@@ -1597,7 +1597,9 @@ class _HomeShell2State extends State<HomeShell2>
   /// `APRS-IS` / `TNC` / `PKWDWPL` 是协议名与设备类别名，不是可翻译短语，直接用字面量。
   String _sourceLabel(AppState st) {
     if (st.dataSource == AppState.srcTnc) return 'TNC';
-    if (st.dataSource == AppState.srcAudio) return S.of(context).dataSourceAudioShort;
+    if (st.dataSource == AppState.srcAudio) {
+      return st.isIcomLanTx ? 'IC-705' : S.of(context).dataSourceAudioShort;
+    }
     if (st.dataSource == AppState.srcPkwdwpl) return 'PKWDWPL';
     return 'APRS-IS';
   }
@@ -1624,6 +1626,11 @@ class _HomeShell2State extends State<HomeShell2>
       return st.pkwdwpl.device?.label ?? S.of(context).tncNotBound;
     }
     if (st.dataSource == AppState.srcAudio) {
+      if (st.isIcomLanTx) {
+        return st.audio.config.icomLan.host.isNotEmpty
+            ? '${st.audio.config.icomLan.host}:${st.audio.config.icomLan.controlPort}'
+            : 'IC-705';
+      }
       return '${st.audio.config.afsk.sampleRate} Hz';
     }
     final s = S.of(context);

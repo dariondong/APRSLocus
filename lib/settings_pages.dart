@@ -2407,13 +2407,15 @@ class _ConnectionSettingsPageState extends State<ConnectionSettingsPage> {
     final names = <String>[
       if (st.aprsIsOn) 'APRS-IS',
       if (st.tncOn) S.of(context).dataSourceTnc,
-      if (st.audioOn) S.of(context).dataSourceAudio,
+      if (st.icomLanOn) S.of(context).icomLanTitle,
+      if (st.audioDeviceOn) S.of(context).dataSourceAudio,
       if (st.pkwdwplOn) S.of(context).dataSourcePkwdwpl,
     ];
     final txIdx = [
       if (st.aprsIsOn) AppState.srcAprsIs,
       if (st.tncOn) AppState.srcTnc,
-      if (st.audioOn) AppState.srcAudio,
+      if (st.icomLanOn) AppState.srcAudio,
+      if (st.audioDeviceOn) AppState.srcAudio,
       if (st.pkwdwplOn) AppState.srcPkwdwpl,
     ].indexOf(st.dataSource);
     final srcLabel = names.isEmpty

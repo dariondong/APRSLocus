@@ -218,7 +218,9 @@ class _DeviceOverviewPageState extends State<DeviceOverviewPage> {
         AppState.srcPkwdwpl =>
           state.pkwdwpl.device?.label ?? s.tncNotBound,
         _ => isIcom
-            ? '${state.audio.config.icomLan.host}:${state.audio.config.icomLan.controlPort}'
+            ? (state.audio.config.icomLan.host.isNotEmpty
+                ? '${state.audio.config.icomLan.host}:${state.audio.config.icomLan.controlPort}'
+                : s.icomLanTitle)
             : '${state.audio.config.afsk.sampleRate} Hz · ${state.audio.backendName}',
       };
       final stats = switch (src) {

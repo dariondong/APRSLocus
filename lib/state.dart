@@ -1897,6 +1897,18 @@ class AppState extends ChangeNotifier {
   bool get audioOn => enabledSources.contains(srcAudio);
   bool get pkwdwplOn => enabledSources.contains(srcPkwdwpl);
 
+  /// IC-705 Wi-Fi 直连是否已启用（多选接收）
+  bool get icomLanOn => audioOn && audio.config.source == AudioSource.icomLan;
+
+  /// AFSK 系统声卡是否已启用（多选接收）
+  bool get audioDeviceOn => audioOn && audio.config.source == AudioSource.device;
+
+  /// IC-705 是否为当前发射来源
+  bool get isIcomLanTx => dataSource == srcAudio && audio.config.source == AudioSource.icomLan;
+
+  /// AFSK 系统声卡是否为当前发射来源
+  bool get isAudioDeviceTx => dataSource == srcAudio && audio.config.source == AudioSource.device;
+
   /// 远程限制名单（黑名单）命中的结果；null = 没被限制 / 还没查到。
   ///
   /// 命中时 `app.dart` 会用整页把它拦下（依据用户协议第 8.2 条）。
@@ -2197,6 +2209,88 @@ class AppState extends ChangeNotifier {
       _heard.clear();
     }
     _reconcileSources();
+    persist();
+    _notify();
+    _updateNotification();
+  }
+
+  /// 启用/停用 IC-705 Wi-Fi 直连（作为独立数据来源）
+  Future<void> toggleIcomLan(bool on) async {
+    if (on) {
+      final wasOther = audio.config.source != AudioSource.icomLan;
+      audio.config.source = AudioSource.icomLan;
+      await audio.save();
+      if (!enabledSources.contains(srcAudio)) {
+        await toggleSource(srcAudio, true);
+      } else if (wasOther && (anyLinkUp || audio.connected)) {
+        await audio.disconnect(manual: false);
+        _setLinkUp(srcAudio, false);
+        if (!_userDisconnected) await _connectAudio();
+      }
+    } else {
+      if (icomLanOn) {
+        await toggleSource(srcAudio, false);
+      }
+    }
+    persist();
+    _notify();
+    _updateNotification();
+  }
+
+  /// 启用/停用 AFSK 系统声卡（作为独立数据来源）
+  Future<void> toggleAudioDevice(bool on) async {
+    if (on) {
+      final wasOther = audio.config.source != AudioSource.device;
+      audio.config.source = AudioSource.device;
+      await audio.save();
+      if (!enabledSources.contains(srcAudio)) {
+        await toggleSource(srcAudio, true);
+      } else if (wasOther && (anyLinkUp || audio.connected)) {
+        await audio.disconnect(manual: false);
+        _setLinkUp(srcAudio, false);
+        if (!_userDisconnected) await _connectAudio();
+      }
+    } else {
+      if (audioDeviceOn) {
+        await toggleSource(srcAudio, false);
+      }
+    }
+    persist();
+    _notify();
+    _updateNotification();
+  }
+
+  /// 指定 IC-705 为发射来源
+  Future<void> setTxIcomLan() async {
+    final wasOther = audio.config.source != AudioSource.icomLan;
+    audio.config.source = AudioSource.icomLan;
+    await audio.save();
+    if (!enabledSources.contains(srcAudio)) {
+      await toggleSource(srcAudio, true);
+    } else if (wasOther && (anyLinkUp || audio.connected)) {
+      await audio.disconnect(manual: false);
+      _setLinkUp(srcAudio, false);
+      if (!_userDisconnected) await _connectAudio();
+    }
+    setTxSource(srcAudio);
+    persist();
+    _notify();
+    _updateNotification();
+  }
+
+  /// 指定 AFSK 系统声卡为发射来源
+  Future<void> setTxAudioDevice() async {
+    final wasOther = audio.config.source != AudioSource.device;
+    audio.config.source = AudioSource.device;
+    await audio.save();
+    if (!enabledSources.contains(srcAudio)) {
+      await toggleSource(srcAudio, true);
+    } else if (wasOther && (anyLinkUp || audio.connected)) {
+      await audio.disconnect(manual: false);
+      _setLinkUp(srcAudio, false);
+      if (!_userDisconnected) await _connectAudio();
+    }
+    setTxSource(srcAudio);
     persist();
     _notify();
     _updateNotification();

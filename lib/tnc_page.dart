@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 import 'settings_widgets.dart';
-import 'audio.dart';
+import 'audio_page.dart';
 import 'garmin_page.dart';
 import 'hr_page.dart';
 import 'ic705_device_page.dart';
+import 'pkwdwpl_device_page.dart';
 import 'platform_caps.dart';
 import 'state.dart';
 import 'theme.dart';
-import 'tnc.dart';
+import 'tnc_device_page.dart';
 import 'widgets.dart';
 
 /// ─── TNC 页的**共享组件** ───
@@ -62,6 +62,41 @@ class DataSourceCard extends StatelessWidget {
           icon: Icons.settings_input_antenna_rounded,
           disabled: !tncPlatformSupported,
           disabledReason: s.iosFeatureUnsupported,
+          onConfigure: () => Navigator.of(context).push(
+            MaterialPageRoute(builder: (_) => TncDevicePage(state: state)),
+          ),
+        ),
+        _tile(
+          context,
+          key: 'icomlan',
+          title: s.icomLanTitle,
+          desc: state.audio.config.icomLan.host.isNotEmpty
+              ? '${state.audio.config.icomLan.host}:${state.audio.config.icomLan.controlPort} · 局域网电台直连收发'
+              : '通过 Wi-Fi 直连 IC-705 电台收发音频与 CI-V 控制',
+          icon: Icons.wifi_tethering_rounded,
+          enabled: state.icomLanOn,
+          isTx: state.isIcomLanTx,
+          up: state.icomLanOn && state.isUp(AppState.srcAudio),
+          onToggle: (on) => state.toggleIcomLan(on),
+          onSetTx: () => state.setTxIcomLan(),
+          onConfigure: () => Navigator.of(context).push(
+            MaterialPageRoute(builder: (_) => Ic705DevicePage(state: state)),
+          ),
+        ),
+        _tile(
+          context,
+          key: AppState.srcAudio,
+          title: s.dataSourceAudio,
+          desc: s.dataSourceAudioDesc,
+          icon: Icons.graphic_eq_rounded,
+          enabled: state.audioDeviceOn,
+          isTx: state.isAudioDeviceTx,
+          up: state.audioDeviceOn && state.isUp(AppState.srcAudio),
+          onToggle: (on) => state.toggleAudioDevice(on),
+          onSetTx: () => state.setTxAudioDevice(),
+          onConfigure: () => Navigator.of(context).push(
+            MaterialPageRoute(builder: (_) => AudioSettingsPage(state: state)),
+          ),
         ),
         // PKWDWPL（Kenwood 航点语句）与 TNC 并列：同一根线缆/蓝牙，
         // 但线上是 NMEA 明文行、而且**只收不发**（canTx: false）
@@ -74,50 +109,8 @@ class DataSourceCard extends StatelessWidget {
           canTx: false,
           disabled: !tncPlatformSupported,
           disabledReason: s.iosFeatureUnsupported,
-        ),
-        _tile(
-          context,
-          key: AppState.srcAudio,
-          title: state.audio.config.source == AudioSource.icomLan
-              ? '${s.dataSourceAudio} (${s.icomLanTitle})'
-              : s.dataSourceAudio,
-          desc: state.audio.config.source == AudioSource.icomLan
-              ? '通过 Wi-Fi 直连 IC-705 电台收发音频与 CI-V 控制'
-              : s.dataSourceAudioDesc,
-          icon: state.audio.config.source == AudioSource.icomLan
-              ? Icons.wifi_tethering_rounded
-              : Icons.graphic_eq_rounded,
-        ),
-        Padding(
-          padding: const EdgeInsets.fromLTRB(14, 2, 14, 8),
-          child: InkWell(
-            onTap: () => Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (_) => Ic705DevicePage(state: state),
-              ),
-            ),
-            borderRadius: BorderRadius.circular(8),
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
-              decoration: BoxDecoration(
-                color: C.cyan.withValues(alpha: 0.08),
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: C.cyan.withValues(alpha: 0.3)),
-              ),
-              child: Row(
-                children: [
-                  Icon(Icons.wifi_tethering_rounded, size: 16, color: C.cyan),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: Text(
-                      '${s.icomLanTitle} · 进入专属电台控制面板',
-                      style: ts(12, c: C.cyan, w: FontWeight.w600),
-                    ),
-                  ),
-                  Icon(Icons.chevron_right_rounded, size: 16, color: C.cyan),
-                ],
-              ),
-            ),
+          onConfigure: () => Navigator.of(context).push(
+            MaterialPageRoute(builder: (_) => PkwdwplDevicePage(state: state)),
           ),
         ),
         // ── 位置来源 / 心率来源（用户要求：佳明应当作为「数据来源」的一种选择）──
@@ -334,29 +327,39 @@ class DataSourceCard extends StatelessWidget {
     required String title,
     required String desc,
     required IconData icon,
+    bool? enabled,
+    bool? isTx,
+    bool? up,
+    ValueChanged<bool>? onToggle,
+    VoidCallback? onSetTx,
+    VoidCallback? onConfigure,
     bool canTx = true,
     bool disabled = false,
     String? disabledReason,
   }) {
     final s = S.of(context);
-    final enabled = state.enabledSources.contains(key);
-    final up = state.isUp(key);
+    final isEnabled = enabled ?? state.enabledSources.contains(key);
+    final isUp = up ?? state.isUp(key);
     // 只读来源（PKWDWPL）永远不是发射来源，圆点也不显示 ——
     // 否则用户会以为「选上它就能发」。
-    final isTx = canTx && state.dataSource == key;
+    final isTxActive = isTx ?? (canTx && state.dataSource == key);
     // 最后一条不允许取消勾选：全关掉应用就什么都不收，而界面没有任何提示
-    final canToggleOff = state.enabledSources.length > 1 || !enabled;
+    final canToggleOff = state.enabledSources.length > 1 || !isEnabled;
     // 平台不支持：整行置灰、不可点，副标题换成「为什么不可用」——
     // 让用户一眼看出不是坏了，而是本平台根本没有这条链路。
     final sub = disabled ? (disabledReason ?? desc) : desc;
     return InkWell(
-      onTap: disabled ? null : () => state.toggleSource(key, !enabled),
+      onTap: disabled
+          ? null
+          : () => onToggle != null
+              ? onToggle(!isEnabled)
+              : state.toggleSource(key, !isEnabled),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
         decoration: BoxDecoration(
           color: disabled
               ? Colors.transparent
-              : (enabled
+              : (isEnabled
                   ? C.blue.withValues(alpha: 0.04)
                   : Colors.transparent),
           border: Border(bottom: BorderSide(color: C.border, width: 0.4)),
@@ -366,13 +369,13 @@ class DataSourceCard extends StatelessWidget {
           Icon(
             disabled
                 ? Icons.block
-                : (enabled
+                : (isEnabled
                     ? Icons.check_box_rounded
                     : Icons.check_box_outline_blank_rounded),
             size: 19,
             color: disabled
                 ? C.greyLight
-                : (enabled ? C.blue : C.greyLight),
+                : (isEnabled ? C.blue : C.greyLight),
           ),
           const SizedBox(width: 10),
           Container(
@@ -381,12 +384,12 @@ class DataSourceCard extends StatelessWidget {
             decoration: BoxDecoration(
               color: disabled
                   ? C.greyBg
-                  : (enabled ? C.blue.withValues(alpha: 0.12) : C.greyBg),
+                  : (isEnabled ? C.blue.withValues(alpha: 0.12) : C.greyBg),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Icon(icon,
                 size: 17,
-                color: disabled ? C.greyLight : (enabled ? C.blue : C.grey)),
+                color: disabled ? C.greyLight : (isEnabled ? C.blue : C.grey)),
           ),
           const SizedBox(width: 11),
           Expanded(
@@ -400,23 +403,23 @@ class DataSourceCard extends StatelessWidget {
                             w: FontWeight.w700,
                             c: disabled
                                 ? C.greyLight
-                                : (enabled ? C.blue : C.grey)),
+                                : (isEnabled ? C.blue : C.grey)),
                         overflow: TextOverflow.ellipsis),
                   ),
-                  if (!disabled && enabled) ...[
+                  if (!disabled && isEnabled) ...[
                     const SizedBox(width: 6),
                     // 每条链路的真实连通状态：多选时这是最需要一眼看到的信息
                     Container(
                       width: 6,
                       height: 6,
                       decoration: BoxDecoration(
-                        color: up ? C.green : C.greyLight,
+                        color: isUp ? C.green : C.greyLight,
                         shape: BoxShape.circle,
                       ),
                     ),
                     const SizedBox(width: 4),
-                    Text(up ? s.connected : s.disconnected,
-                        style: ts(10, c: up ? C.green : C.grey)),
+                    Text(isUp ? s.connected : s.disconnected,
+                        style: ts(10, c: isUp ? C.green : C.grey)),
                   ],
                 ]),
                 const SizedBox(height: 2),
@@ -427,6 +430,30 @@ class DataSourceCard extends StatelessWidget {
               ],
             ),
           ),
+          // 配置专属子页入口按钮
+          if (!disabled && onConfigure != null)
+            GestureDetector(
+              onTap: onConfigure,
+              behavior: HitTestBehavior.opaque,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 4),
+                child: Tooltip(
+                  message: '进入配置面板',
+                  child: Container(
+                    padding: const EdgeInsets.all(5),
+                    decoration: BoxDecoration(
+                      color: isEnabled
+                          ? C.blue.withValues(alpha: 0.1)
+                          : C.greyBg,
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                    child: Icon(Icons.tune_rounded,
+                        size: 15,
+                        color: isEnabled ? C.blue : C.grey),
+                  ),
+                ),
+              ),
+            ),
           // 平台不支持：用一把锁替代发射标记，明确「本平台不可用」
           if (disabled)
             Padding(
@@ -435,9 +462,11 @@ class DataSourceCard extends StatelessWidget {
                   size: 16, color: C.greyLight),
             )
           // 发射来源标记：只有启用的**可发射**链路才有资格
-          else if (enabled && canTx)
+          else if (isEnabled && canTx)
             GestureDetector(
-              onTap: isTx ? null : () => state.setTxSource(key),
+              onTap: isTxActive
+                  ? null
+                  : (onSetTx ?? () => state.setTxSource(key)),
               behavior: HitTestBehavior.opaque,
               child: Padding(
                 padding: const EdgeInsets.only(left: 6),
@@ -445,16 +474,16 @@ class DataSourceCard extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Icon(
-                      isTx
+                      isTxActive
                           ? Icons.radio_button_checked_rounded
                           : Icons.radio_button_unchecked_rounded,
                       size: 18,
-                      color: isTx ? C.orange : C.greyLight,
+                      color: isTxActive ? C.orange : C.greyLight,
                     ),
-                    if (isTx)
+                    if (isTxActive)
                       Text(s.dataSourceTxBadge,
                           style: ts(9, c: C.orange, w: FontWeight.w700)),
-                    if (!isTx && !canToggleOff)
+                    if (!isTxActive && !canToggleOff)
                       const SizedBox(height: 0),
                   ],
                 ),

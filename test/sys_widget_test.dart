@@ -14,6 +14,7 @@ import 'package:aprslocus/sys_widget.dart';
 /// 少一条链路，Kotlin 侧只会安静地留空（`read()` 刻意容错），
 /// 错误全部落在「界面上少了一块」而不报错。
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
   final zh = lookupAppLocalizations(const Locale('zh'));
   final en = lookupAppLocalizations(const Locale('en'));
 
