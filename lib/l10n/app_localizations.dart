@@ -8585,24 +8585,6 @@ abstract class AppLocalizations {
   /// **'项目仓库'**
   String get projectRepo;
 
-  /// No description provided for @qqGroup.
-  ///
-  /// In zh, this message translates to:
-  /// **'QQ 交流群'**
-  String get qqGroup;
-
-  /// No description provided for @qqGroupDesc.
-  ///
-  /// In zh, this message translates to:
-  /// **'APRSlocus 软件 · 反馈问题/交流使用'**
-  String get qqGroupDesc;
-
-  /// No description provided for @qqSoftwareName.
-  ///
-  /// In zh, this message translates to:
-  /// **'APRSlocus 软件'**
-  String get qqSoftwareName;
-
   /// No description provided for @qrCodeTitle.
   ///
   /// In zh, this message translates to:

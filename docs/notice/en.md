@@ -20,7 +20,7 @@ Use only a callsign you lawfully hold, and comply with the applicable radio regu
 5. Disclaimer
 This software is provided "as is", as an auxiliary tool for amateur radio operators, and is not suitable for critical tasks such as the safety of life or property. The development team is not liable for any direct or indirect loss caused by servers you configure, data you upload, or your use of this software.
 
-Please do not ask for, post, or discuss any specific server address in the group. The group is for software discussion only and provides no server resources or Internet service.
+Please do not ask for, post, or discuss any specific server address. This software is for discussion of its use only and provides no server resources or Internet service.
 
 Thank you for your understanding and cooperation.
 ---

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart'
     show defaultTargetPlatform, TargetPlatform;
-import 'package:url_launcher/url_launcher.dart';
 
 import 'notice.dart';
 import 'notice_banner.dart';
@@ -10,7 +9,6 @@ import 'sponsor_page.dart';
 import 'sport_rank_page.dart';
 import 'guide.dart';
 import 'state.dart';
-import 'models.dart';
 import 'widgets.dart';
 import 'about_page.dart';
 import 'check_update_page.dart';
@@ -315,9 +313,6 @@ class _SettingsPageState extends State<SettingsPage> {
                     ),
                   ),
                 ),
-                SizedBox(height: 12),
-                // QQ 交流群
-                _qqBanner(),
                 SizedBox(height: 12),
                 // 翻译设置
                 GestureDetector(
@@ -1020,53 +1015,4 @@ class _SettingsPageState extends State<SettingsPage> {
     await exitApplication();
   }
 
-  Widget _qqBanner() {
-    return GestureDetector(
-      onTap: () => launchUrl(
-        Uri.parse('https://qm.qq.com/q/8pL6vc5YA0'),
-        mode: LaunchMode.externalApplication,
-      ),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        decoration: BoxDecoration(
-          color: C.blueBg,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: C.blue.withValues(alpha: 0.3)),
-        ),
-        child: Row(
-          children: [
-            Container(
-              width: 34,
-              height: 34,
-              decoration: BoxDecoration(
-                color: C.blue,
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: const Icon(
-                Icons.forum_rounded,
-                size: 18,
-                color: Colors.white,
-              ),
-            ),
-            SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    S.of(context).qqGroup,
-                    style: ts(13, w: FontWeight.w700),
-                  ),
-                  SizedBox(height: 2),
-                  Text(S.of(context).qqGroupDesc, style: ts(11, c: C.slate)),
-                ],
-              ),
-            ),
-            SizedBox(width: 8),
-            Icon(Icons.chevron_right_rounded, size: 18, color: C.blue),
-          ],
-        ),
-      ),
-    );
-  }
 }

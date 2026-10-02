@@ -5000,15 +5000,6 @@ By tapping "Agree and connect" you confirm that you have read, understood, and a
   String get projectRepo => 'Repository';
 
   @override
-  String get qqGroup => 'QQ group';
-
-  @override
-  String get qqGroupDesc => 'APRSlocus · Feedback and discussion';
-
-  @override
-  String get qqSoftwareName => 'APRSlocus';
-
-  @override
   String qrCodeTitle(String title) {
     return '$title QR code';
   }

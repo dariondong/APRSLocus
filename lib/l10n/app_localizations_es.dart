@@ -5040,15 +5040,6 @@ Al pulsar "Aceptar y conectar" confirmas que has leído, entendido y aceptado lo
   String get projectRepo => 'Repositorio';
 
   @override
-  String get qqGroup => 'Grupo de QQ';
-
-  @override
-  String get qqGroupDesc => 'APRSlocus · Comentarios y dudas';
-
-  @override
-  String get qqSoftwareName => 'APRSlocus';
-
-  @override
   String qrCodeTitle(String title) {
     return 'Código QR de $title';
   }

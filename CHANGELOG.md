@@ -14,6 +14,8 @@
 - **首次引导：不再预填公共服务器、也不再自动连接**。服务器留空 = 不连接任何服务器，软件只在
   本地工作；要联网由用户自行填写服务器与端口。原文案"可保持默认配置直接使用"一并改掉
   （那等于在推荐）。
+- **移除 QQ 群入口**：应用内的 QQ 群横幅、「关于」页的 QQ 群链接、用户协议第十节里的 QQ 群
+  联系方式，以及公告里"本群"的说法，全部去掉。
 
 ## [2.0.17] - 2026-10-02 (English)
 
@@ -34,6 +36,8 @@
   means no connection at all, with the app running locally only; to go online the user enters a
   server and port. The old wording "the default settings work as-is" is gone (it amounted to a
   recommendation).
+- **QQ group removed**: the in-app QQ banner, the QQ link on the About page, the QQ contact
+  in section 10 of the Terms, and the "group" wording in the notice are all gone.
 
 ## [2.0.16] - 2026-10-02
 

@@ -648,12 +648,6 @@ class _AboutPageState extends State<AboutPage>
                                 url: 'https://aprslocus.theez.top/',
                               ),
                               _linkRow(
-                                icon: Icons.wechat_rounded,
-                                label: t.qqGroup,
-                                value: t.qqSoftwareName,
-                                url: 'https://qm.qq.com/q/8pL6vc5YA0',
-                              ),
-                              _linkRow(
                                 icon: Icons.link_rounded,
                                 label: t.projectRepo,
                                 value: 'GitCode',

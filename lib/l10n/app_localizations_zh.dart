@@ -4803,15 +4803,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get projectRepo => '项目仓库';
 
   @override
-  String get qqGroup => 'QQ 交流群';
-
-  @override
-  String get qqGroupDesc => 'APRSlocus 软件 · 反馈问题/交流使用';
-
-  @override
-  String get qqSoftwareName => 'APRSlocus 软件';
-
-  @override
   String qrCodeTitle(String title) {
     return '$title 赞赏码';
   }
@@ -12291,15 +12282,6 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get projectRepo => '專案倉庫';
-
-  @override
-  String get qqGroup => 'QQ 群組';
-
-  @override
-  String get qqGroupDesc => 'APRSlocus 軟體 · 反饋問題/交流使用';
-
-  @override
-  String get qqSoftwareName => 'APRSlocus 軟體';
 
   @override
   String qrCodeTitle(String title) {

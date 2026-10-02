@@ -166,7 +166,6 @@ Thank you for using APRSlocus! APRSlocus is an open-source APRS client software,
 
 If you have any questions, suggestions, or complaints regarding this agreement, you may contact us via:
 
-· QQ Group: 925025834
 · GitHub Repository: search for "APRSlocus" and submit an Issue
 
 For matters related to personal information or this agreement, please open an Issue in the GitHub repository above (publicly visible, and easy for other users to check).

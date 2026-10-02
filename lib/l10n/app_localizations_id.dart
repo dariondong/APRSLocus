@@ -5011,15 +5011,6 @@ Dengan menekan "Setuju dan sambung", Anda menyatakan telah membaca, memahami, da
   String get projectRepo => 'Repositori';
 
   @override
-  String get qqGroup => 'Grup QQ';
-
-  @override
-  String get qqGroupDesc => 'APRSlocus · Masukan dan diskusi';
-
-  @override
-  String get qqSoftwareName => 'APRSlocus';
-
-  @override
   String qrCodeTitle(String title) {
     return 'Kode QR $title';
   }

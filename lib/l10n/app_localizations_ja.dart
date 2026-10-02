@@ -4860,15 +4860,6 @@ class AppLocalizationsJa extends AppLocalizations {
   String get projectRepo => 'リポジトリ';
 
   @override
-  String get qqGroup => 'QQ グループ';
-
-  @override
-  String get qqGroupDesc => 'APRSlocus · 不具合報告・情報交換';
-
-  @override
-  String get qqSoftwareName => 'APRSlocus';
-
-  @override
   String qrCodeTitle(String title) {
     return '$title の QR コード';
   }
