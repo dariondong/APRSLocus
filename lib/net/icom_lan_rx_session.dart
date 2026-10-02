@@ -245,6 +245,13 @@ class IcomLanRxSession implements IcomLanRadioSession {
 
   Future<void> _openSockets() async {
     _socketsOpenCompleter = Completer<void>();
+    _radioToken = 0;
+    _localToken = _random.nextInt(0x10000);
+    _authInnerSequence = 0x30;
+    _connectionAnnouncement = null;
+    _radioAddress = null;
+    _nextTxOuterSequence = 1;
+    _nextTxAudioSequence = 1;
     try {
       final basePort = config.controlPort;
       for (final role in IcomLanChannelRole.values) {
@@ -292,7 +299,61 @@ class IcomLanRxSession implements IcomLanRadioSession {
     }
   }
 
-  Future<void> _closeSockets() async {
+  void _bestEffortProtocolClose() {
+    final civ = _channels[IcomLanChannelRole.civ];
+    if (civ?.remoteId != null) {
+      try {
+        _sendTracked(
+          civ!,
+          IcomLanHandshakeCodec.encodeCivOpenClose(
+            IcomLanCivOpenClosePacket(
+              sequence: 0,
+              senderId: civ.localId,
+              receiverId: civ.remoteId!,
+              civSequence: _nextCivSequence(civ),
+              action: IcomLanCivChannelAction.close,
+            ),
+          ),
+        );
+      } catch (_) {}
+    }
+    final control = _channels[IcomLanChannelRole.control];
+    if (control?.remoteId != null && _radioToken != 0) {
+      try {
+        _sendTracked(
+          control!,
+          IcomLanHandshakeCodec.encodeTokenDelete(
+            sequence: 0,
+            senderId: control.localId,
+            receiverId: control.remoteId!,
+            innerSequence: _nextAuthInnerSequence(),
+            tokenRequest: _localToken,
+            token: _radioToken,
+          ),
+        );
+      } catch (_) {}
+    }
+    for (final runtime in _channels.values) {
+      if (runtime.remoteId != null) {
+        try {
+          final disconnect = IcomLanControlCodec.encode(
+            IcomLanControlPacket(
+              type: IcomLanControlCodec.typeDisconnect,
+              sequence: 0,
+              senderId: runtime.localId,
+              receiverId: runtime.remoteId!,
+            ),
+          );
+          _sendUntracked(runtime, disconnect);
+        } catch (_) {}
+      }
+    }
+  }
+
+  Future<void> _closeSockets({bool sendProtocolClose = true}) async {
+    if (sendProtocolClose) {
+      _bestEffortProtocolClose();
+    }
     for (final runtime in _channels.values) {
       try {
         await runtime.channel?.close();
@@ -424,29 +485,40 @@ class IcomLanRxSession implements IcomLanRadioSession {
     Uint8List data,
     IcomLanSocketAddress source,
   ) {
-    final packet = IcomLanControlCodec.decode(
-      data,
-      expectedReceiverId: runtime.localId,
-    );
-    switch (packet.type) {
-      case IcomLanControlCodec.typeRetransmit:
-        _handleRetransmit(runtime, data);
-      case IcomLanControlCodec.typeIAmHere:
-        _onChannelDiscovered(runtime, packet.senderId, source);
-      case IcomLanControlCodec.typeReady:
-        _onChannelReady(runtime);
-      case IcomLanControlCodec.typeAreYouThere:
-        _sendUntracked(
-          runtime,
-          IcomLanControlCodec.encode(
-            IcomLanControlPacket(
-              type: IcomLanControlCodec.typeIAmHere,
-              sequence: 0,
-              senderId: runtime.localId,
-              receiverId: packet.senderId,
+    try {
+      final packet = IcomLanControlCodec.decode(
+        data,
+        expectedReceiverId: runtime.localId,
+      );
+      switch (packet.type) {
+        case IcomLanControlCodec.typeRetransmit:
+          _handleRetransmit(runtime, data);
+        case IcomLanControlCodec.typeIAmHere:
+          _onChannelDiscovered(runtime, packet.senderId, source);
+        case IcomLanControlCodec.typeReady:
+          _onChannelReady(runtime);
+        case IcomLanControlCodec.typeNull:
+          break;
+        case IcomLanControlCodec.typeDisconnect:
+          _log('Radio sent DISCONNECT');
+          _dispatch(const IcomLanRecoverableFailure('radio disconnected'));
+        case IcomLanControlCodec.typeAreYouThere:
+          _sendUntracked(
+            runtime,
+            IcomLanControlCodec.encode(
+              IcomLanControlPacket(
+                type: IcomLanControlCodec.typeIAmHere,
+                sequence: 0,
+                senderId: runtime.localId,
+                receiverId: packet.senderId,
+              ),
             ),
-          ),
-        );
+          );
+        default:
+          _log('Unhandled control packet type: ${packet.type}');
+      }
+    } catch (e) {
+      _log('[CONTROL ERROR] role=${runtime.role.name}, err=$e');
     }
   }
 
@@ -523,11 +595,52 @@ class IcomLanRxSession implements IcomLanRadioSession {
       return;
     }
 
+    if (data.length == IcomLanHandshakeCodec.tokenPacketSize) {
+      try {
+        final tokenPacket = IcomLanHandshakeCodec.decodeTokenPacket(
+          data,
+          expectedReceiverId: control.localId,
+        );
+        if (tokenPacket.header.requestType ==
+                IcomLanHandshakeCodec.tokenRequestRenewal &&
+            tokenPacket.header.requestReply ==
+                IcomLanHandshakeCodec.requestReplyResponse) {
+          switch (tokenPacket.responseCode) {
+            case 0:
+              break;
+            case -1:
+              control.remoteId = tokenPacket.header.senderId;
+              _localToken = tokenPacket.header.tokenRequest;
+              _radioToken = tokenPacket.header.token;
+              if (_state.connectionRequestAuthorized) {
+                _dispatch(const IcomLanRecoverableFailure(
+                  'token reauthorization required',
+                ));
+              } else {
+                _dispatch(const IcomLanConnectionRequestAuthorized());
+              }
+            default:
+              _dispatch(const IcomLanRecoverableFailure(
+                'token renewal rejected',
+              ));
+          }
+        }
+      } catch (e) {
+        _log('Decode token packet failed: $e');
+      }
+      return;
+    }
+
     if (data.length == IcomLanConnectionInfoCodec.packetSize) {
       try {
         final announcement = IcomLanConnectionInfoCodec.decodeAnnouncement(
           data,
           expectedReceiverId: control.localId,
+        );
+        _log(
+          'Decoded announcement: isBusy=${announcement.isBusy}, '
+          'radioName="${announcement.radioName}", '
+          'busyClient="${announcement.busyClientName}"',
         );
         if (!announcement.isBusy) {
           _connectionAnnouncement = announcement;
@@ -657,15 +770,14 @@ class IcomLanRxSession implements IcomLanRadioSession {
   void _sendLogin() {
     final control = _channels[IcomLanChannelRole.control]!;
     final remoteId = control.remoteId ?? 0;
-    _localToken = _random.nextInt(0x7fffffff);
 
     final request = IcomLanHandshakeCodec.encodeLoginRequest(
       sequence: 0,
       senderId: control.localId,
       receiverId: remoteId,
       innerSequence: _nextAuthInnerSequence(),
-      tokenRequest: 0,
-      token: _localToken,
+      tokenRequest: _localToken,
+      token: _radioToken,
       username: config.username,
       password: config.password,
       clientName: config.clientName,
@@ -676,16 +788,39 @@ class IcomLanRxSession implements IcomLanRadioSession {
   void _sendTokenConfirmation(int token) {
     final control = _channels[IcomLanChannelRole.control]!;
     final remoteId = control.remoteId ?? 0;
+    _radioToken = token;
 
     final confirm = IcomLanHandshakeCodec.encodeTokenConfirm(
       sequence: 0,
       senderId: control.localId,
       receiverId: remoteId,
       innerSequence: _nextAuthInnerSequence(),
-      tokenRequest: 0,
-      token: token,
+      tokenRequest: _localToken,
+      token: _radioToken,
     );
-    _sendUntracked(control, confirm);
+    _sendTracked(control, confirm);
+
+    _schedulePeriodic(
+      'token_renewal',
+      Duration(milliseconds: _timing.tokenRenewalMillis),
+      _sendTokenRenewal,
+    );
+  }
+
+  void _sendTokenRenewal() {
+    final control = _channels[IcomLanChannelRole.control];
+    if (control == null || control.remoteId == null || _radioToken == 0) return;
+    _sendTracked(
+      control,
+      IcomLanHandshakeCodec.encodeTokenRenewal(
+        sequence: 0,
+        senderId: control.localId,
+        receiverId: control.remoteId!,
+        innerSequence: _nextAuthInnerSequence(),
+        tokenRequest: _localToken,
+        token: _radioToken,
+      ),
+    );
   }
 
   void _sendConnectionInfo() {
@@ -693,6 +828,11 @@ class IcomLanRxSession implements IcomLanRadioSession {
     final remoteId = control.remoteId ?? 0;
     final civ = _channels[IcomLanChannelRole.civ]!;
     final audio = _channels[IcomLanChannelRole.audio]!;
+
+    _log(
+      'Sending ConnectionInfo: radioName="${_connectionAnnouncement?.radioName}", '
+      'civPort=${civ.channel?.localPort}, audioPort=${audio.channel?.localPort}',
+    );
 
     final request = IcomLanConnectionInfoCodec.encodeParameters(
       IcomLanConnectionParameters(
@@ -709,6 +849,11 @@ class IcomLanRxSession implements IcomLanRadioSession {
         localCivPort: civ.channel?.localPort ?? (config.controlPort + 1),
         localAudioPort:
             audio.channel?.localPort ?? (config.controlPort + 2),
+        receiveEnabled: true,
+        transmitEnabled: true,
+        receiveSampleRateHz: 12000,
+        transmitSampleRateHz: 12000,
+        transmitBufferSamples: 0xf0,
       ),
     );
     _sendTracked(control, request);
