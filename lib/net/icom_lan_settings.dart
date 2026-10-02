@@ -84,7 +84,7 @@ class IcomLanConfig {
     this.passwordMaxLength = 16,
   });
 
-  /// 电台 IP（局域网地址，如 192.168.1.143）。
+  /// 电台 IP（局域网地址）。
   final String host;
 
   /// 控制端口；CI-V 与音频使用 controlPort+1 / controlPort+2。
@@ -102,7 +102,7 @@ class IcomLanConfig {
   /// 电台型号预置。
   final WlanRadioModel model;
 
-  /// 电台 CI-V 地址（IC-705 = 0xA4，IC-9700 = 0xA2，IC-7610 = 0x98，IC-905 = 0xAC）。
+  /// 电台 CI-V 地址（随型号预置自动填入，也可手动修改）。
   final int radioCivAddress;
 
   /// 本机 CI-V 地址（默认 0xE0）。
