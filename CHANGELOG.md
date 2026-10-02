@@ -4,13 +4,13 @@
 
 ### 用户协议 V1.2：不提供服务器地址与互联网服务 + 首次引导默认不连接
 
-- **协议 V1.2**（三语，41 → 46 条）：新增 2.4 / 2.5（不提供、不运营、也不推荐任何 APRS
+- **协议 V1.2**（三语，41 → 47 条）：新增 2.4 / 2.5（不提供、不运营、也不推荐任何 APRS
   服务器地址；不提供 APRS-IS、iGate、数据上传、中转或存储等互联网服务；**软件不预置任何
   服务器地址或端口，首次启动与默认配置下不连接任何 APRS-IS、iGate 或其他网络服务器**；
   与任何第三方服务器无隶属、代理或合作关系，自行配置者自担数据出境、个人信息处理、无线电
   管理等责任）、3.8（遵守《数据安全法》《个人信息保护法》，禁止非法追踪、骚扰、干扰）、
   4.8（勿发送国家秘密、商业秘密、个人隐私或敏感位置信息）、7.8（自行配置服务器、自行上传
-  数据造成的损失不担责）；并删掉 5.1 里点名的服务器地址。
+  数据造成的损失不担责）；新增 5.4（启动时只请求"公告、远程配置名单、设备标识库、成员名单"这几样静态内容，只下载、不上传）；并删掉 5.1 与 4.2 里点名的第三方服务。
 - **首次引导：不再预填公共服务器、也不再自动连接**。服务器留空 = 不连接任何服务器，软件只在
   本地工作；要联网由用户自行填写服务器与端口。原文案"可保持默认配置直接使用"一并改掉
   （那等于在推荐）。
@@ -19,7 +19,7 @@
 
 ### Terms V1.2: no server address, no Internet service + first run connects to nothing
 
-- **Terms V1.2** (all three languages, 41 -> 46 clauses): adds 2.4 / 2.5 (we neither provide,
+- **Terms V1.2** (all three languages, 41 -> 47 clauses): adds 2.4 / 2.5 (we neither provide,
   operate, nor recommend any APRS server address, and provide no Internet service such as
   APRS-IS, iGate, upload, relay, or storage; **the software ships with no server address or
   port and, on first launch and under default settings, connects to no APRS-IS, iGate, or other
