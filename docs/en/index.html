@@ -278,47 +278,36 @@
     </header>
 
     <div class="announce-body">
-      <p><b>The Terms of Use have been updated to V1.1 (1 October 2026).</b> This is not a cosmetic edit:</p>
-      <p>we wrote down <b>what the software actually does</b>. Several things were already happening in</p>
-      <p>code but were not described in the agreement. Per section 8, the revised agreement is</p>
-      <p>published in the app and on GitHub, and <b>continued use means acceptance</b>. Full text:</p>
-      <p>Settings -&gt; About -&gt; Terms of Use (or the website).</p>
-      <p><b>Six new clauses</b></p>
-      <p>1. <b>3.5 Gateway forwarding is your responsibility</b>: forwarding APRS-IS packets onto RF</p>
-      <p>(gateway / iGate) means you <b>transmit on amateur bands on behalf of others</b> - callsign,</p>
-      <p>frequency, power and mode must all be lawful and compliant;</p>
-      <p>2. <b>3.6 Minors</b>: use it with the consent and guidance of a guardian, who bears the</p>
-      <p>consequences; in particular, do not transmit on radio frequencies without the required</p>
-      <p>qualifications;</p>
-      <p>3. <b>3.7 What you send</b>: APRS is a public, international network - content must be truthful,</p>
-      <p>accurate and lawful, and must respect the laws, religions and cultural customs of different</p>
-      <p>countries and regions;</p>
-      <p>4. <b>5.3 Which third parties see what</b>: weather sends your location, message translation</p>
-      <p>sends the text to be translated, update checks query GitHub for a version, Garmin</p>
-      <p>LiveTrack opens the link you add, and map tiles come from several providers - **none of</p>
-      <p>this happens unless you use that feature**;</p>
-      <p>5. <b>7.6 Life Guard etc. are not medical devices</b>: crash/fall detection and heart-rate</p>
-      <p>alarms are auxiliary reminders based on phone sensors and location; they may miss events,</p>
-      <p>raise false alarms or be delayed, and they are <b>not an emergency service</b>. In an</p>
-      <p>emergency, call your local emergency number directly;</p>
-      <p>6. <b>9.4 About tips and donations</b>: donations are entirely voluntary, do not buy any</p>
-      <p>feature, priority support or service commitment, and are non-refundable. Minors should ask</p>
-      <p>a guardian first.</p>
+      <p><b>The Terms of Use were updated to V1.2 (2 October 2026).</b> This revision spells out whether the</p>
+      <p>software touches a server at all. It is published in the app and on GitHub per section 8;</p>
+      <p><b>continued use means you accept it</b>. Full text: Settings -&gt; About -&gt; Terms of Use.</p>
+      <p><b>What this revision makes clear</b></p>
+      <p>1. <b>No preset server, no recommended server</b>: the software ships with no server address or port,</p>
+      <p>and <b>on first launch and under default settings it connects to no</b> APRS-IS, iGate, or other</p>
+      <p>network server - whether to connect, and to where, is <b>yours to enter and decide</b> (which is</p>
+      <p>why the "server" field in the first-run guide may be left empty);</p>
+      <p>2. <b>No Internet service</b>: we do not operate APRS-IS or an iGate, and we do not upload, relay, or</p>
+      <p>store your data; we have no affiliation, agency, or cooperation with any third-party server;</p>
+      <p>3. <b>Your responsibility when you configure one</b>: for any third-party server you connect to, you</p>
+      <p>must confirm that the server and your use of it are lawful, and you bear the responsibility</p>
+      <p>arising from cross-border transfer, personal-data processing, and radio regulation;</p>
+      <p>4. <b>Lawful use</b>: use only a callsign you lawfully hold and comply with applicable</p>
+      <p>data-protection and personal-information laws; unlawful tracking, harassment, or interference</p>
+      <p>with networks is prohibited;</p>
+      <p>5. <b>Do not send sensitive data</b>: never send state secrets, trade secrets, personal data, or</p>
+      <p>sensitive location information - APRS is plain text and may be received, stored, or publicly</p>
+      <p>archived by third parties.</p>
       <p><b>Fixed in the same release</b></p>
-      <ul class="announce-list"><li><b>Fixed the crash when Bluetooth fails to connect</b>: the blocking Bluetooth connect was</li></ul>
-      <p>running on the main thread, so the system declared the app unresponsive and killed it.</p>
-      <p>Connecting now happens on a worker thread and reports failures honestly;</p>
-      <ul class="announce-list"><li><b>Phone battery no longer freezes</b>: it used to be read only when a location fix arrived,</li></ul>
-      <p>so a stationary phone showed a stale percentage;</p>
-      <ul class="announce-list"><li><b>Sport ranking</b>: rows used to show placeholder text ("Today - ...", "No steps"); they now</li></ul>
-      <p>show <b>rank + distance + how long ago + steps</b>. Tapping a station opens the same bottom</p>
-      <p>sheet used everywhere else, and the board counts <b>today only</b> (steps from three days ago</p>
-      <p>no longer outrank today\'s) and includes you, marked as such.</p>
-      <p><b>Nothing is required from you</b>: continued use means you accept the revised agreement. If you</p>
-      <p>do not agree, please stop using this software.</p>
+      <ul class="announce-list"><li><b>The first-run guide no longer pre-fills a public server, nor connects automatically</b>: leaving</li></ul>
+      <p>the server empty means no connection at all and the app works locally only; to go online, enter a</p>
+      <p>server and port you trust. The old wording "the default settings work as-is" is gone (it amounted</p>
+      <p>to a recommendation);</p>
+      <ul class="announce-list"><li>The server addresses named in clause 5.1 have been removed.</li></ul>
+      <p><b>Nothing is required from you</b>: continued use means you accept the revised agreement. If you do</p>
+      <p>not agree, please stop using this software.</p>
       <p><b>73!</b></p>
       <p><b>The APRSLocus team</b></p>
-      <p>1 October 2026</p>
+      <p>2 October 2026</p>
     </div>
 
     <div class="announce-actions">
@@ -588,6 +577,15 @@
 
   <div class="changelog-list">
 <!-- site-sync:changelog -->
+    <div class="cl-version reveal">
+      <div class="cl-head">
+        <span class="cl-tag">v2.0.17</span>
+        <span class="cl-date">2026-10-02</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot up"></span>**Terms of Use updated to V1.2**: the app neither provides nor recommends any server address and connects to no APRS-IS / iGate / network server by default, with added clauses on configuring your own server, lawful use, and data safety. In the first-run guide an empty server means no connection at all (no pre-filled public server, no automatic connect).</div>
+      </div>
+    </div>
     <div class="cl-version reveal">
       <div class="cl-head">
         <span class="cl-tag">v2.0.16</span>

@@ -87,7 +87,11 @@ VIDEO_TPL = (
 
 
 def read(rel):
-    return io.open(os.path.join(ROOT, rel), encoding='utf-8', newline='').read()
+    # 归一成 LF：Windows 下 git（core.autocrlf）会把工作区检出成 CRLF，而本脚本与
+    # 兄弟脚本（sync_site_content.py）的锚点都按 LF 写。不归一就会一边 CRLF 一边 LF，
+    # 锚点找不到、或输出整文件换行翻转。
+    return (io.open(os.path.join(ROOT, rel), encoding='utf-8', newline='')
+            .read().replace('\r\n', '\n').replace('\r', '\n'))
 
 
 def write(rel, text):

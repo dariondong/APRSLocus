@@ -2804,6 +2804,35 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'切换数据来源会断开当前连接'**
   String get dataSourceSwitchHint;
+  /// No description provided for @dataNoticeTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'数据与网络使用告知'**
+  String get dataNoticeTitle;
+
+  /// No description provided for @dataNoticeBody.
+  ///
+  /// In zh, this message translates to:
+  /// **'连接第三方 APRS 服务器是您自己的选择。本软件不提供、不运营、也不推荐任何服务器地址。
+
+连接后，您的呼号、位置、消息等内容会经该服务器与 APRS-IS 网络传输，可能被他人接收、存储或公开存档；APRS 是明文的，请勿发送国家秘密、商业秘密、个人隐私或敏感位置信息。
+
+请自行确认所连接的服务器以及您的使用行为合法合规，并自行承担因数据出境、个人信息处理、无线电管理等产生的责任。我们不运营任何服务器，与任何第三方服务器之间也不存在隶属、代理或合作关系。
+
+点击「同意并连接」表示您已阅读、理解并接受上述内容（详见《用户协议》第 2.4、2.5、4.8 条）。'**
+  String get dataNoticeBody;
+
+  /// No description provided for @dataNoticeAccept.
+  ///
+  /// In zh, this message translates to:
+  /// **'同意并连接'**
+  String get dataNoticeAccept;
+
+  /// No description provided for @dataNoticeDecline.
+  ///
+  /// In zh, this message translates to:
+  /// **'暂不连接'**
+  String get dataNoticeDecline;
 
   /// No description provided for @blTitle.
   ///

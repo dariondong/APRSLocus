@@ -12,6 +12,7 @@ import 'splash_page.dart';
 import 'oobe_page.dart';
 import 'app_widget.dart';
 import 'blacklist_page.dart';
+import 'data_notice_page.dart';
 import 'l10n/app_localizations.dart';
 import 'update_prompt.dart';
 
@@ -181,6 +182,9 @@ class _AppState extends State<App> {
       // 放在首次引导之前/之后都一样：引导页也不该给被限制的人继续用。
       final bl = _state.blacklistHit;
       if (bl != null) return BlacklistPage(hit: bl, state: _state);
+      // 连接服务器前必须签署「数据与网络使用告知」（用户协议 2.4/2.5）：
+      // 闸门在 AppState.toggleConnect 里，这里只负责在被请求时把页面显示出来。
+      if (_state.pendingDataNotice) return DataNoticePage(state: _state);
           // 启动后检查一次新版本：有则弹提醒（同一版本只提醒一次）。
           // 放在 home 的 builder 里是为了拿到 **Navigator 之下**的 context
           // （showDialog 需要它）。

@@ -217,15 +217,17 @@ class _OobePageState extends State<OobePage> {
 
   Future<void> _finish() async {
     final st = widget.state;
-    st.aprs.server = _server.text.trim().isEmpty
-        ? 'rotate.aprs2.net'
-        : _server.text.trim();
+    // 服务器**留空就是不连接**：本软件不预置、也不推荐任何服务器地址（用户协议 2.4）。
+    // 以前这里会把空值悄悄填成公共服务器并立刻连接 —— 那是"软件自己决定连到哪里"，
+    // 与"默认不连接任何服务器"的声明冲突。
+    st.aprs.server = _server.text.trim();
     st.aprs.port = int.tryParse(_port.text) ?? 14580;
     st.aprs.passcode = _pass.text.trim().isEmpty ? '-1' : _pass.text.trim();
     st.persist();
     // 先进主页，连接放到后台进行（主页底部横幅显示连接状态）
     st.completeOobe();
-    st.toggleConnect();
+    // 只有用户**自己填了**服务器才连接；留空则保持纯本地（不碰任何网络服务器）。
+    if (st.aprs.server.isNotEmpty) st.toggleConnect();
   }
 
   void _toast(String msg) {
@@ -1087,7 +1089,8 @@ class _OobePageState extends State<OobePage> {
             style: ts(12, c: C.slate, h: 1.6),
           ),
           SizedBox(height: 24),
-          _field(S.of(context).server, _server, 'rotate.aprs2.net'),
+          // 提示里**不出现任何具体服务器地址**（不提供、不推荐：见用户协议 2.4）
+          _field(S.of(context).server, _server, ''),
           SizedBox(height: 10),
           Row(
             children: [

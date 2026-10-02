@@ -1,6 +1,6 @@
 APRSlocus Terms of Use and Disclaimer
 
-Version: V1.1
+Version: V1.2
 
 Effective Date: October 1, 2026
 
@@ -33,6 +33,10 @@ Thank you for using APRSlocus! APRSlocus is an open-source APRS client software,
 · It is prohibited to inject non-amateur-radio content into APRS-IS while masquerading as an amateur station;
 · Access to APRS-IS is limited to operators holding a valid amateur radio callsign.
 
+2.4 We do not provide, operate, or recommend any APRS server address, and we do not provide any Internet service such as APRS-IS, iGate, data upload, data relay, or data storage. The software ships with no server address or port: on first launch and under default settings it connects to no APRS-IS, iGate, or other network server. Whether to connect, and to where, is entirely yours to enter and decide.Before the first server connection the software shows a Data & Network Notice, and connects only after you confirm it.
+
+2.5 We have no affiliation, agency, or cooperation with any third-party server. If you configure and connect to one yourself, you must confirm that the server and your use of it comply with the law, and you bear all responsibility arising from cross-border data transfer, personal-data processing, radio regulation, and the third party's terms of service.
+
 ---
 
 3. Legal Use and Callsign
@@ -62,6 +66,8 @@ Thank you for using APRSlocus! APRSlocus is an open-source APRS client software,
 3.7 APRS is a public, international network: the content you send over APRS (position, messages, comments, status) should be truthful, accurate, and lawful, and should respect the laws, religions, and cultural customs of different countries and regions. Do not send false information, unlawful content, or content that could reasonably be seen as harassment or offensive; you are responsible for all content transmitted under your callsign.
 
 
+3.8 Use only a callsign you lawfully hold, and comply with applicable data-protection and personal-information laws. You must not use this software for unlawful tracking, harassment, interference with radio networks, or any other illegal activity.
+
 ---
 
 4. Data Storage and Privacy
@@ -86,11 +92,13 @@ Thank you for using APRSlocus! APRSlocus is an open-source APRS client software,
 
 4.7 You are responsible for safeguarding your device against unauthorised access to your local data. The development team assumes no liability for data disclosure resulting from loss, theft, or unauthorised use of your device.
 
+4.8 Do not send state secrets, trade secrets, personal data, or sensitive location information over APRS. APRS data may travel in the clear over radio and public networks and may be received, stored, or publicly archived by third parties.
+
 ---
 
 5. Third-Party Services
 
-5.1 This software may connect to third-party APRS-IS servers (e.g., rotate.aprs2.net, noam.aprs2.net, etc.) and third-party map services (e.g., Amap, etc.). These services are independently provided by third parties, and we assume no responsibility for their availability, accuracy, or security.
+5.1 This software ships with no server address: it may connect to a third-party APRS-IS server that you enter yourself, as well as to third-party map services (e.g., Amap). These services are independently provided by third parties; we assume no responsibility for their availability, accuracy, or security, and we have no affiliation, agency, or cooperation with them.
 
 5.2 When using third-party services, you shall comply with their respective terms of use and privacy policies.
 
@@ -125,6 +133,8 @@ Thank you for using APRSlocus! APRSlocus is an open-source APRS client software,
 
 7.7 When you use features such as weather, translation, maps, app updates, or Garmin LiveTrack, the relevant data (for example your location, the text to be translated, device and version information) is sent to the third-party software service you choose. We cannot control how those providers process, store, retain, or redistribute it, and we assume no liability for their handling of your data or for any consequences arising from it. Those transfers are governed by the providers' own terms and privacy policies. You may use the core APRS features of this software without using any of these features.
 
+
+7.8 The development team is not liable for any direct or indirect loss caused by servers you configure, data you upload, or your own use of this software (including but not limited to data disclosure, loss of connectivity, or restrictions placed on your account or callsign).
 
 ---
 

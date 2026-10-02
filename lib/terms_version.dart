@@ -7,4 +7,4 @@
 ///
 /// 护栏：`tool/check_terms.py` 会核对它 == `assets/terms_*.txt` 的版本行，
 /// 并且三个官网页面的 meta 里也必须是同一个版本 —— 改一处漏一处就报红。
-const String kTermsVersion = 'V1.1';
+const String kTermsVersion = 'V1.2';

@@ -1662,6 +1662,24 @@ class AppLocalizationsId extends AppLocalizations {
       'Mengganti sumber data akan memutus koneksi saat ini';
 
   @override
+  String get dataNoticeTitle => 'Pemberitahuan Data & Jaringan';
+
+  @override
+  String get dataNoticeBody => 'Menyambung ke server APRS pihak ketiga adalah pilihan Anda sendiri. Perangkat lunak ini tidak menyediakan, mengoperasikan, maupun merekomendasikan alamat server apa pun.
+
+Setelah tersambung, callsign, posisi, pesan, dan konten lain Anda mengalir melalui server tersebut dan jaringan APRS-IS, dan dapat diterima, disimpan, atau diarsipkan secara publik oleh pihak lain. APRS bersifat terbuka: jangan kirim rahasia negara, rahasia dagang, data pribadi, atau informasi lokasi yang sensitif.
+
+Anda harus memastikan server yang Anda sambungi dan penggunaan Anda sah, dan Anda menanggung tanggung jawab atas transfer data lintas negara, pemrosesan data pribadi, dan regulasi radio. Kami tidak mengoperasikan server apa pun dan tidak memiliki afiliasi, agensi, atau kerja sama dengan server pihak ketiga mana pun.
+
+Dengan menekan "Setuju dan sambung", Anda menyatakan telah membaca, memahami, dan menerima hal di atas (lihat Pasal 2.4, 2.5, dan 4.8 Ketentuan Penggunaan).';
+
+  @override
+  String get dataNoticeAccept => 'Setuju dan sambung';
+
+  @override
+  String get dataNoticeDecline => 'Jangan dulu';
+
+  @override
   String get blTitle => 'Perangkat ini telah dibatasi';
 
   @override
@@ -4654,7 +4672,7 @@ class AppLocalizationsId extends AppLocalizations {
       'Setelah tersambung, Anda menerima data stasiun APRS sedunia. Pengaturan bawaan bisa langsung dipakai';
 
   @override
-  String get oobeServerTitle => 'Sambungkan ke server APRS-IS';
+  String get oobeServerTitle => 'Server APRS-IS (opsional)';
 
   @override
   String get oobeSymbolDesc =>

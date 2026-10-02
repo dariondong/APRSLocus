@@ -113,7 +113,7 @@ class SmartBeaconTier {
 
 class AppState extends ChangeNotifier {
   /// 应用版本（用于信标备注、APRSlocus 识别）
-  static const appVersion = '2.0.16';
+  static const appVersion = '2.0.17';
   // 我的电台
   String myCall = 'BV2AAA';
   int mySsid = 0; // 0 = 无后缀, 1-15 = -1 到 -15
@@ -1905,6 +1905,30 @@ class AppState extends ChangeNotifier {
   /// 下一次**廉价检查**的时刻（真正的拉取在 [recheckBlacklist] 里按 6 小时节流）
   DateTime? _blacklistNext;
 
+  /// ── 数据与网络使用告知 ──
+  ///
+  /// 连接服务器**前**必须签署：本软件不提供、不运营、也不推荐任何服务器地址
+  /// （用户协议 2.4/2.5），所以"要不要连"这件事必须由用户明确同意一次。
+  /// 存本地，签过就不再问；用户取消则本次不连。
+  bool dataNoticeAccepted = false;
+
+  /// 用户点了连接、但还没签告知 → UI 弹告知页（见 `app.dart`）。
+  bool pendingDataNotice = false;
+
+  /// 签署「数据与网络使用告知」并继续连接。
+  void acceptDataNotice() {
+    dataNoticeAccepted = true;
+    pendingDataNotice = false;
+    persist();
+    unawaited(toggleConnect());
+  }
+
+  /// 拒绝告知（不连接，保持本地）。
+  void declineDataNotice() {
+    pendingDataNotice = false;
+    _notify();
+  }
+
   /// 本会话是否已经**成功**拉到过名单。
   ///
   /// 为什么需要它：名单是"远程开关"，紧急封禁不该等 6 小时。所以**每次启动（新会话）
@@ -2973,6 +2997,7 @@ class AppState extends ChangeNotifier {
       if (myComment == _legacyDefaultComment) myComment = '';
       beaconEnabled = p.getBool('beacon') ?? beaconEnabled;
       beaconAutoAsked = p.getBool('beaconAutoAsked') ?? beaconAutoAsked;
+    dataNoticeAccepted = p.getBool('dataNoticeAccepted') ?? false;
       beaconInterval = p.getInt('beaconInterval') ?? beaconInterval;
       beaconNetInterval =
           p.getInt('beaconNetInterval') ?? beaconNetInterval;
@@ -3234,6 +3259,7 @@ class AppState extends ChangeNotifier {
     await p.setString('myComment', myComment);
     await p.setBool('beacon', beaconEnabled);
     await p.setBool('beaconAutoAsked', beaconAutoAsked);
+    await p.setBool('dataNoticeAccepted', dataNoticeAccepted);
     await p.setInt('beaconInterval', beaconInterval);
     await p.setInt('beaconNetInterval', beaconNetInterval);
     _ensureSmartTiers();
@@ -5380,6 +5406,14 @@ class AppState extends ChangeNotifier {
       setConnStatus(ConnPhase.manual);
       _notify();
       _updateNotification();
+      return;
+    }
+    // ── 数据与网络使用告知：**连接服务器前必须先签署**（用户协议 2.4/2.5）──
+    // 闸门放在这里而不是各个按钮上：连接入口有 7 处（首页、面板、设置、shell…），
+    // 只有放在 toggleConnect 里才是"一个口子"，不会漏。
+    if (!dataNoticeAccepted) {
+      pendingDataNotice = true;
+      _notify();
       return;
     }
     _userDisconnected = false;

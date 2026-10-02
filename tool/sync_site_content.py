@@ -205,6 +205,23 @@ CARDS = [
 # 只列「重点版本」：中间几十个纯修 bug 的版本归纳进文字说明，完整记录指向 Releases。
 CL = [
     {
+        'ver': 'v2.0.17', 'date': '2026-10-02',
+        'items': [
+            ('up',
+             T('**用户协议更新到 V1.2**：明确"不预置、不推荐任何服务器地址，默认不连接任何 '
+               'APRS-IS / iGate / 网络服务器"，并补齐自行配置的责任、合法使用与数据安全条款；'
+               '首次引导里服务器留空即不联网（不再预填公共服务器、不再自动连接）。',
+               '**使用者條款更新到 V1.2**：明確「不預置、不推薦任何伺服器位址，預設不連線任何 '
+               'APRS-IS / iGate / 網路伺服器」，並補齊自行設定的責任、合法使用與資料安全條款；'
+               '首次引導裡伺服器留空即不連網（不再預填公共伺服器、不再自動連線）。',
+               '**Terms of Use updated to V1.2**: the app neither provides nor recommends any '
+               'server address and connects to no APRS-IS / iGate / network server by default, '
+               'with added clauses on configuring your own server, lawful use, and data safety. '
+               'In the first-run guide an empty server means no connection at all (no pre-filled '
+               'public server, no automatic connect).')),
+        ],
+    },
+    {
         'ver': 'v2.0.16', 'date': '2026-10-02',
         'items': [
             ('fix',
@@ -1945,6 +1962,10 @@ def main():
     for lang, rel in PAGES.items():
         path = os.path.join(ROOT, rel)
         s = io.open(path, encoding='utf-8', newline='').read()
+        # 归一成 LF 再处理：Windows 下 git（core.autocrlf）把工作区检出成 CRLF，
+        # 而下面所有锚点都是按 LF 写的 —— 不归一就会"找不到锚点"直接崩。写回时
+        # newline='' 保证输出还是 LF，与仓库里存的形态一致（diff 才干净）。
+        s = s.replace('\r\n', '\n').replace('\r', '\n')
         before = len(s)
 
         # 1) 零散文案修正（命中 0 次=已改过；>1 次=结构变了，必须报错）

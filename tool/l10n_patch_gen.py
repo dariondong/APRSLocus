@@ -39,7 +39,7 @@ CLASS2LANG = {
 ANCHOR = 'dataSourceSwitchHint'
 
 # 需要补的键：这些前缀是本仓库历次脚本陆续加的（都在 arb 末尾附近）
-KEYS_PREFIX = ('donate', 'box', 'bl')
+KEYS_PREFIX = ('donate', 'box', 'bl', 'dataNotice')
 
 
 def read(p):

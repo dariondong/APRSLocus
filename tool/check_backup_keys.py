@@ -67,6 +67,9 @@ EXCLUDE = {
     'blacklistCheckedAt': '名单上次成功拉取的时间（缓存的一部分）',
     'blacklistDeviceId': '本机安装标识（只在本机有效；写进备份会违背"不上传"的承诺）',
     'blacklistLocalExempt': '本地白名单开关（本机豁免；该由本人在本机决定，不该随备份搬走）',
+    # 连接服务器前签署的「数据与网络使用告知」：同意应当在**当台设备**上作出并留在这里，
+    # 不该随备份搬到别的设备上（换机后重新签一次，本就是这套告知的用意）。
+    'dataNoticeAccepted': '数据与网络使用告知的签署状态（该在当台设备上重新确认）',
 }
 
 GETSET = re.compile(r"\.(?:get|set)(?:String|Bool|Int|Double|StringList)\(")

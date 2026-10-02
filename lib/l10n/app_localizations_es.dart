@@ -1679,6 +1679,24 @@ class AppLocalizationsEs extends AppLocalizations {
       'Cambiar la fuente de datos desconecta el enlace actual';
 
   @override
+  String get dataNoticeTitle => 'Aviso de datos y red';
+
+  @override
+  String get dataNoticeBody => 'Conectarte a un servidor APRS de terceros es tu propia decisión. Este software no proporciona, opera ni recomienda ninguna dirección de servidor.
+
+Una vez conectado, tu indicativo, posición, mensajes y otros contenidos viajan por ese servidor y la red APRS-IS, y pueden ser recibidos, almacenados o archivados públicamente por terceros. APRS es texto plano: no envíes secretos de Estado, secretos comerciales, datos personales ni información de ubicación sensible.
+
+Debes confirmar que el servidor al que te conectas y tu uso del mismo son lícitos, y asumes la responsabilidad derivada de la transferencia transfronteriza de datos, el tratamiento de datos personales y la normativa de radio. No operamos ningún servidor ni tenemos afiliación, agencia o cooperación con servidores de terceros.
+
+Al pulsar "Aceptar y conectar" confirmas que has leído, entendido y aceptado lo anterior (véanse las cláusulas 2.4, 2.5 y 4.8 de los Términos de uso).';
+
+  @override
+  String get dataNoticeAccept => 'Aceptar y conectar';
+
+  @override
+  String get dataNoticeDecline => 'Ahora no';
+
+  @override
   String get blTitle => 'Este dispositivo ha sido bloqueado';
 
   @override
@@ -4680,7 +4698,7 @@ class AppLocalizationsEs extends AppLocalizations {
       'Conéctate para recibir datos de estaciones APRS de todo el mundo. La configuración predeterminada funciona tal cual.';
 
   @override
-  String get oobeServerTitle => 'Conectar al servidor APRS-IS';
+  String get oobeServerTitle => 'Servidor APRS-IS (opcional)';
 
   @override
   String get oobeSymbolDesc =>

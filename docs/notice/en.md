@@ -1,54 +1,43 @@
-# ?? Terms of Use updated to V1.1 - one minute please
+# 📢 Terms of Use updated to V1.2: no server addresses, no Internet service
 
-**The Terms of Use have been updated to V1.1 (1 October 2026).** This is not a cosmetic edit:
-we wrote down **what the software actually does**. Several things were already happening in
-code but were not described in the agreement. Per section 8, the revised agreement is
-published in the app and on GitHub, and **continued use means acceptance**. Full text:
-Settings -> About -> Terms of Use (or the website).
+**The Terms of Use were updated to V1.2 (2 October 2026).** This revision spells out whether the
+software touches a server at all. It is published in the app and on GitHub per section 8;
+**continued use means you accept it**. Full text: Settings -> About -> Terms of Use.
 
 ---
 
-## Six new clauses
+## What this revision makes clear
 
-1. **3.5 Gateway forwarding is your responsibility**: forwarding APRS-IS packets onto RF
-   (gateway / iGate) means you **transmit on amateur bands on behalf of others** - callsign,
-   frequency, power and mode must all be lawful and compliant;
-2. **3.6 Minors**: use it with the consent and guidance of a guardian, who bears the
-   consequences; in particular, do not transmit on radio frequencies without the required
-   qualifications;
-3. **3.7 What you send**: APRS is a public, international network - content must be truthful,
-   accurate and lawful, and must respect the laws, religions and cultural customs of different
-   countries and regions;
-4. **5.3 Which third parties see what**: weather sends your location, message translation
-   sends the text to be translated, update checks query GitHub for a version, Garmin
-   LiveTrack opens the link you add, and map tiles come from several providers - **none of
-   this happens unless you use that feature**;
-5. **7.6 Life Guard etc. are not medical devices**: crash/fall detection and heart-rate
-   alarms are auxiliary reminders based on phone sensors and location; they may miss events,
-   raise false alarms or be delayed, and they are **not an emergency service**. In an
-   emergency, call your local emergency number directly;
-6. **9.4 About tips and donations**: donations are entirely voluntary, do not buy any
-   feature, priority support or service commitment, and are non-refundable. Minors should ask
-   a guardian first.
+1. **No preset server, no recommended server**: the software ships with no server address or port,
+   and **on first launch and under default settings it connects to no** APRS-IS, iGate, or other
+   network server - whether to connect, and to where, is **yours to enter and decide** (which is
+   why the "server" field in the first-run guide may be left empty);
+2. **No Internet service**: we do not operate APRS-IS or an iGate, and we do not upload, relay, or
+   store your data; we have no affiliation, agency, or cooperation with any third-party server;
+3. **Your responsibility when you configure one**: for any third-party server you connect to, you
+   must confirm that the server and your use of it are lawful, and you bear the responsibility
+   arising from cross-border transfer, personal-data processing, and radio regulation;
+4. **Lawful use**: use only a callsign you lawfully hold and comply with applicable
+   data-protection and personal-information laws; unlawful tracking, harassment, or interference
+   with networks is prohibited;
+5. **Do not send sensitive data**: never send state secrets, trade secrets, personal data, or
+   sensitive location information - APRS is plain text and may be received, stored, or publicly
+   archived by third parties.
 
 ## Fixed in the same release
 
-- **Fixed the crash when Bluetooth fails to connect**: the blocking Bluetooth connect was
-  running on the main thread, so the system declared the app unresponsive and killed it.
-  Connecting now happens on a worker thread and reports failures honestly;
-- **Phone battery no longer freezes**: it used to be read only when a location fix arrived,
-  so a stationary phone showed a stale percentage;
-- **Sport ranking**: rows used to show placeholder text ("Today - ...", "No steps"); they now
-  show **rank + distance + how long ago + steps**. Tapping a station opens the same bottom
-  sheet used everywhere else, and the board counts **today only** (steps from three days ago
-  no longer outrank today\'s) and includes you, marked as such.
+- **The first-run guide no longer pre-fills a public server, nor connects automatically**: leaving
+  the server empty means no connection at all and the app works locally only; to go online, enter a
+  server and port you trust. The old wording "the default settings work as-is" is gone (it amounted
+  to a recommendation);
+- The server addresses named in clause 5.1 have been removed.
 
 ---
 
-**Nothing is required from you**: continued use means you accept the revised agreement. If you
-do not agree, please stop using this software.
+**Nothing is required from you**: continued use means you accept the revised agreement. If you do
+not agree, please stop using this software.
 
 **73!**
 
 **The APRSLocus team**
-1 October 2026
+2 October 2026

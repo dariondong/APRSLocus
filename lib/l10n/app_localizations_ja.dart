@@ -1614,6 +1614,24 @@ class AppLocalizationsJa extends AppLocalizations {
   String get dataSourceSwitchHint => 'データソースを切り替えると現在の接続は切断されます';
 
   @override
+  String get dataNoticeTitle => 'データとネットワークの告知';
+
+  @override
+  String get dataNoticeBody => 'サードパーティの APRS サーバーに接続するかどうかは、ご自身の判断です。本ソフトはサーバーアドレスの提供・運営・推奨を一切行いません。
+
+接続すると、コールサイン・位置・メッセージなどが当該サーバーと APRS-IS 網を通じて送信され、第三者が受信・保存・公開アーカイブする可能性があります。APRS は平文です。国家機密・営業秘密・個人情報・機微な位置情報を送らないでください。
+
+接続するサーバーとご自身の利用が法令に適合していることをご自身で確認し、国外移転・個人情報の処理・無線管理などに伴う責任を負っていただきます。当方はいかなるサーバーも運営しておらず、第三者サーバーとの提携・代理関係もありません。
+
+「同意して接続」を押すと、上記を読み・理解し・受け入れたものとみなします（利用規約 2.4／2.5／4.8 参照）。';
+
+  @override
+  String get dataNoticeAccept => '同意して接続';
+
+  @override
+  String get dataNoticeDecline => '今はしない';
+
+  @override
   String get blTitle => 'この端末は利用を制限されています';
 
   @override
@@ -4508,10 +4526,10 @@ class AppLocalizationsJa extends AppLocalizations {
       'Passcode は APRS-IS のログイン用検証コードで、あなたのコールサインを識別するために使われます。\n\n既定値の -1（未検証）でも接続はできますが、メッセージやグループの送受信が正常に行えません。\n\nhttps://aprs.cool/AprsPG でコールサインを入力して正しい Passcode を調べてから入力してください。';
 
   @override
-  String get oobeServerDesc => '接続すると世界中の APRS 局のデータを受信できます。既定の設定のままでも使えます';
+  String get oobeServerDesc => '空欄のままにすると、どのサーバーにも接続しません（本機のみで動作）。本ソフトはサーバーアドレスの提供も推奨も行いません。オンラインにする場合は、ご自身が信頼するサーバーとポートを入力してください。';
 
   @override
-  String get oobeServerTitle => 'APRS-IS サーバーに接続';
+  String get oobeServerTitle => 'APRS-IS サーバー（任意）';
 
   @override
   String get oobeSymbolDesc => 'シンボルは局の種類を表し、位置ビーコンと一緒に送信されます';

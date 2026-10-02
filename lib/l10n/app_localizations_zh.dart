@@ -1606,6 +1606,24 @@ class AppLocalizationsZh extends AppLocalizations {
   String get dataSourceSwitchHint => '切换数据来源会断开当前连接';
 
   @override
+  String get dataNoticeTitle => '数据与网络使用告知';
+
+  @override
+  String get dataNoticeBody => '连接第三方 APRS 服务器是您自己的选择。本软件不提供、不运营、也不推荐任何服务器地址。
+
+连接后，您的呼号、位置、消息等内容会经该服务器与 APRS-IS 网络传输，可能被他人接收、存储或公开存档；APRS 是明文的，请勿发送国家秘密、商业秘密、个人隐私或敏感位置信息。
+
+请自行确认所连接的服务器以及您的使用行为合法合规，并自行承担因数据出境、个人信息处理、无线电管理等产生的责任。我们不运营任何服务器，与任何第三方服务器之间也不存在隶属、代理或合作关系。
+
+点击「同意并连接」表示您已阅读、理解并接受上述内容（详见《用户协议》第 2.4、2.5、4.8 条）。';
+
+  @override
+  String get dataNoticeAccept => '同意并连接';
+
+  @override
+  String get dataNoticeDecline => '暂不连接';
+
+  @override
   String get blTitle => '本设备已被限制使用';
 
   @override
@@ -4455,10 +4473,10 @@ class AppLocalizationsZh extends AppLocalizations {
       'Passcode 是 APRS-IS 登录验证码，用于识别你的呼号。\n\n使用默认值 -1（未验证）虽然可以连接，但将无法正常收发消息与群组。\n\n建议在 https://aprs.cool/AprsPG 输入呼号查询正确 Passcode 后填写。';
 
   @override
-  String get oobeServerDesc => '连接后接收全球 APRS 台站数据，可保持默认配置直接使用';
+  String get oobeServerDesc => '留空即不连接任何服务器，软件只在本地工作。本软件不提供、也不推荐任何服务器地址；需要联网时，请自行填写你信任的服务器与端口。';
 
   @override
-  String get oobeServerTitle => '连接 APRS-IS 服务器';
+  String get oobeServerTitle => 'APRS-IS 服务器（可选）';
 
   @override
   String get oobeSymbolDesc => '符号代表台站类型，会随位置信标一起发送';
@@ -9075,6 +9093,24 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get dataSourceSwitchHint => '切換資料來源會中斷目前連線';
+
+  @override
+  String get dataNoticeTitle => '資料與網路使用告知';
+
+  @override
+  String get dataNoticeBody => '連接第三方 APRS 伺服器是您自己的選擇。本軟體不提供、不營運、也不推薦任何伺服器位址。
+
+連接後，您的呼號、位置、訊息等內容會經該伺服器與 APRS-IS 網路傳輸，可能被他人接收、存儲或公開存檔；APRS 是明文的，請勿發送國家秘密、商業秘密、個人隱私或敏感位置資訊。
+
+請自行確認所連接的伺服器以及您的使用行為合法合規，並自行承擔因資料出境、個人資料處理、無線電管理等產生的責任。我們不營運任何伺服器，與任何第三方伺服器之間也不存在隸屬、代理或合作關係。
+
+點擊「同意並連線」表示您已閱讀、理解並接受上述內容（詳見《使用者條款》第 2.4、2.5、4.8 條）。';
+
+  @override
+  String get dataNoticeAccept => '同意並連線';
+
+  @override
+  String get dataNoticeDecline => '暫不連線';
 
   @override
   String get blTitle => '本裝置已被限制使用';
