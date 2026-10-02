@@ -2,6 +2,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'audio.dart';
 import 'net/icom_lan_settings.dart';
@@ -208,6 +209,10 @@ class _Ic705DevicePageState extends State<Ic705DevicePage> {
 
             // ⑤ 实时链路日志（折叠）
             _buildLogCard(s),
+            const SizedBox(height: 16),
+
+            // ⑥ 开源与合规说明
+            _buildOpenSourceCard(s),
             const SizedBox(height: 24),
           ],
         ),
@@ -484,6 +489,61 @@ class _Ic705DevicePageState extends State<Ic705DevicePage> {
                     ),
                   ),
                 ),
+        ),
+      ],
+    );
+  }
+
+  /// ⑥ 开源许可与仓库链接
+  Widget _buildOpenSourceCard(S s) {
+    return SettingsSectionCard(
+      title: '开源与合规说明',
+      subtitle: '遵循 GNU General Public License v3.0 (GPL-3.0) 协议',
+      icon: Icons.code_rounded,
+      color: C.blue,
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(14),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'IC-705 Wi-Fi 直连功能（12 kHz PCM 音频收发与 CI-V 控制）基于 APRSLocus 与 aprsdroid mod 开发，遵循 GPL-3.0 协议开源。所有修改均可查阅并获取完整源代码。',
+                style: ts(12, c: C.slate, h: 1.5),
+              ),
+              const SizedBox(height: 12),
+              InkWell(
+                onTap: () => launchUrl(
+                  Uri.parse('https://github.com/nimenhagg/APRSLocus-Customize'),
+                  mode: LaunchMode.externalApplication,
+                ),
+                borderRadius: BorderRadius.circular(10),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                  decoration: BoxDecoration(
+                    color: C.blue.withValues(alpha: 0.08),
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(color: C.blue.withValues(alpha: 0.2)),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(Icons.open_in_new_rounded, size: 16, color: C.blue),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          '查看 IC-705 适配分支源码 (GitHub Fork)',
+                          style: ts(12, w: FontWeight.w600, c: C.blue),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      Icon(Icons.chevron_right_rounded, size: 16, color: C.blue),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ],
     );

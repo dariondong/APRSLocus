@@ -1006,18 +1006,26 @@ class _HomePageState extends State<HomePage> {
         // TNC，而发射仍走未连接的 APRS-IS）。这时也不能说「未连接」——
         // 用户明明刚连上东西，界面却报未连接。
         final rxOnly = st.rxActive && !st.txSourceUp && !pkwdwplMode;
-        // 音频来源没有「设备」概念，改成展示采样率（用户真正关心的参数）
+        final isIcom = st.isIcomLanTx || (st.icomLanOn && !st.audioDeviceOn);
         final tncName = audioMode
-            ? '${st.audio.config.afsk.sampleRate}Hz'
+            ? (isIcom
+                ? (st.audio.config.icomLan.host.isNotEmpty
+                    ? '${st.audio.config.icomLan.host}:${st.audio.config.icomLan.controlPort}'
+                    : S.of(context).icomLanTitle)
+                : '${st.audio.config.afsk.sampleRate}Hz')
             : (st.tnc.device?.label ?? S.of(context).tncNotBound);
         final title = connecting
             ? (audioMode
-                ? S.of(context).dataSourceAudio
+                ? (isIcom
+                    ? S.of(context).icomLanTitle
+                    : S.of(context).dataSourceAudio)
                 : (tncMode
                     ? S.of(context).dataSourceTnc
                     : S.of(context).connectingServer))
             : (audioMode
-                ? S.of(context).audioCaptureStart
+                ? (isIcom
+                    ? '连接 IC-705 电台'
+                    : S.of(context).audioCaptureStart)
                 : (tncMode
                     ? S.of(context).connectTncBar
                     : (pkwdwplMode
@@ -1025,14 +1033,20 @@ class _HomePageState extends State<HomePage> {
                         : (rxOnly ? 'RX' : S.of(context).notConnectedAprsServer))));
         final subtitle = connecting
             ? (audioMode
-                ? S.of(context).connConnectingAudio(tncName)
+                ? (isIcom
+                    ? '正在连接 IC-705（$tncName）…'
+                    : S.of(context).connConnectingAudio(tncName))
                 : (tncMode
                     ? S.of(context).connectingToTnc(tncName)
                     : S
                         .of(context)
                         .connectingToServer(st.aprs.server, st.aprs.port)))
             : (audioMode
-                ? S.of(context).dataSourceAudioDesc
+                ? (isIcom
+                    ? (st.audio.config.icomLan.host.isNotEmpty
+                        ? '${st.audio.config.icomLan.host}:${st.audio.config.icomLan.controlPort} · Wi-Fi 直连电台收发与 CI-V 控制'
+                        : '通过 Wi-Fi 直连 IC-705 电台收发报文与控制')
+                    : S.of(context).dataSourceAudioDesc)
                 : (tncMode
                     ? S.of(context).dataSourceTncDesc
                     : (pkwdwplMode
@@ -1067,7 +1081,13 @@ class _HomePageState extends State<HomePage> {
                 )
               else
                 Icon(
-                  Icons.wifi_tethering_rounded,
+                  isIcom
+                      ? Icons.wifi_tethering_rounded
+                      : (audioMode
+                          ? Icons.graphic_eq_rounded
+                          : (tncMode
+                              ? Icons.settings_input_antenna_rounded
+                              : Icons.cloud_off_rounded)),
                   color: Colors.white,
                   size: 20,
                 ),

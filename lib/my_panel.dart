@@ -329,7 +329,9 @@ class MyPanel extends StatelessWidget {
                   icon: Icon(
                     state.connected
                         ? Icons.stop_circle_outlined
-                        : Icons.wifi_rounded,
+                        : (state.isIcomLanTx
+                            ? Icons.wifi_tethering_rounded
+                            : Icons.wifi_rounded),
                     size: 15,
                   ),
                   label: Text(
@@ -337,6 +339,8 @@ class MyPanel extends StatelessWidget {
                         ? S.of(context).disconnect
                         : state.connecting
                         ? S.of(context).connecting
+                        : state.isIcomLanTx
+                        ? '连接 IC-705'
                         : state.usingAudio
                         ? S.of(context).audioCaptureStart
                         : state.usingTnc

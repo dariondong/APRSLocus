@@ -19,6 +19,8 @@
 
 </div>
 
+> 💡 **IC-705 Wi-Fi 直连适配分支**：本分支由 BD3QID 维护，在 APRSLocus 基础上扩展了 Icom IC-705 局域网直连、12 kHz PCM 音频收发与 CI-V 控制支持。依据 GNU GPL v3.0 协议开源，适配分支仓库：[nimenhagg/APRSLocus-Customize](https://github.com/nimenhagg/APRSLocus-Customize)。
+
 ---
 
 ## 📖 目录
@@ -397,7 +399,7 @@ Android 端使用前台服务持续定位以保持 APRS 在线，可在"定位 /
 - [APRS-IS](https://aprs-is.net) — 全球 APRS 数据网络
 - [flutter_map](https://pub.dev/packages/flutter_map) / [vector_map_tiles](https://pub.dev/packages/vector_map_tiles) — 矢量地图渲染
 - [OpenFreeMap](https://openfreemap.org) — 免费矢量瓦片底图
-- **BD3QID** — 国际化（i18n）贡献
+- **BD3QID** — IC-705 局域网直连适配、国际化（i18n）贡献
 - **BA4UAX** — 繁体中文翻译
 - **BA7KSM** — 翻译
 - **imThree** — Bug 提交与反馈
@@ -414,6 +416,7 @@ Android 端使用前台服务持续定位以保持 APRS 在线，可在"定位 /
 
 | 渠道 | 地址 |
 |------|------|
+| **IC-705 适配分支** | https://github.com/nimenhagg/APRSLocus-Customize |
 | **GitHub 仓库** | https://github.com/dariondong/APRSLocus |
 | **官网** | https://aprslocus.theez.top/ |
 | **GitCode 仓库** | https://gitcode.com/DarionDong/APRSLocus |
