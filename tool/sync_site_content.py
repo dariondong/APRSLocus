@@ -205,6 +205,26 @@ CARDS = [
 # 只列「重点版本」：中间几十个纯修 bug 的版本归纳进文字说明，完整记录指向 Releases。
 CL = [
     {
+        'ver': 'v2.0.18', 'date': '2026-10-02',
+        'items': [
+            ('new',
+             T('**新增：Icom 电台 Wi-Fi / 以太网直连**（IC-705 / IC-9700 / IC-7610 / IC-905）。'
+               '手机与电台在同一局域网即可收发 APRS 音频，不用声卡或 TNC；PTT 与频率控制走 '
+               'CI-V、音频走网络，不占用音频口；新增独立的电台设备页与并列的数据来源入口，'
+               '并带 19 个新测试。由社区贡献者 nimenhagg 实现（PR #29）。',
+               '**新增：Icom 電台 Wi-Fi / 乙太網路直連**（IC-705 / IC-9700 / IC-7610 / IC-905）。'
+               '手機與電台在同一區域網路即可收發 APRS 音訊，不需音效卡或 TNC；PTT 與頻率控制走 '
+               'CI-V、音訊走網路，不佔用音訊埠；新增獨立的電台裝置頁與並列的資料來源入口，'
+               '並帶 19 個新測試。由社群貢獻者 nimenhagg 實作（PR #29）。',
+               '**New: direct Icom connection over Wi-Fi / Ethernet** (IC-705, IC-9700, IC-7610, '
+               'IC-905). With the phone and radio on the same LAN you can send and receive APRS '
+               'audio with no sound card or TNC; PTT and tuning go over CI-V while audio goes '
+               'over the network, leaving the audio port free. Adds a dedicated radio page, a '
+               'parallel data source entry, and 19 new test files. Contributed by nimenhagg '
+               '(PR #29).')),
+        ],
+    },
+    {
         'ver': 'v2.0.17', 'date': '2026-10-02',
         'items': [
             ('up',

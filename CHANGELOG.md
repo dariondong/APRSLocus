@@ -1,5 +1,51 @@
 # 更新日志
 
+## [2.0.18] - 2026-10-02
+
+### 新增：Icom 电台 Wi-Fi / 以太网直连（IC-705 / IC-9700 / IC-7610 / IC-905）
+
+手机与电台处在**同一个局域网**里，就能直接收发 APRS 音频 —— 不用声卡，也不用 TNC：
+
+- **支持机型**：IC-705、IC-9700、IC-7610、IC-905（Icom 的 LAN 遥控协议）；
+- **不占用音频口**：PTT 与频率/模式控制走 CI-V、音频走网络，所以手机还能同时连着蓝牙
+  耳机或手台，互不打架；
+- **一级入口**：新增独立的「IC-705 电台」设备页，并在数据来源卡片里与 APRS-IS、TNC、
+  音频、PKWDWPL 并列成为一条链路；
+- **可靠性**：语音包重排与丢包策略、PTT 状态机、断线重连调度、会话计时策略各自独立实现，
+  并带 **19 个新测试文件**；
+- **安卓侧**：新增平台网络选择器（可指定走 Wi-Fi，不需要外部 AP 路由），不含第三方依赖。
+
+使用前请在电台的 WLAN 设置里开启遥控并设置 Network User 与密码，手机与电台保持同一网段。
+
+> 本功能由社区贡献者 **nimenhagg** 实现（PR #29）。合并前只调整了本地化生成文件的排版
+> （把整份重新生成改成仓库惯用的外科式补键，`+36343/-25096` → `+10729/-130`），
+> 功能代码未作改动。
+
+## [2.0.18] - 2026-10-02 (English)
+
+### New: direct Icom radio connection over Wi-Fi / Ethernet (IC-705, IC-9700, IC-7610, IC-905)
+
+With your phone and radio on the **same LAN**, you can send and receive APRS audio directly -
+no sound card and no TNC:
+
+- **Supported models**: IC-705, IC-9700, IC-7610, IC-905 (Icom's LAN remote-control protocol);
+- **No audio port used**: PTT and frequency/mode control go over CI-V while audio goes over the
+  network, so the phone can stay paired to a Bluetooth headset or handheld at the same time;
+- **First-class entry**: a dedicated "IC-705 radio" device page, and a data source that sits
+  alongside APRS-IS, TNC, audio and PKWDWPL;
+- **Reliability**: audio packet reordering and loss policy, a PTT state machine, a reconnect
+  scheduler, and session timing policy each have their own implementation and tests -
+  **19 new test files** in this release;
+- **Android**: a platform network selector (you can pin the connection to Wi-Fi without an
+  external AP route), with no third-party dependencies.
+
+Before use, enable remote control in the radio's WLAN settings and set a Network User and
+password; keep the phone and the radio on the same subnet.
+
+> Contributed by **nimenhagg** (PR #29). Before merging, only the layout of the generated
+> localisation files was corrected (whole-file regeneration replaced by the repository's
+> surgical key insertion: `+36343/-25096` -> `+10729/-130`); the feature code is unchanged.
+
 ## [2.0.17] - 2026-10-02
 
 ### 用户协议 V1.2：不提供服务器地址与互联网服务 + 首次引导默认不连接
