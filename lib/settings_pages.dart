@@ -2547,7 +2547,9 @@ class _ConnectionSettingsPageState extends State<ConnectionSettingsPage> {
     final a = st.audio;
     final isIcom = a.config.source == AudioSource.icomLan;
     return SettingsSectionCard(
-      title: isIcom ? S.of(context).icomLanTitle : S.of(context).connectionCard2,
+      title: isIcom
+          ? 'WLAN 电台（${a.config.icomLan.model.id}）'
+          : S.of(context).connectionCard2,
       subtitle: isIcom ? S.of(context).icomLanHint : S.of(context).dataSourceAudioDesc,
       icon: isIcom ? Icons.wifi_tethering_rounded : Icons.graphic_eq_rounded,
       color: C.cyan,
@@ -2583,7 +2585,7 @@ class _ConnectionSettingsPageState extends State<ConnectionSettingsPage> {
           valueColor: a.config.rfBeacon ? C.green : C.grey,
         ),
         SettingsHint(isIcom
-            ? '当前已启用 IC-705 Wi-Fi 直连模式。'
+            ? '当前已启用 ${a.config.icomLan.model.displayName} 局域网直连模式。'
             : S.of(context).connAudioSourceHint),
         Padding(
           padding: const EdgeInsets.fromLTRB(14, 4, 14, 12),
@@ -2598,7 +2600,7 @@ class _ConnectionSettingsPageState extends State<ConnectionSettingsPage> {
                       ),
                     ),
                     icon: const Icon(Icons.wifi_tethering_rounded, size: 16),
-                    label: Text(S.of(context).icomLanTitle,
+                    label: Text('WLAN 电台（${a.config.icomLan.model.id}）',
                         style: ts(12, w: FontWeight.w600)),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: C.cyan,
@@ -2649,7 +2651,7 @@ class _ConnectionSettingsPageState extends State<ConnectionSettingsPage> {
                       ),
                     ),
                     icon: const Icon(Icons.wifi_tethering_rounded, size: 16),
-                    label: Text(S.of(context).icomLanTitle,
+                    label: Text('WLAN 电台（${a.config.icomLan.model.id}）',
                         style: ts(12, w: FontWeight.w600)),
                     style: OutlinedButton.styleFrom(
                       foregroundColor: C.cyan,

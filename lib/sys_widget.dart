@@ -58,7 +58,8 @@ List<SysLinkTile> sysLinkTiles(AppState st, AppLocalizations s) {
   return [
     one(AppState.srcAprsIs, 'APRS-IS'),
     one(AppState.srcTnc, 'TNC'),
-    one(AppState.srcAudio, st.icomLanOn ? 'IC-705' : s.sysLinkAudio),
+    one(AppState.srcAudio,
+        st.icomLanOn ? st.audio.config.icomLan.model.id : s.sysLinkAudio),
     one(AppState.srcPkwdwpl, 'PKWDWPL'),
   ];
 }

@@ -844,7 +844,7 @@ class IcomLanRxSession implements IcomLanRadioSession {
         token: _radioToken,
         radioIdentityBlock: _connectionAnnouncement?.radioIdentityBlock ??
             IcomLanConnectionInfoCodec.initialClientIdentityBlock(),
-        radioName: _connectionAnnouncement?.radioName ?? 'IC-705',
+        radioName: _connectionAnnouncement?.radioName ?? config.model.id,
         username: config.username,
         localCivPort: civ.channel?.localPort ?? (config.controlPort + 1),
         localAudioPort:

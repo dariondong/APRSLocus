@@ -538,20 +538,12 @@ class _AboutPageState extends State<AboutPage>
                                 url:
                                     'https://github.com/dariondong/APRSLocus/blob/main/LICENSE',
                               ),
-                              _linkRow(
-                                icon: Icons.fork_right_rounded,
-                                label: 'IC-705 适配源码 (GPL-3.0)',
-                                value: 'GitHub Fork',
-                                url:
-                                    'https://github.com/nimenhagg/APRSLocus-Customize',
-                              ),
                               _termsRow(context),
                               Padding(
                                 padding:
                                     const EdgeInsets.fromLTRB(14, 10, 14, 12),
                                 child: Text(
-                                  '${t.licenseStatement}\n\n'
-                                  '本分发版本包含 IC-705 Wi-Fi 局域网直连扩展，遵循 GNU GPL v3.0 协议开源。完整适配源码及修改记录请查阅 GitHub 分支仓库。',
+                                  t.licenseStatement,
                                   style: ts(11, c: C.grey, h: 1.5),
                                 ),
                               ),
@@ -661,12 +653,6 @@ class _AboutPageState extends State<AboutPage>
                                 label: t.projectRepo,
                                 value: 'GitHub',
                                 url: 'https://github.com/dariondong/APRSLocus',
-                              ),
-                              _linkRow(
-                                icon: Icons.fork_right_rounded,
-                                label: '${t.projectRepo} (IC-705)',
-                                value: 'GitHub Fork',
-                                url: 'https://github.com/nimenhagg/APRSLocus-Customize',
                               ),
                             ],
                           ),

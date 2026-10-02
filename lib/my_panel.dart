@@ -340,7 +340,7 @@ class MyPanel extends StatelessWidget {
                         : state.connecting
                         ? S.of(context).connecting
                         : state.isIcomLanTx
-                        ? '连接 IC-705'
+                        ? '连接 ${state.audio.config.icomLan.model.id}'
                         : state.usingAudio
                         ? S.of(context).audioCaptureStart
                         : state.usingTnc

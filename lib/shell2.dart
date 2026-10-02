@@ -1598,7 +1598,9 @@ class _HomeShell2State extends State<HomeShell2>
   String _sourceLabel(AppState st) {
     if (st.dataSource == AppState.srcTnc) return 'TNC';
     if (st.dataSource == AppState.srcAudio) {
-      return st.isIcomLanTx ? 'IC-705' : S.of(context).dataSourceAudioShort;
+      return st.isIcomLanTx
+          ? st.audio.config.icomLan.model.id
+          : S.of(context).dataSourceAudioShort;
     }
     if (st.dataSource == AppState.srcPkwdwpl) return 'PKWDWPL';
     return 'APRS-IS';
@@ -1629,7 +1631,7 @@ class _HomeShell2State extends State<HomeShell2>
       if (st.isIcomLanTx) {
         return st.audio.config.icomLan.host.isNotEmpty
             ? '${st.audio.config.icomLan.host}:${st.audio.config.icomLan.controlPort}'
-            : 'IC-705';
+            : st.audio.config.icomLan.model.id;
       }
       return '${st.audio.config.afsk.sampleRate} Hz';
     }

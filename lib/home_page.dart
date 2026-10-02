@@ -1014,17 +1014,18 @@ class _HomePageState extends State<HomePage> {
                     : S.of(context).icomLanTitle)
                 : '${st.audio.config.afsk.sampleRate}Hz')
             : (st.tnc.device?.label ?? S.of(context).tncNotBound);
+        final radioName = st.audio.config.icomLan.model.id;
         final title = connecting
             ? (audioMode
                 ? (isIcom
-                    ? S.of(context).icomLanTitle
+                    ? '正在连接 $radioName'
                     : S.of(context).dataSourceAudio)
                 : (tncMode
                     ? S.of(context).dataSourceTnc
                     : S.of(context).connectingServer))
             : (audioMode
                 ? (isIcom
-                    ? '连接 IC-705 电台'
+                    ? '连接 $radioName 电台'
                     : S.of(context).audioCaptureStart)
                 : (tncMode
                     ? S.of(context).connectTncBar
@@ -1034,7 +1035,7 @@ class _HomePageState extends State<HomePage> {
         final subtitle = connecting
             ? (audioMode
                 ? (isIcom
-                    ? '正在连接 IC-705（$tncName）…'
+                    ? '正在连接 $radioName（$tncName）…'
                     : S.of(context).connConnectingAudio(tncName))
                 : (tncMode
                     ? S.of(context).connectingToTnc(tncName)
@@ -1044,8 +1045,8 @@ class _HomePageState extends State<HomePage> {
             : (audioMode
                 ? (isIcom
                     ? (st.audio.config.icomLan.host.isNotEmpty
-                        ? '${st.audio.config.icomLan.host}:${st.audio.config.icomLan.controlPort} · Wi-Fi 直连电台收发与 CI-V 控制'
-                        : '通过 Wi-Fi 直连 IC-705 电台收发报文与控制')
+                        ? '${st.audio.config.icomLan.host}:${st.audio.config.icomLan.controlPort} · 局域网直连电台收发与 CI-V 控制'
+                        : '通过局域网直连 $radioName 电台收发报文与控制')
                     : S.of(context).dataSourceAudioDesc)
                 : (tncMode
                     ? S.of(context).dataSourceTncDesc

@@ -1,8 +1,73 @@
-/// IC-705 / Icom LAN 的连接设置（平台中立，Web 也能引用）。
+/// WLAN / Icom LAN 的连接设置（平台中立，Web 也能引用）。
 ///
 /// 这里只放**数据与校验**：真正的 UDP 实现在 `icom_lan_session.dart`
 /// （仅 `dart:io` 平台可用），适配层在 `icom_lan_io.dart`。
 library;
+
+/// WLAN / Wi-Fi / Icom LAN 支持的电台型号。
+enum WlanRadioModel {
+  ic705(
+    id: 'IC-705',
+    displayName: 'Icom IC-705',
+    defaultCivAddress: 0xA4,
+    defaultPort: 50001,
+    description: '便携全模式 QRP 电台（内置 Wi-Fi AP / STA）',
+  ),
+  ic9700(
+    id: 'IC-9700',
+    displayName: 'Icom IC-9700',
+    defaultCivAddress: 0xA2,
+    defaultPort: 50001,
+    description: 'VHF/UHF/1.2GHz 全模式基站（以太网 LAN / Wi-Fi）',
+  ),
+  ic7610(
+    id: 'IC-7610',
+    displayName: 'Icom IC-7610',
+    defaultCivAddress: 0x98,
+    defaultPort: 50001,
+    description: 'HF/50MHz 双接收 SDR 基站（以太网 LAN）',
+  ),
+  ic905(
+    id: 'IC-905',
+    displayName: 'Icom IC-905',
+    defaultCivAddress: 0xAC,
+    defaultPort: 50001,
+    description: '144MHz~10GHz 全模式微波电台（以太网 LAN）',
+  ),
+  custom(
+    id: 'CUSTOM',
+    displayName: '自定义 / 其他 (Custom)',
+    defaultCivAddress: 0xA4,
+    defaultPort: 50001,
+    description: '自定义 Icom 电台 CI-V 地址与端口',
+  );
+
+  const WlanRadioModel({
+    required this.id,
+    required this.displayName,
+    required this.defaultCivAddress,
+    this.defaultPort = 50001,
+    required this.description,
+  });
+
+  final String id;
+  final String displayName;
+  final int defaultCivAddress;
+  final int defaultPort;
+  final String description;
+
+  String get defaultCivHex =>
+      '0x${defaultCivAddress.toRadixString(16).toUpperCase()}';
+
+  static WlanRadioModel fromId(String? id) {
+    if (id == null || id.trim().isEmpty) return WlanRadioModel.ic705;
+    final clean = id.trim().toUpperCase();
+    return WlanRadioModel.values.firstWhere(
+      (m) => m.id.toUpperCase() == clean || m.name.toUpperCase() == clean,
+      orElse: () => WlanRadioModel.ic705,
+    );
+  }
+}
 
 /// 会话配置。
 class IcomLanConfig {
@@ -12,6 +77,7 @@ class IcomLanConfig {
     required this.username,
     required this.password,
     this.clientName = 'APRSLocus',
+    this.model = WlanRadioModel.ic705,
     this.radioCivAddress = 0xa4,
     this.controllerCivAddress = 0xe0,
     this.usernameMaxLength = 16,
@@ -33,7 +99,10 @@ class IcomLanConfig {
   /// 客户端名（电台用它区分"自己的流"和"别人的流"）。
   final String clientName;
 
-  /// 电台 CI-V 地址（IC-705 = 0xA4）。
+  /// 电台型号预置。
+  final WlanRadioModel model;
+
+  /// 电台 CI-V 地址（IC-705 = 0xA4，IC-9700 = 0xA2，IC-7610 = 0x98，IC-905 = 0xAC）。
   final int radioCivAddress;
 
   /// 本机 CI-V 地址（默认 0xE0）。
@@ -60,6 +129,9 @@ class IcomLanConfig {
     if (clientName.isEmpty || clientName.length > 16) {
       return '客户端名必须在 1..16 字符';
     }
+    if (radioCivAddress <= 0 || radioCivAddress > 0xEF) {
+      return 'CI-V 地址无效（应在 0x01..0xEF）';
+    }
     var asciiOnly = true;
     for (final text in [username, password, clientName]) {
       for (final code in text.codeUnits) {
@@ -76,6 +148,9 @@ class IcomLanConfig {
     String? username,
     String? password,
     String? clientName,
+    WlanRadioModel? model,
+    int? radioCivAddress,
+    int? controllerCivAddress,
   }) =>
       IcomLanConfig(
         host: host ?? this.host,
@@ -83,8 +158,10 @@ class IcomLanConfig {
         username: username ?? this.username,
         password: password ?? this.password,
         clientName: clientName ?? this.clientName,
-        radioCivAddress: radioCivAddress,
-        controllerCivAddress: controllerCivAddress,
+        model: model ?? this.model,
+        radioCivAddress: radioCivAddress ?? this.radioCivAddress,
+        controllerCivAddress:
+            controllerCivAddress ?? this.controllerCivAddress,
       );
 
   Map<String, dynamic> toJson() => {
@@ -93,6 +170,8 @@ class IcomLanConfig {
         'username': username,
         'password': password,
         'clientName': clientName,
+        'model': model.id,
+        'radioCivAddress': radioCivAddress,
       };
 
   static IcomLanConfig fromJson(Object? json) {
@@ -101,12 +180,16 @@ class IcomLanConfig {
     }
     int readInt(Object? value, int fallback) =>
         value is num ? value.toInt() : fallback;
+    final model = WlanRadioModel.fromId(json['model']?.toString());
     return IcomLanConfig(
       host: json['host']?.toString() ?? '',
-      controlPort: readInt(json['controlPort'], 50001),
+      controlPort: readInt(json['controlPort'], model.defaultPort),
       username: json['username']?.toString() ?? '',
       password: json['password']?.toString() ?? '',
       clientName: json['clientName']?.toString() ?? 'APRSLocus',
+      model: model,
+      radioCivAddress:
+          readInt(json['radioCivAddress'], model.defaultCivAddress),
     );
   }
 }

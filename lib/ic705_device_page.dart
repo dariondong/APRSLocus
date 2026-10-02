@@ -2,7 +2,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import 'audio.dart';
 import 'net/icom_lan_settings.dart';
@@ -11,12 +10,13 @@ import 'state.dart';
 import 'theme.dart';
 import 'widgets.dart';
 
-/// ─── IC-705 Wi-Fi 直连设备页（独立一级设备页）───
+/// ─── WLAN 电台直连设备页（独立一级设备页）───
 ///
-/// 专为 IC-705 局域网直连打造的专属控制面板：
+/// 专为 Icom WLAN / LAN 局域网直连打造的专属控制面板，
+/// 完整支持 IC-705、IC-9700、IC-7610、IC-905 及自定义电台：
 /// ① 电台连接状态与实时链路阶段（未连接 / 认证中 / 协商中 / 接收中 / 传输中）
 /// ② 一键直连开关与连接/断开控制
-/// ③ 电台网络参数（电台 IP / 控制端口 / Network User 用户名与密码）
+/// ③ 电台型号预置与网络参数（电台 IP / 控制端口 / Network User 用户名与密码）
 /// ④ CI-V 控制与发射参数（CI-V 地址 / 射频信标开关 / 发射延迟 TX Delay）
 /// ⑤ 电台端配网指引与实时日志
 class Ic705DevicePage extends StatefulWidget {
@@ -35,6 +35,7 @@ class _Ic705DevicePageState extends State<Ic705DevicePage> {
   late final TextEditingController _civAddr;
   late final TextEditingController _txDelay;
 
+  late WlanRadioModel _selectedModel;
   bool _busy = false;
   bool _logOpen = false;
 
@@ -45,6 +46,7 @@ class _Ic705DevicePageState extends State<Ic705DevicePage> {
   void initState() {
     super.initState();
     final c = audio.config;
+    _selectedModel = c.icomLan.model;
     _host = TextEditingController(text: c.icomLan.host);
     _port = TextEditingController(text: '${c.icomLan.controlPort}');
     _user = TextEditingController(text: c.icomLan.username);
@@ -88,14 +90,15 @@ class _Ic705DevicePageState extends State<Ic705DevicePage> {
 
   Future<void> _saveConfig({bool? enabled}) async {
     final c = audio.config;
-    final civ = _parseInt(_civAddr, 0xA4).clamp(0x01, 0xFF);
+    final civ = _parseInt(_civAddr, _selectedModel.defaultCivAddress).clamp(0x01, 0xFF);
     final delay = _parseInt(_txDelay, 200).clamp(0, 2000);
 
     c.icomLan = IcomLanConfig(
       host: _host.text.trim(),
-      controlPort: _parseInt(_port, 50001).clamp(1, 65533),
+      controlPort: _parseInt(_port, _selectedModel.defaultPort).clamp(1, 65533),
       username: _user.text.trim(),
       password: _pass.text,
+      model: _selectedModel,
       radioCivAddress: civ,
       controllerCivAddress: c.icomLan.controllerCivAddress,
       clientName: c.icomLan.clientName,
@@ -185,8 +188,8 @@ class _Ic705DevicePageState extends State<Ic705DevicePage> {
     return ListenableBuilder(
       listenable: st,
       builder: (context, _) => SettingsPageShell(
-        title: s.icomLanTitle,
-        subtitle: '局域网直连 IC-705 电台，收发 12 kHz PCM 音频与 CI-V 控制',
+        title: 'WLAN 电台（${_selectedModel.id} 直连）',
+        subtitle: '局域网直连 Icom 电台（IC-705 / IC-9700 / IC-7610 / IC-905），收发 12 kHz PCM 音频与 CI-V 控制',
         icon: Icons.wifi_tethering_rounded,
         color: C.cyan,
         body: Column(
@@ -195,7 +198,7 @@ class _Ic705DevicePageState extends State<Ic705DevicePage> {
             _buildStatusCard(s, isIcomMode, isConnected, phase),
             const SizedBox(height: 16),
 
-            // ② 电台网络参数
+            // ② 电台网络参数与型号选择
             _buildNetworkCard(s, isIcomMode),
             const SizedBox(height: 16),
 
@@ -209,10 +212,6 @@ class _Ic705DevicePageState extends State<Ic705DevicePage> {
 
             // ⑤ 实时链路日志（折叠）
             _buildLogCard(s),
-            const SizedBox(height: 16),
-
-            // ⑥ 开源与合规说明
-            _buildOpenSourceCard(s),
             const SizedBox(height: 24),
           ],
         ),
@@ -226,17 +225,17 @@ class _Ic705DevicePageState extends State<Ic705DevicePage> {
 
     return SettingsSectionCard(
       title: '电台链路状态',
-      subtitle: isConnected ? '已与 IC-705 建立高速局域网直连' : '未连接或正在握手',
+      subtitle: isConnected ? '已与 ${_selectedModel.displayName} 建立局域网直连' : '未连接或正在握手',
       icon: Icons.sensors_rounded,
       color: C.cyan,
       children: [
         SettingsSwitch(
-          s.icomLanEnable,
+          '启用 ${_selectedModel.id} 局域网直连',
           value: isIcomMode,
           color: C.cyan,
           onChanged: (v) => unawaited(_saveConfig(enabled: v)),
         ),
-        SettingsHint('开启后，APRS 音频收发数据源将直接绑定至 IC-705 局域网直连'),
+        SettingsHint('开启后，APRS 音频收发数据源将直接绑定至 ${_selectedModel.displayName} 局域网直连'),
         Divider(height: 1, color: C.border),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
@@ -288,7 +287,7 @@ class _Ic705DevicePageState extends State<Ic705DevicePage> {
               label: Text(
                 _busy
                     ? '处理中...'
-                    : (isConnected ? '断开电台连接' : '立即连接 IC-705'),
+                    : (isConnected ? '断开电台连接' : '立即连接 ${_selectedModel.displayName}'),
                 style: ts(13, w: FontWeight.w600),
               ),
               style: ElevatedButton.styleFrom(
@@ -306,14 +305,68 @@ class _Ic705DevicePageState extends State<Ic705DevicePage> {
     );
   }
 
-  /// ② 电台网络参数
+  /// ② 电台网络参数与型号选择
   Widget _buildNetworkCard(S s, bool isIcomMode) {
     return SettingsSectionCard(
       title: '电台网络参数',
-      subtitle: '设置 IC-705 的局域网 IP 与 Network User 凭据',
+      subtitle: '选择电台型号预置并配置 IP 与 Network User 凭据',
       icon: Icons.wifi_rounded,
       color: C.blue,
       children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(14, 12, 14, 8),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Icon(Icons.radio_rounded, size: 16, color: C.blue),
+                  const SizedBox(width: 6),
+                  Text('电台型号预置', style: ts(13, w: FontWeight.w600)),
+                  const Spacer(),
+                  Text(_selectedModel.displayName, style: ts(12, c: C.blue, w: FontWeight.bold)),
+                ],
+              ),
+              const SizedBox(height: 10),
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: WlanRadioModel.values.map((m) {
+                  final selected = m == _selectedModel;
+                  return ChoiceChip(
+                    label: Text(m.id),
+                    selected: selected,
+                    selectedColor: C.blue.withValues(alpha: 0.18),
+                    backgroundColor: C.greyBg,
+                    labelStyle: ts(
+                      12,
+                      w: selected ? FontWeight.bold : FontWeight.normal,
+                      c: selected ? C.blue : C.slate,
+                    ),
+                    onSelected: (val) {
+                      if (val) {
+                        setState(() {
+                          _selectedModel = m;
+                          if (m != WlanRadioModel.custom) {
+                            _civAddr.text = m.defaultCivHex;
+                            _port.text = '${m.defaultPort}';
+                          }
+                        });
+                        unawaited(_saveConfig());
+                      }
+                    },
+                  );
+                }).toList(),
+              ),
+              const SizedBox(height: 6),
+              Text(
+                _selectedModel.description,
+                style: ts(11, c: C.grey),
+              ),
+            ],
+          ),
+        ),
+        Divider(height: 1, color: C.border),
         SettingsInput(
           s.icomLanHost,
           _host,
@@ -338,7 +391,7 @@ class _Ic705DevicePageState extends State<Ic705DevicePage> {
           hint: 'aa1919810',
           onEditingComplete: () => unawaited(_saveConfig()),
         ),
-        SettingsHint('提示：用户名和密码必须与 IC-705 电台内 Network User Setting 完全一致。'),
+        SettingsHint('提示：用户名和密码必须与电台内部 Network User Setting 完全一致。'),
       ],
     );
   }
@@ -374,7 +427,7 @@ class _Ic705DevicePageState extends State<Ic705DevicePage> {
         SettingsInput(
           '电台 CI-V 地址 (十六进制)',
           _civAddr,
-          hint: '0xA4',
+          hint: _selectedModel.defaultCivHex,
           onEditingComplete: () => unawaited(_saveConfig()),
         ),
         SettingsRow2('控制器地址', '0xE0 (默认)'),
@@ -386,7 +439,7 @@ class _Ic705DevicePageState extends State<Ic705DevicePage> {
   Widget _buildGuideCard(S s) {
     return SettingsSectionCard(
       title: '电台设置指引',
-      subtitle: '在 IC-705 电台上的必要准备步骤',
+      subtitle: '在 Icom 电台上的必要准备步骤',
       icon: Icons.menu_book_rounded,
       color: C.green,
       children: [
@@ -398,25 +451,26 @@ class _Ic705DevicePageState extends State<Ic705DevicePage> {
               _guideStep(
                 '1',
                 '网络连接',
-                '在电台菜单进入 MENU → SET → WLAN Set → Connection Type，选择 Connect to Network 连接家用路由 Wi-Fi，或选择 Access Point 开启热点由手机直连。',
+                'IC-705 可在 MENU → SET → WLAN Set 中选择 Connect to Network 连接路由器 Wi-Fi，或选择 Access Point 开启热点供手机直连；'
+                'IC-9700 / IC-7610 / IC-905 可直接连接路由器 LAN 口，或通过无线网桥接入局域网。',
               ),
               const SizedBox(height: 10),
               _guideStep(
                 '2',
                 '添加网络用户',
-                '进入 WLAN Set → Network User Setting，添加一个用户（设置好用户名和密码），并开启允许连接。',
+                '进入 WLAN Set / Network Set → Network User Setting，添加一个用户（设置好用户名与密码），并开启允许连接。',
               ),
               const SizedBox(height: 10),
               _guideStep(
                 '3',
-                '确认 CI-V 地址',
-                '进入 MENU → SET → Connectors → CI-V，确保 CI-V Address 设为 A4h（默认值）。',
+                '确认 CI-V 地址与端口',
+                '进入 MENU → SET → Connectors → CI-V，确认 CI-V Address 与控制端口 50001（IC-705 默认 A4h，IC-9700 为 A2h，IC-7610 为 98h，IC-905 为 ACh）。',
               ),
               const SizedBox(height: 10),
               _guideStep(
                 '4',
                 '设置模式与频率',
-                '将电台频率切换至当地 APRS 频率（如 144.640 MHz），模式设为 FM 或 FM-D。',
+                '将电台对应频段模式设为 FM 或 FM-D，调至当地 APRS 频率（如 144.640 MHz）。',
               ),
             ],
           ),
@@ -463,7 +517,7 @@ class _Ic705DevicePageState extends State<Ic705DevicePage> {
 
     return SettingsFold(
       title: '电台通信诊断日志',
-      subtitle: '查看 IC-705 局域网控制包与 CI-V 通信记录',
+      subtitle: '查看 Icom 局域网控制包与 CI-V 通信记录',
       icon: Icons.receipt_long_rounded,
       color: C.slate,
       open: _logOpen,
@@ -489,61 +543,6 @@ class _Ic705DevicePageState extends State<Ic705DevicePage> {
                     ),
                   ),
                 ),
-        ),
-      ],
-    );
-  }
-
-  /// ⑥ 开源许可与仓库链接
-  Widget _buildOpenSourceCard(S s) {
-    return SettingsSectionCard(
-      title: '开源与合规说明',
-      subtitle: '遵循 GNU General Public License v3.0 (GPL-3.0) 协议',
-      icon: Icons.code_rounded,
-      color: C.blue,
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(14),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'IC-705 Wi-Fi 直连功能（12 kHz PCM 音频收发与 CI-V 控制）基于 APRSLocus 与 aprsdroid mod 开发，遵循 GPL-3.0 协议开源。所有修改均可查阅并获取完整源代码。',
-                style: ts(12, c: C.slate, h: 1.5),
-              ),
-              const SizedBox(height: 12),
-              InkWell(
-                onTap: () => launchUrl(
-                  Uri.parse('https://github.com/nimenhagg/APRSLocus-Customize'),
-                  mode: LaunchMode.externalApplication,
-                ),
-                borderRadius: BorderRadius.circular(10),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-                  decoration: BoxDecoration(
-                    color: C.blue.withValues(alpha: 0.08),
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: C.blue.withValues(alpha: 0.2)),
-                  ),
-                  child: Row(
-                    children: [
-                      Icon(Icons.open_in_new_rounded, size: 16, color: C.blue),
-                      const SizedBox(width: 8),
-                      Expanded(
-                        child: Text(
-                          '查看 IC-705 适配分支源码 (GitHub Fork)',
-                          style: ts(12, w: FontWeight.w600, c: C.blue),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                      Icon(Icons.chevron_right_rounded, size: 16, color: C.blue),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
         ),
       ],
     );

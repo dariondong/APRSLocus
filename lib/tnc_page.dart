@@ -69,10 +69,10 @@ class DataSourceCard extends StatelessWidget {
         _tile(
           context,
           key: 'icomlan',
-          title: s.icomLanTitle,
+          title: 'WLAN 电台（${state.audio.config.icomLan.model.id}）',
           desc: state.audio.config.icomLan.host.isNotEmpty
-              ? '${state.audio.config.icomLan.host}:${state.audio.config.icomLan.controlPort} · 局域网电台直连收发'
-              : '通过 Wi-Fi 直连 IC-705 电台收发音频与 CI-V 控制',
+              ? '${state.audio.config.icomLan.model.displayName} · ${state.audio.config.icomLan.host}:${state.audio.config.icomLan.controlPort}'
+              : '局域网直连 Icom 电台（IC-705 / IC-9700 / IC-7610 / IC-905）',
           icon: Icons.wifi_tethering_rounded,
           enabled: state.icomLanOn,
           isTx: state.isIcomLanTx,

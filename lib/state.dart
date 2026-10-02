@@ -4454,17 +4454,18 @@ class AppState extends ChangeNotifier {
     _scheduleReconnectIfNeeded();
   }
 
-  /// 音频 / IC-705 直连连接。
+  /// 音频 / WLAN 电台直连连接。
   Future<void> _connectAudio() async {
     final isIcom = audio.config.source == AudioSource.icomLan;
+    final radioName = audio.config.icomLan.model.id;
     connecting = true;
     setConnStatus(ConnPhase.connectingAudio,
-        arg: isIcom ? 'IC-705 Wi-Fi' : audio.backendName);
+        arg: isIcom ? '$radioName 直连' : audio.backendName);
     _log(
       LogLevel.info,
       '连接',
       isIcom
-          ? '正在连接 IC-705 电台（${audio.config.icomLan.host.isNotEmpty ? audio.config.icomLan.host : "未配IP"}）…'
+          ? '正在连接 $radioName 电台（${audio.config.icomLan.host.isNotEmpty ? audio.config.icomLan.host : "未配IP"}）…'
           : '正在打开音频采集（${audio.backendName}）…',
     );
     _notify();
@@ -4479,18 +4480,18 @@ class AppState extends ChangeNotifier {
       _lastTx = DateTime.now();
       final rate = audio.config.afsk.sampleRate;
       setConnStatus(ConnPhase.audioConnected,
-          arg: isIcom ? 'IC-705 直连' : '${rate}Hz');
+          arg: isIcom ? '$radioName 直连' : '${rate}Hz');
       _log(
         LogLevel.info,
         '连接',
         isIcom
-            ? 'IC-705 直连链路已建立（${audio.config.icomLan.host}:${audio.config.icomLan.controlPort}）'
+            ? '$radioName 直连链路已建立（${audio.config.icomLan.host}:${audio.config.icomLan.controlPort}）'
             : '音频链路已建立 · AFSK 1200 @${rate}Hz（${audio.backendName}）',
       );
       _flushPendingTx();
       if (beaconEnabled && !audio.config.rfBeacon) {
         _log(LogLevel.warn, '信标',
-            '${isIcom ? "IC-705" : "音频"}模式下射频信标开关未打开，不会自动发射位置（可在设备页开启）');
+            '${isIcom ? radioName : "音频"}模式下射频信标开关未打开，不会自动发射位置（可在设备页开启）');
       }
     } else {
       final backoff = [8, 16, 32, 60][_reconnectAttempt.clamp(0, 3)];
@@ -4500,7 +4501,7 @@ class AppState extends ChangeNotifier {
         LogLevel.error,
         '连接',
         isIcom
-            ? 'IC-705 连接失败（${audio.lastError}），$backoff 秒后自动重试'
+            ? '$radioName 连接失败（${audio.lastError}），$backoff 秒后自动重试'
             : '音频链路打开失败（${audio.lastError}），$backoff 秒后自动重试',
       );
     }
@@ -7643,10 +7644,11 @@ class AppState extends ChangeNotifier {
     if (connected) {
       // TNC 模式：明确标出「射频」，否则用户会以为走的是网络，
       // 从而忽略「发射要在自己呼号/执照下操作」这件事。
+      final radioName = audio.config.icomLan.model.id;
       parts.add(usingTnc
           ? l.notifTncConnected
           : (usingAudio
-              ? (isIcomLanTx ? 'IC-705 已连接' : l.notifAudioConnected)
+              ? (isIcomLanTx ? '$radioName 已连接' : l.notifAudioConnected)
               : l.notifConnected));
     } else if (connecting) {
       parts.add(l.notifConnecting);
@@ -7656,10 +7658,11 @@ class AppState extends ChangeNotifier {
       // 通知栏却写「未连接」会让人以为链路坏了。
       parts.add(l.pkwdwplReadOnly);
     } else {
+      final radioName = audio.config.icomLan.model.id;
       parts.add(usingTnc
           ? l.notifTncDisconnected
           : (usingAudio
-              ? (isIcomLanTx ? 'IC-705 未连接' : l.notifAudioDisconnected)
+              ? (isIcomLanTx ? '$radioName 未连接' : l.notifAudioDisconnected)
               : l.notifDisconnected));
     }
     if (myHasFix) {
@@ -7670,7 +7673,8 @@ class AppState extends ChangeNotifier {
     if (usingTnc) {
       parts.add('RF·${tnc.rxFrames}/${tnc.txFrames}');
     } else if (usingAudio) {
-      parts.add('${isIcomLanTx ? "IC-705" : "AFSK"}·${audio.rxFrames}/${audio.txFrames}');
+      final radioName = audio.config.icomLan.model.id;
+      parts.add('${isIcomLanTx ? radioName : "AFSK"}·${audio.rxFrames}/${audio.txFrames}');
     }
     if (aprsIsOn) {
       parts.add(l.notifOnline('$online'));

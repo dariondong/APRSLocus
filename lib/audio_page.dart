@@ -483,7 +483,7 @@ class _AudioSettingsPageState extends State<AudioSettingsPage> {
     final phase = link?.phaseLabel ??
         (audio.connected ? s.connected : s.disconnected);
     return SettingsSectionCard(
-      title: s.icomLanTitle,
+      title: 'WLAN 电台（${cfg.icomLan.model.id}）',
       subtitle: s.icomLanHint,
       icon: Icons.wifi_tethering_rounded,
       color: C.cyan,
@@ -505,7 +505,7 @@ class _AudioSettingsPageState extends State<AudioSettingsPage> {
                 ),
               ),
               icon: const Icon(Icons.open_in_new_rounded, size: 16),
-              label: const Text('进入独立 IC-705 电台控制面板'),
+              label: Text('进入 WLAN 电台（${cfg.icomLan.model.id}）控制面板'),
               style: OutlinedButton.styleFrom(
                 foregroundColor: C.cyan,
                 side: BorderSide(color: C.cyan.withValues(alpha: 0.5)),
