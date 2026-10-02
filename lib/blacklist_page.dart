@@ -43,7 +43,7 @@ class _BlacklistPageState extends State<BlacklistPage> {
     if (mounted) setState(() => _busy = false);
   }
 
-  /// 长按安装标识 → **本机豁免**（本地白名单）并重新判定；页面会自己消失。
+  /// **长按复制按钮** → 本机豁免（本地白名单）并重新判定；页面会自己消失。
   ///
   /// ⚠ 硬封（`hard`，默认）豁免不了：那种条目**静默无反应** —— 按要求，长按不给用户
   /// 任何提示（软封解掉了不提示，硬封解不开也不提示，免得这套机制被"试出来"）。
@@ -124,39 +124,32 @@ class _BlacklistPageState extends State<BlacklistPage> {
                           .copyWith(fontFamily: 'monospace')),
                   if (_deviceId.isNotEmpty) ...[
                     const SizedBox(height: 10),
-                    // 长按整块安装标识 = **本机豁免（本地白名单）**。
-                    // 故意不写任何提示：这是给"被误判要自救"和自测留的出口，
-                    // 不是给所有人指路的按钮。复制另给一个小图标（原来靠 SelectableText，
-                    // 但长按会被它的选择手势吃掉，所以换成普通 Text + 复制按钮）。
-                    GestureDetector(
-                      behavior: HitTestBehavior.opaque,
-                      onLongPress: _exemptLocally,
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(s.blId,
-                                    style: ts(11, c: C.grey, w: FontWeight.w700)),
-                                const SizedBox(height: 3),
-                                Text(_deviceId,
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: ts(12, c: C.ink, h: 1.5)
-                                        .copyWith(fontFamily: 'monospace')),
-                              ],
-                            ),
+                    Text(s.blId, style: ts(11, c: C.grey, w: FontWeight.w700)),
+                    const SizedBox(height: 3),
+                    Row(
+                      children: [
+                        // 安装标识保持可选中/复制（长按选中是它本来的行为）
+                        Expanded(
+                          child: SelectableText(
+                            _deviceId,
+                            maxLines: 1,
+                            style: ts(12, c: C.ink, h: 1.5)
+                                .copyWith(fontFamily: 'monospace'),
                           ),
-                          IconButton(
+                        ),
+                        // **长按这个按钮**才是隐藏手势（本机豁免）：点一下 = 复制。
+                        // 挂在这里而不是标识上，是为了不占掉标识本身的长按（选中/复制）。
+                        GestureDetector(
+                          onLongPress: _exemptLocally,
+                          child: IconButton(
                             onPressed: _copyId,
                             icon: Icon(Icons.copy_rounded,
                                 size: 16, color: C.grey),
                             visualDensity: VisualDensity.compact,
                             tooltip: s.blId,
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ],
                   const SizedBox(height: 14),
