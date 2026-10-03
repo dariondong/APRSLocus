@@ -13,6 +13,13 @@ on:
 permissions:
   contents: write
 
+# 同一个 tag 被反复刷新时（改一处 bug 就并回同版号重跑），**取消上一次仍在跑的构建**。
+# 否则多次构建并发，Release 会被"先跑完的那次"更新 —— 用户下载到的可能是中间某次
+# 的产物，看着就像"这一版没带上修复"（v2.0.20 就踩过这个坑）。
+concurrency:
+  group: build-release-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build-windows:
     name: Build Windows Installer
