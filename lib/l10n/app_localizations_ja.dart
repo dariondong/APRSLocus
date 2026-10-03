@@ -13,7 +13,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get about => 'アプリについて';
 
   @override
-  String get aboutSubtitle => 'APRS 追跡と地図';
+  String get aboutSubtitle => '本機 APRS クライアント・位置情報と地図';
 
   @override
   String get aboutTitle => 'このアプリについて';

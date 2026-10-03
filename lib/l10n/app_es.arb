@@ -328,7 +328,7 @@
   "showTrails": "Mostrar rastros",
   "showStations": "Mostrar estaciones",
   "aboutTitle": "Acerca de",
-  "aboutSubtitle": "Seguimiento y mapas APRS",
+  "aboutSubtitle": "Cliente APRS local · seguimiento y mapa",
   "author": "Autor",
   "codeContributions": "Contribuciones de código",
   "codeContributionI18n": "Internacionalización / interfaz en inglés",

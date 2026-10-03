@@ -4,7 +4,7 @@
 
 # APRSlocus
 
-**APRS Tracking & Mapping**
+**APRS Tracking & Mapping · a local APRS client (no server address bundled)**
 
 A lightweight APRS client built for amateur radio enthusiasts — real-time positioning, station tracking, messaging, and map display, all in one place to keep you in touch with the airwaves.
 

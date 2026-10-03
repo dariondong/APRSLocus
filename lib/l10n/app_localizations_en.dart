@@ -13,7 +13,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get about => 'About';
 
   @override
-  String get aboutSubtitle => 'APRS tracking & mapping';
+  String get aboutSubtitle => 'Local APRS client · tracking & map';
 
   @override
   String get aboutTitle => 'About';

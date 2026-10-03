@@ -1,5 +1,5 @@
 name: aprslocus
-description: "APRSlocus - APRS Tracking & Mapping"
+description: "APRSlocus - a local APRS client (no server address bundled)"
 publish_to: 'none'
 version: 2.0.18+20018
 

@@ -354,7 +354,7 @@
   "showTrails": "Show tracks",
   "showStations": "Show stations",
   "aboutTitle": "About",
-  "aboutSubtitle": "APRS tracking & mapping",
+  "aboutSubtitle": "Local APRS client · tracking & map",
   "author": "Author",
   "codeContributions": "Code contributions",
   "codeContributionI18n": "Internationalization / English UI",
