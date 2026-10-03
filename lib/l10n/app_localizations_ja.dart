@@ -1614,6 +1614,9 @@ class AppLocalizationsJa extends AppLocalizations {
   String get dataSourceSwitchHint => 'データソースを切り替えると現在の接続は切断されます';
 
   @override
+  String get startFromFavorites => 'お気に入りの局から始める';
+
+  @override
   String get boxConnectAction => 'ボックスに接続';
 
   @override

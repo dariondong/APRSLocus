@@ -2294,6 +2294,23 @@ class _MessagesPageState extends State<MessagesPage> {
                       ),
                     ),
                   ),
+                  // 「从收藏台站开始」：不想手打呼号时，直接从收藏里挑一个。
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: TextButton.icon(
+                      onPressed: () {
+                        // 先关掉本对话框，再弹收藏选择（同一时刻只留一层弹层）。
+                        Navigator.of(ctx).pop();
+                        _pickFavoriteAndStart(st);
+                      },
+                      icon: Icon(Icons.star_rounded,
+                          size: 16, color: C.orange),
+                      label: Text(
+                        S.of(context).startFromFavorites,
+                        style: ts(12, w: FontWeight.w600),
+                      ),
+                    ),
+                  ),
                   if (suggestions.isNotEmpty) ...[
                     SizedBox(height: 8),
                     Container(
@@ -2374,6 +2391,72 @@ class _MessagesPageState extends State<MessagesPage> {
   }
 
   /// 开始新会话
+  /// 「从收藏台站开始」：列出收藏台站，挑一个就直接开会话。
+  ///
+  /// 为什么要它：新建会话这条路要手打呼号，而收藏本来就是我们最常联系的那几个台站 ——
+  /// 有了这个入口，常用的两三个就是"点两下"的事。
+  Future<void> _pickFavoriteAndStart(AppState st) async {
+    final favs = st.stations.where((s) => s.favorite).toList()
+      ..sort((a, b) => a.call.compareTo(b.call));
+    final picked = await showModalBottomSheet<String>(
+      context: context,
+      backgroundColor: C.pageFill,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(18)),
+      ),
+      builder: (ctx) => SafeArea(
+        top: false,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const SizedBox(height: 10),
+            Container(
+              width: 36,
+              height: 4,
+              decoration: BoxDecoration(
+                color: C.border,
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+            const SizedBox(height: 12),
+            Text(S.of(context).favoriteStations,
+                style: ts(14, w: FontWeight.w700)),
+            const SizedBox(height: 6),
+            if (favs.isEmpty)
+              // 没有收藏时不留空面板：直接说清怎么收藏（复用现有引导文案）。
+              Padding(
+                padding: const EdgeInsets.fromLTRB(24, 8, 24, 22),
+                child: Text(
+                  S.of(context).addOrFavoriteContact,
+                  textAlign: TextAlign.center,
+                  style: ts(12, c: C.grey, h: 1.6),
+                ),
+              )
+            else
+              Flexible(
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: favs.length,
+                  itemBuilder: (_, i) {
+                    final f = favs[i];
+                    return ListTile(
+                      dense: true,
+                      leading: Icon(Icons.star_rounded,
+                          size: 18, color: C.orange),
+                      title: Text(f.call, style: ts(13, w: FontWeight.w600)),
+                      onTap: () => Navigator.of(ctx).pop(f.call),
+                    );
+                  },
+                ),
+              ),
+            const SizedBox(height: 10),
+          ],
+        ),
+      ),
+    );
+    if (picked != null && mounted) _startConversation(st, picked);
+  }
+
   void _startConversation(AppState st, String callRaw) {
     final call = callRaw.trim().toUpperCase();
     if (call.isEmpty || call == st.myFullCall.toUpperCase()) return;

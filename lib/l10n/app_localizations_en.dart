@@ -1661,6 +1661,9 @@ class AppLocalizationsEn extends AppLocalizations {
       'Switching the data source disconnects the current link';
 
   @override
+  String get startFromFavorites => 'Start from a favourite station';
+
+  @override
   String get boxConnectAction => 'Connect box';
 
   @override

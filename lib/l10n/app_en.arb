@@ -715,6 +715,7 @@
   "dataSourceTnc": "TNC",
   "dataSourceTncDesc": "Send and receive on air through a Bluetooth or serial TNC",
   "dataSourceSwitchHint": "Switching the data source disconnects the current link",
+  "startFromFavorites": "Start from a favourite station",
   "boxConnectAction": "Connect box",
   "boxLinkUnsupported": "The box link is not supported on this platform (needs Bluetooth or USB serial)",
   "boxNoDevicePaired": "No device found - pair the box in system Bluetooth settings first, or plug in a USB serial cable (OTG)",

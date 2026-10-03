@@ -689,6 +689,7 @@
   "dataSourceTnc": "TNC",
   "dataSourceTncDesc": "Envía y recibe por radio mediante un TNC Bluetooth o serie",
   "dataSourceSwitchHint": "Cambiar la fuente de datos desconecta el enlace actual",
+  "startFromFavorites": "Empezar desde una estación favorita",
   "boxConnectAction": "Conectar caja",
   "boxLinkUnsupported": "El enlace de la caja no es compatible en esta plataforma (requiere Bluetooth o serie USB)",
   "boxNoDevicePaired": "No se encontró ningún dispositivo: empareja la caja en los ajustes de Bluetooth del sistema o conecta un cable serie USB (OTG)",

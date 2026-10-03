@@ -690,6 +690,7 @@
   "dataSourceTnc": "TNC",
   "dataSourceTncDesc": "Bluetooth／シリアルの TNC 経由で無線機から直接送受信",
   "dataSourceSwitchHint": "データソースを切り替えると現在の接続は切断されます",
+  "startFromFavorites": "お気に入りの局から始める",
   "boxConnectAction": "ボックスに接続",
   "boxLinkUnsupported": "このプラットフォームはボックス接続に対応していません（Bluetooth または USB シリアルが必要）",
   "boxNoDevicePaired": "デバイスが見つかりません。先にシステムの Bluetooth 設定でボックスをペアリングするか、USB シリアルケーブル（OTG）を接続してください",

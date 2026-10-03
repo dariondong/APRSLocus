@@ -1662,6 +1662,9 @@ class AppLocalizationsId extends AppLocalizations {
       'Mengganti sumber data akan memutus koneksi saat ini';
 
   @override
+  String get startFromFavorites => 'Mulai dari stasiun favorit';
+
+  @override
   String get boxConnectAction => 'Sambung kotak';
 
   @override

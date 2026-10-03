@@ -2804,6 +2804,11 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'切换数据来源会断开当前连接'**
   String get dataSourceSwitchHint;
+  /// No description provided for @startFromFavorites.
+  ///
+  /// In zh, this message translates to:
+  /// **'从收藏台站开始'**
+  String get startFromFavorites;
   /// No description provided for @boxConnectAction.
   ///
   /// In zh, this message translates to:

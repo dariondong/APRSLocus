@@ -690,6 +690,7 @@
   "dataSourceTnc": "TNC",
   "dataSourceTncDesc": "Kirim dan terima lewat udara via TNC Bluetooth atau serial",
   "dataSourceSwitchHint": "Mengganti sumber data akan memutus koneksi saat ini",
+  "startFromFavorites": "Mulai dari stasiun favorit",
   "boxConnectAction": "Sambung kotak",
   "boxLinkUnsupported": "Tautan kotak tidak didukung di platform ini (perlu Bluetooth atau serial USB)",
   "boxNoDevicePaired": "Perangkat tidak ditemukan - pasangkan kotak di pengaturan Bluetooth sistem, atau tancapkan kabel serial USB (OTG)",

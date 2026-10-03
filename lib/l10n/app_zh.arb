@@ -697,6 +697,7 @@
   "dataSourceTnc": "TNC",
   "dataSourceTncDesc": "通过蓝牙或串口的 TNC 与电台直接收发",
   "dataSourceSwitchHint": "切换数据来源会断开当前连接",
+  "startFromFavorites": "从收藏台站开始",
   "boxConnectAction": "连接盒子",
   "boxLinkUnsupported": "当前平台暂不支持盒子链路（需要蓝牙或 USB 串口）",
   "boxNoDevicePaired": "未找到设备 · 先到系统蓝牙设置里配对盒子，或插上 USB 串口线（OTG）",

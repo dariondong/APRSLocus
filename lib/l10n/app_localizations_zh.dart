@@ -1606,6 +1606,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get dataSourceSwitchHint => '切换数据来源会断开当前连接';
 
   @override
+  String get startFromFavorites => '从收藏台站开始';
+
+  @override
   String get boxConnectAction => '连接盒子';
 
   @override
@@ -9117,6 +9120,9 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get dataSourceSwitchHint => '切換資料來源會中斷目前連線';
+
+  @override
+  String get startFromFavorites => '從收藏臺站開始';
 
   @override
   String get boxConnectAction => '連接盒子';
