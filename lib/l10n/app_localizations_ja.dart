@@ -1971,7 +1971,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get deviceCat => 'デバイス';
 
   @override
-  String get deviceCatDesc => '無線機 · 準備中';
+  String get deviceCatDesc => 'データソース・リンク・iGate';
 
   @override
   String get deviceClass => 'デバイス分類';
@@ -5208,7 +5208,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get settingsContribCodeOptimization => 'コード最適化';
 
   @override
-  String get settingsDesc => '無線局・位置情報・接続を設定';
+  String get settingsDesc => '無線局・位置情報・リンク・データ';
 
   @override
   String get settingsDevSubtitle => 'デバッグとテスト';

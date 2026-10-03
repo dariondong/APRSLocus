@@ -2020,7 +2020,7 @@ Dengan menekan "Setuju dan sambung", Anda menyatakan telah membaca, memahami, da
   String get deviceCat => 'Perangkat';
 
   @override
-  String get deviceCatDesc => 'Peralatan radio · segera hadir';
+  String get deviceCatDesc => 'Sumber data · tautan · iGate';
 
   @override
   String get deviceClass => 'Kelas perangkat';
@@ -5368,7 +5368,7 @@ Dengan menekan "Setuju dan sambung", Anda menyatakan telah membaca, memahami, da
   String get settingsContribCodeOptimization => 'Optimasi kode';
 
   @override
-  String get settingsDesc => 'Atur stasiun, lokasi & koneksi';
+  String get settingsDesc => 'Stasiun, lokasi, tautan & data';
 
   @override
   String get settingsDevSubtitle => 'Debug dan pengujian';

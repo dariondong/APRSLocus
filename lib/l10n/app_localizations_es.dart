@@ -2037,7 +2037,7 @@ Al pulsar "Aceptar y conectar" confirmas que has leído, entendido y aceptado lo
   String get deviceCat => 'Dispositivo';
 
   @override
-  String get deviceCatDesc => 'Equipos de radio · próximamente';
+  String get deviceCatDesc => 'Fuentes · enlaces · iGate';
 
   @override
   String get deviceClass => 'Clase de dispositivo';
@@ -5399,7 +5399,7 @@ Al pulsar "Aceptar y conectar" confirmas que has leído, entendido y aceptado lo
   String get settingsContribCodeOptimization => 'Optimización de código';
 
   @override
-  String get settingsDesc => 'Configura estación, ubicación y conexión';
+  String get settingsDesc => 'Estación, ubicación, enlaces y datos';
 
   @override
   String get settingsDevSubtitle => 'Depuración y pruebas';

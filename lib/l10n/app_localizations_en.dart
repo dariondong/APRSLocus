@@ -2019,7 +2019,7 @@ By tapping "Agree and connect" you confirm that you have read, understood, and a
   String get deviceCat => 'Device';
 
   @override
-  String get deviceCatDesc => 'Radio gear · coming soon';
+  String get deviceCatDesc => 'Sources · links · iGate';
 
   @override
   String get deviceClass => 'Device class';
@@ -5355,7 +5355,7 @@ By tapping "Agree and connect" you confirm that you have read, understood, and a
   String get settingsContribCodeOptimization => 'Code optimization';
 
   @override
-  String get settingsDesc => 'Configure station, location & connection';
+  String get settingsDesc => 'Station, location, links & data';
 
   @override
   String get settingsDevSubtitle => 'Debugging and testing';

@@ -1963,7 +1963,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get deviceCat => '设备';
 
   @override
-  String get deviceCatDesc => '电台设备 · 待开放';
+  String get deviceCatDesc => '数据来源 · 链路与网关';
 
   @override
   String get deviceClass => '设备类别';
@@ -5150,7 +5150,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settingsContribCodeOptimization => '代码优化';
 
   @override
-  String get settingsDesc => '配置电台、定位与连接';
+  String get settingsDesc => '电台、定位、链路与数据';
 
   @override
   String get settingsDevSubtitle => '调试与测试';
@@ -9476,7 +9476,7 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   String get deviceCat => '裝置';
 
   @override
-  String get deviceCatDesc => '電台裝置 · 待開放';
+  String get deviceCatDesc => '資料來源 · 鏈路與閘道';
 
   @override
   String get deviceClass => '裝置類別';
@@ -12664,7 +12664,7 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   String get settingsContribCodeOptimization => '程式碼最佳化';
 
   @override
-  String get settingsDesc => '設定電臺、定位與連線';
+  String get settingsDesc => '電台、定位、鏈路與資料';
 
   @override
   String get settingsDevSubtitle => '除錯與測試';
