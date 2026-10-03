@@ -318,6 +318,13 @@ class GarminTrackService {
   final Map<String, DateTime> _seen = {}; // dateTime 字符串 → 时间（用于清理）
   DateTime? _lastForwardAt;
 
+  /// 上一轮抓取还没回来时，跳过这一轮。
+  ///
+  /// 为什么必须挡：定时器**不等**上一次结束（`pollSec` 默认 5 秒，而取数层的超时是
+  /// 15 / 20 秒）—— 链接一断，每一轮都要等到超时才失败，于是同一条死链路上会同时挂着
+  /// 三四个请求，越堆越多（手机上表现为卡顿、甚至被系统回收 —— "链接断开就闪退"）。
+  bool _busy = false;
+
   void _changed() => onChanged?.call();
 
   /// 最近的抓取还新鲜吗（用来决定「手机 GPS 要不要让位」，见 AppState._onFix）。
@@ -368,9 +375,12 @@ class GarminTrackService {
   }
 
   Future<void> _tick() async {
-    if (!on || url.isEmpty) return;
+    if (!on || url.isEmpty || _busy) return;
+    _busy = true;
     try {
       final doc = await fetch.httpGetText(url);
+      // 抓取期间被 stop() 了：别再往下走 —— 否则会拿着已停用的状态回调 UI、转发位置。
+      if (!on) return;
       final points = parseTrackPoints(doc);
       lastFetchAt = DateTime.now();
       failedPolls = 0;
@@ -417,6 +427,8 @@ class GarminTrackService {
       lastFetchAt = DateTime.now();
       lastError = '$e';
       _changed();
+    } finally {
+      _busy = false;
     }
   }
 

@@ -431,12 +431,13 @@ class _BoxDevicePageState extends State<BoxDevicePage> {
         ),
         SettingsRow2(
           s.boxStatLinkMode,
+          // 盒子对 wifi 模式的定义是「只走 WiFi + APRS-IS」；而且另外两档（bt / both）
+          // 都是直接显示模式名，写 `wifi (no BT)` 是在描述"少了什么"，口径也不一致。
           mode == null
               ? '—'
-              : (mode == 'wifi' ? 'wifi (no BT)' : mode),
-          valueColor: mode == null
-              ? C.grey
-              : (mode == 'wifi' ? C.orange : C.green),
+              : (mode == 'wifi' ? 'wifi + APRS-IS' : mode),
+          // wifi 是一等模式（只是蓝牙管理不可用，另有提示），别用橙色当异常标。
+          valueColor: mode == null ? C.grey : C.green,
         ),
         SettingsRow2(
           s.boxStatBeacon,
