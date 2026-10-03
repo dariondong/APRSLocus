@@ -1661,6 +1661,15 @@ class AppLocalizationsEn extends AppLocalizations {
       'Switching the data source disconnects the current link';
 
   @override
+  String get boxConnectAction => 'Connect box';
+
+  @override
+  String get boxLinkUnsupported => 'The box link is not supported on this platform (needs Bluetooth or USB serial)';
+
+  @override
+  String get boxNoDevicePaired => 'No device found - pair the box in system Bluetooth settings first, or plug in a USB serial cable (OTG)';
+
+  @override
   String get icomLanTitle => 'IC-705 Wi-Fi (radio direct)';
 
   @override

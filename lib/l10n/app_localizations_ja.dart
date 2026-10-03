@@ -1614,6 +1614,15 @@ class AppLocalizationsJa extends AppLocalizations {
   String get dataSourceSwitchHint => 'データソースを切り替えると現在の接続は切断されます';
 
   @override
+  String get boxConnectAction => 'ボックスに接続';
+
+  @override
+  String get boxLinkUnsupported => 'このプラットフォームはボックス接続に対応していません（Bluetooth または USB シリアルが必要）';
+
+  @override
+  String get boxNoDevicePaired => 'デバイスが見つかりません。先にシステムの Bluetooth 設定でボックスをペアリングするか、USB シリアルケーブル（OTG）を接続してください';
+
+  @override
   String get icomLanTitle => 'IC-705 Wi-Fi (radio direct)';
 
   @override

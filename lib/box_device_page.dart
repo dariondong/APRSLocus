@@ -145,7 +145,7 @@ class _BoxDevicePageState extends State<BoxDevicePage> {
       case BoxStatus.noDevice:
         return s.tncNotBound;
       case BoxStatus.unsupported:
-        return s.tncSupportedNo;
+        return s.boxLinkUnsupported;
       case BoxStatus.openFailed:
         return s.tncOpenFailedHint;
       case BoxStatus.closed:
@@ -242,7 +242,7 @@ class _BoxDevicePageState extends State<BoxDevicePage> {
               ? C.green
               : (link.connecting ? C.blue : C.slate),
         ),
-        if (!_supported) SettingsHint(s.tncSupportedNo, color: C.orange),
+        if (!_supported) SettingsHint(s.boxLinkUnsupported, color: C.orange),
         Padding(
           padding: const EdgeInsets.fromLTRB(14, 12, 14, 6),
           child: Row(children: [
@@ -274,7 +274,8 @@ class _BoxDevicePageState extends State<BoxDevicePage> {
                       : Icons.link_rounded,
                   size: 16,
                 ),
-                label: Text(link.connected ? s.disconnect : s.tncConnectAction),
+                label: Text(
+                    link.connected ? s.disconnect : s.boxConnectAction),
                 style: FilledButton.styleFrom(
                   backgroundColor: link.connected ? C.red : C.indigo,
                   textStyle: ts(12, c: Colors.white, w: FontWeight.w600),
@@ -344,7 +345,7 @@ class _BoxDevicePageState extends State<BoxDevicePage> {
           Divider(height: 1, color: C.border),
           for (final d in link.devices) _deviceTile(d),
         ] else if (!_scanning)
-          SettingsHint(s.tncNoPaired, icon: Icons.bluetooth_disabled_rounded),
+          SettingsHint(s.boxNoDevicePaired, icon: Icons.bluetooth_disabled_rounded),
       ],
     );
   }

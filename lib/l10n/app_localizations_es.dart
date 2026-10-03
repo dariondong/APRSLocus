@@ -1679,6 +1679,15 @@ class AppLocalizationsEs extends AppLocalizations {
       'Cambiar la fuente de datos desconecta el enlace actual';
 
   @override
+  String get boxConnectAction => 'Conectar caja';
+
+  @override
+  String get boxLinkUnsupported => 'El enlace de la caja no es compatible en esta plataforma (requiere Bluetooth o serie USB)';
+
+  @override
+  String get boxNoDevicePaired => 'No se encontró ningún dispositivo: empareja la caja en los ajustes de Bluetooth del sistema o conecta un cable serie USB (OTG)';
+
+  @override
   String get icomLanTitle => 'IC-705 Wi-Fi (radio direct)';
 
   @override

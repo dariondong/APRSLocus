@@ -2804,6 +2804,23 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'切换数据来源会断开当前连接'**
   String get dataSourceSwitchHint;
+  /// No description provided for @boxConnectAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'连接盒子'**
+  String get boxConnectAction;
+
+  /// No description provided for @boxLinkUnsupported.
+  ///
+  /// In zh, this message translates to:
+  /// **'当前平台暂不支持盒子链路（需要蓝牙或 USB 串口）'**
+  String get boxLinkUnsupported;
+
+  /// No description provided for @boxNoDevicePaired.
+  ///
+  /// In zh, this message translates to:
+  /// **'未找到设备 · 先到系统蓝牙设置里配对盒子，或插上 USB 串口线（OTG）'**
+  String get boxNoDevicePaired;
   /// No description provided for @icomLanTitle.
   ///
   /// In zh, this message translates to:

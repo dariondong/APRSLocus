@@ -1606,6 +1606,15 @@ class AppLocalizationsZh extends AppLocalizations {
   String get dataSourceSwitchHint => '切换数据来源会断开当前连接';
 
   @override
+  String get boxConnectAction => '连接盒子';
+
+  @override
+  String get boxLinkUnsupported => '当前平台暂不支持盒子链路（需要蓝牙或 USB 串口）';
+
+  @override
+  String get boxNoDevicePaired => '未找到设备 · 先到系统蓝牙设置里配对盒子，或插上 USB 串口线（OTG）';
+
+  @override
   String get icomLanTitle => 'IC-705 Wi-Fi（电台直连）';
 
   @override
@@ -9108,6 +9117,15 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get dataSourceSwitchHint => '切換資料來源會中斷目前連線';
+
+  @override
+  String get boxConnectAction => '連接盒子';
+
+  @override
+  String get boxLinkUnsupported => '目前平台暫不支援盒子鏈路（需要藍牙或 USB 序列埠）';
+
+  @override
+  String get boxNoDevicePaired => '找不到裝置 · 先到系統藍牙設定裡配對盒子，或插上 USB 序列埠線（OTG）';
 
   @override
   String get icomLanTitle => 'IC-705 Wi-Fi（電台直連）';

@@ -1662,6 +1662,15 @@ class AppLocalizationsId extends AppLocalizations {
       'Mengganti sumber data akan memutus koneksi saat ini';
 
   @override
+  String get boxConnectAction => 'Sambung kotak';
+
+  @override
+  String get boxLinkUnsupported => 'Tautan kotak tidak didukung di platform ini (perlu Bluetooth atau serial USB)';
+
+  @override
+  String get boxNoDevicePaired => 'Perangkat tidak ditemukan - pasangkan kotak di pengaturan Bluetooth sistem, atau tancapkan kabel serial USB (OTG)';
+
+  @override
   String get icomLanTitle => 'IC-705 Wi-Fi (radio direct)';
 
   @override
