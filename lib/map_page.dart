@@ -713,9 +713,6 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                   child: BackdropGroup(
                     child: Stack(
                       children: [
-                        // 图例（矮横屏隐藏，减少遮挡）
-                        if (!shortWide)
-                          Positioned(top: topBase, right: 60, child: _legend()),
                         // ── 右侧工具列 ──
                         // 此前用 14 / 58 / 102 / 146 四个硬编码 top 各自 Positioned，
                         // 而 `_zoomCtrl()` 含 5 个按钮（放大/缩小/轨迹/热力图/定位，一直排到
@@ -1551,47 +1548,6 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
       ],
     );
   }
-
-  Widget _legend() {
-    return MaterialSurface(
-      radius: 12,
-      blurSigma: C.chipBlur,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-        decoration: BoxDecoration(
-          color: C.chipFill,
-          borderRadius: BorderRadius.circular(12),
-          boxShadow: elev1(),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            _lg(C.green, S.of(context).online),
-            SizedBox(height: 5),
-            _lg(C.blue, S.of(context).moving),
-            SizedBox(height: 5),
-            _lg(C.yellow, S.of(context).stationary),
-            SizedBox(height: 5),
-            _lg(C.grey, S.of(context).offline),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _lg(Color c, String t) => Row(
-    mainAxisSize: MainAxisSize.min,
-    children: [
-      Container(
-        width: 9,
-        height: 9,
-        decoration: BoxDecoration(color: c, shape: BoxShape.circle),
-      ),
-      SizedBox(width: 6),
-      Text(t, style: ts(10, c: C.slate)),
-    ],
-  );
 
   /// 右侧工具列的单颗按钮（统一 38×38 / 圆角 12 / 柔和投影）。
   /// 抽出来是为了让工具列能写成单个 Column 顺序排布，
