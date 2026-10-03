@@ -562,6 +562,16 @@ class _StationsPageState extends State<StationsPage> {
         children: [
           chip(S.of(context).all, _nothingFiltered, C.slate, _clearAll),
           const SizedBox(width: 4),
+          // 只看收藏（用户要求）：与其它条件并列生效
+          chip(
+            S.of(context).favoriteStations,
+            _f.favoriteOnly,
+            C.orange,
+            () => _setFilter(_f.copyWith(favoriteOnly: !_f.favoriteOnly)),
+          ),
+          const SizedBox(width: 8),
+          _divider(),
+          const SizedBox(width: 8),
           status(S.of(context).online, 'online', C.green),
           const SizedBox(width: 4),
           status(S.of(context).moving, 'moving', C.blue),
@@ -985,6 +995,16 @@ class _StationsPageState extends State<StationsPage> {
                   ),
                 ),
                 SizedBox(width: 6),
+                // 「收藏」视图下给一颗实心星标：**点一下即取消收藏**（就地清理，
+                // 不用进详情、也不用记住另一个"管理"入口）。用 IconButton 是为了吸收
+                // 点击 —— 不会冒泡去打开详情面板（与下面「在地图显示」同一手法）。
+                if (_f.favoriteOnly)
+                  IconButton(
+                    onPressed: () => st.toggleFavorite(s.call),
+                    icon: Icon(Icons.star_rounded, color: C.orange, size: 20),
+                    tooltip: S.of(context).unfavorite,
+                    visualDensity: VisualDensity.compact,
+                  ),
                 // 在地图显示：直接给 IconButton 有效 onPressed（IconButton 会吸收点击，
                 // 不会再冒泡到外层 InkWell 打开详情面板）
                 IconButton(

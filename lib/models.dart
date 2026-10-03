@@ -240,6 +240,8 @@ class StationFilter {
   final String app; // all | aprslocus
   final String dev; // all | 设备类别 key
   final String model; // all | 设备显示名
+  /// 只看收藏台站（"我想盯着的那些人"）。与其它条件并列生效。
+  final bool favoriteOnly;
 
   const StationFilter({
     this.status = 'all',
@@ -247,6 +249,7 @@ class StationFilter {
     this.app = 'all',
     this.dev = 'all',
     this.model = 'all',
+    this.favoriteOnly = false,
   });
 
   /// 无任何生效筛选
@@ -255,10 +258,12 @@ class StationFilter {
       type == 'all' &&
       app == 'all' &&
       dev == 'all' &&
-      model == 'all';
+      model == 'all' &&
+      !favoriteOnly;
 
   /// 缓存键：任一条件变化即失效
-  String get key => '$status|$type|$app|$dev|$model';
+  String get key =>
+      '$status|$type|$app|$dev|$model|fav${favoriteOnly ? 1 : 0}';
 
   StationFilter copyWith({
     String? status,
@@ -266,6 +271,7 @@ class StationFilter {
     String? app,
     String? dev,
     String? model,
+    bool? favoriteOnly,
   }) =>
       StationFilter(
         status: status ?? this.status,
@@ -273,6 +279,7 @@ class StationFilter {
         app: app ?? this.app,
         dev: dev ?? this.dev,
         model: model ?? this.model,
+        favoriteOnly: favoriteOnly ?? this.favoriteOnly,
       );
 
   /// 该台站是否命中当前筛选
@@ -299,6 +306,8 @@ class StationFilter {
           (type == 'wx' && tg == TypeGroup.wx);
       if (!ok) return false;
     }
+    // 收藏：只看自己收藏过的（用户要求）
+    if (favoriteOnly && !s.favorite) return false;
     if (dev != 'all' && s.deviceClassKey != dev) return false;
     if (model != 'all' && (s.deviceName ?? '') != model) return false;
     // 同款软件（APRSlocus）：复用 Station 上的单一判定，
