@@ -62,6 +62,17 @@ class _SportRankPageState extends State<SportRankPage> {
     }
 
     final ranked = st.sportRank();
+    // 自己也要占**列表里的一个名次**（用户要求）。
+    //
+    // 榜上每个数字都来自别人主动上报的 STEPS，而自己的步数是本机计步传感器给的 ——
+    // 所以自己永远不在 ranked 里，以前只在榜单上面挂一张卡。这里按今日步数算出名次，
+    // 下面渲染时插进列表（沿用既有的「· 我」标记）。
+    final mySteps = st.stepsToday;
+    final iAmListed = ranked.any((e) => e.$1.call == st.myFullCall);
+    final myRank = (mySteps <= 0 || iAmListed)
+        ? -1
+        : 1 + ranked.where((e) => e.$2 > mySteps).length;
+
     // 没带步数的 APRSlocus 台站：只列出来（不排），让用户知道自己并不孤单
     final noSteps = st.stations
         .where((x) =>
@@ -96,9 +107,16 @@ class _SportRankPageState extends State<SportRankPage> {
                 child: Text(s.sportRankEmpty,
                     style: ts(12, c: C.grey, h: 1.5)),
               )
-            else
-              for (var i = 0; i < ranked.length; i++)
+            else ...[
+              for (var i = 0; i < ranked.length; i++) ...[
+                if (myRank == i + 1)
+                  _myRankTile(context, st, myRank, mySteps),
                 _rankTile(context, st, i + 1, ranked[i].$1, ranked[i].$2),
+              ],
+              // 自己排在最后一名时（步数最少），补在末尾
+              if (myRank == ranked.length + 1)
+                _myRankTile(context, st, myRank, mySteps),
+            ],
           ],
         ),
         if (noSteps.isNotEmpty) ...[
@@ -270,6 +288,35 @@ class _SportRankPageState extends State<SportRankPage> {
       color: medal,
       trailing: s.stepsCount('$steps'),
       onTap: () => _open(context, st, x),
+    );
+  }
+
+  /// 榜单里的「我」那一行。
+  ///
+  /// 与别人的行只差两点：副标题写「今日步数」（本机计步，没有"多久前收到"这回事）、
+  /// 不可点开（自己不需要跳台站详情）。
+  Widget _myRankTile(BuildContext context, AppState st, int rank, int steps) {
+    final s = S.of(context);
+    final medal = switch (rank) {
+      1 => const Color(0xFFC9A227),
+      2 => const Color(0xFF9CA3AF),
+      3 => const Color(0xFFB45309),
+      _ => C.green,
+    };
+    return SettingsNavRow(
+      title: '$rank. ${st.myFullCall} · ${s.sportRankMe}',
+      subtitle: s.stepsTodayLabel,
+      icon: rank <= 3 ? Icons.emoji_events_rounded : Icons.person_rounded,
+      color: medal,
+      trailing: s.stepsCount('$steps'),
+      // 自己这一行不跳台站详情（没有对应的 Station）；点一下说明步数从哪来。
+      onTap: () {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(s.stepsHint, style: ts(12)),
+          duration: const Duration(seconds: 3),
+          behavior: SnackBarBehavior.floating,
+        ));
+      },
     );
   }
 
