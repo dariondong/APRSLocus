@@ -2,7 +2,7 @@
 
 ## [2.0.19] - 2026-10-03
 
-### 地图不再卡（三处根因）+ 收藏/PHG/排行榜等一批改进
+### 地图不再卡（三处根因）+ 收藏筛选与排行榜等一批改进
 
 **性能**
 
@@ -28,8 +28,6 @@
   （没有收藏时不留空按钮，直接给"怎么收藏"的引导）；
 - **台站列表加「收藏」筛选**：与该页其它筛选条件并列生效；**在收藏视图下，每行右侧一颗
   星标，点一下即取消收藏**（就地管理，不用进详情、也不用找另一个入口）；
-- **PHG 解析**（功率 / 天线高度 / 增益 / 方向）：以前只会**编码**（自己发），别人的 PHG
-  收到了没人看。现在台站详情里并排加一格（`50W · 6m · 6dB · 360°`），列表行只报功率；
 - **运动排行榜：自己排进列表**（原来只在榜单上面挂一张卡）。榜上每个数字都来自别人上报的
   `STEPS`，而自己的步数是本机计步传感器给的 —— 所以以前从来不在榜里。
 
@@ -50,7 +48,7 @@
 
 ## [2.0.19] - 2026-10-03 (English)
 
-### The map no longer stutters (three root causes) + favourites, PHG, leaderboard and more
+### The map no longer stutters (three root causes) + favourites, leaderboard and more
 
 **Performance**
 
@@ -81,9 +79,6 @@
   of typing a callsign (with guidance instead of an empty button when you have none);
 - **A "Favourites" filter in the station list**, combinable with the other filters - and in
   that view each row gets a star on the right that **un-favourites in place**;
-- **PHG parsing** (power / antenna height / gain / direction): the app only ever *encoded* it
-  before, so received PHG went unread. The station detail now shows it as one more metric
-  (`50W - 6m - 6dB - 360 deg`), and list rows show the power;
 - **Activity leaderboard: you are now ranked in the list** (you used to be a card above it).
   Every number there comes from someone's `STEPS`, while your own steps come from the phone's
   step sensor - which is why you were never in it.

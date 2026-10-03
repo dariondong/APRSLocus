@@ -450,25 +450,6 @@ class AprsPhg {
   static int heightStepMeters(int code) =>
       (heightStepFeet(code) * 0.3048).round();
 
-  /// 解析报文注释里的 PHG 数据扩展（`PHGphgd`）。
-  ///
-  /// 与 [encode] **严格对称**：功率查 [powerStepWatts]、高度查 [heightStepMeters]、
-  /// 增益就是那一位（dB）、方向 0 = 全向（用 360° 表示，不为四个方位引入六语文案）、
-  /// 1…8 依次 N / NE / E / SE / S / SW / W / NW。
-  ///
-  /// 找不到、或位数不够就返回 null —— **不猜**（宁可没有，也不显示一个假的功率）。
-  static ({int watts, int heightM, int gainDb, String dir})? decode(String text) {
-    final m = RegExp(r'PHG([0-9])([0-9])([0-9])([0-9])').firstMatch(text);
-    if (m == null) return null;
-    const dirs = ['360°', 'N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'];
-    final d = int.parse(m.group(4)!);
-    return (
-      watts: powerStepWatts(int.parse(m.group(1)!)),
-      heightM: heightStepMeters(int.parse(m.group(2)!)),
-      gainDb: int.parse(m.group(3)!),
-      dir: d < dirs.length ? dirs[d] : '?',
-    );
-  }
 
   /// 功率码位 → 展示用瓦数
   static int powerStepWatts(int code) => powerSteps[code.clamp(0, 9)];

@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'theme.dart';
 import 'guide.dart';
 import 'models.dart';
-import 'services.dart';
 import 'state.dart';
 import 'aprs_device.dart';
 import 'widgets.dart';
@@ -966,9 +965,6 @@ class _StationsPageState extends State<StationsPage> {
                         children: [
                           _mini(Icons.speed_rounded, s.speedStr),
                           _mini(Icons.height_rounded, s.altStr),
-                          // PHG 的功率（完整四项在详情里；列表位置有限，只报功率）
-                          if (AprsPhg.decode(s.comment ?? '') case final phg?)
-                            _mini(Icons.bolt_rounded, '${phg.watts}W'),
                           _mini(Icons.grid_4x4_rounded, s.grid),
                           // “X秒前”随每秒 tick 单独刷新，避免整页每秒重建
                           ValueListenableBuilder<int>(
