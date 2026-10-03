@@ -396,11 +396,11 @@ class _PacketsPageState extends State<PacketsPage> {
       itemBuilder: (_, i) {
         final p = list[i];
         final tc = _tc(p.type);
-        return TweenAnimationBuilder<double>(
-          tween: Tween(begin: 0, end: 1),
-          duration: Duration(milliseconds: 220 + i * 15),
-          curve: Curves.easeOutCubic,
-          builder: (_, v, child) => Opacity(opacity: v, child: child),
+        // 淡入**只在元素创建时播一次**（见 _FadeInOnce）。原写法把 TweenAnimationBuilder
+        // 放在 itemBuilder 里、且时长随行号无限增长（第 1000 行要 15 秒），ListView 每次
+        // 重建 / 回收元素都会重播 —— 一屏行逐帧重绘，正是这个页面卡顿的主因。
+        return _FadeInOnce(
+          delayMs: (i % 8) * 18,
           child: SoftCard(
             padding: const EdgeInsets.all(12),
             child: Material(
@@ -562,4 +562,38 @@ class _PacketsPageState extends State<PacketsPage> {
 
   String _fts(DateTime t) =>
       '${t.hour.toString().padLeft(2, '0')}:${t.minute.toString().padLeft(2, '0')}:${t.second.toString().padLeft(2, '0')}';
+}
+
+/// 让子树**只淡入一次**（元素创建时），而不是每次 rebuild 重播。
+///
+/// 为什么不用 TweenAnimationBuilder：它在 build 里被调用一次就重启动画一次，
+/// 而 ListView 的元素在滚动中会反复 build / 回收 —— 于是整屏行一直在逐帧重绘。
+class _FadeInOnce extends StatefulWidget {
+  final Widget child;
+  final int delayMs;
+  const _FadeInOnce({required this.child, this.delayMs = 0});
+
+  @override
+  State<_FadeInOnce> createState() => _FadeInOnceState();
+}
+
+class _FadeInOnceState extends State<_FadeInOnce> {
+  bool _shown = false;
+
+  @override
+  void initState() {
+    super.initState();
+    // 交错一点点，让新到的一批报文是"刷出来"的；但封顶，不随行号增长。
+    Future<void>.delayed(Duration(milliseconds: widget.delayMs), () {
+      if (mounted) setState(() => _shown = true);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) => AnimatedOpacity(
+        opacity: _shown ? 1 : 0,
+        duration: const Duration(milliseconds: 180),
+        curve: Curves.easeOut,
+        child: widget.child,
+      );
 }
