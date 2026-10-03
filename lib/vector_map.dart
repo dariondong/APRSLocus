@@ -355,9 +355,14 @@ class _VectorMapViewState extends State<VectorMapView> {
     );
   }
 
-  Marker _stationMarker(Station s) {
+  /// 相机中心（上次建 Marker 时）——与 stationsVersion 一起决定要不要重建。
+  LatLng? _lastMarkerCenter;
+
+  Marker _stationMarker(Station s, {required bool labels}) {
     final selected = s.call == widget.selectedCall;
+    // key = 呼号：列表变化时让 Flutter 按**身份**复用元素，而不是按位置把后面全部重建。
     return Marker(
+      key: ValueKey(s.call),
       point: LatLng(s.lat, s.lng),
       width: 70,
       height: 52,
@@ -380,25 +385,26 @@ class _VectorMapViewState extends State<VectorMapView> {
                 ),
               ),
             ),
-            // 呼号标签
-            Container(
-              margin: const EdgeInsets.only(top: -22),
-              padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
-              decoration: BoxDecoration(
-                color: Colors.white.withValues(alpha: 0.9),
-                borderRadius: BorderRadius.circular(6),
-                border: Border.all(color: s.color.withValues(alpha: 0.4)),
+            // 呼号标签（台站密 / 缩得小时不画）
+            if (labels)
+              Container(
+                margin: const EdgeInsets.only(top: -22),
+                padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.9),
+                  borderRadius: BorderRadius.circular(6),
+                  border: Border.all(color: s.color.withValues(alpha: 0.4)),
+                ),
+                child: Text(
+                  s.call,
+                  style: ts(9,
+                      c: s.color,
+                      w: FontWeight.w700,
+                      h: 1.0),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
               ),
-              child: Text(
-                s.call,
-                style: ts(9,
-                    c: s.color,
-                    w: FontWeight.w700,
-                    h: 1.0),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
           ],
         ),
       ),
@@ -410,22 +416,50 @@ class _VectorMapViewState extends State<VectorMapView> {
     final zoom = _mapReady ? _map.camera.zoom : 11.0;
     // 台站版本 + 缩放级别 + 聚合开关未变时复用 Marker，
     // 避免 MapPage 每秒 tick 重建时反复创建全部 Marker
+    // 相机中心也要参与判断：加了视口裁剪之后，**拖动**同样会改变"该建哪些 Marker"，
+    // 只盯版本号/缩放会让裁剪结果僵在原地。
+    final center = _mapReady ? _map.camera.center : null;
+    final moved = center != null &&
+        (_lastMarkerCenter == null ||
+            (center.latitude - _lastMarkerCenter!.latitude).abs() > 0.0005 ||
+            (center.longitude - _lastMarkerCenter!.longitude).abs() > 0.0005);
     if (widget.stationsVersion == _lastMarkersVersion &&
         (zoom - _lastMarkerZoom).abs() < 0.5 &&
         widget.selectedCall == _lastSelectedCall &&
+        !moved &&
         _markersCache != null) {
       return _markersCache!;
     }
+    _lastMarkerCenter = center;
     _lastMarkersVersion = widget.stationsVersion;
     _lastMarkerZoom = zoom;
     _lastSelectedCall = widget.selectedCall;
-    final result = widget.stations
+    final bounds = _mapReady ? _map.camera.visibleBounds : null;
+    final vis = widget.stations
         .where((s) =>
             s.call != widget.myCall && s.lat != 0 && s.lng != 0)
-        .map((s) => _stationMarker(s))
+        .where((s) => _inBounds(s, bounds))
         .toList();
+    // 台站密的时候（或缩得很小）不画呼号标签：文字排版是每个标记最贵的一步。
+    final labels = vis.length <= 60 || zoom >= 13;
+    final result = vis.map((s) => _stationMarker(s, labels: labels)).toList();
     _markersCache = result;
     return result;
+  }
+
+  /// 该台站是否落在视口内（含约 20% 留白）。
+  ///
+  /// 为什么必须有：以前是把**全部**台站塞进 MarkerLayer —— 几千个 Marker widget
+  /// 每帧都要布局与绘制；而 stationsVersion 每个报文都会 +1，于是每个报文都会把全部
+  /// Marker 重建一遍。台站一多就卡死。
+  bool _inBounds(Station s, LatLngBounds? b) {
+    if (b == null) return true;
+    final padLat = (b.north - b.south) * 0.2 + 0.002;
+    final padLng = (b.east - b.west) * 0.2 + 0.002;
+    return s.lat >= b.south - padLat &&
+        s.lat <= b.north + padLat &&
+        s.lng >= b.west - padLng &&
+        s.lng <= b.east + padLng;
   }
 
 

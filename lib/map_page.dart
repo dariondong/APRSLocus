@@ -890,6 +890,8 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
 
   List<Widget> _buildMarkers(Size size) {
     final stations = _visible;
+    // 台站密的时候（或缩得很小）不画呼号标签：文字排版是每个标记最贵的一步。
+    final showLabels = stations.length <= 60 || _zoom >= 13;
     // 先滤掉屏幕外台站（含少量留白），避免为不可见台站创建 widget
     return stations.where((s) {
       final p = _toScreen(s.lat, s.lng, size);
@@ -901,7 +903,9 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
       final pulsing = s.effectiveStatus == St.moving || sel;
       final dx = pos.dx - 28;
       final dy = pos.dy - 28;
+      // key = 呼号：列表变化时按身份复用元素，而不是整段重建。
       return Positioned(
+        key: ValueKey(s.call),
         left: dx,
         top: dy,
         child: GestureDetector(
@@ -934,8 +938,8 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                       ),
                     ),
                   ),
-                  // 常驻呼号标签（仅未选中显示，避免与选中信息条重叠）
-                  if (!sel)
+                  // 常驻呼号标签（仅未选中、且台站不密时显示）
+                  if (!sel && showLabels)
                     Positioned(
                       left: 0,
                       right: 0,
