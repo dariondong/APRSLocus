@@ -4884,8 +4884,10 @@ class AppState extends ChangeNotifier {
       // 模拟位置不读 GPS，但**仍要启动前台服务保活**：
       // 否则切到后台后 APRS-IS 连接会被冻结、信标定时器停摆。
       // 该调用不需要定位权限（Android 侧 keepalive 模式已豁免）。
-      await loc.startKeepAlive();
-      locStatus = '模拟位置 · 后台保活';
+      // 非 Android 平台没有这个服务，返回 false —— 状态文案要如实反映，
+      // 不能在没有服务时说"后台保活"。
+      final alive = await loc.startKeepAlive();
+      locStatus = alive ? '模拟位置 · 后台保活' : '模拟位置';
       _notify();
       return true;
     }
