@@ -113,7 +113,8 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
 
   /// 低缩放热力图：瓦片自绘模式 + 开关开启 + zoom 足够低 + 台站够多
   bool get _showHeatmap =>
-      !_usePluginMap &&
+      // 矢量地图也支持（见 VectorMapView.showHeatmap）—— 以前这里写着 !_usePluginMap，
+      // 于是"矢量地图热力图失效"。
       _heatEnabled &&
       _zoom <= _heatZoom &&
       // 20 → 10：城市里同时可见 20 个台站的场景太少，门槛跟 zoom 一起放宽
@@ -493,6 +494,8 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                             styleUrl: vectorStyleUrlFor(_currentMapType.name),
                             stationsVersion: widget.state.stationsVersion,
                             myCall: widget.state.myFullCall,
+      showHeatmap: _showHeatmap,
+      heatLevel: widget.state.heatLevel,
                             myHasFix: widget.state.myHasFix,
                             myLat: widget.state.myLat,
                             myLng: widget.state.myLng,
@@ -604,6 +607,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                       painter: _HeatmapPainter(
                         stations: _visible,
                         toScreen: (lat, lng) => _toScreen(lat, lng, size),
+                        level: widget.state.heatLevel,
                       ),
                     ),
                   ),
@@ -909,7 +913,9 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
           onTapDown: (_) => setState(() => _selected = s),
           onDoubleTap: () => _openDetail(s),
           onTap: () => _animateToStation(s),
-          behavior: HitTestBehavior.opaque,
+          // **translucent**：标记与它身后的地图都收到这个指针，由手势竞技场裁决。
+          // 用 opaque 会把地图的手势挡掉 —— 手指正好落在台站上时就没法缩放/拖动了。
+          behavior: HitTestBehavior.translucent,
           child: RepaintBoundary(
             child: SizedBox(
               width: 56,
@@ -2585,13 +2591,17 @@ class _MyAccuracyPainter extends CustomPainter {
 class _HeatmapPainter extends CustomPainter {
   final List<Station> stations;
   final Offset Function(double lat, double lng) toScreen;
-  _HeatmapPainter({required this.stations, required this.toScreen});
+  _HeatmapPainter({required this.stations, required this.toScreen, this.level = 1});
+
+  /// 热力图档位 0/1/2（弱/中/强）：只缩放网格单元的半径，密度统计本身不变。
+  final int level;
+  double get _levelScale => level == 0 ? 0.7 : (level >= 2 ? 1.5 : 1.0);
 
   @override
   void paint(Canvas canvas, Size size) {
     if (stations.isEmpty || size.isEmpty) return;
     // 网格单元（px）：统计每个格子内台站数作为密度
-    const cell = 28.0;
+    final cell = 28.0 * _levelScale;
     final cols = (size.width / cell).ceil() + 1;
     final rows = (size.height / cell).ceil() + 1;
     final grid = List<int>.filled(cols * rows, 0);

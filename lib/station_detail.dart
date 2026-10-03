@@ -5,6 +5,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'theme.dart';
 import 'material.dart';
 import 'models.dart';
+import 'services.dart';
 import 'state.dart';
 import 'widgets.dart';
 import 'coord.dart';
@@ -531,6 +532,28 @@ class _StationDetailState extends State<StationDetail> {
                             ),
                           ],
                         ),
+                        // PHG（功率 / 天线高度 / 增益 / 方向）：报文里带了才出现。
+                        // 放成**独立一行**而不是塞进上面三列 —— 四列会挤坏指标行的节奏
+                        // （上一版就是那样，被说"不好看"）。
+                        if (AprsPhg.decode(s.comment ?? '') case final phg?) ...[
+                          const SizedBox(height: 10),
+                          Row(
+                            children: [
+                              Icon(Icons.bolt_rounded,
+                                  size: 14, color: C.orange),
+                              const SizedBox(width: 6),
+                              Flexible(
+                                child: Text(
+                                  'PHG  ${phg.watts}W · ${phg.heightM}m · '
+                                  '${phg.gainDb}dB · ${phg.dir}',
+                                  style: ts(11, c: C.slate),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
                         const SizedBox(height: 12),
                         // 快捷操作（Wrap 自动换行，窄屏不溢出）
                         Wrap(

@@ -1614,6 +1614,18 @@ class AppLocalizationsJa extends AppLocalizations {
   String get dataSourceSwitchHint => 'データソースを切り替えると現在の接続は切断されます';
 
   @override
+  String get heatLevel => 'ヒートマップの強さ';
+
+  @override
+  String get heatLevelLow => '弱';
+
+  @override
+  String get heatLevelMid => '中';
+
+  @override
+  String get heatLevelHigh => '強';
+
+  @override
   String get startFromFavorites => 'お気に入りの局から始める';
 
   @override

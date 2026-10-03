@@ -205,6 +205,39 @@ CARDS = [
 # 只列「重点版本」：中间几十个纯修 bug 的版本归纳进文字说明，完整记录指向 Releases。
 CL = [
     {
+        'ver': 'v2.0.20', 'date': '2026-10-03',
+        'items': [
+            ('fix',
+             T('**手指落在台站上时地图无法缩放/拖动**：台站标记的手势会把地图的手势挡掉'
+               '（`HitTestBehavior.opaque`），改成 `translucent` 后标记与地图都收到指针 —— '
+               '点 = 选中台站，拖动/捏合 = 地图；栅格与矢量两套地图都改了。'
+               '**矢量地图的热力图失效**也修了：原来被 `!_usePluginMap` 整个排除，'
+               '现在矢量地图也画热力（用 flutter_map 相机投影）。',
+               '**手指落在臺站上時地圖無法縮放/拖曳**：臺站標記的手勢會把地圖的手勢擋掉'
+               '（`HitTestBehavior.opaque`），改成 `translucent` 後標記與地圖都收到指標 —— '
+               '點 = 選中臺站，拖曳/捏合 = 地圖；點陣與向量兩套地圖都改了。'
+               '**向量地圖的熱力圖失效**也修了：原本被 `!_usePluginMap` 整個排除，'
+               '現在向量地圖也畫熱力（用 flutter_map 相機投影）。',
+               '**Map cannot be zoomed/panned when a finger lands on a station**: the marker '
+               'swallowed the map gestures (`HitTestBehavior.opaque`); with `translucent` both '
+               'receive the pointer - tap selects the station, drag/pinch moves the map; applied '
+               'to both the raster and vector map. **The vector-map heatmap never worked** '
+               'either (it was excluded by `!_usePluginMap`); the vector map draws it now, '
+               'projected with the flutter_map camera.')),
+            ('new',
+             T('**热力图档位**（设置 → 显示 → 地图）：弱 / 中 / 强，调整热力光斑的大小与浓度，'
+               '两套地图共用同一个值。**台站详情重新显示 PHG**（功率 / 天线高度 / 增益 / 方向），'
+               '这次是独立一行、不再挤进三列指标。',
+               '**熱力圖檔位**（設定 → 顯示 → 地圖）：弱 / 中 / 強，調整熱力光斑的大小與濃度，'
+               '兩套地圖共用同一個值。**臺站詳情重新顯示 PHG**（功率 / 天線高度 / 增益 / 方向），'
+               '這次是獨立一行、不再擠進三欄指標。',
+               '**Heatmap level** (Settings -> Display -> Map): Light / Medium / Strong, scaling '
+               'the heat blobs size and density, shared by both maps. **PHG is back in the '
+               'station detail** (power / antenna height / gain / direction), now on its own '
+               'line instead of crammed into the three metrics.')),
+        ],
+    },
+    {
         'ver': 'v2.0.19', 'date': '2026-10-03',
         'items': [
             ('fix',
@@ -240,7 +273,7 @@ CL = [
                '**New**: tapping the connection banner on the settings home page opens a '
                'floating link-method panel (same card as the Connection -> Device page); '
                '"Start from a favourite station" under New session; a Favourites filter in the '
-               '(power / height / gain / direction); and **you now appear in the activity '
+               'station list (tap a row star to un-favourite); and **you now appear in the activity '
                'leaderboard**. Also fixed: Garmin link-drop request pile-up (stutter/crash '
                'risk), the box calling itself a TNC, the stale "coming soon" on the settings '
                'home page, and the map legend was removed.')),

@@ -1606,6 +1606,18 @@ class AppLocalizationsZh extends AppLocalizations {
   String get dataSourceSwitchHint => '切换数据来源会断开当前连接';
 
   @override
+  String get heatLevel => '热力图档位';
+
+  @override
+  String get heatLevelLow => '弱';
+
+  @override
+  String get heatLevelMid => '中';
+
+  @override
+  String get heatLevelHigh => '强';
+
+  @override
   String get startFromFavorites => '从收藏台站开始';
 
   @override
@@ -9120,6 +9132,18 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get dataSourceSwitchHint => '切換資料來源會中斷目前連線';
+
+  @override
+  String get heatLevel => '熱力圖檔位';
+
+  @override
+  String get heatLevelLow => '弱';
+
+  @override
+  String get heatLevelMid => '中';
+
+  @override
+  String get heatLevelHigh => '強';
 
   @override
   String get startFromFavorites => '從收藏臺站開始';

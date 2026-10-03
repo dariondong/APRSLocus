@@ -1661,6 +1661,18 @@ class AppLocalizationsEn extends AppLocalizations {
       'Switching the data source disconnects the current link';
 
   @override
+  String get heatLevel => 'Heatmap level';
+
+  @override
+  String get heatLevelLow => 'Light';
+
+  @override
+  String get heatLevelMid => 'Medium';
+
+  @override
+  String get heatLevelHigh => 'Strong';
+
+  @override
   String get startFromFavorites => 'Start from a favourite station';
 
   @override

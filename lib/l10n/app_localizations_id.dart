@@ -1662,6 +1662,18 @@ class AppLocalizationsId extends AppLocalizations {
       'Mengganti sumber data akan memutus koneksi saat ini';
 
   @override
+  String get heatLevel => 'Tingkat peta panas';
+
+  @override
+  String get heatLevelLow => 'Ringan';
+
+  @override
+  String get heatLevelMid => 'Sedang';
+
+  @override
+  String get heatLevelHigh => 'Kuat';
+
+  @override
   String get startFromFavorites => 'Mulai dari stasiun favorit';
 
   @override

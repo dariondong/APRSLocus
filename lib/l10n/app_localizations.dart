@@ -2804,6 +2804,29 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'切换数据来源会断开当前连接'**
   String get dataSourceSwitchHint;
+  /// No description provided for @heatLevel.
+  ///
+  /// In zh, this message translates to:
+  /// **'热力图档位'**
+  String get heatLevel;
+
+  /// No description provided for @heatLevelLow.
+  ///
+  /// In zh, this message translates to:
+  /// **'弱'**
+  String get heatLevelLow;
+
+  /// No description provided for @heatLevelMid.
+  ///
+  /// In zh, this message translates to:
+  /// **'中'**
+  String get heatLevelMid;
+
+  /// No description provided for @heatLevelHigh.
+  ///
+  /// In zh, this message translates to:
+  /// **'强'**
+  String get heatLevelHigh;
   /// No description provided for @startFromFavorites.
   ///
   /// In zh, this message translates to:

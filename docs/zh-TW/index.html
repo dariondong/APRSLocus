@@ -573,6 +573,16 @@
 <!-- site-sync:changelog -->
     <div class="cl-version reveal">
       <div class="cl-head">
+        <span class="cl-tag">v2.0.20</span>
+        <span class="cl-date">2026-10-03</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot fix"></span>**手指落在臺站上時地圖無法縮放/拖曳**：臺站標記的手勢會把地圖的手勢擋掉（`HitTestBehavior.opaque`），改成 `translucent` 後標記與地圖都收到指標 —— 點 = 選中臺站，拖曳/捏合 = 地圖；點陣與向量兩套地圖都改了。**向量地圖的熱力圖失效**也修了：原本被 `!_usePluginMap` 整個排除，現在向量地圖也畫熱力（用 flutter_map 相機投影）。</div>
+        <div class="cl-item"><span class="cl-dot new"></span>**熱力圖檔位**（設定 → 顯示 → 地圖）：弱 / 中 / 強，調整熱力光斑的大小與濃度，兩套地圖共用同一個值。**臺站詳情重新顯示 PHG**（功率 / 天線高度 / 增益 / 方向），這次是獨立一行、不再擠進三欄指標。</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
         <span class="cl-tag">v2.0.19</span>
         <span class="cl-date">2026-10-03</span>
       </div>

@@ -1,5 +1,51 @@
 # 更新日志
 
+## [2.0.20] - 2026-10-03
+
+### 修复地图手势与矢量热力图 + 热力图档位
+
+**修复**
+
+- **手指正好落在台站上时，地图无法缩放/拖动**：台站标记的手势用了 `HitTestBehavior.opaque`，
+  会把**它身后**的地图手势挡掉，而地图的手势处理正在标记层之后。改成 `translucent`：标记与
+  地图都收到这个指针，由手势竞技场裁决（点 = 选中台站，拖动/捏合 = 地图）。栅格与矢量两套
+  地图都改了；
+- **矢量地图的热力图完全失效**：`_showHeatmap` 的第一行就是 `!_usePluginMap` —— 矢量地图被
+  直接排除在外。现在矢量地图也画热力图（用 flutter_map 自己的相机投影，尺寸与平移和瓦片一致），
+  并去掉了那行排除。
+
+**新增**
+
+- **热力图档位（设置 → 显示 → 地图）**：弱 / 中 / 强，调整热力光斑的大小与浓度，栅格与矢量
+  两套地图共用同一个值（开关仍在地图工具栏上）；
+- **台站详情：PHG 重新加回**（功率 / 天线高度 / 增益 / 方向）。这次放成**独立一行**，不再硬塞
+  进三列指标、也不在列表里孤立地报一个功率 —— 报文里带了 `PHG` 才出现。
+
+## [2.0.20] - 2026-10-03 (English)
+
+### Map gestures & vector heatmap fixes + heatmap level
+
+**Fixed**
+
+- **The map can't be zoomed/panned when a finger lands on a station**: the station marker used
+  `HitTestBehavior.opaque`, which swallowed the map's gestures *behind* it - and the map's
+  gesture handling sits after the marker layer. Switched to `translucent`: both the marker and
+  the map receive the pointer and the gesture arena decides (tap = select station, drag/pinch =
+  map). Applied to both the raster and the vector map;
+- **The heatmap never worked on the vector map**: the first line of `_showHeatmap` was
+  `!_usePluginMap`, excluding the vector map outright. The vector map now draws the heatmap too
+  (projected with flutter_map's own camera, so size and panning match the tiles), and that
+  exclusion is gone.
+
+**Added**
+
+- **Heatmap level (Settings -> Display -> Map)**: Light / Medium / Strong, scaling the heat
+  blobs' size and density; shared by both the raster and the vector map (the on/off toggle
+  stays in the map toolbar);
+- **Station detail: PHG is back** (power / antenna height / gain / direction). This time it sits
+  on its **own line** instead of being crammed into the three metrics or a lone power figure in
+  the list - it only appears when the packet carries `PHG`.
+
 ## [2.0.19] - 2026-10-03
 
 ### 地图不再卡（三处根因）+ 收藏筛选与排行榜等一批改进

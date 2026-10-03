@@ -3236,6 +3236,7 @@ class _DisplaySettingsPageState extends State<DisplaySettingsPage> {
             children: [
               _mapTypeSelector(),
               SettingsHint(S.of(context).mapTypeDesc),
+              _heatLevelSelector(st),
               SettingsNavRow(
                 title: S.of(context).offlineMap,
                 subtitle: S.of(context).offlineMapDesc,
@@ -3670,6 +3671,58 @@ class _DisplaySettingsPageState extends State<DisplaySettingsPage> {
   }
 
   /// 界面缩放选择
+  /// 热力图档位：弱 / 中 / 强 —— 决定台站热力光斑的大小与浓度。
+  /// 两套地图（栅格 / 矢量）共用同一个值；开关仍在**地图工具栏**上。
+  Widget _heatLevelSelector(AppState st) {
+    final labels = [
+      S.of(context).heatLevelLow,
+      S.of(context).heatLevelMid,
+      S.of(context).heatLevelHigh,
+    ];
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+      decoration: BoxDecoration(
+          border: Border(bottom: BorderSide(color: C.border, width: 0.4))),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(S.of(context).heatLevel, style: ts(12, c: C.slate)),
+          const SizedBox(height: 8),
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              for (var i = 0; i < labels.length; i++)
+                GestureDetector(
+                  onTap: () => st.setHeatLevel(i),
+                  child: Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+                    decoration: BoxDecoration(
+                      color: st.heatLevel == i
+                          ? C.orange.withValues(alpha: 0.12)
+                          : C.bgSoft,
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(
+                        color: st.heatLevel == i ? C.orange : C.border,
+                        width: st.heatLevel == i ? 1.5 : 1,
+                      ),
+                    ),
+                    child: Text(labels[i],
+                        style: ts(12,
+                            c: st.heatLevel == i ? C.orange : C.slate,
+                            w: st.heatLevel == i
+                                ? FontWeight.w700
+                                : FontWeight.w500)),
+                  ),
+                ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _uiScaleSelector(AppState st) {
     const presets = <double>[0.9, 1.0, 1.15, 1.3];
     return Container(

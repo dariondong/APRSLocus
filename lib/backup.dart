@@ -103,7 +103,7 @@ const List<BackupGroupSpec> kBackupGroups = [
     // 界面布局（1.0 经典 / 2.0 地图为基底）：同上 —— 换机后不该被静默换回 1.0，
     // 那会让用户以为「新机上的应用长得不一样」。
     'uiLayout',
-    'uiScale', 'mapType', 'updateChannel',
+    'uiScale', 'mapType', 'updateChannel', 'heatLevel',
     // 离线地图：缓存开关、仅离线模式，以及**区域记录**（只有范围与进度，
     // 瓦片本体是文件不随备份走 —— 换机后区域记录还在，重新点「继续」即可）
     'tileCacheOn', 'offlineOnly', 'offlineRegions',

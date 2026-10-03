@@ -113,7 +113,7 @@ class SmartBeaconTier {
 
 class AppState extends ChangeNotifier {
   /// 应用版本（用于信标备注、APRSlocus 识别）
-  static const appVersion = '2.0.19';
+  static const appVersion = '2.0.20';
   // 我的电台
   String myCall = 'BV2AAA';
   int mySsid = 0; // 0 = 无后缀, 1-15 = -1 到 -15
@@ -2659,6 +2659,13 @@ class AppState extends ChangeNotifier {
     _notify();
   }
 
+  /// 设置热力图档位（0 弱 / 1 中 / 2 强）—— 两套地图共用。
+  void setHeatLevel(int v) {
+    heatLevel = v.clamp(0, 2);
+    persist();
+    _notify();
+  }
+
   /// 设置自定义主题色
   void setThemeColor(String hex) {
     final v = hex.trim().replaceAll('#', '').toUpperCase();
@@ -2864,6 +2871,10 @@ class AppState extends ChangeNotifier {
   double filterLat = 39.9042;
   double filterLng = 116.4074;
   int filterRadius = 300; // km
+
+  /// 热力图档位（0 弱 / 1 中 / 2 强）：决定热力光斑的大小与浓度。
+  /// 栅格地图与矢量地图共用同一个值（设置 → 显示 → 地图）。
+  int heatLevel = 1;
   int maxStations = 100000; // 台站上限（默认无限制，可下调）
 
   /// 数据包列表上限（历史记录条数）。原先硬编码 200，偏少。
@@ -3189,6 +3200,7 @@ class AppState extends ChangeNotifier {
       filterLat = p.getDouble('filterLat') ?? filterLat;
       filterLng = p.getDouble('filterLng') ?? filterLng;
       filterRadius = p.getInt('filterRadius') ?? filterRadius;
+      heatLevel = (p.getInt('heatLevel') ?? heatLevel).clamp(0, 2);
       maxStations = p.getInt('maxStations') ?? maxStations;
       maxPackets = p.getInt('maxPackets') ?? maxPackets;
       onlineWindowMin = p.getInt('onlineWindowMin') ?? onlineWindowMin;
@@ -3435,6 +3447,7 @@ class AppState extends ChangeNotifier {
     await p.setDouble('filterLat', filterLat);
     await p.setDouble('filterLng', filterLng);
     await p.setInt('filterRadius', filterRadius);
+    await p.setInt('heatLevel', heatLevel);
     await p.setInt('maxStations', maxStations);
     await p.setInt('maxPackets', maxPackets);
     await p.setInt('onlineWindowMin', onlineWindowMin);

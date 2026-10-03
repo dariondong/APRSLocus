@@ -1679,6 +1679,18 @@ class AppLocalizationsEs extends AppLocalizations {
       'Cambiar la fuente de datos desconecta el enlace actual';
 
   @override
+  String get heatLevel => 'Nivel del mapa de calor';
+
+  @override
+  String get heatLevelLow => 'Suave';
+
+  @override
+  String get heatLevelMid => 'Medio';
+
+  @override
+  String get heatLevelHigh => 'Fuerte';
+
+  @override
   String get startFromFavorites => 'Empezar desde una estación favorita';
 
   @override

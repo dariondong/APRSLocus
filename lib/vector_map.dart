@@ -44,6 +44,12 @@ class VectorMapView extends StatefulWidget {
   final int actionSeq;
   final String action;
   final bool showTracks;
+
+  /// 显示台站热力图（矢量地图以前完全没有这一层，见 MapPage._showHeatmap）。
+  final bool showHeatmap;
+
+  /// 热力图档位 0/1/2（弱/中/强）：与栅格地图同一个值，缩放光斑半径。
+  final int heatLevel;
   // 矢量底图 style URL（OpenFreeMap Liberty / CARTO Positron）
   final String styleUrl;
   const VectorMapView({
@@ -66,6 +72,8 @@ class VectorMapView extends StatefulWidget {
     this.actionSeq = 0,
     this.action = '',
     this.showTracks = true,
+    this.showHeatmap = false,
+    this.heatLevel = 1,
     this.styleUrl = kVectorStyleLiberty,
   });
 
@@ -285,7 +293,24 @@ class _VectorMapViewState extends State<VectorMapView> {
                     ),
                   // 我的位置
                   if (widget.myHasFix && widget.myLat != null && widget.myLng != null)
-                    MarkerLayer(markers: [_myMarker()]),
+                    if (widget.showHeatmap)
+                    Builder(
+                      builder: (ctx) {
+                        // 用 flutter_map 自己的相机投影 —— 尺寸与平移才和瓦片完全一致
+                        final cam = MapCamera.of(ctx);
+                        return IgnorePointer(
+                          child: CustomPaint(
+                            size: Size.infinite,
+                            painter: _VectorHeatmapPainter(
+                              stations: widget.stations,
+                              camera: cam,
+                              level: widget.heatLevel,
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  MarkerLayer(markers: [_myMarker()]),
                   // 台站标记
                   MarkerLayer(
                     markers: _buildStationMarkers(),
@@ -368,6 +393,9 @@ class _VectorMapViewState extends State<VectorMapView> {
       height: 52,
       alignment: Alignment.topCenter,
       child: GestureDetector(
+        // translucent：标记与身后的地图都收到指针 —— 否则手指正好落在台站上时，
+        // 地图既不能缩放也不能拖动（手势全被标记吃了）。
+        behavior: HitTestBehavior.translucent,
         onTap: () => widget.onStationTap?.call(s),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -463,4 +491,49 @@ class _VectorMapViewState extends State<VectorMapView> {
   }
 
 
+}
+
+/// 矢量地图上的台站热力图：每个台站叠一个柔和光斑，密的区域自然变亮。
+///
+/// 与栅格地图那份 `_HeatmapPainter` 分开写：那一个用的是 MapPage 自己的投影，而这里
+/// 只能用 flutter_map 的相机（`MapCamera.of`）。配色按同一套走（橙色叠加）。
+class _VectorHeatmapPainter extends CustomPainter {
+  final List<Station> stations;
+  final MapCamera camera;
+  final int level;
+
+  const _VectorHeatmapPainter(
+      {required this.stations, required this.camera, this.level = 1});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final radius =
+        46.0 * (level == 0 ? 0.7 : (level >= 2 ? 1.5 : 1.0)); // 光斑半径
+    final paint = Paint()..blendMode = BlendMode.plus;
+    for (final s in stations) {
+      if (s.lat == 0 && s.lng == 0) continue;
+      final p = camera.latLngToScreenOffset(LatLng(s.lat, s.lng));
+      // 视口外的直接跳过（相机投影已含平移与缩放）
+      if (p.dx < -radius ||
+          p.dy < -radius ||
+          p.dx > size.width + radius ||
+          p.dy > size.height + radius) {
+        continue;
+      }
+      paint.shader = RadialGradient(
+        colors: [
+          C.orange.withValues(alpha: 0.30),
+          C.orange.withValues(alpha: 0.0),
+        ],
+      ).createShader(Rect.fromCircle(center: p, radius: radius));
+      canvas.drawCircle(p, radius, paint);
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant _VectorHeatmapPainter old) =>
+      !identical(old.stations, stations) ||
+      old.level != level ||
+      old.camera.zoom != camera.zoom ||
+      old.camera.center != camera.center;
 }
