@@ -88,6 +88,16 @@ def main():
         )
         write(lp_path, text)
 
+    # 3) README 的版本徽章（此前没人管，一直停在 1.6.18）
+    for rel in ("README.md", "README.en.md", "README.zh-TW.md"):
+        path = os.path.join(ROOT, rel)
+        text = read(path)
+        new_text, n = re.subn(r"(badge/Version-)[0-9]+\.[0-9]+\.[0-9]+",
+                              r"\g<1>" + new, text)
+        if n:
+            write(path, new_text)
+            print("  %s: Version-%s x%d" % (rel, new, n))
+
     print("version synced: %s+%s (versionCode %s)" % (new, build, version_code))
 
 

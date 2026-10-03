@@ -10,7 +10,7 @@
 
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](LICENSE)
 [![Platform](https://img.shields.io/badge/Platform-Android%20%7C%20Windows%20%7C%20iOS%20%7C%20Linux%20%7C%20macOS%20%7C%20Web-lightgrey.svg)]()
-[![Version](https://img.shields.io/badge/Version-1.6.18-green.svg)]()
+[![Version](https://img.shields.io/badge/Version-2.0.18-green.svg)]()
 [![Flutter](https://img.shields.io/badge/Flutter-3.x-blueviolet.svg)](https://flutter.dev)
 
 作者：[BG7LZQ (Darion)](https://theez.top) · 官网：[aprslocus.theez.top](https://aprslocus.theez.top/) · 最新版发布：[GitHub Releases](https://github.com/dariondong/APRSLocus/releases)
@@ -93,11 +93,12 @@
   - **TNC** —— 蓝牙 SPP 或串口，KISS 帧直接收发（可作双向网关）
   - **音频** —— 声卡 AFSK 1200（Bell 202）软 TNC，话筒/扬声器接电台
   - **PKWDWPL** —— 读 Kenwood 电台输出的 `$PKWDWPL` NMEA 航点语句，**只收不发**
+  - **Icom WLAN** —— IC-705 / IC-9700 / IC-7610 / IC-905 走 Wi-Fi 或以太网直连电台：PTT 与频率走 CI-V、音频走网络，不占音频口
 
   多条链路可以一起收报文（都进同一条解析管线），**发射来源单独指定一条**
   （同一呼号从两条链路发出去会造成重复报文）。
 - TCP 直连（桌面 / 移动）与 WebSocket（Web 平台）双实现
-- 默认服务器 `rotate.aprs2.net:14580`，解析 `# logresp` 验证登录，Passcode 未验证时主页黄色警告横幅
+- 服务器地址与端口由你自己填写（留空 = 不连接任何服务器），解析 `# logresp` 验证登录，Passcode 未验证时主页黄色警告横幅
 - **渐进式重连**（8 → 16 → 32 → 60 秒）
 - **Android 前台定位服务**：GPS 持续上报 + 系统通知，通知栏可直接"连接 / 断开"服务器、一键"退出"应用
 - 收到消息 / 群聊事件推送系统通知
@@ -168,11 +169,11 @@
 | 3️⃣ | 输入你的业余无线电**呼号**（如 `BG7LZQ-3`）并选择 **SSID 后缀**（移动端建议 `3`，手持台建议 `7`） |
 | 4️⃣ | 选择代表台站类型的**符号**（汽车 / 房屋 / 人 / 卡车 / 自行车 / 房车 / 气象站 / 警局） |
 | 5️⃣ | 按国家 / 地区选择**接收台站**（默认中国），可开启"其他台站"接收中继 / 气象 / FMO / APRSlocus |
-| 6️⃣ | 配置服务器与 **Passcode**，完成即自动连接 APRS-IS 并开始上报位置 |
+| 6️⃣ | 配置服务器与 **Passcode**（**可以留空**：留空 = 不连接任何服务器）；填了就自动连接并开始上报位置 |
 
 > **关于 Passcode**：密码填 `-1` 即可连接，但**未验证的 Passcode 无法正常收发消息**。建议到 [APRS Passcode 查询](https://aprs.cool/AprsPG) 生成你的专属 Passcode 并填入。
 
-完成引导后，应用会自动连接 APRS-IS 服务器并开始上报位置、接收周边台站。
+完成引导后，**如果你填了服务器**，应用会自动连接并开始上报位置、接收周边台站；**留空则不连接任何服务器**（也能用蓝牙 TNC / 声卡音频 / Icom 电台直连，随时可在设置里改）。
 
 ---
 
@@ -362,7 +363,7 @@ flutter build ios --release --no-codesign
 <details>
 <summary><b>Q：连接失败 / 频繁掉线？</b></summary>
 
-应用内置渐进式重连（8 → 16 → 32 → 60 秒）。若持续失败，请检查网络、确认服务器地址（默认 `rotate.aprs2.net:14580`）与端口是否被拦截，或在"连接设置"中更换服务器后点击"重新连接"。
+应用内置渐进式重连（8 → 16 → 32 → 60 秒）。若持续失败，请检查网络、确认服务器地址（你填的那个）与端口是否被拦截，或在"连接设置"中更换服务器后点击"重新连接"。
 </details>
 
 <details>
