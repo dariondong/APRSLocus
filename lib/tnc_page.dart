@@ -33,6 +33,66 @@ import 'widgets.dart';
 /// 但**发射只有一条**（[AppState.dataSource]）：同一个呼号从两条链路发出去
 /// 会造成重复报文，射频上还白占一次时隙；所以多选时额外提供「发射」标记，
 /// 由用户指定（默认沿用原来的来源）。
+/// 弹出「链路方式」浮动面板：数据来源的快捷切换。
+///
+/// 设置主页的「连接状态」面板点一下就调它 —— 换链路是高频动作（APRS-IS / 蓝牙 TNC /
+/// 声卡音频 / 盒子之间切），原来得先进「连接」分类、进设备页、再滚到数据来源卡片。
+/// 面板里直接用**同一张** [DataSourceCard]，所以两处永远不会说两套话。
+Future<void> showLinkSheet(BuildContext context, AppState state) {
+  return showModalBottomSheet<void>(
+    context: context,
+    isScrollControlled: true,
+    backgroundColor: C.pageFill,
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(18)),
+    ),
+    builder: (_) => _LinkSheet(state: state),
+  );
+}
+
+class _LinkSheet extends StatelessWidget {
+  final AppState state;
+  const _LinkSheet({required this.state});
+
+  @override
+  Widget build(BuildContext context) {
+    final s = S.of(context);
+    // 面板里的勾选与连接状态都在变，而它不在调用方的重建树里 —— 自己听 state。
+    return ListenableBuilder(
+      listenable: state,
+      builder: (context, _) => SafeArea(
+        top: false,
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            maxHeight: MediaQuery.of(context).size.height * 0.82,
+          ),
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.fromLTRB(16, 10, 16, 14),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // 抓手：明确"这是一块能下拉关掉的面板"
+                Container(
+                  width: 36,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: C.border,
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                DataSourceCard(state: state, extra: s.dataSourceSwitchHint),
+                const SizedBox(height: 10),
+                Text(s.tapAnywhereClose, style: ts(11, c: C.grey)),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class DataSourceCard extends StatelessWidget {
   final AppState state;
   final String? extra;

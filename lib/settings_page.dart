@@ -8,6 +8,7 @@ import 'theme.dart';
 import 'sponsor_page.dart';
 import 'sport_rank_page.dart';
 import 'guide.dart';
+import 'tnc_page.dart';
 import 'state.dart';
 import 'widgets.dart';
 import 'about_page.dart';
@@ -917,46 +918,58 @@ class _SettingsPageState extends State<SettingsPage> {
         : st.connecting
         ? Icons.sync_rounded
         : Icons.cloud_off_rounded;
-    return Container(
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: bg,
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Row(
-        children: [
-          Icon(icon, color: col, size: 20),
-          SizedBox(width: 10),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  st.connected
-                      ? S.of(context).connectedAprsIs
-                      : st.connecting
-                      ? S.of(context).connecting
-                      : S.of(context).disconnected,
-                  style: ts(13, c: col, w: FontWeight.w700),
-                ),
-                Text(
-                  localizedConnectionInfo(context, st.connInfo),
-                  style: ts(11, c: col.withValues(alpha: 0.8)),
-                ),
-              ],
+    // 连接状态面板：**整块可点** → 弹出「链路方式」浮动面板（数据来源快捷切换）。
+    // 右侧那个播放/停止按钮仍是它自己的点击目标（InkWell 抢不走）。
+    return InkWell(
+      onTap: () => showLinkSheet(context, st),
+      borderRadius: BorderRadius.circular(16),
+      child: Container(
+        padding: const EdgeInsets.all(14),
+        decoration: BoxDecoration(
+          color: bg,
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Row(
+          children: [
+            Icon(icon, color: col, size: 20),
+            SizedBox(width: 10),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    st.connected
+                        ? S.of(context).connectedAprsIs
+                        : st.connecting
+                        ? S.of(context).connecting
+                        : S.of(context).disconnected,
+                    style: ts(13, c: col, w: FontWeight.w700),
+                  ),
+                  Text(
+                    localizedConnectionInfo(context, st.connInfo),
+                    style: ts(11, c: col.withValues(alpha: 0.8)),
+                  ),
+                ],
+              ),
             ),
-          ),
-          SizedBox(width: 8),
-          IconButton(
-            icon: Icon(
-              st.connected
-                  ? Icons.stop_circle_outlined
-                  : Icons.play_circle_outline,
-              color: st.connected ? C.red : C.green,
+            SizedBox(width: 8),
+            // 可点的视觉提示：向下的小箭头 = 会展开一块面板
+            Icon(
+              Icons.expand_more_rounded,
+              size: 18,
+              color: col.withValues(alpha: 0.7),
             ),
-            onPressed: st.toggleConnect,
-          ),
-        ],
+            IconButton(
+              icon: Icon(
+                st.connected
+                    ? Icons.stop_circle_outlined
+                    : Icons.play_circle_outline,
+                color: st.connected ? C.red : C.green,
+              ),
+              onPressed: st.toggleConnect,
+            ),
+          ],
+        ),
       ),
     );
   }
