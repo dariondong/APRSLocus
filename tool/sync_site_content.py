@@ -205,6 +205,51 @@ CARDS = [
 # 只列「重点版本」：中间几十个纯修 bug 的版本归纳进文字说明，完整记录指向 Releases。
 CL = [
     {
+        'ver': 'v2.0.19', 'date': '2026-10-03',
+        'items': [
+            ('fix',
+             T('**地图不再卡**（三处根因）：矢量地图原来**完全没有视口裁剪**、还把全世界台站'
+               '塞进 MarkerLayer，而台站版本号每个报文都 +1 —— 于是每个报文都重建几千个标记；'
+               '现在只建视口内的 + 标记带 `key` 按身份复用 + 台站密时不画呼号标签。'
+               '**瓦片拖动不丝滑**也修了：手势期间压住新瓦片的下载与解码，手停再补。'
+               '**数据包页**每行重播淡入动画（时长还随行号无限增长）也改成只播一次。',
+               '**地圖不再卡**（三處根因）：向量地圖原本**完全沒有視窗裁剪**、還把全世界臺站'
+               '塞進 MarkerLayer，而臺站版本號每個封包都 +1 —— 於是每個封包都重建幾千個標記；'
+               '現在只建視窗內的 + 標記帶 `key` 按身分重用 + 臺站密時不畫呼號標籤。'
+               '**圖磚拖曳不順**也修了：手勢期間壓住新圖磚的下載與解碼，手停再補。'
+               '**封包頁**每列重播淡入動畫（時長還隨列號無限增長）也改成只播一次。',
+               '**The map no longer stutters** (three root causes): the vector map had no '
+               'viewport culling and pushed every station in the world into a MarkerLayer, '
+               'while the station version bumps on every packet - so every packet rebuilt '
+               'thousands of markers. Only viewport stations are built now, markers carry a '
+               '`key` for identity reuse, and callsign labels are skipped when dense. Tile '
+               'dragging was fixed too (tile loads are deferred until the gesture ends), as '
+               'was the packet page (each row restarted a fade-in whose duration grew with '
+               'the row index).')),
+            ('new',
+             T('**新增**：设置主页的连接状态面板点一下 → 弹出「链路方式」浮动面板（数据来源'
+               '快捷切换，与「连接 → 设备」页同一张卡片）；「新建会话」下面加「从收藏台站'
+               '开始」；台站列表加「收藏」筛选，收藏视图下每行一颗星标点一下即取消收藏；'
+               '**PHG 解析**（功率/天线高度/增益/方向，详情并排一格、列表行报功率）；'
+               '**运动排行榜把自己排进列表**。另外修好：佳明链接断开时请求堆叠（可能卡顿/'
+               '闪退）、盒子「连接 TNC」的错误文案、设置主页过时的「待开放」、地图图例已去掉。',
+               '**新增**：設定主頁的連線狀態面板點一下 → 彈出「鏈路方式」浮動面板（資料來源'
+               '快速切換，與「連線 → 裝置」頁同一張卡片）；「新建會話」下面加「從收藏臺站'
+               '開始」；臺站列表加「收藏」篩選，收藏檢視下每列一顆星號點一下即取消收藏；'
+               '**PHG 解析**（功率/天線高度/增益/方向，詳情並排一格、列表列報功率）；'
+               '**運動排行榜把自己排進列表**。另外修好：Garmin 連結中斷時請求堆疊（可能卡頓/'
+               '閃退）、盒子「連接 TNC」的錯誤文案、設定主頁過時的「待開放」、地圖圖例已移除。',
+               '**New**: tapping the connection banner on the settings home page opens a '
+               'floating link-method panel (same card as the Connection -> Device page); '
+               '"Start from a favourite station" under New session; a Favourites filter in the '
+               'station list with an in-place un-favourite star per row; **PHG parsing** '
+               '(power / height / gain / direction); and **you now appear in the activity '
+               'leaderboard**. Also fixed: Garmin link-drop request pile-up (stutter/crash '
+               'risk), the box calling itself a TNC, the stale "coming soon" on the settings '
+               'home page, and the map legend was removed.')),
+        ],
+    },
+    {
         'ver': 'v2.0.18', 'date': '2026-10-02',
         'items': [
             ('new',

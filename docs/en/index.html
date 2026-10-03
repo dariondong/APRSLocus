@@ -567,6 +567,16 @@
 <!-- site-sync:changelog -->
     <div class="cl-version reveal">
       <div class="cl-head">
+        <span class="cl-tag">v2.0.19</span>
+        <span class="cl-date">2026-10-03</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot fix"></span>**The map no longer stutters** (three root causes): the vector map had no viewport culling and pushed every station in the world into a MarkerLayer, while the station version bumps on every packet - so every packet rebuilt thousands of markers. Only viewport stations are built now, markers carry a `key` for identity reuse, and callsign labels are skipped when dense. Tile dragging was fixed too (tile loads are deferred until the gesture ends), as was the packet page (each row restarted a fade-in whose duration grew with the row index).</div>
+        <div class="cl-item"><span class="cl-dot new"></span>**New**: tapping the connection banner on the settings home page opens a floating link-method panel (same card as the Connection -> Device page); "Start from a favourite station" under New session; a Favourites filter in the station list with an in-place un-favourite star per row; **PHG parsing** (power / height / gain / direction); and **you now appear in the activity leaderboard**. Also fixed: Garmin link-drop request pile-up (stutter/crash risk), the box calling itself a TNC, the stale "coming soon" on the settings home page, and the map legend was removed.</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
         <span class="cl-tag">v2.0.18</span>
         <span class="cl-date">2026-10-02</span>
       </div>

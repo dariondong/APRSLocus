@@ -573,6 +573,16 @@
 <!-- site-sync:changelog -->
     <div class="cl-version reveal">
       <div class="cl-head">
+        <span class="cl-tag">v2.0.19</span>
+        <span class="cl-date">2026-10-03</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot fix"></span>**地圖不再卡**（三處根因）：向量地圖原本**完全沒有視窗裁剪**、還把全世界臺站塞進 MarkerLayer，而臺站版本號每個封包都 +1 —— 於是每個封包都重建幾千個標記；現在只建視窗內的 + 標記帶 `key` 按身分重用 + 臺站密時不畫呼號標籤。**圖磚拖曳不順**也修了：手勢期間壓住新圖磚的下載與解碼，手停再補。**封包頁**每列重播淡入動畫（時長還隨列號無限增長）也改成只播一次。</div>
+        <div class="cl-item"><span class="cl-dot new"></span>**新增**：設定主頁的連線狀態面板點一下 → 彈出「鏈路方式」浮動面板（資料來源快速切換，與「連線 → 裝置」頁同一張卡片）；「新建會話」下面加「從收藏臺站開始」；臺站列表加「收藏」篩選，收藏檢視下每列一顆星號點一下即取消收藏；**PHG 解析**（功率/天線高度/增益/方向，詳情並排一格、列表列報功率）；**運動排行榜把自己排進列表**。另外修好：Garmin 連結中斷時請求堆疊（可能卡頓/閃退）、盒子「連接 TNC」的錯誤文案、設定主頁過時的「待開放」、地圖圖例已移除。</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
         <span class="cl-tag">v2.0.18</span>
         <span class="cl-date">2026-10-02</span>
       </div>

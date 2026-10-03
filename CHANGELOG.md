@@ -1,5 +1,111 @@
 # 更新日志
 
+## [2.0.19] - 2026-10-03
+
+### 地图不再卡（三处根因）+ 收藏/PHG/排行榜等一批改进
+
+**性能**
+
+- **台站多就卡（矢量地图）**：那套地图**完全没有视口裁剪** —— 把全世界台站都塞进
+  `MarkerLayer`，而台站版本号**每个报文都 +1**，于是**每个报文都重建几千个 Marker**。
+  现在只建视口内的（含约 20% 留白），并把相机中心纳入缓存判断（否则加了裁剪后拖动会僵住）；
+- **两边地图的标记都没有 `key`**：Flutter 只能按列表位置复用元素 —— 列表一变（哪怕只多一个
+  台站）后面全部重建。加上 `ValueKey(呼号)`，改成按**身份**复用；
+- **呼号标签**：文字排版是每个标记最贵的一步。台站密（> 60）或缩得很小（zoom < 13）时不画，
+  与"近了才显示呼号"一致；
+- **瓦片地图拖动不丝滑**：拖动的每一帧都会触发重建，滚进来的新瓦片**在拖动过程中**就发起
+  下载与解码，跟手指抢带宽和解码器。现在**手势期间压住加载**，只用已有瓦片顶着（矢量底图
+  一直可见，看不出缺图），手停 120ms 后一次性补上；
+- **数据包页**：每一行都在跑淡入动画，时长还是 `220 + i*15`（第 1000 行要 15 秒），
+  `ListView` 每次重建/回收都会重播 —— 一屏行逐帧重绘。改成"每个元素只淡入一次"，
+  交错时长按行号取模封顶。
+
+**新增**
+
+- **设置主页的连接状态面板点一下** → 弹出「链路方式」浮动面板：数据来源的快捷切换。
+  面板里用的是**同一张** `DataSourceCard`，所以与「连接 → 设备」页永远不会说两套话；
+- **「新建会话」下面加「从收藏台站开始」**：不想手打呼号时，直接从收藏里挑一个开会话
+  （没有收藏时不留空按钮，直接给"怎么收藏"的引导）；
+- **台站列表加「收藏」筛选**：与该页其它筛选条件并列生效；**在收藏视图下，每行右侧一颗
+  星标，点一下即取消收藏**（就地管理，不用进详情、也不用找另一个入口）；
+- **PHG 解析**（功率 / 天线高度 / 增益 / 方向）：以前只会**编码**（自己发），别人的 PHG
+  收到了没人看。现在台站详情里并排加一格（`50W · 6m · 6dB · 360°`），列表行只报功率；
+- **运动排行榜：自己排进列表**（原来只在榜单上面挂一张卡）。榜上每个数字都来自别人上报的
+  `STEPS`，而自己的步数是本机计步传感器给的 —— 所以以前从来不在榜里。
+
+**修复**
+
+- **佳明 LiveTrack 链接断开时的卡顿/闪退风险**：轮询间隔 5 秒、取数超时 15/20 秒，而定时器
+  **不等**上一轮结束 —— 链接一断，死链路上会同时挂三四个请求，越堆越多。现在上一轮没回来
+  就跳过这一轮，抓取途中被停止也立刻返回；
+- **盒子不再自称 TNC**：「盒子连接」页的按钮原来写「连接 TNC」、提示"先在蓝牙设置里配对
+  TNC" —— 盒子不是 TNC，补了三条属于它自己的文案；
+- **盒子链路模式文案**：`wifi (no BT)` → `wifi + APRS-IS`（与盒子自身定义一致）；
+- **设置主页**：删掉过时的「电台设备 · 待开放」（那页早已做好：数据来源 / 网关 / 链路状态），
+  页头副标题补全为「电台、定位、链路与数据」；
+- **地图页去掉「在线 / 移动 / 静止 / 离线」图例**；
+- **项目描述与三语 README 顺过一遍**：官网 meta / og / twitter / 首屏、解说页、README 三语、
+  `pubspec`、关于页副标题，统一成"本机工具、不预置服务器地址"的口径；README 三语结构对齐
+  （各 439 行 / 44 个标题），版本徽章也接进 `sync_version.py`（以后发版自动跟随）。
+
+## [2.0.19] - 2026-10-03 (English)
+
+### The map no longer stutters (three root causes) + favourites, PHG, leaderboard and more
+
+**Performance**
+
+- **Lag with many stations (vector map)**: that map had **no viewport culling at all** - every
+  station in the world went into a `MarkerLayer`, and the station version bumps on **every
+  packet**, so **every packet rebuilt thousands of Marker widgets**. Now only stations inside
+  the viewport are built (with ~20% margin) and the camera centre participates in the cache
+  check (otherwise panning would freeze the culled set);
+- **Markers had no `key`**: Flutter could only reuse elements by list position, so any list
+  change (even one new station) rebuilt everything after it. They now carry
+  `ValueKey(callsign)` and are reused by **identity**;
+- **Callsign labels**: text layout is the most expensive part of a marker. They are skipped
+  when stations are dense (> 60) or zoomed out (zoom < 13);
+- **Tiles were not smooth to drag**: every frame triggered a rebuild, and tiles scrolling into
+  view started downloading and decoding **during the drag**, competing with your finger.
+  Loading is now held back for the duration of the gesture (the vector backdrop stays visible,
+  so nothing looks missing) and resumed 120 ms after you stop;
+- **Packet page**: every row ran a fade-in whose duration was `220 + i*15` (row 1000 waited 15
+  seconds) and which restarted on every rebuild/recycle. It now fades in **once per element**
+  with a capped stagger.
+
+**New**
+
+- **Tap the connection banner on the settings home page** to open a floating "link method"
+  panel for quickly switching data sources. It uses the **same** `DataSourceCard`, so it can
+  never disagree with the Connection -> Device page;
+- **"Start from a favourite station"** under New session: pick one of your favourites instead
+  of typing a callsign (with guidance instead of an empty button when you have none);
+- **A "Favourites" filter in the station list**, combinable with the other filters - and in
+  that view each row gets a star on the right that **un-favourites in place**;
+- **PHG parsing** (power / antenna height / gain / direction): the app only ever *encoded* it
+  before, so received PHG went unread. The station detail now shows it as one more metric
+  (`50W - 6m - 6dB - 360 deg`), and list rows show the power;
+- **Activity leaderboard: you are now ranked in the list** (you used to be a card above it).
+  Every number there comes from someone's `STEPS`, while your own steps come from the phone's
+  step sensor - which is why you were never in it.
+
+**Fixes**
+
+- **Stutter/crash risk when the Garmin LiveTrack link drops**: the poll interval is 5 s while
+  fetching times out at 15/20 s, and the timer did **not** wait for the previous round - so a
+  dead link accumulated three or four in-flight requests. A round is now skipped while one is
+  still running, and a stop mid-fetch returns immediately;
+- **The box no longer calls itself a TNC**: the box page's button said "Connect TNC" and told
+  you to pair a TNC; the box is not a TNC, and now has its own wording;
+- **Box link-mode text**: `wifi (no BT)` -> `wifi + APRS-IS` (matching the box's own definition);
+- **Settings home page**: the stale "Radio gear - coming soon" is gone (that page has long been
+  done: sources / iGate / link status), and the subtitle now reads "Station, location, links
+  and data";
+- **The map legend (online / moving / stationary / offline) was removed**;
+- **Project description and the three READMEs** were swept: site meta/og/twitter/hero, the
+  guide page, all three READMEs, `pubspec` and the About subtitle now consistently describe a
+  local tool that bundles no server address; the READMEs are structurally aligned (439 lines /
+  44 headings each) and their version badge is now maintained by `sync_version.py`.
+
 ## [2.0.18] - 2026-10-02
 
 ### 新增：Icom 电台 Wi-Fi / 以太网直连（IC-705 / IC-9700 / IC-7610 / IC-905）
