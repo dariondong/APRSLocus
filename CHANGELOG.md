@@ -15,7 +15,10 @@
   并去掉了那行排除；
 - **「从收藏台站开始」新建会话会黑屏**：这个入口会**先关掉**「新建会话」对话框、再弹收藏面板，
   而选完人以后又走了一遍"关对话框" —— 这一次没有对话框可关，`Navigator.pop` 弹掉的是**整个
-  消息页**，于是黑屏。现在选人与手打走同一条开会话的路，只有对话框还开着时才关它。
+  消息页**，于是黑屏。现在选人与手打走同一条开会话的路，只有对话框还开着时才关它；
+- **手动选点（模拟位置）没有系统通知**：手动设坐标那条路会先停掉前台服务，却没再把「保活」
+  起回来 —— 而模拟位置模式正是靠这个前台服务在后台撑着 APRS-IS 连接、信标定时器，常驻通知
+  也来自它。现在停定位后会把保活起回来（幂等，不会来回重启服务）。
 
 **新增**
 
@@ -43,7 +46,12 @@
   conversation dialog before opening the favourites sheet, and the shared "start conversation"
   path then closed a dialog again - but none was left, so `Navigator.pop` removed the **whole
   messages page**. Picking a favourite now takes the same path as typing a callsign, closing the
-  dialog only when one is actually open.
+  dialog only when one is actually open;
+- **No system notification when the simulated location is set by picking a point**: setting the
+  position manually stopped the foreground service but never restarted keep-alive - and that
+  service is what holds the APRS-IS connection, the beacon timer and the persistent notification
+  alive in the background. It is now restarted after stopping location (idempotent, no service
+  churn).
 
 **Added**
 

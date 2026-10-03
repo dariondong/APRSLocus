@@ -416,7 +416,14 @@ class AppState extends ChangeNotifier {
     myAlt = alt;
     myHasFix = true;
     useSimLocation = true;
-    loc.stop();
+    // 之前在真正定位（GPS/网络）就停掉它 —— 模拟位置由手动坐标供位。
+    // 已经在保活模式时**不要**停：stop() 会把前台服务一并关掉。
+    if (loc.running) loc.stop();
+    // ⚠ 手动选点后必须让**保活前台服务**继续在后台跑：模拟位置模式下 APRS-IS 连接
+    // 与信标定时器仍要靠它存活，常驻通知也来自它。原先这里无条件 loc.stop() 却没再
+    // 起保活 —— 于是「手动选点（模拟位置）没有系统通知」，切到后台连接还会被冻结。
+    // startKeepAlive 自带幂等（已在保活模式直接返回），不会来回重启服务。
+    unawaited(startTracking());
     // 换到模拟位置：复位 GPS 侧的全部状态，免得切回真实定位时拿着手动坐标
     // 当历史、把位置粘在旧点上。
     _resetSelfFix();
