@@ -212,18 +212,26 @@ CL = [
                '（`HitTestBehavior.opaque`），改成 `translucent` 后标记与地图都收到指针 —— '
                '点 = 选中台站，拖动/捏合 = 地图；栅格与矢量两套地图都改了。'
                '**矢量地图的热力图失效**也修了：原来被 `!_usePluginMap` 整个排除，'
-               '现在矢量地图也画热力（用 flutter_map 相机投影）。',
+               '现在矢量地图也画热力（用 flutter_map 相机投影）。'
+               '**「从收藏台站开始」新建会话黑屏**也修了：它会先把「新建会话」对话框关掉，'
+               '选完人后又关了一次，把整个消息页弹掉 —— 现在只有对话框还开着时才关。',
                '**手指落在臺站上時地圖無法縮放/拖曳**：臺站標記的手勢會把地圖的手勢擋掉'
                '（`HitTestBehavior.opaque`），改成 `translucent` 後標記與地圖都收到指標 —— '
                '點 = 選中臺站，拖曳/捏合 = 地圖；點陣與向量兩套地圖都改了。'
                '**向量地圖的熱力圖失效**也修了：原本被 `!_usePluginMap` 整個排除，'
-               '現在向量地圖也畫熱力（用 flutter_map 相機投影）。',
+               '現在向量地圖也畫熱力（用 flutter_map 相機投影）。'
+               '**「從收藏臺站開始」新建會話黑屏**也修了：它會先把「新建會話」對話框關掉，'
+               '選完人後又關了一次，把整個訊息頁彈掉 —— 現在只有對話框還開著時才關。',
                '**Map cannot be zoomed/panned when a finger lands on a station**: the marker '
                'swallowed the map gestures (`HitTestBehavior.opaque`); with `translucent` both '
                'receive the pointer - tap selects the station, drag/pinch moves the map; applied '
                'to both the raster and vector map. **The vector-map heatmap never worked** '
                'either (it was excluded by `!_usePluginMap`); the vector map draws it now, '
-               'projected with the flutter_map camera.')),
+               'projected with the flutter_map camera. '
+               '**"Start from a favourite station" opening a black screen** was fixed too: '
+               'it closes the New conversation dialog first and then closed one again after '
+               'picking, popping the whole messages page - now the dialog is only closed when '
+               'one is open.')),
             ('new',
              T('**热力图档位**（设置 → 显示 → 地图）：弱 / 中 / 强，调整热力光斑的大小与浓度，'
                '两套地图共用同一个值。**台站详情重新显示 PHG**（功率 / 天线高度 / 增益 / 方向），'

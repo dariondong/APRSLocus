@@ -12,7 +12,10 @@
   地图都改了；
 - **矢量地图的热力图完全失效**：`_showHeatmap` 的第一行就是 `!_usePluginMap` —— 矢量地图被
   直接排除在外。现在矢量地图也画热力图（用 flutter_map 自己的相机投影，尺寸与平移和瓦片一致），
-  并去掉了那行排除。
+  并去掉了那行排除；
+- **「从收藏台站开始」新建会话会黑屏**：这个入口会**先关掉**「新建会话」对话框、再弹收藏面板，
+  而选完人以后又走了一遍"关对话框" —— 这一次没有对话框可关，`Navigator.pop` 弹掉的是**整个
+  消息页**，于是黑屏。现在选人与手打走同一条开会话的路，只有对话框还开着时才关它。
 
 **新增**
 
@@ -35,7 +38,12 @@
 - **The heatmap never worked on the vector map**: the first line of `_showHeatmap` was
   `!_usePluginMap`, excluding the vector map outright. The vector map now draws the heatmap too
   (projected with flutter_map's own camera, so size and panning match the tiles), and that
-  exclusion is gone.
+  exclusion is gone;
+- **"Start from a favourite station" opened a black screen**: that entry closes the New
+  conversation dialog before opening the favourites sheet, and the shared "start conversation"
+  path then closed a dialog again - but none was left, so `Navigator.pop` removed the **whole
+  messages page**. Picking a favourite now takes the same path as typing a callsign, closing the
+  dialog only when one is actually open.
 
 **Added**
 

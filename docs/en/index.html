@@ -571,7 +571,7 @@
         <span class="cl-date">2026-10-03</span>
       </div>
       <div class="cl-body">
-        <div class="cl-item"><span class="cl-dot fix"></span>**Map cannot be zoomed/panned when a finger lands on a station**: the marker swallowed the map gestures (`HitTestBehavior.opaque`); with `translucent` both receive the pointer - tap selects the station, drag/pinch moves the map; applied to both the raster and vector map. **The vector-map heatmap never worked** either (it was excluded by `!_usePluginMap`); the vector map draws it now, projected with the flutter_map camera.</div>
+        <div class="cl-item"><span class="cl-dot fix"></span>**Map cannot be zoomed/panned when a finger lands on a station**: the marker swallowed the map gestures (`HitTestBehavior.opaque`); with `translucent` both receive the pointer - tap selects the station, drag/pinch moves the map; applied to both the raster and vector map. **The vector-map heatmap never worked** either (it was excluded by `!_usePluginMap`); the vector map draws it now, projected with the flutter_map camera. **"Start from a favourite station" opening a black screen** was fixed too: it closes the New conversation dialog first and then closed one again after picking, popping the whole messages page - now the dialog is only closed when one is open.</div>
         <div class="cl-item"><span class="cl-dot new"></span>**Heatmap level** (Settings -> Display -> Map): Light / Medium / Strong, scaling the heat blobs size and density, shared by both maps. **PHG is back in the station detail** (power / antenna height / gain / direction), now on its own line instead of crammed into the three metrics.</div>
       </div>
     </div>

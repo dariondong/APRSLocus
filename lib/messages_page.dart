@@ -2454,15 +2454,22 @@ class _MessagesPageState extends State<MessagesPage> {
         ),
       ),
     );
-    if (picked != null && mounted) _startConversation(st, picked);
+    if (picked != null && mounted) {
+      _startConversation(st, picked, closeDialog: false);
+    }
   }
 
-  void _startConversation(AppState st, String callRaw) {
+  void _startConversation(AppState st, String callRaw,
+      {bool closeDialog = true}) {
     final call = callRaw.trim().toUpperCase();
     if (call.isEmpty || call == st.myFullCall.toUpperCase()) return;
     // 添加到联系人（若不在列表）
     st.addManualStation(call);
-    Navigator.pop(context);
+    // 只有「新建会话对话框还开着」时才关它。
+    // ⚠ 从「收藏台站」进来时，对话框在弹收藏面板**之前**就已经被关掉了
+    //（见上面那个按钮的注释：同一时刻只留一层弹层）—— 这里若再 pop 一次，
+    // 弹掉的就不是对话框而是**整个消息页**，结果是一片黑屏。
+    if (closeDialog && mounted) Navigator.pop(context);
     setState(() {
       _selectedGroupId = null;
       _selected = call;
