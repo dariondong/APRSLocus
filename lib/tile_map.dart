@@ -60,6 +60,23 @@ class TileMapView extends StatefulWidget {
 }
 
 class _TileMapViewState extends State<TileMapView> {
+  /// 手势进行中：拖动/捏合时**先压住新瓦片的加载**。
+  ///
+  /// 为什么：拖动的每一帧都会走父级 setState → 本 widget 与整片瓦片网格重建，滚进来的
+  /// 新瓦片会在**拖动过程中**就发起下载与解码，跟手指抢带宽和解码器 —— 这是瓦片地图
+  /// "不丝滑"的主因。地图类应用的做法都一样：拖动期间只用已有的图顶着（我们的
+  /// _FallbackPainter 矢量底图一直可见，所以看不出来），**手停了再加载**。
+  bool _gesturing = false;
+  Timer? _gestureTimer;
+
+  void _markGesturing() {
+    _gesturing = true;
+    _gestureTimer?.cancel();
+    _gestureTimer = Timer(const Duration(milliseconds: 120), () {
+      if (mounted) setState(() => _gesturing = false);
+    });
+  }
+
   Offset _lastFocal = Offset.zero;
   Offset? _anchorWorld; // 手势开始时手指下的世界像素点（跟手锚点）
   double _startZoom = 11.0; // 手势起始 zoom（d.scale 是累计值，必须用起始值作基准）
@@ -73,6 +90,7 @@ class _TileMapViewState extends State<TileMapView> {
   }
 
   void _handleScaleStart(ScaleStartDetails d, Size size) {
+    _markGesturing();
     _lastFocal = d.localFocalPoint;
     _startZoom = widget.zoom;
     _anchorWorld = _worldAt(d.localFocalPoint, size);
@@ -92,6 +110,7 @@ class _TileMapViewState extends State<TileMapView> {
   }
 
   void _handleScaleUpdate(ScaleUpdateDetails d, Size size) {
+    _markGesturing();
     // d.scale 是手势起始以来的累计缩放比 → 累计 zoom 增量
     final dz = math.log(d.scale) / math.ln2;
     // 缩放与平移同时处理：缩放时焦点移动也应跟手平移
@@ -167,7 +186,8 @@ class _TileMapViewState extends State<TileMapView> {
                   tx: wx, ty: ty, z: z, scale: scale,
                   mapType: widget.mapType,
                   cacheEnabled: widget.cacheEnabled,
-                  offlineOnly: widget.offlineOnly),
+                  offlineOnly: widget.offlineOnly,
+                  deferLoad: _gesturing),
             ));
           }
         }
@@ -376,6 +396,9 @@ class _Tile extends StatefulWidget {
   /// 仅离线模式：完全不发网络请求（野外省流量）
   final bool offlineOnly;
 
+  /// 拖动/缩放进行中：**先不发起下载**（见 _TileMapViewState._markGesturing）
+  final bool deferLoad;
+
   const _Tile({
     required this.tx,
     required this.ty,
@@ -384,6 +407,7 @@ class _Tile extends StatefulWidget {
     this.mapType = MapType.gaode,
     this.cacheEnabled = true,
     this.offlineOnly = false,
+    this.deferLoad = false,
   });
 
   @override
@@ -406,7 +430,8 @@ class _TileState extends State<_Tile> {
   @override
   void initState() {
     super.initState();
-    _resolve();
+    // 拖动期间新滚进来的瓦片先不加载（等手势停下，见 _TileMapViewState）。
+    if (!widget.deferLoad) _resolve();
   }
 
   @override
@@ -421,8 +446,10 @@ class _TileState extends State<_Tile> {
       _bytes = null;
       _upSteps = 0;
       _triedWrite = false;
-      _resolve();
+      if (!widget.deferLoad) _resolve();
     }
+    // 手势结束（deferLoad: true → false）：把拖动期间欠下的加载补上。
+    if (old.deferLoad && !widget.deferLoad) _resolve();
     // 只有 scale 变化（捏合/滚轮缩放）时**不重新解析**：图还是同一张，
     // 只是要按新的像素边长画。几何一律在 build() 里按当前 _px 现算 ——
     // 若把「算好尺寸的 Widget」存起来，缩放动画中瓦片会停在旧尺寸上，
