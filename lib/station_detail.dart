@@ -5,11 +5,18 @@ import 'package:url_launcher/url_launcher.dart';
 import 'theme.dart';
 import 'material.dart';
 import 'models.dart';
+import 'services.dart';
 import 'state.dart';
 import 'widgets.dart';
 import 'coord.dart';
 import 'early_member.dart';
 import 'honor_wall_page.dart';
+
+/// PHG 一格里的文字：`50W · 6m · 6dB · 360°`。
+///
+/// 单位用国际通用的 W / m / dB + 罗盘方位 —— 不引入任何新文案（六语同形）。
+String phgText(({int watts, int heightM, int gainDb, String dir}) p) =>
+    '${p.watts}W · ${p.heightM}m · ${p.gainDb}dB · ${p.dir}';
 
 class StationDetail extends StatefulWidget {
   final AppState state;
@@ -518,6 +525,19 @@ class _StationDetailState extends State<StationDetail> {
                                 C.purple,
                               ),
                             ),
+                            // PHG（功率 / 天线高度 / 增益 / 方向）：报文里带了才占位，
+                            // 免得把"没发"和"发了但为 0"混在一起。
+                            if (AprsPhg.decode(s.comment ?? '') case final phg?) ...[
+                              SizedBox(width: 10),
+                              Expanded(
+                                child: _metric(
+                                  'PHG',
+                                  phgText(phg),
+                                  Icons.bolt_rounded,
+                                  C.orange,
+                                ),
+                              ),
+                            ],
                             SizedBox(width: 10),
                             Expanded(
                               child: _metric(
