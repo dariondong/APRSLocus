@@ -149,6 +149,48 @@ def main() -> int:
     if "coarse ? '网络定位（粗）'" not in state:
         errors.append('粗定位时没有如实的 locStatus —— 用户会以为 GPS 坏了')
 
+    # ── 上报闸：只有**本轮重新拿到**的定位才允许上报（本次改动）──
+    #
+    # 背景（用户要求）：系统（GPS 或网络定位）**每次启动都会把上一次的位置
+    # 默认交回来**，磁盘上还存着上次的 myLat/myLng —— 于是「定位根本没开」时
+    # myHasFix 就已经是 true、坐标是旧的。拿它上报，等于在没有任何新定位的
+    # 情况下向全网宣告一个错坐标（用户报的正是这个）。
+    #
+    # 所以必须有一个「本轮是否已重新拿到定位」的闸，**自动与手动上报都要过它**：
+    # 只加在自动那条上是不够的 —— 用户点「立即上报」时那个旧坐标照样会发出去。
+    need('lib/state.dart', 'bool get myPositionReportable =>',
+         '没有「本轮已重新定位」的上报闸（myPositionReportable）—— '
+         '会把上次保存的位置当成现在的位置发出去（用户报的正是这个）')
+    need('lib/state.dart', 'bool _pendingSavedPos = false;',
+         '「只是上次保存的位置」这一位没了（见 _pendingSavedPos）')
+    need('lib/state.dart',
+         "_pendingSavedPos = true;\n        locStatus = '已保存位置';",
+         '「已保存位置」没有标记为「本轮尚未定位」—— 上报闸会误开')
+    need('lib/state.dart', 'if (!lastKnown) _pendingSavedPos = false;',
+         '_onFix 没有在本轮真实定位时打开上报闸（lastKnown 缓存点不算）')
+    need('lib/state.dart',
+         'bool get canAutoBeacon => connected &&\n      beaconEnabled &&\n'
+         '      myPositionReportable &&',
+         'canAutoBeacon 没用 myPositionReportable —— '
+         '「上次保存的位置」也会被自动发出')
+    need('lib/state.dart',
+         'if (!myPositionReportable) return;\n    if (!force && !beaconEnabled) return;',
+         '手动「立即上报」没有过 myPositionReportable —— 会发出一个错位置'
+         '（这正是用户报的「定位没开却报出错误位置」）')
+    need('lib/state.dart',
+         'if (!myPositionReportable) return BeaconPhase.waitingFix;',
+         'beaconPhase 没有把「还没本轮定位」报成等待定位 —— '
+         '界面会显示一个照走的倒计时，到点却什么都不发')
+    need('lib/state.dart', 'if (canAutoBeacon && myPositionReportable) {',
+         'tick 里的自动上报没有再过一次 myPositionReportable')
+    # 手动上报的老闸是 `myHasFix`，**不许**退回去（它就是漏洞本身）
+    forbid('lib/state.dart', 'if (!myHasFix) return;\n    if (!force',
+           '手动上报又退回按 myHasFix 放行 —— 上次保存的位置会被发出去')
+    # UI 侧：按钮必须与上报闸同源，否则会弹一条假的「已发送」。
+    need('lib/my_panel.dart', 'final fix = state.myPositionReportable;',
+         '主页按钮没有按上报闸显示 —— 只有保存位置时会显示「立即上报」'
+         '并弹「已发送」，其实什么都没发')
+
     # 静止防抖
     need('lib/state.dart', '_selfFilter.feed(', '静止防抖滤波器没接上')
     need('lib/state.dart', 'final SelfFixFilter _selfFilter',

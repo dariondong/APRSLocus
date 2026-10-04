@@ -256,8 +256,10 @@ class _HomePageState extends State<HomePage> {
     widget.state.beaconAutoAnswered();
     if (enable) {
       st.setBeaconEnabled(true);
-      // 立即上报一次，让用户确认能在地图上看到自己
-      if (st.myHasFix) {
+      // 立即上报一次，让用户确认能在地图上看到自己。
+      // ⚠ 用 myPositionReportable：只有「上次保存的位置」时不能上报（会报错位置），
+      // 这种情况退回去启动定位，等拿到本轮定位再发。
+      if (st.myPositionReportable) {
         st.sendBeacon();
       } else {
         st.startTracking();

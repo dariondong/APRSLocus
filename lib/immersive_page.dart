@@ -411,14 +411,14 @@ class _ImmersiveMapPageState extends State<ImmersiveMapPage>
                 tooltip: s.back),
             const SizedBox(height: 8),
             _chip(
-              icon: st.myHasFix
+              icon: st.myPositionReportable
                   ? Icons.gps_fixed_rounded
                   : Icons.gps_off_rounded,
-              color: st.myHasFix ? C.green : C.yellow,
-              value: st.myHasFix
+              color: st.myPositionReportable ? C.green : C.yellow,
+              value: st.myPositionReportable
                   ? localizedLocationStatus(context, st.locStatus)
                   : s.unlocated,
-              sub: st.myHasFix && st.myLat != null ? st.myGrid : null,
+              sub: st.myPositionReportable && st.myLat != null ? st.myGrid : null,
             ),
           ],
         ),

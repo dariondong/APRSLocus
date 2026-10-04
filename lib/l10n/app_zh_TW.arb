@@ -3236,5 +3236,11 @@
   "icomLanHint": "在電台 WLAN 設定裡開啟遙控並設定 Network User 名稱/密碼，手機與電台保持同一網段。IC-705 區域網路音訊固定 12000 Hz。",
   "codeContributionIcomLan": "IC-705 電台直連",
   "honorCelebrateTitle": "恭喜獲得新榮譽",
-  "honorCelebrateOk": "太棒了"
+  "honorCelebrateOk": "太棒了",
+  "confirmSendToGroup": "確認傳送到 {group}？",
+  "@confirmSendToGroup": {"placeholders": {"group": {"type": "String"}}},
+  "confirmInviteMember": "確認邀請 {call} 加入群聊？",
+  "@confirmInviteMember": {"placeholders": {"call": {"type": "String"}}},
+  "confirmCreateGroup": "確認建立群聊並向 {n} 位成員發出邀請？",
+  "@confirmCreateGroup": {"placeholders": {"n": {"type": "int"}}}
 }

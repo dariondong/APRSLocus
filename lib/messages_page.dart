@@ -3209,7 +3209,14 @@ class _MessagesPageState extends State<MessagesPage> {
                   ),
                   onPressed: selected.isEmpty
                       ? null
-                      : () {
+                      : () async {
+                          // 用户要求：建群会立刻向每位勾选的成员发一条 INVITE
+                          // （一次操作发多条），先提示一次确认。
+                          final ok = await _confirmAction(
+                            S.of(context).invite,
+                            S.of(context).confirmCreateGroup(selected.length),
+                          );
+                          if (!ok || !mounted) return;
                           final g = widget.state.createGroup(
                             nameCtrl.text.trim(),
                             selected,
@@ -3896,22 +3903,29 @@ class _MessagesPageState extends State<MessagesPage> {
                       ),
                       SizedBox(width: 6),
                       GestureDetector(
-                        onTap: () {
+                        onTap: () async {
                           final call = manualCtrl.text.trim().toUpperCase();
-                          if (call.isNotEmpty && call.length >= 3) {
-                            widget.state.sendInvite(
-                              group.groupCall,
-                              call,
-                              group.name,
-                            );
-                            manualCtrl.clear();
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(S.of(context).inviteSent(call)),
-                                duration: const Duration(seconds: 2),
-                              ),
-                            );
-                          }
+                          if (call.isEmpty || call.length < 3) return;
+                          // 用户要求：邀请前提示一次确认。
+                          final ok = await _confirmAction(
+                            S.of(context).invite,
+                            S.of(context).confirmInviteMember(call),
+                          );
+                          if (!ok || !mounted) return;
+                          widget.state.sendInvite(
+                            group.groupCall,
+                            call,
+                            group.name,
+                          );
+                          manualCtrl.clear();
+                          setDialogState(() {});
+                          if (!mounted) return;
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(S.of(context).inviteSent(call)),
+                              duration: const Duration(seconds: 2),
+                            ),
+                          );
                         },
                         child: Container(
                           padding: const EdgeInsets.symmetric(
@@ -3949,13 +3963,21 @@ class _MessagesPageState extends State<MessagesPage> {
                               return GestureDetector(
                                 onTap: invited
                                     ? null
-                                    : () {
+                                    : () async {
+                                        // 用户要求：邀请前提示一次确认。
+                                        final ok = await _confirmAction(
+                                          S.of(context).invite,
+                                          S.of(context)
+                                              .confirmInviteMember(s.call),
+                                        );
+                                        if (!ok || !mounted) return;
                                         widget.state.sendInvite(
                                           group.groupCall,
                                           s.call,
                                           group.name,
                                         );
                                         setDialogState(() {});
+                                        if (!mounted) return;
                                         ScaffoldMessenger.of(
                                           context,
                                         ).showSnackBar(
@@ -4193,6 +4215,32 @@ class _MessagesPageState extends State<MessagesPage> {
     );
   }
 
+  /// 群发 / 邀请前的通用确认弹窗。返回 true = 用户点了确认。
+  ///
+  /// 用户要求：群发与邀请各提示一次确认 —— 这两类动作都是**一次操作发多条**
+  /// （群发 = 一条广播给全体成员；建群 = 一批 INVITE 私信），发出去不可撤回。
+  Future<bool> _confirmAction(String title, String message) async {
+    final ok = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(title, style: T.h2),
+        content: Text(message, style: ts(13)),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: Text(S.of(ctx).cancel, style: ts(13, c: C.slate)),
+          ),
+          FilledButton(
+            style: FilledButton.styleFrom(backgroundColor: C.orange),
+            onPressed: () => Navigator.pop(ctx, true),
+            child: Text(S.of(ctx).confirm, style: ts(13)),
+          ),
+        ],
+      ),
+    );
+    return ok == true;
+  }
+
   /// 发送前的长度/可解析性预检。返回 true = 可以继续发送。
   ///
   /// 为什么必须在**发送前**问：APRS 消息发出去没有回滚（射频上更是如此），
@@ -4259,6 +4307,15 @@ class _MessagesPageState extends State<MessagesPage> {
       if (group != null) {
         final text = _input.text.trim();
         if (!await _confirmLength(st, group.groupCall, text)) return;
+        // 用户要求：群发前提示一次确认（一条广播发给全体成员，发出去不可撤回）。
+        if (!mounted) return;
+        if (!await _confirmAction(
+          S.of(context).groupChat,
+          S.of(context).confirmSendToGroup(group.groupCall),
+        )) {
+          return;
+        }
+        if (!mounted) return;
         widget.state.sendGroupMessage(group.groupCall, text, groupId: group.id);
       }
       _input.clear();

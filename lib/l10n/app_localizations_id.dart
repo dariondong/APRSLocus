@@ -7869,4 +7869,19 @@ Dengan menekan "Setuju dan sambung", Anda menyatakan telah membaca, memahami, da
   @override
   String get honorCelebrateOk => "Keren";
 
+  @override
+  String confirmSendToGroup(String group) {
+    return "Kirim ke $group?";
+  }
+
+  @override
+  String confirmInviteMember(String call) {
+    return "Undang $call ke obrolan grup?";
+  }
+
+  @override
+  String confirmCreateGroup(int n) {
+    return "Buat grup dan undang $n anggota?";
+  }
+
 }

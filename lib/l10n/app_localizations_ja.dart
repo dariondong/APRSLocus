@@ -7648,4 +7648,19 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String get honorCelebrateOk => "やった！";
 
+  @override
+  String confirmSendToGroup(String group) {
+    return "$group に送信しますか？";
+  }
+
+  @override
+  String confirmInviteMember(String call) {
+    return "$call をグループチャットに招待しますか？";
+  }
+
+  @override
+  String confirmCreateGroup(int n) {
+    return "グループを作成し、$n 名を招待しますか？";
+  }
+
 }

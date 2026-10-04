@@ -149,12 +149,15 @@ class _StationSettingsPageState extends State<StationSettingsPage> {
     // 增益**都**属于同一个 `PHGphgd`，见 [AppState.hasPhg]）；没有扩展就不发
     // 位置报文 —— 位置包的价值就在那段随包扩展上。
     final hasExt = st.hasPhg;
-    // 「填了 PHG 却没定位」要**明说**：`sendBeacon()` 内部被 `!myHasFix`
-    // 直接挡回（没坐标不能发位置包），这么一来只发出一帧状态报文。
+    // 「填了 PHG 却没定位」要**明说**：`sendBeacon()` 内部被上报闸
+    // （!myPositionReportable）挡回（没有**本轮**定位不能发位置包），
+    // 这么一来只发出一帧状态报文。
     // 不提示的话用户会以为 PHG 已经上天了 —— 只看流量、看不到一条位置帧。
-    final noFix = hasExt && !st.myHasFix;
+    // ⚠ 判据与 sendBeacon 同源：myPositionReportable 而非 myHasFix
+    // （后者含「上次保存的位置」，会让这里宣称发了、实际没发）。
+    final noFix = hasExt && !st.myPositionReportable;
     final sent = <String>[];
-    if (hasExt && st.myHasFix) {
+    if (hasExt && st.myPositionReportable) {
       st.sendBeacon();
       sent.add(s.txPartPosition);
     }

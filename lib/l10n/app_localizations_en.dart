@@ -7859,4 +7859,19 @@ By tapping "Agree and connect" you confirm that you have read, understood, and a
   @override
   String get honorCelebrateOk => "Awesome";
 
+  @override
+  String confirmSendToGroup(String group) {
+    return "Send to $group?";
+  }
+
+  @override
+  String confirmInviteMember(String call) {
+    return "Invite $call to the group chat?";
+  }
+
+  @override
+  String confirmCreateGroup(int n) {
+    return "Create the group and invite $n member(s)?";
+  }
+
 }

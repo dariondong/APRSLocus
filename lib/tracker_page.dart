@@ -857,16 +857,42 @@ class _TrackerPageState extends State<TrackerPage>
   }
 
 
+  /// 群发前的确认（与消息页 [MessagesPage] 同一约定）：一次操作发全体成员，
+  /// 发出去不可撤回。快捷聊天面板与消息页都要问一次。
+  Future<bool> _confirmGroupSend(String groupCall) async {
+    final ok = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(S.of(ctx).groupChat, style: T.h2),
+        content: Text(S.of(ctx).confirmSendToGroup(groupCall), style: ts(13)),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: Text(S.of(ctx).cancel, style: ts(13, c: C.slate)),
+          ),
+          FilledButton(
+            style: FilledButton.styleFrom(backgroundColor: C.orange),
+            onPressed: () => Navigator.pop(ctx, true),
+            child: Text(S.of(ctx).confirm, style: ts(13)),
+          ),
+        ],
+      ),
+    );
+    return ok == true;
+  }
+
   /// 发送快捷聊天消息
-  void _sheetSend(
+  Future<void> _sheetSend(
     TextEditingController ctrl,
     bool isGroup,
     String? target,
     void Function() refresh,
-  ) {
+  ) async {
     final text = ctrl.text.trim();
     if (text.isEmpty) return;
     if (isGroup) {
+      if (!await _confirmGroupSend(widget.group.groupCall)) return;
+      if (!mounted) return;
       widget.state.sendGroupMessage(
         widget.group.groupCall,
         text,

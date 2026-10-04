@@ -147,6 +147,7 @@ void main() {
       final st = AppState()..dataSource = AppState.srcAudio;
       st.beaconEnabled = true;
       st.connected = true;
+      st.debugSetFreshFix(); // 本轮已定位（否则会先卡在 waitingFix）
       expect(st.beaconPhase, BeaconPhase.rfDisabled);
       await st.enableRfBeacon();
       expect(st.audio.config.rfBeacon, isTrue, reason: '一键开启要落到当前来源的配置');
@@ -267,6 +268,7 @@ void main() {
         ..myLat = 22 + 16.45 / 60
         ..myLng = 111 + 13.90 / 60
         ..myHasFix = true
+        ..debugSetFreshFix()
         ..beaconPowerW = 25
         ..beaconAntennaHeightFt = 5120
         ..beaconGainDb = 5
@@ -321,6 +323,7 @@ void main() {
         ..myLat = 39.1
         ..myLng = 116.4
         ..myHasFix = true
+        ..debugSetFreshFix()
         ..debugSetLinkUp(AppState.srcAprsIs, true);
       st.sendBeacon();
       expect(st.connInfo, contains('位置'));
@@ -347,7 +350,7 @@ void main() {
       final st = AppState()
         ..myCall = 'BG7LZG'
         ..beaconPowerW = 25; // 有 PHG，但 myHasFix 仍为 false
-      st.sendBeacon(); // 内部被 !myHasFix 挡回
+      st.sendBeacon(); // 内部被 !myPositionReportable 挡回
       st.sendStatus();
       expect(st.packets.where((p) => p.type == 'position'), isEmpty,
           reason: '没有定位不能发位置包');
@@ -386,6 +389,7 @@ void main() {
       ..myLat = 21 + 55.17 / 60
       ..myLng = 110 + 52.40 / 60
       ..myHasFix = true
+      ..debugSetFreshFix()
       ..beaconPowerW = 4
       ..beaconAntennaHeightFt = 20
       ..beaconGainDb = 3

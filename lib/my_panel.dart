@@ -28,7 +28,11 @@ class MyPanel extends StatelessWidget {
   }
 
   Widget _body(BuildContext context) {
-    final fix = state.myHasFix;
+    // ⚠ 用 myPositionReportable 而不是 myHasFix：后者含「上次保存的位置」，
+    // 此时按钮若显示「立即上报」并弹「已发送」，其实 _sendBeaconNow 会被
+    // 上报闸挡回、什么都没发出去 —— 用户看到的是一条假的成功提示。
+    // 未重新定位时按钮显示「获取位置」，点它去开定位，拿到新点后自然可上报。
+    final fix = state.myPositionReportable;
     final locColor = fix
         ? C.green
         : state.loc.running
@@ -240,7 +244,7 @@ class MyPanel extends StatelessWidget {
                       GestureDetector(
                         onTap: () {
                           state.setBeaconEnabled(true);
-                          if (state.myHasFix) {
+                          if (fix) {
                             state.sendBeacon();
                           }
                         },
@@ -265,7 +269,7 @@ class MyPanel extends StatelessWidget {
                   onPressed: state.readOnlyMode
                       ? null
                       : () {
-                          if (state.myHasFix) {
+                          if (fix) {
                             state.sendBeacon();
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
@@ -288,7 +292,7 @@ class MyPanel extends StatelessWidget {
                           }
                         },
                   icon: Icon(
-                    state.myHasFix
+                    fix
                         ? Icons.send_rounded
                         : Icons.my_location_rounded,
                     size: 18,
@@ -296,18 +300,18 @@ class MyPanel extends StatelessWidget {
                   label: Text(
                     state.readOnlyMode
                         ? S.of(context).pkwdwplRxOnly
-                        : (state.myHasFix
+                        : (fix
                             ? S.of(context).beaconNow
                             : S.of(context).getLocation),
                   ),
                   style: OutlinedButton.styleFrom(
                     foregroundColor: state.readOnlyMode
                         ? C.grey
-                        : (state.myHasFix ? C.green : C.blue),
+                        : (fix ? C.green : C.blue),
                     side: BorderSide(
                       color: (state.readOnlyMode
                               ? C.greyLight
-                              : (state.myHasFix ? C.green : C.blue))
+                              : (fix ? C.green : C.blue))
                           .withValues(alpha: 0.5),
                     ),
                     // 手动上报是主页最高频的动作，给足触摸目标

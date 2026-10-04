@@ -115,6 +115,7 @@ void main() {
     test('已定位时用「已定位」，且网格不是 --', () {
       final st = fresh();
       st.myHasFix = true;
+      st.debugSetFreshFix(); // 本轮已拿到定位（否则只是「已保存位置」）
       st.myLat = 22.5;
       st.myLng = 114.0;
       final snap = buildSysWidgetSnapshot(st: st, s: zh);

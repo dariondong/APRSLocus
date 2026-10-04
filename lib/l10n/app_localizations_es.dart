@@ -7909,4 +7909,19 @@ Al pulsar "Aceptar y conectar" confirmas que has leído, entendido y aceptado lo
   @override
   String get honorCelebrateOk => "Genial";
 
+  @override
+  String confirmSendToGroup(String group) {
+    return "¿Enviar a $group?";
+  }
+
+  @override
+  String confirmInviteMember(String call) {
+    return "¿Invitar a $call al chat grupal?";
+  }
+
+  @override
+  String confirmCreateGroup(int n) {
+    return "¿Crear el grupo e invitar a $n miembro(s)?";
+  }
+
 }

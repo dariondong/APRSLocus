@@ -13430,6 +13430,24 @@ abstract class AppLocalizations {
   /// **'太棒了'**
   String get honorCelebrateOk;
 
+  /// No description provided for @confirmSendToGroup.
+  ///
+  /// In zh, this message translates to:
+  /// **'确认发送到 {group}？'**
+  String confirmSendToGroup(String group);
+
+  /// No description provided for @confirmInviteMember.
+  ///
+  /// In zh, this message translates to:
+  /// **'确认邀请 {call} 加入群聊？'**
+  String confirmInviteMember(String call);
+
+  /// No description provided for @confirmCreateGroup.
+  ///
+  /// In zh, this message translates to:
+  /// **'确认创建群聊并向 {n} 位成员发出邀请？'**
+  String confirmCreateGroup(int n);
+
 }
 
 class _AppLocalizationsDelegate

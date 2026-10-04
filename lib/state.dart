@@ -191,6 +191,28 @@ class AppState extends ChangeNotifier {
 
   // 我的位置
   bool myHasFix = false;
+
+  /// 本轮的定位是不是**只是把上次保存的位置装回来**（尚未收到新的定位）。
+  ///
+  /// 为什么必须和 [myHasFix] 分开：系统（GPS 或网络定位）**每次启动都会把
+  /// 上一次的位置默认交回来**，`_loadPrefs` 也会把磁盘上的 myLat/myLng 装回去 ——
+  /// 于是「定位还没真正开启」时，[myHasFix] 就已经是 true、坐标还是旧的。
+  /// 若拿它上报，就等于在没有任何新定位的情况下对外宣告一个错坐标。
+  ///
+  /// 所以只在**收到一次真实定位**（[_onFix] / 佳明点 / 手动选点）时才允许上报，
+  /// 见 [myPositionReportable]。
+  bool _pendingSavedPos = false;
+
+  /// 位置是否可以**上报**（自动信标与手动「立即上报」都要过这一关）。
+  ///
+  /// ⚠ 不要写成 `myHasFix`：那一位含着「上次保存的位置」，用户报的
+  /// 「定位没开却报出错误位置」正是拿它上报导致的。必须是**本轮重新拿到**的
+  /// 定位才算数（用户要求：先重新获取到位置，位置报告才能开始）。
+  ///
+  /// 与 [myHasFix] 分开还带来一点好处：旧位置仍可**显示**（用户打开 App 想先看到
+  /// 自己上次在哪），但**不发出去**。
+  bool get myPositionReportable => myHasFix && !_pendingSavedPos;
+
   double? myLat, myLng, myAlt;
   double? mySpeed, myCourse;
   String locStatus = '未定位';
@@ -287,6 +309,7 @@ class AppState extends ChangeNotifier {
     myLat = p.lat;
     myLng = p.lng;
     myHasFix = true;
+    _pendingSavedPos = false; // 手表给的是真实点，可以上报
     myFixCoarse = false; // 手表 GPS，不是粗定位
     myAccuracy = 0; // 佳明页面不给精度 → 0 = 未知（不画精度圈）
     if (p.altM != null) myAlt = p.altM;
@@ -427,6 +450,9 @@ class AppState extends ChangeNotifier {
     // 换到模拟位置：复位 GPS 侧的全部状态，免得切回真实定位时拿着手动坐标
     // 当历史、把位置粘在旧点上。
     _resetSelfFix();
+    // ⚠ 上面这行会把「只是保存的位置」重新置位，所以这里必须在它**之后**清掉。
+    // 手动坐标是用户显式指定的，允许上报（否则模拟位置永远发不出去）。
+    _pendingSavedPos = false;
     locStatus = '模拟位置';
     _syncFilterToPosition(); // 过滤中心跟随我的位置（filterFollow 时）
     persist();
@@ -574,6 +600,10 @@ class AppState extends ChangeNotifier {
   bool beaconIncludeSteps = false;
 
   /// 今日步数（0 = 还没读到或确实没走）。
+  ///
+  /// **必须落盘**（见 [_persistSteps]）：只留内存的话，每次冷启动、
+  /// 升级重装或改文件重编译之后都会回落到 0 —— 用户看到的就是
+  /// 「一升级步数就清零」。
   int stepsToday = 0;
 
   /// 今日步数里「设备重启之前」已经攒下的部分（见上）。
@@ -651,7 +681,7 @@ class AppState extends ChangeNotifier {
       _stepsBaseline = raw;
       _stepsCarry = 0;
       stepsToday = 0;
-      persist();
+      _persistSteps();
       return;
     }
     if (_stepsBaseline < 0 || raw < _stepsBaseline) {
@@ -659,7 +689,7 @@ class AppState extends ChangeNotifier {
       //    区别是重启时要把已经攒下的部分接住，否则今日步数会凭空少一截。
       if (_stepsBaseline >= 0) _stepsCarry = stepsToday;
       _stepsBaseline = raw;
-      persist();
+      _persistSteps();
     }
     // ⚠ 不能用 `.clamp()`：`int.clamp` 的返回类型是 **num**（它声明在 num 上），
     // 赋给 int 字段会报 argument_type_not_assignable/类型不匹配 —— CI 才看得出来。
@@ -668,8 +698,30 @@ class AppState extends ChangeNotifier {
     final v = _stepsCarry + delta;
     if (v != stepsToday) {
       stepsToday = v;
+      // 每次变化都落盘：升级 / 重装 / 改文件重编译后，[_stepsCarry] 与
+      // [stepsToday] 都要能接回来，否则「一升级步数就归零」。
+      _persistSteps();
       _notify();
     }
+  }
+
+  /// 只把计步相关字段落盘（比 [persist] 轻，[stepsToday] 变化可能几秒一次）。
+  ///
+  /// 为什么单独落盘而不是走 [persist]：走那个会顺带写完整份偏好并 `_notify()`，
+  /// 走一步就重建一次页面树不合算。这几个键是「跟着设备走」的数据（不进备份，
+  /// 见 tool/check_backup_keys.py），但**必须在同机升级后存活**。
+  void _persistSteps() {
+    unawaited(_persistStepsNow());
+  }
+
+  Future<void> _persistStepsNow() async {
+    try {
+      final p = await SharedPreferences.getInstance();
+      await p.setInt('stepsToday', stepsToday);
+      await p.setInt('stepsBaseline', _stepsBaseline);
+      await p.setString('stepsDayKey', _stepsDayKey);
+      await p.setInt('stepsCarry', _stepsCarry);
+    } catch (_) {}
   }
 
   /// 外置 GPS（佳明 LiveTrack）新鲜期间，把**手机 GPS 停下来**（issue #21-4）。
@@ -2490,6 +2542,24 @@ class AppState extends ChangeNotifier {
   @visibleForTesting
   void debugSetLinkUp(String src, bool up) => _setLinkUp(src, up);
 
+  /// 仅测试用：模拟「本轮重新拿到了一次定位」。
+  ///
+  /// 生产代码不要用它 —— 真实定位通过 [_onFix] 打开上报闸（[myPositionReportable]）。
+  /// 测试若直接改 `_pendingSavedPos`（私有）也改不到，所以留这个口子。
+  @visibleForTesting
+  void debugSetFreshFix() => _pendingSavedPos = false;
+
+  /// 仅测试用：模拟「当前坐标只是上次保存的位置、尚未重新定位」。
+  @visibleForTesting
+  void debugSetSavedPosPending() => _pendingSavedPos = true;
+
+  /// 仅测试用：用当前 [MotionService.instance.sample] 同步一次步数。
+  ///
+  /// 生产路径只在定位回调 / 启动传感器后调用 [_syncSteps]（需要平台通道），
+  /// 单测里用这个口子直接驱动基线算法。
+  @visibleForTesting
+  void debugSyncSteps() => _syncSteps();
+
   void _setLinkUp(String src, bool up) {
     _linkUp[src] = up;
     _refreshConnected();
@@ -2740,6 +2810,7 @@ class AppState extends ChangeNotifier {
         setMyPosition(39.9042, 116.4074);
       } else {
         myHasFix = true;
+        _pendingSavedPos = false; // 沿用模拟坐标也就是「有坐标可上报」
         locStatus = '模拟位置';
         _syncFilterToPosition(); // 已有坐标：切模拟时同样同步过滤中心
       }
@@ -3173,6 +3244,11 @@ class AppState extends ChangeNotifier {
       _stepsBaseline = p.getInt('stepsBaseline') ?? _stepsBaseline;
       _stepsDayKey = p.getString('stepsDayKey') ?? _stepsDayKey;
       _stepsCarry = p.getInt('stepsCarry') ?? _stepsCarry;
+      // 今日步数本身也要接回来：不接的话，本次启动在拿到第一个传感器读数前
+      // 会先显示 0，而**升级/重装/改文件重编译**若一直没等到读数，就永远停在 0
+      // —— 用户报的「升级后步数变 0」正是这一档。跨天时下面 [_syncSteps] 会自己归零。
+      final savedToday = p.getInt('stepsToday');
+      if (savedToday != null) stepsToday = savedToday;
       beaconIncludeTripMileage =
           p.getBool('beaconIncludeTripMileage') ?? beaconIncludeTripMileage;
       beaconIncludeTotalMileage = p.getBool('beaconIncludeTotalMileage') ??
@@ -3295,6 +3371,10 @@ class AppState extends ChangeNotifier {
         myLat = savedLat;
         myLng = savedLng;
         myHasFix = true;
+        // ⚠ 这只是「上次保存的位置」，**不是本轮的定位** —— 记上这一笔，
+        // 让上报闸（myPositionReportable）在收到真实定位前一直关着。
+        // 否则定位没开、坐标还是旧的，就会把这个错位置当成「我在哪」发出去。
+        _pendingSavedPos = true;
         locStatus = '已保存位置';
       }
       // 注意：devMode 不持久化，启动始终为干净的演示关闭状态
@@ -3439,6 +3519,7 @@ class AppState extends ChangeNotifier {
     await p.setInt('stepsBaseline', _stepsBaseline);
     await p.setString('stepsDayKey', _stepsDayKey);
     await p.setInt('stepsCarry', _stepsCarry);
+    await p.setInt('stepsToday', stepsToday);
     await p.setBool('beaconIncludeTripMileage', beaconIncludeTripMileage);
     await p.setBool('beaconIncludeTotalMileage', beaconIncludeTotalMileage);
     await p.setDouble('totalMileageKm', totalMileageKm);
@@ -3621,7 +3702,10 @@ class AppState extends ChangeNotifier {
       //   * 距离那条专治「走得快时两点之间被拉成直线、拐弯全被抹平」——
       //     走得快就按距离补点，停下来距离不动、自然退回纯定时。
       // 两条都不成立时什么都不做（不空转、不 notify）。
-      if (canAutoBeacon && myHasFix) {
+      //
+      // myPositionReportable 而不是 myHasFix：后者含「上次保存的位置」，
+      // 用它会在**本轮还没拿到定位**时就报一个旧坐标（见 canAutoBeacon 条件③）。
+      if (canAutoBeacon && myPositionReportable) {
         final sinceSec =
             DateTime.now().difference(_lastBeacon).inSeconds.toDouble();
         final dueByTime = sinceSec >= beaconIntervalNow;
@@ -3709,7 +3793,8 @@ class AppState extends ChangeNotifier {
       }
       // 盒子喂位置：每秒看一眼，**15 秒**才真发一次（盒子侧 60 秒内算新鲜）。
       // 开关关着、没定位、没连上时什么都不做（不空转、不 notify）。
-      if (boxOn && box.config.feedPos && box.connected && myHasFix) {
+      // myPositionReportable：别把「上次保存的位置」当成现在的位置喂给盒子。
+      if (boxOn && box.config.feedPos && box.connected && myPositionReportable) {
         final now = DateTime.now();
         if (_lastBoxFeed == null ||
             now.difference(_lastBoxFeed!).inSeconds >= 15) {
@@ -4326,12 +4411,21 @@ class AppState extends ChangeNotifier {
   /// 是否允许**自动**周期上报。
   ///
   /// 「会不会真的自动发出去」只有这一个出口 —— 散在两处必然漂移（见
-  /// [beaconPhase] 的注释）。四个条件缺一不可：
+  /// [beaconPhase] 的注释）。缺一不可的条件：
   ///
   ///   ① 链路可用（[connected]）；
   ///   ② 信标开着（[beaconEnabled]）；
-  ///   ③ **当前定位不是粗定位**（[myFixCoarse]）；
-  ///   ④ 射频来源（TNC/音频）还需用户显式开启「射频信标」。
+  ///   ③ **本轮已重新拿到定位**（[myPositionReportable]）；
+  ///   ④ **当前定位不是粗定位**（[myFixCoarse]）；
+  ///   ⑤ 射频来源（TNC/音频）还需用户显式开启「射频信标」。
+  ///
+  /// ── 条件 ③：为什么「有位置」还不够（本次改动）──
+  ///
+  /// 系统（GPS 或网络）**每次启动都会把上一次的位置默认交回来**，磁盘上还存着
+  /// 上次的 myLat/myLng。于是「定位根本没开」时 [myHasFix] 就已经是 true、坐标
+  /// 是旧的 —— 拿它上报，等于在没有任何新定位的情况下向全网宣告一个错位置
+  /// （用户报的正是这个）。所以必须等**重新获取到位置**才允许上报；旧的保存位置
+  /// 只用于显示、不发出去。
   ///
   /// ── 为什么粗定位（网络/基站/被动）不自动上报（v1.6.163）──
   ///
@@ -4339,13 +4433,17 @@ class AppState extends ChangeNotifier {
   /// 报出去的是个错坐标，收端（igate / 其他台站）看到的是一条乱跳的轨迹。
   /// 网络定位从此只用来「在地图上给个大概位置」，不进入信道；GPS 一回来
   /// 就自动恢复（倒计时按 [_lastBeacon] 算，所以那一刻会立刻补报一次）。
-  /// **手动「立即上报」不受影响**：那是用户的显式动作，知情且即时。
+  /// **手动「立即上报」不受影响**：那是用户的显式动作，知情且即时
+  /// （但仍受条件 ③ 约束 —— 用户点的是「上报**现在**的位置」，而当前还没有
+  /// 本轮定位时那个位置就是错的，见 [_sendBeaconNow]）。
   ///
   /// 唯一的例外是 [beaconForceCoarse]：用户明确选择了「就要发网络定位」
-  /// （没有 GPS 的设备）时才放开这一道闸 —— 它是**用户自己的决定**，
-  /// 而不是代码替他默认。
+  /// （没有 GPS 的设备）时才放开条件 ④ —— 它是**用户自己的决定**，
+  /// 而不是代码替他默认。它**不**放开条件 ③：强制的是「网络点也发」，
+  /// 不是「没有新定位也发」。
   bool get canAutoBeacon => connected &&
       beaconEnabled &&
+      myPositionReportable &&
       (!myFixCoarse || beaconForceCoarse || locationMode == 'network') &&
       (!usingRf || (usingTnc ? tnc.config.rfBeacon : audio.config.rfBeacon));
 
@@ -5136,6 +5234,11 @@ class AppState extends ChangeNotifier {
     myLng = outLng;
     myAlt = alt;
     myHasFix = true;
+    // 收到**本轮的**定位（含用户显式选用的网络定位）→ 上报闸打开。
+    // ⚠ `lastKnown` 是系统缓存点，不算「重新获取到的位置」：它只让标记有东西
+    // 可显示，绝不能据此上报（见 [myPositionReportable] 与用户报的
+    // 「定位没开却报出错位置」）。
+    if (!lastKnown) _pendingSavedPos = false;
     myFixCoarse = coarse;
     // 粗定位的精度**不能照抄系统自报值**：它常报 20~40m 却实际偏几百米，
     // 于是精度圈画得像 GPS 一样小，反而更骗人。给一个诚实的下限。
@@ -5277,7 +5380,11 @@ class AppState extends ChangeNotifier {
   /// [force] 为 true 时忽略信标总开关（仅手动上报用）；
   /// 自动定时上报调用时不带 force，受 beaconEnabled 门控。
   void _sendBeaconNow({bool force = false}) {
-    if (!myHasFix) return;
+    // ⚠ 这里必须是 [myPositionReportable] 而不是 [myHasFix]：后者含着
+    // 「上次保存的位置」，用户报的「定位没开却报出错位置」正是它造成的
+    // （系统的上次位置 / 磁盘存档都会把它置真）。手动上报也一样 —— 用户点的是
+    // 「上报现在的位置」，而当前还没有本轮定位，那个坐标就是错的。
+    if (!myPositionReportable) return;
     if (!force && !beaconEnabled) return;
     final lat = myLat!;
     final lng = myLng!;
@@ -6548,6 +6655,9 @@ class AppState extends ChangeNotifier {
     _pendingFixCount = 0;
     myAccuracy = 0;
     myFixCoarse = false;
+    // 复位「只是保存的位置」这一位：切到模拟位置 / 清空数据后若不复位，
+    // 用户切回真机 GPS 时可能带着上一次的「可上报」状态（那正是要防的）。
+    _pendingSavedPos = true;
   }
 
   // 接收侧不再有任何质量层状态（见 _upsertStation 顶部的说明）。
@@ -7634,7 +7744,10 @@ class AppState extends ChangeNotifier {
           ? BeaconPhase.coarseForced
           : BeaconPhase.coarseFix;
     }
-    if (!myHasFix) return BeaconPhase.waitingFix;
+    // 本轮还没重新拿到定位（当前只是上次保存的位置 / 系统交回的旧点）→
+    // 不能倒计时，如实报「等待定位」。否则倒计时走着，到点却因上报闸
+    // （myPositionReportable）拦住什么都不发 —— 又是「倒计时结束不发射」。
+    if (!myPositionReportable) return BeaconPhase.waitingFix;
     return beaconSecondsLeft > 0 ? BeaconPhase.counting : BeaconPhase.imminent;
   }
 

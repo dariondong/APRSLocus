@@ -7558,6 +7558,21 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String get honorCelebrateOk => "太棒了";
 
+  @override
+  String confirmSendToGroup(String group) {
+    return "确认发送到 $group？";
+  }
+
+  @override
+  String confirmInviteMember(String call) {
+    return "确认邀请 $call 加入群聊？";
+  }
+
+  @override
+  String confirmCreateGroup(int n) {
+    return "确认创建群聊并向 $n 位成员发出邀请？";
+  }
+
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
@@ -15112,5 +15127,20 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get honorCelebrateOk => "太棒了";
+
+  @override
+  String confirmSendToGroup(String group) {
+    return "確認傳送到 $group？";
+  }
+
+  @override
+  String confirmInviteMember(String call) {
+    return "確認邀請 $call 加入群聊？";
+  }
+
+  @override
+  String confirmCreateGroup(int n) {
+    return "確認建立群聊並向 $n 位成員發出邀請？";
+  }
 
 }

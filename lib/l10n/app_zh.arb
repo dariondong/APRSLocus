@@ -3247,5 +3247,11 @@
   "icomLanHint": "在电台 WLAN 设置里开启遥控并设置 Network User 名/密码，手机与电台保持同一网段。IC-705 局域网音频固定 12000 Hz。",
   "codeContributionIcomLan": "IC-705 电台直连",
   "honorCelebrateTitle": "恭喜获得新荣誉",
-  "honorCelebrateOk": "太棒了"
+  "honorCelebrateOk": "太棒了",
+  "confirmSendToGroup": "确认发送到 {group}？",
+  "@confirmSendToGroup": {"placeholders": {"group": {"type": "String"}}},
+  "confirmInviteMember": "确认邀请 {call} 加入群聊？",
+  "@confirmInviteMember": {"placeholders": {"call": {"type": "String"}}},
+  "confirmCreateGroup": "确认创建群聊并向 {n} 位成员发出邀请？",
+  "@confirmCreateGroup": {"placeholders": {"n": {"type": "int"}}}
 }

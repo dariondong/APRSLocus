@@ -227,7 +227,9 @@ class _HrAlarmWatcherState extends State<HrAlarmWatcher> {
     }
     // 正文刻意短：射频模式下单条消息上限 67 字符（见 AppState.tncMaxMsgLen），
     // 而求救信息最不该因为太长而被拒发/截断。
-    final pos = st.myHasFix
+    // ⚠ 位置用 myPositionReportable：没有**本轮**定位时宁可不报坐标（`--`），
+    // 也不要把「上次保存的位置」当成现在的位置发进求救信息（那是两个地方）。
+    final pos = st.myPositionReportable
         ? '${st.myLat!.toStringAsFixed(4)},${st.myLng!.toStringAsFixed(4)}'
         : '--';
     // 求助正文：碰撞/摔倒时没有新的心率读数，就报当前心率（可能为 0），

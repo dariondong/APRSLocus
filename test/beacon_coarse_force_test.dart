@@ -22,14 +22,17 @@ void main() {
 
   setUp(() => SharedPreferences.setMockInitialValues({}));
 
-  /// 一个「链路已连、信标已开」的状态：这是自动上报的门槛条件。
-  /// 其余四个条件（粗定位与否、射频信标、佳明、定位就绪）由各用例自己摆。
+  /// 一个「链路已连、信标已开、本轮已定位」的状态：这是自动上报的门槛条件。
+  /// 其余条件（粗定位与否、射频信标、佳明）由各用例自己摆。
   Future<AppState> armed() async {
     final st = AppState();
     // 构造函数里的 _loadPrefs 是异步的，不等它落地会被它覆盖
     await Future<void>.delayed(const Duration(milliseconds: 20));
     st.beaconEnabled = true;
     st.connected = true; // 默认来源是 APRS-IS，不受「射频信标」那一档影响
+    // ⚠ 新增的上报闸（myPositionReportable）要求「本轮已重新定位」——
+    // 这里没有真实定位回调，用调试口子把它摆成「已拿到本轮定位」。
+    st.debugSetFreshFix();
     return st;
   }
 
@@ -105,6 +108,56 @@ void main() {
       st.setBeaconForceCoarse(false);
       expect(st.canAutoBeacon, isFalse, reason: '关掉必须立刻生效（不能等到重连/重启）');
       expect(st.beaconPhase, BeaconPhase.coarseFix);
+
+      st.dispose();
+    });
+  });
+
+  /// ── 上报闸：只有**本轮重新拿到**的定位才允许上报 ──
+  ///
+  /// 用户报的问题：系统（GPS 或网络定位）**每次启动都会把上一次的位置默认
+  /// 交回来**，磁盘上也存着上次的坐标 —— 于是「定位根本没开」时 myHasFix
+  /// 就已经是 true、坐标是旧的。拿它上报等于报一个错位置。
+  ///
+  /// 这里把「有位置 ≠ 可上报」钉死：手动与自动两条路都要过闸。
+  group('上报闸（本轮的定位才算数）', () {
+    test('只有上次保存的位置：可显示但不可上报', () async {
+      final st = await armed();
+      // 模拟「上次保存的位置」：有坐标可显示，但本轮尚未定位。
+      st.myHasFix = true;
+      st.myLat = 22.5;
+      st.myLng = 114.0;
+      st.debugSetSavedPosPending();
+
+      expect(st.myPositionReportable, isFalse,
+          reason: '只有保存的位置，不算「本轮定位」');
+      expect(st.canAutoBeacon, isFalse, reason: '没重新定位前不许自动上报');
+      expect(st.beaconPhase, BeaconPhase.waitingFix,
+          reason: '不能显示一个照走的倒计时（到点也不会发）');
+
+      final before = st.packets.length;
+      st.sendBeacon();
+      expect(st.packets.length, before,
+          reason: '手动「立即上报」也必须被挡回 —— 发出去的是一个错位置');
+
+      st.dispose();
+    });
+
+    test('本轮重新定位后：闸打开，手动上报能出去', () async {
+      final st = await armed();
+      st.myHasFix = true;
+      st.myLat = 22.5;
+      st.myLng = 114.0;
+      st.debugSetSavedPosPending();
+      expect(st.myPositionReportable, isFalse);
+
+      st.debugSetFreshFix(); // 相当于 _onFix 收到一个非缓存点
+
+      expect(st.myPositionReportable, isTrue);
+      expect(st.canAutoBeacon, isTrue);
+      expect(st.beaconPhase, isNot(BeaconPhase.waitingFix));
+      st.sendBeacon();
+      expect(st.packets, isNotEmpty, reason: '重新定位后手动上报要能出去');
 
       st.dispose();
     });

@@ -2732,5 +2732,11 @@
   "icomLanHint": "Enable remote control in the radio WLAN settings, set the Network User name/password, and keep the phone on the same subnet. IC-705 LAN audio is fixed at 12000 Hz.",
   "codeContributionIcomLan": "IC-705 radio link",
   "honorCelebrateTitle": "Nueva distinción desbloqueada",
-  "honorCelebrateOk": "Genial"
+  "honorCelebrateOk": "Genial",
+  "confirmSendToGroup": "¿Enviar a {group}?",
+  "@confirmSendToGroup": {"placeholders": {"group": {"type": "String"}}},
+  "confirmInviteMember": "¿Invitar a {call} al chat grupal?",
+  "@confirmInviteMember": {"placeholders": {"call": {"type": "String"}}},
+  "confirmCreateGroup": "¿Crear el grupo e invitar a {n} miembro(s)?",
+  "@confirmCreateGroup": {"placeholders": {"n": {"type": "int"}}}
 }

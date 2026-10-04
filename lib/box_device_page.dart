@@ -653,7 +653,7 @@ class _BoxDevicePageState extends State<BoxDevicePage> {
           child: Row(children: [
             Expanded(
               child: OutlinedButton.icon(
-                onPressed: link.connected && st.myHasFix
+                onPressed: link.connected && st.myPositionReportable
                     ? () {
                         final ok = _feedNow();
                         _toast(ok ? s.boxCfgSent : s.disconnected,
@@ -689,7 +689,7 @@ class _BoxDevicePageState extends State<BoxDevicePage> {
             ),
           ]),
         ),
-        if (!st.myHasFix) SettingsHint(s.boxFeedNoFix, color: C.orange),
+        if (!st.myPositionReportable) SettingsHint(s.boxFeedNoFix, color: C.orange),
       ],
     );
   }
@@ -697,7 +697,9 @@ class _BoxDevicePageState extends State<BoxDevicePage> {
   /// 把手机**当前**位置喂过去。单位换算在这里一次做完：
   /// `mySpeed` 是 km/h，盒子要 m/s；`myAlt` 是米（盒子也是米）。
   bool _feedNow() {
-    if (!st.myHasFix) return false;
+    // 手动/自动同源：没有**本轮**定位（只是上次保存的位置）不喂 ——
+    // 否则盒子那侧会显示一个手机现在并不在的坐标。
+    if (!st.myPositionReportable) return false;
     return link.feedPos(
       lat: st.myLat!,
       lon: st.myLng!,

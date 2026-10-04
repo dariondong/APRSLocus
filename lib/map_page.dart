@@ -1167,7 +1167,8 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                           ),
                           Text(
                             localizedLocationStatus(context, st.locStatus),
-                            style: ts(11, c: st.myHasFix ? C.green : C.yellow),
+                            style: ts(11,
+                                c: st.myPositionReportable ? C.green : C.yellow),
                           ),
                         ],
                       ),
@@ -1259,14 +1260,16 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                         onPressed: () {
                           Navigator.pop(context);
                           st.sendBeacon();
+                          // 上报闸（myPositionReportable）会挡住「还没本轮定位」的点；
+                          // 这里如实反馈，别弹一条假的「已发送」。
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
-                              content: Text(
-                                S.of(context).positionBeaconDetail(
-                                  st.myGrid,
-                                  st.beaconAttachedDetail,
-                                ),
-                              ),
+                              content: Text(st.myPositionReportable
+                                  ? S.of(context).positionBeaconDetail(
+                                      st.myGrid,
+                                      st.beaconAttachedDetail,
+                                    )
+                                  : S.of(context).beaconWaitingFix),
                               behavior: SnackBarBehavior.floating,
                             ),
                           );
@@ -2162,10 +2165,13 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                       child: GestureDetector(
                         onTap: () {
                           st.sendBeacon();
-                          _toastMsg(S.of(context).positionBeaconDetail(
-                            st.myGrid,
-                            st.beaconAttachedDetail,
-                          ));
+                          // 还没本轮定位时上报闸会挡住它，如实提示（别弹假的已发送）。
+                          _toastMsg(st.myPositionReportable
+                              ? S.of(context).positionBeaconDetail(
+                                  st.myGrid,
+                                  st.beaconAttachedDetail,
+                                )
+                              : S.of(context).beaconWaitingFix);
                         },
                         child: Container(
                           // **不能是 const**：里面的档位判断是运行期表达式
