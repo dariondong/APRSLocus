@@ -297,22 +297,51 @@ String _norm(String s) => s.trim().toUpperCase();
 // 背景：荣誉由官网 members.json（以及 firstfix.json）下发，推送即生效、无需发版。
 // 用户在别处被授予称号后再次打开软件，应当有一个「恭喜获得」的仪式感提示。
 //
-// 判定与去重的关键设计（**首次启用不能误报**是这里最要紧的事）：
+// 判定与去重的关键设计（**首次启用不能误报、也不能漏报**是这里最要紧的事）：
 //   * 用一条持久化快照（`honorSeenKeys`）记住「上次已见过的荣誉」。
-//   * **基线以「第一份在线数据」为准**：全新安装 / 首次启用本功能时，不能拿
-//     内置 seed 或本地缓存当基线 —— 它们对普通用户是空的，一旦之后在线数据
-//     到达，会把用户**本来就有**的荣誉当成「新授予」全部弹一遍。所以先到的
-//     在线数据只用来**建立基线**（静默落盘、不弹），此后的在线数据才做对比。
-//   * 若磁盘上**已有** snapshots（上次运行写过），则本轮直接对比、无需再等。
-//   * 一次只把**展示顺序最靠前**的一枚作为主角；用户确认后由 App 调
-//     [markHonorsSeen] 把当前全部拥有标记为已见，避免多枚同时新增时反复弹。
-List<Honor> _pendingCelebration = [];
+//   * **基线怎么建分三种情形**（见 [honorBaselineAction]）：
+//       - 磁盘已有「已见」snapshot → 直接对比（普通老用户）；
+//       - **老用户升级**：本地已存有荣誉表却没有「已见」记录 ⇒ 此前版本没有庆祝
+//         功能，立刻用现存荣誉建基线并进入对比态，本窗口内的在线新增（例如刚授予
+//         的称号）才能被弹出来；
+//       - **全新安装**：没有本地荣誉表，第一份在线名单会把用户本来就有荣誉全带
+//         出来，不能当新授予弹 —— 要等在线数据到了再建基线。
+//   * 一次新增多枚时：每枚弹一次，关闭一枚补下一枚（队列），不吞掉。
+final List<Honor> _pendingQueue = [];
 bool _honorSeenLoaded = false;
 bool _honorSeenInitialized = false;
 bool _honorBaselineReady = false;
 bool _membersOnline = false;
+bool _membersLoaded = false; // ensureMembersLoaded() 是否已读完本地缓存
+bool _hadStoredHonors = false; // 本地是否已存有荣誉表（老用户升级判据）
+Map<String, List<String>>? _loadTimeHonors; // 本地缓存读完那一刻的荣誉表快照
+Set<String> _loadTimeFirstFix = {}; // 本地缓存读完那一刻的 FIRST FIX 名单
 Set<String> _knownHonorKeys = {};
 String _myHonorCall = '';
+
+/// 基线动作：见 [honorBaselineAction]（纯函数，便于单测）。
+enum HonorBaselineAction { compare, baselineNow, waitOnline }
+
+/// 决定「首次启用庆祝功能」时如何建立基线。抽成纯函数是为了把这三种情形
+/// 写成可测的：
+///   * **已有基线**（上次运行写过「已见」）→ 直接对比；
+///   * **老用户升级**：本地已存有荣誉表却没有「已见」记录 ⇒ 此前版本没有庆祝
+///     功能。要**立刻**用现存荣誉建基线，本窗口内的在线新增（如刚授予的称号）
+///     才能被识别为「新授予」弹出来；
+///   * **全新安装**：没有本地荣誉表 ⇒ 第一份在线名单会把用户本来就有荣誉全带
+///     出来，不能当新授予弹，要**等在线数据**到了再建基线。
+/// 任一处判错的表现都很极端：「该弹的一年不弹」或「一打开狂弹一串」。
+HonorBaselineAction honorBaselineAction({
+  required bool seenInitialized,
+  required bool hadStoredHonors,
+  required bool membersOnline,
+}) {
+  if (seenInitialized) return HonorBaselineAction.compare;
+  if (hadStoredHonors) return HonorBaselineAction.baselineNow;
+  return membersOnline
+      ? HonorBaselineAction.baselineNow
+      : HonorBaselineAction.waitOnline;
+}
 
 /// 设置「要检测谁的新荣誉」并读入已见过快照、立即尝试一次对比。
 /// 在 App 首次进入主页时调用。
@@ -322,11 +351,13 @@ Future<void> setHonorCelebrationCall(String call) async {
   onHonorsUpdated();
 }
 
-/// 本次启动待弹的「新荣誉」。取走后置空，保证只消费一次。
-List<Honor> takePendingHonorCelebrations() {
-  final out = _pendingCelebration;
-  _pendingCelebration = [];
-  return out;
+/// 查看队首待弹项（不消费）。App 用它决定是否展示、展示哪一枚。
+Honor? peekPendingHonorCelebrations() =>
+    _pendingQueue.isEmpty ? null : _pendingQueue.first;
+
+/// 消费队首待弹项（动画关闭后调用），使下一枚可继续弹出。
+void consumeCurrentHonorCelebration() {
+  if (_pendingQueue.isNotEmpty) _pendingQueue.removeAt(0);
 }
 
 /// 读取上次记录的「已见过荣誉」快照。`honorSeenKeys` 键存在即视为已初始化
@@ -359,43 +390,71 @@ Future<void> markHonorsSeen(Iterable<String> keys) async {
 }
 
 /// 纯函数：给定「当前拥有」与「已见过」，算出本次需要庆祝的新荣誉。
-/// 单独抽出来是为了可测（不碰 SharedPreferences / 网络），也把「取哪一枚」
-/// 的规则集中在一处：**按展示顺序取最靠前的一枚**，多枚时其余由确认回调一并记账。
+/// 单独抽出来是为了可测（不碰 SharedPreferences / 网络）。
+/// **按展示顺序返回全部新增**（定义缺失的 key 跳过）—— 一次授予多枚时，
+/// App 会逐枚弹、关闭一枚补下一枚，不把其余吞掉。
 List<Honor> newHonorsToCelebrate(Set<String> owned, Set<String> seen) {
   final fresh = owned.difference(seen);
   if (fresh.isEmpty) return const [];
-  final ordered = displayHonorKeys.where(fresh.contains).toList();
-  final mainKey = ordered.isNotEmpty ? ordered.first : fresh.first;
-  final h = _honorDefs[mainKey];
-  return h == null ? const [] : [h];
+  final ordered = displayHonorKeys.where(fresh.contains);
+  final out = <Honor>[];
+  for (final k in ordered) {
+    final h = _honorDefs[k];
+    if (h != null) out.add(h);
+  }
+  return out;
 }
 
 /// 对比「当前拥有」与「已见过」，算出新增荣誉并挂起待弹。
-/// 触发时机：[online] 表示本次是**在线** members.json 解析后触发（建立基线只认它）。
+/// 触发时机：[online] 表示本次是**在线** members.json 解析后触发。
 /// 也可能由 [setHonorCelebrationCall] 在进入主页时调用一次。
 void _updateKnownHonors({bool online = false}) {
   // 先记下「本轮在线数据已到手」——即便此刻 App 还没设好检测呼号，
   // 这个事实也必须保留，否则「在线数据先到、初始化后到」会永远等不到对比。
   if (online) _membersOnline = true;
+  // 本地荣誉表还没读完就先不判（否则会把「还没读到」误当「没有任何荣誉」）。
+  if (!_membersLoaded && !online) return;
   if (_myHonorCall.isEmpty || !_honorSeenLoaded) return;
-  // 等待本轮的在线数据（已到手则直接进入对比）：避免把内置 seed / 本地缓存
-  // 误当基线，或把「本来是既有荣誉」当成新授予弹出。
-  if (!_membersOnline) return;
   final owned = memberHonorKeys(_myHonorCall).toSet();
   if (!_honorBaselineReady) {
     _honorBaselineReady = true;
-    // 磁盘已有基线（上次运行写的）→ 直接进入对比
-    if (_honorSeenInitialized) {
-      // fallthrough
-    } else {
-      // 首次启用：用第一份在线数据建立基线，静默落盘、不弹
-      unawaited(markHonorsSeen(owned));
+    final action = honorBaselineAction(
+      seenInitialized: _honorSeenInitialized,
+      hadStoredHonors: _hadStoredHonors,
+      membersOnline: _membersOnline,
+    );
+    if (action == HonorBaselineAction.waitOnline) {
+      // 全新安装：等第一份在线名单，用**它**建基线（不能拿内置 seed/本地空缓存，
+      // 否则之后在线数据到达会把用户本来就有荣誉全当成新授予弹一遍）。
+      _honorBaselineReady = false;
       return;
     }
+    if (action == HonorBaselineAction.baselineNow) {
+      // 用当前拥有静默建基线、不弹；此后同一窗口内到达的在线新增即被识别为
+      // 「新授予」。老用户若在本地读完前在线就已到达（`owned` 已含刚授予的称号），
+      // 基线须用「本地缓存读完那一刻」的快照，否则会把新称号算进基线、永久不弹。
+      // 快照不含 firstFix，需并入当时的 FIRST FIX 名单（否则已持有 FIRST FIX 的
+      // 老用户升级后会被误弹一次）；「本地查无此人」= 空集（不能回退成 `owned`，
+      // 那会把刚授予的称号误算进基线）。
+      final localSnap = _loadTimeHonors?[_myHonorCall];
+      final localOwned = localSnap == null
+          ? <String>{}
+          : {
+              if (_loadTimeFirstFix.contains(_myHonorCall)) 'firstFix',
+              ...localSnap,
+            };
+      unawaited(markHonorsSeen(_hadStoredHonors ? localOwned : owned));
+      return;
+    }
+    // action == compare：磁盘已有基线 → 落入下方对比
   }
   final fresh = newHonorsToCelebrate(owned, _knownHonorKeys);
   if (fresh.isEmpty) return;
-  _pendingCelebration = fresh;
+  // 去重：数据可能多次更新而「已见」要等用户关闭才记账，避免同一枚重复入队。
+  final queued = _pendingQueue.map((h) => h.key).toSet();
+  final toAdd = fresh.where((h) => !queued.contains(h.key)).toList();
+  if (toAdd.isEmpty) return;
+  _pendingQueue.addAll(toAdd);
   memberListVersion.value++;
 }
 
@@ -640,6 +699,10 @@ Future<void> ensureMembersLoaded() async {
     final defs = p.getString('honorDefsJson');
     final cache = p.getString('honorsCacheJson');
     final prim = p.getString('primariesJson');
+    // 老用户升级判据：本地已存有荣誉表（`honorDefsJson` + `honorsCacheJson`
+    // 自 v2.0.3 的 8ebecf9 起就在写）。有表却没有「已见」记录 ⇒ 此前版本没有
+    // 庆祝功能，应立刻建基线、放行本窗口内的在线新增（见 `honorBaselineAction`）。
+    _hadStoredHonors = defs != null && cache != null;
     if (defs != null && cache != null) {
       try {
         _userPrimary.clear();
@@ -709,6 +772,26 @@ Future<void> ensureMembersLoaded() async {
       } catch (_) {}
     }
   } catch (_) {}
+  // 本地缓存读完：快照荣誉表与 FIRST FIX 名单，作为「老用户升级」建基线的来源
+  // （必须在 refreshMembers 之前 —— 在线数据一到就可能触发基线判定）。
+  _loadTimeHonors = {
+    for (final e in _honorsCache.entries) e.key: List<String>.of(e.value)
+  };
+  // FIRST FIX 名单由 achievements.dart 持久化；直接读上次落盘值即可，
+  // 不依赖 AchievementCenter 的加载时序。
+  try {
+    final prefs = await SharedPreferences.getInstance();
+    final ff = prefs.getString('firstFixHolders');
+    if (ff != null) {
+      final list = jsonDecode(ff);
+      if (list is List) {
+        _loadTimeFirstFix =
+            list.map((e) => e.toString().toUpperCase()).toSet();
+      }
+    }
+  } catch (_) {}
+  _membersLoaded = true;
+  onHonorsUpdated();
   unawaited(refreshMembers());
 }
 

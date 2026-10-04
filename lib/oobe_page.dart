@@ -58,10 +58,16 @@ class _OobePageState extends State<OobePage> {
   void initState() {
     super.initState();
     final st = widget.state;
+    // 连接参数在**首次运行**时一律留空：软件不预置、也不推荐任何服务器地址
+    // （用户协议 2.4），端口/Passcode 也交由用户显式决定，仅以 hint 提示常值。
+    // 预填 `rotate.aprs2.net` / `14580` / `-1` 会诱导用户「直接下一步」，等于
+    // 软件替他选了连到哪里。重新运行向导（oobeDone）时才回填已保存值，
+    // 否则会把用户现有配置清掉（向导承诺「当前设置不会丢」）。
+    final rerun = st.oobeDone;
     _call = TextEditingController(text: st.myCall);
-    _server = TextEditingController(text: st.aprs.server);
-    _port = TextEditingController(text: '${st.aprs.port}');
-    _pass = TextEditingController(text: st.aprs.passcode);
+    _server = TextEditingController(text: rerun ? st.aprs.server : '');
+    _port = TextEditingController(text: rerun ? '${st.aprs.port}' : '');
+    _pass = TextEditingController(text: rerun ? st.aprs.passcode : '');
     _symbol = st.mySymbol;
     _ssid = st.mySsid;
     _lang = st.locale;

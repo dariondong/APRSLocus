@@ -70,7 +70,7 @@ class _AppState extends State<App> {
   /// 「有新版弹提醒」只调一次（启动后第一次进入主页时挂一个 post-frame）
   bool _updatePromptScheduled = false;
 
-  /// 新荣誉庆祝：0=未开始 1=已排期/检测中 2=已展示（只弹一次）
+  /// 新荣誉庆祝：0=未开始 1=已排期/检测中 2=展示中
   int _honorCelebration = 0;
 
   /// 荣誉数据版本监听是否已挂（只挂一次）
@@ -149,12 +149,12 @@ class _AppState extends State<App> {
     WidgetsBinding.instance.addPostFrameCallback((_) => _onHonorsMaybeChanged());
   }
 
-  /// 荣誉数据更新 → 若有待弹项则展示庆祝动画（仅一次）
+  /// 荣誉数据更新 → 若有待弹项则展示庆祝动画（每枚一次，关闭后再看下一枚）
   void _onHonorsMaybeChanged() {
     if (!mounted || _honorCelebration == 2) return;
-    final pending = takePendingHonorCelebrations();
-    if (pending.isEmpty) return;
-    _showHonorCelebration(pending.first);
+    final honor = peekPendingHonorCelebrations();
+    if (honor == null) return;
+    _showHonorCelebration(honor);
   }
 
   void _showHonorCelebration(Honor honor) {
@@ -188,8 +188,14 @@ class _AppState extends State<App> {
           if (removed) return; // 背景与按钮都可能触发，去重
           removed = true;
           entry.remove();
-          // 把当前拥有的全部荣誉记为「已见」，避免下次启动重复弹
+          // 消费掉这一枚（队首），并把「当前拥有」的全部记为「已见」，避免重复弹
+          consumeCurrentHonorCelebration();
           unawaited(markHonorsSeen(memberHonorKeys(_state.myFullCall)));
+          // 若还有排队的新徽章，依次补弹 —— 不能只弹「最靠前那一枚」就把
+          // 其余几枚吞掉（一次新增多枚时用户会少看几个）。
+          _honorCelebration = 1;
+          WidgetsBinding.instance
+              .addPostFrameCallback((_) => _onHonorsMaybeChanged());
         },
       ),
     );
