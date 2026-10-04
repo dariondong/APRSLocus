@@ -43,7 +43,8 @@ class _BlacklistPageState extends State<BlacklistPage> {
     if (mounted) setState(() => _busy = false);
   }
 
-  /// **长按复制按钮** → 本机豁免（本地白名单）并重新判定；页面会自己消失。
+  /// **长按安装标识行** → 本机豁免（本地白名单）并重新判定；页面会自己消失。
+  /// （标识行：点一下 = 复制，长按 = 这个隐藏手势；两者都不给提示。）
   ///
   /// ⚠ 硬封（`hard`，默认）豁免不了：那种条目**静默无反应** —— 按要求，长按不给用户
   /// 任何提示（软封解掉了不提示，硬封解不开也不提示，免得这套机制被"试出来"）。
@@ -126,30 +127,11 @@ class _BlacklistPageState extends State<BlacklistPage> {
                     const SizedBox(height: 10),
                     Text(s.blId, style: ts(11, c: C.grey, w: FontWeight.w700)),
                     const SizedBox(height: 3),
-                    Row(
-                      children: [
-                        // 安装标识保持可选中/复制（长按选中是它本来的行为）
-                        Expanded(
-                          child: SelectableText(
-                            _deviceId,
-                            maxLines: 1,
-                            style: ts(12, c: C.ink, h: 1.5)
-                                .copyWith(fontFamily: 'monospace'),
-                          ),
-                        ),
-                        // **长按这个按钮**才是隐藏手势（本机豁免）：点一下 = 复制。
-                        // 挂在这里而不是标识上，是为了不占掉标识本身的长按（选中/复制）。
-                        GestureDetector(
-                          onLongPress: _exemptLocally,
-                          child: IconButton(
-                            onPressed: _copyId,
-                            icon: Icon(Icons.copy_rounded,
-                                size: 16, color: C.grey),
-                            visualDensity: VisualDensity.compact,
-                            tooltip: s.blId,
-                          ),
-                        ),
-                      ],
+                    // 点一下 = 复制；长按 = 隐藏手势（本机豁免，见 `_exemptLocally`）。
+                    DeviceIdRow(
+                      deviceId: _deviceId,
+                      onCopy: _copyId,
+                      onLongPress: _exemptLocally,
                     ),
                   ],
                   const SizedBox(height: 14),
@@ -176,6 +158,63 @@ class _BlacklistPageState extends State<BlacklistPage> {
               ),
             ),
           ),
+        ),
+      ),
+    );
+  }
+}
+
+/// 安装标识行：**点一下 = 复制**，**长按 = 隐藏手势**（本机豁免）。
+///
+/// 抽成独立 widget 有两个原因，都是为了让「长按被抢走」这类回归再也进不来：
+///
+///  1. **手势区必须独占长按**。曾经标识是 `SelectableText`、隐藏手势挂在旁边的
+///     复制图标上 —— 两者都出事：长按标识弹的是系统选区工具栏，长按图标弹的是
+///     `IconButton.tooltip`（默认 `longPress` 触发）。两个长按都不是豁免，用户按到
+///     的全是"复制 / 选择"。
+///  2. 独立出来才能被 widget 测试**直接驱动真实手势**（见 `blacklist_page_test.dart`）：
+///     该测试在整行上 `longPress` 并断言触发的是本机豁免、且渲染里**不含
+///     `SelectableText` / `Tooltip`** —— 谁把它们加回来，测试就会红。
+class DeviceIdRow extends StatelessWidget {
+  final String deviceId;
+  final VoidCallback onCopy;
+  final VoidCallback onLongPress;
+
+  const DeviceIdRow({
+    super.key,
+    required this.deviceId,
+    required this.onCopy,
+    required this.onLongPress,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onCopy,
+        onLongPress: onLongPress,
+        borderRadius: BorderRadius.circular(10),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 9),
+          decoration: BoxDecoration(
+            color: C.pageFill,
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(color: C.border, width: 0.5),
+          ),
+          child: Row(children: [
+            Expanded(
+              child: Text(
+                deviceId,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: ts(12, c: C.ink, h: 1.5)
+                    .copyWith(fontFamily: 'monospace'),
+              ),
+            ),
+            const SizedBox(width: 8),
+            Icon(Icons.copy_rounded, size: 16, color: C.grey),
+          ]),
         ),
       ),
     );
