@@ -535,15 +535,25 @@ FIRST FIX  firstfix.json → isFirstFixHolder() → 动态注入 'firstFix'
 |---|---|
 | `setHonorCelebrationCall(call)` | App 进主页时调用：设检测呼号、读入快照、尝试一次对比 |
 | `onHonorsUpdated({online})` | 荣誉数据更新后调用（`refreshMembers` 解析完传 `online: true`） |
-| `takePendingHonorCelebrations()` | 取走待弹荣誉（取后置空，只消费一次） |
+| `peekPendingHonorCelebrations()` | 查看队首待弹项（不消费），App 据此决定弹哪一枚 |
+| `consumeCurrentHonorCelebration()` | 动画关闭后消费队首，使下一枚可继续弹 |
 | `markHonorsSeen(keys)` | 用户看过动画后把「当前拥有」落盘为 `honorSeenKeys` |
-| `newHonorsToCelebrate(owned, seen)` | **纯函数**：算新增项、取展示顺序最靠前的一枚（有单测） |
+| `honorBaselineAction(...)` | **纯函数**：首次启用时如何建基线（有单测） |
+| `newHonorsToCelebrate(owned, seen)` | **纯函数**：按展示顺序返回全部新增（有单测） |
 
-**关键设计（首次启用不能误报）**：基线以**第一份在线数据**为准。
-`members.json` 到达前（内置 seed / 本地缓存）一律不对比 —— 否则普通用户
-在线数据一回来，会把**本来就有**的荣誉当成「新授予」全部弹一遍。所以
-`_membersOnline` 为 false 时直接按兵不动；第一份在线数据只用来建立基线
-（静默落盘、不弹），此后每份在线数据对比新增。老用户此后获得新授予同样会弹。
+**关键设计（首次启用既不能误报、也不能漏报）**：基线怎么建分三种情形
+（`honorBaselineAction`）：
+
+* **磁盘已有 `honorSeenKeys`** → 直接对比（普通老用户）；
+* **老用户升级**（本地已存荣誉表、却没有 `honorSeenKeys`）→ 此前版本没有庆祝
+  功能，**立刻用本地缓存建基线**并进入对比态（并入当时的 FIRST FIX 名单）。
+  这样**本窗口内到达的在线新增**（例如刚授予的称号）才能被识别为「新授予」弹出
+  ——若像旧版那样「一律等第一份在线数据建基线」，刚授予的称号会被算进基线、
+  **永久不弹**（这正是 v2.0.21 老用户看不到动画的原因）；
+* **全新安装**（没有本地荣誉表）→ 第一份在线名单会把用户本来就有荣誉全带出来，
+  不能当新授予弹，**等在线数据到了再建基线**。
+
+**一次新增多枚**：每枚弹一次，关闭一枚补下一枚（队列 + 去重），不把其余吞掉。
 
 **消费点**：`lib/app.dart` 在 `home` 的 builder 里调度；用一个 `OverlayEntry`
 插入到 `navigatorKey` 的 overlay 上（不在 builder 里 `setState`，避免重建地图外壳）。
