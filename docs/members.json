@@ -1,6 +1,6 @@
 {
-  "version": 56,
-  "updated": "2026-10-01",
+  "version": 57,
+  "updated": "2026-10-04",
   "developers": [
     {
       "call": "BG7LZQ",
@@ -647,7 +647,8 @@
         "en": "Kept watch in the faintest signals, growing with it from a whisper to a clear call."
       },
       "honors": [
-        "earlyMember"
+        "earlyMember",
+        "jadeGift"
       ],
       "primary": "earlyMember",
       "grp": "test",
