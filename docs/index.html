@@ -642,6 +642,16 @@ html{overflow-x:hidden}
 <!-- site-sync:changelog -->
     <div class="cl-version reveal">
       <div class="cl-head">
+        <span class="cl-tag">v2.0.23</span>
+        <span class="cl-date">2026-10-04</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot new"></span>**显示设置新增「始终显示地图标签」**：打开后，无论台站多密、缩得多小，地图上都会显示每个台站的呼号标签（栅格与矢量两套地图都生效）。默认关，沿用原取舍（台站 ≤ 60 个或放大到 13 级以上才显示）—— 打开会明显变密、标签也可能互相重叠，渲染也更费；该偏好随备份一起走。</div>
+        <div class="cl-item"><span class="cl-dot fix"></span>**拦截页「长按解封」按不出来**：远程限制名单里**软封**的隐藏解封入口（长按本机安装标识）此前被两处手势抢走 —— 标识用的是可选中文本，长按会弹出系统选区工具栏；旁边的复制图标又因长按提示抢走同一手势。于是长按永远不是「解封」，用户看到的就是「变成复制/选择工具栏」。现在标识行是**单一手势区**：点一下 = 复制、长按 = 解封（软封有效；硬封仍按设计静默无反应）。</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
         <span class="cl-tag">v2.0.22</span>
         <span class="cl-date">2026-10-04</span>
       </div>

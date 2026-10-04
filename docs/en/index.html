@@ -567,6 +567,16 @@
 <!-- site-sync:changelog -->
     <div class="cl-version reveal">
       <div class="cl-head">
+        <span class="cl-tag">v2.0.23</span>
+        <span class="cl-date">2026-10-04</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot new"></span>**New display setting: "Always show map labels"**: when on, every station's callsign label is drawn on the map regardless of station count or zoom (both the raster and vector maps). Off by default, keeping the original trade-off (labels only when there are 60 or fewer stations or zoom is 13+) - turning it on gets crowded, labels may overlap, and it costs more to render. The preference travels with backups.</div>
+        <div class="cl-item"><span class="cl-dot fix"></span>**The intercept page's "unblock on long-press" never fired**: the soft-ban hidden unblock (long-press the install ID) was swallowed by two other gestures on the same row - the ID used selectable text, so a long-press raised the system selection toolbar, and the copy icon's long-press tooltip claimed the same gesture. The long-press was therefore never the unblock. The ID row is now a **single gesture area**: tap = copy, long-press = unblock (works for soft bans; hard bans stay silent by design).</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
         <span class="cl-tag">v2.0.22</span>
         <span class="cl-date">2026-10-04</span>
       </div>

@@ -205,6 +205,44 @@ CARDS = [
 # 只列「重点版本」：中间几十个纯修 bug 的版本归纳进文字说明，完整记录指向 Releases。
 CL = [
     {
+        'ver': 'v2.0.23', 'date': '2026-10-04',
+        'items': [
+            ('new',
+             T('**显示设置新增「始终显示地图标签」**：打开后，无论台站多密、缩得多小，'
+               '地图上都会显示每个台站的呼号标签（栅格与矢量两套地图都生效）。默认关，'
+               '沿用原取舍（台站 ≤ 60 个或放大到 13 级以上才显示）—— 打开会明显变密、'
+               '标签也可能互相重叠，渲染也更费；该偏好随备份一起走。',
+               '**顯示設定新增「永遠顯示地圖標籤」**：開啟後，無論台站多密、縮得多小，'
+               '地圖上都會顯示每個台站的呼號標籤（格狀與向量兩套地圖都生效）。預設關，'
+               '沿用原取捨（台站 ≤ 60 個或放大到 13 級以上才顯示）—— 開啟會明顯變密、'
+               '標籤也可能互相重疊，渲染也更費；該偏好隨備份一起走。',
+               '**New display setting: "Always show map labels"**: when on, every station\'s '
+               'callsign label is drawn on the map regardless of station count or zoom (both the '
+               'raster and vector maps). Off by default, keeping the original trade-off (labels '
+               'only when there are 60 or fewer stations or zoom is 13+) - turning it on gets '
+               'crowded, labels may overlap, and it costs more to render. The preference travels '
+               'with backups.')),
+            ('fix',
+             T('**拦截页「长按解封」按不出来**：远程限制名单里**软封**的隐藏解封入口'
+               '（长按本机安装标识）此前被两处手势抢走 —— 标识用的是可选中文本，长按会弹出'
+               '系统选区工具栏；旁边的复制图标又因长按提示抢走同一手势。于是长按永远不是'
+               '「解封」，用户看到的就是「变成复制/选择工具栏」。现在标识行是**单一手势区**：'
+               '点一下 = 复制、长按 = 解封（软封有效；硬封仍按设计静默无反应）。',
+               '**攔截頁「長按解封」按不出來**：遠端限制名單裡**軟封**的隱藏解封入口'
+               '（長按本機安裝識別）此前被兩處手勢搶走 —— 識別用的是可選取文字，長按會彈出'
+               '系統選區工具列；旁邊的複製圖示又因長按提示搶走同一手勢。於是長按永遠不是'
+               '「解封」，使用者看到的就是「變成複製/選取工具列」。現在識別列是**單一手勢區**：'
+               '點一下 = 複製、長按 = 解封（軟封有效；硬封仍按設計靜默無反應）。',
+               '**The intercept page\'s "unblock on long-press" never fired**: the soft-ban hidden '
+               'unblock (long-press the install ID) was swallowed by two other gestures on the same '
+               'row - the ID used selectable text, so a long-press raised the system selection '
+               'toolbar, and the copy icon\'s long-press tooltip claimed the same gesture. The '
+               'long-press was therefore never the unblock. The ID row is now a **single gesture '
+               'area**: tap = copy, long-press = unblock (works for soft bans; hard bans stay '
+               'silent by design).')),
+        ],
+    },
+    {
         'ver': 'v2.0.22', 'date': '2026-10-04',
         'items': [
             ('fix',

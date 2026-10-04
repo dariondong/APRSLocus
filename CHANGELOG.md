@@ -1,5 +1,48 @@
 # 更新日志
 
+## [2.0.23] - 2026-10-04
+
+### 新增「始终显示地图标签」+ 修复拦截页长按解封
+
+**新增**
+
+- **显示设置新增「始终显示地图标签」**：打开后，无论台站多密、缩得多小，地图上都会
+  显示每个台站的呼号标签（栅格与矢量两套地图都生效）。默认关，沿用原取舍（台站
+  ≤ 60 个，或缩放到 13 级以上才显示）—— 打开会明显变密，标签也可能互相重叠，且更
+  费渲染。该偏好会随备份一起走。
+
+**修复**
+
+- **拦截页「长按解封」按不出来**：远程限制名单里**软封**的隐藏解封入口（长按本机安装
+  标识）此前被两处手势抢走 —— 标识用的是 `SelectableText`，长按会弹出系统选区工具栏；
+  旁边的复制图标又因 `tooltip` 同样在长按时弹提示。于是长按永远不是「解封」，用户看到
+  的就是「变成复制/选择工具栏」。现在标识行是**单一手势区**：点一下 = 复制、长按 = 解封
+  （软封有效；硬封仍按设计**静默无反应**）。
+- **配套**：手册「设置参考」页已重新生成，补上新开关并同步此前滞后的若干设置项。
+
+## [2.0.23] - 2026-10-04 (English)
+
+### New "always show map labels" + intercept-page long-press fix
+
+**New**
+
+- **Display settings: "Always show map labels"**: when on, every station's callsign label is
+  drawn on the map regardless of station count or zoom (both the raster and vector maps). Off
+  by default, keeping the original trade-off (labels only when ≤ 60 stations or zoom ≥ 13) -
+  turning it on gets crowded, labels may overlap, and it costs more to render. The preference
+  travels with backups.
+
+**Fixed**
+
+- **The intercept page's "unblock on long-press" never fired**: the soft-ban hidden unblock
+  (long-press the install ID) was swallowed by two other gestures on the same row - the ID used
+  `SelectableText`, so a long-press raised the system selection toolbar, and the copy icon's
+  `tooltip` also triggers on long-press. The long-press was therefore never the unblock. The ID
+  row is now a **single gesture area**: tap = copy, long-press = unblock (works for soft bans;
+  hard bans stay silent by design).
+- **Also**: the manual's "Settings reference" page was regenerated to include the new switch
+  and to sync several previously missing settings.
+
 ## [2.0.22] - 2026-10-04
 
 ### 修复「老用户看不到荣誉庆祝」+ 首次运行不再预填连接参数

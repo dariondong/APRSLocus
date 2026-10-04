@@ -573,6 +573,16 @@
 <!-- site-sync:changelog -->
     <div class="cl-version reveal">
       <div class="cl-head">
+        <span class="cl-tag">v2.0.23</span>
+        <span class="cl-date">2026-10-04</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot new"></span>**顯示設定新增「永遠顯示地圖標籤」**：開啟後，無論台站多密、縮得多小，地圖上都會顯示每個台站的呼號標籤（格狀與向量兩套地圖都生效）。預設關，沿用原取捨（台站 ≤ 60 個或放大到 13 級以上才顯示）—— 開啟會明顯變密、標籤也可能互相重疊，渲染也更費；該偏好隨備份一起走。</div>
+        <div class="cl-item"><span class="cl-dot fix"></span>**攔截頁「長按解封」按不出來**：遠端限制名單裡**軟封**的隱藏解封入口（長按本機安裝識別）此前被兩處手勢搶走 —— 識別用的是可選取文字，長按會彈出系統選區工具列；旁邊的複製圖示又因長按提示搶走同一手勢。於是長按永遠不是「解封」，使用者看到的就是「變成複製/選取工具列」。現在識別列是**單一手勢區**：點一下 = 複製、長按 = 解封（軟封有效；硬封仍按設計靜默無反應）。</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
         <span class="cl-tag">v2.0.22</span>
         <span class="cl-date">2026-10-04</span>
       </div>
