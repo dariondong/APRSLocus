@@ -467,7 +467,7 @@ void onHonorsUpdated({bool online = false}) {
 
 void _seedDefaults() {
   _honorsCache = {
-    'BG7LZQ': ['kaishan', 'developer', 'earlyMember'],
+    'BG7LZQ': ['kaishan', 'developer', 'earlyMember', 'sower', 'jadeGift'],
     'BG2HCB': ['kaishan', 'developer', 'earlyMember'],
     'BA4UAX': ['kaishan', 'developer', 'earlyMember'],
     'BD3QID': ['kaishan', 'developer', 'earlyMember'],

@@ -1,5 +1,5 @@
 {
-  "version": 57,
+  "version": 58,
   "updated": "2026-10-04",
   "developers": [
     {
@@ -52,7 +52,8 @@
         "kaishan",
         "developer",
         "earlyMember",
-        "sower"
+        "sower",
+        "jadeGift"
       ],
       "primary": "kaishan"
     },
