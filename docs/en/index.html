@@ -567,6 +567,17 @@
 <!-- site-sync:changelog -->
     <div class="cl-version reveal">
       <div class="cl-head">
+        <span class="cl-tag">v2.0.24</span>
+        <span class="cl-date">2026-10-04</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot fix"></span>**Honor celebration no longer distinguishes new and existing users**: previously only a freshly granted title would show, and honors you already had were never shown. Now: **with no local "read" record, every honor you currently own is shown in turn** (a fresh install, an upgrade from an older version, or a cleared record all count as no record); once seen, the record is written and it will not repeat - unless the account is granted a new honor.</div>
+        <div class="cl-item"><span class="cl-dot fix"></span>**Tapping your own row in the steps leaderboard showed a black-on-black toast**: the text used `ts(12)`, whose default color is dark, on an equally dark background - dark on dark and unreadable. It is now explicit white text (one more instance of the same bug in the settings pages is fixed too).</div>
+        <div class="cl-item"><span class="cl-dot new"></span>**New developer option "Clear read honors"** (Settings → Lab & developer tools): wipes the local "read" record so the next check replays every honor you currently own - handy for previewing and for self-testing.</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
         <span class="cl-tag">v2.0.23</span>
         <span class="cl-date">2026-10-04</span>
       </div>

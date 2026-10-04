@@ -642,6 +642,17 @@ html{overflow-x:hidden}
 <!-- site-sync:changelog -->
     <div class="cl-version reveal">
       <div class="cl-head">
+        <span class="cl-tag">v2.0.24</span>
+        <span class="cl-date">2026-10-04</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot fix"></span>**荣誉庆祝不再区分新老用户**：此前「只有被新授予的称号才弹」，自己本来已有的荣誉从不展示。现在改为：**本地没有「已阅读」记录，就把当前已拥有的全部荣誉依次弹一遍**（全新安装、旧版本升级、记录被清除都算无记录）；看过一次即落盘，之后不再重复（除非该账号新获荣誉）。</div>
+        <div class="cl-item"><span class="cl-dot fix"></span>**步数排行榜点「我」那一行，弹出的提示条黑乎乎一片**：提示文字用了 `ts(12)`，其默认取色是深色，压在同样是深色的提示条底上 —— 深字叠深底，一个字都看不清。改为显式白字（设置页里同类的一处一并修）。</div>
+        <div class="cl-item"><span class="cl-dot new"></span>**开发者选项新增「清除已阅读荣誉」**（设置 → 实验室与开发者工具）：清掉本机「已阅读」记录，下次判定会把当前已拥有的荣誉重新展示一遍，方便预览与自测。</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
         <span class="cl-tag">v2.0.23</span>
         <span class="cl-date">2026-10-04</span>
       </div>

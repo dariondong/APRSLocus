@@ -205,6 +205,47 @@ CARDS = [
 # 只列「重点版本」：中间几十个纯修 bug 的版本归纳进文字说明，完整记录指向 Releases。
 CL = [
     {
+        'ver': 'v2.0.24', 'date': '2026-10-04',
+        'items': [
+            ('fix',
+             T('**荣誉庆祝不再区分新老用户**：此前「只有被新授予的称号才弹」，自己'
+               '本来已有的荣誉从不展示。现在改为：**本地没有「已阅读」记录，就把当前'
+               '已拥有的全部荣誉依次弹一遍**（全新安装、旧版本升级、记录被清除都算'
+               '无记录）；看过一次即落盘，之后不再重复（除非该账号新获荣誉）。',
+               '**榮譽慶祝不再區分新舊使用者**：此前「只有被新授予的稱號才彈」，自己'
+               '本來已有的榮譽從不顯示。現在改為：**本機沒有「已閱讀」記錄，就把目前'
+               '已擁有的全部榮譽依序彈一遍**（全新安裝、舊版升級、記錄被清除都算'
+               '無記錄）；看過一次即落盤，之後不再重複（除非該帳號新獲榮譽）。',
+               '**Honor celebration no longer distinguishes new and existing users**: '
+               'previously only a freshly granted title would show, and honors you already '
+               'had were never shown. Now: **with no local "read" record, every honor you '
+               'currently own is shown in turn** (a fresh install, an upgrade from an older '
+               'version, or a cleared record all count as no record); once seen, the record '
+               'is written and it will not repeat - unless the account is granted a new honor.')),
+            ('fix',
+             T('**步数排行榜点「我」那一行，弹出的提示条黑乎乎一片**：提示文字用了 '
+               '`ts(12)`，其默认取色是深色，压在同样是深色的提示条底上 —— 深字叠深底，'
+               '一个字都看不清。改为显式白字（设置页里同类的一处一并修）。',
+               '**步數排行榜點「我」那一列，彈出的提示條黑壓壓一片**：提示文字用了 '
+               '`ts(12)`，其預設取色是深色，壓在同樣是深色的提示條底上 —— 深字疊深底，'
+               '一個字都看不清楚。改為明確白字（設定頁裡同類的一處一併修）。',
+               '**Tapping your own row in the steps leaderboard showed a black-on-black '
+               'toast**: the text used `ts(12)`, whose default color is dark, on an equally '
+               'dark background - dark on dark and unreadable. It is now explicit white text '
+               '(one more instance of the same bug in the settings pages is fixed too).')),
+            ('new',
+             T('**开发者选项新增「清除已阅读荣誉」**（设置 → 实验室与开发者工具）：'
+               '清掉本机「已阅读」记录，下次判定会把当前已拥有的荣誉重新展示一遍，'
+               '方便预览与自测。',
+               '**開發者選項新增「清除已閱讀榮譽」**（設定 → 實驗室與開發者工具）：'
+               '清掉本機「已閱讀」記錄，下次判定會把目前已擁有的榮譽重新顯示一遍，'
+               '方便預覽與自測。',
+               '**New developer option "Clear read honors"** (Settings → Lab & developer '
+               'tools): wipes the local "read" record so the next check replays every honor '
+               'you currently own - handy for previewing and for self-testing.')),
+        ],
+    },
+    {
         'ver': 'v2.0.23', 'date': '2026-10-04',
         'items': [
             ('new',

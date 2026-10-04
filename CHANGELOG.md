@@ -1,5 +1,56 @@
 # 更新日志
 
+## [2.0.24] - 2026-10-04
+
+### 荣誉庆祝改为「本地无记录即全部展示」+ 开发者选项可清除已阅读荣誉
+
+**修复**
+
+- **荣誉庆祝动画只有"被新授予"才弹，自己本来已有的荣誉从来不弹**：此前判定按
+  「新用户 / 老用户升级 / 全新安装」三种情形分别"建基线"，还会等在线名单，结果
+  只有刚好在运行中途被追加的称号才弹得出来。现在去掉了新老区分：判定就是一次
+  差集 `当前拥有 − 已阅读`。**本地没有记录**（全新安装、老版本升级、或记录被清除）
+  ⇒ 已阅读视为空集 ⇒ **当前已拥有的全部荣誉都会依次弹一遍**；只要用户看过一次，
+  记录即落盘，之后启动不再重复（除该账号新获荣誉）。想重新预览，见下面的开发者项。
+- **步数排行榜点「我」那一行，弹出的黑色提示条里一个字都看不清**：提示文字用了
+  `ts(12)`，其默认取色是深色 `C.ink`，却压在同样是深色的 SnackBar 底上 —— 深字
+  叠深底，整条就是"黑乎乎一片"。改为显式白字（`settings_pages` 里同类的一处一并修）。
+
+**新增**
+
+- **开发者选项新增「清除已阅读荣誉」**（设置 → 实验室与开发者工具）：清掉本机
+  「已阅读」记录，下次判定会把当前已拥有的荣誉重新展示一遍，方便预览与自测。
+
+---
+
+## [2.0.24] - 2026-10-04 (English)
+
+### Honor celebration now shows everything when there is no local record + a developer option to clear read honors
+
+**Fixed**
+
+- **The honor-celebration animation only fired for freshly granted honors, never for
+  honors you already had**: the check used to build a "baseline" differently for new
+  users, upgraded users, and fresh installs, and also waited for the online list - so only
+  a title granted while the app happened to be running could ever show. The new/old-user
+  distinction is gone: the check is now a single set difference `owned - read`.
+  **With no local record** (fresh install, an upgrade from an older version, or a cleared
+  record) "read" is treated as empty, so **every honor you currently own is shown in turn**;
+  once you have seen them, the record is written and later launches stay quiet (unless the
+  account is granted a new honor). See the developer item below to replay it.
+- **Tapping your own row in the steps leaderboard showed a black-on-black toast**: the
+  notice text used `ts(12)`, whose default color is the dark `C.ink`, on top of an equally
+  dark SnackBar background - dark on dark, i.e. the "all black" you saw. It is now explicit
+  white text (and one more instance of the same bug in `settings_pages` is fixed too).
+
+**New**
+
+- **Developer option "Clear read honors"** (Settings → Lab & developer tools): wipes the
+  local "read" record so the next check replays every honor you currently own - handy for
+  previewing and for self-testing.
+
+---
+
 ## [2.0.23] - 2026-10-04
 
 ### 新增「始终显示地图标签」+ 修复拦截页长按解封
