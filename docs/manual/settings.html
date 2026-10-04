@@ -180,7 +180,7 @@
   <section class="chapter reveal" id="g0">
     <h2 id="g0">设置<a class="hdr-anchor" href="#g0" aria-label="本节永久链接" title="本节永久链接">#</a></h2>
       <h3 id="g0">设置<a class="hdr-anchor" href="#g0" aria-label="本节永久链接" title="本节永久链接">#</a></h3>
-      <p class="m-grp-sub">配置电台、定位与连接</p>
+      <p class="m-grp-sub">电台、定位、链路与数据</p>
       <p>设置页顶部是 <b>8 张分组卡</b>（点进去是子页面），下面还有 6 个直达入口。本页把每个子页里的设置项逐条列出：名称、控件、默认值、说明 —— 默认值直接取自代码，改了代码重新生成即对齐。</p>
       <div class="m-sub">
         <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>设置项</th><th>控件</th><th>默认值</th><th>说明</th></tr></thead><tbody>
@@ -188,17 +188,20 @@
 <tr><td><b>定位上报</b></td><td><span class="m-kind">分组卡</span></td><td class="m-def">—</td><td>GPS · 信标 · 手动定位</td></tr>
 <tr><td><b>连接</b></td><td><span class="m-kind">分组卡</span></td><td class="m-def">—</td><td>服务器 · 过滤范围</td></tr>
 <tr><td><b>显示</b></td><td><span class="m-kind">分组卡</span></td><td class="m-def">—</td><td>坐标 · 主题</td></tr>
-<tr><td><b>设备</b></td><td><span class="m-kind">分组卡</span></td><td class="m-def">—</td><td>电台设备 · 待开放</td></tr>
+<tr><td><b>设备</b></td><td><span class="m-kind">分组卡</span></td><td class="m-def">—</td><td>数据来源 · 链路与网关</td></tr>
 <tr><td><b>数据</b></td><td><span class="m-kind">分组卡</span></td><td class="m-def">—</td><td>清除本地数据</td></tr>
 <tr><td><b>高级</b></td><td><span class="m-kind">分组卡</span></td><td class="m-def">—</td><td>实验室 · 开发者</td></tr>
 <tr><td><b>更新</b></td><td><span class="m-kind">分组卡</span></td><td class="m-def">—</td><td>检查新版本</td></tr>
+<tr><td><b>运动排行榜</b></td><td><span class="m-kind">直达入口</span></td><td class="m-def">—</td><td>今日步数排行（只统计本机收到的报文）</td></tr>
 <tr><td><b>荣誉墙</b></td><td><span class="m-kind">直达入口</span></td><td class="m-def">—</td><td>我的徽章与成就</td></tr>
 <tr><td><b>翻译设置</b></td><td><span class="m-kind">直达入口</span></td><td class="m-def">—</td><td>翻译接口、语言与自动翻译</td></tr>
 <tr><td><b>导出 ADIF</b></td><td><span class="m-kind">直达入口</span></td><td class="m-def">—</td><td>会话导出为日志文件</td></tr>
 <tr><td><b>主题</b></td><td><span class="m-kind">直达入口</span></td><td class="m-def">—</td><td>自定义颜色、图标与文字</td></tr>
 <tr><td><b>历史轨迹</b></td><td><span class="m-kind">直达入口</span></td><td class="m-def">—</td><td>按天记录自己的速度与里程，保存在本机</td></tr>
 <tr><td><b>备份与恢复</b></td><td><span class="m-kind">直达入口</span></td><td class="m-def">—</td><td>打包配置与数据为 JSON 文件</td></tr>
+<tr><td><b>赞助与鸣谢</b></td><td><span class="m-kind">直达入口</span></td><td class="m-def">—</td><td>名单与赞助方式（服务器与地图流量都靠它）</td></tr>
 <tr><td><b>关于</b></td><td><span class="m-kind">直达入口</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>生命守护</b></td><td><span class="m-kind">直达入口</span></td><td class="m-def">—</td><td>心率异常时告警、拨打急救、向附近台站求助</td></tr>
 </tbody></table></div>
       </div>
   </section>
@@ -208,11 +211,21 @@
       <p class="m-grp-sub">呼号 · SSID · 符号</p>
       <p>身份是所有报文的根：呼号必须与你的执照一致，SSID 决定台站类型（-9 车载、-7 手持常见）。</p>
       <div class="m-sub">
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>设置项</th><th>控件</th><th>默认值</th><th>说明</th></tr></thead><tbody>
+<tr><td><b>高度（米，留空跟随定位）</b></td><td><span class="m-kind">输入框</span></td><td class="m-def">—</td><td>填了就用手填的这个海拔（更可靠：无气压计机型、室内、只有网络定位时 GPS 海拔常不可用），留空则跟随定位的海拔。发送时按英尺编成 `/A=aaaaaa` 六位；这是台站**海拔**，与下面 PHG 里的「天线高度」（高于当地平均地面）是两个不同的量。</td></tr>
+<tr><td><b>功率（瓦）</b></td><td><span class="m-kind">输入框</span></td><td class="m-def">—</td><td>功率 / 天线高度 / 增益同属一个 PHG 数据扩展，填了任一项就一起编码发出（规范里它是固定的 7 字节字段）。功率取不超过实际值的最大档：25 W 报 25、30 W 也只报 25 —— 写大了等于虚报覆盖范围。天线高度是「高于当地平均地面」，与上面自动发送的 /A= 海拔是两个不同的量。</td></tr>
+<tr><td><b>天线高度（英尺）</b></td><td><span class="m-kind">输入框</span></td><td class="m-def">—</td><td>功率 / 天线高度 / 增益同属一个 PHG 数据扩展，填了任一项就一起编码发出（规范里它是固定的 7 字节字段）。功率取不超过实际值的最大档：25 W 报 25、30 W 也只报 25 —— 写大了等于虚报覆盖范围。天线高度是「高于当地平均地面」，与上面自动发送的 /A= 海拔是两个不同的量。</td></tr>
+<tr><td><b>增益（dB）</b></td><td><span class="m-kind">输入框</span></td><td class="m-def">—</td><td>功率 / 天线高度 / 增益同属一个 PHG 数据扩展，填了任一项就一起编码发出（规范里它是固定的 7 字节字段）。功率取不超过实际值的最大档：25 W 报 25、30 W 也只报 25 —— 写大了等于虚报覆盖范围。天线高度是「高于当地平均地面」，与上面自动发送的 /A= 海拔是两个不同的量。</td></tr>
+<tr><td><b>独立状态报文</b> <code class="m-field">aprsStatusText</code></td><td><span class="m-kind">输入框</span></td><td class="m-def">（空）</td><td>这一点发的是**独立一帧**状态报文（`&gt;` 开头、不含坐标、不会移动你在 aprs.fi 上的位置），与上面那行备注是两种不同的 APRS 报文。留空则发送内置的 APRSlocus 在线帧。</td></tr>
+</tbody></table></div>
+      </div>
+      <div class="m-sub">
         <h4>电台身份</h4>
         <p class="m-grp-sub">呼号、SSID 与备注</p>
         <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>设置项</th><th>控件</th><th>默认值</th><th>说明</th></tr></thead><tbody>
 <tr><td><b>呼号</b> <code class="m-field">myCall</code></td><td><span class="m-kind">输入框</span></td><td class="m-def"><code>BV2AAA</code></td><td>APRS 呼号，如 BV2AAA</td></tr>
 <tr><td><b>台站备注</b> <code class="m-field">myComment</code></td><td><span class="m-kind">输入框</span></td><td class="m-def">（空）</td><td>信标发送时的备注内容</td></tr>
+<tr><td><b>发射</b></td><td><span class="m-kind">按钮</span></td><td class="m-def">—</td><td></td></tr>
 </tbody></table></div>
       </div>
       <div class="m-sub">
@@ -234,31 +247,41 @@
         <p class="m-grp-sub">选择坐标来源</p>
         <div class="callout info"><span class="co-ic">ℹ️</span><div><p>无法自动定位时，可手动输入经纬度或用地图选点，用于信标上报与台站距离计算。</p></div></div>
         <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>设置项</th><th>控件</th><th>默认值</th><th>说明</th></tr></thead><tbody>
-<tr><td><b>定位<span class="m-opts">模拟位置</span></b> <code class="m-field">useSimLocation</code></td><td><span class="m-kind">选项卡</span></td><td class="m-def">关</td><td>使用设备定位 / 模拟位置：手动输入坐标</td></tr>
-<tr><td><b>传感器辅助定位</b> <code class="m-field">sensorAssist</code></td><td><span class="m-kind">开关</span></td><td class="m-def">开</td><td>用加速度计判断是否真的在移动、用指南针补正低速航向，让轨迹打点更准（仅 Android 生效）。</td></tr>
+<tr><td><b>手机 GPS<span class="m-opts">模拟位置</span></b> <code class="m-field">useSimLocation</code></td><td><span class="m-kind">选项卡</span></td><td class="m-def">关</td><td>使用设备定位 / 模拟位置：手动输入坐标</td></tr>
+<tr><td><b>传感器辅助定位</b> <code class="m-field">sensorAssist</code></td><td><span class="m-kind">开关</span></td><td class="m-def">开</td><td>同时可用时的优先级：模拟/手动位置 › 佳明（手表有实时数据时）› 手机 GPS</td></tr>
+<tr><td><b>定位来源</b></td><td><span class="m-kind">只读状态</span></td><td class="m-def">—</td><td></td></tr>
 </tbody></table></div>
       </div>
       <div class="m-sub">
         <h4>定位模式</h4>
         <p class="m-grp-sub">选择定位方式</p>
         <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>设置项</th><th>控件</th><th>默认值</th><th>说明</th></tr></thead><tbody>
-<tr><td><b>纯 GPS<span class="m-opts">GPS + 网络</span></b> <code class="m-field">locationMode</code></td><td><span class="m-kind">选项卡</span></td><td class="m-def"><code>gps_network</code></td><td>仅卫星定位，更省电 / GPS + 网络：网络仅作兜底（GPS 停更时），粗定位不写轨迹</td></tr>
+<tr><td><b>纯 GPS<span class="m-opts">GPS + 网络 · 纯网络</span></b> <code class="m-field">locationMode</code></td><td><span class="m-kind">选项卡</span></td><td class="m-def"><code>gps_network</code></td><td>仅卫星定位，更省电 / GPS + 网络：网络仅作兜底（GPS 停更时），粗定位不写轨迹 / 纯网络：仅基站 / Wi-Fi，误差百米级；最省电，适合没有 GPS 的设备</td></tr>
+<tr><td><b>网络定位时的台站图标</b></td><td><span class="m-kind">入口</span></td><td class="m-def">—</td><td>纯网络定位的点可能偏几百米到几公里，换一个图标能让别人一眼看出「这是网络标的位」。默认跟随「我的符号」。</td></tr>
+<tr><td><b>外置 GPS 优先时手机 GPS 待机</b> <code class="m-field">extGpsStandby</code></td><td><span class="m-kind">开关</span></td><td class="m-def">开</td><td>外置 GPS（佳明 LiveTrack）在推数据时，停掉手机的定位以省电；外置失效时会自动切回手机 GPS，并在状态栏与日志里说明。关掉它也不会让位置变错——位置优先级本来就是「外置优先」。</td></tr>
 </tbody></table></div>
       </div>
       <div class="m-sub">
         <h4>信标上报</h4>
         <p class="m-grp-sub">发送间隔与上报内容</p>
         <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>设置项</th><th>控件</th><th>默认值</th><th>说明</th></tr></thead><tbody>
-<tr><td><b>启用位置信标</b> <code class="m-field">beaconEnabled</code></td><td><span class="m-kind">开关</span></td><td class="m-def">开</td><td></td></tr>
+<tr><td><b>启用位置信标</b> <code class="m-field">beaconEnabled</code></td><td><span class="m-kind">开关</span></td><td class="m-def">开</td><td>经典＝一行（状态 + 立即上报）；详细＝多一行判据：当前档位、还差多少秒、距离打点还差多少米、转弯还差多少度，并每秒刷新一次。</td></tr>
+<tr><td><b>纯网络上报间隔（秒）</b> <code class="m-field">beaconNetInterval</code></td><td><span class="m-kind">输入框</span></td><td class="m-def"><code>300</code></td><td>纯网络模式使用固定间隔；网络定位没有可靠速度，不使用智能信标（按速度 / 距离 / 转弯）</td></tr>
 <tr><td><b>上报间隔(秒)</b> <code class="m-field">beaconInterval</code></td><td><span class="m-kind">输入框</span></td><td class="m-def"><code>60</code></td><td>位置信标的发送间隔，至少 5 秒</td></tr>
 <tr><td><b>智能信标(按速度分档)</b> <code class="m-field">smartBeaconEnabled</code></td><td><span class="m-kind">开关</span></td><td class="m-def">关</td><td></td></tr>
 <tr><td><b>速度</b> <code class="m-field">beaconIncludeSpeed</code></td><td><span class="m-kind">小开关</span></td><td class="m-def">开</td><td></td></tr>
 <tr><td><b>方位角</b> <code class="m-field">beaconIncludeCourse</code></td><td><span class="m-kind">小开关</span></td><td class="m-def">开</td><td></td></tr>
 <tr><td><b>手机电量</b> <code class="m-field">beaconIncludeBattery</code></td><td><span class="m-kind">小开关</span></td><td class="m-def">开</td><td></td></tr>
+<tr><td><b>本次里程</b> <code class="m-field">beaconIncludeTripMileage</code></td><td><span class="m-kind">小开关</span></td><td class="m-def">关</td><td></td></tr>
+<tr><td><b>累计里程</b> <code class="m-field">beaconIncludeTotalMileage</code></td><td><span class="m-kind">小开关</span></td><td class="m-def">关</td><td></td></tr>
+<tr><td><b>步数</b> <code class="m-field">beaconIncludeSteps</code></td><td><span class="m-kind">小开关</span></td><td class="m-def">关</td><td></td></tr>
+<tr><td><b>今日步数</b></td><td><span class="m-kind">只读状态</span></td><td class="m-def">—</td><td>步数来自手机的计步传感器（硬件计数，比用加速度计估算准）。可以随信标一起发出（`STEPS=`），对方也是 APRSlocus 时就能在运动排行榜里看到你。</td></tr>
+<tr><td><b>授予「身体活动」权限</b></td><td><span class="m-kind">按钮</span></td><td class="m-def">—</td><td></td></tr>
 <tr><td><b>定位状态</b></td><td><span class="m-kind">只读状态</span></td><td class="m-def">—</td><td></td></tr>
 <tr><td><b>信标发送次数</b></td><td><span class="m-kind">只读状态</span></td><td class="m-def">—</td><td></td></tr>
-<tr><td><b>下次上报</b></td><td><span class="m-kind">只读状态</span></td><td class="m-def">—</td><td>射频来源的自动发射需要显式打开「射频信标」。在此之前不会自动发射位置（倒计时也不会走动）。</td></tr>
+<tr><td><b>下次上报</b></td><td><span class="m-kind">只读状态</span></td><td class="m-def">—</td><td>当前定位来自网络（粗，误差常达几百米）—— 自动上报已暂停，GPS 恢复后自动继续；期间仍可手动上报。</td></tr>
 <tr><td><b>开启射频信标</b></td><td><span class="m-kind">按钮</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>强制接受网络定位自动上报</b> <code class="m-field">beaconForceCoarse</code></td><td><span class="m-kind">开关</span></td><td class="m-def">关</td><td>正在用网络定位（粗）上报</td></tr>
 <tr><td><b>重新定位</b></td><td><span class="m-kind">按钮</span></td><td class="m-def">—</td><td></td></tr>
 </tbody></table></div>
       </div>
@@ -290,13 +313,13 @@
       </div>
       <div class="m-sub">
         <h4>APRS-IS 连接</h4>
-        <p class="m-grp-sub">用麦克风/扬声器或声卡线接电台，收发 AFSK 1200</p>
+        <p class="m-grp-sub">在电台 WLAN 设置里开启遥控并设置 Network User 名/密码，手机与电台保持同一网段。IC-705 局域网音频固定 12000 Hz。</p>
         <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>设置项</th><th>控件</th><th>默认值</th><th>说明</th></tr></thead><tbody>
 <tr><td><b>音频后端</b></td><td><span class="m-kind">只读状态</span></td><td class="m-def">—</td><td></td></tr>
 <tr><td><b>采样率</b></td><td><span class="m-kind">只读状态</span></td><td class="m-def">—</td><td></td></tr>
 <tr><td><b>连接</b></td><td><span class="m-kind">只读状态</span></td><td class="m-def">—</td><td></td></tr>
 <tr><td><b>允许射频信标</b></td><td><span class="m-kind">只读状态</span></td><td class="m-def">—</td><td>音频模式下不使用服务器、过滤器与 KISS 参数</td></tr>
-<tr><td><b>音频（声卡 TNC）</b></td><td><span class="m-kind">按钮</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>音频（声卡 TNC）<span class="m-opts">音频（声卡 TNC）</span></b></td><td><span class="m-kind">按钮</span></td><td class="m-def">—</td><td></td></tr>
 </tbody></table></div>
       </div>
       <div class="m-sub">
@@ -356,6 +379,7 @@
         <p class="m-grp-sub">地图类型与显示</p>
         <div class="callout info"><span class="co-ic">ℹ️</span><div><p>「地图 2.0（矢量）」使用客户端实时矢量渲染，数据量小、缩放清晰；栅格图源为在线瓦片，画质取决于网络。</p></div></div>
         <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>设置项</th><th>控件</th><th>默认值</th><th>说明</th></tr></thead><tbody>
+<tr><td><b>始终显示地图标签</b> <code class="m-field">mapLabelsAlways</code></td><td><span class="m-kind">开关</span></td><td class="m-def">关</td><td>无论台站多少、缩放多小，都在地图上显示每个台站的呼号标签。</td></tr>
 <tr><td><b>离线地图</b></td><td><span class="m-kind">入口</span></td><td class="m-def">—</td><td>材质只作用于应用自己的表面（卡片、顶栏、导航栏、弹窗、地图浮层），不是系统窗口的透明。模糊要占显卡：旧机型上可能不如关闭时顺滑。 / 把地图瓦片预先下载到本机，没有网络时也能看地图</td></tr>
 </tbody></table></div>
       </div>
@@ -371,6 +395,14 @@
         <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>设置项</th><th>控件</th><th>默认值</th><th>说明</th></tr></thead><tbody>
 <tr><td><b>聊天记录</b></td><td><span class="m-kind">选项卡</span></td><td class="m-def">—</td><td></td></tr>
 <tr><td><b>清空全部聊天记录</b></td><td><span class="m-kind">按钮</span></td><td class="m-def">—</td><td></td></tr>
+</tbody></table></div>
+      </div>
+      <div class="m-sub">
+        <h4>台站列表</h4>
+        <p class="m-grp-sub">收到的台站与它们的轨迹，保存在本机</p>
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>设置项</th><th>控件</th><th>默认值</th><th>说明</th></tr></thead><tbody>
+<tr><td><b>台站列表</b></td><td><span class="m-kind">选项卡</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>清除台站列表</b></td><td><span class="m-kind">按钮</span></td><td class="m-def">—</td><td></td></tr>
 </tbody></table></div>
       </div>
       <div class="m-sub">
@@ -438,7 +470,10 @@
         <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>设置项</th><th>控件</th><th>默认值</th><th>说明</th></tr></thead><tbody>
 <tr><td><b>TNC 设备与参数</b></td><td><span class="m-kind">选项卡</span></td><td class="m-def">—</td><td>蓝牙/串口绑定、初始化串、KISS 参数与发射自检</td></tr>
 <tr><td><b>音频（声卡 TNC）</b></td><td><span class="m-kind">选项卡</span></td><td class="m-def">—</td><td>用声卡收发 AFSK 1200 报文</td></tr>
-<tr><td><b>PKWDWPL 设备</b></td><td><span class="m-kind">选项卡</span></td><td class="m-def">—</td><td>暂无日志 / 绑定电台端口 · 查看航点接收状态</td></tr>
+<tr><td><b>PKWDWPL 设备</b></td><td><span class="m-kind">选项卡</span></td><td class="m-def">—</td><td>绑定电台端口 · 查看航点接收状态</td></tr>
+<tr><td><b>APRSlocusBOX</b> <code class="m-field">connected</code></td><td><span class="m-kind">选项卡</span></td><td class="m-def">关</td><td>已连接</td></tr>
+<tr><td><b>心率</b></td><td><span class="m-kind">选项卡</span></td><td class="m-def">—</td><td>蓝牙心率带（标准心率服务），可随信标一起上报</td></tr>
+<tr><td><b>佳明 LiveTrack</b></td><td><span class="m-kind">选项卡</span></td><td class="m-def">—</td><td>暂无日志 / 把佳明手表的活动实时位置接进来，随信标上报</td></tr>
 </tbody></table></div>
       </div>
   </section>
@@ -466,6 +501,7 @@
         <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>设置项</th><th>控件</th><th>默认值</th><th>说明</th></tr></thead><tbody>
 <tr><td><b>行间隔 (ms)</b> <code class="m-field">initDelayMs</code></td><td><span class="m-kind">输入框</span></td><td class="m-def"><code>300</code></td><td>每行命令之间的等待时间。模块处理命令需要时间，太短会丢命令</td></tr>
 <tr><td><b>串口线速 (bd)</b> <code class="m-field">serialBaud</code></td><td><span class="m-kind">输入框</span></td><td class="m-def"><code>9600</code></td><td>USB 串口线与电台数据口必须同速，否则一个字节都收不到。常见值：9600 / 19200 / 38400 / 57600 / 115200。蓝牙 SPP 没有波特率概念，绑蓝牙设备时此项不生效。</td></tr>
+<tr><td><b>发射串口</b></td><td><span class="m-kind">入口</span></td><td class="m-def">—</td><td>当前绑的是蓝牙设备：蓝牙 SPP 没有波特率概念，此项不生效 / 已保存。默认与接收共用一个口；分开口可避免 Windows 上读写争用同一 COM 口。</td></tr>
 <tr><td><b>立即发送初始化串</b></td><td><span class="m-kind">按钮</span></td><td class="m-def">—</td><td></td></tr>
 <tr><td><b>未填写初始化串</b></td><td><span class="m-kind">选项卡</span></td><td class="m-def">—</td><td></td></tr>
 </tbody></table></div>
@@ -514,6 +550,23 @@
       <h3 id="g9">音频（声卡 TNC）<a class="hdr-anchor" href="#g9" aria-label="本节永久链接" title="本节永久链接">#</a></h3>
       <p class="m-grp-sub">用声卡收发 AFSK 1200 报文</p>
       <p>把声卡当 TNC：采样率/比特率/音调、发射电平与 CSMA 等待、WAV 文件模式（离线解码录音）。</p>
+      <div class="m-sub">
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>设置项</th><th>控件</th><th>默认值</th><th>说明</th></tr></thead><tbody>
+<tr><td><b>播放设备</b></td><td><span class="m-kind">入口</span></td><td class="m-def">—</td><td>要启用 / 切换数据来源（链路），请到「设置 → 设备」</td></tr>
+</tbody></table></div>
+      </div>
+      <div class="m-sub">
+        <h4>WLAN 电台（$…）</h4>
+        <p class="m-grp-sub">在电台 WLAN 设置里开启遥控并设置 Network User 名/密码，手机与电台保持同一网段。IC-705 局域网音频固定 12000 Hz。</p>
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>设置项</th><th>控件</th><th>默认值</th><th>说明</th></tr></thead><tbody>
+<tr><td><b>启用 IC-705 局域网直连</b></td><td><span class="m-kind">开关</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>电台 IP</b></td><td><span class="m-kind">输入框</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>控制端口</b></td><td><span class="m-kind">输入框</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>用户名（Network User）</b></td><td><span class="m-kind">输入框</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>密码（Network User）</b></td><td><span class="m-kind">输入框</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>音频后端</b></td><td><span class="m-kind">只读状态</span></td><td class="m-def">—</td><td></td></tr>
+</tbody></table></div>
+      </div>
       <div class="m-sub">
         <h4>音频采集</h4>
         <p class="m-grp-sub">从麦克风/线路输入解调 AFSK 1200</p>

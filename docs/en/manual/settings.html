@@ -180,7 +180,7 @@
   <section class="chapter reveal" id="g0">
     <h2 id="g0">Settings<a class="hdr-anchor" href="#g0" aria-label="Permalink to this section" title="Permalink to this section">#</a></h2>
       <h3 id="g0">Settings<a class="hdr-anchor" href="#g0" aria-label="Permalink to this section" title="Permalink to this section">#</a></h3>
-      <p class="m-grp-sub">Configure station, location &amp; connection</p>
+      <p class="m-grp-sub">Station, location, links &amp; data</p>
       <p>The Settings page opens with <b>eight category cards</b> (each leading to its own page) plus six direct entries. Below, every setting is listed: name, control, default, meaning — defaults are read from the code, so regenerating keeps them honest.</p>
       <div class="m-sub">
         <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>Setting</th><th>Control</th><th>Default</th><th>Description</th></tr></thead><tbody>
@@ -188,17 +188,20 @@
 <tr><td><b>Beaconing</b></td><td><span class="m-kind">Category card</span></td><td class="m-def">—</td><td>GPS · Beaconing · Manual position</td></tr>
 <tr><td><b>Connection</b></td><td><span class="m-kind">Category card</span></td><td class="m-def">—</td><td>Server · Range filter</td></tr>
 <tr><td><b>Display</b></td><td><span class="m-kind">Category card</span></td><td class="m-def">—</td><td>Coords · Theme</td></tr>
-<tr><td><b>Device</b></td><td><span class="m-kind">Category card</span></td><td class="m-def">—</td><td>Radio gear · coming soon</td></tr>
+<tr><td><b>Device</b></td><td><span class="m-kind">Category card</span></td><td class="m-def">—</td><td>Sources · links · iGate</td></tr>
 <tr><td><b>Data</b></td><td><span class="m-kind">Category card</span></td><td class="m-def">—</td><td>Clear local data</td></tr>
 <tr><td><b>Advanced</b></td><td><span class="m-kind">Category card</span></td><td class="m-def">—</td><td>Lab · Developer</td></tr>
 <tr><td><b>Update</b></td><td><span class="m-kind">Category card</span></td><td class="m-def">—</td><td>Check for updates</td></tr>
+<tr><td><b>Activity leaderboard</b></td><td><span class="m-kind">Direct entry</span></td><td class="m-def">—</td><td>Steps ranking for today (only what this device received)</td></tr>
 <tr><td><b>Honors</b></td><td><span class="m-kind">Direct entry</span></td><td class="m-def">—</td><td>My badges and achievements</td></tr>
 <tr><td><b>Translation settings</b></td><td><span class="m-kind">Direct entry</span></td><td class="m-def">—</td><td>Provider, languages and auto-translate</td></tr>
 <tr><td><b>Export ADIF</b></td><td><span class="m-kind">Direct entry</span></td><td class="m-def">—</td><td>Export chats as a log file</td></tr>
 <tr><td><b>Theme</b></td><td><span class="m-kind">Direct entry</span></td><td class="m-def">—</td><td>Custom colours, icons and text</td></tr>
 <tr><td><b>Track history</b></td><td><span class="m-kind">Direct entry</span></td><td class="m-def">—</td><td>Records your own speed and distance by day, saved on this device</td></tr>
 <tr><td><b>Backup &amp; restore</b></td><td><span class="m-kind">Direct entry</span></td><td class="m-def">—</td><td>Pack settings and data into a JSON file</td></tr>
+<tr><td><b>Sponsors &amp; thanks</b></td><td><span class="m-kind">Direct entry</span></td><td class="m-def">—</td><td>The list and how to support (servers and map traffic depend on it)</td></tr>
 <tr><td><b>About</b></td><td><span class="m-kind">Direct entry</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>Life guard</b></td><td><span class="m-kind">Direct entry</span></td><td class="m-def">—</td><td>Alarm on abnormal heart rate, call emergency services, ask nearby stations</td></tr>
 </tbody></table></div>
       </div>
   </section>
@@ -208,11 +211,21 @@
       <p class="m-grp-sub">Callsign · SSID · Symbol</p>
       <p>Identity is the root of every frame: the callsign must match your licence, and the SSID states the station type (-9 mobile, -7 handheld are common).</p>
       <div class="m-sub">
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>Setting</th><th>Control</th><th>Default</th><th>Description</th></tr></thead><tbody>
+<tr><td><b>Altitude (m, empty = use the fix)</b></td><td><span class="m-kind">Text input</span></td><td class="m-def">—</td><td>When set, this manually entered altitude is used (more reliable: on phones without a barometer, indoors, or with network-only positioning the GPS altitude is often unusable). Left empty, the altitude from the fix is used. It is encoded as six zero-padded feet in the /A= extension. This is station altitude - a different quantity from the PHG antenna height below (above average local terrain).</td></tr>
+<tr><td><b>Power (W)</b></td><td><span class="m-kind">Text input</span></td><td class="m-def">—</td><td>Power, antenna height and gain share one PHG data extension: filling any of them encodes and sends all of them (the spec defines it as a single fixed 7-byte field). Power takes the largest step not exceeding the real value: 25 W reports 25, and so does 30 W, because over-reporting inflates your coverage circle. Antenna height is measured above average local terrain - a different quantity from the /A= altitude sent automatically above.</td></tr>
+<tr><td><b>Antenna height (ft)</b></td><td><span class="m-kind">Text input</span></td><td class="m-def">—</td><td>Power, antenna height and gain share one PHG data extension: filling any of them encodes and sends all of them (the spec defines it as a single fixed 7-byte field). Power takes the largest step not exceeding the real value: 25 W reports 25, and so does 30 W, because over-reporting inflates your coverage circle. Antenna height is measured above average local terrain - a different quantity from the /A= altitude sent automatically above.</td></tr>
+<tr><td><b>Gain (dB)</b></td><td><span class="m-kind">Text input</span></td><td class="m-def">—</td><td>Power, antenna height and gain share one PHG data extension: filling any of them encodes and sends all of them (the spec defines it as a single fixed 7-byte field). Power takes the largest step not exceeding the real value: 25 W reports 25, and so does 30 W, because over-reporting inflates your coverage circle. Antenna height is measured above average local terrain - a different quantity from the /A= altitude sent automatically above.</td></tr>
+<tr><td><b>Standalone status packet</b> <code class="m-field">aprsStatusText</code></td><td><span class="m-kind">Text input</span></td><td class="m-def">(empty)</td><td>This sends a standalone status packet (starts with `&gt;`, carries no coordinates, and does not move you on aprs.fi) - a different APRS packet type from the comment above. Left empty, the built-in APRSlocus online frame is sent instead.</td></tr>
+</tbody></table></div>
+      </div>
+      <div class="m-sub">
         <h4>Station identity</h4>
         <p class="m-grp-sub">Callsign, SSID and comment</p>
         <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>Setting</th><th>Control</th><th>Default</th><th>Description</th></tr></thead><tbody>
 <tr><td><b>Callsign</b> <code class="m-field">myCall</code></td><td><span class="m-kind">Text input</span></td><td class="m-def"><code>BV2AAA</code></td><td>APRS callsign, e.g. BV2AAA</td></tr>
 <tr><td><b>Station comment</b> <code class="m-field">myComment</code></td><td><span class="m-kind">Text input</span></td><td class="m-def">(empty)</td><td>Comment sent with position beacons</td></tr>
+<tr><td><b>Transmit</b></td><td><span class="m-kind">Button</span></td><td class="m-def">—</td><td></td></tr>
 </tbody></table></div>
       </div>
       <div class="m-sub">
@@ -234,31 +247,41 @@
         <p class="m-grp-sub">Choose position source</p>
         <div class="callout info"><span class="co-ic">ℹ️</span><div><p>When auto-location is unavailable, enter coordinates manually or pick on the map for beacon reporting and station distance calculation.</p></div></div>
         <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>Setting</th><th>Control</th><th>Default</th><th>Description</th></tr></thead><tbody>
-<tr><td><b>Location<span class="m-opts">Simulated location</span></b> <code class="m-field">useSimLocation</code></td><td><span class="m-kind">Choice card</span></td><td class="m-def">off</td><td>Use device location / Simulated location：Enter coordinates manually</td></tr>
-<tr><td><b>Sensor-assisted positioning</b> <code class="m-field">sensorAssist</code></td><td><span class="m-kind">Switch</span></td><td class="m-def">on</td><td>Uses the accelerometer to tell whether you are really moving and the compass to correct the heading at low speed, for more accurate track points (Android only).</td></tr>
+<tr><td><b>phone GPS<span class="m-opts">Simulated location</span></b> <code class="m-field">useSimLocation</code></td><td><span class="m-kind">Choice card</span></td><td class="m-def">off</td><td>Use device location / Simulated location：Enter coordinates manually</td></tr>
+<tr><td><b>Sensor-assisted positioning</b> <code class="m-field">sensorAssist</code></td><td><span class="m-kind">Switch</span></td><td class="m-def">on</td><td>Priority when several are available: simulated/manual › Garmin (while the watch has live data) › phone GPS</td></tr>
+<tr><td><b>Location source</b></td><td><span class="m-kind">Read-only</span></td><td class="m-def">—</td><td></td></tr>
 </tbody></table></div>
       </div>
       <div class="m-sub">
         <h4>Location mode</h4>
         <p class="m-grp-sub">Choose location method</p>
         <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>Setting</th><th>Control</th><th>Default</th><th>Description</th></tr></thead><tbody>
-<tr><td><b>GPS only<span class="m-opts">GPS + Network</span></b> <code class="m-field">locationMode</code></td><td><span class="m-kind">Choice card</span></td><td class="m-def"><code>gps_network</code></td><td>Satellite only, saves battery / GPS + Network：Network is a fallback only (when GPS goes stale); coarse fixes are never written to the track</td></tr>
+<tr><td><b>GPS only<span class="m-opts">GPS + Network · Network only</span></b> <code class="m-field">locationMode</code></td><td><span class="m-kind">Choice card</span></td><td class="m-def"><code>gps_network</code></td><td>Satellite only, saves battery / GPS + Network：Network is a fallback only (when GPS goes stale); coarse fixes are never written to the track / Network only：Cell / Wi-Fi only, accurate to a few hundred metres; most power-saving, for devices without GPS</td></tr>
+<tr><td><b>Station icon for network fixes</b></td><td><span class="m-kind">Entry</span></td><td class="m-def">—</td><td>Network fixes can be off by hundreds of metres to kilometres; a distinct icon makes it obvious that the position came from the network. Defaults to following your own symbol.</td></tr>
+<tr><td><b>Idle the phone GPS while an external GPS is active</b> <code class="m-field">extGpsStandby</code></td><td><span class="m-kind">Switch</span></td><td class="m-def">on</td><td>While an external GPS (Garmin LiveTrack) is feeding data, stop the phone location to save power; when it goes stale the phone GPS takes over automatically, and the status line and log say so. Turning this off cannot make the position wrong — the external source is already preferred.</td></tr>
 </tbody></table></div>
       </div>
       <div class="m-sub">
         <h4>Beaconing</h4>
         <p class="m-grp-sub">Transmit interval &amp; report content</p>
         <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>Setting</th><th>Control</th><th>Default</th><th>Description</th></tr></thead><tbody>
-<tr><td><b>Enable beaconing</b> <code class="m-field">beaconEnabled</code></td><td><span class="m-kind">Switch</span></td><td class="m-def">on</td><td></td></tr>
+<tr><td><b>Enable beaconing</b> <code class="m-field">beaconEnabled</code></td><td><span class="m-kind">Switch</span></td><td class="m-def">on</td><td>Classic: one line (status + send now). Detailed: an extra line showing which tier is active, the seconds left, how many metres the distance trigger still needs, and how many degrees the turn trigger still needs — refreshed once a second.</td></tr>
+<tr><td><b>Network-only interval (s)</b> <code class="m-field">beaconNetInterval</code></td><td><span class="m-kind">Text input</span></td><td class="m-def"><code>300</code></td><td>In network-only mode a fixed interval is used; cell/Wi-Fi fixes have no reliable speed, so smart beaconing (speed / distance / turn) is not used</td></tr>
 <tr><td><b>Beacon interval (sec)</b> <code class="m-field">beaconInterval</code></td><td><span class="m-kind">Text input</span></td><td class="m-def"><code>60</code></td><td>Position beacon interval, minimum 5 seconds</td></tr>
 <tr><td><b>SmartBeacon (by speed)</b> <code class="m-field">smartBeaconEnabled</code></td><td><span class="m-kind">Switch</span></td><td class="m-def">off</td><td></td></tr>
 <tr><td><b>Speed</b> <code class="m-field">beaconIncludeSpeed</code></td><td><span class="m-kind">Small switch</span></td><td class="m-def">on</td><td></td></tr>
 <tr><td><b>Bearing</b> <code class="m-field">beaconIncludeCourse</code></td><td><span class="m-kind">Small switch</span></td><td class="m-def">on</td><td></td></tr>
 <tr><td><b>Phone battery</b> <code class="m-field">beaconIncludeBattery</code></td><td><span class="m-kind">Small switch</span></td><td class="m-def">on</td><td></td></tr>
+<tr><td><b>Trip distance</b> <code class="m-field">beaconIncludeTripMileage</code></td><td><span class="m-kind">Small switch</span></td><td class="m-def">off</td><td></td></tr>
+<tr><td><b>Total distance</b> <code class="m-field">beaconIncludeTotalMileage</code></td><td><span class="m-kind">Small switch</span></td><td class="m-def">off</td><td></td></tr>
+<tr><td><b>Steps</b> <code class="m-field">beaconIncludeSteps</code></td><td><span class="m-kind">Small switch</span></td><td class="m-def">off</td><td></td></tr>
+<tr><td><b>Today's steps</b></td><td><span class="m-kind">Read-only</span></td><td class="m-def">—</td><td>Steps come from the phone's step counter (hardware counting, more accurate than estimating from the accelerometer). They can be sent along with the beacon (`STEPS=`), so other APRSlocus users can see you in the activity leaderboard.</td></tr>
+<tr><td><b>Grant activity permission</b></td><td><span class="m-kind">Button</span></td><td class="m-def">—</td><td></td></tr>
 <tr><td><b>Location status</b></td><td><span class="m-kind">Read-only</span></td><td class="m-def">—</td><td></td></tr>
 <tr><td><b>Beacons sent</b></td><td><span class="m-kind">Read-only</span></td><td class="m-def">—</td><td></td></tr>
-<tr><td><b>Next beacon</b></td><td><span class="m-kind">Read-only</span></td><td class="m-def">—</td><td>Automatic transmission on an RF source requires the “RF beacon” switch. Until then no position is transmitted automatically (and the countdown does not run).</td></tr>
+<tr><td><b>Next beacon</b></td><td><span class="m-kind">Read-only</span></td><td class="m-def">—</td><td>The current fix comes from the network (coarse, often hundreds of metres off) — automatic reports are paused and resume once GPS is back. You can still beacon manually.</td></tr>
 <tr><td><b>Enable RF beacon</b></td><td><span class="m-kind">Button</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>Beacon network (coarse) fixes anyway</b> <code class="m-field">beaconForceCoarse</code></td><td><span class="m-kind">Switch</span></td><td class="m-def">off</td><td>Beaconing a network (coarse) fix</td></tr>
 <tr><td><b>Relocate</b></td><td><span class="m-kind">Button</span></td><td class="m-def">—</td><td></td></tr>
 </tbody></table></div>
       </div>
@@ -290,13 +313,13 @@
       </div>
       <div class="m-sub">
         <h4>APRS-IS connection</h4>
-        <p class="m-grp-sub">AFSK 1200 to/from a radio via mic/speaker or a soundcard cable</p>
+        <p class="m-grp-sub">Enable remote control in the radio WLAN settings, set the Network User name/password, and keep the phone on the same subnet. IC-705 LAN audio is fixed at 12000 Hz.</p>
         <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>Setting</th><th>Control</th><th>Default</th><th>Description</th></tr></thead><tbody>
 <tr><td><b>Audio backend</b></td><td><span class="m-kind">Read-only</span></td><td class="m-def">—</td><td></td></tr>
 <tr><td><b>Sample rate</b></td><td><span class="m-kind">Read-only</span></td><td class="m-def">—</td><td></td></tr>
 <tr><td><b>Connection</b></td><td><span class="m-kind">Read-only</span></td><td class="m-def">—</td><td></td></tr>
 <tr><td><b>Allow RF beaconing</b></td><td><span class="m-kind">Read-only</span></td><td class="m-def">—</td><td>Audio mode does not use the server, filters or KISS settings</td></tr>
-<tr><td><b>Audio (soundcard TNC)</b></td><td><span class="m-kind">Button</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>Audio (soundcard TNC)<span class="m-opts">Audio (soundcard TNC)</span></b></td><td><span class="m-kind">Button</span></td><td class="m-def">—</td><td></td></tr>
 </tbody></table></div>
       </div>
       <div class="m-sub">
@@ -356,6 +379,7 @@
         <p class="m-grp-sub">Map type and display</p>
         <div class="callout info"><span class="co-ic">ℹ️</span><div><p>"Map 2.0 (vector)" renders vectors on-device for lower data use and sharp zooming; raster sources use online tiles, so quality depends on the network.</p></div></div>
         <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>Setting</th><th>Control</th><th>Default</th><th>Description</th></tr></thead><tbody>
+<tr><td><b>Always show map labels</b> <code class="m-field">mapLabelsAlways</code></td><td><span class="m-kind">Switch</span></td><td class="m-def">off</td><td>Show every station callsign label on the map regardless of station count or zoom.</td></tr>
 <tr><td><b>Offline maps</b></td><td><span class="m-kind">Entry</span></td><td class="m-def">—</td><td>The material only affects the app's own surfaces (cards, bars, dialogs, map overlays) — it is not window transparency. Blur costs GPU time, so on older devices it may feel less smooth than Off. / Download map tiles ahead of time so the map works without a network</td></tr>
 </tbody></table></div>
       </div>
@@ -371,6 +395,14 @@
         <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>Setting</th><th>Control</th><th>Default</th><th>Description</th></tr></thead><tbody>
 <tr><td><b>Chat history</b></td><td><span class="m-kind">Choice card</span></td><td class="m-def">—</td><td></td></tr>
 <tr><td><b>Clear all chat history</b></td><td><span class="m-kind">Button</span></td><td class="m-def">—</td><td></td></tr>
+</tbody></table></div>
+      </div>
+      <div class="m-sub">
+        <h4>Stations</h4>
+        <p class="m-grp-sub">Received stations and their tracks, stored on this device</p>
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>Setting</th><th>Control</th><th>Default</th><th>Description</th></tr></thead><tbody>
+<tr><td><b>Stations</b></td><td><span class="m-kind">Choice card</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>Clear station list</b></td><td><span class="m-kind">Button</span></td><td class="m-def">—</td><td></td></tr>
 </tbody></table></div>
       </div>
       <div class="m-sub">
@@ -438,7 +470,10 @@
         <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>Setting</th><th>Control</th><th>Default</th><th>Description</th></tr></thead><tbody>
 <tr><td><b>TNC device &amp; parameters</b></td><td><span class="m-kind">Choice card</span></td><td class="m-def">—</td><td>Bluetooth/serial binding, init string, KISS parameters and TX self-test</td></tr>
 <tr><td><b>Audio (soundcard TNC)</b></td><td><span class="m-kind">Choice card</span></td><td class="m-def">—</td><td>Send and receive AFSK 1200 packets with your soundcard</td></tr>
-<tr><td><b>PKWDWPL device</b></td><td><span class="m-kind">Choice card</span></td><td class="m-def">—</td><td>No log entries yet / Bind the radio port and check waypoint reception</td></tr>
+<tr><td><b>PKWDWPL device</b></td><td><span class="m-kind">Choice card</span></td><td class="m-def">—</td><td>Bind the radio port and check waypoint reception</td></tr>
+<tr><td><b>APRSlocusBOX</b> <code class="m-field">connected</code></td><td><span class="m-kind">Choice card</span></td><td class="m-def">off</td><td>Connected</td></tr>
+<tr><td><b>Heart rate</b></td><td><span class="m-kind">Choice card</span></td><td class="m-def">—</td><td>Bluetooth heart-rate straps (standard HR service), optionally sent with your beacon</td></tr>
+<tr><td><b>Garmin LiveTrack</b></td><td><span class="m-kind">Choice card</span></td><td class="m-def">—</td><td>No log entries yet / Pull your Garmin watch activity in and beacon it</td></tr>
 </tbody></table></div>
       </div>
   </section>
@@ -466,6 +501,7 @@
         <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>Setting</th><th>Control</th><th>Default</th><th>Description</th></tr></thead><tbody>
 <tr><td><b>Delay per line (ms)</b> <code class="m-field">initDelayMs</code></td><td><span class="m-kind">Text input</span></td><td class="m-def"><code>300</code></td><td>Wait between lines. Modules need time to process commands; too short drops them</td></tr>
 <tr><td><b>Serial baud rate (bd)</b> <code class="m-field">serialBaud</code></td><td><span class="m-kind">Text input</span></td><td class="m-def"><code>9600</code></td><td>A USB serial cable and the radio data port must agree on the speed, otherwise not a single byte gets through. Common values: 9600 / 19200 / 38400 / 57600 / 115200. Bluetooth SPP has no baud rate, so this is ignored for Bluetooth devices.</td></tr>
+<tr><td><b>TX serial port</b></td><td><span class="m-kind">Entry</span></td><td class="m-def">—</td><td>A Bluetooth device is bound: Bluetooth SPP has no baud rate, so this setting has no effect / Saved. By default TX shares the RX port; a separate port avoids two handles fighting over one COM port on Windows.</td></tr>
 <tr><td><b>Send init string now</b></td><td><span class="m-kind">Button</span></td><td class="m-def">—</td><td></td></tr>
 <tr><td><b>No init string configured</b></td><td><span class="m-kind">Choice card</span></td><td class="m-def">—</td><td></td></tr>
 </tbody></table></div>
@@ -514,6 +550,23 @@
       <h3 id="g9">Audio (soundcard TNC)<a class="hdr-anchor" href="#g9" aria-label="Permalink to this section" title="Permalink to this section">#</a></h3>
       <p class="m-grp-sub">Send and receive AFSK 1200 packets with your soundcard</p>
       <p>Use the sound card as a TNC: sample rate/baud/tone, TX level and CSMA wait, plus WAV file mode (decode a recording offline).</p>
+      <div class="m-sub">
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>Setting</th><th>Control</th><th>Default</th><th>Description</th></tr></thead><tbody>
+<tr><td><b>Playback device</b></td><td><span class="m-kind">Entry</span></td><td class="m-def">—</td><td>To enable or switch data sources (links), go to Settings → Devices</td></tr>
+</tbody></table></div>
+      </div>
+      <div class="m-sub">
+        <h4>WLAN 电台（$…）</h4>
+        <p class="m-grp-sub">Enable remote control in the radio WLAN settings, set the Network User name/password, and keep the phone on the same subnet. IC-705 LAN audio is fixed at 12000 Hz.</p>
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>Setting</th><th>Control</th><th>Default</th><th>Description</th></tr></thead><tbody>
+<tr><td><b>Enable IC-705 LAN link</b></td><td><span class="m-kind">Switch</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>Radio IP</b></td><td><span class="m-kind">Text input</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>Control port</b></td><td><span class="m-kind">Text input</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>Username (Network User)</b></td><td><span class="m-kind">Text input</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>Password (Network User)</b></td><td><span class="m-kind">Text input</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>Audio backend</b></td><td><span class="m-kind">Read-only</span></td><td class="m-def">—</td><td></td></tr>
+</tbody></table></div>
+      </div>
       <div class="m-sub">
         <h4>Audio capture</h4>
         <p class="m-grp-sub">Demodulate AFSK 1200 from the mic/line input</p>
