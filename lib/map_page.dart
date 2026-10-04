@@ -509,6 +509,8 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                             actionSeq: _mapActionSeq,
                             action: _mapAction,
                             showTracks: _showTracks,
+                            // 设置里可强制「无论密度/缩放都显示标签」
+                            showStationLabels: widget.state.mapLabelsAlways,
                             onTap: _handleMapLatLng,
                             onStationTap: (s) {
                               _openDetail(s);
@@ -843,6 +845,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
   String? _markerSelHash;
   List<Station>? _markerVisibleList; // 上次构建标记所用的可见台站列表（用同一性判断）
   bool _forceMarkerRebuild = false; // 脉冲动画停转后强制重建一次，移除残留圈
+  bool _markerLabelsAlways = false; // 上次构建标记时的「始终显示标签」设置（变化需重建）
 
   List<Widget> _stationMarkers(Size size) {
     final now = DateTime.now();
@@ -871,6 +874,9 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
         viewHash != _markerViewHash || selHash != _markerSelHash;
     final force = _forceMarkerRebuild;
     _forceMarkerRebuild = false;
+    // 设置里切换「始终显示标签」也要重建：否则缓存复用会让开关“点了没反应”。
+    final labelsAlways = widget.state.mapLabelsAlways;
+    final labelsAlwaysChanged = labelsAlways != _markerLabelsAlways;
     final sizeChanged = _markerCacheSize != size;
     final elapsed = now.difference(_markerCacheTime).inMilliseconds;
     final fresh =
@@ -878,6 +884,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
         !force &&
         !visChanged &&
         !viewChanged &&
+        !labelsAlwaysChanged &&
         (sizeChanged ? elapsed < 150 : true);
     if (fresh) return _markerCache!;
     _markerCacheTime = now;
@@ -885,6 +892,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
     _markerViewHash = viewHash;
     _markerSelHash = selHash;
     _markerVisibleList = vis;
+    _markerLabelsAlways = labelsAlways;
     _markerCache = _buildMarkers(size);
     return _markerCache!;
   }
@@ -892,7 +900,10 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
   List<Widget> _buildMarkers(Size size) {
     final stations = _visible;
     // 台站密的时候（或缩得很小）不画呼号标签：文字排版是每个标记最贵的一步。
-    final showLabels = stations.length <= 60 || _zoom >= 13;
+    // 设置里可强制「无论密度/缩放都显示」（见 AppState.mapLabelsAlways）。
+    final showLabels = widget.state.mapLabelsAlways ||
+        stations.length <= 60 ||
+        _zoom >= 13;
     // 先滤掉屏幕外台站（含少量留白），避免为不可见台站创建 widget
     return stations.where((s) {
       final p = _toScreen(s.lat, s.lng, size);

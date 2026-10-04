@@ -1626,6 +1626,12 @@ class AppLocalizationsJa extends AppLocalizations {
   String get heatLevelHigh => '強';
 
   @override
+  String get mapLabelsAlways => '地図ラベルを常に表示';
+
+  @override
+  String get mapLabelsAlwaysDesc => '台局数やズームに関係なく、すべての局のコールサインラベルを地図に表示します。';
+
+  @override
   String get startFromFavorites => 'お気に入りの局から始める';
 
   @override

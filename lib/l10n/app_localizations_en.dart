@@ -1673,6 +1673,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get heatLevelHigh => 'Strong';
 
   @override
+  String get mapLabelsAlways => 'Always show map labels';
+
+  @override
+  String get mapLabelsAlwaysDesc => 'Show every station callsign label on the map regardless of station count or zoom.';
+
+  @override
   String get startFromFavorites => 'Start from a favourite station';
 
   @override

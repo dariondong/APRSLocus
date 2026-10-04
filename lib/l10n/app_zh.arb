@@ -701,6 +701,8 @@
   "heatLevelLow": "弱",
   "heatLevelMid": "中",
   "heatLevelHigh": "强",
+  "mapLabelsAlways": "始终显示地图标签",
+  "mapLabelsAlwaysDesc": "无论台站多少、缩放多小，都在地图上显示每个台站的呼号标签。",
   "startFromFavorites": "从收藏台站开始",
   "boxConnectAction": "连接盒子",
   "boxLinkUnsupported": "当前平台暂不支持盒子链路（需要蓝牙或 USB 串口）",

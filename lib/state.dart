@@ -2673,6 +2673,13 @@ class AppState extends ChangeNotifier {
     _notify();
   }
 
+  /// 切换「始终显示地图标签」（见 [mapLabelsAlways]）。
+  void setMapLabelsAlways(bool v) {
+    mapLabelsAlways = v;
+    persist();
+    _notify();
+  }
+
   /// 设置自定义主题色
   void setThemeColor(String hex) {
     final v = hex.trim().replaceAll('#', '').toUpperCase();
@@ -2882,6 +2889,13 @@ class AppState extends ChangeNotifier {
   /// 热力图档位（0 弱 / 1 中 / 2 强）：决定热力光斑的大小与浓度。
   /// 栅格地图与矢量地图共用同一个值（设置 → 显示 → 地图）。
   int heatLevel = 1;
+
+  /// 地图标签：**无论台站多密 / 缩得多小**都绘制呼号标签（设置 → 显示）。
+  ///
+  /// 默认关，保持原有取舍：标签排版是每个标记最贵的一步，台站密时也最容易
+  /// 糊成一片，所以原逻辑只在 `台站数 <= 60 || 缩放 >= 13` 时才画。
+  /// 打开后忽略该阈值、**始终**绘制 —— 栅格与矢量两套地图共用。
+  bool mapLabelsAlways = false;
   int maxStations = 100000; // 台站上限（默认无限制，可下调）
 
   /// 数据包列表上限（历史记录条数）。原先硬编码 200，偏少。
@@ -3208,6 +3222,7 @@ class AppState extends ChangeNotifier {
       filterLng = p.getDouble('filterLng') ?? filterLng;
       filterRadius = p.getInt('filterRadius') ?? filterRadius;
       heatLevel = (p.getInt('heatLevel') ?? heatLevel).clamp(0, 2);
+      mapLabelsAlways = p.getBool('mapLabelsAlways') ?? mapLabelsAlways;
       maxStations = p.getInt('maxStations') ?? maxStations;
       maxPackets = p.getInt('maxPackets') ?? maxPackets;
       onlineWindowMin = p.getInt('onlineWindowMin') ?? onlineWindowMin;
@@ -3455,6 +3470,7 @@ class AppState extends ChangeNotifier {
     await p.setDouble('filterLng', filterLng);
     await p.setInt('filterRadius', filterRadius);
     await p.setInt('heatLevel', heatLevel);
+    await p.setBool('mapLabelsAlways', mapLabelsAlways);
     await p.setInt('maxStations', maxStations);
     await p.setInt('maxPackets', maxPackets);
     await p.setInt('onlineWindowMin', onlineWindowMin);

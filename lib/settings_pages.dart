@@ -3237,6 +3237,13 @@ class _DisplaySettingsPageState extends State<DisplaySettingsPage> {
               _mapTypeSelector(),
               SettingsHint(S.of(context).mapTypeDesc),
               _heatLevelSelector(st),
+              // 无论台站多密 / 缩得多小都画呼号标签。开 = 强制显示（可能糊成一片、
+              // 也更费渲染）；关 = 沿用原取舍（台站少或放大到 13 级以上才显示）。
+              SettingsSwitch(S.of(context).mapLabelsAlways,
+                  value: st.mapLabelsAlways,
+                  color: C.blue,
+                  onChanged: (v) => st.setMapLabelsAlways(v)),
+              SettingsHint(S.of(context).mapLabelsAlwaysDesc, color: C.blue),
               SettingsNavRow(
                 title: S.of(context).offlineMap,
                 subtitle: S.of(context).offlineMapDesc,

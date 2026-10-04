@@ -1674,6 +1674,12 @@ class AppLocalizationsId extends AppLocalizations {
   String get heatLevelHigh => 'Kuat';
 
   @override
+  String get mapLabelsAlways => 'Selalu tampilkan label peta';
+
+  @override
+  String get mapLabelsAlwaysDesc => 'Selalu tampilkan label callsign setiap stasiun di peta, berapa pun jumlah stasiun atau tingkat zoom.';
+
+  @override
   String get startFromFavorites => 'Mulai dari stasiun favorit';
 
   @override

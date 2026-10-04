@@ -1691,6 +1691,12 @@ class AppLocalizationsEs extends AppLocalizations {
   String get heatLevelHigh => 'Fuerte';
 
   @override
+  String get mapLabelsAlways => 'Mostrar siempre etiquetas del mapa';
+
+  @override
+  String get mapLabelsAlwaysDesc => 'Muestra la etiqueta de indicativo de cada estación en el mapa sin importar la cantidad de estaciones ni el zoom.';
+
+  @override
   String get startFromFavorites => 'Empezar desde una estación favorita';
 
   @override

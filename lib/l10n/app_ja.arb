@@ -694,6 +694,8 @@
   "heatLevelLow": "弱",
   "heatLevelMid": "中",
   "heatLevelHigh": "強",
+  "mapLabelsAlways": "地図ラベルを常に表示",
+  "mapLabelsAlwaysDesc": "台局数やズームに関係なく、すべての局のコールサインラベルを地図に表示します。",
   "startFromFavorites": "お気に入りの局から始める",
   "boxConnectAction": "ボックスに接続",
   "boxLinkUnsupported": "このプラットフォームはボックス接続に対応していません（Bluetooth または USB シリアルが必要）",

@@ -50,6 +50,9 @@ class VectorMapView extends StatefulWidget {
 
   /// 热力图档位 0/1/2（弱/中/强）：与栅格地图同一个值，缩放光斑半径。
   final int heatLevel;
+
+  /// 设置里强制「无论台站多密 / 缩得多小都显示呼号标签」（见 AppState.mapLabelsAlways）。
+  final bool showStationLabels;
   // 矢量底图 style URL（OpenFreeMap Liberty / CARTO Positron）
   final String styleUrl;
   const VectorMapView({
@@ -74,6 +77,7 @@ class VectorMapView extends StatefulWidget {
     this.showTracks = true,
     this.showHeatmap = false,
     this.heatLevel = 1,
+    this.showStationLabels = false,
     this.styleUrl = kVectorStyleLiberty,
   });
 
@@ -93,6 +97,7 @@ class _VectorMapViewState extends State<VectorMapView> {
   int _lastMarkersVersion = -1;
   double _lastMarkerZoom = -999;
   String? _lastSelectedCall;
+  bool _lastShowStationLabels = false;
   List<Marker>? _markersCache;
 
   @override
@@ -454,6 +459,7 @@ class _VectorMapViewState extends State<VectorMapView> {
     if (widget.stationsVersion == _lastMarkersVersion &&
         (zoom - _lastMarkerZoom).abs() < 0.5 &&
         widget.selectedCall == _lastSelectedCall &&
+        widget.showStationLabels == _lastShowStationLabels &&
         !moved &&
         _markersCache != null) {
       return _markersCache!;
@@ -462,6 +468,7 @@ class _VectorMapViewState extends State<VectorMapView> {
     _lastMarkersVersion = widget.stationsVersion;
     _lastMarkerZoom = zoom;
     _lastSelectedCall = widget.selectedCall;
+    _lastShowStationLabels = widget.showStationLabels;
     final bounds = _mapReady ? _map.camera.visibleBounds : null;
     final vis = widget.stations
         .where((s) =>
@@ -469,7 +476,9 @@ class _VectorMapViewState extends State<VectorMapView> {
         .where((s) => _inBounds(s, bounds))
         .toList();
     // 台站密的时候（或缩得很小）不画呼号标签：文字排版是每个标记最贵的一步。
-    final labels = vis.length <= 60 || zoom >= 13;
+    // 设置里可强制「无论密度/缩放都显示」（见 AppState.mapLabelsAlways）。
+    final labels =
+        widget.showStationLabels || vis.length <= 60 || zoom >= 13;
     final result = vis.map((s) => _stationMarker(s, labels: labels)).toList();
     _markersCache = result;
     return result;

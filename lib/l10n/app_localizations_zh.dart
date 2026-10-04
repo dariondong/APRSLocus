@@ -1618,6 +1618,12 @@ class AppLocalizationsZh extends AppLocalizations {
   String get heatLevelHigh => '强';
 
   @override
+  String get mapLabelsAlways => '始终显示地图标签';
+
+  @override
+  String get mapLabelsAlwaysDesc => '无论台站多少、缩放多小，都在地图上显示每个台站的呼号标签。';
+
+  @override
   String get startFromFavorites => '从收藏台站开始';
 
   @override
@@ -9150,6 +9156,12 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get heatLevelHigh => '強';
+
+  @override
+  String get mapLabelsAlways => '永遠顯示地圖標籤';
+
+  @override
+  String get mapLabelsAlwaysDesc => '無論台站多少、縮放多小，都在地圖上顯示每個台站的呼號標籤。';
 
   @override
   String get startFromFavorites => '從收藏臺站開始';

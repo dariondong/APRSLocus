@@ -719,6 +719,8 @@
   "heatLevelLow": "Light",
   "heatLevelMid": "Medium",
   "heatLevelHigh": "Strong",
+  "mapLabelsAlways": "Always show map labels",
+  "mapLabelsAlwaysDesc": "Show every station callsign label on the map regardless of station count or zoom.",
   "startFromFavorites": "Start from a favourite station",
   "boxConnectAction": "Connect box",
   "boxLinkUnsupported": "The box link is not supported on this platform (needs Bluetooth or USB serial)",

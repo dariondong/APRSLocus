@@ -693,6 +693,8 @@
   "heatLevelLow": "Suave",
   "heatLevelMid": "Medio",
   "heatLevelHigh": "Fuerte",
+  "mapLabelsAlways": "Mostrar siempre etiquetas del mapa",
+  "mapLabelsAlwaysDesc": "Muestra la etiqueta de indicativo de cada estación en el mapa sin importar la cantidad de estaciones ni el zoom.",
   "startFromFavorites": "Empezar desde una estación favorita",
   "boxConnectAction": "Conectar caja",
   "boxLinkUnsupported": "El enlace de la caja no es compatible en esta plataforma (requiere Bluetooth o serie USB)",

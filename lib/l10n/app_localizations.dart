@@ -2827,6 +2827,18 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'强'**
   String get heatLevelHigh;
+  /// No description provided for @mapLabelsAlways.
+  ///
+  /// In zh, this message translates to:
+  /// **'始终显示地图标签'**
+  String get mapLabelsAlways;
+
+  /// No description provided for @mapLabelsAlwaysDesc.
+  ///
+  /// In zh, this message translates to:
+  /// **'无论台站多少、缩放多小，都在地图上显示每个台站的呼号标签。'**
+  String get mapLabelsAlwaysDesc;
+
   /// No description provided for @startFromFavorites.
   ///
   /// In zh, this message translates to:

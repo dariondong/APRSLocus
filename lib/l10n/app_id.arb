@@ -694,6 +694,8 @@
   "heatLevelLow": "Ringan",
   "heatLevelMid": "Sedang",
   "heatLevelHigh": "Kuat",
+  "mapLabelsAlways": "Selalu tampilkan label peta",
+  "mapLabelsAlwaysDesc": "Selalu tampilkan label callsign setiap stasiun di peta, berapa pun jumlah stasiun atau tingkat zoom.",
   "startFromFavorites": "Mulai dari stasiun favorit",
   "boxConnectAction": "Sambung kotak",
   "boxLinkUnsupported": "Tautan kotak tidak didukung di platform ini (perlu Bluetooth atau serial USB)",
