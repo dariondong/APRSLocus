@@ -2804,6 +2804,35 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'切换数据来源会断开当前连接'**
   String get dataSourceSwitchHint;
+  /// No description provided for @honorResetRow.
+  ///
+  /// In zh, this message translates to:
+  /// **'清除已阅读荣誉'**
+  String get honorResetRow;
+
+  /// No description provided for @honorResetTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'清除已阅读荣誉？'**
+  String get honorResetTitle;
+
+  /// No description provided for @honorResetConfirm.
+  ///
+  /// In zh, this message translates to:
+  /// **'清空「已阅读」记录，下次进入会把当前已拥有的荣誉重新展示一遍。'**
+  String get honorResetConfirm;
+
+  /// No description provided for @honorResetButton.
+  ///
+  /// In zh, this message translates to:
+  /// **'清除'**
+  String get honorResetButton;
+
+  /// No description provided for @honorResetDone.
+  ///
+  /// In zh, this message translates to:
+  /// **'已阅读荣誉已清除'**
+  String get honorResetDone;
   /// No description provided for @heatLevel.
   ///
   /// In zh, this message translates to:

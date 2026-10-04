@@ -40,49 +40,15 @@ void main() {
     test('未定义的新 key → 跳过（不弹无名徽章）', () {
       expect(newHonorsToCelebrate({'__nope__'}, {}), isEmpty);
     });
-  });
 
-  group('honorBaselineAction（基线建立策略）', () {
-    test('已有「已见」快照 → 直接对比', () {
-      expect(
-        honorBaselineAction(
-            seenInitialized: true, hadStoredHonors: true, membersOnline: true),
-        HonorBaselineAction.compare,
+    test('本地无记录（已阅读为空）→ 当前拥有的全部都会弹（不区分新老）', () {
+      // 这是刻意的语义：无记录 = 没见过任何荣誉 ⇒ owned − {} = owned。
+      final out = newHonorsToCelebrate(
+        {'kaishan', 'developer', 'earlyMember', 'sower'},
+        <String>{},
       );
-      // 即使还没有在线数据，只要快照在也直接对比（老用户常规路径）
-      expect(
-        honorBaselineAction(
-            seenInitialized: true, hadStoredHonors: false, membersOnline: false),
-        HonorBaselineAction.compare,
-      );
-    });
-
-    test('老用户升级（有荣誉表、无「已见」）→ 立刻建基线', () {
-      // 不能等在线数据：否则本窗口内刚授予的称号会被吸入基线、永不弹
-      expect(
-        honorBaselineAction(
-            seenInitialized: false, hadStoredHonors: true, membersOnline: false),
-        HonorBaselineAction.baselineNow,
-      );
-      expect(
-        honorBaselineAction(
-            seenInitialized: false, hadStoredHonors: true, membersOnline: true),
-        HonorBaselineAction.baselineNow,
-      );
-    });
-
-    test('全新安装（无荣誉表、无线索）→ 等在线数据', () {
-      expect(
-        honorBaselineAction(
-            seenInitialized: false, hadStoredHonors: false, membersOnline: false),
-        HonorBaselineAction.waitOnline,
-      );
-      // 在线已到 → 用第一份在线数据建基线
-      expect(
-        honorBaselineAction(
-            seenInitialized: false, hadStoredHonors: false, membersOnline: true),
-        HonorBaselineAction.baselineNow,
-      );
+      expect(out.map((h) => h.key).toList(),
+          ['kaishan', 'developer', 'earlyMember', 'sower']);
     });
   });
 
@@ -94,7 +60,7 @@ void main() {
     });
   });
 
-  group('已见快照落盘', () {
+  group('已阅读快照落盘 / 清除', () {
     test('markHonorsSeen 写入 honorSeenKeys', () async {
       await markHonorsSeen({'kaishan', 'developer'});
       final p = await SharedPreferences.getInstance();
@@ -102,6 +68,13 @@ void main() {
       expect(raw, isNotNull);
       expect(raw, contains('kaishan'));
       expect(raw, contains('developer'));
+    });
+
+    test('resetHonorSeen 删除记录（下次判定重新弹全部）', () async {
+      await markHonorsSeen({'kaishan', 'developer'});
+      await resetHonorSeen();
+      final p = await SharedPreferences.getInstance();
+      expect(p.getString('honorSeenKeys'), isNull);
     });
   });
 }

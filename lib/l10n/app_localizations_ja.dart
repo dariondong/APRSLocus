@@ -1614,6 +1614,21 @@ class AppLocalizationsJa extends AppLocalizations {
   String get dataSourceSwitchHint => 'データソースを切り替えると現在の接続は切断されます';
 
   @override
+  String get honorResetRow => '既読の名誉を消去';
+
+  @override
+  String get honorResetTitle => '既読の名誉を消去しますか？';
+
+  @override
+  String get honorResetConfirm => '「既読」の記録を消去します。次回起動時に、現在持っている名誉がすべて再表示されます。';
+
+  @override
+  String get honorResetButton => '消去';
+
+  @override
+  String get honorResetDone => '既読の名誉を消去しました';
+
+  @override
   String get heatLevel => 'ヒートマップの強さ';
 
   @override

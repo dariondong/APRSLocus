@@ -310,11 +310,19 @@ class _SportRankPageState extends State<SportRankPage> {
       color: medal,
       trailing: s.stepsCount('$steps'),
       // 自己这一行不跳台站详情（没有对应的 Station）；点一下说明步数从哪来。
+      //
+      // ⚠ 文字必须用**白字**显式指定：SnackBar 的底色在亮色主题下也是深色
+      // （`C.ink`），而 `ts(12)` 取色默认是 `C.ink`（深）—— 深字叠深底，
+      // 整条提示就是"黑乎乎一片"，一个字都看不清（用户报的就是这个）。
+      // 与开发者选项 `_confirmResetGuides` 的提示同一套配色（深底 + 白字）。
       onTap: () {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text(s.stepsHint, style: ts(12)),
+          content: Text(s.stepsHint, style: ts(12, c: Colors.white)),
+          backgroundColor: C.ink,
           duration: const Duration(seconds: 3),
           behavior: SnackBarBehavior.floating,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         ));
       },
     );

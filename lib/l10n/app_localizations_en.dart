@@ -1661,6 +1661,21 @@ class AppLocalizationsEn extends AppLocalizations {
       'Switching the data source disconnects the current link';
 
   @override
+  String get honorResetRow => 'Clear read honors';
+
+  @override
+  String get honorResetTitle => 'Clear read honors?';
+
+  @override
+  String get honorResetConfirm => 'This clears the “read” record so every honor you already own shows again on the next launch.';
+
+  @override
+  String get honorResetButton => 'Clear';
+
+  @override
+  String get honorResetDone => 'Read honors cleared';
+
+  @override
   String get heatLevel => 'Heatmap level';
 
   @override

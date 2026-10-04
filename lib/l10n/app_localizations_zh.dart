@@ -1606,6 +1606,21 @@ class AppLocalizationsZh extends AppLocalizations {
   String get dataSourceSwitchHint => '切换数据来源会断开当前连接';
 
   @override
+  String get honorResetRow => '清除已阅读荣誉';
+
+  @override
+  String get honorResetTitle => '清除已阅读荣誉？';
+
+  @override
+  String get honorResetConfirm => '清空「已阅读」记录，下次进入会把当前已拥有的荣誉重新展示一遍。';
+
+  @override
+  String get honorResetButton => '清除';
+
+  @override
+  String get honorResetDone => '已阅读荣誉已清除';
+
+  @override
   String get heatLevel => '热力图档位';
 
   @override
@@ -9144,6 +9159,21 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get dataSourceSwitchHint => '切換資料來源會中斷目前連線';
+
+  @override
+  String get honorResetRow => '清除已閱讀榮譽';
+
+  @override
+  String get honorResetTitle => '清除已閱讀榮譽？';
+
+  @override
+  String get honorResetConfirm => '清空「已閱讀」記錄，下次進入會把目前擁有的榮譽重新展示一遍。';
+
+  @override
+  String get honorResetButton => '清除';
+
+  @override
+  String get honorResetDone => '已閱讀榮譽已清除';
 
   @override
   String get heatLevel => '熱力圖檔位';

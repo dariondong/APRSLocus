@@ -1662,6 +1662,21 @@ class AppLocalizationsId extends AppLocalizations {
       'Mengganti sumber data akan memutus koneksi saat ini';
 
   @override
+  String get honorResetRow => 'Hapus kehormatan yang dibaca';
+
+  @override
+  String get honorResetTitle => 'Hapus kehormatan yang dibaca?';
+
+  @override
+  String get honorResetConfirm => 'Menghapus catatan “sudah dibaca” sehingga semua kehormatan yang sudah Anda miliki ditampilkan lagi saat berikutnya.';
+
+  @override
+  String get honorResetButton => 'Hapus';
+
+  @override
+  String get honorResetDone => 'Kehormatan yang dibaca dihapus';
+
+  @override
   String get heatLevel => 'Tingkat peta panas';
 
   @override

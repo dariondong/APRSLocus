@@ -2017,7 +2017,9 @@ class _BeaconSettingsPageState extends State<BeaconSettingsPage> {
                           ScaffoldMessenger.of(ctx)
                             ..hideCurrentSnackBar()
                             ..showSnackBar(SnackBar(
-                              content: Text(err, style: ts(12)),
+                              // 底色是默认深色（inverseSurface）——文字必须显式白字，
+                              // 否则 ts() 的默认深色会压出「黑乎乎一片」（同运动榜）
+                              content: Text(err, style: ts(12, c: Colors.white)),
                               duration: const Duration(seconds: 2),
                             ));
                           return;
@@ -4384,6 +4386,52 @@ class _AdvancedSettingsPageState extends State<AdvancedSettingsPage> {
     );
   }
 
+  /// 确认后清空「已阅读荣誉」记录（下次判定会把已拥有的荣誉重新弹一遍）。
+  void _confirmResetHonorSeen() {
+    showDialog(
+      context: context,
+      builder: (ctx) => MaterialSurface(
+        radius: 16,
+        child: AlertDialog(
+          backgroundColor: C.sheetFill,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          title: Text(S.of(context).honorResetTitle, style: ts(16, w: FontWeight.w700)),
+          content: Text(S.of(context).honorResetConfirm,
+              style: ts(13, c: C.slate, h: 1.6)),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx),
+              child: Text(S.of(context).cancel, style: ts(13, c: C.grey)),
+            ),
+            FilledButton(
+              style: FilledButton.styleFrom(
+                backgroundColor: C.purple,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              ),
+              onPressed: () {
+                unawaited(resetHonorsAndRecheck());
+                Navigator.pop(ctx);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(S.of(context).honorResetDone,
+                        style: ts(12, c: Colors.white)),
+                    behavior: SnackBarBehavior.floating,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    backgroundColor: C.ink,
+                  ),
+                );
+              },
+              child: Text(S.of(context).honorResetButton,
+                style: ts(13, c: Colors.white, w: FontWeight.w700)),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   void _confirmRestartOobe() {
     showDialog(
       context: context,
@@ -4504,6 +4552,22 @@ class _AdvancedSettingsPageState extends State<AdvancedSettingsPage> {
                   Icon(Icons.help_outline_rounded, size: 16, color: C.purple),
                   SizedBox(width: 8),
                   Text(S.of(context).guideResetRow,
+                      style: ts(12, c: C.slate, w: FontWeight.w600)),
+                  Spacer(),
+                  Icon(Icons.chevron_right_rounded, size: 18, color: C.grey),
+                ]),
+              ),
+            ),
+            Divider(height: 1, color: C.border),
+            // 清除「已阅读荣誉」记录：下次判定会把已拥有的荣誉重新弹一遍
+            InkWell(
+              onTap: () => _confirmResetHonorSeen(),
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                child: Row(children: [
+                  Icon(Icons.emoji_events_outlined, size: 16, color: C.purple),
+                  SizedBox(width: 8),
+                  Text(S.of(context).honorResetRow,
                       style: ts(12, c: C.slate, w: FontWeight.w600)),
                   Spacer(),
                   Icon(Icons.chevron_right_rounded, size: 18, color: C.grey),

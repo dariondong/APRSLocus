@@ -1679,6 +1679,21 @@ class AppLocalizationsEs extends AppLocalizations {
       'Cambiar la fuente de datos desconecta el enlace actual';
 
   @override
+  String get honorResetRow => 'Borrar distinciones leídas';
+
+  @override
+  String get honorResetTitle => '¿Borrar distinciones leídas?';
+
+  @override
+  String get honorResetConfirm => 'Borra el registro de “leídas” para que todas las distinciones que ya tienes vuelvan a mostrarse la próxima vez.';
+
+  @override
+  String get honorResetButton => 'Borrar';
+
+  @override
+  String get honorResetDone => 'Distinciones leídas borradas';
+
+  @override
   String get heatLevel => 'Nivel del mapa de calor';
 
   @override
