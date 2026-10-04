@@ -3238,5 +3238,7 @@
   "icomLanUsername": "用户名（Network User）",
   "icomLanPassword": "密码（Network User）",
   "icomLanHint": "在电台 WLAN 设置里开启遥控并设置 Network User 名/密码，手机与电台保持同一网段。IC-705 局域网音频固定 12000 Hz。",
-  "codeContributionIcomLan": "IC-705 电台直连"
+  "codeContributionIcomLan": "IC-705 电台直连",
+  "honorCelebrateTitle": "恭喜获得新荣誉",
+  "honorCelebrateOk": "太棒了"
 }

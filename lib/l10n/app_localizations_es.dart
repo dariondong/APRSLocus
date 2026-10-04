@@ -7882,4 +7882,10 @@ Al pulsar "Aceptar y conectar" confirmas que has leído, entendido y aceptado lo
 
 
 
+  @override
+  String get honorCelebrateTitle => "Nueva distinción desbloqueada";
+
+  @override
+  String get honorCelebrateOk => "Genial";
+
 }

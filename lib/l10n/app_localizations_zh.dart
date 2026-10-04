@@ -7531,6 +7531,12 @@ class AppLocalizationsZh extends AppLocalizations {
 
 
 
+  @override
+  String get honorCelebrateTitle => "恭喜获得新荣誉";
+
+  @override
+  String get honorCelebrateOk => "太棒了";
+
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
@@ -15058,5 +15064,11 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
 
 
+
+  @override
+  String get honorCelebrateTitle => "恭喜獲得新榮譽";
+
+  @override
+  String get honorCelebrateOk => "太棒了";
 
 }

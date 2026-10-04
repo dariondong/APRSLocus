@@ -321,6 +321,7 @@ Future<void> setUserPrimary(String call, String honorKey) async {
 | `honorsCacheJson` | `呼号 → [honorKey]` | 同上 | 同上 |
 | `primariesJson` | `呼号 → primary` | 同上 | 同上 |
 | `honorPrimary_<BASE>` | 用户自选主徽章（一人一键） | `setUserPrimary` | `ensureMembersLoaded` 扫描前缀 |
+| `honorSeenKeys` | 上次已见过的荣誉 key 数组（庆祝动画去重） | `markHonorsSeen` | `setHonorCelebrationCall` |
 | `firstFixHolders` | FIRST FIX 名单 JSON 数组 | `achievements.dart` | 同左 |
 
 **为什么定义要存三语**（`_serializeDefs()`）：
@@ -520,6 +521,35 @@ FIRST FIX  firstfix.json → isFirstFixHolder() → 动态注入 'firstFix'
 
 ---
 
+## 13.5 新获荣誉庆祝动画
+
+启动时若检测到**账号被新授予荣誉**，`lib/honor_celebration.dart` 会弹一层庆祝动画：
+半透明遮罩上金箔粒子四散，中央是**与全 App 一致的白底大圆角卡片**，卡片里徽章
+（荣誉色块）带光环 / 射线浮现，随后荣誉名 / 描述 / 蓝色主按钮依次淡入。
+造型刻意**沿用项目语言**（浅色底、白卡片、[`ts`] 文字、`C.blue` 主按钮），
+不做第二套霓虹暗黑视觉。
+
+**检测与去重**（`lib/early_member.dart`）：
+
+| 函数 | 作用 |
+|---|---|
+| `setHonorCelebrationCall(call)` | App 进主页时调用：设检测呼号、读入快照、尝试一次对比 |
+| `onHonorsUpdated({online})` | 荣誉数据更新后调用（`refreshMembers` 解析完传 `online: true`） |
+| `takePendingHonorCelebrations()` | 取走待弹荣誉（取后置空，只消费一次） |
+| `markHonorsSeen(keys)` | 用户看过动画后把「当前拥有」落盘为 `honorSeenKeys` |
+| `newHonorsToCelebrate(owned, seen)` | **纯函数**：算新增项、取展示顺序最靠前的一枚（有单测） |
+
+**关键设计（首次启用不能误报）**：基线以**第一份在线数据**为准。
+`members.json` 到达前（内置 seed / 本地缓存）一律不对比 —— 否则普通用户
+在线数据一回来，会把**本来就有**的荣誉当成「新授予」全部弹一遍。所以
+`_membersOnline` 为 false 时直接按兵不动；第一份在线数据只用来建立基线
+（静默落盘、不弹），此后每份在线数据对比新增。老用户此后获得新授予同样会弹。
+
+**消费点**：`lib/app.dart` 在 `home` 的 builder 里调度；用一个 `OverlayEntry`
+插入到 `navigatorKey` 的 overlay 上（不在 builder 里 `setState`，避免重建地图外壳）。
+
+---
+
 ## 📎 相关
 
 | 文件 | 说明 |
@@ -530,6 +560,7 @@ FIRST FIX  firstfix.json → isFirstFixHolder() → 动态注入 'firstFix'
 | `docs/firstfix.json` | FIRST FIX 授勋名单 |
 | `docs/sponsors.json` | 赞助名单（独立于称号） |
 | `lib/early_member.dart` | **本文主角**：定义、兜底、拉取、解析、查询 |
+| `lib/honor_celebration.dart` | **新获荣誉庆祝动画**（全屏，启动时检测到新授予时弹出） |
 | `lib/achievements.dart` | 成就中心 + FIRST FIX 名单拉取 |
 | `lib/honor_wall_page.dart` | 荣誉墙页面 |
 | `lib/sponsor_page.dart` | 赞助页 |

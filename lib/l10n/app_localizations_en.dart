@@ -7832,4 +7832,10 @@ By tapping "Agree and connect" you confirm that you have read, understood, and a
 
 
 
+  @override
+  String get honorCelebrateTitle => "New honor unlocked";
+
+  @override
+  String get honorCelebrateOk => "Awesome";
+
 }

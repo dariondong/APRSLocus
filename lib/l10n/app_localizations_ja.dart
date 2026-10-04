@@ -7621,4 +7621,10 @@ class AppLocalizationsJa extends AppLocalizations {
 
 
 
+  @override
+  String get honorCelebrateTitle => "新しい名誉を獲得";
+
+  @override
+  String get honorCelebrateOk => "やった！";
+
 }

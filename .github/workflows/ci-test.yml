@@ -219,6 +219,12 @@ jobs:
       - name: Test Baidu tile projection math
         run: flutter test test/baidu_proj_test.dart
 
+      # 「新获荣誉庆祝」的判定边界：没有新增不弹、一次新增多枚只弹展示顺序最
+      # 靠前的一枚、未定义的 key 跳过。这几条错了不会编译失败、analyze 也全绿，
+      # 只会表现成「每次启动都弹」「一次弹好几遍」或弹出无名徽章。
+      - name: Test honor celebration detection
+        run: flutter test test/honor_celebration_test.dart
+
       - name: Analyze (tolerate known vector_map false positive)
         shell: bash
         run: |

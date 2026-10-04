@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart'
     show defaultTargetPlatform, TargetPlatform;
 import 'package:flutter/material.dart';
@@ -13,6 +15,8 @@ import 'oobe_page.dart';
 import 'app_widget.dart';
 import 'blacklist_page.dart';
 import 'data_notice_page.dart';
+import 'early_member.dart';
+import 'honor_celebration.dart';
 import 'l10n/app_localizations.dart';
 import 'update_prompt.dart';
 
@@ -66,6 +70,15 @@ class _AppState extends State<App> {
   /// 「有新版弹提醒」只调一次（启动后第一次进入主页时挂一个 post-frame）
   bool _updatePromptScheduled = false;
 
+  /// 新荣誉庆祝：0=未开始 1=已排期/检测中 2=已展示（只弹一次）
+  int _honorCelebration = 0;
+
+  /// 荣誉数据版本监听是否已挂（只挂一次）
+  bool _honorListenerAttached = false;
+
+  /// 用于取得 Navigator 之下的 context / overlay（庆祝层要插在它上面）
+  final GlobalKey<NavigatorState> _navKey = GlobalKey<NavigatorState>();
+
   @override
   void initState() {
     super.initState();
@@ -115,15 +128,79 @@ class _AppState extends State<App> {
 
   @override
   void dispose() {
+    _honorListenerAttached = false;
+    memberListVersion.removeListener(_onHonorsMaybeChanged);
     _state.removeListener(_onThemeChange);
     _state.dispose();
     super.dispose();
+  }
+
+  /// 进入主页后：启动新荣誉检测。设置检测呼号、挂一次数据版本监听，
+  /// 并在下一帧检查是否已经有待弹项（本地缓存/在线数据可能已经就绪）。
+  void _maybeScheduleHonorCelebration() {
+    if (_honorCelebration != 0) return;
+    _honorCelebration = 1;
+    if (!_honorListenerAttached) {
+      _honorListenerAttached = true;
+      memberListVersion.addListener(_onHonorsMaybeChanged);
+    }
+    final call = _state.myFullCall;
+    unawaited(setHonorCelebrationCall(call));
+    WidgetsBinding.instance.addPostFrameCallback((_) => _onHonorsMaybeChanged());
+  }
+
+  /// 荣誉数据更新 → 若有待弹项则展示庆祝动画（仅一次）
+  void _onHonorsMaybeChanged() {
+    if (!mounted || _honorCelebration == 2) return;
+    final pending = takePendingHonorCelebrations();
+    if (pending.isEmpty) return;
+    _showHonorCelebration(pending.first);
+  }
+
+  void _showHonorCelebration(Honor honor) {
+    final overlay = _navKey.currentState?.overlay;
+    if (overlay == null) {
+      // Navigator 还没就绪（极早时机）：下一帧再试一次；仍不行就放弃本轮
+      // （不标记已见，下次启动会重算并再试，宁可重复也不要丢）
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        final o2 = _navKey.currentState?.overlay;
+        if (o2 == null) return;
+        _insertCelebration(o2, honor);
+      });
+      return;
+    }
+    _insertCelebration(overlay, honor);
+  }
+
+  void _insertCelebration(OverlayState overlay, Honor honor) {
+    if (_honorCelebration == 2) return;
+    _honorCelebration = 2;
+    var removed = false;
+    late OverlayEntry entry;
+    entry = OverlayEntry(
+      builder: (_) => HonorCelebrationPage(
+        honor: honor,
+        // 用 Navigator 之下的 context 取语言（本类 context 在 MaterialApp 之上，
+        // Localizations.maybeLocaleOf 取不到当前语言）
+        lang: honorLangOf(_navKey.currentContext ?? context),
+        onDone: () {
+          if (removed) return; // 背景与按钮都可能触发，去重
+          removed = true;
+          entry.remove();
+          // 把当前拥有的全部荣誉记为「已见」，避免下次启动重复弹
+          unawaited(markHonorsSeen(memberHonorKeys(_state.myFullCall)));
+        },
+      ),
+    );
+    overlay.insert(entry);
   }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       key: ValueKey('app_${_state.reloadTick}'),
+      navigatorKey: _navKey,
       title: 'APRSlocus',
       debugShowCheckedModeBanner: false,
       theme: _themeFor(Brightness.light),
@@ -194,6 +271,10 @@ class _AppState extends State<App> {
               if (mounted) maybePromptUpdate(context: context, state: _state);
             });
           }
+          // 新荣誉庆祝：进入主页后初始化检测（用当前呼号做一次基线），
+          // 并监听荣誉数据版本 —— 本地缓存/在线 members.json 到达时会再触发对比。
+          // 命中新授予就弹庆祝动画；用户确认前后都只弹一次。
+          _maybeScheduleHonorCelebration();
           // 两套外壳二选一（设置 → 显示 → 界面布局）。判断读 C 上的全局值
           // 而不是 _state.uiLayout：C.layout 与调色板同一时刻写入，不会出现
           // 「颜色已换、外壳还是旧的」这种半截状态。

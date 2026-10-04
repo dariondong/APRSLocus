@@ -5,6 +5,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'early_member.dart' show onHonorsUpdated;
+
 /// 单个成就定义
 class Achievement {
   final String key;
@@ -213,6 +215,8 @@ class AchievementCenter {
             await p.setString('firstFixHolders',
                 jsonEncode(_firstFixHolders.toList()));
           } catch (_) {}
+          // FIRST FIX 名单变化也会改变「当前拥有」→ 通知荣誉庆祝检测对比一次
+          onHonorsUpdated();
         }
       } finally {
         client.close(force: true);

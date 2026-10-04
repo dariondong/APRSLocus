@@ -2639,5 +2639,7 @@
   "icomLanUsername": "Username (Network User)",
   "icomLanPassword": "Password (Network User)",
   "icomLanHint": "Enable remote control in the radio WLAN settings, set the Network User name/password, and keep the phone on the same subnet. IC-705 LAN audio is fixed at 12000 Hz.",
-  "codeContributionIcomLan": "IC-705 radio link"
+  "codeContributionIcomLan": "IC-705 radio link",
+  "honorCelebrateTitle": "New honor unlocked",
+  "honorCelebrateOk": "Awesome"
 }

@@ -7842,4 +7842,10 @@ Dengan menekan "Setuju dan sambung", Anda menyatakan telah membaca, memahami, da
 
 
 
+  @override
+  String get honorCelebrateTitle => "Kehormatan baru terbuka";
+
+  @override
+  String get honorCelebrateOk => "Keren";
+
 }

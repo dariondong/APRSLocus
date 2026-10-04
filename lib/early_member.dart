@@ -292,6 +292,120 @@ final ValueNotifier<int> memberListVersion = ValueNotifier<int>(0);
 String _base(String call) => call.trim().toUpperCase().split('-').first;
 String _norm(String s) => s.trim().toUpperCase();
 
+// ─── 启动时检测「新获授的账号荣誉」并弹庆祝动画 ───
+//
+// 背景：荣誉由官网 members.json（以及 firstfix.json）下发，推送即生效、无需发版。
+// 用户在别处被授予称号后再次打开软件，应当有一个「恭喜获得」的仪式感提示。
+//
+// 判定与去重的关键设计（**首次启用不能误报**是这里最要紧的事）：
+//   * 用一条持久化快照（`honorSeenKeys`）记住「上次已见过的荣誉」。
+//   * **基线以「第一份在线数据」为准**：全新安装 / 首次启用本功能时，不能拿
+//     内置 seed 或本地缓存当基线 —— 它们对普通用户是空的，一旦之后在线数据
+//     到达，会把用户**本来就有**的荣誉当成「新授予」全部弹一遍。所以先到的
+//     在线数据只用来**建立基线**（静默落盘、不弹），此后的在线数据才做对比。
+//   * 若磁盘上**已有** snapshots（上次运行写过），则本轮直接对比、无需再等。
+//   * 一次只把**展示顺序最靠前**的一枚作为主角；用户确认后由 App 调
+//     [markHonorsSeen] 把当前全部拥有标记为已见，避免多枚同时新增时反复弹。
+List<Honor> _pendingCelebration = [];
+bool _honorSeenLoaded = false;
+bool _honorSeenInitialized = false;
+bool _honorBaselineReady = false;
+bool _membersOnline = false;
+Set<String> _knownHonorKeys = {};
+String _myHonorCall = '';
+
+/// 设置「要检测谁的新荣誉」并读入已见过快照、立即尝试一次对比。
+/// 在 App 首次进入主页时调用。
+Future<void> setHonorCelebrationCall(String call) async {
+  _myHonorCall = _base(call);
+  await _loadKnownHonors();
+  onHonorsUpdated();
+}
+
+/// 本次启动待弹的「新荣誉」。取走后置空，保证只消费一次。
+List<Honor> takePendingHonorCelebrations() {
+  final out = _pendingCelebration;
+  _pendingCelebration = [];
+  return out;
+}
+
+/// 读取上次记录的「已见过荣誉」快照。`honorSeenKeys` 键存在即视为已初始化
+/// （哪怕是空数组），这样「本来没有任何荣誉、后来获得第一枚」也能正常庆祝。
+Future<void> _loadKnownHonors() async {
+  if (_honorSeenLoaded) return;
+  _honorSeenLoaded = true;
+  try {
+    final p = await SharedPreferences.getInstance();
+    final raw = p.getString('honorSeenKeys');
+    if (raw != null) {
+      _honorSeenInitialized = true;
+      final list = jsonDecode(raw);
+      if (list is List) {
+        _knownHonorKeys =
+            list.map((e) => e.toString()).where((e) => e.isNotEmpty).toSet();
+      }
+    }
+  } catch (_) {}
+}
+
+/// 落盘「已见过荣誉」快照（App 在用户看过庆祝动画后调用）。
+Future<void> markHonorsSeen(Iterable<String> keys) async {
+  _knownHonorKeys = keys.where((e) => e.isNotEmpty).toSet();
+  _honorSeenInitialized = true;
+  try {
+    final p = await SharedPreferences.getInstance();
+    await p.setString('honorSeenKeys', jsonEncode(_knownHonorKeys.toList()));
+  } catch (_) {}
+}
+
+/// 纯函数：给定「当前拥有」与「已见过」，算出本次需要庆祝的新荣誉。
+/// 单独抽出来是为了可测（不碰 SharedPreferences / 网络），也把「取哪一枚」
+/// 的规则集中在一处：**按展示顺序取最靠前的一枚**，多枚时其余由确认回调一并记账。
+List<Honor> newHonorsToCelebrate(Set<String> owned, Set<String> seen) {
+  final fresh = owned.difference(seen);
+  if (fresh.isEmpty) return const [];
+  final ordered = displayHonorKeys.where(fresh.contains).toList();
+  final mainKey = ordered.isNotEmpty ? ordered.first : fresh.first;
+  final h = _honorDefs[mainKey];
+  return h == null ? const [] : [h];
+}
+
+/// 对比「当前拥有」与「已见过」，算出新增荣誉并挂起待弹。
+/// 触发时机：[online] 表示本次是**在线** members.json 解析后触发（建立基线只认它）。
+/// 也可能由 [setHonorCelebrationCall] 在进入主页时调用一次。
+void _updateKnownHonors({bool online = false}) {
+  // 先记下「本轮在线数据已到手」——即便此刻 App 还没设好检测呼号，
+  // 这个事实也必须保留，否则「在线数据先到、初始化后到」会永远等不到对比。
+  if (online) _membersOnline = true;
+  if (_myHonorCall.isEmpty || !_honorSeenLoaded) return;
+  // 等待本轮的在线数据（已到手则直接进入对比）：避免把内置 seed / 本地缓存
+  // 误当基线，或把「本来是既有荣誉」当成新授予弹出。
+  if (!_membersOnline) return;
+  final owned = memberHonorKeys(_myHonorCall).toSet();
+  if (!_honorBaselineReady) {
+    _honorBaselineReady = true;
+    // 磁盘已有基线（上次运行写的）→ 直接进入对比
+    if (_honorSeenInitialized) {
+      // fallthrough
+    } else {
+      // 首次启用：用第一份在线数据建立基线，静默落盘、不弹
+      unawaited(markHonorsSeen(owned));
+      return;
+    }
+  }
+  final fresh = newHonorsToCelebrate(owned, _knownHonorKeys);
+  if (fresh.isEmpty) return;
+  _pendingCelebration = fresh;
+  memberListVersion.value++;
+}
+
+/// 本地或在线荣誉数据更新后调用：判断是否出现了新的已授予荣誉
+void onHonorsUpdated({bool online = false}) {
+  try {
+    _updateKnownHonors(online: online);
+  } catch (_) {}
+}
+
 void _seedDefaults() {
   _honorsCache = {
     'BG7LZQ': ['kaishan', 'developer', 'earlyMember'],
@@ -490,6 +604,8 @@ Future<void> refreshMembers() async {
       if (d is! Map) return;
       _parseMembers(d);
       memberListVersion.value++;
+      // 在线数据是新授予的唯一真源：解析完立刻对比快照，命中新增则挂起庆祝
+      onHonorsUpdated(online: true);
       try {
         final p = await SharedPreferences.getInstance();
         await p.setString('honorDefsJson', jsonEncode(_serializeDefs()));

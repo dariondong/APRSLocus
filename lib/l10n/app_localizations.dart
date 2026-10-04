@@ -13377,6 +13377,18 @@ abstract class AppLocalizations {
 
 
 
+  /// No description provided for @honorCelebrateTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'恭喜获得新荣誉'**
+  String get honorCelebrateTitle;
+
+  /// No description provided for @honorCelebrateOk.
+  ///
+  /// In zh, this message translates to:
+  /// **'太棒了'**
+  String get honorCelebrateOk;
+
 }
 
 class _AppLocalizationsDelegate

@@ -149,6 +149,8 @@ const List<BackupGroupSpec> kBackupGroups = [
     [
       'achievements', 'achCounts', 'firstFixHolders',
       'honorDefsJson', 'honorsCacheJson', 'primariesJson',
+      // 已见过的荣誉快照：换机后带上它，新机不会把既有荣誉再当「新授予」弹一次
+      'honorSeenKeys',
     ],
     prefixes: ['honorPrimary_'],
   ),
