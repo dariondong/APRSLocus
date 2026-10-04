@@ -87,10 +87,10 @@ void main() {
   });
 
   group('待弹队列 peek / consume', () {
-    test('空队列 peek 返回空、consume 不抛', () {
-      expect(peekPendingHonorCelebrations(), isEmpty);
+    test('空队列 peek 返回 null、consume 不抛', () {
+      expect(peekPendingHonorCelebrations(), isNull);
       consumeCurrentHonorCelebration();
-      expect(peekPendingHonorCelebrations(), isEmpty);
+      expect(peekPendingHonorCelebrations(), isNull);
     });
   });
 
