@@ -33,7 +33,12 @@ void main() {
     // ⚠ 新增的上报闸（myPositionReportable）要求「本轮已重新定位」，即
     // myHasFix && !_pendingSavedPos —— **缺一不可**。这里没有真实定位回调，
     // 用调试口子把它摆成「已拿到本轮定位」。
+    // ⚠ 定位是「有坐标」的，必须一并给坐标：setBeaconForceCoarse 会走
+    // _updateNotification → myGrid，而 myGrid 直接 myLat!/myLng!，
+    // 只置 myHasFix 不给坐标会抛 null check。
     st.myHasFix = true;
+    st.myLat = 39.9075;
+    st.myLng = 116.3972;
     st.debugSetFreshFix();
     return st;
   }

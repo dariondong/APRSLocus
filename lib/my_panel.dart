@@ -231,7 +231,14 @@ class MyPanel extends StatelessWidget {
                         state.beaconEnabled
                             ? (state.smartBeaconEnabled
                                 ? '自动上报中 · 智能分档(每 ${state.beaconIntervalNow}s)'
-                                : '自动上报中 · 每 ${state.beaconInterval}s')
+                                // ⚠ 用 beaconIntervalNow 而不是 beaconInterval：
+                                // 后者只是「固定间隔」那一个字段，**纯网络模式**下
+                                // 生效值来自 beaconNetInterval —— 拿 beaconInterval
+                                // 会显示上一个 GPS 模式留下的旧值（用户报的
+                                // 「左下角一直固定显示 30 秒，改成 300 也不变，
+                                // 但倒计时是对的」正是这一处），与倒计时用的
+                                // beaconIntervalNow 对不上。
+                                : '自动上报中 · 每 ${state.beaconIntervalNow}s')
                             : '位置未上报 · 仅接收',
                         style: ts(
                           10.5,

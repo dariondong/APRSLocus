@@ -33,9 +33,12 @@ void main() {
     final st = AppState();
     // 构造函数里的 _loadPrefs 是异步的，不等它落地会被它覆盖
     await Future<void>.delayed(const Duration(milliseconds: 20));
-    // 计步走的是定位回调那条路（_syncSteps 不依赖上报闸），但这里把「本轮已定位」
-    // 一并摆好，免得日后 _syncSteps 的调用条件变动时这个测试变得脆弱。
+    // 计步走的是定位回调那条路（_syncSteps 不依赖上报闸）。给出坐标与
+    // 「本轮已定位」只是为了让前置状态完整，避免日后 _syncSteps 的调用
+    // 条件变动、或落盘路径顺带触达 myGrid（myLat!）时测试变脆。
     st.myHasFix = true;
+    st.myLat = 39.9075;
+    st.myLng = 116.3972;
     st.debugSetFreshFix();
     return st;
   }

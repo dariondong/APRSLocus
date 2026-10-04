@@ -1231,9 +1231,13 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                         const SizedBox(height: 8),
                         KV(
                           S.of(context).beaconIntervalLabel,
+                          // ⚠ 必须用 beaconIntervalNow（生效值）：纯网络模式下
+                          // 生效值是 beaconNetInterval，智能模式下是当前档位间隔；
+                          // 用 st.beaconInterval 会显示固定模式那个旧字段，与倒计时
+                          // （按 beaconIntervalNow 走）对不上。
                           st.smartBeaconEnabled
                               ? '智能 · ${S.of(context).secondsValue(st.beaconIntervalNow)}'
-                              : S.of(context).secondsValue(st.beaconInterval),
+                              : S.of(context).secondsValue(st.beaconIntervalNow),
                           icon: Icons.timer_rounded,
                         ),
                         const SizedBox(height: 8),

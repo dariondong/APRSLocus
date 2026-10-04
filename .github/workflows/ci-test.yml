@@ -225,6 +225,12 @@ jobs:
       - name: Test honor celebration detection
         run: flutter test test/honor_celebration_test.dart
 
+      # 「升级后今日步数归零」（issue #22-2）：步数此前只存内存、从不落盘，
+      # 升级/冷启动就先回到 0。这属于「analyze 全绿、构建全过」但用户直接看得见
+      # 的错，所以和上面几条一样钉在 CI。
+      - name: Test steps persistence
+        run: flutter test test/steps_persist_test.dart
+
       - name: Analyze (tolerate known vector_map false positive)
         shell: bash
         run: |
