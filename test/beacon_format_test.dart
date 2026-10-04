@@ -29,6 +29,19 @@ void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   setUp(() => SharedPreferences.setMockInitialValues({}));
 
+  /// 把「本轮已重新拿到定位」摆齐。
+  ///
+  /// 位置上报闸 `myPositionReportable = myHasFix && !_pendingSavedPos`，缺一不可。
+  /// 给坐标是因为置 `myHasFix` 后 `_updateNotification → myGrid` 会走
+  /// `myLat!/myLng!`，只置标志会抛空断言。
+  AppState located(AppState st) {
+    st.myHasFix = true;
+    st.myLat = 39.9075;
+    st.myLng = 116.3972;
+    st.debugSetFreshFix();
+    return st;
+  }
+
   group('信标报文格式（第三方兼容性）', () {
     test('注释必须紧跟符号，中间不得有空格', () {
       final raw = AprsFmt.position(
@@ -130,7 +143,7 @@ void main() {
     // 自动发射都用它。下面把这条不变量钉死：只要不会发射，就绝不能
     // 报告 counting/imminent。
     test('射频信标未开启时：不得报告倒计时（必须报 rfDisabled）', () {
-      final st = AppState()..dataSource = AppState.srcAudio;
+      final st = located(AppState()..dataSource = AppState.srcAudio);
       st.beaconEnabled = true;
       st.connected = true;
       st.audio.config.rfBeacon = false;
@@ -144,10 +157,9 @@ void main() {
     });
 
     test('打开射频信标后：同一状态才开始倒计时', () async {
-      final st = AppState()..dataSource = AppState.srcAudio;
+      final st = located(AppState()..dataSource = AppState.srcAudio);
       st.beaconEnabled = true;
       st.connected = true;
-      st.debugSetFreshFix(); // 本轮已定位（否则会先卡在 waitingFix）
       expect(st.beaconPhase, BeaconPhase.rfDisabled);
       await st.enableRfBeacon();
       expect(st.audio.config.rfBeacon, isTrue, reason: '一键开启要落到当前来源的配置');
@@ -158,7 +170,7 @@ void main() {
     });
 
     test('TNC 与音频的射频信标开关互相独立', () async {
-      final st = AppState()..dataSource = AppState.srcTnc;
+      final st = located(AppState()..dataSource = AppState.srcTnc);
       st.beaconEnabled = true;
       st.connected = true;
       await st.enableRfBeacon();
