@@ -642,6 +642,17 @@ html{overflow-x:hidden}
 <!-- site-sync:changelog -->
     <div class="cl-version reveal">
       <div class="cl-head">
+        <span class="cl-tag">v2.0.25</span>
+        <span class="cl-date">2026-10-04</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot new"></span>**群发前提示一次确认**：无论从消息页选中群聊发送，还是从群跟踪页的快捷聊天面板发给整个群，发送前都会弹一次「确认发送到 &lt;群呼号&gt;？」。群发是一键发给全体成员，发出去收不回来，值得先问一句。</div>
+        <div class="cl-item"><span class="cl-dot new"></span>**邀请前提示一次确认**：单成员邀请（手动输入呼号或点成员旁的对勾）与建群时的批量邀请，都会先弹一次确认（建群那句会写明「将邀请 N 位成员」）。</div>
+        <div class="cl-item"><span class="cl-dot fix"></span>**升级 / 更改文件重装后「今日步数」归零**（issue #22-2）：今日步数此前只存在内存里、从不落盘，任何一次冷启动、覆盖安装或改文件重编译都会先回到 0，若一直没等到传感器读数就永远停在 0。现在**每次步数变化即落盘**，启动时把今日步数接回来；跨天照常按日期归零，同一天内设备重启则把重启前已累计的部分接续上，不再凭空少一截。</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
         <span class="cl-tag">v2.0.24</span>
         <span class="cl-date">2026-10-04</span>
       </div>

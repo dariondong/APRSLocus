@@ -205,6 +205,48 @@ CARDS = [
 # 只列「重点版本」：中间几十个纯修 bug 的版本归纳进文字说明，完整记录指向 Releases。
 CL = [
     {
+        'ver': 'v2.0.25', 'date': '2026-10-04',
+        'items': [
+            ('new',
+             T('**群发前提示一次确认**：无论从消息页选中群聊发送，还是从群跟踪页的'
+               '快捷聊天面板发给整个群，发送前都会弹一次「确认发送到 &lt;群呼号&gt;？」。'
+               '群发是一键发给全体成员，发出去收不回来，值得先问一句。',
+               '**群發前提示一次確認**：無論從訊息頁選中群聊發送，還是從群追蹤頁的'
+               '快捷聊天面板發給整個群，發送前都會彈一次「確認發送到 &lt;群呼號&gt;？」。'
+               '群發是一鍵發給全體成員，發出去收不回來，值得先問一句。',
+               '**Confirm once before a group mass-send**: whether you send from the messages '
+               'page with a group selected or from the tracker\'s quick-chat panel to the whole '
+               'group, a single "Send to &lt;group call&gt;?" prompt appears first. A mass-send goes '
+               'to every member at once and cannot be recalled.')),
+            ('new',
+             T('**邀请前提示一次确认**：单成员邀请（手动输入呼号或点成员旁的对勾）与'
+               '建群时的批量邀请，都会先弹一次确认（建群那句会写明「将邀请 N 位成员」）。',
+               '**邀請前提示一次確認**：單成員邀請（手動輸入呼號或點成員旁的對勾）與'
+               '建群時的批次邀請，都會先彈一次確認（建群那句會寫明「將邀請 N 位成員」）。',
+               '**Confirm once before inviting**: single-member invites (typing a call or '
+               'tapping the check beside a member) and the batch invites fired when creating a '
+               'group both ask once first (the create-group prompt states how many members will '
+               'be invited).')),
+            ('fix',
+             T('**升级 / 更改文件重装后「今日步数」归零**（issue #22-2）：今日步数此前只'
+               '存在内存里、从不落盘，任何一次冷启动、覆盖安装或改文件重编译都会先回到 0，'
+               '若一直没等到传感器读数就永远停在 0。现在**每次步数变化即落盘**，启动时把'
+               '今日步数接回来；跨天照常按日期归零，同一天内设备重启则把重启前已累计的'
+               '部分接续上，不再凭空少一截。',
+               '**升級 / 更改檔案重裝後「今日步數」歸零**（issue #22-2）：今日步數此前只'
+               '存在記憶體裡、從不落盤，任何一次冷啟動、覆蓋安裝或改檔重編譯都會先回到 0，'
+               '若一直沒等到感測器讀數就永遠停在 0。現在**每次步數變化即落盤**，啟動時把'
+               '今日步數接回來；跨天照常按日期歸零，同一天內裝置重啟則把重啟前已累計的'
+               '部分接續上，不再憑空少一截。',
+               '**"Steps today" resetting to zero after an upgrade / reinstall** (issue #22-2): '
+               'the count only ever lived in memory and was never written to disk, so any cold '
+               'start, in-place upgrade or rebuild began at 0 and stayed there until a sensor '
+               'reading arrived. The count is now **written on every change** and restored on '
+               'launch; it still resets across a date change, and a same-day device reboot '
+               'resumes the pre-reboot accumulation instead of losing it.')),
+        ],
+    },
+    {
         'ver': 'v2.0.24', 'date': '2026-10-04',
         'items': [
             ('fix',

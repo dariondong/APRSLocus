@@ -573,6 +573,17 @@
 <!-- site-sync:changelog -->
     <div class="cl-version reveal">
       <div class="cl-head">
+        <span class="cl-tag">v2.0.25</span>
+        <span class="cl-date">2026-10-04</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot new"></span>**群發前提示一次確認**：無論從訊息頁選中群聊發送，還是從群追蹤頁的快捷聊天面板發給整個群，發送前都會彈一次「確認發送到 &lt;群呼號&gt;？」。群發是一鍵發給全體成員，發出去收不回來，值得先問一句。</div>
+        <div class="cl-item"><span class="cl-dot new"></span>**邀請前提示一次確認**：單成員邀請（手動輸入呼號或點成員旁的對勾）與建群時的批次邀請，都會先彈一次確認（建群那句會寫明「將邀請 N 位成員」）。</div>
+        <div class="cl-item"><span class="cl-dot fix"></span>**升級 / 更改檔案重裝後「今日步數」歸零**（issue #22-2）：今日步數此前只存在記憶體裡、從不落盤，任何一次冷啟動、覆蓋安裝或改檔重編譯都會先回到 0，若一直沒等到感測器讀數就永遠停在 0。現在**每次步數變化即落盤**，啟動時把今日步數接回來；跨天照常按日期歸零，同一天內裝置重啟則把重啟前已累計的部分接續上，不再憑空少一截。</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
         <span class="cl-tag">v2.0.24</span>
         <span class="cl-date">2026-10-04</span>
       </div>

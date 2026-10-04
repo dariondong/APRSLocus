@@ -1,5 +1,50 @@
 # 更新日志
 
+## [2.0.25] - 2026-10-04
+
+### 群发 / 邀请前各加一次确认 + 修复升级后步数归零
+
+**新增**
+
+- **群发前提示一次确认**：无论从消息页选中群聊发送，还是从群跟踪页的快捷聊天面板
+  发给整个群，发送前都会弹一次「确认发送到 <群呼号>？」。群发是一键发给全体成员，
+  发出去收不回来，值得先问一句。
+- **邀请前提示一次确认**：单成员邀请（手动输入呼号或点成员旁的对勾）与建群时的
+  批量邀请，都会先弹一次确认（建群那句会写明「将邀请 N 位成员」）。
+
+**修复**
+
+- **升级 / 更改文件重装后「今日步数」归零**（issue #22-2）：今日步数此前只存在内存里、
+  从不落盘，任何一次冷启动、覆盖安装或改文件重编译都会先回到 0，若一直没等到传感器
+  读数就永远停在 0。现在**每次步数变化即落盘**，启动时把今日步数接回来；跨天照常按
+  日期归零，同一天内设备重启则把重启前已累计的部分接续上，不再凭空少一截。
+
+---
+
+## [2.0.25] - 2026-10-04 (English)
+
+### A confirmation before mass-send / invite + fix for steps resetting on upgrade
+
+**New**
+
+- **Confirm once before a group mass-send**: whether you send from the messages page with a
+  group selected, or from the tracker's quick-chat panel to the whole group, a single
+  "Send to <group call>?" prompt appears first. A mass-send goes out to every member at once
+  and cannot be recalled, so it is worth one confirmation.
+- **Confirm once before inviting**: single-member invites (typing a call or tapping the check
+  next to a member) and the batch invites fired when creating a group both ask once first
+  (the create-group prompt states how many members will be invited).
+
+**Fixed**
+
+- **"Steps today" resetting to zero after an upgrade / reinstall** (issue #22-2): the count
+  only ever lived in memory and was never written to disk, so any cold start, in-place upgrade
+  or rebuild began at 0 and stayed there until a sensor reading arrived. The count is now
+  **written on every change**, restored on launch; it still resets across a date change, and a
+  same-day device reboot resumes the pre-reboot accumulation instead of losing it.
+
+---
+
 ## [2.0.24] - 2026-10-04
 
 ### 荣誉庆祝改为「本地无记录即全部展示」+ 开发者选项可清除已阅读荣誉

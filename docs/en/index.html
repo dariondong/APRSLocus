@@ -567,6 +567,17 @@
 <!-- site-sync:changelog -->
     <div class="cl-version reveal">
       <div class="cl-head">
+        <span class="cl-tag">v2.0.25</span>
+        <span class="cl-date">2026-10-04</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot new"></span>**Confirm once before a group mass-send**: whether you send from the messages page with a group selected or from the tracker's quick-chat panel to the whole group, a single "Send to &lt;group call&gt;?" prompt appears first. A mass-send goes to every member at once and cannot be recalled.</div>
+        <div class="cl-item"><span class="cl-dot new"></span>**Confirm once before inviting**: single-member invites (typing a call or tapping the check beside a member) and the batch invites fired when creating a group both ask once first (the create-group prompt states how many members will be invited).</div>
+        <div class="cl-item"><span class="cl-dot fix"></span>**"Steps today" resetting to zero after an upgrade / reinstall** (issue #22-2): the count only ever lived in memory and was never written to disk, so any cold start, in-place upgrade or rebuild began at 0 and stayed there until a sensor reading arrived. The count is now **written on every change** and restored on launch; it still resets across a date change, and a same-day device reboot resumes the pre-reboot accumulation instead of losing it.</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
         <span class="cl-tag">v2.0.24</span>
         <span class="cl-date">2026-10-04</span>
       </div>
