@@ -642,6 +642,16 @@ html{overflow-x:hidden}
 <!-- site-sync:changelog -->
     <div class="cl-version reveal">
       <div class="cl-head">
+        <span class="cl-tag">v2.0.22</span>
+        <span class="cl-date">2026-10-04</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot fix"></span>**修好「老用户看不到新荣誉庆祝」**：上一版的新荣誉庆祝只在你关闭过动画后才记录「已见」，而旧版本没有这个功能 —— 升级后设备上只有荣誉表、没有已见记录，旧逻辑把这种情况当成全新安装、「等第一份在线名单再建基线」，而那份名单**已经含刚授予的称号**，于是新荣誉被算进基线、**永远不弹**。现在按「本地是否已有荣誉表」区分：老用户升级时立刻用本地缓存建基线，同一会话内到达的在线新授予即可正常弹出；全新安装仍等在线名单，不会把已有荣誉狂弹一遍。**一次授予多枚只弹一枚**也修了：现在按顺序逐枚弹，关闭一枚自动补下一枚。</div>
+        <div class="cl-item"><span class="cl-dot up"></span>**首次运行的向导不再预填连接参数**：服务器、端口与 Passcode 一律留空（仅以灰色提示常值），不再默认填好 `rotate.aprs2.net` / `14580` / `-1` —— 软件不预置、也不推荐任何服务器地址；重新运行向导时仍会回填你保存过的值。</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
         <span class="cl-tag">v2.0.21</span>
         <span class="cl-date">2026-10-04</span>
       </div>

@@ -567,6 +567,16 @@
 <!-- site-sync:changelog -->
     <div class="cl-version reveal">
       <div class="cl-head">
+        <span class="cl-tag">v2.0.22</span>
+        <span class="cl-date">2026-10-04</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot fix"></span>**Fixed: existing users never saw the new-honor celebration**: the previous release only recorded a "seen" snapshot after you dismissed the animation - and older versions had no such feature, so after upgrading the device held a roster but no seen-record. The old logic treated that as a fresh install and waited for the first online roster to build the baseline - but that roster **already contained the newly granted honor**, so it was folded into the baseline and **never celebrated**. It now tells existing users from fresh installs by whether a local roster is stored: on upgrade the baseline is built immediately, so a genuinely new online grant in the same session still pops, while a fresh install still waits for the online roster and never replays honors you already had. **Several honors granted at once only celebrated one** is fixed too: they are now queued and shown one after another.</div>
+        <div class="cl-item"><span class="cl-dot up"></span>**The first-run wizard no longer prefills connection fields**: server, port and Passcode are left empty (common values only show as grey hints) instead of defaulting to `rotate.aprs2.net` / `14580` / `-1` - the app presets and recommends no server; re-running the wizard still restores your saved values.</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
         <span class="cl-tag">v2.0.21</span>
         <span class="cl-date">2026-10-04</span>
       </div>

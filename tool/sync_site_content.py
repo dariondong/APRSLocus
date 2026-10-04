@@ -205,6 +205,49 @@ CARDS = [
 # 只列「重点版本」：中间几十个纯修 bug 的版本归纳进文字说明，完整记录指向 Releases。
 CL = [
     {
+        'ver': 'v2.0.22', 'date': '2026-10-04',
+        'items': [
+            ('fix',
+             T('**修好「老用户看不到新荣誉庆祝」**：上一版的新荣誉庆祝只在你关闭过动画后'
+               '才记录「已见」，而旧版本没有这个功能 —— 升级后设备上只有荣誉表、没有已见记录，'
+               '旧逻辑把这种情况当成全新安装、「等第一份在线名单再建基线」，而那份名单'
+               '**已经含刚授予的称号**，于是新荣誉被算进基线、**永远不弹**。现在按「本地是否已有'
+               '荣誉表」区分：老用户升级时立刻用本地缓存建基线，同一会话内到达的在线新授予即可正常弹出；'
+               '全新安装仍等在线名单，不会把已有荣誉狂弹一遍。'
+               '**一次授予多枚只弹一枚**也修了：现在按顺序逐枚弹，关闭一枚自动补下一枚。',
+               '**修好「老用戶看不到新榮譽慶祝」**：上一版的新榮譽慶祝只在你關閉過動畫後'
+               '才記錄「已見」，而舊版本沒有這個功能 —— 升級後裝置上只有榮譽表、沒有已見記錄，'
+               '舊邏輯把這種情況當成全新安裝、「等第一份線上名單再建基線」，而那份名單'
+               '**已經含剛授予的稱號**，於是新榮譽被算進基線、**永遠不彈**。現在按「本機是否已有'
+               '榮譽表」區分：老用戶升級時立刻用本機快取建基線，同一工作階段內到達的線上新增即可正常彈出；'
+               '全新安裝仍等線上名單，不會把已有榮譽狂彈一遍。'
+               '**一次授予多枚只彈一枚**也修了：現在依序逐枚彈，關閉一枚自動補下一枚。',
+               '**Fixed: existing users never saw the new-honor celebration**: the previous '
+               'release only recorded a "seen" snapshot after you dismissed the animation - and '
+               'older versions had no such feature, so after upgrading the device held a roster but '
+               'no seen-record. The old logic treated that as a fresh install and waited for the '
+               'first online roster to build the baseline - but that roster **already contained the '
+               'newly granted honor**, so it was folded into the baseline and **never celebrated**. '
+               'It now tells existing users from fresh installs by whether a local roster is '
+               'stored: on upgrade the baseline is built immediately, so a genuinely new online '
+               'grant in the same session still pops, while a fresh install still waits for the '
+               'online roster and never replays honors you already had. '
+               '**Several honors granted at once only celebrated one** is fixed too: they are now '
+               'queued and shown one after another.')),
+            ('up',
+             T('**首次运行的向导不再预填连接参数**：服务器、端口与 Passcode 一律留空'
+               '（仅以灰色提示常值），不再默认填好 `rotate.aprs2.net` / `14580` / `-1` —— '
+               '软件不预置、也不推荐任何服务器地址；重新运行向导时仍会回填你保存过的值。',
+               '**首次執行的嚮導不再預填連線參數**：伺服器、連接埠與 Passcode 一律留空'
+               '（僅以灰色提示常值），不再預設填好 `rotate.aprs2.net` / `14580` / `-1` —— '
+               '軟體不預置、也不推薦任何伺服器位址；重新執行嚮導時仍會回填你儲存過的值。',
+               '**The first-run wizard no longer prefills connection fields**: server, port and '
+               'Passcode are left empty (common values only show as grey hints) instead of '
+               'defaulting to `rotate.aprs2.net` / `14580` / `-1` - the app presets and recommends '
+               'no server; re-running the wizard still restores your saved values.')),
+        ],
+    },
+    {
         'ver': 'v2.0.21', 'date': '2026-10-04',
         'items': [
             ('new',

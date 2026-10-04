@@ -1,5 +1,53 @@
 # 更新日志
 
+## [2.0.22] - 2026-10-04
+
+### 修复「老用户看不到荣誉庆祝」+ 首次运行不再预填连接参数
+
+**修复**
+
+- **老用户升级后看不到「恭喜获得」动画**：上一版加入了新荣誉庆祝，但**已见过荣誉**的
+  快照只有在你关闭过动画之后才会记录 —— 老版本没有这个功能，因此升级后磁盘上只有
+  荣誉表、没有「已见」记录。旧逻辑把这种情况一律当成全新安装，去「等第一份在线名单」
+  再建基线，而那份名单**已经包含刚授予的称号**，于是新荣誉被算进了基线、**永远不弹**。
+  现在会按「本地是否已有荣誉表」区分：老用户升级时立刻用本地缓存建立基线，本窗口内
+  到达的在线新授予即可正常弹出；全新安装仍等在线名单，不会把本来就有荣誉狂弹一遍；
+- **一次授予多枚荣誉只弹一枚**：旧逻辑只把展示顺序最靠前的那一枚作为主角，其余在
+  「标记已见」时被一并吞掉。现在按顺序**逐枚弹出**，关闭一枚自动补下一枚。
+
+**变更**
+
+- **首次运行的设置向导不再预填连接参数**：服务器、端口与 Passcode 一律留空（仅以灰色
+  提示常值），不再默认填好 `rotate.aprs2.net` / `14580` / `-1` —— 软件不预置、也不推荐
+  任何服务器地址。重新运行向导时仍会回填你保存过的值，现有配置不会丢。
+
+## [2.0.22] - 2026-10-04 (English)
+
+### Fix: existing users never saw the honor celebration + no prefilled connection
+
+**Fixed**
+
+- **Existing users never saw the "Congratulations" animation**: the previous release added
+  the new-honor celebration, but the *seen* snapshot is only written after you dismiss the
+  animation - and older versions had no such feature, so after upgrading the device held a
+  roster but no seen-record. The old logic treated that as a fresh install and waited for the
+  first online roster to build the baseline - but that roster **already contained the newly
+  granted honor**, so it was folded into the baseline and **never celebrated**. It now tells
+  existing users from fresh installs by whether a local roster is stored: on upgrade the
+  baseline is built immediately from the local cache, so a genuinely new online grant in the
+  same session still pops; a fresh install still waits for the online roster and never replays
+  honors you already had;
+- **Several honors granted at once only celebrated one**: the old logic picked just the
+  front-most honor and swallowed the rest when marking them seen. It now queues **every** new
+  honor and shows them one after another.
+
+**Changed**
+
+- **The first-run wizard no longer prefills connection fields**: server, port and Passcode are
+  left empty (common values only appear as grey hints) instead of defaulting to
+  `rotate.aprs2.net` / `14580` / `-1` - the app presets and recommends no server. Re-running
+  the wizard still restores your saved values, so nothing is lost.
+
 ## [2.0.21] - 2026-10-04
 
 ### 新获荣誉时弹「恭喜获得」庆祝动画

@@ -573,6 +573,16 @@
 <!-- site-sync:changelog -->
     <div class="cl-version reveal">
       <div class="cl-head">
+        <span class="cl-tag">v2.0.22</span>
+        <span class="cl-date">2026-10-04</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot fix"></span>**修好「老用戶看不到新榮譽慶祝」**：上一版的新榮譽慶祝只在你關閉過動畫後才記錄「已見」，而舊版本沒有這個功能 —— 升級後裝置上只有榮譽表、沒有已見記錄，舊邏輯把這種情況當成全新安裝、「等第一份線上名單再建基線」，而那份名單**已經含剛授予的稱號**，於是新榮譽被算進基線、**永遠不彈**。現在按「本機是否已有榮譽表」區分：老用戶升級時立刻用本機快取建基線，同一工作階段內到達的線上新增即可正常彈出；全新安裝仍等線上名單，不會把已有榮譽狂彈一遍。**一次授予多枚只彈一枚**也修了：現在依序逐枚彈，關閉一枚自動補下一枚。</div>
+        <div class="cl-item"><span class="cl-dot up"></span>**首次執行的嚮導不再預填連線參數**：伺服器、連接埠與 Passcode 一律留空（僅以灰色提示常值），不再預設填好 `rotate.aprs2.net` / `14580` / `-1` —— 軟體不預置、也不推薦任何伺服器位址；重新執行嚮導時仍會回填你儲存過的值。</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
         <span class="cl-tag">v2.0.21</span>
         <span class="cl-date">2026-10-04</span>
       </div>
