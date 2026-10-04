@@ -1,5 +1,34 @@
 # 更新日志
 
+## [2.0.21] - 2026-10-04
+
+### 新获荣誉时弹「恭喜获得」庆祝动画
+
+**新增**
+
+- **获得新荣誉时弹出庆祝动画**：打开软件后，若检测到你的账号**被新授予**荣誉（成员称号或
+  FIRST FIX），会弹出一屏「恭喜获得」：半透明遮罩上金箔粒子四散，中央白底卡片里徽章带
+  光环 / 射线浮现，随后荣誉名、描述与主按钮依次淡入。造型沿用全 App 的浅色卡片语言，
+  徽章配色与荣誉墙一致；点按任意处或按钮即可关闭，**同一枚荣誉只弹一次**；
+- 判定只在**在线名单**到达后进行：全新安装不会把「本来就有」的荣誉误当成新授予弹一遍；
+  老用户此后获得的新授予同样会弹。已见记录随备份一起保存。
+
+## [2.0.21] - 2026-10-04 (English)
+
+### A "Congratulations" celebration when you earn a new honor
+
+**Added**
+
+- **A celebration animation for a newly granted honor**: after the app starts, if your account
+  has been **newly granted** an honor (a member title or FIRST FIX), a "Congratulations" screen
+  pops up: gold-foil particles scatter over a dimmed backdrop while a badge emerges with rings
+  and rays inside a white card, then the honor name, description and the primary button fade in.
+  It follows the app's light card language, and the badge color matches the honor wall. Tap
+  anywhere or the button to dismiss; **each honor is celebrated only once**;
+- Detection waits for the **online roster**: a fresh install never replays honors you already
+  had as if they were new, while a genuinely new grant to an existing user still shows. The
+  seen record is stored alongside backups.
+
 ## [2.0.20] - 2026-10-03
 
 ### 修复地图手势与矢量热力图 + 热力图档位

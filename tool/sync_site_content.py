@@ -205,6 +205,30 @@ CARDS = [
 # 只列「重点版本」：中间几十个纯修 bug 的版本归纳进文字说明，完整记录指向 Releases。
 CL = [
     {
+        'ver': 'v2.0.21', 'date': '2026-10-04',
+        'items': [
+            ('new',
+             T('**新获荣誉时弹出「恭喜获得」庆祝动画**：打开软件后若检测到账号**被新授予**荣誉'
+               '（成员称号或 FIRST FIX），会弹出一屏庆祝：半透明遮罩上金箔粒子四散，中央白底卡片里'
+               '徽章带光环 / 射线浮现，随后荣誉名、描述与主按钮依次淡入。造型沿用全 App 的浅色卡片语言，'
+               '徽章配色与荣誉墙一致；点按任意处或按钮关闭，**同一枚荣誉只弹一次**。'
+               '判定只在**在线名单**到达后进行，全新安装不会把已有荣誉误当新授予弹一遍。',
+               '**新獲榮譽時彈出「恭喜獲得」慶祝動畫**：開啟軟體後若偵測到帳號**被新授予**榮譽'
+               '（成員稱號或 FIRST FIX），會彈出一幕慶祝：半透明遮罩上金箔粒子四散，中央白底卡片裡'
+               '徽章帶著光環 / 射線浮現，隨後榮譽名、描述與主按鈕依序淡入。造型沿用全 App 的淺色卡片語言，'
+               '徽章配色與榮譽牆一致；點按任意處或按鈕關閉，**同一枚榮譽只彈一次**。'
+               '判定只在**線上名單**到達後進行，全新安裝不會把已有榮譽誤當新授予彈一遍。',
+               '**A "Congratulations" celebration when you earn a new honor**: after the app starts, '
+               'if your account has been **newly granted** an honor (a member title or FIRST FIX), a '
+               'celebration pops up - gold-foil particles scatter over a dimmed backdrop while a badge '
+               'emerges with rings and rays inside a white card, then the honor name, description and '
+               'the primary button fade in. It follows the app light-card language and the badge color '
+               'matches the honor wall; tap anywhere or the button to dismiss, **each honor is '
+               'celebrated only once**. Detection waits for the **online roster**, so a fresh install '
+               'never replays honors you already had as if they were new.')),
+        ],
+    },
+    {
         'ver': 'v2.0.20', 'date': '2026-10-03',
         'items': [
             ('fix',
