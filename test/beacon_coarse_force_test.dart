@@ -30,8 +30,10 @@ void main() {
     await Future<void>.delayed(const Duration(milliseconds: 20));
     st.beaconEnabled = true;
     st.connected = true; // 默认来源是 APRS-IS，不受「射频信标」那一档影响
-    // ⚠ 新增的上报闸（myPositionReportable）要求「本轮已重新定位」——
-    // 这里没有真实定位回调，用调试口子把它摆成「已拿到本轮定位」。
+    // ⚠ 新增的上报闸（myPositionReportable）要求「本轮已重新定位」，即
+    // myHasFix && !_pendingSavedPos —— **缺一不可**。这里没有真实定位回调，
+    // 用调试口子把它摆成「已拿到本轮定位」。
+    st.myHasFix = true;
     st.debugSetFreshFix();
     return st;
   }
