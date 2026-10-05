@@ -49,7 +49,7 @@ BODIES = {
 <ul class="m-index-list">
 <li><a href="start.html">快速上手</a> —— 安装、七步向导、Passcode、收第一条报文</li>
 <li><a href="interface.html">界面导览</a> —— 五个页签、面板手势、返回键</li>
-<li><a href="connections.html">连接与数据来源</a> —— 四条链路、APRS-IS、接电台、iGate、链路自检</li>
+<li><a href="connections.html">连接与数据来源</a> —— 五条链路、APRS-IS、接电台、iGate、链路自检</li>
 <li><a href="beacon.html">位置信标</a> —— 间隔、速度分档、无 GPS、报文示例</li>
 <li><a href="messaging.html">消息与群聊</a> —— 单聊、67/512 红线、群聊、翻译</li>
 <li><a href="maps.html">地图与显示</a> —— 图源、坐标纠偏、离线地图、主题</li>
@@ -67,7 +67,7 @@ BODIES = {
 <ul class="m-index-list">
 <li><a href="start.html">快速上手</a> —— 安裝、七步引導、Passcode、收第一則封包</li>
 <li><a href="interface.html">介面導覽</a> —— 五個頁籤、面板手勢、返回鍵</li>
-<li><a href="connections.html">連線與資料來源</a> —— 四條鏈路、APRS-IS、接電臺、iGate、鏈路自檢</li>
+<li><a href="connections.html">連線與資料來源</a> —— 五條鏈路、APRS-IS、接電臺、iGate、鏈路自檢</li>
 <li><a href="beacon.html">位置信標</a> —— 間隔、速度分檔、無 GPS、封包示例</li>
 <li><a href="messaging.html">訊息與群組</a> —— 單聊、67/512 紅線、群組、翻譯</li>
 <li><a href="maps.html">地圖與顯示</a> —— 圖磚、座標校正、離線地圖、主題</li>
@@ -85,7 +85,7 @@ BODIES = {
 <ul class="m-index-list">
 <li><a href="start.html">Quick Start</a> — install, seven-step wizard, Passcode, first packet</li>
 <li><a href="interface.html">Interface</a> — five tabs, panel gestures, the Back key</li>
-<li><a href="connections.html">Connections</a> — four links, APRS-IS, radio hookup, iGate, self-test</li>
+<li><a href="connections.html">Connections</a> — five links, APRS-IS, radio hookup, iGate, self-test</li>
 <li><a href="beacon.html">Beaconing</a> — interval, speed tiers, no GPS, frame example</li>
 <li><a href="messaging.html">Messaging</a> — direct chat, the 67/512 limits, groups, translation</li>
 <li><a href="maps.html">Maps &amp; Display</a> — tiles, datum correction, offline maps, themes</li>
@@ -345,7 +345,7 @@ the scroll position should still be there.</p></div></div>
 
 # ─────────────────────────── 连接与数据来源 ───────────────────────────
 'connections': [
-    ('sources', T('四条链路：收可以多选，发只有一条', '四條鏈路：收可複選，發只有一條', 'Four links: many RX, one TX'), '''
+    ('sources', T('五条链路：收可以多选，发只有一条', '五條鏈路：收可複選，發只有一條', 'Five links: many RX, one TX'), '''
 <p>路径 <b>设置 → 连接 → 数据来源</b>。勾中的链路都会<b>收</b>报文，但<b>发射只有一条</b> ——
 右侧圆点标记的那条。同一个呼号从两条链路发出去会造成重复报文。</p>
 <div class="doc-table-wrap"><table class="doc-table">
@@ -354,6 +354,7 @@ the scroll position should still be there.</p></div></div>
 <tr><td><b>TNC</b></td><td>蓝牙 SPP / USB 串口（OTG），KISS 协议，接电台</td><td>✓</td><td>✓</td></tr>
 <tr><td><b>音频</b></td><td>耳机口接电台，AFSK 1200（Bell 202）</td><td>✓</td><td>✓</td></tr>
 <tr><td><b>PKWDWPL</b></td><td>蓝牙/串口读 Kenwood 的 <code>$PKWDWPL</code> 航点语句</td><td>✓</td><td><b>✗ 只读</b></td></tr>
+<tr><td><b>Icom WLAN</b></td><td>Wi-Fi / 以太网直连（IC-705 / IC-9700 / IC-7610 / IC-905），CI-V 控制 + 网络音频</td><td>✓</td><td>✓</td></tr>
 </tbody></table></div>
 <div class="callout warn"><span class="co-ic">📡</span><div><p><b>接收范围默认 300 km</b>（最小 10 km），用 <code>r/纬度/经度/半径</code> 过滤 ——
 改完必须点 <b>「保存并应用」</b> 才生效。想收全球就把半径调大或关掉过滤中心跟随。</p></div></div>
@@ -366,6 +367,7 @@ the scroll position should still be there.</p></div></div>
 <tr><td><b>TNC</b></td><td>藍牙 SPP / USB 序列埠（OTG），KISS 協定，接電臺</td><td>✓</td><td>✓</td></tr>
 <tr><td><b>音訊</b></td><td>耳機孔接電臺，AFSK 1200（Bell 202）</td><td>✓</td><td>✓</td></tr>
 <tr><td><b>PKWDWPL</b></td><td>藍牙/序列埠讀 Kenwood 的 <code>$PKWDWPL</code> 航點語句</td><td>✓</td><td><b>✗ 唯讀</b></td></tr>
+<tr><td><b>Icom WLAN</b></td><td>Wi-Fi / 乙太網路直連（IC-705 / IC-9700 / IC-7610 / IC-905），CI-V 控制 + 網路音訊</td><td>✓</td><td>✓</td></tr>
 </tbody></table></div>
 <div class="callout warn"><span class="co-ic">📡</span><div><p><b>接收範圍預設 300 km</b>（最小 10 km），用 <code>r/緯度/經度/半徑</code> 過濾 ——
 改完必須點 <b>「儲存並套用」</b>才生效。想收全球就把半徑調大或關掉過濾中心跟隨。</p></div></div>
@@ -379,6 +381,7 @@ two links produces duplicate packets.</p>
 <tr><td><b>TNC</b></td><td>Bluetooth SPP / USB serial (OTG), KISS, into a radio</td><td>✓</td><td>✓</td></tr>
 <tr><td><b>Audio</b></td><td>headphone jack into a radio, AFSK 1200 (Bell 202)</td><td>✓</td><td>✓</td></tr>
 <tr><td><b>PKWDWPL</b></td><td>Bluetooth/serial reader of a Kenwood radio’s <code>$PKWDWPL</code> waypoints</td><td>✓</td><td><b>✗ receive-only</b></td></tr>
+<tr><td><b>Icom WLAN</b></td><td>Wi-Fi / Ethernet direct link (IC-705 / IC-9700 / IC-7610 / IC-905), CI-V + LAN audio</td><td>✓</td><td>✓</td></tr>
 </tbody></table></div>
 <div class="callout warn"><span class="co-ic">📡</span><div><p><b>The receive range defaults to 300 km</b> (10 km minimum), filtered with
 <code>r/lat/lng/radius</code> — press <b>“Save &amp; apply”</b> after changing it. For worldwide
@@ -421,50 +424,56 @@ reception, raise the radius or stop following your position.</p></div></div>
 <li>Custom relay / WebSocket: fill <b>WebSocket URL (optional)</b> in the same place; empty = plain TCP.</li>
 </ul>
 '''),
-    ('rf', T('接电台：TNC / 音频 / PKWDWPL', '接電臺：TNC / 音訊 / PKWDWPL', 'Into a radio: TNC / audio / PKWDWPL'), '''
-<p>三条射频路径的入口都在 <b>设置 → 设备</b>（设备总览页列出当前链路与三个子页）：</p>
+    ('rf', T('接电台：TNC / 音频 / PKWDWPL / Icom', '接電臺：TNC / 音訊 / PKWDWPL / Icom', 'Into a radio: TNC / audio / PKWDWPL / Icom'), '''
+<p>四条射频路径的入口都在 <b>设置 → 设备</b>（设备总览页列出当前链路与四个子页）：</p>
 <div class="doc-table-wrap"><table class="doc-table">
 <thead><tr><th>路径</th><th>子页</th><th>关键参数</th></tr></thead><tbody>
 <tr><td><b>蓝牙/USB TNC</b></td><td>设备 → TNC 设备与参数</td><td>初始化串、串口线速、KISS 参数（txDelay 300ms、txTail 50ms、P=63、时隙 100ms、帧长 330B）、中继路径 <code>WIDE1-1,WIDE2-1</code></td></tr>
 <tr><td><b>音频（声卡）</b></td><td>设备 → 音频（声卡 TNC）</td><td>采样率 22050、比特率 1200、标号 1200Hz / 空号 2200Hz、发射电平、CSMA 等待 3000ms</td></tr>
 <tr><td><b>Kenwood 航点</b></td><td>设备 → PKWDWPL 设备</td><td>只读链路；严格校验和默认关（不符只标注不丢弃）</td></tr>
+<tr><td><b>Icom 电台直连</b></td><td>设备 → Icom 电台设置</td><td>WLAN/LAN 遥控、用户名与密码、电台 IP、CI-V 地址（默认 0xA4）、<b>对应频段模式设为 FM-D</b></td></tr>
 </tbody></table></div>
 <ol class="m-steps">
 <li><b>绑定设备</b>：子页里点「扫描设备」（蓝牙已配对 + USB 串口），选中后绑定。</li>
 <li><b>TNC「能收不能发」</b>：先点「立即发送初始化串」—— 很多模块上电停在命令模式，要收到 <code>KISS ON</code> 才进 KISS；再核对<b>串口线速</b>（USB 串口与电台数据口必须同速：9600/19200/38400/57600/115200；蓝牙 SPP 无波特率概念）。</li>
 <li><b>音频「对方解不出」</b>：看出去的<b>发射电平</b> —— 峰值太低或削顶都解不出；用音频线（耳机口 → 电台数据/话筒口），<b>别用扬声器对着麦克风</b>。</li>
 <li><b>想只收不发</b>：关掉「允许发射 / 允许射频信标」—— 只听信标最省心，也避免误触 PTT。</li>
+<li><b>Icom 直连</b>：电台开启 WLAN / LAN 远程控制并设置 Network User 用户名与密码；手机/电脑与电台在同一局域网，子页中填入电台 IP、端口、账号密码与 CI-V 地址；<b>将电台对应频段模式设为 FM-D</b>。</li>
 </ol>
 <div class="callout warn"><span class="co-ic">⚠️</span><div><p>射频发射需持照操作，请遵守当地法规；<b>允许射频信标</b>默认关，打开前确认你的执照与本地规则允许。</p></div></div>
 ''', '''
-<p>三條射頻路徑的入口都在 <b>設定 → 裝置</b>（裝置總覽頁列出當前鏈路與三個子頁）：</p>
+<p>四條射頻路徑的入口都在 <b>設定 → 裝置</b>（裝置總覽頁列出當前鏈路與四個子頁）：</p>
 <div class="doc-table-wrap"><table class="doc-table">
 <thead><tr><th>路徑</th><th>子頁</th><th>關鍵參數</th></tr></thead><tbody>
 <tr><td><b>藍牙/USB TNC</b></td><td>裝置 → TNC 裝置與參數</td><td>初始化字串、序列埠線速、KISS 參數（txDelay 300ms、txTail 50ms、P=63、時隙 100ms、幀長 330B）、中繼路徑 <code>WIDE1-1,WIDE2-1</code></td></tr>
 <tr><td><b>音訊（音效卡）</b></td><td>裝置 → 音訊（音效卡 TNC）</td><td>取樣率 22050、鮑率 1200、標號 1200Hz / 空號 2200Hz、發射電平、CSMA 等待 3000ms</td></tr>
 <tr><td><b>Kenwood 航點</b></td><td>裝置 → PKWDWPL 裝置</td><td>唯讀鏈路；嚴格校驗和預設關（不符只標註不丟棄）</td></tr>
+<tr><td><b>Icom 電台直連</b></td><td>裝置 → Icom 電台設定</td><td>WLAN/LAN 遙控、使用者名稱與密碼、電台 IP、CI-V 位址（預設 0xA4）、<b>對應頻段模式設為 FM-D</b></td></tr>
 </tbody></table></div>
 <ol class="m-steps">
 <li><b>綁定裝置</b>：子頁裡點「掃描裝置」（藍牙已配對 + USB 序列埠），選中後綁定。</li>
 <li><b>TNC「能收不能發」</b>：先點「立即送出初始化字串」—— 很多模組上電停在命令模式，要收到 <code>KISS ON</code> 才進 KISS；再核對<b>序列埠線速</b>（USB 序列埠與電臺資料埠必須同速：9600/19200/38400/57600/115200；藍牙 SPP 無鮑率概念）。</li>
 <li><b>音訊「對方解不出」</b>：看出去的<b>發射電平</b> —— 峰值太低或削波都解不出；用音訊線（耳機孔 → 電臺資料/麥克風孔），<b>別用喇叭對著麥克風</b>。</li>
 <li><b>想只收不發</b>：關掉「允許發射 / 允許射頻信標」—— 只聽信標最省心，也避免誤觸 PTT。</li>
+<li><b>Icom 直連</b>：電台開啟 WLAN / LAN 遠端控制並設定 Network User 使用者名稱與密碼；手機/電腦與電台在同一區域網路，子頁中填入電台 IP、埠、帳號密碼與 CI-V 位址；<b>將電台對應頻段模式設為 FM-D</b>。</li>
 </ol>
 <div class="callout warn"><span class="co-ic">⚠️</span><div><p>射頻發射需照證操作，請遵守當地法規；<b>允許射頻信標</b>預設關，打開前確認你的執照與本地規則允許。</p></div></div>
 ''', '''
-<p>All three RF paths live under <b>Settings → Device</b> (the overview lists the current link and
-three sub-pages):</p>
+<p>All four RF paths live under <b>Settings → Device</b> (the overview lists the current link and
+four sub-pages):</p>
 <div class="doc-table-wrap"><table class="doc-table">
 <thead><tr><th>Path</th><th>Sub-page</th><th>Key parameters</th></tr></thead><tbody>
 <tr><td><b>Bluetooth/USB TNC</b></td><td>Device → TNC</td><td>init string, serial baud, KISS params (txDelay 300 ms, txTail 50 ms, P=63, slot 100 ms, 330 B frames), path <code>WIDE1-1,WIDE2-1</code></td></tr>
 <tr><td><b>Audio (soundcard)</b></td><td>Device → Audio</td><td>22050 sample rate, 1200 baud, mark 1200 Hz / space 2200 Hz, TX level, 3000 ms CSMA wait</td></tr>
 <tr><td><b>Kenwood waypoints</b></td><td>Device → PKWDWPL</td><td>read-only link; strict checksum off by default (mismatches are flagged, not dropped)</td></tr>
+<tr><td><b>Icom Radio Link</b></td><td>Device → Icom Radio Settings</td><td>WLAN/LAN remote control, Network User credentials, radio IP, CI-V address (default 0xA4), <b>band mode set to FM-D</b></td></tr>
 </tbody></table></div>
 <ol class="m-steps">
 <li><b>Bind the device</b>: tap “Scan devices” (paired Bluetooth + USB serial) in the sub-page and pick yours.</li>
 <li><b>TNC receives but will not transmit</b>: send the init string first — many modules boot into command mode and need <code>KISS ON</code>; then match the <b>serial baud</b> on both ends (9600/19200/38400/57600/115200 are common; Bluetooth SPP has no baud rate).</li>
 <li><b>Audio nobody can decode</b>: check the <b>TX level</b> — too low or clipped both fail; wire it (headphone jack → radio data/mic), <b>never speaker-to-microphone</b>.</li>
 <li><b>Receive-only</b>: switch off “allow TX / allow RF beacon” — listening only is the calmest setup and never keys the PTT by mistake.</li>
+<li><b>Icom Direct Link</b>: enable WLAN / LAN remote control on the radio and create a Network User; ensure device and radio are on the same local network, enter IP, port, credentials and CI-V address in the sub-page; <b>set the radio band mode to FM-D</b>.</li>
 </ol>
 <div class="callout warn"><span class="co-ic">⚠️</span><div><p>RF transmission requires a licence — follow local regulations. <b>RF beaconing</b> is off by default; confirm your licence allows it before enabling.</p></div></div>
 '''),

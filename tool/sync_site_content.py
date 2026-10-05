@@ -46,21 +46,20 @@ def T(zh, zh_TW, en):
 CARDS = [
     {
         'icon': 'c9', 'fa': 'fa-tower-cell',
-        'title': T('四种数据来源', '四種資料來源', 'Four Data Sources'),
+        'title': T('五种数据来源', '五種資料來源', 'Five Data Sources'),
         'desc': T(
-            '互联网（APRS-IS）、蓝牙 / 串口 TNC（KISS）、声卡音频 AFSK 1200（Bell 202 软 TNC），'
-            '以及读取 Kenwood 电台输出的 <code>$PKWDWPL</code> 航点语句（只收不发）。'
-            '几条链路可以同时收报文，发射来源单独指定一条。',
-            '網際網路（APRS-IS）、藍牙 / 串列埠 TNC（KISS）、音效卡音訊 AFSK 1200（Bell 202 軟 TNC），'
-            '以及讀取 Kenwood 電台輸出的 <code>$PKWDWPL</code> 航點語句（唯讀、不發射）。'
+            '互联网（APRS-IS）、蓝牙 / 串口 TNC（KISS）、声卡音频 AFSK 1200（Bell 202 软 TNC）、'
+            'Kenwood 航点 <code>$PKWDWPL</code>（只收不发），以及 Icom 电台直连（IC-705 / IC-9700 / IC-7610 / IC-905 Wi-Fi / 以太网直连，CI-V 控制与网络音频）。'
+            '多条链路可以同时收报文，发射来源单独指定一条。',
+            '網際網路（APRS-IS）、藍牙 / 串列埠 TNC（KISS）、音效卡音訊 AFSK 1200（Bell 202 軟 TNC）、'
+            'Kenwood 航點 <code>$PKWDWPL</code>（唯讀、不發射），以及 Icom 電台直連（IC-705 / IC-9700 / IC-7610 / IC-905 Wi-Fi / 乙太網路直連，CI-V 控制與網路音訊）。'
             '數條鏈路可以同時收報文，發射來源單獨指定一條。',
-            'Internet (APRS-IS), Bluetooth / serial TNC over KISS, a sound-card AFSK 1200 '
-            '(Bell 202) software TNC, and reading the <code>$PKWDWPL</code> waypoint sentences '
-            'a Kenwood radio outputs (receive-only). Several links can receive at once, while '
-            'the transmit source is picked separately.'),
-        'tags': {'zh': ['APRS-IS', 'TNC', '音频', 'PKWDWPL'],
-                 'zh_TW': ['APRS-IS', 'TNC', '音訊', 'PKWDWPL'],
-                 'en': ['APRS-IS', 'TNC', 'Audio', 'PKWDWPL']},
+            'Internet (APRS-IS), Bluetooth / serial TNC (KISS), sound-card AFSK 1200 (Bell 202 software TNC), '
+            'Kenwood <code>$PKWDWPL</code> waypoints (receive-only), and direct Icom connection (IC-705 / IC-9700 / IC-7610 / IC-905 over Wi-Fi / Ethernet with CI-V and LAN audio). '
+            'Multiple links can receive simultaneously, while the transmit link is picked separately.'),
+        'tags': {'zh': ['APRS-IS', 'TNC', '音频', 'PKWDWPL', 'Icom'],
+                 'zh_TW': ['APRS-IS', 'TNC', '音訊', 'PKWDWPL', 'Icom'],
+                 'en': ['APRS-IS', 'TNC', 'Audio', 'PKWDWPL', 'Icom']},
     },
     {
         'icon': 'c10', 'fa': 'fa-right-left',

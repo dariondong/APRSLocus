@@ -160,15 +160,15 @@
         <a href="platform.html">平台差异</a>
         <a href="troubleshooting.html">故障排查</a>
       <div class="mn-title">本页目录</div>
-        <a href="#sources">四条链路：收可以多选，发只有一条</a>
+        <a href="#sources">五条链路：收可以多选，发只有一条</a>
         <a href="#aprsis">接上 APRS-IS</a>
-        <a href="#rf">接电台：TNC / 音频 / PKWDWPL</a>
+        <a href="#rf">接电台：TNC / 音频 / PKWDWPL / Icom</a>
         <a href="#igate">网关 iGate</a>
         <a href="#selftest">链路自检与排错顺序</a>
     </nav>
     <div class="manual-body">
   <section class="chapter reveal" id="sources">
-    <h2 id="sources">四条链路：收可以多选，发只有一条<a class="hdr-anchor" href="#sources" aria-label="本节永久链接" title="本节永久链接">#</a></h2>
+    <h2 id="sources">五条链路：收可以多选，发只有一条<a class="hdr-anchor" href="#sources" aria-label="本节永久链接" title="本节永久链接">#</a></h2>
 <p>路径 <b>设置 → 连接 → 数据来源</b>。勾中的链路都会<b>收</b>报文，但<b>发射只有一条</b> ——
 右侧圆点标记的那条。同一个呼号从两条链路发出去会造成重复报文。</p>
 <div class="doc-table-wrap"><table class="doc-table">
@@ -177,6 +177,7 @@
 <tr><td><b>TNC</b></td><td>蓝牙 SPP / USB 串口（OTG），KISS 协议，接电台</td><td>✓</td><td>✓</td></tr>
 <tr><td><b>音频</b></td><td>耳机口接电台，AFSK 1200（Bell 202）</td><td>✓</td><td>✓</td></tr>
 <tr><td><b>PKWDWPL</b></td><td>蓝牙/串口读 Kenwood 的 <code>$PKWDWPL</code> 航点语句</td><td>✓</td><td><b>✗ 只读</b></td></tr>
+<tr><td><b>Icom WLAN</b></td><td>Wi-Fi / 以太网直连（IC-705 / IC-9700 / IC-7610 / IC-905），CI-V 控制 + 网络音频</td><td>✓</td><td>✓</td></tr>
 </tbody></table></div>
 <div class="callout warn"><span class="co-ic">📡</span><div><p><b>接收范围默认 300 km</b>（最小 10 km），用 <code>r/纬度/经度/半径</code> 过滤 ——
 改完必须点 <b>「保存并应用」</b> 才生效。想收全球就把半径调大或关掉过滤中心跟随。</p></div></div>
@@ -196,19 +197,21 @@
 </ul>
   </section>
   <section class="chapter reveal" id="rf">
-    <h2 id="rf">接电台：TNC / 音频 / PKWDWPL<a class="hdr-anchor" href="#rf" aria-label="本节永久链接" title="本节永久链接">#</a></h2>
-<p>三条射频路径的入口都在 <b>设置 → 设备</b>（设备总览页列出当前链路与三个子页）：</p>
+    <h2 id="rf">接电台：TNC / 音频 / PKWDWPL / Icom<a class="hdr-anchor" href="#rf" aria-label="本节永久链接" title="本节永久链接">#</a></h2>
+<p>四条射频路径的入口都在 <b>设置 → 设备</b>（设备总览页列出当前链路与四个子页）：</p>
 <div class="doc-table-wrap"><table class="doc-table">
 <thead><tr><th>路径</th><th>子页</th><th>关键参数</th></tr></thead><tbody>
 <tr><td><b>蓝牙/USB TNC</b></td><td>设备 → TNC 设备与参数</td><td>初始化串、串口线速、KISS 参数（txDelay 300ms、txTail 50ms、P=63、时隙 100ms、帧长 330B）、中继路径 <code>WIDE1-1,WIDE2-1</code></td></tr>
 <tr><td><b>音频（声卡）</b></td><td>设备 → 音频（声卡 TNC）</td><td>采样率 22050、比特率 1200、标号 1200Hz / 空号 2200Hz、发射电平、CSMA 等待 3000ms</td></tr>
 <tr><td><b>Kenwood 航点</b></td><td>设备 → PKWDWPL 设备</td><td>只读链路；严格校验和默认关（不符只标注不丢弃）</td></tr>
+<tr><td><b>Icom 电台直连</b></td><td>设备 → Icom 电台设置</td><td>WLAN/LAN 遥控、用户名与密码、电台 IP、CI-V 地址（默认 0xA4）、<b>对应频段模式设为 FM-D</b></td></tr>
 </tbody></table></div>
 <ol class="m-steps">
 <li><b>绑定设备</b>：子页里点「扫描设备」（蓝牙已配对 + USB 串口），选中后绑定。</li>
 <li><b>TNC「能收不能发」</b>：先点「立即发送初始化串」—— 很多模块上电停在命令模式，要收到 <code>KISS ON</code> 才进 KISS；再核对<b>串口线速</b>（USB 串口与电台数据口必须同速：9600/19200/38400/57600/115200；蓝牙 SPP 无波特率概念）。</li>
 <li><b>音频「对方解不出」</b>：看出去的<b>发射电平</b> —— 峰值太低或削顶都解不出；用音频线（耳机口 → 电台数据/话筒口），<b>别用扬声器对着麦克风</b>。</li>
 <li><b>想只收不发</b>：关掉「允许发射 / 允许射频信标」—— 只听信标最省心，也避免误触 PTT。</li>
+<li><b>Icom 直连</b>：电台开启 WLAN / LAN 远程控制并设置 Network User 用户名与密码；手机/电脑与电台在同一局域网，子页中填入电台 IP、端口、账号密码与 CI-V 地址；<b>将电台对应频段模式设为 FM-D</b>。</li>
 </ol>
 <div class="callout warn"><span class="co-ic">⚠️</span><div><p>射频发射需持照操作，请遵守当地法规；<b>允许射频信标</b>默认关，打开前确认你的执照与本地规则允许。</p></div></div>
   </section>

@@ -62,9 +62,9 @@ PAGE_META = {
         lead=T('目标：选对数据来源、把 APRS-IS 连上并验证，必要时接上电台跑通射频链路。',
                '目標：選對資料來源、把 APRS-IS 連上並驗證，必要時接上電臺跑通射頻鏈路。',
                'Goal: pick the data sources, connect and verify APRS-IS, then get the RF link working.'),
-        sections=[('sources', T('四条链路：收可以多选，发只有一条', '四條鏈路：收可複選，發只有一條', 'Four links: many RX, one TX')),
+        sections=[('sources', T('五条链路：收可以多选，发只有一条', '五條鏈路：收可複選，發只有一條', 'Five links: many RX, one TX')),
                   ('aprsis', T('接上 APRS-IS', '接上 APRS-IS', 'Connect APRS-IS')),
-                  ('rf', T('接电台：TNC / 音频 / PKWDWPL', '接電臺：TNC / 音訊 / PKWDWPL', 'Into a radio: TNC / audio / PKWDWPL')),
+                  ('rf', T('接电台：TNC / 音频 / PKWDWPL / Icom', '接電臺：TNC / 音訊 / PKWDWPL / Icom', 'Into a radio: TNC / audio / PKWDWPL / Icom')),
                   ('igate', T('网关 iGate', '閘道 iGate', 'iGate')),
                   ('selftest', T('链路自检与排错顺序', '鏈路自檢與排錯順序', 'Self-test & order of diagnosis'))]),
     'beacon': dict(
