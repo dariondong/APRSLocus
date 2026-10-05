@@ -281,11 +281,11 @@ class _DeviceOverviewPageState extends State<DeviceOverviewPage> {
           context,
           icon: Icons.wifi_tethering_rounded,
           color: C.cyan,
-          title: 'WLAN 电台（${state.audio.config.icomLan.model.id}）',
+          title: s.icomLanTitle,
           desc: state.audio.config.source == AudioSource.icomLan
               ? (state.audio.icomLanLink?.phaseLabel ??
                   (state.audio.connected ? s.connected : s.disconnected))
-              : '局域网直连 Icom 电台（IC-705 / IC-9700 / IC-7610 / IC-905）',
+              : s.icomLanSubtitle,
           page: Ic705DevicePage(state: state),
         ),
         _entry(

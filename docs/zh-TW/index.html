@@ -388,8 +388,8 @@
     <article class="card reveal">
       <div class="card-icon c9"><i class="fa-solid fa-tower-cell"></i></div>
       <h3>五種資料來源</h3>
-      <p>網際網路（APRS-IS）、藍牙 / 串列埠 TNC（KISS）、音效卡音訊 AFSK 1200（Bell 202 軟 TNC）、Kenwood 航點 <code>$PKWDWPL</code>（唯讀、不發射），以及 Icom 電台直連（IC-705 / IC-9700 / IC-7610 / IC-905 Wi-Fi / 乙太網路直連，CI-V 控制與網路音訊）。數條鏈路可以同時收報文，發射來源單獨指定一條。</p>
-      <ul class="card-tags"><li>APRS-IS</li><li>TNC</li><li>音訊</li><li>PKWDWPL</li><li>Icom</li></ul>
+      <p>網際網路（APRS-IS）、藍牙 / 串列埠 TNC（KISS）、音效卡音訊 AFSK 1200（Bell 202 軟 TNC）、Kenwood 航點 <code>$PKWDWPL</code>（唯讀、不發射），以及 WLAN 電台直連（支援 IC-705 / IC-9700 / IC-7610 / IC-905 等 Wi-Fi / 乙太網路型號，CI-V 控制與區域網路音訊）。數條鏈路可以同時收報文，發射來源單獨指定一條。</p>
+      <ul class="card-tags"><li>APRS-IS</li><li>TNC</li><li>音訊</li><li>PKWDWPL</li><li>WLAN 電台</li></ul>
     </article>
     <article class="card reveal">
       <div class="card-icon c10"><i class="fa-solid fa-right-left"></i></div>
@@ -658,7 +658,7 @@
         <span class="cl-date">2026-10-02</span>
       </div>
       <div class="cl-body">
-        <div class="cl-item"><span class="cl-dot new"></span><b>新增：Icom 電台 Wi-Fi / 乙太網路直連</b>（IC-705 / IC-9700 / IC-7610 / IC-905）。手機與電台在同一區域網路即可收發 APRS 音訊，不需音效卡或 TNC；PTT 與頻率控制走 CI-V、音訊走網路，不佔用音訊埠；新增獨立的電台裝置頁與並列的資料來源入口，並帶 19 個新測試。由社群貢獻者 nimenhagg 實作（PR #29）。</div>
+        <div class="cl-item"><span class="cl-dot new"></span><b>新增：WLAN 電台直連</b>（支援 IC-705 / IC-9700 / IC-7610 / IC-905 等 Wi-Fi 與乙太網路型號）。手機與電台在同一區域網路即可收發 APRS 音訊，不需音效卡或 TNC；PTT 與頻率控制走 CI-V、音訊走網路，不佔用音訊埠；新增獨立的電台裝置頁與並列的資料來源入口，並帶 19 個新測試。由社群貢獻者 nimenhagg 實作（PR #29）。</div>
       </div>
     </div>
     <div class="cl-version reveal">
@@ -1450,7 +1450,7 @@
       <div class="contributors">
         <span class="contributor">
           <span class="avatar" style="background:linear-gradient(135deg,#8a5cf0,#6d3ee0)">B</span>
-          <span><span class="c-name">BD3QID</span><span class="c-role">IC-705 電台直連</span></span>
+          <span><span class="c-name">BD3QID</span><span class="c-role">WLAN 電台直連</span></span>
         </span>
         <span class="contributor">
           <span class="avatar" style="background:linear-gradient(135deg,#f97316,#ea580c)">零</span>

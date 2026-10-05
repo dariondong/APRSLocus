@@ -457,8 +457,8 @@ html{overflow-x:hidden}
     <article class="card reveal">
       <div class="card-icon c9"><i class="fa-solid fa-tower-cell"></i></div>
       <h3>五种数据来源</h3>
-      <p>互联网（APRS-IS）、蓝牙 / 串口 TNC（KISS）、声卡音频 AFSK 1200（Bell 202 软 TNC）、Kenwood 航点 <code>$PKWDWPL</code>（只收不发），以及 Icom 电台直连（IC-705 / IC-9700 / IC-7610 / IC-905 Wi-Fi / 以太网直连，CI-V 控制与网络音频）。多条链路可以同时收报文，发射来源单独指定一条。</p>
-      <ul class="card-tags"><li>APRS-IS</li><li>TNC</li><li>音频</li><li>PKWDWPL</li><li>Icom</li></ul>
+      <p>互联网（APRS-IS）、蓝牙 / 串口 TNC（KISS）、声卡音频 AFSK 1200（Bell 202 软 TNC）、Kenwood 航点 <code>$PKWDWPL</code>（只收不发），以及 WLAN 电台直连（支持 IC-705 / IC-9700 / IC-7610 / IC-905 等 Wi-Fi / 以太网型号，CI-V 控制与局域网音频）。多条链路可以同时收报文，发射来源单独指定一条。</p>
+      <ul class="card-tags"><li>APRS-IS</li><li>TNC</li><li>音频</li><li>PKWDWPL</li><li>WLAN 电台</li></ul>
     </article>
     <article class="card reveal">
       <div class="card-icon c10"><i class="fa-solid fa-right-left"></i></div>
@@ -727,7 +727,7 @@ html{overflow-x:hidden}
         <span class="cl-date">2026-10-02</span>
       </div>
       <div class="cl-body">
-        <div class="cl-item"><span class="cl-dot new"></span><b>新增：Icom 电台 Wi-Fi / 以太网直连</b>（IC-705 / IC-9700 / IC-7610 / IC-905）。手机与电台在同一局域网即可收发 APRS 音频，不用声卡或 TNC；PTT 与频率控制走 CI-V、音频走网络，不占用音频口；新增独立的电台设备页与并列的数据来源入口，并带 19 个新测试。由社区贡献者 nimenhagg 实现（PR #29）。</div>
+        <div class="cl-item"><span class="cl-dot new"></span><b>新增：WLAN 电台直连</b>（支持 IC-705 / IC-9700 / IC-7610 / IC-905 等 Wi-Fi 与以太网型号）。手机与电台在同一局域网即可收发 APRS 音频，不用声卡或 TNC；PTT 与频率控制走 CI-V、音频走网络，不占用音频口；新增独立的电台设备页与并列的数据来源入口，并带 19 个新测试。由社区贡献者 nimenhagg 实现（PR #29）。</div>
       </div>
     </div>
     <div class="cl-version reveal">
@@ -1529,7 +1529,7 @@ html{overflow-x:hidden}
       <div class="contributors">
         <span class="contributor">
           <span class="avatar" style="background:linear-gradient(135deg,#8a5cf0,#6d3ee0)">B</span>
-          <span><span class="c-name">BD3QID</span><span class="c-role">IC-705 电台直连</span></span>
+          <span><span class="c-name">BD3QID</span><span class="c-role">WLAN 电台直连</span></span>
         </span>
         <span class="contributor">
           <span class="avatar" style="background:linear-gradient(135deg,#f97316,#ea580c)">零</span>

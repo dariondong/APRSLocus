@@ -354,7 +354,7 @@ the scroll position should still be there.</p></div></div>
 <tr><td><b>TNC</b></td><td>蓝牙 SPP / USB 串口（OTG），KISS 协议，接电台</td><td>✓</td><td>✓</td></tr>
 <tr><td><b>音频</b></td><td>耳机口接电台，AFSK 1200（Bell 202）</td><td>✓</td><td>✓</td></tr>
 <tr><td><b>PKWDWPL</b></td><td>蓝牙/串口读 Kenwood 的 <code>$PKWDWPL</code> 航点语句</td><td>✓</td><td><b>✗ 只读</b></td></tr>
-<tr><td><b>Icom WLAN</b></td><td>Wi-Fi / 以太网直连（IC-705 / IC-9700 / IC-7610 / IC-905），CI-V 控制 + 网络音频</td><td>✓</td><td>✓</td></tr>
+<tr><td><b>WLAN 电台直连</b></td><td>Wi-Fi / 以太网直连（支持 IC-705 / IC-9700 / IC-7610 / IC-905 等），CI-V 控制 + 网络音频</td><td>✓</td><td>✓</td></tr>
 </tbody></table></div>
 <div class="callout warn"><span class="co-ic">📡</span><div><p><b>接收范围默认 300 km</b>（最小 10 km），用 <code>r/纬度/经度/半径</code> 过滤 ——
 改完必须点 <b>「保存并应用」</b> 才生效。想收全球就把半径调大或关掉过滤中心跟随。</p></div></div>
@@ -367,7 +367,7 @@ the scroll position should still be there.</p></div></div>
 <tr><td><b>TNC</b></td><td>藍牙 SPP / USB 序列埠（OTG），KISS 協定，接電臺</td><td>✓</td><td>✓</td></tr>
 <tr><td><b>音訊</b></td><td>耳機孔接電臺，AFSK 1200（Bell 202）</td><td>✓</td><td>✓</td></tr>
 <tr><td><b>PKWDWPL</b></td><td>藍牙/序列埠讀 Kenwood 的 <code>$PKWDWPL</code> 航點語句</td><td>✓</td><td><b>✗ 唯讀</b></td></tr>
-<tr><td><b>Icom WLAN</b></td><td>Wi-Fi / 乙太網路直連（IC-705 / IC-9700 / IC-7610 / IC-905），CI-V 控制 + 網路音訊</td><td>✓</td><td>✓</td></tr>
+<tr><td><b>WLAN 電台直連</b></td><td>Wi-Fi / 乙太網路直連（支援 IC-705 / IC-9700 / IC-7610 / IC-905 等），CI-V 控制 + 網路音訊</td><td>✓</td><td>✓</td></tr>
 </tbody></table></div>
 <div class="callout warn"><span class="co-ic">📡</span><div><p><b>接收範圍預設 300 km</b>（最小 10 km），用 <code>r/緯度/經度/半徑</code> 過濾 ——
 改完必須點 <b>「儲存並套用」</b>才生效。想收全球就把半徑調大或關掉過濾中心跟隨。</p></div></div>
@@ -381,7 +381,7 @@ two links produces duplicate packets.</p>
 <tr><td><b>TNC</b></td><td>Bluetooth SPP / USB serial (OTG), KISS, into a radio</td><td>✓</td><td>✓</td></tr>
 <tr><td><b>Audio</b></td><td>headphone jack into a radio, AFSK 1200 (Bell 202)</td><td>✓</td><td>✓</td></tr>
 <tr><td><b>PKWDWPL</b></td><td>Bluetooth/serial reader of a Kenwood radio’s <code>$PKWDWPL</code> waypoints</td><td>✓</td><td><b>✗ receive-only</b></td></tr>
-<tr><td><b>Icom WLAN</b></td><td>Wi-Fi / Ethernet direct link (IC-705 / IC-9700 / IC-7610 / IC-905), CI-V + LAN audio</td><td>✓</td><td>✓</td></tr>
+<tr><td><b>WLAN radio direct</b></td><td>Wi-Fi / Ethernet direct link (supporting IC-705 / IC-9700 / IC-7610 / IC-905 etc.), CI-V + LAN audio</td><td>✓</td><td>✓</td></tr>
 </tbody></table></div>
 <div class="callout warn"><span class="co-ic">📡</span><div><p><b>The receive range defaults to 300 km</b> (10 km minimum), filtered with
 <code>r/lat/lng/radius</code> — press <b>“Save &amp; apply”</b> after changing it. For worldwide
