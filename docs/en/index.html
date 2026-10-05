@@ -571,7 +571,7 @@
         <span class="cl-date">2026-10-04</span>
       </div>
       <div class="cl-body">
-        <div class="cl-item"><span class="cl-dot new"></span>**The map's my-location marker now shows heading**: a small white corner points along your course, so you can tell at a glance which way you are facing (the vector-map marker box was widened so the corner is not clipped). It is not drawn for network-only fixes or when no course is known, rather than guessing a direction.</div>
+        <div class="cl-item"><span class="cl-dot new"></span>**The map's my-location marker now shows heading**: a triangular arrow (blue fill, white outline, matching the dot's visual language) points along your course so you can tell at a glance which way you are facing. It is not drawn for network-only fixes or when no course is known, rather than guessing a direction.</div>
         <div class="cl-item"><span class="cl-dot fix"></span>**The interval shown in the bottom-left my-location panel disagreed with the countdown next to it**: the panel's "auto-reporting · every Ns" line read the *fixed* interval field while the countdown read the *effective* one. In network-only mode the two differ (effective = the network interval, 300 s by default), so the label sat on a stale value left over from GPS mode. Both now use the effective interval.</div>
       </div>
     </div>

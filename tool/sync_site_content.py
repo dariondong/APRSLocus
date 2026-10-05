@@ -208,17 +208,17 @@ CL = [
         'ver': 'v2.0.26', 'date': '2026-10-04',
         'items': [
             ('new',
-             T('**地图「我的位置」标记显示方位角**：圆点上多出一个朝航向的白色'
-               '「小角角」，一眼就能看出自己朝哪边走（矢量地图标记框同时放宽，'
-               '角角不会被裁掉）。纯网络定位 / 静止未取得航向时不画，不拿猜的方向误导。',
-               '**地圖「我的位置」標記顯示方位角**：圓點上多出一個朝航向的白色'
-               '「小角角」，一眼就能看出自己朝哪邊走（向量地圖標記框同時放寬，'
-               '角角不會被裁掉）。純網路定位 / 靜止未取得航向時不畫，不拿猜的方向誤導。',
-               '**The map\'s my-location marker now shows heading**: a small white corner '
-               'points along your course, so you can tell at a glance which way you are facing '
-               '(the vector-map marker box was widened so the corner is not clipped). It is not '
-               'drawn for network-only fixes or when no course is known, rather than guessing a '
-               'direction.')),
+             T('**地图「我的位置」标记显示方位角**：圆环上多出一个朝航向的三角箭头'
+               '（蓝底白边，与圆点同一套视觉语言），一眼就能看出自己朝哪边走。'
+               '纯网络定位 / 静止未取得航向时不画，不拿猜的方向误导。',
+               '**地圖「我的位置」標記顯示方位角**：圓環上多出一個朝航向的三角箭頭'
+               '（藍底白邊，與圓點同一套視覺語言），一眼就能看出自己朝哪邊走。'
+               '純網路定位 / 靜止未取得航向時不畫，不拿猜的方向誤導。',
+               '**The map\'s my-location marker now shows heading**: a triangular arrow '
+               '(blue fill, white outline, matching the dot\'s visual language) points along '
+               'your course so you can tell at a glance which way you are facing. It is not '
+               'drawn for network-only fixes or when no course is known, rather than guessing '
+               'a direction.')),
             ('fix',
              T('**左下角「我的位置」面板显示的上报间隔与倒计时不一致**：面板那行'
                '「自动上报中 · 每 Ns」读的是**固定间隔**字段，而右边的倒计时读的是'

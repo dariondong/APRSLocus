@@ -401,7 +401,12 @@ class _VectorMapViewState extends State<VectorMapView> {
             ),
           ),
           if (hasCourse)
-            HeadingCornerIndicator(course: crs, radius: 13, size: 8),
+            HeadingCornerIndicator(
+              course: crs,
+              radius: 14,
+              size: 9,
+              accent: C.blue,
+            ),
         ],
       ),
     );

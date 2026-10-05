@@ -736,9 +736,13 @@ class _LogoPainter extends CustomPainter {
 /// ─── 方位角「小角角」指示器 ───
 ///
 /// 叠在「我的位置」圆点上，从圆边缘朝**航向**（真北顺时针，与 [Station.course]
-/// 一致）伸出一个圆头小凸起。为什么要有它：地图页原来只有一个圆点 + 内部图标，
-/// 完全看不出「我朝哪边走」（而其它移动台站的符号本身带方向）。这里把航向做成
-/// 一个朝外的角标，圆点在视觉上就成了「有朝向的位置」。
+/// 一致）伸出一个三角箭头。为什么要有它：地图页原来只有一个圆点 + 内部图标，
+/// 完全看不出「我朝哪边走」（而其它移动台站的符号本身带方向）。
+///
+/// 造型是**两色三角**：白色描边的三角 + 内部 [accent] 填充，与圆点「蓝底白边」
+/// 同一套视觉语言 —— 一眼就认得出是朝外指的箭头，而不是圆边上长了个疙瘩。
+/// 三角的**底边落在圆环中心线上**（略微内缩 [inset]），因此与圆环自然接续，
+/// 看起来就是圆环长出的一个尖角。
 ///
 /// 与 [Transform.rotate] 的 `child` 叠加使用：外层负责缩放（脉冲/尺寸），
 /// 本组件负责按 [course] 旋转。航向朝上（0°）时角角指向正上方。
@@ -747,30 +751,53 @@ class _LogoPainter extends CustomPainter {
 /// 也不要拿一个猜的方向误导用户。
 class HeadingCornerIndicator extends StatelessWidget {
   final double? course;
+
+  /// 圆环**中心线**半径（即圆点半径，描边以它为中心）。
   final double radius;
+
+  /// 箭头伸出圆环外的长度。
   final double size;
+
+  /// 三角底边的半宽。
+  final double halfWidth;
+
+  /// 底边相对圆环中心线向内缩进，让三角与圆环咬合、不留缝。
+  final double inset;
+
+  /// 描边/外三角颜色。
   final Color color;
+
+  /// 内三角填充色；为 null 则画成纯色三角。
+  final Color? accent;
   const HeadingCornerIndicator({
     super.key,
     required this.course,
     this.radius = 13,
-    this.size = 7,
+    this.size = 9,
+    this.halfWidth = 7.5,
+    this.inset = 3,
     this.color = Colors.white,
+    this.accent,
   });
 
   @override
   Widget build(BuildContext context) {
     final crs = course;
     if (crs == null || crs < 0) return const SizedBox.shrink();
-    final d = (radius + size) * 2 + 4;
+    // 画布要容得下「圆心到箭头尖」这一整段，且以圆心为正中心。
+    final reach = radius + size;
+    final d = reach * 2 + 4;
     return Transform.rotate(
       angle: crs * math.pi / 180,
       child: CustomPaint(
         size: Size.square(d),
         painter: _HeadingCornerPainter(
-          radius: radius + size / 2 - 1,
-          dot: size / 2,
+          radius: radius,
+          size: size,
+          halfWidth: halfWidth,
+          inset: inset,
           color: color,
+          accent: accent,
         ),
       ),
     );
@@ -778,34 +805,52 @@ class HeadingCornerIndicator extends StatelessWidget {
 }
 
 class _HeadingCornerPainter extends CustomPainter {
-  final double radius;
-  final double dot;
+  final double radius, size, halfWidth, inset;
   final Color color;
+  final Color? accent;
   _HeadingCornerPainter({
     required this.radius,
-    required this.dot,
+    required this.size,
+    required this.halfWidth,
+    required this.inset,
     required this.color,
+    required this.accent,
   });
+
+  /// 以原点为中心、朝屏幕上方的一组三角路径（y 轴向下，故取负）。
+  Path _tri(double apexR, double baseR, double hw) => Path()
+    ..moveTo(0, -apexR)
+    ..lineTo(-hw, -baseR)
+    ..lineTo(hw, -baseR)
+    ..close();
 
   @override
   void paint(Canvas canvas, Size size) {
-    final c = Offset(size.width / 2, size.height / 2);
-    final paint = Paint()..color = color;
-    // 角标：从圆边缘（底部与圆相接）向外伸出一个圆头凸起，
-    // 不描边——它的颜色与圆点边框同为白色，视觉上就是同一个「角」。
-    canvas.drawRRect(
-      RRect.fromRectAndRadius(
-        Rect.fromLTRB(c.dx - dot, c.dy - radius - dot, c.dx + dot,
-            c.dy - radius + dot),
-        Radius.circular(dot),
-      ),
-      paint,
+    canvas.translate(size.width / 2, size.height / 2);
+    final baseR = radius - inset;
+    // 外三角：白边 + 尖端，从圆环中心线一路伸到 radius+size。
+    canvas.drawPath(
+      _tri(radius + size, baseR, halfWidth),
+      Paint()..color = color,
     );
+    // 内三角：同色于圆点本体（蓝），与外三角的白边组成「蓝底白边」的箭头。
+    final acc = accent;
+    if (acc != null) {
+      canvas.drawPath(
+        _tri(radius + size * 0.58, baseR + 1.5, halfWidth * 0.5),
+        Paint()..color = acc,
+      );
+    }
   }
 
   @override
   bool shouldRepaint(covariant _HeadingCornerPainter old) =>
-      old.radius != radius || old.dot != dot || old.color != color;
+      old.radius != radius ||
+      old.size != size ||
+      old.halfWidth != halfWidth ||
+      old.inset != inset ||
+      old.color != color ||
+      old.accent != accent;
 }
 
 /// 真实 APRS 官方符号图标：优先加载官方符号表 PNG（透明底彩色），

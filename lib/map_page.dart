@@ -1095,13 +1095,15 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                       size: 15,
                     ),
                   ),
-                  // 方位角「小角角」：在圆点之上、随航向旋转的凸起。
+                  // 方位角「小角角」：在圆点之上、随航向旋转的箭头。
                   // 与圆点同心叠放（不能放进圆点的 child，否则会被圆形裁剪）。
+                  // 蓝底白边的三角，与圆点同一套视觉语言。
                   HeadingCornerIndicator(
                     course: widget.state.myCourse,
-                    radius: 12,
-                    size: 8,
-                    color: Colors.white,
+                    radius: 13,
+                    size: 9,
+                    halfWidth: 7.5,
+                    accent: C.blue,
                   ),
                   Positioned(
                     top: 30,
