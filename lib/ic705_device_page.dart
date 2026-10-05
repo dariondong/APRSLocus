@@ -470,7 +470,7 @@ class _Ic705DevicePageState extends State<Ic705DevicePage> {
               _guideStep(
                 '4',
                 '设置模式与频率',
-                '将电台对应频段模式设为 FM，调至当地 APRS 频率（如 144.640 MHz）。',
+                '将电台对应频段模式设为 FM-D。',
               ),
             ],
           ),
