@@ -567,6 +567,15 @@
 <!-- site-sync:changelog -->
     <div class="cl-version reveal">
       <div class="cl-head">
+        <span class="cl-tag">v2.0.27</span>
+        <span class="cl-date">2026-10-05</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot fix"></span><b>The custom status packet was overwritten by the built-in identity frame on connect</b> (issue #31): connecting to APRS-IS first sends an identity status frame to announce presence, which rewrites the "station status" field on aprs.fi with the built-in text. Only the 15-second keep-alive frame used to re-send the custom status, and the connect-success path <b>missed it</b> — so every reconnect wiped the user's status once. Both paths now re-send it.</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
         <span class="cl-tag">v2.0.26</span>
         <span class="cl-date">2026-10-04</span>
       </div>

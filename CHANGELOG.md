@@ -1,5 +1,29 @@
 # 更新日志
 
+## [2.0.27] - 2026-10-05
+
+### 连接成功后补发自定义状态包（issue #31）
+
+**修复**
+
+- **连接成功时用户自定义状态包被内置身份帧顶掉**（issue #31）：连上 APRS-IS 时会先发一帧
+  身份状态帧（`>APRSlocus CONNECT vX.Y.Z`，用于宣告在线 / 客户端标识），它会把 aprs.fi 上
+  「台站状态」那一栏改成内置文本。此前只有 15 秒保活帧会紧随其后补一帧自定义状态
+  （issue #18 的修复），而连接成功这条路径**漏了**，于是每次重连都会把用户设的状态顶掉一次。
+  现在两处都补发，且共用同一个组帧方法，避免再次漂移。
+
+---
+
+## [2.0.27] - 2026-10-05 (English)
+
+### Re-send the custom status packet after connecting (issue #31)
+
+**Fixed**
+
+- **The user's custom status packet was overwritten by the built-in identity frame on connect** (issue #31): when the app connects to APRS-IS it first sends an identity status frame (`>APRSlocus CONNECT vX.Y.Z`, to announce presence and the client id), which rewrites the "station status" field on aprs.fi with the built-in text. Only the 15-second keep-alive frame used to append a compensating custom-status frame (the issue #18 fix); the connect-success path **missed it**, so every reconnect wiped the user's status once. Both paths now re-send it, sharing a single frame builder so they cannot drift apart again.
+
+---
+
 ## [2.0.26] - 2026-10-04
 
 ### 我的位置标记显示方位角「小角角」+ 修地图页「每 Ns」显示旧值

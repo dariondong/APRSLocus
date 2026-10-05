@@ -573,6 +573,15 @@
 <!-- site-sync:changelog -->
     <div class="cl-version reveal">
       <div class="cl-head">
+        <span class="cl-tag">v2.0.27</span>
+        <span class="cl-date">2026-10-05</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot fix"></span><b>連線成功時使用者自訂狀態包被內建身分幀頂掉</b>（issue #31）：連上 APRS-IS 會先發一幀身分狀態幀宣告在線，它會把 aprs.fi 上「臺站狀態」那一欄改成內建文字。此前只有 15 秒保活幀會補一幀自訂狀態，連線成功這條路徑<b>漏了</b> —— 於是每次重連都把使用者設的狀態頂掉一次。現在兩處都補發。</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
         <span class="cl-tag">v2.0.26</span>
         <span class="cl-date">2026-10-04</span>
       </div>

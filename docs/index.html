@@ -642,6 +642,15 @@ html{overflow-x:hidden}
 <!-- site-sync:changelog -->
     <div class="cl-version reveal">
       <div class="cl-head">
+        <span class="cl-tag">v2.0.27</span>
+        <span class="cl-date">2026-10-05</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot fix"></span><b>连接成功时用户自定义状态包被内置身份帧顶掉</b>（issue #31）：连上 APRS-IS 会先发一帧身份状态帧宣告在线，它会把 aprs.fi 上「台站状态」那一栏改成内置文本。此前只有 15 秒保活帧会补一帧自定义状态，连接成功这条路径<b>漏了</b> —— 于是每次重连都把用户设的状态顶掉一次。现在两处都补发。</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
         <span class="cl-tag">v2.0.26</span>
         <span class="cl-date">2026-10-04</span>
       </div>

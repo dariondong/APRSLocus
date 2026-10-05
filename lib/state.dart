@@ -113,7 +113,7 @@ class SmartBeaconTier {
 
 class AppState extends ChangeNotifier {
   /// 应用版本（用于信标备注、APRSlocus 识别）
-  static const appVersion = '2.0.26';
+  static const appVersion = '2.0.27';
   // 我的电台
   String myCall = 'BV2AAA';
   int mySsid = 0; // 0 = 无后缀, 1-15 = -1 到 -15
@@ -3835,12 +3835,8 @@ class AppState extends ChangeNotifier {
       //
       // 这里**不走 [sendStatus]**：那条路会改连接状态、写日志、_notify()，
       // 于是界面每 15 秒弹一次「状态已发送」—— 保活是后台行为，不该打扰用户。
-      final custom = aprsStatusText.trim();
-      if (custom.isNotEmpty) {
-        var txt = custom.replaceAll(RegExp(r'[\r\n]+'), ' ').trim();
-        if (txt.length > statusMaxLen) txt = txt.substring(0, statusMaxLen);
-        aprs.send('$myFullCall>$_destHeader:>$txt');
-      }
+      final frame = _customStatusFrame();
+      if (frame != null) aprs.send(frame);
       _lastTx = DateTime.now();
       _updateNotification(); // 定期刷新通知内容（台站数/收包数）
     });
@@ -4513,6 +4509,12 @@ class AppState extends ChangeNotifier {
       _flushPendingTx();
       // 连接成功即发一次身份状态帧（APRS 惯例：上报在线/客户端标识）
       aprs.send('$myFullCall>APALOC,TCPIP*:>APRSLocus CONNECT v$appVersion $platformTag');
+      // 紧接着补一帧自定义状态（issue #31）：上面那帧会把 aprs.fi 上「台站状态」
+      // 改写成 CONNECT 文本，与 15 秒保活帧是同一个问题 —— 不补就等于「一连上
+      // 服务器，用户自己设的状态立刻被内置文本顶掉」。保活路径的同一处理见
+      // [_keepaliveTimer]，两处共用 [_customStatusFrame]。
+      final customFrame = _customStatusFrame();
+      if (customFrame != null) aprs.send(customFrame);
       // 连接成功：若主界面已就绪且尚未问过“是否自动上报”，延迟触发询问。
       // 不在此置位 beaconAutoAsked —— 用户做出选择后才记位，避免漏弹后永久丢失。
       if (!beaconAutoAsked && beaconEnabled) {
@@ -4842,6 +4844,21 @@ class AppState extends ChangeNotifier {
     _notify();
     _updateNotification();
     return raw;
+  }
+
+  /// 当前自定义状态文本对应的状态帧原文（DTI `>`）；未填自定义文本时返回 null。
+  ///
+  /// 抽出来给两处「会被内置身份帧顶掉」的发送点复用（issue #31）：连接成功时的
+  /// 身份帧、以及每 15 秒的保活帧。两者都把 aprs.fi 上「台站状态」那一栏改写成
+  /// 内置的 CONNECT 文本，必须紧随其后补一帧自定义状态，否则用户设的状态每 15
+  /// 秒（或每次重连）就被顶掉一次，看起来就是「状态根本设不住」。
+  /// 保活那条路径见 [_keepaliveTimer]；这里只组帧，不碰连接状态、不写日志、不 _notify()。
+  String? _customStatusFrame() {
+    final custom = aprsStatusText.trim();
+    if (custom.isEmpty) return null;
+    var txt = custom.replaceAll(RegExp(r'[\r\n]+'), ' ').trim();
+    if (txt.length > statusMaxLen) txt = txt.substring(0, statusMaxLen);
+    return '$myFullCall>$_destHeader:>$txt';
   }
 
   /// 是否自动回复 ack。TNC 模式下可由用户在设备页关闭 ——

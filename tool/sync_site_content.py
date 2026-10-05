@@ -204,6 +204,26 @@ CARDS = [
 # 只列「重点版本」：中间几十个纯修 bug 的版本归纳进文字说明，完整记录指向 Releases。
 CL = [
     {
+        'ver': 'v2.0.27', 'date': '2026-10-05',
+        'items': [
+            ('fix',
+             T('**连接成功时用户自定义状态包被内置身份帧顶掉**（issue #31）：连上 '
+               'APRS-IS 会先发一帧身份状态帧宣告在线，它会把 aprs.fi 上「台站状态」那一栏'
+               '改成内置文本。此前只有 15 秒保活帧会补一帧自定义状态，连接成功这条路径'
+               '**漏了** —— 于是每次重连都把用户设的状态顶掉一次。现在两处都补发。',
+               '**連線成功時使用者自訂狀態包被內建身分幀頂掉**（issue #31）：連上 '
+               'APRS-IS 會先發一幀身分狀態幀宣告在線，它會把 aprs.fi 上「臺站狀態」那一欄'
+               '改成內建文字。此前只有 15 秒保活幀會補一幀自訂狀態，連線成功這條路徑'
+               '**漏了** —— 於是每次重連都把使用者設的狀態頂掉一次。現在兩處都補發。',
+               '**The custom status packet was overwritten by the built-in identity frame on '
+               'connect** (issue #31): connecting to APRS-IS first sends an identity status '
+               'frame to announce presence, which rewrites the "station status" field on '
+               'aprs.fi with the built-in text. Only the 15-second keep-alive frame used to '
+               're-send the custom status, and the connect-success path **missed it** — so '
+               'every reconnect wiped the user\'s status once. Both paths now re-send it.')),
+        ],
+    },
+    {
         'ver': 'v2.0.26', 'date': '2026-10-04',
         'items': [
             ('new',
