@@ -189,7 +189,7 @@ class _Ic705DevicePageState extends State<Ic705DevicePage> {
       listenable: st,
       builder: (context, _) => SettingsPageShell(
         title: s.icomLanTitle,
-        subtitle: s.icomLanSubtitle,
+        subtitle: '局域网直连 Icom 电台（IC-705 / IC-9700 / IC-7610 / IC-905），收发 12 kHz PCM 音频与 CI-V 控制',
         icon: Icons.wifi_tethering_rounded,
         color: C.cyan,
         body: Column(

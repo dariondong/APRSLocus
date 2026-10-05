@@ -285,7 +285,7 @@ class _DeviceOverviewPageState extends State<DeviceOverviewPage> {
           desc: state.audio.config.source == AudioSource.icomLan
               ? (state.audio.icomLanLink?.phaseLabel ??
                   (state.audio.connected ? s.connected : s.disconnected))
-              : s.icomLanSubtitle,
+              : '局域网直连 Icom 电台（IC-705 / IC-9700 / IC-7610 / IC-905）',
           page: Ic705DevicePage(state: state),
         ),
         _entry(

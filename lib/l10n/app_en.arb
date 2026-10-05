@@ -2640,7 +2640,6 @@
   "crashAlarmBody": "The phone detected a strong impact, followed by no significant movement (about 12 seconds).\n\nIf you are fine, tap \"I am fine\". If you feel unwell or cannot move, call emergency services now, or send a help message to stations within 100 km.\n\n**This is a heuristic, not engineering-grade crash detection**: a speed bump or dropping the phone can trigger it.",
   "crashNotif": "Life guard: possible crash detected",
   "icomLanTitle": "WLAN Radio Direct Link",
-  "icomLanSubtitle": "Direct LAN link to Icom radios (IC-705 / IC-9700 / IC-7610 / IC-905), 12 kHz PCM audio and CI-V control",
   "icomLanEnable": "Enable WLAN radio LAN link",
   "icomLanHost": "Radio IP",
   "icomLanPort": "Control port",

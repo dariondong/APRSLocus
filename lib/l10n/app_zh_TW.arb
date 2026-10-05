@@ -3228,7 +3228,6 @@
   "crashAlarmBody": "手機偵測到一次強烈的衝擊，之後一直沒有明顯移動（約 12 秒）。\n\n如果你沒事，按「我沒事」即可；如果身體不適或無法行動，請立即撥打急救電話，或向附近 100 公里內的臺站發出求助訊息。\n\n**這是啟發式判斷，不是工程級碰撞偵測**：過減速帶、手機摔落在地上都可能觸發。",
   "crashNotif": "生命守護：偵測到疑似碰撞",
   "icomLanTitle": "WLAN 電台直連",
-  "icomLanSubtitle": "區域網路直連 Icom 電台（IC-705 / IC-9700 / IC-7610 / IC-905），收發 12 kHz PCM 音訊與 CI-V 控制",
   "icomLanEnable": "啟用 WLAN 電台直連",
   "icomLanHost": "電台 IP",
   "icomLanPort": "控制埠",
