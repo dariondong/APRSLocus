@@ -130,7 +130,7 @@
 
 | 平台 | 状态 | 说明 |
 |------|------|------|
-| **Android** | ✅ 完整支持 | 最低 Android 5.0，APK 直装 |
+| **Android** | ✅ 完整支持 | 最低 Android 7.0 (API 24)，APK 直装 |
 | **Windows** | ✅ 完整支持 | 绿色单文件 EXE + Inno Setup 安装包 |
 | **iOS** | 🧪 可构建 | CI 已支持编译（无签名验证），需自行签名部署 |
 | **Linux** | 🔧 工程就绪 | Flutter Linux runner 已配置 |
@@ -146,7 +146,7 @@
 ### Android
 1. 下载 `APRSLocus_<版本号>.apk`
 2. 允许"安装未知来源"后安装
-3. 最低支持 Android 5.0
+3. 最低支持 Android 7.0 (API 24)
 
 ### Windows
 1. 下载 `APRSlocus-<版本号>-setup.exe`（Inno Setup 安装包）或绿色单文件 EXE
@@ -407,12 +407,11 @@ Android 端使用前台服务持续定位以保持 APRS 在线，可在"定位 /
 - [APRS-IS](https://aprs-is.net) — 全球 APRS 数据网络
 - [flutter_map](https://pub.dev/packages/flutter_map) / [vector_map_tiles](https://pub.dev/packages/vector_map_tiles) — 矢量地图渲染
 - [OpenFreeMap](https://openfreemap.org) — 免费矢量瓦片底图
-- **BD3QID** — 国际化（i18n）贡献
+- **BD3QID (nimenhagg)** — 国际化（i18n）及 Icom 电台 Wi-Fi / 以太网直连（IC-705 / IC-9700 / IC-7610 / IC-905 LAN / CI-V）贡献
 - **BA4UAX** — 繁体中文翻译
 - **BA7KSM** — 翻译
 - **imThree** — Bug 提交与反馈
 - **清零（BG2HCB）** — 设置页代码优化
-- **nimenhagg** — Icom 电台 Wi-Fi / 以太网直连（IC-705 / IC-9700 / IC-7610 / IC-905 LAN / CI-V）贡献
 - **测试成员**：BG7PGW、BG7LMW、BG7OSL、BD3QID
 - **AI 算力支持**：BA3RZL 养生
 - 所有业余无线电爱好者的支持与反馈
