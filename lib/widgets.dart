@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 
 import 'theme.dart';
@@ -729,6 +731,81 @@ class _LogoPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
+
+/// ─── 方位角「小角角」指示器 ───
+///
+/// 叠在「我的位置」圆点上，从圆边缘朝**航向**（真北顺时针，与 [Station.course]
+/// 一致）伸出一个圆头小凸起。为什么要有它：地图页原来只有一个圆点 + 内部图标，
+/// 完全看不出「我朝哪边走」（而其它移动台站的符号本身带方向）。这里把航向做成
+/// 一个朝外的角标，圆点在视觉上就成了「有朝向的位置」。
+///
+/// 与 [Transform.rotate] 的 `child` 叠加使用：外层负责缩放（脉冲/尺寸），
+/// 本组件负责按 [course] 旋转。航向朝上（0°）时角角指向正上方。
+///
+/// **无航向时不画**（[course] 为 null / 负值 / 静止未取得航向）：宁可没有角标，
+/// 也不要拿一个猜的方向误导用户。
+class HeadingCornerIndicator extends StatelessWidget {
+  final double? course;
+  final double radius;
+  final double size;
+  final Color color;
+  const HeadingCornerIndicator({
+    super.key,
+    required this.course,
+    this.radius = 13,
+    this.size = 7,
+    this.color = Colors.white,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final crs = course;
+    if (crs == null || crs < 0) return const SizedBox.shrink();
+    final d = (radius + size) * 2 + 4;
+    return Transform.rotate(
+      angle: crs * math.pi / 180,
+      child: CustomPaint(
+        size: Size.square(d),
+        painter: _HeadingCornerPainter(
+          radius: radius + size / 2 - 1,
+          dot: size / 2,
+          color: color,
+        ),
+      ),
+    );
+  }
+}
+
+class _HeadingCornerPainter extends CustomPainter {
+  final double radius;
+  final double dot;
+  final Color color;
+  _HeadingCornerPainter({
+    required this.radius,
+    required this.dot,
+    required this.color,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final c = Offset(size.width / 2, size.height / 2);
+    final paint = Paint()..color = color;
+    // 角标：从圆边缘（底部与圆相接）向外伸出一个圆头凸起，
+    // 不描边——它的颜色与圆点边框同为白色，视觉上就是同一个「角」。
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(
+        Rect.fromLTRB(c.dx - dot, c.dy - radius - dot, c.dx + dot,
+            c.dy - radius + dot),
+        Radius.circular(dot),
+      ),
+      paint,
+    );
+  }
+
+  @override
+  bool shouldRepaint(covariant _HeadingCornerPainter old) =>
+      old.radius != radius || old.dot != dot || old.color != color;
 }
 
 /// 真实 APRS 官方符号图标：优先加载官方符号表 PNG（透明底彩色），

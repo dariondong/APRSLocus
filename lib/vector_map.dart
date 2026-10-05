@@ -30,6 +30,8 @@ class VectorMapView extends StatefulWidget {
   final String myCall;
   final bool myHasFix;
   final double? myLat, myLng;
+  // 航向（真北顺时针，度）：给我的位置标记画方位角「小角角」。
+  final double? myCourse;
   // 轨迹显示：我的轨迹（蓝色）+ 选中台站轨迹（台站颜色）
   final List<TrackPt> myTrack;
   final String? selectedCall;
@@ -63,6 +65,7 @@ class VectorMapView extends StatefulWidget {
     this.myHasFix = false,
     this.myLat,
     this.myLng,
+    this.myCourse,
     this.myTrack = const [],
     this.selectedCall,
     this.selectedTrack = const [],
@@ -367,20 +370,39 @@ class _VectorMapViewState extends State<VectorMapView> {
   }
 
   Marker _myMarker() {
+    // 有航向时用带指向的箭头图标，并在圆外叠一个方位角「小角角」；
+    // 无航向（null / 静止未取得）时退回普通圆点，不画角标 —— 别拿猜的方向误导。
+    final crs = widget.myCourse;
+    final hasCourse = crs != null && crs >= 0;
     return Marker(
       point: LatLng(widget.myLat!, widget.myLng!),
-      width: 28,
-      height: 28,
-      child: Container(
-        decoration: BoxDecoration(
-          color: C.blue,
-          shape: BoxShape.circle,
-          border: Border.all(color: Colors.white, width: 2),
-          // 这里**故意**不用 elev1/2/3：这是地图标记背后的一圈深色光晕，用途是让压在各种瓦片上的文字可读，属于「可读性」而不是「层次」。
-          // 同上：可读性光晕，不属于三级高度体系。
-            boxShadow: softShadow(blur: 8, alpha: 0.3),
-        ),
-        child: const Icon(Icons.navigation_rounded, color: Colors.white, size: 14),
+      width: 40,
+      height: 40,
+      child: Stack(
+        alignment: Alignment.center,
+        // 角标会伸出圆外（比标记框略大），不裁剪才不会把尖端切掉。
+        clipBehavior: Clip.none,
+        children: [
+          Container(
+            width: 28,
+            height: 28,
+            decoration: BoxDecoration(
+              color: C.blue,
+              shape: BoxShape.circle,
+              border: Border.all(color: Colors.white, width: 2),
+              // 这里**故意**不用 elev1/2/3：这是地图标记背后的一圈深色光晕，用途是让压在各种瓦片上的文字可读，属于「可读性」而不是「层次」。
+              // 同上：可读性光晕，不属于三级高度体系。
+              boxShadow: softShadow(blur: 8, alpha: 0.3),
+            ),
+            child: Icon(
+              hasCourse ? Icons.navigation_rounded : Icons.my_location_rounded,
+              color: Colors.white,
+              size: 14,
+            ),
+          ),
+          if (hasCourse)
+            HeadingCornerIndicator(course: crs, radius: 13, size: 8),
+        ],
       ),
     );
   }

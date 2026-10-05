@@ -499,6 +499,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                             myHasFix: widget.state.myHasFix,
                             myLat: widget.state.myLat,
                             myLng: widget.state.myLng,
+                            myCourse: widget.state.myCourse,
                             myTrack: widget.state.myTrack,
                             selectedCall: _selected?.call,
                             selectedTrack: _selected?.track ?? const [],
@@ -1093,6 +1094,14 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                       color: Colors.white,
                       size: 15,
                     ),
+                  ),
+                  // 方位角「小角角」：在圆点之上、随航向旋转的凸起。
+                  // 与圆点同心叠放（不能放进圆点的 child，否则会被圆形裁剪）。
+                  HeadingCornerIndicator(
+                    course: widget.state.myCourse,
+                    radius: 12,
+                    size: 8,
+                    color: Colors.white,
                   ),
                   Positioned(
                     top: 30,
