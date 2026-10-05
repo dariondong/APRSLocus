@@ -188,7 +188,7 @@ class _Ic705DevicePageState extends State<Ic705DevicePage> {
     return ListenableBuilder(
       listenable: st,
       builder: (context, _) => SettingsPageShell(
-        title: 'WLAN 电台（${_selectedModel.id} 直连）',
+        title: s.icomLanTitle,
         subtitle: '局域网直连 Icom 电台（IC-705 / IC-9700 / IC-7610 / IC-905），收发 12 kHz PCM 音频与 CI-V 控制',
         icon: Icons.wifi_tethering_rounded,
         color: C.cyan,
@@ -230,7 +230,7 @@ class _Ic705DevicePageState extends State<Ic705DevicePage> {
       color: C.cyan,
       children: [
         SettingsSwitch(
-          '启用 ${_selectedModel.id} 局域网直连',
+          s.icomLanEnable,
           value: isIcomMode,
           color: C.cyan,
           onChanged: (v) => unawaited(_saveConfig(enabled: v)),
@@ -470,7 +470,7 @@ class _Ic705DevicePageState extends State<Ic705DevicePage> {
               _guideStep(
                 '4',
                 '设置模式与频率',
-                '将电台对应频段模式设为 FM，调至当地 APRS 频率（如 144.640 MHz）。',
+                '将电台对应频段模式设为 FM-D。',
               ),
             ],
           ),

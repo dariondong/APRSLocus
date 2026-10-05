@@ -2605,7 +2605,7 @@ class _ConnectionSettingsPageState extends State<ConnectionSettingsPage> {
                       ),
                     ),
                     icon: const Icon(Icons.wifi_tethering_rounded, size: 16),
-                    label: Text('WLAN 电台（${a.config.icomLan.model.id}）',
+                    label: Text(S.of(context).icomLanTitle,
                         style: ts(12, w: FontWeight.w600)),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: C.cyan,
@@ -2656,7 +2656,7 @@ class _ConnectionSettingsPageState extends State<ConnectionSettingsPage> {
                       ),
                     ),
                     icon: const Icon(Icons.wifi_tethering_rounded, size: 16),
-                    label: Text('WLAN 电台（${a.config.icomLan.model.id}）',
+                    label: Text(S.of(context).icomLanTitle,
                         style: ts(12, w: FontWeight.w600)),
                     style: OutlinedButton.styleFrom(
                       foregroundColor: C.cyan,

@@ -189,7 +189,7 @@ def main():
         chk('settings defaults present', 'rotate.aprs2.net' in s and '14580' in s)
     uniq = set(set_stats.values())
     chk('settings tables aligned across languages',
-        len(uniq) == 1 and next(iter(uniq))[0] == 15 and next(iter(uniq))[1] >= 150,
+        len(uniq) == 1 and next(iter(uniq))[0] == 16 and next(iter(uniq))[1] >= 150,
         str(set_stats))
     # 任务式素材：真实报文 + m-steps（且不得误用首页 .steps）
     s = read('docs/manual/start.html')

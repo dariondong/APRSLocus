@@ -615,9 +615,19 @@ body.loaded .hero::after { transform: translate(-50%,-50%) scale(1); opacity: 1;
 .cl-head { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
 .cl-tag { font-weight: 800; font-size: 13px; color: #fff; background: var(--grad); padding: 2px 12px; border-radius: 999px; letter-spacing: .3px; }
 .cl-date { font-size: 13px; color: var(--text-faint); }
-.cl-body { display: flex; flex-direction: column; gap: 6px; }
-.cl-item { display: flex; align-items: flex-start; gap: 8px; font-size: 14px; color: var(--text-dim); line-height: 1.6; }
-.cl-dot { flex: 0 0 auto; width: 6px; height: 6px; border-radius: 50%; margin-top: 8px; }
+.cl-body { display: flex; flex-direction: column; gap: 14px; }
+.cl-item {
+  display: flex; align-items: flex-start; gap: 10px;
+  font-size: 13.5px; color: var(--text-dim); line-height: 1.7;
+  word-break: break-word; text-align: justify;
+}
+.cl-item b { color: var(--text); font-weight: 700; }
+.cl-item code { font-size: .88em; padding: 1px 5px; margin: 0 2px; }
+.cl-dot {
+  flex: 0 0 auto; width: 7px; height: 7px; border-radius: 50%; margin-top: 8px;
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, .8);
+}
+:root[data-theme="dark"] .cl-dot { box-shadow: 0 0 0 2px rgba(15, 23, 42, .8); }
 .cl-dot.fix { background: var(--red); }
 .cl-dot.new { background: var(--green); }
 .cl-dot.up { background: var(--amber); }

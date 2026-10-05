@@ -46,21 +46,20 @@ def T(zh, zh_TW, en):
 CARDS = [
     {
         'icon': 'c9', 'fa': 'fa-tower-cell',
-        'title': T('四种数据来源', '四種資料來源', 'Four Data Sources'),
+        'title': T('五种数据来源', '五種資料來源', 'Five Data Sources'),
         'desc': T(
-            '互联网（APRS-IS）、蓝牙 / 串口 TNC（KISS）、声卡音频 AFSK 1200（Bell 202 软 TNC），'
-            '以及读取 Kenwood 电台输出的 <code>$PKWDWPL</code> 航点语句（只收不发）。'
-            '几条链路可以同时收报文，发射来源单独指定一条。',
-            '網際網路（APRS-IS）、藍牙 / 串列埠 TNC（KISS）、音效卡音訊 AFSK 1200（Bell 202 軟 TNC），'
-            '以及讀取 Kenwood 電台輸出的 <code>$PKWDWPL</code> 航點語句（唯讀、不發射）。'
+            '互联网（APRS-IS）、蓝牙 / 串口 TNC（KISS）、声卡音频 AFSK 1200（Bell 202 软 TNC）、'
+            'Kenwood 航点 <code>$PKWDWPL</code>（只收不发），以及 WLAN 电台直连（支持 IC-705 / IC-9700 / IC-7610 / IC-905 等 Wi-Fi / 以太网型号，CI-V 控制与局域网音频）。'
+            '多条链路可以同时收报文，发射来源单独指定一条。',
+            '網際網路（APRS-IS）、藍牙 / 串列埠 TNC（KISS）、音效卡音訊 AFSK 1200（Bell 202 軟 TNC）、'
+            'Kenwood 航點 <code>$PKWDWPL</code>（唯讀、不發射），以及 WLAN 電台直連（支援 IC-705 / IC-9700 / IC-7610 / IC-905 等 Wi-Fi / 乙太網路型號，CI-V 控制與區域網路音訊）。'
             '數條鏈路可以同時收報文，發射來源單獨指定一條。',
-            'Internet (APRS-IS), Bluetooth / serial TNC over KISS, a sound-card AFSK 1200 '
-            '(Bell 202) software TNC, and reading the <code>$PKWDWPL</code> waypoint sentences '
-            'a Kenwood radio outputs (receive-only). Several links can receive at once, while '
-            'the transmit source is picked separately.'),
-        'tags': {'zh': ['APRS-IS', 'TNC', '音频', 'PKWDWPL'],
-                 'zh_TW': ['APRS-IS', 'TNC', '音訊', 'PKWDWPL'],
-                 'en': ['APRS-IS', 'TNC', 'Audio', 'PKWDWPL']},
+            'Internet (APRS-IS), Bluetooth / serial TNC (KISS), sound-card AFSK 1200 (Bell 202 software TNC), '
+            'Kenwood <code>$PKWDWPL</code> waypoints (receive-only), and WLAN radio direct link (supporting IC-705 / IC-9700 / IC-7610 / IC-905 over Wi-Fi / Ethernet with CI-V and LAN audio). '
+            'Multiple links can receive simultaneously, while the transmit link is picked separately.'),
+        'tags': {'zh': ['APRS-IS', 'TNC', '音频', 'PKWDWPL', 'WLAN 电台'],
+                 'zh_TW': ['APRS-IS', 'TNC', '音訊', 'PKWDWPL', 'WLAN 電台'],
+                 'en': ['APRS-IS', 'TNC', 'Audio', 'PKWDWPL', 'WLAN Radio']},
     },
     {
         'icon': 'c10', 'fa': 'fa-right-left',
@@ -516,15 +515,15 @@ CL = [
         'ver': 'v2.0.18', 'date': '2026-10-02',
         'items': [
             ('new',
-             T('**新增：Icom 电台 Wi-Fi / 以太网直连**（IC-705 / IC-9700 / IC-7610 / IC-905）。'
+             T('**新增：WLAN 电台直连**（支持 IC-705 / IC-9700 / IC-7610 / IC-905 等 Wi-Fi 与以太网型号）。'
                '手机与电台在同一局域网即可收发 APRS 音频，不用声卡或 TNC；PTT 与频率控制走 '
                'CI-V、音频走网络，不占用音频口；新增独立的电台设备页与并列的数据来源入口，'
                '并带 19 个新测试。由社区贡献者 nimenhagg 实现（PR #29）。',
-               '**新增：Icom 電台 Wi-Fi / 乙太網路直連**（IC-705 / IC-9700 / IC-7610 / IC-905）。'
+               '**新增：WLAN 電台直連**（支援 IC-705 / IC-9700 / IC-7610 / IC-905 等 Wi-Fi 與乙太網路型號）。'
                '手機與電台在同一區域網路即可收發 APRS 音訊，不需音效卡或 TNC；PTT 與頻率控制走 '
                'CI-V、音訊走網路，不佔用音訊埠；新增獨立的電台裝置頁與並列的資料來源入口，'
                '並帶 19 個新測試。由社群貢獻者 nimenhagg 實作（PR #29）。',
-               '**New: direct Icom connection over Wi-Fi / Ethernet** (IC-705, IC-9700, IC-7610, '
+               '**New: WLAN radio direct link over Wi-Fi / Ethernet** (supporting IC-705, IC-9700, IC-7610, '
                'IC-905). With the phone and radio on the same LAN you can send and receive APRS '
                'audio with no sound card or TNC; PTT and tuning go over CI-V while audio goes '
                'over the network, leaving the audio port free. Adds a dedicated radio page, a '
@@ -2230,6 +2229,16 @@ def strip_block(s, open_m, close_m):
     return pat.sub('', s)
 
 
+def md_inline(s):
+    """将内联 markdown（`代码`、**粗体**、*斜体*）转换为 HTML 标签。"""
+    if not s:
+        return ''
+    s = re.sub(r'`([^`]+)`', r'<code>\1</code>', s)
+    s = re.sub(r'\*\*([^*]+)\*\*', r'<b>\1</b>', s)
+    s = re.sub(r'(?<![*\w])\*([^\s*]+)\*(?![*\w])', r'<em>\1</em>', s)
+    return s
+
+
 def render_cards(lang):
     out = [F_OPEN]
     for c in CARDS:
@@ -2241,7 +2250,8 @@ def render_cards(lang):
             '      <p>{desc}</p>\n'
             '      <ul class="card-tags">{tags}</ul>\n'
             '    </article>'.format(icon=c['icon'], fa=c['fa'],
-                                   title=c['title'][lang], desc=c['desc'][lang],
+                                   title=md_inline(c['title'][lang]),
+                                   desc=md_inline(c['desc'][lang]),
                                    tags=tags))
     out.append('  ' + F_CLOSE)
     return '\n'.join(out)
@@ -2258,7 +2268,7 @@ def render_changelog(lang):
         out.append('      <div class="cl-body">')
         for kind, txt in e['items']:
             out.append('        <div class="cl-item"><span class="cl-dot %s"></span>%s</div>'
-                       % (kind, txt[lang]))
+                       % (kind, md_inline(txt[lang])))
         out.append('      </div>')
         out.append('    </div>')
     out.append('  ' + C_CLOSE)

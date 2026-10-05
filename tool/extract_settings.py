@@ -65,6 +65,7 @@ CAT_KEYS = {
 SINGLE_FILES = [
     'lib/device_page.dart',            # 设备总览（DeviceSettingsPage 转发到这里）
     'lib/tnc_device_page.dart',        # 设备 · TNC
+    'lib/ic705_device_page.dart',      # 设备 · WLAN 电台直连
     'lib/audio_page.dart',             # 设备 · 音频
     'lib/pkwdwpl_device_page.dart',    # 设备 · PKWDWPL
     'lib/translate_page.dart',         # 翻译设置

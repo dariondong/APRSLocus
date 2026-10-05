@@ -169,12 +169,13 @@
         <a href="#g6">高级</a>
         <a href="#g7">设备</a>
         <a href="#g8">TNC 设备与参数</a>
-        <a href="#g9">音频（声卡 TNC）</a>
-        <a href="#g10">PKWDWPL 设备</a>
-        <a href="#g11">翻译设置</a>
-        <a href="#g12">主题</a>
-        <a href="#g13">备份与恢复</a>
-        <a href="#g14">离线地图</a>
+        <a href="#g9">WLAN 电台直连</a>
+        <a href="#g10">音频（声卡 TNC）</a>
+        <a href="#g11">PKWDWPL 设备</a>
+        <a href="#g12">翻译设置</a>
+        <a href="#g13">主题</a>
+        <a href="#g14">备份与恢复</a>
+        <a href="#g15">离线地图</a>
     </nav>
     <div class="manual-body">
   <section class="chapter reveal" id="g0">
@@ -212,11 +213,11 @@
       <p>身份是所有报文的根：呼号必须与你的执照一致，SSID 决定台站类型（-9 车载、-7 手持常见）。</p>
       <div class="m-sub">
         <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>设置项</th><th>控件</th><th>默认值</th><th>说明</th></tr></thead><tbody>
-<tr><td><b>高度（米，留空跟随定位）</b></td><td><span class="m-kind">输入框</span></td><td class="m-def">—</td><td>填了就用手填的这个海拔（更可靠：无气压计机型、室内、只有网络定位时 GPS 海拔常不可用），留空则跟随定位的海拔。发送时按英尺编成 `/A=aaaaaa` 六位；这是台站**海拔**，与下面 PHG 里的「天线高度」（高于当地平均地面）是两个不同的量。</td></tr>
+<tr><td><b>高度（米，留空跟随定位）</b></td><td><span class="m-kind">输入框</span></td><td class="m-def">—</td><td>填了就用手填的这个海拔（更可靠：无气压计机型、室内、只有网络定位时 GPS 海拔常不可用），留空则跟随定位的海拔。发送时按英尺编成 <code>/A=aaaaaa</code> 六位；这是台站<b>海拔</b>，与下面 PHG 里的「天线高度」（高于当地平均地面）是两个不同的量。</td></tr>
 <tr><td><b>功率（瓦）</b></td><td><span class="m-kind">输入框</span></td><td class="m-def">—</td><td>功率 / 天线高度 / 增益同属一个 PHG 数据扩展，填了任一项就一起编码发出（规范里它是固定的 7 字节字段）。功率取不超过实际值的最大档：25 W 报 25、30 W 也只报 25 —— 写大了等于虚报覆盖范围。天线高度是「高于当地平均地面」，与上面自动发送的 /A= 海拔是两个不同的量。</td></tr>
 <tr><td><b>天线高度（英尺）</b></td><td><span class="m-kind">输入框</span></td><td class="m-def">—</td><td>功率 / 天线高度 / 增益同属一个 PHG 数据扩展，填了任一项就一起编码发出（规范里它是固定的 7 字节字段）。功率取不超过实际值的最大档：25 W 报 25、30 W 也只报 25 —— 写大了等于虚报覆盖范围。天线高度是「高于当地平均地面」，与上面自动发送的 /A= 海拔是两个不同的量。</td></tr>
 <tr><td><b>增益（dB）</b></td><td><span class="m-kind">输入框</span></td><td class="m-def">—</td><td>功率 / 天线高度 / 增益同属一个 PHG 数据扩展，填了任一项就一起编码发出（规范里它是固定的 7 字节字段）。功率取不超过实际值的最大档：25 W 报 25、30 W 也只报 25 —— 写大了等于虚报覆盖范围。天线高度是「高于当地平均地面」，与上面自动发送的 /A= 海拔是两个不同的量。</td></tr>
-<tr><td><b>独立状态报文</b> <code class="m-field">aprsStatusText</code></td><td><span class="m-kind">输入框</span></td><td class="m-def">（空）</td><td>这一点发的是**独立一帧**状态报文（`&gt;` 开头、不含坐标、不会移动你在 aprs.fi 上的位置），与上面那行备注是两种不同的 APRS 报文。留空则发送内置的 APRSlocus 在线帧。</td></tr>
+<tr><td><b>独立状态报文</b> <code class="m-field">aprsStatusText</code></td><td><span class="m-kind">输入框</span></td><td class="m-def">（空）</td><td>这一点发的是<b>独立一帧</b>状态报文（<code>&gt;</code> 开头、不含坐标、不会移动你在 aprs.fi 上的位置），与上面那行备注是两种不同的 APRS 报文。留空则发送内置的 APRSlocus 在线帧。</td></tr>
 </tbody></table></div>
       </div>
       <div class="m-sub">
@@ -275,7 +276,7 @@
 <tr><td><b>本次里程</b> <code class="m-field">beaconIncludeTripMileage</code></td><td><span class="m-kind">小开关</span></td><td class="m-def">关</td><td></td></tr>
 <tr><td><b>累计里程</b> <code class="m-field">beaconIncludeTotalMileage</code></td><td><span class="m-kind">小开关</span></td><td class="m-def">关</td><td></td></tr>
 <tr><td><b>步数</b> <code class="m-field">beaconIncludeSteps</code></td><td><span class="m-kind">小开关</span></td><td class="m-def">关</td><td></td></tr>
-<tr><td><b>今日步数</b></td><td><span class="m-kind">只读状态</span></td><td class="m-def">—</td><td>步数来自手机的计步传感器（硬件计数，比用加速度计估算准）。可以随信标一起发出（`STEPS=`），对方也是 APRSlocus 时就能在运动排行榜里看到你。</td></tr>
+<tr><td><b>今日步数</b></td><td><span class="m-kind">只读状态</span></td><td class="m-def">—</td><td>步数来自手机的计步传感器（硬件计数，比用加速度计估算准）。可以随信标一起发出（<code>STEPS=</code>），对方也是 APRSlocus 时就能在运动排行榜里看到你。</td></tr>
 <tr><td><b>授予「身体活动」权限</b></td><td><span class="m-kind">按钮</span></td><td class="m-def">—</td><td></td></tr>
 <tr><td><b>定位状态</b></td><td><span class="m-kind">只读状态</span></td><td class="m-def">—</td><td></td></tr>
 <tr><td><b>信标发送次数</b></td><td><span class="m-kind">只读状态</span></td><td class="m-def">—</td><td></td></tr>
@@ -313,12 +314,13 @@
       </div>
       <div class="m-sub">
         <h4>APRS-IS 连接</h4>
-        <p class="m-grp-sub">在电台 WLAN 设置里开启遥控并设置 Network User 名/密码，手机与电台保持同一网段。IC-705 局域网音频固定 12000 Hz。</p>
+        <p class="m-grp-sub">在电台 WLAN 设置里开启遥控并设置 Network User 名/密码，手机与电台保持同一网段。WLAN 电台局域网音频固定 12000 Hz。</p>
         <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>设置项</th><th>控件</th><th>默认值</th><th>说明</th></tr></thead><tbody>
 <tr><td><b>音频后端</b></td><td><span class="m-kind">只读状态</span></td><td class="m-def">—</td><td></td></tr>
 <tr><td><b>采样率</b></td><td><span class="m-kind">只读状态</span></td><td class="m-def">—</td><td></td></tr>
 <tr><td><b>连接</b></td><td><span class="m-kind">只读状态</span></td><td class="m-def">—</td><td></td></tr>
 <tr><td><b>允许射频信标</b></td><td><span class="m-kind">只读状态</span></td><td class="m-def">—</td><td>音频模式下不使用服务器、过滤器与 KISS 参数</td></tr>
+<tr><td><b>WLAN 电台直连<span class="m-opts">WLAN 电台直连</span></b></td><td><span class="m-kind">按钮</span></td><td class="m-def">—</td><td></td></tr>
 <tr><td><b>音频（声卡 TNC）<span class="m-opts">音频（声卡 TNC）</span></b></td><td><span class="m-kind">按钮</span></td><td class="m-def">—</td><td></td></tr>
 </tbody></table></div>
       </div>
@@ -328,7 +330,7 @@
         <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>设置项</th><th>控件</th><th>默认值</th><th>说明</th></tr></thead><tbody>
 <tr><td><b>已绑定设备</b></td><td><span class="m-kind">只读状态</span></td><td class="m-def">—</td><td></td></tr>
 <tr><td><b>连接</b></td><td><span class="m-kind">只读状态</span></td><td class="m-def">—</td><td></td></tr>
-<tr><td><b>PKWDWPL（Kenwood 航点）</b></td><td><span class="m-kind">只读状态</span></td><td class="m-def">—</td><td>PKWDWPL 是**只读**链路：能收台站、不参与发射（发射请用 APRS-IS / TNC / 音频）</td></tr>
+<tr><td><b>PKWDWPL（Kenwood 航点）</b></td><td><span class="m-kind">只读状态</span></td><td class="m-def">—</td><td>PKWDWPL 是<b>只读</b>链路：能收台站、不参与发射（发射请用 APRS-IS / TNC / 音频）</td></tr>
 <tr><td><b>PKWDWPL 设备</b></td><td><span class="m-kind">按钮</span></td><td class="m-def">—</td><td></td></tr>
 </tbody></table></div>
       </div>
@@ -444,13 +446,13 @@
     <h2 id="g7">设备<a class="hdr-anchor" href="#g7" aria-label="本节永久链接" title="本节永久链接">#</a></h2>
       <h3 id="g7">设备<a class="hdr-anchor" href="#g7" aria-label="本节永久链接" title="本节永久链接">#</a></h3>
       <p class="m-grp-sub">数据来源、链路状态与自检</p>
-      <p>设备总览 = 当前链路 + 网关状态 + 三个子页入口（TNC / 音频 / PKWDWPL）+ 链路自检与日志。</p>
+      <p>设备总览 = 当前链路 + 网关状态 + 四个子页入口（TNC / WLAN 电台 / 音频 / PKWDWPL）+ 链路自检与日志。</p>
       <div class="m-sub">
         <h4>网关（iGate）</h4>
         <p class="m-grp-sub">把射频收到的报文送上 APRS-IS</p>
         <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>设置项</th><th>控件</th><th>默认值</th><th>说明</th></tr></thead><tbody>
 <tr><td><b>启用网关</b> <code class="m-field">igateEnabled</code></td><td><span class="m-kind">开关</span></td><td class="m-def">关</td><td></td></tr>
-<tr><td><b>双向网关（向射频转递消息）</b> <code class="m-field">igateTwoWay</code></td><td><span class="m-kind">开关</span></td><td class="m-def">关</td><td>射频上一条报文都没收到：网关的条件已经全齐，但它**无报文可转**。这不是网关的问题 —— 报文根本没进到应用里。查上游：电台音量与静噪、天线、对方是否真的在发射，也可以在日志页确认有没有任何射频报文。</td></tr>
+<tr><td><b>双向网关（向射频转递消息）</b> <code class="m-field">igateTwoWay</code></td><td><span class="m-kind">开关</span></td><td class="m-def">关</td><td>射频上一条报文都没收到：网关的条件已经全齐，但它<b>无报文可转</b>。这不是网关的问题 —— 报文根本没进到应用里。查上游：电台音量与静噪、天线、对方是否真的在发射，也可以在日志页确认有没有任何射频报文。</td></tr>
 <tr><td><b>射频收到（条）</b></td><td><span class="m-kind">只读状态</span></td><td class="m-def">—</td><td></td></tr>
 <tr><td><b>已转递 → APRS-IS（条）</b></td><td><span class="m-kind">只读状态</span></td><td class="m-def">—</td><td></td></tr>
 <tr><td><b>已转递 → 射频（条）</b></td><td><span class="m-kind">只读状态</span></td><td class="m-def">—</td><td></td></tr>
@@ -469,6 +471,7 @@
         <p class="m-grp-sub">每条链路一个子页，各管各的参数</p>
         <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>设置项</th><th>控件</th><th>默认值</th><th>说明</th></tr></thead><tbody>
 <tr><td><b>TNC 设备与参数</b></td><td><span class="m-kind">选项卡</span></td><td class="m-def">—</td><td>蓝牙/串口绑定、初始化串、KISS 参数与发射自检</td></tr>
+<tr><td><b>WLAN 电台直连</b> <code class="m-field">source</code></td><td><span class="m-kind">选项卡</span></td><td class="m-def"><code>AudioSource.device</code></td><td>已连接</td></tr>
 <tr><td><b>音频（声卡 TNC）</b></td><td><span class="m-kind">选项卡</span></td><td class="m-def">—</td><td>用声卡收发 AFSK 1200 报文</td></tr>
 <tr><td><b>PKWDWPL 设备</b></td><td><span class="m-kind">选项卡</span></td><td class="m-def">—</td><td>绑定电台端口 · 查看航点接收状态</td></tr>
 <tr><td><b>APRSlocusBOX</b> <code class="m-field">connected</code></td><td><span class="m-kind">选项卡</span></td><td class="m-def">关</td><td>已连接</td></tr>
@@ -546,25 +549,51 @@
       </div>
   </section>
   <section class="chapter reveal" id="g9">
-    <h2 id="g9">音频（声卡 TNC）<a class="hdr-anchor" href="#g9" aria-label="本节永久链接" title="本节永久链接">#</a></h2>
-      <h3 id="g9">音频（声卡 TNC）<a class="hdr-anchor" href="#g9" aria-label="本节永久链接" title="本节永久链接">#</a></h3>
+    <h2 id="g9">WLAN 电台直连<a class="hdr-anchor" href="#g9" aria-label="本节永久链接" title="本节永久链接">#</a></h2>
+      <h3 id="g9">WLAN 电台直连<a class="hdr-anchor" href="#g9" aria-label="本节永久链接" title="本节永久链接">#</a></h3>
+      <p class="m-grp-sub">局域网直连 Icom 电台（IC-705 / IC-9700 / IC-7610 / IC-905），收发 12 kHz PCM 音频与 CI-V 控制</p>
+      <p>局域网直连 Icom 电台（IC-705 / IC-9700 / IC-7610 / IC-905 等）：电台 IP/控制端口、Network User 认证、CI-V 地址与导前延时（TX Delay）、收发 12 kHz PCM 音频。</p>
+      <div class="m-sub">
+        <h4>电台链路状态</h4>
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>设置项</th><th>控件</th><th>默认值</th><th>说明</th></tr></thead><tbody>
+<tr><td><b>启用 WLAN 电台直连</b></td><td><span class="m-kind">开关</span></td><td class="m-def">—</td><td>开启后，APRS 音频收发数据源将直接绑定至 $… 局域网直连</td></tr>
+<tr><td><b>射频收发统计</b></td><td><span class="m-kind">只读状态</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>音频采样率</b></td><td><span class="m-kind">只读状态</span></td><td class="m-def">—</td><td></td></tr>
+</tbody></table></div>
+      </div>
+      <div class="m-sub">
+        <h4>电台网络参数</h4>
+        <p class="m-grp-sub">选择电台型号预置并配置 IP 与 Network User 凭据</p>
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>设置项</th><th>控件</th><th>默认值</th><th>说明</th></tr></thead><tbody>
+<tr><td><b>电台 IP</b></td><td><span class="m-kind">输入框</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>控制端口</b></td><td><span class="m-kind">输入框</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>用户名（Network User）</b></td><td><span class="m-kind">输入框</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>密码（Network User）</b></td><td><span class="m-kind">输入框</span></td><td class="m-def">—</td><td>提示：用户名和密码必须与电台内部 Network User Setting 完全一致。</td></tr>
+</tbody></table></div>
+      </div>
+      <div class="m-sub">
+        <h4>CI-V 控制与发射设置</h4>
+        <p class="m-grp-sub">PTT 自动控制、前导延时与信标参数</p>
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>设置项</th><th>控件</th><th>默认值</th><th>说明</th></tr></thead><tbody>
+<tr><td><b>允许射频信标</b> <code class="m-field">rfBeacon</code></td><td><span class="m-kind">开关</span></td><td class="m-def">关</td><td>是否允许通过电台射频自动周期发射信标（半双工，发射时自动静默监听）。</td></tr>
+<tr><td><b>发射前导延迟 (TX Delay, ms)</b> <code class="m-field">txDelayMs</code></td><td><span class="m-kind">输入框</span></td><td class="m-def"><code>300</code></td><td></td></tr>
+<tr><td><b>电台 CI-V 地址 (十六进制)</b></td><td><span class="m-kind">输入框</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>控制器地址</b></td><td><span class="m-kind">只读状态</span></td><td class="m-def">—</td><td></td></tr>
+</tbody></table></div>
+      </div>
+      <div class="m-sub">
+        <h4>电台设置指引</h4>
+        <p class="m-grp-sub">在 Icom 电台上的必要准备步骤</p>
+      </div>
+  </section>
+  <section class="chapter reveal" id="g10">
+    <h2 id="g10">音频（声卡 TNC）<a class="hdr-anchor" href="#g10" aria-label="本节永久链接" title="本节永久链接">#</a></h2>
+      <h3 id="g10">音频（声卡 TNC）<a class="hdr-anchor" href="#g10" aria-label="本节永久链接" title="本节永久链接">#</a></h3>
       <p class="m-grp-sub">用声卡收发 AFSK 1200 报文</p>
       <p>把声卡当 TNC：采样率/比特率/音调、发射电平与 CSMA 等待、WAV 文件模式（离线解码录音）。</p>
       <div class="m-sub">
         <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>设置项</th><th>控件</th><th>默认值</th><th>说明</th></tr></thead><tbody>
 <tr><td><b>播放设备</b></td><td><span class="m-kind">入口</span></td><td class="m-def">—</td><td>要启用 / 切换数据来源（链路），请到「设置 → 设备」</td></tr>
-</tbody></table></div>
-      </div>
-      <div class="m-sub">
-        <h4>WLAN 电台（$…）</h4>
-        <p class="m-grp-sub">在电台 WLAN 设置里开启遥控并设置 Network User 名/密码，手机与电台保持同一网段。IC-705 局域网音频固定 12000 Hz。</p>
-        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>设置项</th><th>控件</th><th>默认值</th><th>说明</th></tr></thead><tbody>
-<tr><td><b>启用 IC-705 局域网直连</b></td><td><span class="m-kind">开关</span></td><td class="m-def">—</td><td></td></tr>
-<tr><td><b>电台 IP</b></td><td><span class="m-kind">输入框</span></td><td class="m-def">—</td><td></td></tr>
-<tr><td><b>控制端口</b></td><td><span class="m-kind">输入框</span></td><td class="m-def">—</td><td></td></tr>
-<tr><td><b>用户名（Network User）</b></td><td><span class="m-kind">输入框</span></td><td class="m-def">—</td><td></td></tr>
-<tr><td><b>密码（Network User）</b></td><td><span class="m-kind">输入框</span></td><td class="m-def">—</td><td></td></tr>
-<tr><td><b>音频后端</b></td><td><span class="m-kind">只读状态</span></td><td class="m-def">—</td><td></td></tr>
 </tbody></table></div>
       </div>
       <div class="m-sub">
@@ -620,9 +649,9 @@
         <div class="callout info"><span class="co-ic">ℹ️</span><div><p>暂无日志</p></div></div>
       </div>
   </section>
-  <section class="chapter reveal" id="g10">
-    <h2 id="g10">PKWDWPL 设备<a class="hdr-anchor" href="#g10" aria-label="本节永久链接" title="本节永久链接">#</a></h2>
-      <h3 id="g10">PKWDWPL 设备<a class="hdr-anchor" href="#g10" aria-label="本节永久链接" title="本节永久链接">#</a></h3>
+  <section class="chapter reveal" id="g11">
+    <h2 id="g11">PKWDWPL 设备<a class="hdr-anchor" href="#g11" aria-label="本节永久链接" title="本节永久链接">#</a></h2>
+      <h3 id="g11">PKWDWPL 设备<a class="hdr-anchor" href="#g11" aria-label="本节永久链接" title="本节永久链接">#</a></h3>
       <p class="m-grp-sub">绑定电台端口 · 查看航点接收状态</p>
       <p>Kenwood 航点只读链路：绑定与状态、收到的航点计数、严格校验和（默认关，只标注不丢弃）。</p>
       <div class="m-sub">
@@ -651,9 +680,9 @@
 </tbody></table></div>
       </div>
   </section>
-  <section class="chapter reveal" id="g11">
-    <h2 id="g11">翻译设置<a class="hdr-anchor" href="#g11" aria-label="本节永久链接" title="本节永久链接">#</a></h2>
-      <h3 id="g11">翻译设置<a class="hdr-anchor" href="#g11" aria-label="本节永久链接" title="本节永久链接">#</a></h3>
+  <section class="chapter reveal" id="g12">
+    <h2 id="g12">翻译设置<a class="hdr-anchor" href="#g12" aria-label="本节永久链接" title="本节永久链接">#</a></h2>
+      <h3 id="g12">翻译设置<a class="hdr-anchor" href="#g12" aria-label="本节永久链接" title="本节永久链接">#</a></h3>
       <p class="m-grp-sub">翻译接口、语言与自动翻译</p>
       <p>目标语言、引擎（默认 auto 免密钥）、各引擎的密钥/实例地址、测试翻译。</p>
       <div class="m-sub">
@@ -690,9 +719,9 @@
 </tbody></table></div>
       </div>
   </section>
-  <section class="chapter reveal" id="g12">
-    <h2 id="g12">主题<a class="hdr-anchor" href="#g12" aria-label="本节永久链接" title="本节永久链接">#</a></h2>
-      <h3 id="g12">主题<a class="hdr-anchor" href="#g12" aria-label="本节永久链接" title="本节永久链接">#</a></h3>
+  <section class="chapter reveal" id="g13">
+    <h2 id="g13">主题<a class="hdr-anchor" href="#g13" aria-label="本节永久链接" title="本节永久链接">#</a></h2>
+      <h3 id="g13">主题<a class="hdr-anchor" href="#g13" aria-label="本节永久链接" title="本节永久链接">#</a></h3>
       <p class="m-grp-sub">把界面配色、图标与常用文案改成你自己的</p>
       <p>颜色 / 图标 / 文字 / 背景图四大块，改完可导出 JSON 分享；预设皮肤可一键切换。</p>
       <div class="m-sub">
@@ -778,9 +807,9 @@
         <div class="callout info"><span class="co-ic">ℹ️</span><div><p>预设主题不可修改，复制为我的主题后即可自由编辑</p></div></div>
       </div>
   </section>
-  <section class="chapter reveal" id="g13">
-    <h2 id="g13">备份与恢复<a class="hdr-anchor" href="#g13" aria-label="本节永久链接" title="本节永久链接">#</a></h2>
-      <h3 id="g13">备份与恢复<a class="hdr-anchor" href="#g13" aria-label="本节永久链接" title="本节永久链接">#</a></h3>
+  <section class="chapter reveal" id="g14">
+    <h2 id="g14">备份与恢复<a class="hdr-anchor" href="#g14" aria-label="本节永久链接" title="本节永久链接">#</a></h2>
+      <h3 id="g14">备份与恢复<a class="hdr-anchor" href="#g14" aria-label="本节永久链接" title="本节永久链接">#</a></h3>
       <p class="m-grp-sub">导出或导入配置与数据</p>
       <p>一个 JSON 装下设置与数据；白名单导入防来路不明的文件改配置；导入后需重启生效。</p>
       <div class="m-sub">
@@ -809,9 +838,9 @@
 </tbody></table></div>
       </div>
   </section>
-  <section class="chapter reveal" id="g14">
-    <h2 id="g14">离线地图<a class="hdr-anchor" href="#g14" aria-label="本节永久链接" title="本节永久链接">#</a></h2>
-      <h3 id="g14">离线地图<a class="hdr-anchor" href="#g14" aria-label="本节永久链接" title="本节永久链接">#</a></h3>
+  <section class="chapter reveal" id="g15">
+    <h2 id="g15">离线地图<a class="hdr-anchor" href="#g15" aria-label="本节永久链接" title="本节永久链接">#</a></h2>
+      <h3 id="g15">离线地图<a class="hdr-anchor" href="#g15" aria-label="本节永久链接" title="本节永久链接">#</a></h3>
       <p class="m-grp-sub">把地图瓦片预先下载到本机，没有网络时也能看地图</p>
       <p>瓦片缓存与「仅使用离线瓦片」开关；下载范围 = 当前所见那一屏，入口在地图菜单。</p>
       <div class="m-sub">
@@ -831,7 +860,7 @@
 
     <aside class="m-related reveal" aria-label="相关章节">
       <div class="mr-title">相关章节</div>
-      <div class="mr-links"><a href="start.html#wizard">首次启动：七步向导</a><a href="connections.html#rf">接电台：TNC / 音频 / PKWDWPL</a><a href="troubleshooting.html">故障排查</a></div>
+      <div class="mr-links"><a href="start.html#wizard">首次启动：七步向导</a><a href="connections.html#rf">接电台：TNC / 音频 / PKWDWPL / Icom</a><a href="troubleshooting.html">故障排查</a></div>
     </aside>
     </div>
   </div>

@@ -169,12 +169,13 @@
         <a href="#g6">Advanced</a>
         <a href="#g7">Devices</a>
         <a href="#g8">TNC device & parameters</a>
-        <a href="#g9">Audio (soundcard TNC)</a>
-        <a href="#g10">PKWDWPL device</a>
-        <a href="#g11">Translation settings</a>
-        <a href="#g12">Theme</a>
-        <a href="#g13">Backup & restore</a>
-        <a href="#g14">Offline maps</a>
+        <a href="#g9">WLAN Radio Direct Link</a>
+        <a href="#g10">Audio (soundcard TNC)</a>
+        <a href="#g11">PKWDWPL device</a>
+        <a href="#g12">Translation settings</a>
+        <a href="#g13">Theme</a>
+        <a href="#g14">Backup & restore</a>
+        <a href="#g15">Offline maps</a>
     </nav>
     <div class="manual-body">
   <section class="chapter reveal" id="g0">
@@ -216,7 +217,7 @@
 <tr><td><b>Power (W)</b></td><td><span class="m-kind">Text input</span></td><td class="m-def">—</td><td>Power, antenna height and gain share one PHG data extension: filling any of them encodes and sends all of them (the spec defines it as a single fixed 7-byte field). Power takes the largest step not exceeding the real value: 25 W reports 25, and so does 30 W, because over-reporting inflates your coverage circle. Antenna height is measured above average local terrain - a different quantity from the /A= altitude sent automatically above.</td></tr>
 <tr><td><b>Antenna height (ft)</b></td><td><span class="m-kind">Text input</span></td><td class="m-def">—</td><td>Power, antenna height and gain share one PHG data extension: filling any of them encodes and sends all of them (the spec defines it as a single fixed 7-byte field). Power takes the largest step not exceeding the real value: 25 W reports 25, and so does 30 W, because over-reporting inflates your coverage circle. Antenna height is measured above average local terrain - a different quantity from the /A= altitude sent automatically above.</td></tr>
 <tr><td><b>Gain (dB)</b></td><td><span class="m-kind">Text input</span></td><td class="m-def">—</td><td>Power, antenna height and gain share one PHG data extension: filling any of them encodes and sends all of them (the spec defines it as a single fixed 7-byte field). Power takes the largest step not exceeding the real value: 25 W reports 25, and so does 30 W, because over-reporting inflates your coverage circle. Antenna height is measured above average local terrain - a different quantity from the /A= altitude sent automatically above.</td></tr>
-<tr><td><b>Standalone status packet</b> <code class="m-field">aprsStatusText</code></td><td><span class="m-kind">Text input</span></td><td class="m-def">(empty)</td><td>This sends a standalone status packet (starts with `&gt;`, carries no coordinates, and does not move you on aprs.fi) - a different APRS packet type from the comment above. Left empty, the built-in APRSlocus online frame is sent instead.</td></tr>
+<tr><td><b>Standalone status packet</b> <code class="m-field">aprsStatusText</code></td><td><span class="m-kind">Text input</span></td><td class="m-def">(empty)</td><td>This sends a standalone status packet (starts with <code>&gt;</code>, carries no coordinates, and does not move you on aprs.fi) - a different APRS packet type from the comment above. Left empty, the built-in APRSlocus online frame is sent instead.</td></tr>
 </tbody></table></div>
       </div>
       <div class="m-sub">
@@ -275,7 +276,7 @@
 <tr><td><b>Trip distance</b> <code class="m-field">beaconIncludeTripMileage</code></td><td><span class="m-kind">Small switch</span></td><td class="m-def">off</td><td></td></tr>
 <tr><td><b>Total distance</b> <code class="m-field">beaconIncludeTotalMileage</code></td><td><span class="m-kind">Small switch</span></td><td class="m-def">off</td><td></td></tr>
 <tr><td><b>Steps</b> <code class="m-field">beaconIncludeSteps</code></td><td><span class="m-kind">Small switch</span></td><td class="m-def">off</td><td></td></tr>
-<tr><td><b>Today's steps</b></td><td><span class="m-kind">Read-only</span></td><td class="m-def">—</td><td>Steps come from the phone's step counter (hardware counting, more accurate than estimating from the accelerometer). They can be sent along with the beacon (`STEPS=`), so other APRSlocus users can see you in the activity leaderboard.</td></tr>
+<tr><td><b>Today's steps</b></td><td><span class="m-kind">Read-only</span></td><td class="m-def">—</td><td>Steps come from the phone's step counter (hardware counting, more accurate than estimating from the accelerometer). They can be sent along with the beacon (<code>STEPS=</code>), so other APRSlocus users can see you in the activity leaderboard.</td></tr>
 <tr><td><b>Grant activity permission</b></td><td><span class="m-kind">Button</span></td><td class="m-def">—</td><td></td></tr>
 <tr><td><b>Location status</b></td><td><span class="m-kind">Read-only</span></td><td class="m-def">—</td><td></td></tr>
 <tr><td><b>Beacons sent</b></td><td><span class="m-kind">Read-only</span></td><td class="m-def">—</td><td></td></tr>
@@ -313,12 +314,13 @@
       </div>
       <div class="m-sub">
         <h4>APRS-IS connection</h4>
-        <p class="m-grp-sub">Enable remote control in the radio WLAN settings, set the Network User name/password, and keep the phone on the same subnet. IC-705 LAN audio is fixed at 12000 Hz.</p>
+        <p class="m-grp-sub">Enable remote control in the radio WLAN settings, set the Network User name/password, and keep the phone on the same subnet. WLAN radio LAN audio is fixed at 12000 Hz.</p>
         <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>Setting</th><th>Control</th><th>Default</th><th>Description</th></tr></thead><tbody>
 <tr><td><b>Audio backend</b></td><td><span class="m-kind">Read-only</span></td><td class="m-def">—</td><td></td></tr>
 <tr><td><b>Sample rate</b></td><td><span class="m-kind">Read-only</span></td><td class="m-def">—</td><td></td></tr>
 <tr><td><b>Connection</b></td><td><span class="m-kind">Read-only</span></td><td class="m-def">—</td><td></td></tr>
 <tr><td><b>Allow RF beaconing</b></td><td><span class="m-kind">Read-only</span></td><td class="m-def">—</td><td>Audio mode does not use the server, filters or KISS settings</td></tr>
+<tr><td><b>WLAN Radio Direct Link<span class="m-opts">WLAN Radio Direct Link</span></b></td><td><span class="m-kind">Button</span></td><td class="m-def">—</td><td></td></tr>
 <tr><td><b>Audio (soundcard TNC)<span class="m-opts">Audio (soundcard TNC)</span></b></td><td><span class="m-kind">Button</span></td><td class="m-def">—</td><td></td></tr>
 </tbody></table></div>
       </div>
@@ -328,7 +330,7 @@
         <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>Setting</th><th>Control</th><th>Default</th><th>Description</th></tr></thead><tbody>
 <tr><td><b>Bound device</b></td><td><span class="m-kind">Read-only</span></td><td class="m-def">—</td><td></td></tr>
 <tr><td><b>Connection</b></td><td><span class="m-kind">Read-only</span></td><td class="m-def">—</td><td></td></tr>
-<tr><td><b>PKWDWPL (Kenwood waypoints)</b></td><td><span class="m-kind">Read-only</span></td><td class="m-def">—</td><td>PKWDWPL is a **receive-only** link: it brings in stations but never transmits (use APRS-IS / TNC / audio for transmitting)</td></tr>
+<tr><td><b>PKWDWPL (Kenwood waypoints)</b></td><td><span class="m-kind">Read-only</span></td><td class="m-def">—</td><td>PKWDWPL is a <b>receive-only</b> link: it brings in stations but never transmits (use APRS-IS / TNC / audio for transmitting)</td></tr>
 <tr><td><b>PKWDWPL device</b></td><td><span class="m-kind">Button</span></td><td class="m-def">—</td><td></td></tr>
 </tbody></table></div>
       </div>
@@ -444,7 +446,7 @@
     <h2 id="g7">Devices<a class="hdr-anchor" href="#g7" aria-label="Permalink to this section" title="Permalink to this section">#</a></h2>
       <h3 id="g7">Devices<a class="hdr-anchor" href="#g7" aria-label="Permalink to this section" title="Permalink to this section">#</a></h3>
       <p class="m-grp-sub">Data source, link status and self-test</p>
-      <p>Device overview = current link, gateway status, the three sub-pages (TNC / audio / PKWDWPL) plus link self-test and logs.</p>
+      <p>Device overview = current link, gateway status, the four sub-pages (TNC / WLAN radio / audio / PKWDWPL) plus link self-test and logs.</p>
       <div class="m-sub">
         <h4>Gateway (iGate)</h4>
         <p class="m-grp-sub">Relay packets heard on RF into APRS-IS</p>
@@ -469,6 +471,7 @@
         <p class="m-grp-sub">One sub-page per link, each with its own settings</p>
         <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>Setting</th><th>Control</th><th>Default</th><th>Description</th></tr></thead><tbody>
 <tr><td><b>TNC device &amp; parameters</b></td><td><span class="m-kind">Choice card</span></td><td class="m-def">—</td><td>Bluetooth/serial binding, init string, KISS parameters and TX self-test</td></tr>
+<tr><td><b>WLAN Radio Direct Link</b> <code class="m-field">source</code></td><td><span class="m-kind">Choice card</span></td><td class="m-def"><code>AudioSource.device</code></td><td>Connected</td></tr>
 <tr><td><b>Audio (soundcard TNC)</b></td><td><span class="m-kind">Choice card</span></td><td class="m-def">—</td><td>Send and receive AFSK 1200 packets with your soundcard</td></tr>
 <tr><td><b>PKWDWPL device</b></td><td><span class="m-kind">Choice card</span></td><td class="m-def">—</td><td>Bind the radio port and check waypoint reception</td></tr>
 <tr><td><b>APRSlocusBOX</b> <code class="m-field">connected</code></td><td><span class="m-kind">Choice card</span></td><td class="m-def">off</td><td>Connected</td></tr>
@@ -546,25 +549,51 @@
       </div>
   </section>
   <section class="chapter reveal" id="g9">
-    <h2 id="g9">Audio (soundcard TNC)<a class="hdr-anchor" href="#g9" aria-label="Permalink to this section" title="Permalink to this section">#</a></h2>
-      <h3 id="g9">Audio (soundcard TNC)<a class="hdr-anchor" href="#g9" aria-label="Permalink to this section" title="Permalink to this section">#</a></h3>
+    <h2 id="g9">WLAN Radio Direct Link<a class="hdr-anchor" href="#g9" aria-label="Permalink to this section" title="Permalink to this section">#</a></h2>
+      <h3 id="g9">WLAN Radio Direct Link<a class="hdr-anchor" href="#g9" aria-label="Permalink to this section" title="Permalink to this section">#</a></h3>
+      <p class="m-grp-sub">局域网直连 Icom 电台（IC-705 / IC-9700 / IC-7610 / IC-905），收发 12 kHz PCM 音频与 CI-V 控制</p>
+      <p>Direct LAN link to Icom radios (IC-705 / IC-9700 / IC-7610 / IC-905 etc.): radio IP/control port, Network User auth, CI-V address and TX Delay, 12 kHz PCM audio streaming.</p>
+      <div class="m-sub">
+        <h4>电台链路状态</h4>
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>Setting</th><th>Control</th><th>Default</th><th>Description</th></tr></thead><tbody>
+<tr><td><b>Enable WLAN radio LAN link</b></td><td><span class="m-kind">Switch</span></td><td class="m-def">—</td><td>开启后，APRS 音频收发数据源将直接绑定至 $… 局域网直连</td></tr>
+<tr><td><b>射频收发统计</b></td><td><span class="m-kind">Read-only</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>音频采样率</b></td><td><span class="m-kind">Read-only</span></td><td class="m-def">—</td><td></td></tr>
+</tbody></table></div>
+      </div>
+      <div class="m-sub">
+        <h4>电台网络参数</h4>
+        <p class="m-grp-sub">选择电台型号预置并配置 IP 与 Network User 凭据</p>
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>Setting</th><th>Control</th><th>Default</th><th>Description</th></tr></thead><tbody>
+<tr><td><b>Radio IP</b></td><td><span class="m-kind">Text input</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>Control port</b></td><td><span class="m-kind">Text input</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>Username (Network User)</b></td><td><span class="m-kind">Text input</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>Password (Network User)</b></td><td><span class="m-kind">Text input</span></td><td class="m-def">—</td><td>提示：用户名和密码必须与电台内部 Network User Setting 完全一致。</td></tr>
+</tbody></table></div>
+      </div>
+      <div class="m-sub">
+        <h4>CI-V 控制与发射设置</h4>
+        <p class="m-grp-sub">PTT 自动控制、前导延时与信标参数</p>
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>Setting</th><th>Control</th><th>Default</th><th>Description</th></tr></thead><tbody>
+<tr><td><b>Allow RF beaconing</b> <code class="m-field">rfBeacon</code></td><td><span class="m-kind">Switch</span></td><td class="m-def">off</td><td>是否允许通过电台射频自动周期发射信标（半双工，发射时自动静默监听）。</td></tr>
+<tr><td><b>发射前导延迟 (TX Delay, ms)</b> <code class="m-field">txDelayMs</code></td><td><span class="m-kind">Text input</span></td><td class="m-def"><code>300</code></td><td></td></tr>
+<tr><td><b>电台 CI-V 地址 (十六进制)</b></td><td><span class="m-kind">Text input</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>控制器地址</b></td><td><span class="m-kind">Read-only</span></td><td class="m-def">—</td><td></td></tr>
+</tbody></table></div>
+      </div>
+      <div class="m-sub">
+        <h4>电台设置指引</h4>
+        <p class="m-grp-sub">在 Icom 电台上的必要准备步骤</p>
+      </div>
+  </section>
+  <section class="chapter reveal" id="g10">
+    <h2 id="g10">Audio (soundcard TNC)<a class="hdr-anchor" href="#g10" aria-label="Permalink to this section" title="Permalink to this section">#</a></h2>
+      <h3 id="g10">Audio (soundcard TNC)<a class="hdr-anchor" href="#g10" aria-label="Permalink to this section" title="Permalink to this section">#</a></h3>
       <p class="m-grp-sub">Send and receive AFSK 1200 packets with your soundcard</p>
       <p>Use the sound card as a TNC: sample rate/baud/tone, TX level and CSMA wait, plus WAV file mode (decode a recording offline).</p>
       <div class="m-sub">
         <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>Setting</th><th>Control</th><th>Default</th><th>Description</th></tr></thead><tbody>
 <tr><td><b>Playback device</b></td><td><span class="m-kind">Entry</span></td><td class="m-def">—</td><td>To enable or switch data sources (links), go to Settings → Devices</td></tr>
-</tbody></table></div>
-      </div>
-      <div class="m-sub">
-        <h4>WLAN 电台（$…）</h4>
-        <p class="m-grp-sub">Enable remote control in the radio WLAN settings, set the Network User name/password, and keep the phone on the same subnet. IC-705 LAN audio is fixed at 12000 Hz.</p>
-        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>Setting</th><th>Control</th><th>Default</th><th>Description</th></tr></thead><tbody>
-<tr><td><b>Enable IC-705 LAN link</b></td><td><span class="m-kind">Switch</span></td><td class="m-def">—</td><td></td></tr>
-<tr><td><b>Radio IP</b></td><td><span class="m-kind">Text input</span></td><td class="m-def">—</td><td></td></tr>
-<tr><td><b>Control port</b></td><td><span class="m-kind">Text input</span></td><td class="m-def">—</td><td></td></tr>
-<tr><td><b>Username (Network User)</b></td><td><span class="m-kind">Text input</span></td><td class="m-def">—</td><td></td></tr>
-<tr><td><b>Password (Network User)</b></td><td><span class="m-kind">Text input</span></td><td class="m-def">—</td><td></td></tr>
-<tr><td><b>Audio backend</b></td><td><span class="m-kind">Read-only</span></td><td class="m-def">—</td><td></td></tr>
 </tbody></table></div>
       </div>
       <div class="m-sub">
@@ -620,9 +649,9 @@
         <div class="callout info"><span class="co-ic">ℹ️</span><div><p>No log entries yet</p></div></div>
       </div>
   </section>
-  <section class="chapter reveal" id="g10">
-    <h2 id="g10">PKWDWPL device<a class="hdr-anchor" href="#g10" aria-label="Permalink to this section" title="Permalink to this section">#</a></h2>
-      <h3 id="g10">PKWDWPL device<a class="hdr-anchor" href="#g10" aria-label="Permalink to this section" title="Permalink to this section">#</a></h3>
+  <section class="chapter reveal" id="g11">
+    <h2 id="g11">PKWDWPL device<a class="hdr-anchor" href="#g11" aria-label="Permalink to this section" title="Permalink to this section">#</a></h2>
+      <h3 id="g11">PKWDWPL device<a class="hdr-anchor" href="#g11" aria-label="Permalink to this section" title="Permalink to this section">#</a></h3>
       <p class="m-grp-sub">Bind the radio port and check waypoint reception</p>
       <p>Read-only Kenwood waypoint link: binding and status, waypoint counters, strict checksum (off by default — mismatches are flagged, not dropped).</p>
       <div class="m-sub">
@@ -651,9 +680,9 @@
 </tbody></table></div>
       </div>
   </section>
-  <section class="chapter reveal" id="g11">
-    <h2 id="g11">Translation settings<a class="hdr-anchor" href="#g11" aria-label="Permalink to this section" title="Permalink to this section">#</a></h2>
-      <h3 id="g11">Translation settings<a class="hdr-anchor" href="#g11" aria-label="Permalink to this section" title="Permalink to this section">#</a></h3>
+  <section class="chapter reveal" id="g12">
+    <h2 id="g12">Translation settings<a class="hdr-anchor" href="#g12" aria-label="Permalink to this section" title="Permalink to this section">#</a></h2>
+      <h3 id="g12">Translation settings<a class="hdr-anchor" href="#g12" aria-label="Permalink to this section" title="Permalink to this section">#</a></h3>
       <p class="m-grp-sub">Provider, languages and auto-translate</p>
       <p>Target language, engine (auto, no key needed), per-engine keys and instance URLs, test translation.</p>
       <div class="m-sub">
@@ -690,9 +719,9 @@
 </tbody></table></div>
       </div>
   </section>
-  <section class="chapter reveal" id="g12">
-    <h2 id="g12">Theme<a class="hdr-anchor" href="#g12" aria-label="Permalink to this section" title="Permalink to this section">#</a></h2>
-      <h3 id="g12">Theme<a class="hdr-anchor" href="#g12" aria-label="Permalink to this section" title="Permalink to this section">#</a></h3>
+  <section class="chapter reveal" id="g13">
+    <h2 id="g13">Theme<a class="hdr-anchor" href="#g13" aria-label="Permalink to this section" title="Permalink to this section">#</a></h2>
+      <h3 id="g13">Theme<a class="hdr-anchor" href="#g13" aria-label="Permalink to this section" title="Permalink to this section">#</a></h3>
       <p class="m-grp-sub">Make the colours, icons and common labels your own</p>
       <p>Four blocks — colours, icons, text, background — exportable as JSON to share; preset skins switch in one tap.</p>
       <div class="m-sub">
@@ -778,9 +807,9 @@
         <div class="callout info"><span class="co-ic">ℹ️</span><div><p>Presets cannot be edited — copy one to your themes first</p></div></div>
       </div>
   </section>
-  <section class="chapter reveal" id="g13">
-    <h2 id="g13">Backup &amp; restore<a class="hdr-anchor" href="#g13" aria-label="Permalink to this section" title="Permalink to this section">#</a></h2>
-      <h3 id="g13">Backup &amp; restore<a class="hdr-anchor" href="#g13" aria-label="Permalink to this section" title="Permalink to this section">#</a></h3>
+  <section class="chapter reveal" id="g14">
+    <h2 id="g14">Backup &amp; restore<a class="hdr-anchor" href="#g14" aria-label="Permalink to this section" title="Permalink to this section">#</a></h2>
+      <h3 id="g14">Backup &amp; restore<a class="hdr-anchor" href="#g14" aria-label="Permalink to this section" title="Permalink to this section">#</a></h3>
       <p class="m-grp-sub">Export or import settings and data</p>
       <p>One JSON holds settings and data; whitelisted import stops a foreign file from rewriting your config; restart after importing.</p>
       <div class="m-sub">
@@ -809,9 +838,9 @@
 </tbody></table></div>
       </div>
   </section>
-  <section class="chapter reveal" id="g14">
-    <h2 id="g14">Offline maps<a class="hdr-anchor" href="#g14" aria-label="Permalink to this section" title="Permalink to this section">#</a></h2>
-      <h3 id="g14">Offline maps<a class="hdr-anchor" href="#g14" aria-label="Permalink to this section" title="Permalink to this section">#</a></h3>
+  <section class="chapter reveal" id="g15">
+    <h2 id="g15">Offline maps<a class="hdr-anchor" href="#g15" aria-label="Permalink to this section" title="Permalink to this section">#</a></h2>
+      <h3 id="g15">Offline maps<a class="hdr-anchor" href="#g15" aria-label="Permalink to this section" title="Permalink to this section">#</a></h3>
       <p class="m-grp-sub">Download map tiles ahead of time so the map works without a network</p>
       <p>Tile cache plus the “offline tiles only” switch; the download area is exactly what you see on screen, entered from the map menu.</p>
       <div class="m-sub">
@@ -831,7 +860,7 @@
 
     <aside class="m-related reveal" aria-label="Related sections">
       <div class="mr-title">Related sections</div>
-      <div class="mr-links"><a href="start.html#wizard">First launch: seven steps</a><a href="connections.html#rf">Into a radio: TNC / audio / PKWDWPL</a><a href="troubleshooting.html">Troubleshooting</a></div>
+      <div class="mr-links"><a href="start.html#wizard">First launch: seven steps</a><a href="connections.html#rf">Into a radio: TNC / audio / PKWDWPL / Icom</a><a href="troubleshooting.html">Troubleshooting</a></div>
     </aside>
     </div>
   </div>

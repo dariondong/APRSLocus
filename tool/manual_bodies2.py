@@ -59,9 +59,9 @@ SETTINGS_INTRO = {
         'To read it on demand, use the <b>Announcements</b> button at the very bottom of the '
         'settings home screen — it is always available and shows the same content.'),
     '设备': T(
-        '设备总览 = 当前链路 + 网关状态 + 三个子页入口（TNC / 音频 / PKWDWPL）+ 链路自检与日志。',
-        '裝置總覽 = 當前鏈路 + 網關狀態 + 三個子頁入口（TNC / 音訊 / PKWDWPL）+ 鏈路自檢與日誌。',
-        'Device overview = current link, gateway status, the three sub-pages (TNC / audio / PKWDWPL) '
+        '设备总览 = 当前链路 + 网关状态 + 四个子页入口（TNC / WLAN 电台 / 音频 / PKWDWPL）+ 链路自检与日志。',
+        '裝置總覽 = 當前鏈路 + 網關狀態 + 四個子頁入口（TNC / WLAN 電台 / 音訊 / PKWDWPL）+ 鏈路自檢與日誌。',
+        'Device overview = current link, gateway status, the four sub-pages (TNC / WLAN radio / audio / PKWDWPL) '
         'plus link self-test and logs.'),
     '数据': T(
         '只读统计与破坏性操作分开摆：清聊天记录是单独按钮，「清除所有数据」会二次确认。',
@@ -77,6 +77,13 @@ SETTINGS_INTRO = {
         '接藍牙/USB TNC 的全部參數：綁定、初始化字串、線速、KISS 定時參數、中繼路徑、發射自檢。',
         'Everything for a Bluetooth/USB TNC: binding, init string, baud, KISS timing, digipeat path '
         'and the TX self-test.'),
+    'WLAN 电台直连': T(
+        '局域网直连 Icom 电台（IC-705 / IC-9700 / IC-7610 / IC-905 等）：电台 IP/控制端口、'
+        'Network User 认证、CI-V 地址与导前延时（TX Delay）、收发 12 kHz PCM 音频。',
+        '區域網路直連 Icom 電台（IC-705 / IC-9700 / IC-7610 / IC-905 等）：電台 IP/控制埠、'
+        'Network User 認證、CI-V 位址與導前延時（TX Delay）、收發 12 kHz PCM 音訊。',
+        'Direct LAN link to Icom radios (IC-705 / IC-9700 / IC-7610 / IC-905 etc.): radio IP/control port, '
+        'Network User auth, CI-V address and TX Delay, 12 kHz PCM audio streaming.'),
     '音频（声卡 TNC）': T(
         '把声卡当 TNC：采样率/比特率/音调、发射电平与 CSMA 等待、WAV 文件模式（离线解码录音）。',
         '把音效卡當 TNC：取樣率/鮑率/音調、發射電平與 CSMA 等待、WAV 檔案模式（離線解碼錄音）。',
