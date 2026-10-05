@@ -68,6 +68,9 @@ class LifeGuardPage extends StatelessWidget {
             // 「向附近台站求助」的口径也在这里说清 —— 它是告警的一部分，
             // 但用户最容易误以为「会自动广播」，必须在配置之前就写明。
             SettingsHint(s.lifeGuardNearbyNote, color: C.orange),
+            // issue #32「强提醒」：告诉用户告警走的是高优先级系统通知，
+            // 以及需要他确认的系统侧条件（通知权限 / 免打扰）。
+            SettingsHint(s.lifeGuardStrongHint, color: C.blue),
           ],
         ),
         const SizedBox(height: 16),
@@ -255,7 +258,53 @@ class _CrashCard extends StatelessWidget {
             value: st.crashDetectEnabled,
             color: C.orange,
             onChanged: st.setCrashDetectEnabled),
+        // 灵敏度（issue #32）：固定阈值无法同时适配「放裤兜里骑车」与「固定在车把上」，
+        // 所以给三档。只在开启时显示 —— 关着的时候调它没有意义。
+        if (st.crashDetectEnabled)
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(s.crashSensitivity, style: ts(12, c: C.slate)),
+                const SizedBox(height: 6),
+                SizedBox(
+                  width: double.infinity,
+                  child: SegmentedButton<String>(
+                    segments: [
+                      ButtonSegment(
+                          value: 'gentle', label: Text(s.crashSensGentle)),
+                      ButtonSegment(
+                          value: 'standard',
+                          label: Text(s.crashSensStandard)),
+                      ButtonSegment(
+                          value: 'firm', label: Text(s.crashSensFirm)),
+                    ],
+                    selected: {st.crashSensitivity},
+                    onSelectionChanged: (v) => st.setCrashSensitivity(v.first),
+                    style: ButtonStyle(
+                      visualDensity: VisualDensity.compact,
+                      textStyle:
+                          WidgetStatePropertyAll(ts(11, w: FontWeight.w600)),
+                      foregroundColor: WidgetStateProperty.resolveWith((sel) =>
+                          sel.contains(WidgetState.selected)
+                              ? Colors.white
+                              : C.orange),
+                      backgroundColor: WidgetStateProperty.resolveWith((sel) =>
+                          sel.contains(WidgetState.selected)
+                              ? C.orange
+                              : Colors.transparent),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 6),
+                Text(s.crashSensHint, style: ts(11, c: C.grey, h: 1.4)),
+              ],
+            ),
+          ),
         SettingsHint(s.crashHowItWorks, color: C.grey),
+        // issue #32：讲清「摔倒 vs 碰撞」的新判据（自由落体段）。
+        SettingsHint(s.crashKindHint, color: C.grey),
         // 没有加速度计：开关照旧可以点，但要如实说「这台设备检测不了」
         if (!st.hasCrashSensor && st.crashDetectEnabled)
           SettingsHint(s.crashNoSensor, color: C.orange),

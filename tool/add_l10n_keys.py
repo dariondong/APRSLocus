@@ -169,6 +169,131 @@ KEYS = {
         '_armeabi-v7a untuk perangkat 32-bit lama; _x86_64 hanya untuk emulator / Chromebook. '
         'Ketuk satu baris untuk membuka tautan unduhan paket itu.',
     ),
+    # ── 生命守护增强（issue #32：强化生命守护 + 优化生命守护算法）──
+    #
+    # 「强提醒」：说明碰撞/摔倒与心率异常会发**高优先级**通知（响铃/震动/横幅），
+    # 因为弹窗在手机放兜里时看不见。
+    'lifeGuardStrongHint': (
+        '告警会通过**高优先级系统通知**提醒（响铃 / 震动 / 锁屏横幅），不只是应用内弹窗 —— '
+        '手机放在兜里或没看屏幕时，弹窗是看不见的。请确保系统允许本应用通知，并关闭该通知渠道的免打扰。',
+        '告警會透過**高優先級系統通知**提醒（響鈴 / 震動 / 鎖屏橫幅），不只是應用程式內彈窗 —— '
+        '手機放在口袋或沒看螢幕時，彈窗是看不見的。請確認系統允許本應用程式通知，並關閉該通知管道的勿擾。',
+        'Alarms also fire a **high-priority system notification** (sound / vibration / '
+        'lock-screen banner), not just an in-app dialog — a dialog is invisible with the phone in '
+        'your pocket. Please allow notifications for this app and keep this channel out of Do Not Disturb.',
+        'アラームは**優先度の高いシステム通知**（音 / 振動 / ロック画面バナー）でも鳴ります。'
+        'アプリ内ダイアログだけでは、ポケットの中や画面を見ていないときに気づけません。'
+        '本アプリの通知を許可し、このチャンネルをサイレントにしないでください。',
+        'Las alarmas también emiten una **notificación de sistema de alta prioridad** '
+        '(sonido / vibración / aviso en pantalla de bloqueo), no solo un diálogo dentro de la app: '
+        'un diálogo es invisible con el teléfono en el bolsillo. Permite las notificaciones de la '
+        'app y mantén este canal fuera de No molestar.',
+        'Alarm juga memicu **notifikasi sistem prioritas tinggi** (bunyi / getar / spanduk layar '
+        'kunci), bukan sekadar dialog dalam aplikasi — dialog tidak terlihat saat ponsel di saku. '
+        'Izinkan notifikasi untuk aplikasi ini dan jangan masukkan kanal ini ke Jangan Ganggu.',
+    ),
+    # 灵敏度的档位标签与说明。
+    'crashSensitivity': (
+        '检测灵敏度', '偵測靈敏度', 'Detection sensitivity',
+        '検出感度', 'Sensibilidad de detección', 'Sensitivitas deteksi',
+    ),
+    'crashSensGentle': (
+        '灵敏', '靈敏', 'Sensitive',
+        '敏感', 'Sensible', 'Peka',
+    ),
+    'crashSensStandard': (
+        '标准', '標準', 'Standard',
+        '標準', 'Estándar', 'Standar',
+    ),
+    'crashSensFirm': (
+        '抗颠簸', '抗顛簸', 'Firm',
+        '振動に強い', 'Firme', 'Kuat',
+    ),
+    'crashSensHint': (
+        '阈值固定不了：手机放裤兜里骑车，正常颠簸就能越过灵敏档；固定在车把上就该用抗颠簸档，'
+        '否则一路都在误报。默认「标准」。灵敏度只影响**检测**（哪个撞击算数），不影响后续的告警动作。',
+        '閾值固定不了：手機放褲袋騎車，正常顛簸就能越過靈敏檔；固定在車把上就該用抗顛簸檔，'
+        '否則一路都在誤報。預設「標準」。靈敏度只影響**偵測**（哪個撞擊算數），不影響後續的告警動作。',
+        'A fixed threshold cannot fit everyone: a phone in a cycling pocket trips the sensitive '
+        'setting on every bump, while a bar-mounted phone needs the firm setting or it false-alarms '
+        'the whole ride. Default is Standard. Sensitivity only affects **detection** (which impact '
+        'counts), not what the alarm does afterwards.',
+        '固定のしきい値では合いません。ポケットのスマホは敏感だと段差ごとに反応し、'
+        'ハンドル固定なら「振動に強い」にしないと走行中ずっと誤報します。既定は「標準」。'
+        '感度は**検出**（どの衝撃を数えるか）だけに効き、その後の動作には影響しません。',
+        'Un umbral fijo no sirve para todos: un teléfono en el bolsillo dispara el ajuste sensible '
+        'con cada bache, mientras que uno fijado al manillar necesita el ajuste firme o dará falsas '
+        'alarmas todo el trayecto. Por defecto: Estándar. La sensibilidad solo afecta a la '
+        '**detección** (qué impacto cuenta), no a lo que hace la alarma después.',
+        'Ambang tetap tidak cocok untuk semua: ponsel di saku memicu setelan peka pada setiap '
+        'guncangan, sedangkan ponsel terpasang di setang perlu setelan kuat agar tidak salah alarm '
+        'sepanjang perjalanan. Bawaan: Standar. Sensitivitas hanya memengaruhi **deteksi** '
+        '(benturan mana yang dihitung), bukan tindakan alarm setelahnya.',
+    ),
+    # 摔倒的告警标题/正文（与碰撞区分：冲击前有自由落体）。
+    'crashFallAlarmTitle': (
+        '检测到疑似摔倒', '偵測到疑似摔倒', 'Possible fall detected',
+        '転倒の可能性を検知', 'Posible caída detectada', 'Kemungkinan terjatuh terdeteksi',
+    ),
+    'crashFallAlarmBody': (
+        '手机先自由落体、随后一次落地冲击，再之后一直没有明显移动（约 12 秒）—— 这是摔倒的典型加速度特征。\n\n'
+        '如果你没事，按「我没事」即可；如果身体不适或无法行动，请立即拨打急救电话，或向附近 100 公里内的台站发出求助信息。\n\n'
+        '**这是启发式判断，不是工程级检测**：手机从口袋/手里掉到地上也可能满足。',
+        '手機先自由落體、隨後一次落地衝擊，再之後一直沒有明顯移動（約 12 秒）—— 這是摔倒的典型加速度特徵。\n\n'
+        '如果你沒事，按「我沒事」即可；如果身體不適或無法行動，請立即撥打急救電話，或向附近 100 公里內的臺站發出求助訊息。\n\n'
+        '**這是啟發式判斷，不是工程級偵測**：手機從口袋/手裡掉到地上也可能滿足。',
+        'The phone free-fell, then took a landing impact, then stayed still for about 12 seconds — '
+        'the classic acceleration signature of a fall.\n\nIf you are fine, tap "I\'m OK"; if you are '
+        'unwell or cannot move, call emergency services now or send a help message to stations '
+        'within 100 km.\n\n**This is a heuristic, not engineering-grade detection**: dropping the '
+        'phone from a pocket or hand can also match it.',
+        'スマホが自由落下したあとに着地衝撃、その後に約 12 秒間ほとんど動かない —— '
+        '転倒に典型的な加速度パターンです。\n\n問題なければ「大丈夫」を押してください。体調が悪い、'
+        'または動けない場合は、すぐに救急へ電話するか、100 km 以内の局へ救助メッセージを送ってください。\n\n'
+        '**これはヒューリスティックであり、工学レベルの検出ではありません**：ポケットや手から'
+        '落としただけでも該当します。',
+        'El teléfono cayó libremente, luego sufrió un impacto de aterrizaje y después estuvo quieto '
+        'unos 12 segundos: la firma de aceleración típica de una caída.\n\nSi estás bien, pulsa '
+        '"Estoy bien"; si te encuentras mal o no puedes moverte, llama ahora a emergencias o envía '
+        'un mensaje de ayuda a las estaciones a menos de 100 km.\n\n**Es una heurística, no una '
+        'detección de nivel ingenieril**: dejarse caer el teléfono desde el bolsillo o la mano '
+        'también puede cumplirla.',
+        'Ponsel jatuh bebas, lalu menerima benturan saat mendarat, lalu tidak bergerak sekitar 12 '
+        'detik — pola akselerasi khas terjatuh.\n\nJika Anda baik-baik saja, ketuk "Saya baik"; '
+        'jika Anda tidak enak badan atau tidak bisa bergerak, segera hubungi layanan darurat atau '
+        'kirim pesan bantuan ke stasiun dalam 100 km.\n\n**Ini heuristik, bukan deteksi sekelas '
+        'rekayasa**: ponsel yang terlepas dari saku atau tangan juga bisa memicunya.',
+    ),
+    # 算法增强说明（issue #32）：把「摔倒 vs 碰撞」的判据讲清，并点明新增的自由落体段。
+    'crashKindHint': (
+        '现在会顺便区分**碰撞**与**摔倒**：摔倒几乎总是先有一段自由落体（模接近 0），'
+        '再是落地冲击；车祸撞击没有那一段。所以在原有「冲击 + 随后静止」之外，'
+        '再看冲击前有没有自由落体 —— 有就按「摔倒」提醒，没有就按「碰撞」。'
+        '这只改**提示文字与图标**，两类的处理方式完全一样（都是我没事 / 打电话 / 求助）。',
+        '現在會順便區分**碰撞**與**摔倒**：摔倒幾乎總是先有一段自由落體（模接近 0），'
+        '再是落地衝擊；車禍撞擊沒有那一段。所以在原有「衝擊 + 隨後靜止」之外，'
+        '再看衝擊前有沒有自由落體 —— 有就按「摔倒」提醒，沒有就按「碰撞」。'
+        '這只改**提示文字與圖示**，兩類的處理方式完全一樣（都是我沒事 / 打電話 / 求助）。',
+        'It now also tells **crashes** and **falls** apart: a fall almost always starts with a '
+        'brief free fall (magnitude near 0) before the landing impact, whereas a vehicle crash does '
+        'not. So beyond the existing "impact + then still", it also checks for a free fall just '
+        'before the impact — present means a fall, absent means a crash. This only changes the '
+        '**wording and icon**; both are handled exactly the same (I\'m OK / call / ask for help).',
+        '**衝突**と**転倒**も見分けます。転倒は着地衝撃の前にほぼ必ず自由落下（大きさが 0 付近）が'
+        'あり、車の衝突にはそれがありません。従来の「衝撃 + その後の静止」に加えて、'
+        '衝撃の直前に自由落下があったかを見ます（あれば転倒、なければ衝突）。'
+        '変わるのは**文言とアイコン**だけで、対応はどちらも同じ（大丈夫 / 電話 / 救援要請）です。',
+        'Ahora también distingue **choques** de **caídas**: una caída casi siempre empieza con una '
+        'breve caída libre (magnitud cerca de 0) antes del impacto, mientras que un choque de '
+        'vehículo no. Así, además del "impacto + luego quieto", comprueba si hubo caída libre justo '
+        'antes del impacto: si la hay, es caída; si no, choque. Solo cambia el **texto y el icono**; '
+        'ambos se tratan igual (Estoy bien / llamar / pedir ayuda).',
+        'Kini juga membedakan **benturan** dan **terjatuh**: terjatuh hampir selalu dimulai dengan '
+        'jatuh bebas singkat (magnitudo mendekati 0) sebelum benturan mendarat, sedangkan benturan '
+        'kendaraan tidak. Jadi selain "benturan + lalu diam", sistem juga memeriksa apakah ada jatuh '
+        'bebas tepat sebelum benturan — ada berarti terjatuh, tidak ada berarti benturan. Ini hanya '
+        'mengubah **teks dan ikon**; keduanya ditangani sama (Saya baik / telepon / minta bantuan).',
+    ),
 }
 
 # ── 占位符声明（可空）──

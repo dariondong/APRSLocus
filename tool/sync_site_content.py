@@ -204,6 +204,65 @@ CARDS = [
 # 只列「重点版本」：中间几十个纯修 bug 的版本归纳进文字说明，完整记录指向 Releases。
 CL = [
     {
+        'ver': 'v2.0.28', 'date': '2026-10-03',
+        'items': [
+            ('new',
+             T('**生命守护「强提醒」**：碰撞 / 摔倒、心率异常触发时，除了应用内弹窗，'
+               '还会发一条**高优先级系统通知**（响铃 + 震动 + 锁屏/抬头横幅）。此前告警只挂在'
+               '那条安静（`IMPORTANCE_LOW`）的常驻通知上，系统不为它震动也不弹横幅 —— '
+               '手机放兜里（摔倒或开车时最常见的状态）根本察觉不到。强提醒走**单独**的高优先级'
+               '通道；Android 需要 `VIBRATE` 权限（已加）。',
+               '**生命守護「強提醒」**：碰撞 / 摔倒、心率異常觸發時，除了應用程式內彈窗，'
+               '還會發一條**高優先級系統通知**（響鈴 + 震動 + 鎖屏/抬頭橫幅）。此前告警只掛在'
+               '那條安靜（`IMPORTANCE_LOW`）的常駐通知上，系統不為它震動也不彈橫幅 —— '
+               '手機放口袋（摔倒或開車時最常見的狀態）根本察覺不到。強提醒走**單獨**的高優先級'
+               '通道；Android 需要 `VIBRATE` 權限（已加）。',
+               '**Life-guard "strong reminder"**: when a crash/fall or an abnormal heart rate '
+               'fires, besides the in-app dialog the app now posts a **high-priority system '
+               'notification** (sound + vibration + lock-screen/heads-up banner). Previously '
+               'alarms only went to the quiet (`IMPORTANCE_LOW`) persistent notification, which '
+               'the system neither vibrates nor banners for — so with the phone in a pocket (the '
+               'usual state during a fall or while driving) it was not noticed at all. The strong '
+               'reminder uses its **own** high-priority channel; Android needs the `VIBRATE` '
+               'permission (added).')),
+            ('up',
+             T('**碰撞 / 摔倒检测算法优化**：在原有「冲击 + 随后约 12 秒静止」之外，再看冲击前'
+               '有没有**自由落体**（加速度模 ≤ 0.35 g 持续 ≥ 80 毫秒）—— 摔倒几乎总是先自由'
+               '落体再落地冲击，车祸撞击则没有那一段。据此把告警区分为**摔倒**与**碰撞**，'
+               '标题、图标与说明文字随之变化。两类告警的**处理方式完全一样**，这只是把判断'
+               '说得更准；仍然是启发式，弹窗里照旧写明「不是工程级检测」。',
+               '**碰撞 / 摔倒偵測演算法優化**：在原有「衝擊 + 隨後約 12 秒靜止」之外，再看衝擊前'
+               '有沒有**自由落體**（加速度模 ≤ 0.35 g 持續 ≥ 80 毫秒）—— 摔倒幾乎總是先自由'
+               '落體再落地衝擊，車禍撞擊則沒有那一段。據此把告警區分為**摔倒**與**碰撞**，'
+               '標題、圖示與說明文字隨之變化。兩類告警的**處理方式完全一樣**，這只是把判斷'
+               '說得更準；仍然是啟發式，彈窗裡照舊寫明「不是工程級偵測」。',
+               '**Better crash/fall detection algorithm**: on top of the existing "impact + then '
+               '~12 s of stillness", it now also looks for a **free fall** just before the impact '
+               '(acceleration magnitude ≤ 0.35 g for ≥ 80 ms) — a fall almost always starts with a '
+               'free fall before the landing impact, whereas a vehicle crash does not. Alarms are '
+               'therefore split into **fall** and **crash**, changing the title, icon and '
+               'explanatory text. Both kinds are **handled exactly the same**; this only makes the '
+               'wording more accurate. It is still a heuristic, and the dialog still says so '
+               '("not engineering-grade detection").')),
+            ('new',
+             T('**检测灵敏度三档**：设置 → 生命守护新增「灵敏 / 标准 / 抗颠簸」。原来阈值写死，'
+               '适配不了不同携带方式 —— 手机放裤兜里骑车，正常颠簸就能越过阈值；固定在车把上'
+               '又一路误报。灵敏度只影响**检测**（哪个撞击算数），不影响告警动作；随备份一起走。'
+               '同时 **iOS 补齐**了本地通知与同款碰撞/摔倒检测。',
+               '**偵測靈敏度三檔**：設定 → 生命守護新增「靈敏 / 標準 / 抗顛簸」。原來閾值寫死，'
+               '適配不了不同攜帶方式 —— 手機放褲袋騎車，正常顛簸就能越過閾值；固定在車把上'
+               '又一路誤報。靈敏度只影響**偵測**（哪個撞擊算數），不影響告警動作；隨備份一起走。'
+               '同時 **iOS 補齊**了本機通知與同款碰撞/摔倒偵測。',
+               '**Three detection-sensitivity levels**: Settings → Life Guard now offers Sensitive '
+               '/ Standard / Firm. The threshold used to be hard-coded, which cannot fit every way '
+               'of carrying the phone — in a cycling pocket an ordinary bump crosses it, while a '
+               'bar-mounted phone then false-alarms the whole ride. Sensitivity only affects '
+               '**detection** (which impact counts), not what the alarm does; it travels with '
+               'backups. **iOS parity** was added too: local notifications and the same '
+               'crash/fall detection.')),
+        ],
+    },
+    {
         'ver': 'v2.0.27', 'date': '2026-10-05',
         'items': [
             ('fix',

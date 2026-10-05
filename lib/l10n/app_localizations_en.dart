@@ -7874,4 +7874,40 @@ By tapping "Agree and connect" you confirm that you have read, understood, and a
     return "Create the group and invite $n member(s)?";
   }
 
+  @override
+  String get choosePackage => "Choose a package";
+
+  @override
+  String get pkgRecommended => "Recommended";
+
+  @override
+  String get choosePackageHint => "The 64-bit package covers almost every phone (this is what the in-app update fetches); _armeabi-v7a is for older 32-bit devices; _x86_64 is only for emulators / Chromebooks. Tapping a row opens that package's download URL.";
+
+  @override
+  String get lifeGuardStrongHint => "Alarms also fire a **high-priority system notification** (sound / vibration / lock-screen banner), not just an in-app dialog — a dialog is invisible with the phone in your pocket. Please allow notifications for this app and keep this channel out of Do Not Disturb.";
+
+  @override
+  String get crashSensitivity => "Detection sensitivity";
+
+  @override
+  String get crashSensGentle => "Sensitive";
+
+  @override
+  String get crashSensStandard => "Standard";
+
+  @override
+  String get crashSensFirm => "Firm";
+
+  @override
+  String get crashSensHint => "A fixed threshold cannot fit everyone: a phone in a cycling pocket trips the sensitive setting on every bump, while a bar-mounted phone needs the firm setting or it false-alarms the whole ride. Default is Standard. Sensitivity only affects **detection** (which impact counts), not what the alarm does afterwards.";
+
+  @override
+  String get crashFallAlarmTitle => "Possible fall detected";
+
+  @override
+  String get crashFallAlarmBody => "The phone free-fell, then took a landing impact, then stayed still for about 12 seconds — the classic acceleration signature of a fall.\n\nIf you are fine, tap \"I'm OK\"; if you are unwell or cannot move, call emergency services now or send a help message to stations within 100 km.\n\n**This is a heuristic, not engineering-grade detection**: dropping the phone from a pocket or hand can also match it.";
+
+  @override
+  String get crashKindHint => "It now also tells **crashes** and **falls** apart: a fall almost always starts with a brief free fall (magnitude near 0) before the landing impact, whereas a vehicle crash does not. So beyond the existing \"impact + then still\", it also checks for a free fall just before the impact — present means a fall, absent means a crash. This only changes the **wording and icon**; both are handled exactly the same (I'm OK / call / ask for help).";
+
 }

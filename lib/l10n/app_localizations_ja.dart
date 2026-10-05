@@ -7663,4 +7663,40 @@ class AppLocalizationsJa extends AppLocalizations {
     return "グループを作成し、$n 名を招待しますか？";
   }
 
+  @override
+  String get choosePackage => "パッケージを選ぶ";
+
+  @override
+  String get pkgRecommended => "推奨";
+
+  @override
+  String get choosePackageHint => "64 ビット版はほとんどのスマホ向け（アプリ内更新が取得するのはこれです）。_armeabi-v7a は古い 32 ビット機、_x86_64 はエミュレータ / Chromebook 専用です。行をタップするとそのパッケージのダウンロード先を開きます。";
+
+  @override
+  String get lifeGuardStrongHint => "アラームは**優先度の高いシステム通知**（音 / 振動 / ロック画面バナー）でも鳴ります。アプリ内ダイアログだけでは、ポケットの中や画面を見ていないときに気づけません。本アプリの通知を許可し、このチャンネルをサイレントにしないでください。";
+
+  @override
+  String get crashSensitivity => "検出感度";
+
+  @override
+  String get crashSensGentle => "敏感";
+
+  @override
+  String get crashSensStandard => "標準";
+
+  @override
+  String get crashSensFirm => "振動に強い";
+
+  @override
+  String get crashSensHint => "固定のしきい値では合いません。ポケットのスマホは敏感だと段差ごとに反応し、ハンドル固定なら「振動に強い」にしないと走行中ずっと誤報します。既定は「標準」。感度は**検出**（どの衝撃を数えるか）だけに効き、その後の動作には影響しません。";
+
+  @override
+  String get crashFallAlarmTitle => "転倒の可能性を検知";
+
+  @override
+  String get crashFallAlarmBody => "スマホが自由落下したあとに着地衝撃、その後に約 12 秒間ほとんど動かない —— 転倒に典型的な加速度パターンです。\n\n問題なければ「大丈夫」を押してください。体調が悪い、または動けない場合は、すぐに救急へ電話するか、100 km 以内の局へ救助メッセージを送ってください。\n\n**これはヒューリスティックであり、工学レベルの検出ではありません**：ポケットや手から落としただけでも該当します。";
+
+  @override
+  String get crashKindHint => "**衝突**と**転倒**も見分けます。転倒は着地衝撃の前にほぼ必ず自由落下（大きさが 0 付近）があり、車の衝突にはそれがありません。従来の「衝撃 + その後の静止」に加えて、衝撃の直前に自由落下があったかを見ます（あれば転倒、なければ衝突）。変わるのは**文言とアイコン**だけで、対応はどちらも同じ（大丈夫 / 電話 / 救援要請）です。";
+
 }

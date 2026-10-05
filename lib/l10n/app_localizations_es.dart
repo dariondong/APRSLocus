@@ -7924,4 +7924,40 @@ Al pulsar "Aceptar y conectar" confirmas que has leído, entendido y aceptado lo
     return "¿Crear el grupo e invitar a $n miembro(s)?";
   }
 
+  @override
+  String get choosePackage => "Elegir paquete";
+
+  @override
+  String get pkgRecommended => "Recomendado";
+
+  @override
+  String get choosePackageHint => "El paquete de 64 bits sirve para casi todos los teléfonos (es el que descarga la actualización integrada); _armeabi-v7a es para equipos antiguos de 32 bits; _x86_64 solo para emuladores / Chromebooks. Toca una fila para abrir la descarga de ese paquete.";
+
+  @override
+  String get lifeGuardStrongHint => "Las alarmas también emiten una **notificación de sistema de alta prioridad** (sonido / vibración / aviso en pantalla de bloqueo), no solo un diálogo dentro de la app: un diálogo es invisible con el teléfono en el bolsillo. Permite las notificaciones de la app y mantén este canal fuera de No molestar.";
+
+  @override
+  String get crashSensitivity => "Sensibilidad de detección";
+
+  @override
+  String get crashSensGentle => "Sensible";
+
+  @override
+  String get crashSensStandard => "Estándar";
+
+  @override
+  String get crashSensFirm => "Firme";
+
+  @override
+  String get crashSensHint => "Un umbral fijo no sirve para todos: un teléfono en el bolsillo dispara el ajuste sensible con cada bache, mientras que uno fijado al manillar necesita el ajuste firme o dará falsas alarmas todo el trayecto. Por defecto: Estándar. La sensibilidad solo afecta a la **detección** (qué impacto cuenta), no a lo que hace la alarma después.";
+
+  @override
+  String get crashFallAlarmTitle => "Posible caída detectada";
+
+  @override
+  String get crashFallAlarmBody => "El teléfono cayó libremente, luego sufrió un impacto de aterrizaje y después estuvo quieto unos 12 segundos: la firma de aceleración típica de una caída.\n\nSi estás bien, pulsa \"Estoy bien\"; si te encuentras mal o no puedes moverte, llama ahora a emergencias o envía un mensaje de ayuda a las estaciones a menos de 100 km.\n\n**Es una heurística, no una detección de nivel ingenieril**: dejarse caer el teléfono desde el bolsillo o la mano también puede cumplirla.";
+
+  @override
+  String get crashKindHint => "Ahora también distingue **choques** de **caídas**: una caída casi siempre empieza con una breve caída libre (magnitud cerca de 0) antes del impacto, mientras que un choque de vehículo no. Así, además del \"impacto + luego quieto\", comprueba si hubo caída libre justo antes del impacto: si la hay, es caída; si no, choque. Solo cambia el **texto y el icono**; ambos se tratan igual (Estoy bien / llamar / pedir ayuda).";
+
 }

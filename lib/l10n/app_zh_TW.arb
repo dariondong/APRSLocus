@@ -3242,5 +3242,17 @@
   "confirmInviteMember": "確認邀請 {call} 加入群聊？",
   "@confirmInviteMember": {"placeholders": {"call": {"type": "String"}}},
   "confirmCreateGroup": "確認建立群聊並向 {n} 位成員發出邀請？",
-  "@confirmCreateGroup": {"placeholders": {"n": {"type": "int"}}}
+  "@confirmCreateGroup": {"placeholders": {"n": {"type": "int"}}},
+  "choosePackage": "選擇安裝包",
+  "pkgRecommended": "建議",
+  "choosePackageHint": "64 位元套件用於絕大多數手機（應用程式內更新下載的是這個）；帶 _armeabi-v7a 的是 32 位元舊機型；_x86_64 只用於模擬器 / Chromebook。點一列會開啟該套件的下載網址。",
+  "lifeGuardStrongHint": "告警會透過**高優先級系統通知**提醒（響鈴 / 震動 / 鎖屏橫幅），不只是應用程式內彈窗 —— 手機放在口袋或沒看螢幕時，彈窗是看不見的。請確認系統允許本應用程式通知，並關閉該通知管道的勿擾。",
+  "crashSensitivity": "偵測靈敏度",
+  "crashSensGentle": "靈敏",
+  "crashSensStandard": "標準",
+  "crashSensFirm": "抗顛簸",
+  "crashSensHint": "閾值固定不了：手機放褲袋騎車，正常顛簸就能越過靈敏檔；固定在車把上就該用抗顛簸檔，否則一路都在誤報。預設「標準」。靈敏度只影響**偵測**（哪個撞擊算數），不影響後續的告警動作。",
+  "crashFallAlarmTitle": "偵測到疑似摔倒",
+  "crashFallAlarmBody": "手機先自由落體、隨後一次落地衝擊，再之後一直沒有明顯移動（約 12 秒）—— 這是摔倒的典型加速度特徵。\n\n如果你沒事，按「我沒事」即可；如果身體不適或無法行動，請立即撥打急救電話，或向附近 100 公里內的臺站發出求助訊息。\n\n**這是啟發式判斷，不是工程級偵測**：手機從口袋/手裡掉到地上也可能滿足。",
+  "crashKindHint": "現在會順便區分**碰撞**與**摔倒**：摔倒幾乎總是先有一段自由落體（模接近 0），再是落地衝擊；車禍撞擊沒有那一段。所以在原有「衝擊 + 隨後靜止」之外，再看衝擊前有沒有自由落體 —— 有就按「摔倒」提醒，沒有就按「碰撞」。這只改**提示文字與圖示**，兩類的處理方式完全一樣（都是我沒事 / 打電話 / 求助）。"
 }

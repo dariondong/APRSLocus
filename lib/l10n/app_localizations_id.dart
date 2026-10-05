@@ -7884,4 +7884,40 @@ Dengan menekan "Setuju dan sambung", Anda menyatakan telah membaca, memahami, da
     return "Buat grup dan undang $n anggota?";
   }
 
+  @override
+  String get choosePackage => "Pilih paket";
+
+  @override
+  String get pkgRecommended => "Disarankan";
+
+  @override
+  String get choosePackageHint => "Paket 64-bit untuk hampir semua ponsel (inilah yang diunduh pembaruan dalam aplikasi); _armeabi-v7a untuk perangkat 32-bit lama; _x86_64 hanya untuk emulator / Chromebook. Ketuk satu baris untuk membuka tautan unduhan paket itu.";
+
+  @override
+  String get lifeGuardStrongHint => "Alarm juga memicu **notifikasi sistem prioritas tinggi** (bunyi / getar / spanduk layar kunci), bukan sekadar dialog dalam aplikasi — dialog tidak terlihat saat ponsel di saku. Izinkan notifikasi untuk aplikasi ini dan jangan masukkan kanal ini ke Jangan Ganggu.";
+
+  @override
+  String get crashSensitivity => "Sensitivitas deteksi";
+
+  @override
+  String get crashSensGentle => "Peka";
+
+  @override
+  String get crashSensStandard => "Standar";
+
+  @override
+  String get crashSensFirm => "Kuat";
+
+  @override
+  String get crashSensHint => "Ambang tetap tidak cocok untuk semua: ponsel di saku memicu setelan peka pada setiap guncangan, sedangkan ponsel terpasang di setang perlu setelan kuat agar tidak salah alarm sepanjang perjalanan. Bawaan: Standar. Sensitivitas hanya memengaruhi **deteksi** (benturan mana yang dihitung), bukan tindakan alarm setelahnya.";
+
+  @override
+  String get crashFallAlarmTitle => "Kemungkinan terjatuh terdeteksi";
+
+  @override
+  String get crashFallAlarmBody => "Ponsel jatuh bebas, lalu menerima benturan saat mendarat, lalu tidak bergerak sekitar 12 detik — pola akselerasi khas terjatuh.\n\nJika Anda baik-baik saja, ketuk \"Saya baik\"; jika Anda tidak enak badan atau tidak bisa bergerak, segera hubungi layanan darurat atau kirim pesan bantuan ke stasiun dalam 100 km.\n\n**Ini heuristik, bukan deteksi sekelas rekayasa**: ponsel yang terlepas dari saku atau tangan juga bisa memicunya.";
+
+  @override
+  String get crashKindHint => "Kini juga membedakan **benturan** dan **terjatuh**: terjatuh hampir selalu dimulai dengan jatuh bebas singkat (magnitudo mendekati 0) sebelum benturan mendarat, sedangkan benturan kendaraan tidak. Jadi selain \"benturan + lalu diam\", sistem juga memeriksa apakah ada jatuh bebas tepat sebelum benturan — ada berarti terjatuh, tidak ada berarti benturan. Ini hanya mengubah **teks dan ikon**; keduanya ditangani sama (Saya baik / telepon / minta bantuan).";
+
 }

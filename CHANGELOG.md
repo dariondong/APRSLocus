@@ -1,5 +1,73 @@
 # 更新日志
 
+## [2.0.28] - 2026-10-03
+
+### 强化生命守护：告警强提醒 + 检测算法优化（issue #32）
+
+**新增**
+
+- **生命守护「强提醒」**：碰撞 / 摔倒、心率异常触发时，除了应用内弹窗，还会发一条
+  **高优先级系统通知**（响铃 + 震动 + 锁屏/抬头横幅）。此前告警只会挂到那条
+  `IMPORTANCE_LOW` 的常驻通知上 —— 系统不为它震动、也不弹横幅，手机放在兜里
+  （摔倒、开车时最常见的状态）根本察觉不到，等于「提醒不发声」。强提醒走**单独**的
+  高优先级通道，与常驻通知分开；Android 需要 `VIBRATE` 权限（已加）。设置页「开启条件」
+  里写明了这一点，并提示用户确认通知权限、不要把该渠道设成免打扰。
+- **碰撞 / 摔倒检测灵敏度三档**：设置 → 生命守护新增「灵敏 / 标准 / 抗颠簸」。
+  原来阈值写死，适配不了不同携带方式 —— 手机放裤兜里骑车，正常颠簸就能越过阈值；
+  固定在车把上又一路误报。灵敏度只影响**检测**（哪个撞击算数），不影响告警动作；
+  随备份一起走。
+- **iOS 补齐**：此前 iOS 侧没有任何通知实现，App 在后台时告警只能靠 Android。
+  现在补充本地通知（响铃 / 震动 / 横幅），并在 `MotionPlugin.swift` 里补齐与 Android
+  一致的碰撞/摔倒检测与灵敏度接口。
+
+**优化**
+
+- **碰撞 / 摔倒检测算法**：在原有「冲击 + 随后约 12 秒静止」之外，再看冲击前有没有
+  **自由落体**（加速度模 ≤ 0.35 g 持续 ≥ 80 毫秒）—— 摔倒几乎总是先自由落体再落地冲击，
+  车祸撞击则没有那一段。据此把告警区分为**摔倒**与**碰撞**，标题、图标与说明文字随之变化
+  （对摔倒的人说「疑似碰撞」是不准确的）。两类告警的**处理方式完全一样**，这只是把判断
+  说得更准。仍然是启发式，弹窗里照旧写明「不是工程级检测」。
+
+---
+
+## [2.0.28] - 2026-10-03 (English)
+
+### Stronger life guard: loud alarms and a better detection algorithm (issue #32)
+
+**New**
+
+- **Life-guard "strong reminder"**: when a crash/fall or an abnormal heart rate fires, besides
+  the in-app dialog the app now posts a **high-priority system notification** (sound + vibration
+  + lock-screen/heads-up banner). Previously alarms only went to the `IMPORTANCE_LOW` persistent
+  notification — the system neither vibrates nor shows a banner for it, so with the phone in a
+  pocket (the usual state during a fall or while driving) it was simply not noticed: a reminder
+  that makes no sound. The strong reminder uses its **own** high-priority channel, separate from
+  the persistent one; Android needs the `VIBRATE` permission (added). The "conditions" section of
+  the settings page spells this out and tells the user to allow notifications and keep the channel
+  out of Do Not Disturb.
+- **Three sensitivity levels for crash/fall detection**: Settings → Life Guard now offers
+  Sensitive / Standard / Firm. The threshold used to be hard-coded, which cannot fit every way of
+  carrying the phone — in a cycling pocket an ordinary bump crosses it, while a bar-mounted phone
+  then false-alarms the whole ride. Sensitivity only affects **detection** (which impact counts),
+  not what the alarm does; it travels with backups.
+- **iOS parity**: the iOS side previously had **no** notification implementation, so in the
+  background alarms relied on Android alone. It now posts local notifications (sound / vibration /
+  banner) and `MotionPlugin.swift` gained the same crash/fall detection and sensitivity channel as
+  Android.
+
+**Improved**
+
+- **Crash/fall detection algorithm**: on top of the existing "impact + then ~12 s of stillness",
+  it now also looks for a **free fall** just before the impact (acceleration magnitude ≤ 0.35 g for
+  ≥ 80 ms) — a fall almost always starts with a free fall before the landing impact, whereas a
+  vehicle crash does not. Alarms are therefore split into **fall** and **crash**, changing the
+  title, icon and explanatory text (telling someone who fell that it was "a suspected crash" is
+  inaccurate). Both kinds are **handled exactly the same**; this only makes the wording more
+  accurate. It is still a heuristic, and the dialog still says so ("not engineering-grade
+  detection").
+
+---
+
 ## [2.0.27] - 2026-10-05
 
 ### 连接成功后补发自定义状态包（issue #31）

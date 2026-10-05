@@ -65,11 +65,21 @@ class MotionSample {
     this.crashSeq = 0,
     this.hasCrashSensor = false,
     this.impactPending = false,
+    this.crashKind = '',
+    this.sensitivity = 'standard',
   });
 
   /// 碰撞/摔倒事件序号（issue #26）。Dart 侧靠它发现「又发生了一次」——
   /// 用布尔标志会在「事件发生时不在这页、回来后又读到 true」时重复告警。
   final int crashSeq;
+
+  /// 最近一次判定是**摔倒**还是**碰撞**（issue #32）：`'fall'` / `'crash'` / `''`。
+  final String crashKind;
+
+  /// 当前碰撞/摔倒检测灵敏度（issue #32）：`gentle` / `standard` / `firm`。
+  ///
+  /// 原生侧落盘、这里只读回显；改档走 [MotionService.setSensitivity]。
+  final String sensitivity;
 
   /// 设备上有没有加速度计（碰撞检测的前提）。
   final bool hasCrashSensor;
@@ -89,6 +99,8 @@ class MotionSample {
     crashSeq: 0,
     hasCrashSensor: false,
     impactPending: false,
+    crashKind: '',
+    sensitivity: 'standard',
   );
 }
 
@@ -180,8 +192,20 @@ class MotionService {
         crashSeq: (r['crashSeq'] as num?)?.toInt() ?? 0,
         hasCrashSensor: r['hasCrashSensor'] == true,
         impactPending: r['impactPending'] == true,
+        crashKind: r['lastKind'] as String? ?? '',
+        sensitivity: r['sensitivity'] as String? ?? 'standard',
       );
     } catch (_) {}
     return sample;
+  }
+
+  /// 设置碰撞/摔倒检测灵敏度（issue #32）：gentle / standard / firm。
+  ///
+  /// 原生侧会立即落盘，下次启动仍生效；通道不可用时静默失败（老 APK / 其它平台）。
+  Future<void> setSensitivity(String value) async {
+    if (!supported) return;
+    try {
+      await _channel.invokeMethod('setSensitivity', {'value': value});
+    } catch (_) {}
   }
 }

@@ -7573,6 +7573,42 @@ class AppLocalizationsZh extends AppLocalizations {
     return "确认创建群聊并向 $n 位成员发出邀请？";
   }
 
+  @override
+  String get choosePackage => "选择安装包";
+
+  @override
+  String get pkgRecommended => "推荐";
+
+  @override
+  String get choosePackageHint => "64 位包用于绝大多数手机（应用内更新下的是这个）；带 _armeabi-v7a 的是 32 位老机型；_x86_64 只用于模拟器 / Chromebook。点一行会打开该包的下载地址。";
+
+  @override
+  String get lifeGuardStrongHint => "告警会通过**高优先级系统通知**提醒（响铃 / 震动 / 锁屏横幅），不只是应用内弹窗 —— 手机放在兜里或没看屏幕时，弹窗是看不见的。请确保系统允许本应用通知，并关闭该通知渠道的免打扰。";
+
+  @override
+  String get crashSensitivity => "检测灵敏度";
+
+  @override
+  String get crashSensGentle => "灵敏";
+
+  @override
+  String get crashSensStandard => "标准";
+
+  @override
+  String get crashSensFirm => "抗颠簸";
+
+  @override
+  String get crashSensHint => "阈值固定不了：手机放裤兜里骑车，正常颠簸就能越过灵敏档；固定在车把上就该用抗颠簸档，否则一路都在误报。默认「标准」。灵敏度只影响**检测**（哪个撞击算数），不影响后续的告警动作。";
+
+  @override
+  String get crashFallAlarmTitle => "检测到疑似摔倒";
+
+  @override
+  String get crashFallAlarmBody => "手机先自由落体、随后一次落地冲击，再之后一直没有明显移动（约 12 秒）—— 这是摔倒的典型加速度特征。\n\n如果你没事，按「我没事」即可；如果身体不适或无法行动，请立即拨打急救电话，或向附近 100 公里内的台站发出求助信息。\n\n**这是启发式判断，不是工程级检测**：手机从口袋/手里掉到地上也可能满足。";
+
+  @override
+  String get crashKindHint => "现在会顺便区分**碰撞**与**摔倒**：摔倒几乎总是先有一段自由落体（模接近 0），再是落地冲击；车祸撞击没有那一段。所以在原有「冲击 + 随后静止」之外，再看冲击前有没有自由落体 —— 有就按「摔倒」提醒，没有就按「碰撞」。这只改**提示文字与图标**，两类的处理方式完全一样（都是我没事 / 打电话 / 求助）。";
+
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
@@ -15142,5 +15178,41 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   String confirmCreateGroup(int n) {
     return "確認建立群聊並向 $n 位成員發出邀請？";
   }
+
+  @override
+  String get choosePackage => "選擇安裝包";
+
+  @override
+  String get pkgRecommended => "建議";
+
+  @override
+  String get choosePackageHint => "64 位元套件用於絕大多數手機（應用程式內更新下載的是這個）；帶 _armeabi-v7a 的是 32 位元舊機型；_x86_64 只用於模擬器 / Chromebook。點一列會開啟該套件的下載網址。";
+
+  @override
+  String get lifeGuardStrongHint => "告警會透過**高優先級系統通知**提醒（響鈴 / 震動 / 鎖屏橫幅），不只是應用程式內彈窗 —— 手機放在口袋或沒看螢幕時，彈窗是看不見的。請確認系統允許本應用程式通知，並關閉該通知管道的勿擾。";
+
+  @override
+  String get crashSensitivity => "偵測靈敏度";
+
+  @override
+  String get crashSensGentle => "靈敏";
+
+  @override
+  String get crashSensStandard => "標準";
+
+  @override
+  String get crashSensFirm => "抗顛簸";
+
+  @override
+  String get crashSensHint => "閾值固定不了：手機放褲袋騎車，正常顛簸就能越過靈敏檔；固定在車把上就該用抗顛簸檔，否則一路都在誤報。預設「標準」。靈敏度只影響**偵測**（哪個撞擊算數），不影響後續的告警動作。";
+
+  @override
+  String get crashFallAlarmTitle => "偵測到疑似摔倒";
+
+  @override
+  String get crashFallAlarmBody => "手機先自由落體、隨後一次落地衝擊，再之後一直沒有明顯移動（約 12 秒）—— 這是摔倒的典型加速度特徵。\n\n如果你沒事，按「我沒事」即可；如果身體不適或無法行動，請立即撥打急救電話，或向附近 100 公里內的臺站發出求助訊息。\n\n**這是啟發式判斷，不是工程級偵測**：手機從口袋/手裡掉到地上也可能滿足。";
+
+  @override
+  String get crashKindHint => "現在會順便區分**碰撞**與**摔倒**：摔倒幾乎總是先有一段自由落體（模接近 0），再是落地衝擊；車禍撞擊沒有那一段。所以在原有「衝擊 + 隨後靜止」之外，再看衝擊前有沒有自由落體 —— 有就按「摔倒」提醒，沒有就按「碰撞」。這只改**提示文字與圖示**，兩類的處理方式完全一樣（都是我沒事 / 打電話 / 求助）。";
 
 }

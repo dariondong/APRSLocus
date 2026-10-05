@@ -33,6 +33,61 @@ object NotifHelper {
     const val MSG_CHANNEL_ID = "aprslocus_messages"
     const val MSG_NOTIF_BASE = 2000
 
+    /// 生命守护「强提醒」通道（issue #32）。
+    ///
+    /// 与常驻通知（`aprslocus_channel`，IMPORTANCE_LOW）**必须分开**：常驻通知的定位是
+    /// 「安静地显示在状态栏」，系统不会为它震动、也不会弹横幅；而碰撞/摔倒与心率异常
+    /// 是需要立刻看见的事 —— 用户把手机放在兜里时，只有一个 IMPORTANCE_HIGH、
+    /// 带震动、走 ALARM 类别的通知才能真正把人叫醒。复用常驻通道等于「提醒不发声」，
+    /// 那正是 issue #32 说的「强提醒」缺失。
+    const val ALARM_CHANNEL_ID = "aprslocus_alarm"
+    const val ALARM_NOTIF_ID = 1002
+
+    fun ensureAlarmChannel(context: Context) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val nm = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            if (nm.getNotificationChannel(ALARM_CHANNEL_ID) == null) {
+                val ch = NotificationChannel(
+                    ALARM_CHANNEL_ID, "生命守护强提醒", NotificationManager.IMPORTANCE_HIGH
+                ).apply {
+                    description = "碰撞 / 摔倒 / 心率异常时的强提醒（响铃 + 震动）"
+                    enableVibration(true)
+                    vibrationPattern = longArrayOf(0, 400, 200, 400, 200, 400)
+                    // 锁屏上也显示内容：这是安全告警，不是隐私消息。
+                    lockscreenVisibility = Notification.VISIBILITY_PUBLIC
+                }
+                nm.createNotificationChannel(ch)
+            }
+        }
+    }
+
+    /// 生命守护强提醒（issue #32）：高优先级 + 震动 + 抬头横幅，点击打开应用。
+    ///
+    /// 与 [showMessage] 的区别是**打扰级别**：这个消息不该安静地躺在通知栏里。
+    fun showAlarm(context: Context, title: String, text: String) {
+        ensureAlarmChannel(context)
+        val pi = PendingIntent.getActivity(
+            context, 42,
+            Intent(context, MainActivity::class.java)
+                .addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP),
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+        val notif = NotificationCompat.Builder(context, ALARM_CHANNEL_ID)
+            .setContentTitle(title)
+            .setContentText(text)
+            .setStyle(NotificationCompat.BigTextStyle().bigText(text))
+            .setSmallIcon(android.R.drawable.ic_dialog_alert)
+            .setContentIntent(pi)
+            .setAutoCancel(true)
+            .setPriority(NotificationCompat.PRIORITY_MAX)
+            .setCategory(NotificationCompat.CATEGORY_ALARM)
+            .setDefaults(NotificationCompat.DEFAULT_ALL)
+            .setVibrate(longArrayOf(0, 400, 200, 400, 200, 400))
+            .build()
+        val nm = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        nm.notify(ALARM_NOTIF_ID, notif)
+    }
+
     fun ensureMsgChannel(context: Context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val nm = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager

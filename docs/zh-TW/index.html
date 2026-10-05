@@ -573,6 +573,17 @@
 <!-- site-sync:changelog -->
     <div class="cl-version reveal">
       <div class="cl-head">
+        <span class="cl-tag">v2.0.28</span>
+        <span class="cl-date">2026-10-03</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot new"></span><b>生命守護「強提醒」</b>：碰撞 / 摔倒、心率異常觸發時，除了應用程式內彈窗，還會發一條<b>高優先級系統通知</b>（響鈴 + 震動 + 鎖屏/抬頭橫幅）。此前告警只掛在那條安靜（<code>IMPORTANCE_LOW</code>）的常駐通知上，系統不為它震動也不彈橫幅 —— 手機放口袋（摔倒或開車時最常見的狀態）根本察覺不到。強提醒走<b>單獨</b>的高優先級通道；Android 需要 <code>VIBRATE</code> 權限（已加）。</div>
+        <div class="cl-item"><span class="cl-dot up"></span><b>碰撞 / 摔倒偵測演算法優化</b>：在原有「衝擊 + 隨後約 12 秒靜止」之外，再看衝擊前有沒有<b>自由落體</b>（加速度模 ≤ 0.35 g 持續 ≥ 80 毫秒）—— 摔倒幾乎總是先自由落體再落地衝擊，車禍撞擊則沒有那一段。據此把告警區分為<b>摔倒</b>與<b>碰撞</b>，標題、圖示與說明文字隨之變化。兩類告警的<b>處理方式完全一樣</b>，這只是把判斷說得更準；仍然是啟發式，彈窗裡照舊寫明「不是工程級偵測」。</div>
+        <div class="cl-item"><span class="cl-dot new"></span><b>偵測靈敏度三檔</b>：設定 → 生命守護新增「靈敏 / 標準 / 抗顛簸」。原來閾值寫死，適配不了不同攜帶方式 —— 手機放褲袋騎車，正常顛簸就能越過閾值；固定在車把上又一路誤報。靈敏度只影響<b>偵測</b>（哪個撞擊算數），不影響告警動作；隨備份一起走。同時 <b>iOS 補齊</b>了本機通知與同款碰撞/摔倒偵測。</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
         <span class="cl-tag">v2.0.27</span>
         <span class="cl-date">2026-10-05</span>
       </div>

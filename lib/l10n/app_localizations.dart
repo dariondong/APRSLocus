@@ -13448,6 +13448,82 @@ abstract class AppLocalizations {
   /// **'确认创建群聊并向 {n} 位成员发出邀请？'**
   String confirmCreateGroup(int n);
 
+  /// No description provided for @choosePackage.
+  ///
+  /// In zh, this message translates to:
+  /// **'选择安装包'**
+  String get choosePackage;
+
+  /// No description provided for @pkgRecommended.
+  ///
+  /// In zh, this message translates to:
+  /// **'推荐'**
+  String get pkgRecommended;
+
+  /// No description provided for @choosePackageHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'64 位包用于绝大多数手机（应用内更新下的是这个）；带 _armeabi-v7a 的是 32 位老机型；_x86_64 只用于模拟器 / Chromebook。点一行会打开该包的下载地址。'**
+  String get choosePackageHint;
+
+  /// No description provided for @lifeGuardStrongHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'告警会通过**高优先级系统通知**提醒（响铃 / 震动 / 锁屏横幅），不只是应用内弹窗 —— 手机放在兜里或没看屏幕时，弹窗是看不见的。请确保系统允许本应用通知，并关闭该通知渠道的免打扰。'**
+  String get lifeGuardStrongHint;
+
+  /// No description provided for @crashSensitivity.
+  ///
+  /// In zh, this message translates to:
+  /// **'检测灵敏度'**
+  String get crashSensitivity;
+
+  /// No description provided for @crashSensGentle.
+  ///
+  /// In zh, this message translates to:
+  /// **'灵敏'**
+  String get crashSensGentle;
+
+  /// No description provided for @crashSensStandard.
+  ///
+  /// In zh, this message translates to:
+  /// **'标准'**
+  String get crashSensStandard;
+
+  /// No description provided for @crashSensFirm.
+  ///
+  /// In zh, this message translates to:
+  /// **'抗颠簸'**
+  String get crashSensFirm;
+
+  /// No description provided for @crashSensHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'阈值固定不了：手机放裤兜里骑车，正常颠簸就能越过灵敏档；固定在车把上就该用抗颠簸档，否则一路都在误报。默认「标准」。灵敏度只影响**检测**（哪个撞击算数），不影响后续的告警动作。'**
+  String get crashSensHint;
+
+  /// No description provided for @crashFallAlarmTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'检测到疑似摔倒'**
+  String get crashFallAlarmTitle;
+
+  /// No description provided for @crashFallAlarmBody.
+  ///
+  /// In zh, this message translates to:
+  /// **'手机先自由落体、随后一次落地冲击，再之后一直没有明显移动（约 12 秒）—— 这是摔倒的典型加速度特征。
+
+如果你没事，按「我没事」即可；如果身体不适或无法行动，请立即拨打急救电话，或向附近 100 公里内的台站发出求助信息。
+
+**这是启发式判断，不是工程级检测**：手机从口袋/手里掉到地上也可能满足。'**
+  String get crashFallAlarmBody;
+
+  /// No description provided for @crashKindHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'现在会顺便区分**碰撞**与**摔倒**：摔倒几乎总是先有一段自由落体（模接近 0），再是落地冲击；车祸撞击没有那一段。所以在原有「冲击 + 随后静止」之外，再看冲击前有没有自由落体 —— 有就按「摔倒」提醒，没有就按「碰撞」。这只改**提示文字与图标**，两类的处理方式完全一样（都是我没事 / 打电话 / 求助）。'**
+  String get crashKindHint;
+
 }
 
 class _AppLocalizationsDelegate

@@ -267,6 +267,16 @@ class LocService {
     } catch (_) {}
   }
 
+  /// 生命守护强提醒（issue #32）：高优先级 + 震动 + 抬头横幅。
+  ///
+  /// 与 [showMessageNotification] 的区别是**打扰级别** —— 碰撞/摔倒与心率异常
+  /// 不能只是安静地挂在通知栏里（用户没看屏幕时等于没提醒）。
+  Future<void> showAlarmNotification(String title, String text) async {
+    try {
+      await _channel.invokeMethod('showAlarm', {'title': title, 'text': text});
+    } catch (_) {}
+  }
+
   /// 群聊事件系统通知（邀请/加入/离开等）
   Future<void> showGroupNotification(String title, String text) async {
     try {

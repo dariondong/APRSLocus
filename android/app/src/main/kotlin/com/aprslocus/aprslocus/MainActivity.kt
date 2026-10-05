@@ -164,6 +164,13 @@ class MainActivity : FlutterActivity() {
                     NotifHelper.showMessage(this, from, text)
                     result.success(true)
                 }
+                // 生命守护强提醒（issue #32）：高优先级 + 震动 + 抬头横幅。
+                "showAlarm" -> {
+                    val title = call.argument<String>("title") ?: ""
+                    val text = call.argument<String>("text") ?: ""
+                    NotifHelper.showAlarm(this, title, text)
+                    result.success(true)
+                }
                 "getBattery" -> {
                     val bm = getSystemService(BATTERY_SERVICE) as android.os.BatteryManager
                     val level = bm.getIntProperty(android.os.BatteryManager.BATTERY_PROPERTY_CAPACITY)

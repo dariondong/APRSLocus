@@ -107,6 +107,7 @@ class _HrAlarmWatcherState extends State<HrAlarmWatcher> {
     if (!isCrash && bpm == null) return;
     final s = S.of(context);
     _showing = true;
+    final isFall = isCrash && st.crashAlarmKind == 'fall';
     final action = await showDialog<String>(
       context: context,
       // 告警必须能一路回到「关掉它」，所以不允许点空白关（barrierDismissible
@@ -115,15 +116,20 @@ class _HrAlarmWatcherState extends State<HrAlarmWatcher> {
       builder: (ctx) => AlertDialog(
         backgroundColor: Colors.white,
         icon: Icon(
-          isCrash ? Icons.car_crash_rounded : Icons.favorite_rounded,
+          isCrash
+              ? (isFall ? Icons.personal_injury_rounded : Icons.car_crash_rounded)
+              : Icons.favorite_rounded,
           color: C.red,
           size: 34,
         ),
-        title: Text(isCrash ? s.crashAlarmTitle : s.hrAlarmTitle,
+        title: Text(
+            isCrash
+                ? (isFall ? s.crashFallAlarmTitle : s.crashAlarmTitle)
+                : s.hrAlarmTitle,
             style: ts(16, w: FontWeight.w800)),
         content: Text(
           isCrash
-              ? s.crashAlarmBody
+              ? (isFall ? s.crashFallAlarmBody : s.crashAlarmBody)
               : s.hrAlarmBody('$bpm', '${st.hrAlarmLow}', '${st.hrAlarmHigh}'),
           style: ts(13, h: 1.5),
         ),

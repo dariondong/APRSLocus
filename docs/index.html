@@ -642,6 +642,17 @@ html{overflow-x:hidden}
 <!-- site-sync:changelog -->
     <div class="cl-version reveal">
       <div class="cl-head">
+        <span class="cl-tag">v2.0.28</span>
+        <span class="cl-date">2026-10-03</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot new"></span><b>生命守护「强提醒」</b>：碰撞 / 摔倒、心率异常触发时，除了应用内弹窗，还会发一条<b>高优先级系统通知</b>（响铃 + 震动 + 锁屏/抬头横幅）。此前告警只挂在那条安静（<code>IMPORTANCE_LOW</code>）的常驻通知上，系统不为它震动也不弹横幅 —— 手机放兜里（摔倒或开车时最常见的状态）根本察觉不到。强提醒走<b>单独</b>的高优先级通道；Android 需要 <code>VIBRATE</code> 权限（已加）。</div>
+        <div class="cl-item"><span class="cl-dot up"></span><b>碰撞 / 摔倒检测算法优化</b>：在原有「冲击 + 随后约 12 秒静止」之外，再看冲击前有没有<b>自由落体</b>（加速度模 ≤ 0.35 g 持续 ≥ 80 毫秒）—— 摔倒几乎总是先自由落体再落地冲击，车祸撞击则没有那一段。据此把告警区分为<b>摔倒</b>与<b>碰撞</b>，标题、图标与说明文字随之变化。两类告警的<b>处理方式完全一样</b>，这只是把判断说得更准；仍然是启发式，弹窗里照旧写明「不是工程级检测」。</div>
+        <div class="cl-item"><span class="cl-dot new"></span><b>检测灵敏度三档</b>：设置 → 生命守护新增「灵敏 / 标准 / 抗颠簸」。原来阈值写死，适配不了不同携带方式 —— 手机放裤兜里骑车，正常颠簸就能越过阈值；固定在车把上又一路误报。灵敏度只影响<b>检测</b>（哪个撞击算数），不影响告警动作；随备份一起走。同时 <b>iOS 补齐</b>了本地通知与同款碰撞/摔倒检测。</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
         <span class="cl-tag">v2.0.27</span>
         <span class="cl-date">2026-10-05</span>
       </div>

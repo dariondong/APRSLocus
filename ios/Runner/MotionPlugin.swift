@@ -27,6 +27,42 @@ final class MotionPlugin: NSObject {
   /// g → m/s²。
   private static let gToMs2 = 9.80665
 
+  // ── 碰撞 / 摔倒检测（issue #26 / #32），判据与 Android MotionManager 对齐 ──
+  private static let sensGentle = 2.2
+  private static let sensStandard = 3.0
+  private static let sensFirm = 4.0
+  private static let freefallG = 0.35
+  private static let freefallMinMs = 80.0
+  private static let freefallWatchMs = 4000.0
+  private static let impactMoveG = 1.2
+  private static let stillMs = 12000.0
+  private static let cooldownMs = 180000.0
+  private static let startGraceMs = 20000.0
+  private static let prefKey = "aprslocus.motion.sensitivity"
+
+  private var impactAtMs: Double = 0        // 最近一次冲击时间（秒*1000）
+  private var impactPeakG: Double = 0
+  private var impactKind = ""
+  private var lastCrashMs: Double = 0
+  private var crashSeq = 0
+  private var lastKind = ""
+  private var freefallStartMs: Double = 0
+  private var lastFreefallEndMs: Double = 0
+  private var startedAtMs: Double = 0
+  private var sensitivity = "standard"
+
+  private var impactThresholdG: Double {
+    switch sensitivity {
+    case "gentle": return Self.sensGentle
+    case "firm": return Self.sensFirm
+    default: return Self.sensStandard
+    }
+  }
+
+  private static func nowMs() -> Double {
+    return Date().timeIntervalSince1970 * 1000.0
+  }
+
   private let manager = CMMotionManager()
 
   private var started = false
@@ -57,6 +93,13 @@ final class MotionPlugin: NSObject {
       result(nil)
     case "sample":
       result(snapshot())
+    case "setSensitivity":
+      // issue #32：设置碰撞/摔倒灵敏度（gentle / standard / firm），落盘到 UserDefaults。
+      if let args = call.arguments as? [String: Any],
+         let v = args["value"] as? String {
+        setSensitivity(v)
+      }
+      result(true)
     default:
       result(FlutterMethodNotImplemented)
     }
@@ -74,6 +117,11 @@ final class MotionPlugin: NSObject {
     lastAccel = 0
     heading = -1
     hasCompass = false
+    impactAtMs = 0
+    impactKind = ""
+    freefallStartMs = 0
+    startedAtMs = Self.nowMs()
+    sensitivity = UserDefaults.standard.string(forKey: Self.prefKey) ?? "standard"
 
     if manager.isDeviceMotionAvailable {
       // 磁北参考系下 yaw 才是磁航向；设备不支持磁北时退回任意参考系，
@@ -127,6 +175,51 @@ final class MotionPlugin: NSObject {
     let e = mx * mx + my * my + mz * mz
     energy = energy * (1 - Self.energyAlpha) + e * Self.energyAlpha
     lastAccel = energy.squareRoot()
+    checkImpact(mag: e.squareRoot())
+  }
+
+  /// 碰撞/摔倒判定（issue #26 / #32），与 Android MotionManager.checkImpact 同一套判据：
+  /// 冲击 + 随后静止；冲击前有自由落体则判为「摔倒」，否则「碰撞」。
+  private func checkImpact(mag: Double) {
+    let now = Self.nowMs()
+    let g = mag / Self.gToMs2
+
+    if g <= Self.freefallG {
+      if freefallStartMs == 0 { freefallStartMs = now }
+    } else if freefallStartMs != 0 {
+      if now - freefallStartMs >= Self.freefallMinMs { lastFreefallEndMs = now }
+      freefallStartMs = 0
+    }
+
+    if impactAtMs == 0 {
+      if g >= impactThresholdG && now - lastCrashMs > Self.cooldownMs &&
+        now - startedAtMs > Self.startGraceMs {
+        impactAtMs = now
+        impactPeakG = g
+        impactKind = (lastFreefallEndMs != 0 &&
+          now - lastFreefallEndMs <= Self.freefallWatchMs) ? "fall" : "crash"
+      }
+      return
+    }
+    if g >= Self.impactMoveG {
+      impactAtMs = 0
+      impactPeakG = 0
+      impactKind = ""
+      return
+    }
+    if now - impactAtMs >= Self.stillMs {
+      crashSeq += 1
+      lastCrashMs = now
+      lastKind = impactKind.isEmpty ? "crash" : impactKind
+      impactAtMs = 0
+      impactKind = ""
+    }
+  }
+
+  private func setSensitivity(_ value: String) {
+    let v = ["gentle", "standard", "firm"].contains(value) ? value : "standard"
+    sensitivity = v
+    UserDefaults.standard.set(v, forKey: Self.prefKey)
   }
 
   private func snapshot() -> [String: Any] {
@@ -138,6 +231,13 @@ final class MotionPlugin: NSObject {
       "pitch": pitch,
       "roll": roll,
       "accel": lastAccel,
+      // 碰撞/摔倒（issue #26 / #32），键名与 Android 对齐。
+      "crashSeq": crashSeq,
+      "hasCrashSensor": manager.isAccelerometerAvailable || manager.isDeviceMotionAvailable,
+      "impactPending": impactAtMs != 0,
+      "impactPeakG": (impactPeakG * 10).rounded() / 10,
+      "lastKind": lastKind,
+      "sensitivity": sensitivity,
     ]
   }
 

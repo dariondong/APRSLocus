@@ -567,6 +567,17 @@
 <!-- site-sync:changelog -->
     <div class="cl-version reveal">
       <div class="cl-head">
+        <span class="cl-tag">v2.0.28</span>
+        <span class="cl-date">2026-10-03</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot new"></span><b>Life-guard "strong reminder"</b>: when a crash/fall or an abnormal heart rate fires, besides the in-app dialog the app now posts a <b>high-priority system notification</b> (sound + vibration + lock-screen/heads-up banner). Previously alarms only went to the quiet (<code>IMPORTANCE_LOW</code>) persistent notification, which the system neither vibrates nor banners for — so with the phone in a pocket (the usual state during a fall or while driving) it was not noticed at all. The strong reminder uses its <b>own</b> high-priority channel; Android needs the <code>VIBRATE</code> permission (added).</div>
+        <div class="cl-item"><span class="cl-dot up"></span><b>Better crash/fall detection algorithm</b>: on top of the existing "impact + then ~12 s of stillness", it now also looks for a <b>free fall</b> just before the impact (acceleration magnitude ≤ 0.35 g for ≥ 80 ms) — a fall almost always starts with a free fall before the landing impact, whereas a vehicle crash does not. Alarms are therefore split into <b>fall</b> and <b>crash</b>, changing the title, icon and explanatory text. Both kinds are <b>handled exactly the same</b>; this only makes the wording more accurate. It is still a heuristic, and the dialog still says so ("not engineering-grade detection").</div>
+        <div class="cl-item"><span class="cl-dot new"></span><b>Three detection-sensitivity levels</b>: Settings → Life Guard now offers Sensitive / Standard / Firm. The threshold used to be hard-coded, which cannot fit every way of carrying the phone — in a cycling pocket an ordinary bump crosses it, while a bar-mounted phone then false-alarms the whole ride. Sensitivity only affects <b>detection</b> (which impact counts), not what the alarm does; it travels with backups. <b>iOS parity</b> was added too: local notifications and the same crash/fall detection.</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
         <span class="cl-tag">v2.0.27</span>
         <span class="cl-date">2026-10-05</span>
       </div>

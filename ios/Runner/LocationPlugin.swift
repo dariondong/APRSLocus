@@ -1,6 +1,7 @@
 import CoreLocation
 import Flutter
 import UIKit
+import UserNotifications
 
 /// 定位通道的 iOS 原生实现。
 ///
@@ -127,6 +128,16 @@ final class LocationPlugin: NSObject, CLLocationManagerDelegate {
         result(level < 0 ? -1 : Int((level * 100).rounded()))
       }
 
+    case "showAlarm":
+      // 生命守护强提醒（issue #32）：iOS 侧此前**完全没有**通知实现，
+      // 所以 App 在后台时告警只能靠 Android。这里补上本地通知（响铃/震动/横幅），
+      // 与 Android 的 NotifHelper.showAlarm 对应。
+      let args = call.arguments as? [String: Any]
+      let title = (args?["title"] as? String) ?? "APRSLocus"
+      let body = (args?["text"] as? String) ?? ""
+      Self.postAlarm(title: title, body: body)
+      result(true)
+
     default:
       result(FlutterMethodNotImplemented)
     }
@@ -199,6 +210,27 @@ final class LocationPlugin: NSObject, CLLocationManagerDelegate {
     } else if manager.authorizationStatus == .denied {
       emitStatus("定位权限被拒绝，可在「设置 → 隐私 → 定位服务」中开启")
     }
+  }
+
+  // MARK: - 本地通知（issue #32 强提醒 / 消息通知）
+
+  /// 发一条本地通知。首次调用时请求授权（异步，当次通知可能在授权完成前发出，
+  /// 属可接受的取舍：强提醒宁可早发也不要为了等授权而延迟）。
+  ///
+  /// 时间敏感级别 .timeSensitive 只在 Info.plist 声明了对应 entitlement 时才生效；
+  /// 未声明时系统按普通通知处理，不会崩溃。
+  private static func postAlarm(title: String, body: String) {
+    let center = UNUserNotificationCenter.current()
+    center.requestAuthorization(options: [.alert, .sound, .badge]) { _, _ in }
+    let content = UNMutableNotificationContent()
+    content.title = title
+    content.body = body
+    content.sound = .default
+    content.interruptionLevel = .timeSensitive
+    let req = UNNotificationRequest(
+      identifier: "aprslocus-\(UUID().uuidString)",
+      content: content, trigger: nil)
+    center.add(req)
   }
 }
 

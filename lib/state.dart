@@ -113,7 +113,7 @@ class SmartBeaconTier {
 
 class AppState extends ChangeNotifier {
   /// 应用版本（用于信标备注、APRSlocus 识别）
-  static const appVersion = '2.0.27';
+  static const appVersion = '2.0.28';
   // 我的电台
   String myCall = 'BV2AAA';
   int mySsid = 0; // 0 = 无后缀, 1-15 = -1 到 -15
@@ -787,6 +787,18 @@ class AppState extends ChangeNotifier {
   /// 当前未处理的碰撞告警（null = 没有）。
   String? crashAlarm;
 
+  /// 碰撞/摔倒检测灵敏度（issue #32）：`gentle` / `standard` / `firm`。
+  ///
+  /// 阈值的**取用**在原生侧（[MotionService.setSensitivity] 会落盘到原生 prefs）；
+  /// 这里保存一份是为了设置页能立刻回显，并在启动时把选择下发给原生。
+  String crashSensitivity = 'standard';
+
+  /// 这次告警的判定类型（issue #32）：`'fall'`（摔倒）或 `'crash'`（碰撞）。
+  ///
+  /// 由原生侧根据「冲击前是否有自由落体」给出（见 MotionManager.checkImpact）；
+  /// 界面据此换标题与说明文字 —— 对摔倒的人说「疑似碰撞」是不准确的。
+  String crashAlarmKind = 'crash';
+
   /// 告警序号：界面靠它区分「同一次告警不要反复弹窗」。
   int crashAlarmSeq = 0;
 
@@ -816,6 +828,19 @@ class AppState extends ChangeNotifier {
     _notify();
   }
 
+  /// 设置碰撞/摔倒灵敏度（issue #32）：gentle / standard / firm。
+  ///
+  /// 阈值取用在原生侧，所以这里除了记一份用于界面回显，还要下发给原生并落盘
+  /// （[MotionService.setSensitivity] 内部会写原生 prefs，跨重启保留）。
+  void setCrashSensitivity(String v) {
+    if (v != 'gentle' && v != 'standard' && v != 'firm') v = 'standard';
+    if (v == crashSensitivity) return;
+    crashSensitivity = v;
+    unawaited(MotionService.instance.setSensitivity(v));
+    persist();
+    _notify();
+  }
+
   void clearCrashAlarm() {
     if (crashAlarm == null) return;
     crashAlarm = null;
@@ -830,14 +855,22 @@ class AppState extends ChangeNotifier {
     if (!_crashSeqInited) {
       _crashSeqInited = true;
       _crashSeqSeen = smp.crashSeq;
+      // 首次采样：把本地的灵敏度下发给原生（换机后原生 prefs 是空的，
+      // 而备份里带着用户选的档位 —— 不下发就会静默回到 standard）。
+      unawaited(MotionService.instance.setSensitivity(crashSensitivity));
       return;
     }
     if (smp.crashSeq == _crashSeqSeen) return;
     _crashSeqSeen = smp.crashSeq;
     if (!crashDetectEnabled) return;
     crashAlarm = 'crash';
+    crashAlarmKind = smp.crashKind.isEmpty ? 'crash' : smp.crashKind;
     crashAlarmSeq++;
-    _log(LogLevel.warn, '生命守护', '检测到疑似碰撞/摔倒（冲击后持续静止）');
+    _log(LogLevel.warn, '生命守护',
+        crashAlarmKind == 'fall' ? '检测到疑似摔倒（自由落体后静止）' : '检测到疑似碰撞（冲击后持续静止）');
+    // 强提醒（issue #32）：弹窗只在用户正看着屏幕时有用，手机在兜里时必须靠
+    // 高优先级通知把人叫到屏幕前 —— 与心率告警同一处理，见 _notifyStrongAlarm。
+    _notifyStrongAlarm();
     _notify();
   }
 
@@ -918,7 +951,29 @@ class AppState extends ChangeNotifier {
     hrAlarm = b;
     hrAlarmSeq++;
     _log(LogLevel.warn, '心率', '心率异常：$b bpm（阈值 $hrAlarmLow~$hrAlarmHigh）');
+    _notifyStrongAlarm();
     _notify();
+  }
+
+  /// 生命守护「强提醒」（issue #32）：把告警发成**高优先级系统通知**
+  /// （响铃 + 震动 + 抬头横幅，见原生 NotifHelper.showAlarm）。
+  ///
+  /// 为什么弹窗还不够：碰撞/摔倒与心率异常大多发生在用户没在看手机的时候
+  /// （开车、摔倒、夜里）。挂一条 IMPORTANCE_LOW 的常驻通知是**静音**的，
+  /// 用户根本不会察觉 —— 那等于没有提醒。这里另开一条高优先级通道，
+  /// 与弹窗互补：看着屏幕时弹窗，看不见屏幕时通知把人叫过来。
+  ///
+  /// 只发通知，不改告警状态（谁发起、谁负责 clear）。
+  void _notifyStrongAlarm() {
+    final l = l10n;
+    // 心率与碰撞同时成立时优先报心率（与 HrAlarmWatcher 的弹窗优先级一致）：
+    // 心率异常带具体读数，信息量更大。
+    final crash = crashAlarm != null && hrAlarm == null;
+    final title = crash
+        ? (crashAlarmKind == 'fall' ? l.crashFallAlarmTitle : l.crashAlarmTitle)
+        : l.hrAlarmTitle;
+    final body = crash ? l.crashAlarmBody : l.hrAlarmNotif('${hrAlarm ?? 0}');
+    unawaited(loc.showAlarmNotification(title, body));
   }
 
   /// 我附近（[radiusKm] 内）的台站，按距离升序，最多 [limit] 条。
@@ -3237,6 +3292,8 @@ class AppState extends ChangeNotifier {
       hrAlarmLow = p.getInt('hrAlarmLow') ?? hrAlarmLow;
       crashDetectEnabled =
           p.getBool('crashDetectEnabled') ?? crashDetectEnabled;
+      crashSensitivity =
+          p.getString('crashSensitivity') ?? crashSensitivity;
       emergencyTel = p.getString('emergencyTel') ?? emergencyTel;
       beaconIncludeSteps =
           p.getBool('beaconIncludeSteps') ?? beaconIncludeSteps;
@@ -3514,6 +3571,7 @@ class AppState extends ChangeNotifier {
     await p.setInt('hrAlarmHigh', hrAlarmHigh);
     await p.setInt('hrAlarmLow', hrAlarmLow);
     await p.setBool('crashDetectEnabled', crashDetectEnabled);
+    await p.setString('crashSensitivity', crashSensitivity);
     await p.setString('emergencyTel', emergencyTel);
     await p.setBool('beaconIncludeSteps', beaconIncludeSteps);
     await p.setInt('stepsBaseline', _stepsBaseline);
