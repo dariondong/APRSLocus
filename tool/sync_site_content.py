@@ -205,6 +205,38 @@ CARDS = [
 # 只列「重点版本」：中间几十个纯修 bug 的版本归纳进文字说明，完整记录指向 Releases。
 CL = [
     {
+        'ver': 'v2.0.26', 'date': '2026-10-04',
+        'items': [
+            ('new',
+             T('**地图「我的位置」标记显示方位角**：圆点上多出一个朝航向的白色'
+               '「小角角」，一眼就能看出自己朝哪边走（矢量地图标记框同时放宽，'
+               '角角不会被裁掉）。纯网络定位 / 静止未取得航向时不画，不拿猜的方向误导。',
+               '**地圖「我的位置」標記顯示方位角**：圓點上多出一個朝航向的白色'
+               '「小角角」，一眼就能看出自己朝哪邊走（向量地圖標記框同時放寬，'
+               '角角不會被裁掉）。純網路定位 / 靜止未取得航向時不畫，不拿猜的方向誤導。',
+               '**The map\'s my-location marker now shows heading**: a small white corner '
+               'points along your course, so you can tell at a glance which way you are facing '
+               '(the vector-map marker box was widened so the corner is not clipped). It is not '
+               'drawn for network-only fixes or when no course is known, rather than guessing a '
+               'direction.')),
+            ('fix',
+             T('**左下角「我的位置」面板显示的上报间隔与倒计时不一致**：面板那行'
+               '「自动上报中 · 每 Ns」读的是**固定间隔**字段，而右边的倒计时读的是'
+               '**当前生效间隔**。纯网络模式下两者不同（生效值 = 网络间隔，默认 300 秒），'
+               '于是间隔卡在 GPS 模式留下的旧值不动。现在两处都改用生效间隔。',
+               '**左下角「我的位置」面板顯示的上報間隔與倒數不一致**：面板那行'
+               '「自動上報中 · 每 Ns」讀的是**固定間隔**欄位，而右邊的倒數讀的是'
+               '**目前生效間隔**。純網路模式下兩者不同（生效值 = 網路間隔，預設 300 秒），'
+               '於是間隔卡在 GPS 模式留下的舊值不動。現在兩處都改用生效間隔。',
+               '**The interval shown in the bottom-left my-location panel disagreed with the '
+               'countdown next to it**: the panel\'s "auto-reporting · every Ns" line read the '
+               '*fixed* interval field while the countdown read the *effective* one. In '
+               'network-only mode the two differ (effective = the network interval, 300 s by '
+               'default), so the label sat on a stale value left over from GPS mode. Both now '
+               'use the effective interval.')),
+        ],
+    },
+    {
         'ver': 'v2.0.25', 'date': '2026-10-04',
         'items': [
             ('new',

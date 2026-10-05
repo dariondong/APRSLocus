@@ -1,5 +1,45 @@
 # 更新日志
 
+## [2.0.26] - 2026-10-04
+
+### 我的位置标记显示方位角「小角角」+ 修地图页「每 Ns」显示旧值
+
+**新增**
+
+- **地图「我的位置」标记显示方位角**：圆点上多出一个朝航向的白色「小角角」，
+  一眼就能看出自己朝哪边走（矢量地图标记框同时放宽，角角不会被裁掉）。
+  纯网络定位 / 静止未取得航向时不画，不拿猜的方向误导。
+
+**修复**
+
+- **左下角「我的位置」面板显示的上报间隔与倒计时不一致**：面板那行「自动上报中 ·
+  每 Ns」读的是**固定间隔**字段，而右边的倒计时读的是**当前生效间隔**。纯网络模式下
+  两者不同（生效值 = 网络间隔，默认 300 秒），于是间隔卡在 GPS 模式留下的旧值不动。
+  现在两处都改用生效间隔。
+
+---
+
+## [2.0.26] - 2026-10-04 (English)
+
+### A heading "corner" on the my-location marker + fix for a stale interval shown on the map
+
+**New**
+
+- **The map's my-location marker now shows heading**: a small white corner points
+  along your course, so you can tell at a glance which way you are facing (the
+  vector-map marker box was widened so the corner is not clipped). It is not drawn
+  for network-only fixes or when no course is known, rather than guessing a direction.
+
+**Fixed**
+
+- **The interval shown in the bottom-left my-location panel disagreed with the
+  countdown next to it**: the panel's "auto-reporting · every Ns" line read the
+  *fixed* interval field while the countdown read the *effective* one. In network-only
+  mode the two differ (effective = the network interval, 300 s by default), so the
+  label sat on a stale value left over from GPS mode. Both now use the effective interval.
+
+---
+
 ## [2.0.25] - 2026-10-04
 
 ### 群发 / 邀请前各加一次确认 + 修复升级后步数归零
