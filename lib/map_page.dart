@@ -1075,6 +1075,14 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                       ),
                     ),
                   ),
+                  // 方位角「小角角」：朝航向伸出的三角箭头。
+                  // **放在圆点之前（其下层）**：三角底边藏进圆点、被圆点盖住，
+                  // 屏幕上只剩圆环外露出的尖角；与圆点同心叠放（放进圆点的 child
+                  // 会被圆形裁剪）。
+                  HeadingCornerIndicator(
+                    course: widget.state.myCourse,
+                    accent: C.blue,
+                  ),
                   Container(
                     width: 26,
                     height: 26,
@@ -1094,16 +1102,6 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                       color: Colors.white,
                       size: 15,
                     ),
-                  ),
-                  // 方位角「小角角」：在圆点之上、随航向旋转的箭头。
-                  // 与圆点同心叠放（不能放进圆点的 child，否则会被圆形裁剪）。
-                  // 蓝底白边的三角，与圆点同一套视觉语言。
-                  HeadingCornerIndicator(
-                    course: widget.state.myCourse,
-                    radius: 13,
-                    size: 9,
-                    halfWidth: 7.5,
-                    accent: C.blue,
                   ),
                   Positioned(
                     top: 30,

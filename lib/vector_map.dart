@@ -383,6 +383,13 @@ class _VectorMapViewState extends State<VectorMapView> {
         // 角标会伸出圆外（比标记框略大），不裁剪才不会把尖端切掉。
         clipBehavior: Clip.none,
         children: [
+          // 方位角「小角角」在圆点**之下**：底边被圆点盖住，只露出尖角。
+          if (hasCourse)
+            HeadingCornerIndicator(
+              course: crs,
+              radius: 14,
+              accent: C.blue,
+            ),
           Container(
             width: 28,
             height: 28,
@@ -400,13 +407,6 @@ class _VectorMapViewState extends State<VectorMapView> {
               size: 14,
             ),
           ),
-          if (hasCourse)
-            HeadingCornerIndicator(
-              course: crs,
-              radius: 14,
-              size: 9,
-              accent: C.blue,
-            ),
         ],
       ),
     );

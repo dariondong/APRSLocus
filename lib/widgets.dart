@@ -741,11 +741,15 @@ class _LogoPainter extends CustomPainter {
 ///
 /// 造型是**两色三角**：白色描边的三角 + 内部 [accent] 填充，与圆点「蓝底白边」
 /// 同一套视觉语言 —— 一眼就认得出是朝外指的箭头，而不是圆边上长了个疙瘩。
-/// 三角的**底边落在圆环中心线上**（略微内缩 [inset]），因此与圆环自然接续，
-/// 看起来就是圆环长出的一个尖角。
+/// 三角的**底边落在圆点内部**（[inset] 缩进量），被叠在上面的圆点盖住，
+/// 于是屏幕上只剩圆环外露出的那个尖角，看起来就是圆点长出的一个尖鼻子。
 ///
 /// 与 [Transform.rotate] 的 `child` 叠加使用：外层负责缩放（脉冲/尺寸），
 /// 本组件负责按 [course] 旋转。航向朝上（0°）时角角指向正上方。
+///
+/// **务必将本组件叠在圆点 *之下***（Stack 里放在圆点 Container 前面）：三角底边
+/// 落在圆点内部，被圆点本体盖住，屏幕上只剩圆环外露出的那个尖角 —— 否则底边
+/// 会在蓝圆上留下一道白疤。所以 [inset] 要大于 0，让底边缩进圆内。
 ///
 /// **无航向时不画**（[course] 为 null / 负值 / 静止未取得航向）：宁可没有角标，
 /// 也不要拿一个猜的方向误导用户。
@@ -761,7 +765,7 @@ class HeadingCornerIndicator extends StatelessWidget {
   /// 三角底边的半宽。
   final double halfWidth;
 
-  /// 底边相对圆环中心线向内缩进，让三角与圆环咬合、不留缝。
+  /// 底边相对圆环中心线向内缩进，让底边完全藏进圆点、不留白疤。
   final double inset;
 
   /// 描边/外三角颜色。
@@ -774,8 +778,8 @@ class HeadingCornerIndicator extends StatelessWidget {
     required this.course,
     this.radius = 13,
     this.size = 9,
-    this.halfWidth = 7.5,
-    this.inset = 3,
+    this.halfWidth = 8,
+    this.inset = 5,
     this.color = Colors.white,
     this.accent,
   });
@@ -825,8 +829,10 @@ class _HeadingCornerPainter extends CustomPainter {
     ..close();
 
   @override
-  void paint(Canvas canvas, Size size) {
-    canvas.translate(size.width / 2, size.height / 2);
+  void paint(Canvas canvas, Size canvasSize) {
+    canvas.translate(canvasSize.width / 2, canvasSize.height / 2);
+    // 注意：这里的成员 size（箭头长度）会与 paint 的 Size 形参重名，
+    // 故形参命名 canvasSize，避免遮蔽成员。
     final baseR = radius - inset;
     // 外三角：白边 + 尖端，从圆环中心线一路伸到 radius+size。
     canvas.drawPath(
