@@ -108,6 +108,16 @@ def esc(s):
     return (s or '').replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
 
 
+def md_inline(s):
+    """将内联 markdown（`代码`、**粗体**、*斜体*）转换为 HTML 标签。"""
+    if not s:
+        return ''
+    s = re.sub(r'`([^`]+)`', r'<code>\1</code>', s)
+    s = re.sub(r'\*\*([^*]+)\*\*', r'<b>\1</b>', s)
+    s = re.sub(r'(?<![*\w])\*([^\s*]+)\*(?![*\w])', r'<em>\1</em>', s)
+    return s
+
+
 def page_path(lang, file):
     """输出路径（相对仓库根）。"""
     return '%s/%s.html' % (DEST[lang][0], file)
@@ -205,7 +215,7 @@ def build_settings(lang):
         parts = ['      <h3 id="%s">%s<a class="hdr-anchor" href="#%s" aria-label="%s" '
                  'title="%s">#</a></h3>' % (sid, esc(title), sid, PERMA[lang], PERMA[lang])]
         if pg['subtitle'] and pg['subtitle'] != title:
-            parts.append('      <p class="m-grp-sub">%s</p>' % esc(pg['subtitle']))
+            parts.append('      <p class="m-grp-sub">%s</p>' % md_inline(esc(pg['subtitle'])))
         if intro:
             parts.append('      <p>%s</p>' % intro[lang])
         for sec in pg['sections']:
@@ -229,17 +239,17 @@ def build_settings(lang):
             if sec['title']:
                 parts.append('        <h4>%s</h4>' % esc(sec['title']))
             if sec['subtitle']:
-                parts.append('        <p class="m-grp-sub">%s</p>' % esc(sec['subtitle']))
+                parts.append('        <p class="m-grp-sub">%s</p>' % md_inline(esc(sec['subtitle'])))
             if sec['note']:
                 parts.append('        <div class="callout info"><span class="co-ic">ℹ️</span>'
-                             '<div><p>%s</p></div></div>' % esc(sec['note']))
+                             '<div><p>%s</p></div></div>' % md_inline(esc(sec['note'])))
             if rows:
                 parts.append('        <div class="doc-table-wrap"><table class="doc-table set-table">'
                              '<thead><tr><th>%s</th><th>%s</th><th>%s</th><th>%s</th></tr></thead><tbody>'
                              % (T('设置项', '設定項', 'Setting')[lang],
-                                T('控件', '控件', 'Control')[lang],
-                                T('默认值', '預設值', 'Default')[lang],
-                                T('说明', '說明', 'Description')[lang]))
+                                 T('控件', '控件', 'Control')[lang],
+                                 T('默认值', '預設值', 'Default')[lang],
+                                 T('说明', '說明', 'Description')[lang]))
                 for r in rows:
                     kind = KIND.get(r['kind'], T('控件', '控件', 'Control'))[lang]
                     # 默认值：只有可编辑控件才显示（状态/计数显示默认值会误导）
@@ -256,17 +266,17 @@ def build_settings(lang):
                             d = 'auto'
                         else:
                             d = '<code>%s</code>' % esc(dv)
-                    label = esc(r['label'])
+                    label = md_inline(esc(r['label']))
                     if r['opts']:
                         label += '<span class="m-opts">%s</span>' % \
-                            ' · '.join(esc(o) for o in r['opts'])
+                            ' · '.join(md_inline(esc(o)) for o in r['opts'])
                     desc = ' / '.join(x for x in (r['tip'] or r['hint'] or '',
                                                   r['sub'], *r['subsub']) if x)
                     fld = '<code class="m-field">%s</code>' % esc(r['field']) if r['field'] and editable else ''
                     parts.append(
                         '<tr><td><b>%s</b>%s</td><td><span class="m-kind">%s</span></td>'
                         '<td class="m-def">%s</td><td>%s</td></tr>'
-                        % (label, (' ' + fld) if fld else '', kind, d, esc(desc)))
+                        % (label, (' ' + fld) if fld else '', kind, d, md_inline(esc(desc))))
                 parts.append('</tbody></table></div>')
             parts.append('      </div>')
         secs.append(dict(id=sid, title=title, html='\n'.join(parts)))

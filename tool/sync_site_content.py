@@ -2229,6 +2229,16 @@ def strip_block(s, open_m, close_m):
     return pat.sub('', s)
 
 
+def md_inline(s):
+    """将内联 markdown（`代码`、**粗体**、*斜体*）转换为 HTML 标签。"""
+    if not s:
+        return ''
+    s = re.sub(r'`([^`]+)`', r'<code>\1</code>', s)
+    s = re.sub(r'\*\*([^*]+)\*\*', r'<b>\1</b>', s)
+    s = re.sub(r'(?<![*\w])\*([^\s*]+)\*(?![*\w])', r'<em>\1</em>', s)
+    return s
+
+
 def render_cards(lang):
     out = [F_OPEN]
     for c in CARDS:
@@ -2240,7 +2250,8 @@ def render_cards(lang):
             '      <p>{desc}</p>\n'
             '      <ul class="card-tags">{tags}</ul>\n'
             '    </article>'.format(icon=c['icon'], fa=c['fa'],
-                                   title=c['title'][lang], desc=c['desc'][lang],
+                                   title=md_inline(c['title'][lang]),
+                                   desc=md_inline(c['desc'][lang]),
                                    tags=tags))
     out.append('  ' + F_CLOSE)
     return '\n'.join(out)
@@ -2257,7 +2268,7 @@ def render_changelog(lang):
         out.append('      <div class="cl-body">')
         for kind, txt in e['items']:
             out.append('        <div class="cl-item"><span class="cl-dot %s"></span>%s</div>'
-                       % (kind, txt[lang]))
+                       % (kind, md_inline(txt[lang])))
         out.append('      </div>')
         out.append('    </div>')
     out.append('  ' + C_CLOSE)

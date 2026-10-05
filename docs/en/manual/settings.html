@@ -216,7 +216,7 @@
 <tr><td><b>Power (W)</b></td><td><span class="m-kind">Text input</span></td><td class="m-def">—</td><td>Power, antenna height and gain share one PHG data extension: filling any of them encodes and sends all of them (the spec defines it as a single fixed 7-byte field). Power takes the largest step not exceeding the real value: 25 W reports 25, and so does 30 W, because over-reporting inflates your coverage circle. Antenna height is measured above average local terrain - a different quantity from the /A= altitude sent automatically above.</td></tr>
 <tr><td><b>Antenna height (ft)</b></td><td><span class="m-kind">Text input</span></td><td class="m-def">—</td><td>Power, antenna height and gain share one PHG data extension: filling any of them encodes and sends all of them (the spec defines it as a single fixed 7-byte field). Power takes the largest step not exceeding the real value: 25 W reports 25, and so does 30 W, because over-reporting inflates your coverage circle. Antenna height is measured above average local terrain - a different quantity from the /A= altitude sent automatically above.</td></tr>
 <tr><td><b>Gain (dB)</b></td><td><span class="m-kind">Text input</span></td><td class="m-def">—</td><td>Power, antenna height and gain share one PHG data extension: filling any of them encodes and sends all of them (the spec defines it as a single fixed 7-byte field). Power takes the largest step not exceeding the real value: 25 W reports 25, and so does 30 W, because over-reporting inflates your coverage circle. Antenna height is measured above average local terrain - a different quantity from the /A= altitude sent automatically above.</td></tr>
-<tr><td><b>Standalone status packet</b> <code class="m-field">aprsStatusText</code></td><td><span class="m-kind">Text input</span></td><td class="m-def">(empty)</td><td>This sends a standalone status packet (starts with `&gt;`, carries no coordinates, and does not move you on aprs.fi) - a different APRS packet type from the comment above. Left empty, the built-in APRSlocus online frame is sent instead.</td></tr>
+<tr><td><b>Standalone status packet</b> <code class="m-field">aprsStatusText</code></td><td><span class="m-kind">Text input</span></td><td class="m-def">(empty)</td><td>This sends a standalone status packet (starts with <code>&gt;</code>, carries no coordinates, and does not move you on aprs.fi) - a different APRS packet type from the comment above. Left empty, the built-in APRSlocus online frame is sent instead.</td></tr>
 </tbody></table></div>
       </div>
       <div class="m-sub">
@@ -275,7 +275,7 @@
 <tr><td><b>Trip distance</b> <code class="m-field">beaconIncludeTripMileage</code></td><td><span class="m-kind">Small switch</span></td><td class="m-def">off</td><td></td></tr>
 <tr><td><b>Total distance</b> <code class="m-field">beaconIncludeTotalMileage</code></td><td><span class="m-kind">Small switch</span></td><td class="m-def">off</td><td></td></tr>
 <tr><td><b>Steps</b> <code class="m-field">beaconIncludeSteps</code></td><td><span class="m-kind">Small switch</span></td><td class="m-def">off</td><td></td></tr>
-<tr><td><b>Today's steps</b></td><td><span class="m-kind">Read-only</span></td><td class="m-def">—</td><td>Steps come from the phone's step counter (hardware counting, more accurate than estimating from the accelerometer). They can be sent along with the beacon (`STEPS=`), so other APRSlocus users can see you in the activity leaderboard.</td></tr>
+<tr><td><b>Today's steps</b></td><td><span class="m-kind">Read-only</span></td><td class="m-def">—</td><td>Steps come from the phone's step counter (hardware counting, more accurate than estimating from the accelerometer). They can be sent along with the beacon (<code>STEPS=</code>), so other APRSlocus users can see you in the activity leaderboard.</td></tr>
 <tr><td><b>Grant activity permission</b></td><td><span class="m-kind">Button</span></td><td class="m-def">—</td><td></td></tr>
 <tr><td><b>Location status</b></td><td><span class="m-kind">Read-only</span></td><td class="m-def">—</td><td></td></tr>
 <tr><td><b>Beacons sent</b></td><td><span class="m-kind">Read-only</span></td><td class="m-def">—</td><td></td></tr>
@@ -328,7 +328,7 @@
         <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>Setting</th><th>Control</th><th>Default</th><th>Description</th></tr></thead><tbody>
 <tr><td><b>Bound device</b></td><td><span class="m-kind">Read-only</span></td><td class="m-def">—</td><td></td></tr>
 <tr><td><b>Connection</b></td><td><span class="m-kind">Read-only</span></td><td class="m-def">—</td><td></td></tr>
-<tr><td><b>PKWDWPL (Kenwood waypoints)</b></td><td><span class="m-kind">Read-only</span></td><td class="m-def">—</td><td>PKWDWPL is a **receive-only** link: it brings in stations but never transmits (use APRS-IS / TNC / audio for transmitting)</td></tr>
+<tr><td><b>PKWDWPL (Kenwood waypoints)</b></td><td><span class="m-kind">Read-only</span></td><td class="m-def">—</td><td>PKWDWPL is a <b>receive-only</b> link: it brings in stations but never transmits (use APRS-IS / TNC / audio for transmitting)</td></tr>
 <tr><td><b>PKWDWPL device</b></td><td><span class="m-kind">Button</span></td><td class="m-def">—</td><td></td></tr>
 </tbody></table></div>
       </div>

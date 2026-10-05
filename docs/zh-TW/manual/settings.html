@@ -212,11 +212,11 @@
       <p>身份是所有封包的根：呼號必須與你的執照一致，SSID 決定臺站類型（-9 車載、-7 手持常見）。</p>
       <div class="m-sub">
         <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>設定項</th><th>控件</th><th>預設值</th><th>說明</th></tr></thead><tbody>
-<tr><td><b>高度（公尺，留空跟隨定位）</b></td><td><span class="m-kind">輸入框</span></td><td class="m-def">—</td><td>填了就用手填的這個海拔（更可靠：無氣壓計機型、室內、只有網路定位時 GPS 海拔常不可用），留空則跟隨定位的海拔。傳送時按英尺編成 `/A=aaaaaa` 六位；這是臺站**海拔**，與下面 PHG 裡的「天線高度」（高於當地平均地面）是兩個不同的量。</td></tr>
+<tr><td><b>高度（公尺，留空跟隨定位）</b></td><td><span class="m-kind">輸入框</span></td><td class="m-def">—</td><td>填了就用手填的這個海拔（更可靠：無氣壓計機型、室內、只有網路定位時 GPS 海拔常不可用），留空則跟隨定位的海拔。傳送時按英尺編成 <code>/A=aaaaaa</code> 六位；這是臺站<b>海拔</b>，與下面 PHG 裡的「天線高度」（高於當地平均地面）是兩個不同的量。</td></tr>
 <tr><td><b>功率（瓦）</b></td><td><span class="m-kind">輸入框</span></td><td class="m-def">—</td><td>功率 / 天線高度 / 增益同屬一個 PHG 資料擴充，填了任一項就一起編碼送出（規範裡它是固定的 7 位元組欄位）。功率取不超過實際值的最大檔：25 W 報 25、30 W 也只報 25 —— 寫大了等於虛報覆蓋範圍。天線高度是「高於當地平均地面」，與上面自動傳送的 /A= 海拔是兩個不同的量。</td></tr>
 <tr><td><b>天線高度（英尺）</b></td><td><span class="m-kind">輸入框</span></td><td class="m-def">—</td><td>功率 / 天線高度 / 增益同屬一個 PHG 資料擴充，填了任一項就一起編碼送出（規範裡它是固定的 7 位元組欄位）。功率取不超過實際值的最大檔：25 W 報 25、30 W 也只報 25 —— 寫大了等於虛報覆蓋範圍。天線高度是「高於當地平均地面」，與上面自動傳送的 /A= 海拔是兩個不同的量。</td></tr>
 <tr><td><b>增益（dB）</b></td><td><span class="m-kind">輸入框</span></td><td class="m-def">—</td><td>功率 / 天線高度 / 增益同屬一個 PHG 資料擴充，填了任一項就一起編碼送出（規範裡它是固定的 7 位元組欄位）。功率取不超過實際值的最大檔：25 W 報 25、30 W 也只報 25 —— 寫大了等於虛報覆蓋範圍。天線高度是「高於當地平均地面」，與上面自動傳送的 /A= 海拔是兩個不同的量。</td></tr>
-<tr><td><b>獨立狀態報文</b> <code class="m-field">aprsStatusText</code></td><td><span class="m-kind">輸入框</span></td><td class="m-def">（空）</td><td>這一點發的是**獨立一幀**狀態報文（`&gt;` 開頭、不含座標、不會移動你在 aprs.fi 上的位置），與上面那行備註是兩種不同的 APRS 報文。留空則傳送內建的 APRSlocus 在線幀。</td></tr>
+<tr><td><b>獨立狀態報文</b> <code class="m-field">aprsStatusText</code></td><td><span class="m-kind">輸入框</span></td><td class="m-def">（空）</td><td>這一點發的是<b>獨立一幀</b>狀態報文（<code>&gt;</code> 開頭、不含座標、不會移動你在 aprs.fi 上的位置），與上面那行備註是兩種不同的 APRS 報文。留空則傳送內建的 APRSlocus 在線幀。</td></tr>
 </tbody></table></div>
       </div>
       <div class="m-sub">
@@ -275,7 +275,7 @@
 <tr><td><b>本次里程</b> <code class="m-field">beaconIncludeTripMileage</code></td><td><span class="m-kind">小開關</span></td><td class="m-def">關</td><td></td></tr>
 <tr><td><b>累計里程</b> <code class="m-field">beaconIncludeTotalMileage</code></td><td><span class="m-kind">小開關</span></td><td class="m-def">關</td><td></td></tr>
 <tr><td><b>步數</b> <code class="m-field">beaconIncludeSteps</code></td><td><span class="m-kind">小開關</span></td><td class="m-def">關</td><td></td></tr>
-<tr><td><b>今日步數</b></td><td><span class="m-kind">唯讀狀態</span></td><td class="m-def">—</td><td>步數來自手機的計步感測器（硬體計數，比用加速度計估算準）。可以隨信標一起發出（`STEPS=`），對方也是 APRSlocus 時就能在運動排行榜裡看到你。</td></tr>
+<tr><td><b>今日步數</b></td><td><span class="m-kind">唯讀狀態</span></td><td class="m-def">—</td><td>步數來自手機的計步感測器（硬體計數，比用加速度計估算準）。可以隨信標一起發出（<code>STEPS=</code>），對方也是 APRSlocus 時就能在運動排行榜裡看到你。</td></tr>
 <tr><td><b>授予「身體活動」權限</b></td><td><span class="m-kind">按鈕</span></td><td class="m-def">—</td><td></td></tr>
 <tr><td><b>定位狀態</b></td><td><span class="m-kind">唯讀狀態</span></td><td class="m-def">—</td><td></td></tr>
 <tr><td><b>信標傳送次數</b></td><td><span class="m-kind">唯讀狀態</span></td><td class="m-def">—</td><td></td></tr>
@@ -328,7 +328,7 @@
         <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>設定項</th><th>控件</th><th>預設值</th><th>說明</th></tr></thead><tbody>
 <tr><td><b>已綁定裝置</b></td><td><span class="m-kind">唯讀狀態</span></td><td class="m-def">—</td><td></td></tr>
 <tr><td><b>連線</b></td><td><span class="m-kind">唯讀狀態</span></td><td class="m-def">—</td><td></td></tr>
-<tr><td><b>PKWDWPL（Kenwood 航點）</b></td><td><span class="m-kind">唯讀狀態</span></td><td class="m-def">—</td><td>PKWDWPL 是**唯讀**鏈路：能收台站、不參與發射（發射請用 APRS-IS / TNC / 音訊）</td></tr>
+<tr><td><b>PKWDWPL（Kenwood 航點）</b></td><td><span class="m-kind">唯讀狀態</span></td><td class="m-def">—</td><td>PKWDWPL 是<b>唯讀</b>鏈路：能收台站、不參與發射（發射請用 APRS-IS / TNC / 音訊）</td></tr>
 <tr><td><b>PKWDWPL 裝置</b></td><td><span class="m-kind">按鈕</span></td><td class="m-def">—</td><td></td></tr>
 </tbody></table></div>
       </div>
@@ -450,7 +450,7 @@
         <p class="m-grp-sub">把射頻收到的報文送上 APRS-IS</p>
         <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>設定項</th><th>控件</th><th>預設值</th><th>說明</th></tr></thead><tbody>
 <tr><td><b>啟用閘道</b> <code class="m-field">igateEnabled</code></td><td><span class="m-kind">開關</span></td><td class="m-def">關</td><td></td></tr>
-<tr><td><b>雙向閘道（向射頻轉遞訊息）</b> <code class="m-field">igateTwoWay</code></td><td><span class="m-kind">開關</span></td><td class="m-def">關</td><td>射頻上一條報文都沒收到：閘道的條件已經全齊，但它**無報文可轉**。這不是閘道的問題 —— 報文根本沒進到應用程式裡。查上游：電台音量與靜噪、天線、對方是否真的在發射，也可以在日誌頁確認有沒有任何射頻報文。</td></tr>
+<tr><td><b>雙向閘道（向射頻轉遞訊息）</b> <code class="m-field">igateTwoWay</code></td><td><span class="m-kind">開關</span></td><td class="m-def">關</td><td>射頻上一條報文都沒收到：閘道的條件已經全齊，但它<b>無報文可轉</b>。這不是閘道的問題 —— 報文根本沒進到應用程式裡。查上游：電台音量與靜噪、天線、對方是否真的在發射，也可以在日誌頁確認有沒有任何射頻報文。</td></tr>
 <tr><td><b>射頻收到（條）</b></td><td><span class="m-kind">唯讀狀態</span></td><td class="m-def">—</td><td></td></tr>
 <tr><td><b>已轉遞 → APRS-IS（條）</b></td><td><span class="m-kind">唯讀狀態</span></td><td class="m-def">—</td><td></td></tr>
 <tr><td><b>已轉遞 → 射頻（條）</b></td><td><span class="m-kind">唯讀狀態</span></td><td class="m-def">—</td><td></td></tr>
