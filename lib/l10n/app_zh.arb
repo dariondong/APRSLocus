@@ -3278,5 +3278,19 @@
   "@pruneConfirm": {"placeholders": {"n": {"type": "String"}, "m": {"type": "String"}}},
   "@pruneDone": {"placeholders": {"n": {"type": "String"}}},
   "prunePreview": "将清理 {n} 个",
-  "@prunePreview": {"placeholders": {"n": {"type": "String"}}}
+  "@prunePreview": {"placeholders": {"n": {"type": "String"}}},
+  "nDays": "{n} 天",
+  "retentionDaysOff": "关闭（不自动清理）",
+  "pruneWithin": "清理多少天前的台站",
+  "pruneWithinTip": "手动清理使用的天数，与上面的自动清理保留天数**相互独立** —— 选几天就只清掉「这么多天没再听到」的普通台站。",
+  "prunePickDays": "请先选择天数",
+  "factoryReset": "清除所有数据并重新初始化",
+  "factoryResetDesc": "连呼号与所有设置一起清除，重新运行首次引导",
+  "factoryResetIntro": "把本应用恢复到「刚安装」的状态：",
+  "factoryResetCallsign": "呼号与 SSID",
+  "factoryResetSettings": "服务器、信标、界面等全部设置",
+  "factoryResetWarn": "此操作不可恢复，且会重新运行首次引导。建议先导出一次备份。",
+  "factoryResetButton": "清除所有数据并重新初始化",
+  "factoryResetConfirm": "将清除呼号、服务器、信标与界面等**全部设置**，以及台站、消息、日志、轨迹等**全部数据**，然后重新运行首次引导。此操作**不可恢复**。确定继续吗？",
+  "@nDays": {"placeholders": {"n": {"type": "String"}}}
 }

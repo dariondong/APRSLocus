@@ -2172,8 +2172,6 @@ class _ConnectionSettingsPageState extends State<ConnectionSettingsPage> {
   late final TextEditingController _maxTrackPts;
   // 在线判定时长（分钟）——原先写死 5 分钟，现改为用户可配置
   late final TextEditingController _onlineWindow;
-  // 台站保留天数（0 = 关闭自动清理）——数据维护：过时台站自动清理
-  late final TextEditingController _retention;
 
   bool _configDirty = false;
   String _origServer = '';
@@ -2201,7 +2199,6 @@ class _ConnectionSettingsPageState extends State<ConnectionSettingsPage> {
     _maxPackets = TextEditingController(text: '${st.maxPackets}');
     _maxTrackPts = TextEditingController(text: '${st.maxTrackPts}');
     _onlineWindow = TextEditingController(text: '${st.onlineWindowMin}');
-    _retention = TextEditingController(text: '${st.stationRetentionDays}');
     _origServer = st.aprs.server;
     _origPort = st.aprs.port;
     _origPass = st.aprs.passcode;
@@ -2225,7 +2222,6 @@ class _ConnectionSettingsPageState extends State<ConnectionSettingsPage> {
     _maxPackets.dispose();
     _maxTrackPts.dispose();
     _onlineWindow.dispose();
-    _retention.dispose();
     super.dispose();
   }
 
@@ -2961,12 +2957,8 @@ class _ConnectionSettingsPageState extends State<ConnectionSettingsPage> {
           final n = int.tryParse(v);
           if (n != null) st.setOnlineWindowMin(n);
         }),
-        // 台站保留天数（数据维护）：过时台站自动清理的上限天数
-        SettingsInput(S.of(context).stationRetention, _retention,
-            tip: S.of(context).stationRetentionTip, onChanged: (v) {
-          final n = int.tryParse(v);
-          if (n != null) st.setStationRetentionDays(n);
-        }),
+        // 「台站保留天数」已移到「数据维护」页 —— 它属于「清理策略」而不是
+        // 「本地保留多少数据」，和它要清理的那个按钮分在两页时用户找不到。
       ],
     );
   }
@@ -3981,6 +3973,17 @@ class DataSettingsPage extends StatefulWidget {
 class _DataSettingsPageState extends State<DataSettingsPage> {
   AppState get st => widget.state;
 
+  /// 可选的「天数」档位，自动清理保留天数与手动清理天数共用同一组。
+  /// 0 = 关闭（自动）/ 未选择（手动）。
+  static const List<int> _dayOptions = [0, 3, 7, 14, 30, 60, 90, 180, 365];
+
+  /// 手动清理使用的天数阈值。
+  ///
+  /// **刻意不从 [AppState.stationRetentionDays] 预填**：那是「自动清理策略」，
+  /// 手动清理应当由用户当场选择，两者是独立参数（用户反馈：复用自动清理的
+  /// 参数会让「点一下清掉多少」不可预期）。不落盘，一次性选择。
+  int _pruneDays = 0;
+
   @override
   Widget build(BuildContext context) {
     return ListenableBuilder(
@@ -4067,36 +4070,56 @@ class _DataSettingsPageState extends State<DataSettingsPage> {
         const SizedBox(height: 16),
         // 单项：按天数清理**过时台站**（不是全清）——长期没再听到的普通台站，
         // 收藏 / 手动添加的保留。与上面「清空台站列表」互补：那是「全清」，
-        // 这是「只清过时的」。保留天数在「连接设置 → 存储上限」里配置。
+        // 这是「只清过时的」。
+        //
+        // 本卡把「清理策略」收拢在一处：上面一行是**自动清理**的保留天数
+        // （启动时按它跑一次），接着是**手动清理**——它有自己的天数选择器，
+        // 不套用自动清理那个数（用户反馈：混用会让结果不可预期）。
         SettingsSectionCard(
           title: S.of(context).pruneOldData,
           subtitle: S.of(context).pruneOldDataDesc,
           icon: Icons.delete_sweep_rounded,
           color: C.orange,
           children: [
+            SettingsChoice<int>(
+              S.of(context).stationRetention,
+              value: _dayValue(st.stationRetentionDays),
+              options: _dayOptions,
+              labelOf: (v) => v <= 0
+                  ? S.of(context).retentionDaysOff
+                  : S.of(context).nDays('$v'),
+              tip: S.of(context).stationRetentionTip,
+              onChanged: (v) => st.setStationRetentionDays(v),
+            ),
             Padding(
               padding: const EdgeInsets.all(14),
               child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                if (st.stationRetentionDays <= 0)
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 4),
-                    child: Text(S.of(context).retentionOff,
-                        style: ts(11, c: C.orange, h: 1.4)),
-                  ),
                 Text(S.of(context).pruneHint, style: ts(11, c: C.grey, h: 1.4)),
                 const SizedBox(height: 12),
+                SettingsChoice<int>(
+                  S.of(context).pruneWithin,
+                  value: _pruneDays,
+                  options: _dayOptions,
+                  labelOf: (v) => v <= 0
+                      ? S.of(context).prunePickDays
+                      : S.of(context).nDays('$v'),
+                  tip: S.of(context).pruneWithinTip,
+                  onChanged: (v) => setState(() => _pruneDays = v),
+                ),
+                const SizedBox(height: 10),
                 SizedBox(
                   width: double.infinity,
                   child: OutlinedButton.icon(
-                    onPressed:
-                        st.prunableStationCount == 0 ? null : _confirmPrune,
+                    onPressed: _pruneDays <= 0 ? null : _confirmPrune,
                     icon: const Icon(Icons.delete_sweep_rounded, size: 16),
-                    label: Text(st.prunableStationCount == 0
-                        ? S.of(context).pruneNone
-                        : S.of(context)
-                            .prunePreview('${st.prunableStationCount}')),
+                    label: Text(_pruneDays <= 0
+                        ? S.of(context).prunePickDays
+                        : st.prunableStationCountFor(_pruneDays) == 0
+                            ? S.of(context).pruneNone
+                            : S.of(context).prunePreview(
+                                '${st.prunableStationCountFor(_pruneDays)}')),
                     style: OutlinedButton.styleFrom(
                       foregroundColor: C.orange,
                       side: BorderSide(color: C.orange.withValues(alpha: 0.4)),
@@ -4156,6 +4179,62 @@ class _DataSettingsPageState extends State<DataSettingsPage> {
                     onPressed: () => _confirmClearAll(),
                     icon: Icon(Icons.delete_forever_rounded, size: 18),
                     label: Text(S.of(context).confirmClearAllData),
+                    style: FilledButton.styleFrom(
+                      backgroundColor: C.red,
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12)),
+                    ),
+                  ),
+                ),
+              ]),
+            ),
+          ],
+        ),
+        const SizedBox(height: 16),
+        // 恢复出厂：比「清空全部数据」更进一步 —— 连**呼号与所有设置**一起清，
+        // 并重新跑首次引导。放在清空数据之后、离线地图之前，作为「数据维护」页
+        // 里最重的一档，视觉上用红色警示。
+        SettingsSectionCard(
+          title: S.of(context).factoryReset,
+          subtitle: S.of(context).factoryResetDesc,
+          icon: Icons.settings_backup_restore_rounded,
+          color: C.red,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(14),
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                Text(S.of(context).factoryResetIntro, style: ts(13)),
+                SizedBox(height: 8),
+                _clearDataItem(S.of(context).factoryResetCallsign,
+                    '${st.myFullCall}'),
+                _clearDataItem(S.of(context).factoryResetSettings, ''),
+                SizedBox(height: 10),
+                Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: C.redBg,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Row(children: [
+                    Icon(Icons.warning_amber_rounded,
+                        size: 14, color: C.red),
+                    SizedBox(width: 6),
+                    Expanded(
+                      child: Text(S.of(context).factoryResetWarn,
+                          style: ts(11, c: C.red, w: FontWeight.w500)),
+                    ),
+                  ]),
+                ),
+                SizedBox(height: 14),
+                SizedBox(
+                  width: double.infinity,
+                  child: FilledButton.icon(
+                    onPressed: _confirmFactoryReset,
+                    icon: Icon(Icons.settings_backup_restore_rounded, size: 18),
+                    label: Text(S.of(context).factoryResetButton),
                     style: FilledButton.styleFrom(
                       backgroundColor: C.red,
                       padding: const EdgeInsets.symmetric(vertical: 12),
@@ -4277,11 +4356,28 @@ class _DataSettingsPageState extends State<DataSettingsPage> {
     );
   }
 
+  /// 把保存的保留天数吸附到最近的档位，避免下拉框 value 不在 options 里
+  /// （旧版本数字输入可能存过任意值，DropdownButton 遇到未知 value 会断言失败）。
+  int _dayValue(int days) {
+    if (days <= 0) return 0;
+    var best = _dayOptions.first;
+    var bestDiff = 1 << 30;
+    for (final o in _dayOptions) {
+      final d = (o - days).abs();
+      if (d < bestDiff) {
+        bestDiff = d;
+        best = o;
+      }
+    }
+    return best;
+  }
+
   /// 按天数清理**过时台站**（收藏 / 手动添加的保留）。与全清不同：只删
-  /// `lastHeard` 早于保留阈值的普通台站，且同样不可恢复，故先确认。
+  /// `lastHeard` 早于**本页所选天数**的普通台站，且同样不可恢复，故先确认。
+  /// 天数取自 [_pruneDays]（用户当场选的），不套用自动清理的保留天数。
   void _confirmPrune() {
-    final days = st.stationRetentionDays;
-    final n = st.prunableStationCount;
+    final days = _pruneDays;
+    final n = st.prunableStationCountFor(days);
     if (n == 0) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(S.of(context).pruneNone)),
@@ -4356,7 +4452,47 @@ class _DataSettingsPageState extends State<DataSettingsPage> {
               backgroundColor: C.red,
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
             ),
-            child: Text(S.of(context).confirmClear, style: ts(13, c: Colors.white, w: FontWeight.w700)),
+            child: Text(S.of(context).confirmClear,                 style: ts(13, c: Colors.white, w: FontWeight.w700)),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// 恢复出厂二次确认。清空是**破坏性且不可逆**的，且会连呼号一起清掉，
+  /// 故文案必须把「会清掉什么」逐条讲明，确认按钮也用红色强调。
+  void _confirmFactoryReset() {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: Row(children: [
+          Icon(Icons.warning_amber_rounded, color: C.red, size: 22),
+          SizedBox(width: 8),
+          Text(S.of(context).factoryReset, style: ts(16, w: FontWeight.w700)),
+        ]),
+        content: Text(S.of(context).factoryResetConfirm, style: ts(13, c: C.slate)),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: Text(S.of(context).cancel, style: ts(13, c: C.grey)),
+          ),
+          FilledButton(
+            onPressed: () async {
+              Navigator.pop(ctx);
+              await st.factoryReset();
+              if (!mounted) return;
+              // factoryReset 已把 oobeDone 置回 false + reloadTick++，
+              // App 层会切到向导页并重建导航栈 —— 这里只需回根路由。
+              Navigator.of(context).popUntil((r) => r.isFirst);
+            },
+            style: FilledButton.styleFrom(
+              backgroundColor: C.red,
+              shape:
+                  RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            ),
+            child: Text(S.of(context).factoryResetButton,
+                style: ts(13, c: Colors.white, w: FontWeight.w700)),
           ),
         ],
       ),

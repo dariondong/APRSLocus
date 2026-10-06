@@ -7945,4 +7945,43 @@ Dengan menekan "Setuju dan sambung", Anda menyatakan telah membaca, memahami, da
   @override
   String prunePreview(String n) => "Akan membersihkan $n";
 
+  @override
+  String nDays(String n) => "$n hari";
+
+  @override
+  String get retentionDaysOff => "Nonaktif (tanpa bersih otomatis)";
+
+  @override
+  String get pruneWithin => "Bersihkan stasiun lebih lama dari";
+
+  @override
+  String get pruneWithinTip => "Jumlah hari untuk pembersihan manual, **terpisah** dari retensi pembersihan otomatis di atas — hanya stasiun biasa yang tidak terdengar selama itu yang dihapus.";
+
+  @override
+  String get prunePickDays => "Pilih jumlah hari dulu";
+
+  @override
+  String get factoryReset => "Hapus semua data dan mulai ulang";
+
+  @override
+  String get factoryResetDesc => "Menghapus call sign dan semua pengaturan juga, lalu menjalankan ulang panduan awal";
+
+  @override
+  String get factoryResetIntro => "Mengembalikan aplikasi ke kondisi baru dipasang:";
+
+  @override
+  String get factoryResetCallsign => "Call sign dan SSID";
+
+  @override
+  String get factoryResetSettings => "Semua pengaturan: server, beacon, antarmuka, dll.";
+
+  @override
+  String get factoryResetWarn => "Tidak dapat dibatalkan, dan panduan awal akan berjalan lagi. Ekspor cadangan dulu.";
+
+  @override
+  String get factoryResetButton => "Hapus semua dan mulai ulang";
+
+  @override
+  String get factoryResetConfirm => "Menghapus **semua pengaturan** (call sign, server, beacon, antarmuka) dan **semua data** (stasiun, pesan, log, jejak), lalu menjalankan panduan awal lagi. **Tidak dapat dibatalkan**. Lanjutkan?";
+
 }

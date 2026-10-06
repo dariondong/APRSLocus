@@ -269,4 +269,15 @@ class AchievementCenter {
 
   /// 是否已解锁全部 7 项（FIRST FIX 申请前置）
   bool get allUnlocked => AchievementCenter.all.every((a) => isUnlocked(a.key));
+
+  /// 恢复出厂：清空本地成就进度。
+  ///
+  /// 供「清除所有数据并重新初始化」调用（AppState.factoryReset）。只清内存，
+  /// 磁盘由 factoryReset 的 `p.clear()` 统一处理；联网的官方名单
+  /// （[_firstFixHolders]）是**远端**授予、不属本地数据，保留不动。
+  void resetToDefaults() {
+    _unlocked.clear();
+    _counts.clear();
+    version.value++;
+  }
 }

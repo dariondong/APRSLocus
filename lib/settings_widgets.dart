@@ -227,6 +227,75 @@ class SettingsInput extends StatelessWidget {
   }
 }
 
+/// 设置下拉选择行：左标签 + 右侧下拉菜单。
+///
+/// 用于「值来自一组固定选项」的设置，且选项不适合/不需要平铺成一排按钮时 ——
+/// 尤其当当前值可能落在一长串数字里（例如「清理多少天前的台站」）。与
+/// [SettingsInput] 同款左标签右控件布局，视觉一致。
+class SettingsChoice<T> extends StatelessWidget {
+  final String label;
+  final T value;
+  final List<T> options;
+  final String Function(T) labelOf;
+  final ValueChanged<T> onChanged;
+  final String? tip;
+
+  const SettingsChoice(this.label,
+      {super.key,
+      required this.value,
+      required this.options,
+      required this.labelOf,
+      required this.onChanged,
+      this.tip});
+
+  @override
+  Widget build(BuildContext context) {
+    final row = Container(
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
+      decoration: BoxDecoration(
+          border: Border(bottom: BorderSide(color: C.border, width: 0.4))),
+      child: Row(children: [
+        Flexible(
+          child: Row(children: [
+            Flexible(
+              child: Text(label,
+                  style: ts(12, c: C.slate), overflow: TextOverflow.ellipsis),
+            ),
+            if (tip != null) ...[
+              const SizedBox(width: 4),
+              Tooltip(
+                message: tip,
+                child: Icon(Icons.help_outline_rounded,
+                    size: 14, color: C.greyLight),
+              ),
+            ],
+          ]),
+        ),
+        const Spacer(),
+        DropdownButton<T>(
+          value: value,
+          underline: const SizedBox.shrink(),
+          borderRadius: BorderRadius.circular(12),
+          isDense: true,
+          style: ts(13, w: FontWeight.w600, c: C.blue),
+          icon: Icon(Icons.expand_more_rounded, size: 18, color: C.blue),
+          items: [
+            for (final o in options)
+              DropdownMenuItem<T>(
+                value: o,
+                child: Text(labelOf(o), style: ts(13, w: FontWeight.w600)),
+              ),
+          ],
+          onChanged: (v) {
+            if (v != null) onChanged(v);
+          },
+        ),
+      ]),
+    );
+    return tip != null ? Tooltip(message: tip!, child: row) : row;
+  }
+}
+
 /// 设置开关行
 class SettingsSwitch extends StatelessWidget {
   final String label;

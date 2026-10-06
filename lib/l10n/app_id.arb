@@ -2763,5 +2763,19 @@
   "@pruneConfirm": {"placeholders": {"n": {"type": "String"}, "m": {"type": "String"}}},
   "@pruneDone": {"placeholders": {"n": {"type": "String"}}},
   "prunePreview": "Akan membersihkan {n}",
-  "@prunePreview": {"placeholders": {"n": {"type": "String"}}}
+  "@prunePreview": {"placeholders": {"n": {"type": "String"}}},
+  "nDays": "{n} hari",
+  "retentionDaysOff": "Nonaktif (tanpa bersih otomatis)",
+  "pruneWithin": "Bersihkan stasiun lebih lama dari",
+  "pruneWithinTip": "Jumlah hari untuk pembersihan manual, **terpisah** dari retensi pembersihan otomatis di atas — hanya stasiun biasa yang tidak terdengar selama itu yang dihapus.",
+  "prunePickDays": "Pilih jumlah hari dulu",
+  "factoryReset": "Hapus semua data dan mulai ulang",
+  "factoryResetDesc": "Menghapus call sign dan semua pengaturan juga, lalu menjalankan ulang panduan awal",
+  "factoryResetIntro": "Mengembalikan aplikasi ke kondisi baru dipasang:",
+  "factoryResetCallsign": "Call sign dan SSID",
+  "factoryResetSettings": "Semua pengaturan: server, beacon, antarmuka, dll.",
+  "factoryResetWarn": "Tidak dapat dibatalkan, dan panduan awal akan berjalan lagi. Ekspor cadangan dulu.",
+  "factoryResetButton": "Hapus semua dan mulai ulang",
+  "factoryResetConfirm": "Menghapus **semua pengaturan** (call sign, server, beacon, antarmuka) dan **semua data** (stasiun, pesan, log, jejak), lalu menjalankan panduan awal lagi. **Tidak dapat dibatalkan**. Lanjutkan?",
+  "@nDays": {"placeholders": {"n": {"type": "String"}}}
 }

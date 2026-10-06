@@ -7985,4 +7985,43 @@ Al pulsar "Aceptar y conectar" confirmas que has leído, entendido y aceptado lo
   @override
   String prunePreview(String n) => "Se eliminarán $n";
 
+  @override
+  String nDays(String n) => "$n días";
+
+  @override
+  String get retentionDaysOff => "Desactivado (sin limpieza automática)";
+
+  @override
+  String get pruneWithin => "Limpiar estaciones anteriores a";
+
+  @override
+  String get pruneWithinTip => "Días que usa la limpieza manual, **independientes** de la retención automática de arriba: solo se eliminan las estaciones normales sin recibir durante esos días.";
+
+  @override
+  String get prunePickDays => "Elige primero un número de días";
+
+  @override
+  String get factoryReset => "Borrar todos los datos y reiniciar";
+
+  @override
+  String get factoryResetDesc => "Borra también el indicativo y todos los ajustes, y reinicia el asistente inicial";
+
+  @override
+  String get factoryResetIntro => "Restaura la app al estado de recién instalada:";
+
+  @override
+  String get factoryResetCallsign => "Indicativo y SSID";
+
+  @override
+  String get factoryResetSettings => "Todos los ajustes: servidor, baliza, interfaz, etc.";
+
+  @override
+  String get factoryResetWarn => "No se puede deshacer y el asistente inicial volverá a ejecutarse. Exporta antes una copia de seguridad.";
+
+  @override
+  String get factoryResetButton => "Borrar todo y reiniciar";
+
+  @override
+  String get factoryResetConfirm => "Se borrarán **todos los ajustes** (indicativo, servidor, baliza, interfaz) y **todos los datos** (estaciones, mensajes, registros, trazas), y se reiniciará el asistente inicial. **No se puede deshacer**. ¿Continuar?";
+
 }

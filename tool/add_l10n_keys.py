@@ -392,6 +392,106 @@ KEYS = {
         'un número de días primero',
         'Pembersihan otomatis nonaktif (retensi 0); bersihkan manual, atau atur jumlah hari dulu',
     ),
+    # ── 数据维护页「清理策略」改版：保留天数从「连接设置 → 存储上限」移入本页，
+    # 且手动清理改为**当场选天数**（不再套用自动清理的保留天数）。──
+    #
+    # 「天」的量词在各语言里位置不同（中文在后、英西在前），用占位符而非拼接。
+    'nDays': (
+        '{n} 天', '{n} 天',
+        '{n} days', '{n} 日',
+        '{n} días', '{n} hari',
+    ),
+    'retentionDaysOff': (
+        '关闭（不自动清理）', '關閉（不自動清理）',
+        'Off (no auto-prune)', 'オフ（自動整理なし）',
+        'Desactivado (sin limpieza automática)', 'Nonaktif (tanpa bersih otomatis)',
+    ),
+    'pruneWithin': (
+        '清理多少天前的台站', '清理多少天前的台站',
+        'Prune stations older than', '〇日前の局を整理',
+        'Limpiar estaciones anteriores a', 'Bersihkan stasiun lebih lama dari',
+    ),
+    'pruneWithinTip': (
+        '手动清理使用的天数，与上面的自动清理保留天数**相互独立** —— 选几天就只清掉「这么多天没再听到」的普通台站。',
+        '手動清理使用的天數，與上面的自動清理保留天數**相互獨立** —— 選幾天就只清掉「這麼多天沒再聽到」的一般台站。',
+        'Days used by manual pruning, **independent** of the auto-prune retention above — only '
+        'ordinary stations not heard from for this many days are removed.',
+        '手動整理で使う日数です。上の自動整理の保持日数とは**別々**に指定でき、選んだ日数だけ再受信の無い一般局を削除します。',
+        'Días que usa la limpieza manual, **independientes** de la retención automática de arriba: '
+        'solo se eliminan las estaciones normales sin recibir durante esos días.',
+        'Jumlah hari untuk pembersihan manual, **terpisah** dari retensi pembersihan otomatis di '
+        'atas — hanya stasiun biasa yang tidak terdengar selama itu yang dihapus.',
+    ),
+    'prunePickDays': (
+        '请先选择天数', '請先選擇天數',
+        'Choose a number of days first', '先に日数を選んでください',
+        'Elige primero un número de días', 'Pilih jumlah hari dulu',
+    ),
+    # ── 恢复出厂：清除**全部**数据与设置（含呼号）并重跑首次引导。──
+    #
+    # 与「清空全部数据」是两个不同的动作（那个保留设置），文案必须把差别说出来，
+    # 否则用户会以为它只是又一个清空按钮。
+    'factoryReset': (
+        '清除所有数据并重新初始化', '清除所有資料並重新初始化',
+        'Erase all data and start over', '全データを消去して初期化',
+        'Borrar todos los datos y reiniciar', 'Hapus semua data dan mulai ulang',
+    ),
+    'factoryResetDesc': (
+        '连呼号与所有设置一起清除，重新运行首次引导',
+        '連呼號與所有設定一起清除，重新執行首次引導',
+        'Clears callsign and all settings too, then re-runs the first-run wizard',
+        'コールサインと全設定も消去し、初回ガイドをやり直します',
+        'Borra también el indicativo y todos los ajustes, y reinicia el asistente inicial',
+        'Menghapus call sign dan semua pengaturan juga, lalu menjalankan ulang panduan awal',
+    ),
+    'factoryResetIntro': (
+        '把本应用恢复到「刚安装」的状态：',
+        '把本應用程式恢復到「剛安裝」的狀態：',
+        'Restores the app to a just-installed state:',
+        'アプリを「インストール直後」の状態に戻します：',
+        'Restaura la app al estado de recién instalada:',
+        'Mengembalikan aplikasi ke kondisi baru dipasang:',
+    ),
+    'factoryResetCallsign': (
+        '呼号与 SSID', '呼號與 SSID',
+        'Callsign and SSID', 'コールサインと SSID',
+        'Indicativo y SSID', 'Call sign dan SSID',
+    ),
+    'factoryResetSettings': (
+        '服务器、信标、界面等全部设置',
+        '伺服器、信標、介面等全部設定',
+        'All settings: server, beacon, UI, etc.',
+        'サーバー・ビーコン・表示など全設定',
+        'Todos los ajustes: servidor, baliza, interfaz, etc.',
+        'Semua pengaturan: server, beacon, antarmuka, dll.',
+    ),
+    'factoryResetWarn': (
+        '此操作不可恢复，且会重新运行首次引导。建议先导出一次备份。',
+        '此操作不可恢復，且會重新執行首次引導。建議先匯出一次備份。',
+        'This cannot be undone, and the first-run wizard will run again. Export a backup first.',
+        '元に戻せません。初回ガイドが再実行されます。先にバックアップを書き出してください。',
+        'No se puede deshacer y el asistente inicial volverá a ejecutarse. Exporta antes una copia de seguridad.',
+        'Tidak dapat dibatalkan, dan panduan awal akan berjalan lagi. Ekspor cadangan dulu.',
+    ),
+    'factoryResetButton': (
+        '清除所有数据并重新初始化', '清除所有資料並重新初始化',
+        'Erase everything and restart', '全データを消去して再初期化',
+        'Borrar todo y reiniciar', 'Hapus semua dan mulai ulang',
+    ),
+    'factoryResetConfirm': (
+        '将清除呼号、服务器、信标与界面等**全部设置**，以及台站、消息、日志、轨迹等**全部数据**，然后重新运行首次引导。此操作**不可恢复**。确定继续吗？',
+        '將清除呼號、伺服器、信標與介面等**全部設定**，以及台站、訊息、日誌、軌跡等**全部資料**，然後重新執行首次引導。此操作**不可恢復**。確定繼續嗎？',
+        'This clears **all settings** (callsign, server, beacon, UI) and **all data** (stations, '
+        'messages, logs, tracks), then runs the first-run wizard again. This **cannot be undone**. '
+        'Continue?',
+        'コールサイン・サーバー・ビーコン・表示などの**全設定**、および局・メッセージ・ログ・軌跡などの**全データ**を消去し、初回ガイドを再実行します。**元に戻せません**。続行しますか？',
+        'Se borrarán **todos los ajustes** (indicativo, servidor, baliza, interfaz) y **todos los '
+        'datos** (estaciones, mensajes, registros, trazas), y se reiniciará el asistente inicial. '
+        '**No se puede deshacer**. ¿Continuar?',
+        'Menghapus **semua pengaturan** (call sign, server, beacon, antarmuka) dan **semua data** '
+        '(stasiun, pesan, log, jejak), lalu menjalankan panduan awal lagi. **Tidak dapat '
+        'dibatalkan**. Lanjutkan?',
+    ),
 }
 
 # ── 占位符声明（可空）──
@@ -404,6 +504,7 @@ META = {
     'connStatusSent': '{"placeholders": {"call": {"type": "String"}}}',
     'connTncStatusSent': '{"placeholders": {"arg": {"type": "String"}}}',
     'connAudioStatusSent': '{"placeholders": {"call": {"type": "String"}}}',
+    'nDays': '{"placeholders": {"n": {"type": "String"}}}',
 }
 
 

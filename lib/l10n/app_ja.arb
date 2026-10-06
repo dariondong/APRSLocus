@@ -2763,5 +2763,19 @@
   "@pruneConfirm": {"placeholders": {"n": {"type": "String"}, "m": {"type": "String"}}},
   "@pruneDone": {"placeholders": {"n": {"type": "String"}}},
   "prunePreview": "{n} 件を整理します",
-  "@prunePreview": {"placeholders": {"n": {"type": "String"}}}
+  "@prunePreview": {"placeholders": {"n": {"type": "String"}}},
+  "nDays": "{n} 日",
+  "retentionDaysOff": "オフ（自動整理なし）",
+  "pruneWithin": "〇日前の局を整理",
+  "pruneWithinTip": "手動整理で使う日数です。上の自動整理の保持日数とは**別々**に指定でき、選んだ日数だけ再受信の無い一般局を削除します。",
+  "prunePickDays": "先に日数を選んでください",
+  "factoryReset": "全データを消去して初期化",
+  "factoryResetDesc": "コールサインと全設定も消去し、初回ガイドをやり直します",
+  "factoryResetIntro": "アプリを「インストール直後」の状態に戻します：",
+  "factoryResetCallsign": "コールサインと SSID",
+  "factoryResetSettings": "サーバー・ビーコン・表示など全設定",
+  "factoryResetWarn": "元に戻せません。初回ガイドが再実行されます。先にバックアップを書き出してください。",
+  "factoryResetButton": "全データを消去して再初期化",
+  "factoryResetConfirm": "コールサイン・サーバー・ビーコン・表示などの**全設定**、および局・メッセージ・ログ・軌跡などの**全データ**を消去し、初回ガイドを再実行します。**元に戻せません**。続行しますか？",
+  "@nDays": {"placeholders": {"n": {"type": "String"}}}
 }

@@ -303,6 +303,18 @@ class ThemeController extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// 恢复出厂：清掉用户自建主题，激活内置默认。
+  ///
+  /// 供「清除所有数据并重新初始化」调用（AppState.factoryReset）。只动内存 +
+  /// 通知，磁盘由 [AppState.factoryReset] 统一 `p.clear()` 后重写；
+  /// 这里不自己落盘，避免在「清空偏好」之后又把旧主题写回去。
+  void resetToDefaults() {
+    _user.clear();
+    _activeId = builtinPresets.first.id;
+    revision++;
+    notifyListeners();
+  }
+
   Future<void> _warmIconStore() async {
     if (!icon_io.supportsFileIcons) return;
     try {

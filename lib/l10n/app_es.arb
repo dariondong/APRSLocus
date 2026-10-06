@@ -2763,5 +2763,19 @@
   "@pruneConfirm": {"placeholders": {"n": {"type": "String"}, "m": {"type": "String"}}},
   "@pruneDone": {"placeholders": {"n": {"type": "String"}}},
   "prunePreview": "Se eliminarán {n}",
-  "@prunePreview": {"placeholders": {"n": {"type": "String"}}}
+  "@prunePreview": {"placeholders": {"n": {"type": "String"}}},
+  "nDays": "{n} días",
+  "retentionDaysOff": "Desactivado (sin limpieza automática)",
+  "pruneWithin": "Limpiar estaciones anteriores a",
+  "pruneWithinTip": "Días que usa la limpieza manual, **independientes** de la retención automática de arriba: solo se eliminan las estaciones normales sin recibir durante esos días.",
+  "prunePickDays": "Elige primero un número de días",
+  "factoryReset": "Borrar todos los datos y reiniciar",
+  "factoryResetDesc": "Borra también el indicativo y todos los ajustes, y reinicia el asistente inicial",
+  "factoryResetIntro": "Restaura la app al estado de recién instalada:",
+  "factoryResetCallsign": "Indicativo y SSID",
+  "factoryResetSettings": "Todos los ajustes: servidor, baliza, interfaz, etc.",
+  "factoryResetWarn": "No se puede deshacer y el asistente inicial volverá a ejecutarse. Exporta antes una copia de seguridad.",
+  "factoryResetButton": "Borrar todo y reiniciar",
+  "factoryResetConfirm": "Se borrarán **todos los ajustes** (indicativo, servidor, baliza, interfaz) y **todos los datos** (estaciones, mensajes, registros, trazas), y se reiniciará el asistente inicial. **No se puede deshacer**. ¿Continuar?",
+  "@nDays": {"placeholders": {"n": {"type": "String"}}}
 }

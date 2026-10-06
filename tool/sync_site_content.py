@@ -204,6 +204,26 @@ CARDS = [
 # 只列「重点版本」：中间几十个纯修 bug 的版本归纳进文字说明，完整记录指向 Releases。
 CL = [
     {
+        'ver': 'v2.0.32', 'date': '2026-10-03',
+        'items': [
+            ('new',
+             T('**数据维护页重排 + 恢复出厂**：把「台站保留天数」从「连接设置 → 存储上限」'
+               '移进「数据维护」页、与清理按钮同页（改为下拉选择）；手动清理不再复用自动清理的'
+               '天数，而是**当场选一个独立天数**；新增**「清除所有数据并重新初始化」**——连呼号、'
+               '服务器、信标、界面等全部设置一起清除，并重新运行首次引导。',
+               '**資料維護頁重排 + 恢復出廠**：把「台站保留天數」從「連線設定 → 儲存上限」'
+               '移進「資料維護」頁、與清理按鈕同頁（改為下拉選擇）；手動清理不再複用自動清理的'
+               '天數，而是**當場選一個獨立天數**；新增**「清除所有資料並重新初始化」**——連呼號、'
+               '伺服器、信標、介面等全部設定一起清除，並重新執行首次引導。',
+               '**Data-maintenance page rework + factory reset**: retention days moved from '
+               '*Connection → Storage limits* onto the *Data maintenance* page next to the prune '
+               'button (as a dropdown); manual pruning no longer reuses the auto-prune days — you '
+               '**pick its own days** on the spot; and a new **"Erase all data and start over"** '
+               'clears **all settings including callsign, server, beacon and UI** and re-runs the '
+               'first-run wizard.')),
+        ],
+    },
+    {
         'ver': 'v2.0.31', 'date': '2026-10-03',
         'items': [
             ('fix',

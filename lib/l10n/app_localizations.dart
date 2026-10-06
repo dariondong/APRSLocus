@@ -13584,6 +13584,84 @@ abstract class AppLocalizations {
   /// **'将清理 {n} 个'**
   String prunePreview(String n);
 
+  /// No description provided for @nDays.
+  ///
+  /// In zh, this message translates to:
+  /// **'{n} 天'**
+  String nDays(String n);
+
+  /// No description provided for @retentionDaysOff.
+  ///
+  /// In zh, this message translates to:
+  /// **'关闭（不自动清理）'**
+  String get retentionDaysOff;
+
+  /// No description provided for @pruneWithin.
+  ///
+  /// In zh, this message translates to:
+  /// **'清理多少天前的台站'**
+  String get pruneWithin;
+
+  /// No description provided for @pruneWithinTip.
+  ///
+  /// In zh, this message translates to:
+  /// **'手动清理使用的天数，与上面的自动清理保留天数**相互独立** —— 选几天就只清掉「这么多天没再听到」的普通台站。'**
+  String get pruneWithinTip;
+
+  /// No description provided for @prunePickDays.
+  ///
+  /// In zh, this message translates to:
+  /// **'请先选择天数'**
+  String get prunePickDays;
+
+  /// No description provided for @factoryReset.
+  ///
+  /// In zh, this message translates to:
+  /// **'清除所有数据并重新初始化'**
+  String get factoryReset;
+
+  /// No description provided for @factoryResetDesc.
+  ///
+  /// In zh, this message translates to:
+  /// **'连呼号与所有设置一起清除，重新运行首次引导'**
+  String get factoryResetDesc;
+
+  /// No description provided for @factoryResetIntro.
+  ///
+  /// In zh, this message translates to:
+  /// **'把本应用恢复到「刚安装」的状态：'**
+  String get factoryResetIntro;
+
+  /// No description provided for @factoryResetCallsign.
+  ///
+  /// In zh, this message translates to:
+  /// **'呼号与 SSID'**
+  String get factoryResetCallsign;
+
+  /// No description provided for @factoryResetSettings.
+  ///
+  /// In zh, this message translates to:
+  /// **'服务器、信标、界面等全部设置'**
+  String get factoryResetSettings;
+
+  /// No description provided for @factoryResetWarn.
+  ///
+  /// In zh, this message translates to:
+  /// **'此操作不可恢复，且会重新运行首次引导。建议先导出一次备份。'**
+  String get factoryResetWarn;
+
+  /// No description provided for @factoryResetButton.
+  ///
+  /// In zh, this message translates to:
+  /// **'清除所有数据并重新初始化'**
+  String get factoryResetButton;
+
+  /// No description provided for @factoryResetConfirm.
+  ///
+  /// In zh, this message translates to:
+  /// **'将清除呼号、服务器、信标与界面等**全部设置**，以及台站、消息、日志、轨迹等**全部数据**，然后重新运行首次引导。此操作**不可恢复**。确定继续吗？'**
+  String get factoryResetConfirm;
+
 }
 
 class _AppLocalizationsDelegate

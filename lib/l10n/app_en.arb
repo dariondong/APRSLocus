@@ -2679,5 +2679,19 @@
   "@pruneConfirm": {"placeholders": {"n": {"type": "String"}, "m": {"type": "String"}}},
   "@pruneDone": {"placeholders": {"n": {"type": "String"}}},
   "prunePreview": "Will prune {n}",
-  "@prunePreview": {"placeholders": {"n": {"type": "String"}}}
+  "@prunePreview": {"placeholders": {"n": {"type": "String"}}},
+  "nDays": "{n} days",
+  "retentionDaysOff": "Off (no auto-prune)",
+  "pruneWithin": "Prune stations older than",
+  "pruneWithinTip": "Days used by manual pruning, **independent** of the auto-prune retention above — only ordinary stations not heard from for this many days are removed.",
+  "prunePickDays": "Choose a number of days first",
+  "factoryReset": "Erase all data and start over",
+  "factoryResetDesc": "Clears callsign and all settings too, then re-runs the first-run wizard",
+  "factoryResetIntro": "Restores the app to a just-installed state:",
+  "factoryResetCallsign": "Callsign and SSID",
+  "factoryResetSettings": "All settings: server, beacon, UI, etc.",
+  "factoryResetWarn": "This cannot be undone, and the first-run wizard will run again. Export a backup first.",
+  "factoryResetButton": "Erase everything and restart",
+  "factoryResetConfirm": "This clears **all settings** (callsign, server, beacon, UI) and **all data** (stations, messages, logs, tracks), then runs the first-run wizard again. This **cannot be undone**. Continue?",
+  "@nDays": {"placeholders": {"n": {"type": "String"}}}
 }

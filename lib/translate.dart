@@ -553,6 +553,18 @@ class TranslateService {
     } catch (_) {}
   }
 
+  /// 恢复出厂：清空翻译缓存与每会话偏好，配置回落默认（含 API Key）。
+  ///
+  /// 供「清除所有数据并重新初始化」调用（AppState.factoryReset）。只动内存，
+  /// 磁盘由 factoryReset 的 `p.clear()` 统一处理。
+  void resetToDefaults() {
+    _cache.clear();
+    _prefs.clear();
+    requestCount = 0;
+    failureCount = 0;
+    _copy(TranslateConfig(), config);
+  }
+
   static void _copy(TranslateConfig from, TranslateConfig to) {
     to
       ..provider = from.provider

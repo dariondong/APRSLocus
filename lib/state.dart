@@ -43,6 +43,7 @@ import 'achievements.dart';
 // 新增的这几个名字才能解析 —— CI 的 analyze 就是这么报出来的。
 import 'theme.dart';
 import 'theme_store.dart';
+import 'tile_cache.dart';
 import 'ble_hr.dart';
 import 'blacklist.dart';
 import 'garmin.dart';
@@ -113,7 +114,7 @@ class SmartBeaconTier {
 
 class AppState extends ChangeNotifier {
   /// 应用版本（用于信标备注、APRSlocus 识别）
-  static const appVersion = '2.0.31';
+  static const appVersion = '2.0.32';
   // 我的电台
   String myCall = 'BV2AAA';
   int mySsid = 0; // 0 = 无后缀, 1-15 = -1 到 -15
@@ -1914,6 +1915,18 @@ class AppState extends ChangeNotifier {
     ).length;
   }
 
+  /// 指定 [days] 天阈值下会被清理的台站数量。
+  ///
+  /// 供「清理过时台站」按钮按**用户当场选的**天数预览：手动清理不再套用
+  /// 自动清理那一个保留天数（两者混用会让「点一下清掉多少」不可预期）。
+  int prunableStationCountFor(int days) {
+    if (days <= 0) return 0;
+    return _prunableStations(
+      maxAge: Duration(days: days),
+      now: DateTime.now(),
+    ).length;
+  }
+
   List<Station> _prunableStations(
       {required Duration maxAge, required DateTime now}) {
     final cutoff = now.subtract(maxAge);
@@ -3213,6 +3226,205 @@ class AppState extends ChangeNotifier {
   void restartOobe() {
     oobeDone = false;
     persist();
+    _notify();
+  }
+
+  /// 恢复出厂设置：清空**全部**本地数据与设置，并重新跑一次首次引导（OOBE）。
+  ///
+  /// 与 [clearAllData] 的区别：那个只清「内容」（台站/消息/日志/轨迹），
+  /// 保留呼号、服务器、信标等一切设置；本方法连**呼号与全部设置**一起清掉，
+  /// 相当于「重装」——适合把设备交给别人、或配置被改乱想从头来一遍。
+  ///
+  /// 实现上**不逐个 reset 字段再由 setter 落盘**（那既漏又慢），而是：
+  ///   ① 断开所有链路、停定位；
+  ///   ② 把内存里的设置/内容全部复位成字段默认值；
+  ///   ③ 复位各单例的内存态（主题/成就/翻译/已读荣誉）；
+  ///   ④ 磁盘 `p.clear()` 一把清干净，再把「出厂默认」的最小集合写回。
+  ///
+  /// ④ 的顺序很关键：先 clear 再让 [ThemeController.saveTo] 写回主题包，
+  /// 否则 clear 会把刚写进去的默认主题也抹掉。清完不调用 [persist]——
+  /// 那会把内存里的默认值整包写回去，等于白清（虽然值相同，但没必要）。
+  ///
+  /// 完成后 [oobeDone] 置回 false，App 层（见 app.dart）会切回向导页；
+  /// [reloadTick] 自增让 MaterialApp 换 key、丢掉整个旧导航栈。
+  Future<void> factoryReset() async {
+    // ① 先压住自动重连：断链会触发 onDisconnected → 立刻排重连，
+    //    若不在最前面置位，清完设置后会马上又拿旧参数去连。
+    _userDisconnected = true;
+    try {
+      aprs.disconnect();
+    } catch (_) {}
+    try {
+      await tnc.disconnect(manual: false);
+    } catch (_) {}
+    try {
+      await audio.disconnect(manual: false);
+    } catch (_) {}
+    try {
+      await pkwdwpl.disconnect(manual: false);
+    } catch (_) {}
+    try {
+      await box.disconnect(manual: false);
+    } catch (_) {}
+    try {
+      loc.stop();
+    } catch (_) {}
+    try {
+      await bleHr.disconnect();
+    } catch (_) {}
+    try {
+      garmin.stop();
+    } catch (_) {}
+    garminOn = false;
+
+    // ② 设置项复位（与字段声明处的默认值保持一致）
+    myCall = 'BV2AAA';
+    mySsid = 0;
+    mySymbol = '>';
+    myComment = '';
+    aprsStatusText = '';
+    beaconEnabled = true;
+    beaconAutoAsked = false;
+    dataNoticeAccepted = false;
+    beaconInterval = 60;
+    beaconNetInterval = 300;
+    smartBeaconEnabled = false;
+    smartTiers
+      ..clear()
+      ..addAll(defaultSmartTiers());
+    beaconIncludeSpeed = true;
+    beaconIncludeCourse = true;
+    beaconIncludeBattery = true;
+    beaconPowerW = null;
+    beaconAntennaHeightFt = null;
+    beaconGainDb = null;
+    beaconAltOverrideM = null;
+    beaconIncludeHr = true;
+    beaconBarDetailed = true;
+    networkSymbol = '';
+    extGpsStandby = true;
+    hrAlarmEnabled = true;
+    hrAlarmHigh = 150;
+    hrAlarmLow = 40;
+    crashDetectEnabled = true;
+    crashSensitivity = 'standard';
+    emergencyTel = '120';
+    beaconIncludeSteps = false;
+    _stepsBaseline = -1;
+    _stepsDayKey = '';
+    _stepsCarry = 0;
+    stepsToday = 0;
+    beaconIncludeTripMileage = false;
+    beaconIncludeTotalMileage = false;
+    totalMileageKm = 0;
+    beaconForceCoarse = false;
+    bleHrId = '';
+    bleHrName = '';
+    bleHr.deviceId = '';
+    bleHr.deviceName = '';
+    garminUrl = '';
+    coordDatum = 'wgs84';
+    darkMode = false;
+    weatherEnabled = true;
+    noticeBanner = true;
+    locale = '';
+    themeColor = '';
+    uiScale = 1.0;
+    uiMaterial = '';
+    uiLayout = '';
+    mapType = 'gaode';
+    tileCacheOn = true;
+    offlineOnly = false;
+    updateChannel = 'github';
+    adifMode = 'PKT';
+    adifSubMode = true;
+    adifBand = '';
+    adifFreq = '';
+    adifStripSsid = false;
+    locationMode = 'gps_network';
+    loc.mode = locationMode;
+    useSimLocation = false;
+    filterLat = 39.9042;
+    filterLng = 116.4074;
+    filterRadius = 300;
+    heatLevel = 1;
+    mapLabelsAlways = false;
+    maxStations = 100000;
+    maxPackets = 2000;
+    onlineWindowMin = 5;
+    _applyOnlineWindow();
+    maxTrackPts = 300;
+    stationRetentionDays = 0;
+    filterFollow = true;
+    receiveCountries.clear();
+    receiveOthers = false;
+    guideSeen.clear();
+    labLandscape = false;
+    sensorAssist = true;
+    aprs.server = 'rotate.aprs2.net';
+    aprs.port = 14580;
+    aprs.passcode = '-1';
+    dataSource = srcAprsIs;
+    enabledSources
+      ..clear()
+      ..add(srcAprsIs);
+    igateEnabled = false;
+    igateTwoWay = false;
+    _lastFilter = '';
+
+    // 内容与运行时状态
+    stations.clear();
+    myTrack.clear();
+    beaconMarks.clear();
+    messages.clear();
+    chatGroups.clear();
+    logs.clear();
+    packets.clear();
+    _readAt.clear();
+    _groupReadAt.clear();
+    packetsRx = 0;
+    packetsTx = 0;
+    unreadMessages = 0;
+    myLat = null;
+    myLng = null;
+    myHasFix = false;
+    myHr = null;
+    _resetSelfFix();
+    _bumpStationsVersion();
+    _reconnectAttempt = 0;
+    _customStatusLost = false;
+    pendingDataNotice = false;
+
+    // ③ 单例内存态复位
+    ThemeController.instance.resetToDefaults();
+    AchievementCenter.instance.resetToDefaults();
+    TranslateService.instance.resetToDefaults();
+    try {
+      await resetHonorSeen();
+    } catch (_) {}
+
+    // 配色写在全局 C 上（不在 C 里、也不随 rebuild 自动重算），必须显式重算，
+    // 否则「界面仍是上一个主题的配色」——主题包已清、C 还是旧的。
+    applySavedTheme();
+
+    // ④ 磁盘：先清空全部键，再把出厂默认的最小集合写回
+    try {
+      final p = await SharedPreferences.getInstance();
+      await p.clear();
+      await ThemeController.instance.saveTo(p);
+    } catch (_) {}
+    try {
+      await TrackLogStore.instance.clearAll();
+    } catch (_) {}
+    try {
+      await TileCache.clear();
+    } catch (_) {}
+
+    // 收尾：清掉「不重连」闸门、进入向导、换 key 重建导航栈
+    _userDisconnected = false;
+    oobeDone = false;
+    reloadTick++;
+    _log(LogLevel.warn, '数据维护', '已恢复出厂设置：全部数据与设置已清除，正在重新运行首次引导');
     _notify();
   }
 

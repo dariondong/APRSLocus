@@ -3267,5 +3267,19 @@
   "@pruneConfirm": {"placeholders": {"n": {"type": "String"}, "m": {"type": "String"}}},
   "@pruneDone": {"placeholders": {"n": {"type": "String"}}},
   "prunePreview": "將清理 {n} 個",
-  "@prunePreview": {"placeholders": {"n": {"type": "String"}}}
+  "@prunePreview": {"placeholders": {"n": {"type": "String"}}},
+  "nDays": "{n} 天",
+  "retentionDaysOff": "關閉（不自動清理）",
+  "pruneWithin": "清理多少天前的台站",
+  "pruneWithinTip": "手動清理使用的天數，與上面的自動清理保留天數**相互獨立** —— 選幾天就只清掉「這麼多天沒再聽到」的一般台站。",
+  "prunePickDays": "請先選擇天數",
+  "factoryReset": "清除所有資料並重新初始化",
+  "factoryResetDesc": "連呼號與所有設定一起清除，重新執行首次引導",
+  "factoryResetIntro": "把本應用程式恢復到「剛安裝」的狀態：",
+  "factoryResetCallsign": "呼號與 SSID",
+  "factoryResetSettings": "伺服器、信標、介面等全部設定",
+  "factoryResetWarn": "此操作不可恢復，且會重新執行首次引導。建議先匯出一次備份。",
+  "factoryResetButton": "清除所有資料並重新初始化",
+  "factoryResetConfirm": "將清除呼號、伺服器、信標與介面等**全部設定**，以及台站、訊息、日誌、軌跡等**全部資料**，然後重新執行首次引導。此操作**不可恢復**。確定繼續嗎？",
+  "@nDays": {"placeholders": {"n": {"type": "String"}}}
 }

@@ -7634,6 +7634,45 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String prunePreview(String n) => "将清理 $n 个";
 
+  @override
+  String nDays(String n) => "$n 天";
+
+  @override
+  String get retentionDaysOff => "关闭（不自动清理）";
+
+  @override
+  String get pruneWithin => "清理多少天前的台站";
+
+  @override
+  String get pruneWithinTip => "手动清理使用的天数，与上面的自动清理保留天数**相互独立** —— 选几天就只清掉「这么多天没再听到」的普通台站。";
+
+  @override
+  String get prunePickDays => "请先选择天数";
+
+  @override
+  String get factoryReset => "清除所有数据并重新初始化";
+
+  @override
+  String get factoryResetDesc => "连呼号与所有设置一起清除，重新运行首次引导";
+
+  @override
+  String get factoryResetIntro => "把本应用恢复到「刚安装」的状态：";
+
+  @override
+  String get factoryResetCallsign => "呼号与 SSID";
+
+  @override
+  String get factoryResetSettings => "服务器、信标、界面等全部设置";
+
+  @override
+  String get factoryResetWarn => "此操作不可恢复，且会重新运行首次引导。建议先导出一次备份。";
+
+  @override
+  String get factoryResetButton => "清除所有数据并重新初始化";
+
+  @override
+  String get factoryResetConfirm => "将清除呼号、服务器、信标与界面等**全部设置**，以及台站、消息、日志、轨迹等**全部数据**，然后重新运行首次引导。此操作**不可恢复**。确定继续吗？";
+
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
@@ -15276,5 +15315,44 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String prunePreview(String n) => "將清理 $n 個";
+
+  @override
+  String nDays(String n) => "$n 天";
+
+  @override
+  String get retentionDaysOff => "關閉（不自動清理）";
+
+  @override
+  String get pruneWithin => "清理多少天前的台站";
+
+  @override
+  String get pruneWithinTip => "手動清理使用的天數，與上面的自動清理保留天數**相互獨立** —— 選幾天就只清掉「這麼多天沒再聽到」的一般台站。";
+
+  @override
+  String get prunePickDays => "請先選擇天數";
+
+  @override
+  String get factoryReset => "清除所有資料並重新初始化";
+
+  @override
+  String get factoryResetDesc => "連呼號與所有設定一起清除，重新執行首次引導";
+
+  @override
+  String get factoryResetIntro => "把本應用程式恢復到「剛安裝」的狀態：";
+
+  @override
+  String get factoryResetCallsign => "呼號與 SSID";
+
+  @override
+  String get factoryResetSettings => "伺服器、信標、介面等全部設定";
+
+  @override
+  String get factoryResetWarn => "此操作不可恢復，且會重新執行首次引導。建議先匯出一次備份。";
+
+  @override
+  String get factoryResetButton => "清除所有資料並重新初始化";
+
+  @override
+  String get factoryResetConfirm => "將清除呼號、伺服器、信標與介面等**全部設定**，以及台站、訊息、日誌、軌跡等**全部資料**，然後重新執行首次引導。此操作**不可恢復**。確定繼續嗎？";
 
 }

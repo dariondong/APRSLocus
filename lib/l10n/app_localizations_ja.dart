@@ -7724,4 +7724,43 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String prunePreview(String n) => "$n 件を整理します";
 
+  @override
+  String nDays(String n) => "$n 日";
+
+  @override
+  String get retentionDaysOff => "オフ（自動整理なし）";
+
+  @override
+  String get pruneWithin => "〇日前の局を整理";
+
+  @override
+  String get pruneWithinTip => "手動整理で使う日数です。上の自動整理の保持日数とは**別々**に指定でき、選んだ日数だけ再受信の無い一般局を削除します。";
+
+  @override
+  String get prunePickDays => "先に日数を選んでください";
+
+  @override
+  String get factoryReset => "全データを消去して初期化";
+
+  @override
+  String get factoryResetDesc => "コールサインと全設定も消去し、初回ガイドをやり直します";
+
+  @override
+  String get factoryResetIntro => "アプリを「インストール直後」の状態に戻します：";
+
+  @override
+  String get factoryResetCallsign => "コールサインと SSID";
+
+  @override
+  String get factoryResetSettings => "サーバー・ビーコン・表示など全設定";
+
+  @override
+  String get factoryResetWarn => "元に戻せません。初回ガイドが再実行されます。先にバックアップを書き出してください。";
+
+  @override
+  String get factoryResetButton => "全データを消去して再初期化";
+
+  @override
+  String get factoryResetConfirm => "コールサイン・サーバー・ビーコン・表示などの**全設定**、および局・メッセージ・ログ・軌跡などの**全データ**を消去し、初回ガイドを再実行します。**元に戻せません**。続行しますか？";
+
 }

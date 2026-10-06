@@ -202,6 +202,13 @@ jobs:
       - name: Check station retention/prune (algorithm regression)
         run: python3 tool/sim_prune.py --check
 
+      # 数据维护改版：保留天数移入本页、手动清理独立天数（不再复用保留天数）、
+      # 「清除所有数据并重新初始化（恢复出厂）」清呼号+设置并重跑 OOBE。
+      # 这些改动大多在 UI/状态里，编译/analyze 全绿也看不出「参数又被复用回去」，
+      # 靠它把判据钉死。
+      - name: Check data-maintenance rework / factory reset (algorithm regression)
+        run: python3 tool/sim_factory_reset.py --check
+
       # 自定义状态帧自愈：状态报文是「CONNECT + 自定义」一对，自定义那帧若写失败，
       # aprs.fi 会一直停在 CONNECT 上、且每轮保活又续一次。断言「丢帧后下一拍补
       # 自定义帧（不再发 CONNECT）、连败重试到成功、空文本清标记」。

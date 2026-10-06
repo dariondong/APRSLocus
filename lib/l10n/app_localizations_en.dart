@@ -7935,4 +7935,43 @@ By tapping "Agree and connect" you confirm that you have read, understood, and a
   @override
   String prunePreview(String n) => "Will prune $n";
 
+  @override
+  String nDays(String n) => "$n days";
+
+  @override
+  String get retentionDaysOff => "Off (no auto-prune)";
+
+  @override
+  String get pruneWithin => "Prune stations older than";
+
+  @override
+  String get pruneWithinTip => "Days used by manual pruning, **independent** of the auto-prune retention above — only ordinary stations not heard from for this many days are removed.";
+
+  @override
+  String get prunePickDays => "Choose a number of days first";
+
+  @override
+  String get factoryReset => "Erase all data and start over";
+
+  @override
+  String get factoryResetDesc => "Clears callsign and all settings too, then re-runs the first-run wizard";
+
+  @override
+  String get factoryResetIntro => "Restores the app to a just-installed state:";
+
+  @override
+  String get factoryResetCallsign => "Callsign and SSID";
+
+  @override
+  String get factoryResetSettings => "All settings: server, beacon, UI, etc.";
+
+  @override
+  String get factoryResetWarn => "This cannot be undone, and the first-run wizard will run again. Export a backup first.";
+
+  @override
+  String get factoryResetButton => "Erase everything and restart";
+
+  @override
+  String get factoryResetConfirm => "This clears **all settings** (callsign, server, beacon, UI) and **all data** (stations, messages, logs, tracks), then runs the first-run wizard again. This **cannot be undone**. Continue?";
+
 }

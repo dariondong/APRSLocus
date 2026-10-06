@@ -1,5 +1,74 @@
 # 更新日志
 
+## [2.0.32] - 2026-10-03
+
+### 改进：数据维护页重排 + 恢复出厂
+
+**背景**
+
+- 「清理过时台账」原本把**保留天数**放在「连接设置 → 存储上限」里，而清理按钮在
+  「数据维护」页 —— 参数和它控制的功能分在两页，用户很难找到，也不理解它俩的关系。
+- 手动清理**复用**了自动清理的「保留天数」，于是「点一下会清掉多少」取决于另一个
+  设置，用户反馈「很混乱」。
+- 想「从头再来」时，只有「清空全部数据」，它**保留呼号与所有设置**，无法真正重置。
+
+**改进**
+
+- **保留天数移入「数据维护」页**，与清理按钮同页、同一张卡，改成下拉选择
+  （关闭 / 3 / 7 / 14 / 30 / 60 / 90 / 180 / 365 天）；「连接设置」页不再有这一项。
+- 手动清理新增**独立的天数选择器**（默认「请先选择天数」，不落盘），与自动清理的
+  保留天数**互不影响**；按钮上按所选天数预览「将清理 N 个」。
+- 新增**「清除所有数据并重新初始化」（恢复出厂）**：清除台站、消息、日志、轨迹等
+  全部数据，**并连呼号、服务器、信标、界面等全部设置一起清除**，同时复位主题、
+  成就、翻译等本地状态与各类缓存文件，随后**重新运行首次引导（OOBE）**。
+  与「清空全部数据」并列展示，并在两者文案里讲明差别。
+
+**测试**
+
+- 新增 `tool/sim_factory_reset.py`：1:1 描述清理判据，断言「保留天数已在数据维护页、
+  手动清理用独立天数且不再复用自动保留天数、恢复出厂清空偏好/复位单例/重跑 OOBE」，
+  接进 CI。
+
+---
+---
+
+## [2.0.32] - 2026-10-03 (English)
+
+### Improvement: data-maintenance page rework + factory reset
+
+**Context**
+
+- "Clean up stale stations" kept its **retention days** in *Connection → Storage limits*,
+  while the prune button lives on the *Data maintenance* page — the parameter and the feature
+  it controls were on two different pages, so users could not find it.
+- Manual pruning **reused** the auto-prune retention days, so "how much does one tap remove?"
+  depended on another setting. Reported as "messy".
+- To truly start over there was only "Clear all data", which **keeps the callsign and all
+  settings** — not a real reset.
+
+**Changes**
+
+- **Retention days moved to the Data maintenance page**, on the same card as the prune button,
+  now a dropdown (off / 3 / 7 / 14 / 30 / 60 / 90 / 180 / 365 days); the Connection page no
+  longer has this field.
+- Manual pruning gets its **own day selector** (defaults to "choose a number of days first",
+  not persisted), **independent** of the auto-prune retention; the button previews
+  "will prune N" for the chosen days.
+- New **"Erase all data and start over" (factory reset)**: clears all data (stations, messages,
+  logs, tracks) **and all settings including callsign, server, beacon and UI**, resets local
+  state (themes, achievements, translations) and cache files, then **re-runs the first-run
+  wizard (OOBE)**. Shown next to "Clear all data", with copy that spells out the difference.
+
+**Tests**
+
+- New `tool/sim_factory_reset.py`: a 1:1 description of the pruning rule, asserting that
+  retention now lives on the data-maintenance page, manual pruning uses its own days (no longer
+  reusing the auto retention), and factory reset clears prefs / resets singletons / re-runs OOBE.
+  Wired into CI.
+
+---
+---
+
 ## [2.0.31] - 2026-10-03
 
 ### 修复：自定义状态「有时还显示 CONNECT」（状态帧自愈）
