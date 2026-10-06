@@ -1,5 +1,49 @@
 # 更新日志
 
+## [2.0.34] - 2026-10-03
+
+### 修复：非整数缩放级别下地图发糊
+
+**背景**
+
+- 用户反馈「瓦片还是糊」。实测各图源返回的像素后发现，除了高德街道（wprd 主机
+  + `scl=2`）给 512px，Carto / OSM / Esri / 腾讯 / 高德卫星**都只有 256px** ——
+  图源本身不是主因。
+- 真正的问题在选层级：地图用 `zoom.floor()` 取瓦片级，于是整档 `[z, z+1)` 都取
+  z 级瓦片，越接近 `z+1` 源图被拉得越大（z=12.9 时 **1.93×**），再乘屏幕像素
+  密度 2~3 倍，物理上放大 4~6 倍，必然糊。用户常在 11.5、12.4 这类非整数级看
+  地图，正好落在这半档里。
+
+**改进**
+
+- 选层级改用 `zoom.round()`：放大封顶在 √2≈1.41×，后半档转为缩小（0.71~1×）。
+  对**所有图源**生效，不只高德。
+- 配合上一版的 2× 高清瓦片，缩放接近整数且用高德街道时进一步贴近物理 1:1。
+
+---
+---
+
+## [2.0.34] - 2026-10-03 (English)
+
+### Fix: blurry map at fractional zoom levels
+
+**Context**
+
+- Reported as "tiles are still blurry". Measuring the actual pixel size each source
+  returns showed that apart from Gaode street (wprd host + `scl=2`, 512px), Carto / OSM /
+  Esri / Tencent / Gaode satellite **only serve 256px** — the source was not the cause.
+- The real issue was level selection: the map picked the tile level with `zoom.floor()`,
+  so the whole `[z, z+1)` band used level-`z` tiles, stretching the source up to **1.93×**
+  at z=12.9 and then 2–3× more by screen pixel density — a 4–6× physical upscale, hence
+  blur. Users often view the map at fractional zooms like 11.5 or 12.4, right in that half.
+
+**Changes**
+
+- Level selection now uses `zoom.round()`: the upscale is capped at √2≈1.41×, and the
+  upper half of the band downscales (0.71–1×). Applies to **all sources**, not just Gaode.
+- Combined with the previous release's 2× tiles, near-integer zoom on Gaode street gets
+  close to a physical 1:1 mapping.
+
 ## [2.0.33] - 2026-10-03
 
 ### 上报界面合并：一处开关，两处按钮
