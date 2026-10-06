@@ -55,7 +55,7 @@
 <link rel="alternate" hreflang="en" href="https://aprslocus.theez.top/en/">
 <link rel="canonical" href="https://aprslocus.theez.top/en/">
 <link rel="icon" type="image/png" href="../assets/favicon.png">
-<link rel="stylesheet" href="../css/style.css?v=5">
+<link rel="stylesheet" href="../css/style.css?v=6">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 </head>
 <body>
@@ -565,6 +565,24 @@
 
   <div class="changelog-list">
 <!-- site-sync:changelog -->
+    <div class="cl-version reveal">
+      <div class="cl-head">
+        <span class="cl-tag">v2.0.34</span>
+        <span class="cl-date">2026-10-03</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot fix"></span><b>Blurry map at fractional zoom levels</b>: measuring the pixels each source returns showed that apart from Gaode street (wprd host + <code>scl=2</code>, 512px), Carto / OSM / Esri / Tencent / Gaode satellite <b>only serve 256px</b> — the source was not the cause. The real issue was level selection: the map used <code>zoom.floor()</code>, so the whole <code>[z, z+1)</code> band pulled level-<code>z</code> tiles, stretching the source up to <b>1.93×</b> at z=12.9 and then 2–3× more by screen pixel density — a 4–6× physical upscale, hence blur. It now uses <code>zoom.round()</code>: the upscale is capped at √2≈1.41× and the upper half downscales. <b>Applies to every source.</b></div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
+        <span class="cl-tag">v2.0.33</span>
+        <span class="cl-date">2026-10-03</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot up"></span><b>One reporting control, two buttons</b>: the scattered "report now" actions on the map status bar, the My panel and the immersive page are consolidated into a shared <code>ReportActions</code> (auto-report switch + report-now button); the duplicate implementations and the false "reported" toast are gone. Settings now use the unified "自动上报" wording with a hint pointing back to the main UI.</div>
+      </div>
+    </div>
     <div class="cl-version reveal">
       <div class="cl-head">
         <span class="cl-tag">v2.0.32</span>
@@ -1642,6 +1660,15 @@
         <a href="https://github.com/dariondong/APRSLocus/releases" target="_blank" rel="noopener">Releases</a>
       </div>
     </div>
+<!-- friends-sync -->
+    <div class="footer-friends">
+      <span class="footer-friends-label">Friendly Links</span>
+      <a class="flink" href="https://www.BA4IZZ.cn" target="_blank" rel="noopener">
+        <img class="flink-logo" src="https://www.BA4IZZ.cn/logo.png" alt="Yinan Amateur Radio Association" loading="lazy" referrerpolicy="no-referrer">
+        <span class="flink-text"><span class="flink-name">Yinan Amateur Radio Association</span><span class="flink-desc">Official website of the Yinan Amateur Radio Association</span></span>
+      </a>
+    </div>
+<!-- /friends-sync -->
     <div class="footer-bottom">
       <span>© <span id="year">2026</span> BG7LZQ (Darion) · Licensed under <a href="https://github.com/dariondong/APRSLocus/blob/main/LICENSE" target="_blank" rel="noopener">GPL-3.0</a> · <a href="terms.html">User Agreement</a></span>
     </div>

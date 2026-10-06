@@ -57,7 +57,7 @@
 <link rel="alternate" hreflang="en" href="https://aprslocus.theez.top/en/">
 <link rel="canonical" href="https://aprslocus.theez.top/zh-TW/">
 <link rel="icon" type="image/png" href="../assets/favicon.png">
-<link rel="stylesheet" href="../css/style.css?v=5">
+<link rel="stylesheet" href="../css/style.css?v=6">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 </head>
 <body>
@@ -571,6 +571,24 @@
 
   <div class="changelog-list">
 <!-- site-sync:changelog -->
+    <div class="cl-version reveal">
+      <div class="cl-head">
+        <span class="cl-tag">v2.0.34</span>
+        <span class="cl-date">2026-10-03</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot fix"></span><b>非整數縮放級別下地圖發糊</b>：實測各圖源回傳的像素後發現，除了高德街道（wprd 主機 + <code>scl=2</code>）給 512px，Carto / OSM / Esri / 騰訊 / 高德衛星<b>都只有 256px</b> —— 圖源本身不是主因。真正的問題在選層級：地圖用 <code>zoom.floor()</code> 取瓦片級，於是整檔 <code>[z, z+1)</code> 都取 z 級瓦片，越接近 <code>z+1</code> 源圖被拉得越大（z=12.9 時 <b>1.93×</b>），再乘螢幕像素密度 2~3 倍，物理上放大 4~6 倍，必然糊。改用 <code>zoom.round()</code>：放大封頂在 √2≈1.41×，後半檔轉為縮小，<b>對所有圖源</b>都生效。</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
+        <span class="cl-tag">v2.0.33</span>
+        <span class="cl-date">2026-10-03</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot up"></span><b>上報介面合併，一處開關兩處按鈕</b>：把分散在地圖狀態列、我的面板、沉浸頁的「立即上報」收進共用的 <code>ReportActions</code>（自動上報開關 + 立即上報按鈕），刪掉重複實作與「上報成功」的假提示；設定裡統一叫「自動上報」並加了指回主介面的說明。</div>
+      </div>
+    </div>
     <div class="cl-version reveal">
       <div class="cl-head">
         <span class="cl-tag">v2.0.32</span>
@@ -1647,6 +1665,15 @@
         <a href="https://github.com/dariondong/APRSLocus/releases" target="_blank" rel="noopener">Releases</a>
       </div>
     </div>
+<!-- friends-sync -->
+    <div class="footer-friends">
+      <span class="footer-friends-label">友情連結</span>
+      <a class="flink" href="https://www.BA4IZZ.cn" target="_blank" rel="noopener">
+        <img class="flink-logo" src="https://www.BA4IZZ.cn/logo.png" alt="沂南業餘無線電運動協會" loading="lazy" referrerpolicy="no-referrer">
+        <span class="flink-text"><span class="flink-name">沂南業餘無線電運動協會</span><span class="flink-desc">沂南業餘無線電運動協會官方網站</span></span>
+      </a>
+    </div>
+<!-- /friends-sync -->
     <div class="footer-bottom">
       <span>© <span id="year">2026</span> BG7LZQ (Darion) · 開源協議 <a href="https://github.com/dariondong/APRSLocus/blob/main/LICENSE" target="_blank" rel="noopener">GPL-3.0</a> · <a href="terms.html">用戶協議</a></span>
       <span class="disclaimer">本軟體僅供業餘無線電愛好者學習交流使用，請遵守當地無線電管理法規。</span>

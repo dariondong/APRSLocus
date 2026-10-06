@@ -204,6 +204,49 @@ CARDS = [
 # 只列「重点版本」：中间几十个纯修 bug 的版本归纳进文字说明，完整记录指向 Releases。
 CL = [
     {
+        'ver': 'v2.0.34', 'date': '2026-10-03',
+        'items': [
+            ('fix',
+             T('**非整数缩放级别下地图发糊**：实测各图源返回的像素后发现，除了高德街道'
+               '（wprd 主机 + `scl=2`）给 512px，Carto / OSM / Esri / 腾讯 / 高德卫星**都只有 '
+               '256px** —— 图源本身不是主因。真正的问题在选层级：地图用 `zoom.floor()` 取瓦片级，'
+               '于是整档 `[z, z+1)` 都取 z 级瓦片，越接近 `z+1` 源图被拉得越大（z=12.9 时 '
+               '**1.93×**），再乘屏幕像素密度 2~3 倍，物理上放大 4~6 倍，必然糊。改用 '
+               '`zoom.round()`：放大封顶在 √2≈1.41×，后半档转为缩小，**对所有图源**都生效。',
+               '**非整數縮放級別下地圖發糊**：實測各圖源回傳的像素後發現，除了高德街道'
+               '（wprd 主機 + `scl=2`）給 512px，Carto / OSM / Esri / 騰訊 / 高德衛星**都只有 '
+               '256px** —— 圖源本身不是主因。真正的問題在選層級：地圖用 `zoom.floor()` 取瓦片級，'
+               '於是整檔 `[z, z+1)` 都取 z 級瓦片，越接近 `z+1` 源圖被拉得越大（z=12.9 時 '
+               '**1.93×**），再乘螢幕像素密度 2~3 倍，物理上放大 4~6 倍，必然糊。改用 '
+               '`zoom.round()`：放大封頂在 √2≈1.41×，後半檔轉為縮小，**對所有圖源**都生效。',
+               '**Blurry map at fractional zoom levels**: measuring the pixels each source returns '
+               'showed that apart from Gaode street (wprd host + `scl=2`, 512px), Carto / OSM / '
+               'Esri / Tencent / Gaode satellite **only serve 256px** — the source was not the '
+               'cause. The real issue was level selection: the map used `zoom.floor()`, so the '
+               'whole `[z, z+1)` band pulled level-`z` tiles, stretching the source up to **1.93×** '
+               'at z=12.9 and then 2–3× more by screen pixel density — a 4–6× physical upscale, '
+               'hence blur. It now uses `zoom.round()`: the upscale is capped at √2≈1.41× and the '
+               'upper half downscales. **Applies to every source.**')),
+        ],
+    },
+    {
+        'ver': 'v2.0.33', 'date': '2026-10-03',
+        'items': [
+            ('up',
+             T('**上报界面合并，一处开关两处按钮**：把分散在地图状态栏、我的面板、沉浸页的'
+               '「立即上报」收进共用的 `ReportActions`（自动上报开关 + 立即上报按钮），删掉重复实现与'
+               '「上报成功」的假提示；设置里统一叫「自动上报」并加了指回主界面的说明。',
+               '**上報介面合併，一處開關兩處按鈕**：把分散在地圖狀態列、我的面板、沉浸頁的'
+               '「立即上報」收進共用的 `ReportActions`（自動上報開關 + 立即上報按鈕），刪掉重複實作與'
+               '「上報成功」的假提示；設定裡統一叫「自動上報」並加了指回主介面的說明。',
+               '**One reporting control, two buttons**: the scattered "report now" actions on the '
+               'map status bar, the My panel and the immersive page are consolidated into a shared '
+               '`ReportActions` (auto-report switch + report-now button); the duplicate '
+               'implementations and the false "reported" toast are gone. Settings now use the '
+               'unified "自动上报" wording with a hint pointing back to the main UI.')),
+        ],
+    },
+    {
         'ver': 'v2.0.32', 'date': '2026-10-03',
         'items': [
             ('new',

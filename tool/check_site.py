@@ -285,6 +285,34 @@ def main():
             gmiss.append(nm)
     chk('解说页赞助卡片含全部 %d 位' % len(ents), bool(ents) and not gmiss, gmiss[:3])
 
+    print('[friend links]')
+    # 友链的唯一真源是 docs/links.json，静态渲染进三个语言页的页脚
+    # （tool/sync_friend_links_site.py）。这里逐条点名：忘了跑脚本 / 漏某个语言
+    # 都会当场报。渲进页脚是**静态**的（没有运行时 fetch 兜底），所以更得盯着。
+    try:
+        _lk = json.loads(read('docs/links.json'))
+        flinks = [lk for lk in (_lk.get('links') or []) if lk.get('url')]
+    except Exception as ex:
+        flinks = []
+        chk('links.json 可解析', False, ex)
+
+    flabel = {'zh': '友情链接', 'zh-TW': '友情連結', 'en': 'Friendly Links'}
+    fmiss = []
+    for rel, lang in (('docs/index.html', 'zh'),
+                      ('docs/zh-TW/index.html', 'zh-TW'),
+                      ('docs/en/index.html', 'en')):
+        s = read(rel)
+        if '<!-- friends-sync -->' not in s:
+            fmiss.append('%s 缺 friends-sync 块' % rel)
+            continue
+        if flabel[lang] not in s:
+            fmiss.append('%s 缺标题「%s」' % (rel, flabel[lang]))
+        for lk in flinks:
+            nm = _sp_pick(lk.get('name'), None, lang)
+            if nm and not _sp_hit(nm, s, 'class="flink-name">%s</span>'):
+                fmiss.append('%s 缺 %s' % (rel, nm))
+    chk('友情链接 %d 条 × 三语页脚齐备' % len(flinks), bool(flinks) and not fmiss, fmiss[:3])
+
     print('[css / js]')
     css = read('docs/css/style.css')
     cssb = re.sub(r'/\*.*?\*/', '', css, flags=re.S)
@@ -318,10 +346,10 @@ def main():
     chk('跨页搜索容器 + 脚本',
         all('manualResults' in read(b0 + '/start.html')
             and "fetch('_index.json')" in read(b0 + '/start.html') for b0, _ in BASES))
-    chk('css 缓存版本 v5、无 v4 残留',
-        'style.css?v=5' in read('docs/manual/start.html')
-        and 'style.css?v=4' not in read('docs/manual/start.html')
-        and 'style.css?v=5' in read('docs/index.html'))
+    chk('css 缓存版本 v6、无 v5 残留',
+        'style.css?v=6' in read('docs/manual/start.html')
+        and 'style.css?v=5' not in read('docs/manual/start.html')
+        and 'style.css?v=6' in read('docs/index.html'))
     chk('永久链接文案三语',
         '本节永久链接' in read('docs/manual/start.html')
         and '本節永久連結' in read('docs/zh-TW/manual/start.html')

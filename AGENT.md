@@ -179,6 +179,10 @@ python3 tool/sim_selffix.py --check && python3 tool/sim_turn_dot.py --check
 # 2) CI **不跑**、但改到就得自己跑的（官网 / 引导 / 教程页）
 python3 tool/check_site.py      # 官网三语：结构 / 链接 / 版本号是否出现在首页
 python3 tool/check_guides.py    # 功能引导表 ↔ 6 语言 ↔ 产物 ↔ 页面接入点
+# 改了官网的「带真源的数据块」要重跑对应同步脚本（都是幂等标记块写入，可反复跑）：
+#   python3 tool/sync_site_content.py       # 功能卡片 + 更新日志（**发版后必跑**，否则首页版本号落后）
+#   python3 tool/sync_sponsors_site.py      # 赞助名单（真源 docs/sponsors.json）
+#   python3 tool/sync_friend_links_site.py  # 友情链接（真源 docs/links.json）
 
 # 3) 改了 arb 或 CHANGELOG 时
 python3 tool/check_l10n_sync.py       # arb ↔ 提交进 git 的 gen-l10n 产物

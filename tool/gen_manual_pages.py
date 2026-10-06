@@ -330,7 +330,7 @@ def render_head(lang, file, title, desc, anchors):
 <link rel="canonical" href="{canonical}">
 {hreflangs}
 <link rel="icon" type="image/png" href="{asset}assets/favicon.png">
-<link rel="stylesheet" href="{asset}css/style.css?v=5">
+<link rel="stylesheet" href="{asset}css/style.css?v=6">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 <script>
 /* 主题：localStorage 优先，否则跟随系统；首帧前执行防闪白 */
