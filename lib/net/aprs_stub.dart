@@ -5,7 +5,7 @@ class AprsStub extends AprsConnector {
   @override
   Future<bool> connect() async => false;
   @override
-  void send(String raw) {}
+  bool send(String raw) => false;
   @override
   void disconnect() {}
 }

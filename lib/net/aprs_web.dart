@@ -38,11 +38,13 @@ class AprsWeb extends AprsConnector {
   }
 
   @override
-  void send(String raw) {
-    if (connected && _ch != null) {
-      try {
-        _ch!.sink.add(raw);
-      } catch (_) {}
+  bool send(String raw) {
+    if (!connected || _ch == null) return false;
+    try {
+      _ch!.sink.add(raw);
+      return true;
+    } catch (_) {
+      return false;
     }
   }
 

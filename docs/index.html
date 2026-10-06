@@ -642,6 +642,15 @@ html{overflow-x:hidden}
 <!-- site-sync:changelog -->
     <div class="cl-version reveal">
       <div class="cl-head">
+        <span class="cl-tag">v2.0.31</span>
+        <span class="cl-date">2026-10-03</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot fix"></span><b>自定义状态「有时还显示 CONNECT」</b>：状态报文是「内置身份帧 + 自定义状态」一对，写的是 aprs.fi 上同一个「台站状态」栏、后到者覆盖。补发那一帧原本是「发射即忘」，socket 抖动时可能静默写失败，于是 aprs.fi 停在 CONNECT 上、每轮保活又续一次。现在连接器<b>回传发送成败</b>，保活记住「上次自定义帧丢了」，<b>下一拍立刻补发自定义帧本身</b>（不再发 CONNECT）直到成功 —— 状态不会再被内置文本顶掉。</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
         <span class="cl-tag">v2.0.30</span>
         <span class="cl-date">2026-10-03</span>
       </div>

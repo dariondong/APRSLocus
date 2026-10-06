@@ -113,7 +113,7 @@ class SmartBeaconTier {
 
 class AppState extends ChangeNotifier {
   /// 应用版本（用于信标备注、APRSlocus 识别）
-  static const appVersion = '2.0.30';
+  static const appVersion = '2.0.31';
   // 我的电台
   String myCall = 'BV2AAA';
   int mySsid = 0; // 0 = 无后缀, 1-15 = -1 到 -15
@@ -3110,6 +3110,14 @@ class AppState extends ChangeNotifier {
   Timer? _reconnectTimer;
   bool _userDisconnected = false;
 
+  /// 最近一帧**自定义状态报文**是否没能写进链路（socket 抖动 / 半开）。
+  ///
+  /// 状态报文是「内置 CONNECT + 自定义状态」一对：第二帧被吞掉时，aprs.fi 上的
+  /// 「台站状态」会永远停在 CONNECT 上，而保活每轮都先发 CONNECT —— 等于每 15s
+  /// 把错误的文本又续一次（射频模式更没有任何周期保活）。所以这里记住「上次自定义
+  /// 帧丢了」，由 [_keepaliveTimer] 无视发报门槛立刻补发，直到写成功为止。
+  bool _customStatusLost = false;
+
   /// 最近一次把位置喂给盒子的时刻（喂位置按 30 秒节流：盒子侧 60 秒内算新鲜）
   DateTime? _lastBoxFeed;
 
@@ -3956,7 +3964,23 @@ class AppState extends ChangeNotifier {
       // 仍然需要保活帧，否则会被服务器踢掉（网关也就跟着断了）。
       if (!aprsIsOn) return;
       if (!connected || _userDisconnected) return;
-      if (DateTime.now().difference(_lastTx).inSeconds < 25) return;
+      // 上次自定义状态帧被吞了：无视发报门槛，立刻重发它（不重复发 CONNECT，
+      // 免得又把状态栏顶回 CONNECT 文本）。成功即清除标记。
+      final lost = _customStatusLost;
+      if (!lost && DateTime.now().difference(_lastTx).inSeconds < 25) return;
+      if (lost) {
+        final re = _customStatusFrame();
+        if (re == null) {
+          _customStatusLost = false; // 用户已清空文本，没什么可补的
+        } else if (aprs.send(re)) {
+          _customStatusLost = false;
+          _lastTx = DateTime.now();
+          _updateNotification();
+          return;
+        } else {
+          return; // 仍然发不出去：下个 tick（15s 后）再试
+        }
+      }
       // 保活：发送身份/在线状态帧。tocall=APALOC（本应用官方注册标识），
       // body=APRSLocus CONNECT（区分于位置信标；不再用非标 “保持连接”）
       final raw =
@@ -3970,7 +3994,11 @@ class AppState extends ChangeNotifier {
       // 这里**不走 [sendStatus]**：那条路会改连接状态、写日志、_notify()，
       // 于是界面每 15 秒弹一次「状态已发送」—— 保活是后台行为，不该打扰用户。
       final frame = _customStatusFrame();
-      if (frame != null) aprs.send(frame);
+      if (frame != null) {
+        // 写失败（socket 抖动/半开）就记下来：这帧没进链路，aprs.fi 会停在
+        // CONNECT 上。下个 tick 由上面的自愈分支重发，直到成功。
+        _customStatusLost = !aprs.send(frame);
+      }
       _lastTx = DateTime.now();
       _updateNotification(); // 定期刷新通知内容（台站数/收包数）
     });
@@ -4647,8 +4675,11 @@ class AppState extends ChangeNotifier {
       // 改写成 CONNECT 文本，与 15 秒保活帧是同一个问题 —— 不补就等于「一连上
       // 服务器，用户自己设的状态立刻被内置文本顶掉」。保活路径的同一处理见
       // [_keepaliveTimer]，两处共用 [_customStatusFrame]。
+      // 这一帧若写失败（socket 刚建好就抖动），aprs.fi 会停在 CONNECT 上；记下
+      // 失败标记，交给 [_keepaliveTimer] 的自愈分支补发（射频模式没有保活，
+      // 但射频也不发 CONNECT 帧，不存在这个覆盖问题）。
       final customFrame = _customStatusFrame();
-      if (customFrame != null) aprs.send(customFrame);
+      if (customFrame != null) _customStatusLost = !aprs.send(customFrame);
       // 连接成功：若主界面已就绪且尚未问过“是否自动上报”，延迟触发询问。
       // 不在此置位 beaconAutoAsked —— 用户做出选择后才记位，避免漏弹后永久丢失。
       if (!beaconAutoAsked && beaconEnabled) {

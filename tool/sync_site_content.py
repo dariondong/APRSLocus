@@ -204,6 +204,30 @@ CARDS = [
 # 只列「重点版本」：中间几十个纯修 bug 的版本归纳进文字说明，完整记录指向 Releases。
 CL = [
     {
+        'ver': 'v2.0.31', 'date': '2026-10-03',
+        'items': [
+            ('fix',
+             T('**自定义状态「有时还显示 CONNECT」**：状态报文是「内置身份帧 + 自定义状态」一对，'
+               '写的是 aprs.fi 上同一个「台站状态」栏、后到者覆盖。补发那一帧原本是「发射即忘」，'
+               'socket 抖动时可能静默写失败，于是 aprs.fi 停在 CONNECT 上、每轮保活又续一次。'
+               '现在连接器**回传发送成败**，保活记住「上次自定义帧丢了」，**下一拍立刻补发自定义帧'
+               '本身**（不再发 CONNECT）直到成功 —— 状态不会再被内置文本顶掉。',
+               '**自訂狀態「有時還顯示 CONNECT」**：狀態報文是「內建身份幀 + 自訂狀態」一對，'
+               '寫的是 aprs.fi 上同一個「台站狀態」欄、後到者覆蓋。補發那一幀原本是「發射即忘」，'
+               'socket 抖動時可能靜默寫入失敗，於是 aprs.fi 停在 CONNECT 上、每輪保活又續一次。'
+               '現在連接器**回傳發送成敗**，保活記住「上次自訂幀丟了」，**下一拍立刻補發自訂幀'
+               '本身**（不再發 CONNECT）直到成功 —— 狀態不會再被內建文字頂掉。',
+               '**Custom status "sometimes still shows CONNECT"**: a status report is a pair — the '
+               'built-in identity frame plus your custom status — and both write the **same "station '
+               'status" field** on aprs.fi, last one wins. The compensating frame was fire-and-forget, '
+               'so a socket hiccup could drop it silently and leave aprs.fi stuck on CONNECT while each '
+               'keep-alive renewed it. The connector now **reports send success**, and keep-alive '
+               'remembers a lost custom frame and **re-sends the custom frame itself on the next tick** '
+               '(no extra CONNECT) until it goes through — your status can no longer be overwritten by '
+               'the built-in text.')),
+        ],
+    },
+    {
         'ver': 'v2.0.30', 'date': '2026-10-03',
         'items': [
             ('new',

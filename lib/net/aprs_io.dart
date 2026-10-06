@@ -77,10 +77,18 @@ class AprsIo extends AprsConnector {
   }
 
   @override
-  void send(String raw) {
+  bool send(String raw) {
+    final sock = _sock;
+    if (!connected || sock == null) return false;
     try {
-      _sock?.write('$raw\r\n');
-    } catch (_) {}
+      sock.write('$raw\r\n');
+      return true;
+    } catch (_) {
+      // 写到一半失败（socket 已半开/被重置）：连接已经不可用，主动收掉让上层
+      // 走重连；否则会一直「以为在发」而报文明明进不去。
+      _handleGone();
+      return false;
+    }
   }
 
   /// 静默收掉当前连接：清理资源但**不**触发 onDisconnected。

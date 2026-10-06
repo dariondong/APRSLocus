@@ -1,5 +1,64 @@
 # 更新日志
 
+## [2.0.31] - 2026-10-03
+
+### 修复：自定义状态「有时还显示 CONNECT」（状态帧自愈）
+
+**问题**
+
+- 独立状态报文是**一对**：先发内置身份帧 `>APRSlocus CONNECT vX.Y.Z 平台`，紧接着补一帧
+  用户自定义状态。两帧写的是 aprs.fi 上**同一个「台站状态」栏**，谁后到谁覆盖。
+- 补发那一帧是「发射即忘」：socket 抖动 / 半开时 `write` 可能失败而被静默吞掉，于是
+  aprs.fi 就**停在 CONNECT 文本上**。更糟的是每轮保活又先发一帧 CONNECT，等于每 30 秒
+  把错误文本再续一次 —— 用户看到的现象就是「明明填了状态，有时还显示 CONNECT」。
+
+**修复**
+
+- 连接器的 `send` 现在**回传成败**（写异常时返回 `false`，并主动收掉已半开的连接让上层重连）。
+- 保活记住「上次自定义状态帧没写进去」，**下一拍无视发报门槛立刻补发自定义帧本身**
+  （不重复发 CONNECT），直到写成功为止；自定义文本被清空时清除标记、不发（不空转）。
+- 连接成功那条路径同样记录失败标记，交给保活自愈。
+
+**测试**
+
+- 新增 `tool/sim_status_selfheal.py`：1:1 移植保活里与自愈相关的分支 + 回归断言
+  （`--check`），断言「丢帧后下一拍补的是自定义帧且不再发 CONNECT、连败重试到成功、
+  空文本清标记、链路正常不误报」，接进 CI。
+
+---
+---
+
+## [2.0.31] - 2026-10-03 (English)
+
+### Fix: custom status "sometimes shows CONNECT" (status-frame self-heal)
+
+**Problem**
+
+- An independent status report is a **pair**: the built-in identity frame
+  `>APRSlocus CONNECT vX.Y.Z <platform>`, immediately followed by the user's custom status.
+  Both write the **same "station status" field** on aprs.fi — last one wins.
+- The compensating frame was fire-and-forget: a socket hiccup / half-open link could make the
+  `write` fail silently, leaving aprs.fi **stuck on the CONNECT text**. Worse, every keep-alive
+  sends a CONNECT frame first, re-writing the wrong text about every 30 s — exactly the user's
+  "I set a status, yet it sometimes still shows CONNECT".
+
+**Fix**
+
+- The connector's `send` now **reports success** (returns `false` on write failure and tears down a
+  half-open link so the upper layer can reconnect).
+- Keep-alive remembers "the last custom status frame did not make it" and, on the **next tick,
+  ignores the send gate and re-sends the custom frame itself** (no extra CONNECT) until it writes
+  successfully; if the custom text was cleared, the flag is dropped and nothing is sent (no busy loop).
+- The connect-success path records the same failure flag, handing it to keep-alive self-heal.
+
+**Tests**
+
+- Added `tool/sim_status_selfheal.py`: a 1:1 port of the keep-alive self-heal branch plus regression
+  assertions (`--check`) covering "the tick after a loss re-sends the custom frame and no CONNECT,
+  retries until success, clears on empty text, never false-positives on a healthy link", wired into CI.
+
+---
+
 ## [2.0.30] - 2026-10-03
 
 ### 数据维护：按天数清理过时的台站数据（issue #33）
@@ -25,8 +84,6 @@
 - 新增 `tool/sim_prune.py`：1:1 移植清理判据的算法级仿真 + 回归断言（`--check`），
   校验 Dart 判据与仿真一致，并断言「收藏/手动/自己永不被清、恰好卡阈值保留、
   保留天数 0 时不清、只清更旧的普通台站」，接进 CI。
-
----
 
 ## [2.0.30] - 2026-10-03 (English)
 

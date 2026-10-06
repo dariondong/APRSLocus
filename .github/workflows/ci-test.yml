@@ -202,6 +202,12 @@ jobs:
       - name: Check station retention/prune (algorithm regression)
         run: python3 tool/sim_prune.py --check
 
+      # 自定义状态帧自愈：状态报文是「CONNECT + 自定义」一对，自定义那帧若写失败，
+      # aprs.fi 会一直停在 CONNECT 上、且每轮保活又续一次。断言「丢帧后下一拍补
+      # 自定义帧（不再发 CONNECT）、连败重试到成功、空文本清标记」。
+      - name: Check custom status self-heal (algorithm regression)
+        run: python3 tool/sim_status_selfheal.py --check
+
       # 第三方包（DTI `}`）解包：这类报文**只有真机收得到**才知道是坑。
       # 欧洲的 iGate / 中继大量用 `}` 把**整条报文**再包一层，不解包时内层的
       # `:收件人:文本` 会落到默认类型「位置」—— 数据包页把消息标成位置，

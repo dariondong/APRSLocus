@@ -573,6 +573,15 @@
 <!-- site-sync:changelog -->
     <div class="cl-version reveal">
       <div class="cl-head">
+        <span class="cl-tag">v2.0.31</span>
+        <span class="cl-date">2026-10-03</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot fix"></span><b>自訂狀態「有時還顯示 CONNECT」</b>：狀態報文是「內建身份幀 + 自訂狀態」一對，寫的是 aprs.fi 上同一個「台站狀態」欄、後到者覆蓋。補發那一幀原本是「發射即忘」，socket 抖動時可能靜默寫入失敗，於是 aprs.fi 停在 CONNECT 上、每輪保活又續一次。現在連接器<b>回傳發送成敗</b>，保活記住「上次自訂幀丟了」，<b>下一拍立刻補發自訂幀本身</b>（不再發 CONNECT）直到成功 —— 狀態不會再被內建文字頂掉。</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
         <span class="cl-tag">v2.0.30</span>
         <span class="cl-date">2026-10-03</span>
       </div>

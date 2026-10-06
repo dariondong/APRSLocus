@@ -567,6 +567,15 @@
 <!-- site-sync:changelog -->
     <div class="cl-version reveal">
       <div class="cl-head">
+        <span class="cl-tag">v2.0.31</span>
+        <span class="cl-date">2026-10-03</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot fix"></span><b>Custom status "sometimes still shows CONNECT"</b>: a status report is a pair — the built-in identity frame plus your custom status — and both write the <b>same "station status" field</b> on aprs.fi, last one wins. The compensating frame was fire-and-forget, so a socket hiccup could drop it silently and leave aprs.fi stuck on CONNECT while each keep-alive renewed it. The connector now <b>reports send success</b>, and keep-alive remembers a lost custom frame and <b>re-sends the custom frame itself on the next tick</b> (no extra CONNECT) until it goes through — your status can no longer be overwritten by the built-in text.</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
         <span class="cl-tag">v2.0.30</span>
         <span class="cl-date">2026-10-03</span>
       </div>
