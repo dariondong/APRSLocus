@@ -33,11 +33,13 @@ final class MotionPlugin: NSObject {
   private static let sensFirm = 4.0
   private static let freefallG = 0.35
   private static let freefallMinMs = 80.0
-  private static let freefallWatchMs = 4000.0
+  private static let freefallWatchMs = 2000.0
   private static let impactMoveG = 1.2
   private static let stillMs = 12000.0
   private static let cooldownMs = 180000.0
   private static let startGraceMs = 20000.0
+  /// 无失重佐证时，「碰撞」要比灵敏度阈值再高一截才认（防「放手机」误报），与 Android 一致。
+  private static let crashBarMult = 2.0
   private static let prefKey = "aprslocus.motion.sensitivity"
 
   private var impactAtMs: Double = 0        // 最近一次冲击时间（秒*1000）
@@ -68,6 +70,10 @@ final class MotionPlugin: NSObject {
   private var started = false
   private var energy = 0.0
   private var lastAccel = 0.0
+  /// 重力估计（仅「只有加速度计、没有 deviceMotion」的回退路径用）：一阶低通。
+  private var gravity = [0.0, 0.0, 0.0]
+  private var hasGravity = false
+  private static let gravityAlpha = 0.15
   private var heading = -1.0
   private var pitch = 0.0
   private var roll = 0.0
@@ -115,6 +121,8 @@ final class MotionPlugin: NSObject {
     guard available else { return false }
     energy = 0
     lastAccel = 0
+    hasGravity = false
+    gravity = [0.0, 0.0, 0.0]
     heading = -1
     hasCompass = false
     impactAtMs = 0
@@ -137,11 +145,26 @@ final class MotionPlugin: NSObject {
       }
     } else {
       // 只有加速度计：至少能回答「在不在动」，航向不可用。
+      // 用一阶低通估重力，再分离线性/总加速度（与 Android 的 gravity[]/accelEnergy 同一套）。
       manager.accelerometerUpdateInterval = 1.0 / 15.0
       manager.startAccelerometerUpdates(to: OperationQueue.main) { [weak self] data, _ in
         guard let self = self, let d = data else { return }
         let a = d.acceleration
-        self.accumulate(ax: a.x, ay: a.y, az: a.z)
+        let raw = [a.x, a.y, a.z]
+        if !self.hasGravity {
+          self.gravity = raw
+          self.hasGravity = true
+        } else {
+          for i in 0..<3 {
+            self.gravity[i] += Self.gravityAlpha * (raw[i] - self.gravity[i])
+          }
+        }
+        let lx = raw[0] - self.gravity[0]
+        let ly = raw[1] - self.gravity[1]
+        let lz = raw[2] - self.gravity[2]
+        let lin = (lx * lx + ly * ly + lz * lz).squareRoot() * Self.gToMs2
+        let tot = (raw[0] * raw[0] + raw[1] * raw[1] + raw[2] * raw[2]).squareRoot() * Self.gToMs2
+        self.accumulate(linearMs2: lin, totalMs2: tot)
       }
     }
     started = true
@@ -163,28 +186,32 @@ final class MotionPlugin: NSObject {
     heading = norm360(m.attitude.yaw * 180.0 / Double.pi)
     pitch = m.attitude.pitch * 180.0 / Double.pi
     roll = m.attitude.roll * 180.0 / Double.pi
-    let a = m.userAcceleration
-    accumulate(ax: a.x, ay: a.y, az: a.z)
+    // 线性（去重力）与总（含重力）加速度分开算：判失重只能用后者。
+    let ua = m.userAcceleration
+    let g = m.gravity
+    let lin = (ua.x * ua.x + ua.y * ua.y + ua.z * ua.z).squareRoot() * Self.gToMs2
+    let tx = ua.x + g.x, ty = ua.y + g.y, tz = ua.z + g.z
+    let tot = (tx * tx + ty * ty + tz * tz).squareRoot() * Self.gToMs2
+    accumulate(linearMs2: lin, totalMs2: tot)
   }
 
-  private func accumulate(ax: Double, ay: Double, az: Double) {
-    // userAcceleration 单位是 g → m/s²（与 Android 的加速度计单位一致）
-    let mx = ax * Self.gToMs2
-    let my = ay * Self.gToMs2
-    let mz = az * Self.gToMs2
-    let e = mx * mx + my * my + mz * mz
+  private func accumulate(linearMs2: Double, totalMs2: Double) {
+    let e = linearMs2 * linearMs2
     energy = energy * (1 - Self.energyAlpha) + e * Self.energyAlpha
     lastAccel = energy.squareRoot()
-    checkImpact(mag: e.squareRoot())
+    checkImpact(linear: linearMs2, total: totalMs2)
   }
 
   /// 碰撞/摔倒判定（issue #26 / #32），与 Android MotionManager.checkImpact 同一套判据：
-  /// 冲击 + 随后静止；冲击前有自由落体则判为「摔倒」，否则「碰撞」。
-  private func checkImpact(mag: Double) {
+  /// 冲击 + 随后静止；冲击前有失重（自由落体）则判「摔倒」并用基准阈值，
+  /// 否则判「碰撞」且要求冲击 ≥ 基准 × crashBarMult（防「放手机」误报）。
+  private func checkImpact(linear: Double, total: Double) {
     let now = Self.nowMs()
-    let g = mag / Self.gToMs2
+    let lg = linear / Self.gToMs2
+    let tg = total / Self.gToMs2
 
-    if g <= Self.freefallG {
+    // 失重用**总**加速度：正常静止≈1g，只有真失重才趋近 0。
+    if tg <= Self.freefallG {
       if freefallStartMs == 0 { freefallStartMs = now }
     } else if freefallStartMs != 0 {
       if now - freefallStartMs >= Self.freefallMinMs { lastFreefallEndMs = now }
@@ -192,16 +219,18 @@ final class MotionPlugin: NSObject {
     }
 
     if impactAtMs == 0 {
-      if g >= impactThresholdG && now - lastCrashMs > Self.cooldownMs &&
+      let fallWindow = lastFreefallEndMs != 0 &&
+        now - lastFreefallEndMs <= Self.freefallWatchMs
+      let bar = fallWindow ? impactThresholdG : impactThresholdG * Self.crashBarMult
+      if lg >= bar && now - lastCrashMs > Self.cooldownMs &&
         now - startedAtMs > Self.startGraceMs {
         impactAtMs = now
-        impactPeakG = g
-        impactKind = (lastFreefallEndMs != 0 &&
-          now - lastFreefallEndMs <= Self.freefallWatchMs) ? "fall" : "crash"
+        impactPeakG = lg
+        impactKind = fallWindow ? "fall" : "crash"
       }
       return
     }
-    if g >= Self.impactMoveG {
+    if lg >= Self.impactMoveG {
       impactAtMs = 0
       impactPeakG = 0
       impactKind = ""

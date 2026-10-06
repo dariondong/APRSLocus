@@ -1,5 +1,66 @@
 # 更新日志
 
+## [2.0.29] - 2026-10-03
+
+### 修好生命守护「放手机就触发」的误报（issue #32 后续）
+
+**修复**
+
+- **稍微使劲把手机放在桌上就会触发碰撞提醒**：旧判据是「一个冲击尖峰 + 之后 12 秒不动」，
+  而**放手机**恰好同时满足这两条 —— 一个 3~8g 的尖峰，机器接着就一动不动。阈值调高也救不了
+  （放手机的尖峰本来就可能高过任何还算合理的撞击阈值），这是判据本身的问题，不是数值问题。
+  现在把两种事件的要求**分开**：
+  - **摔倒**：先有一段**自由落体**（失重，总加速度接近 0）再落地冲击 —— 放手机绝不会失重，
+    所以这条不误伤；
+  - **碰撞**：没有失重可依据，就要求那次冲击**明显更狠**（约为灵敏度阈值的两倍）—— 真实车祸
+    的峰值动辄 20g 以上，翻倍照样抓得到，而轻放手机的 3~8g 被挡掉。
+  两类都仍然要求「冲击之后约 12 秒没有明显运动」。
+- **修一个自由落体判据的 bug**：此前判「失重」用的是**去掉重力**的线性加速度，而它在静止时
+  恒为 0 —— 于是「放着不动」被当成了「一直在自由落体」，每次冲击都被判成「摔倒」，失重闸门
+  也一直开着。现在判失重改用**含重力的总加速度**（正常静止≈1g，只有真失重才趋近 0）。
+- 失重后的观察窗口从 4 秒收窄到 2 秒（让「摔倒」的判定更贴合真实的落地时序）。
+
+**说明**
+
+- 这是**启发式的收紧**，不是变得更灵敏：代价仍是**轻微碰撞（人还能动）不会提醒** ——
+  这个功能的定位是「人已经动不了了」，不是「发生过撞击」。判断依据与取舍在设置页的
+  说明卡里如实写明了（含「为什么放手机不再触发」）。
+
+---
+
+## [2.0.29] - 2026-10-03 (English)
+
+### Fix the life-guard false alarm that fired when setting the phone down
+
+**Fixed**
+
+- **Setting the phone down a bit firmly triggered a crash alert**: the old rule was "an impact
+  spike + then 12 s of stillness", and **setting the phone down** satisfies both at once — a 3–8 g
+  spike, after which the device is perfectly still. Raising the threshold cannot fix this (a
+  set-down spike can exceed any still-reasonable crash threshold); it is a flaw in the rule itself,
+  not in a number. The two events now have **separate** requirements:
+  - **Fall**: a **free fall** first (weightlessness — total acceleration near 0) followed by the
+    landing impact — setting the phone down never goes weightless, so this does not false-alarm;
+  - **Crash**: with no weightlessness to rely on, the impact must be **much harder** (about twice
+    the sensitivity threshold) — a real vehicle crash peaks at 20 g or more, so it still triggers,
+    while a 3–8 g set-down is rejected.
+  Both still require "no clear movement for about 12 s after the impact".
+- **Fixed a free-fall detection bug**: weightlessness used to be judged from the **gravity-removed**
+  linear acceleration, which is always 0 at rest — so "sitting still" was mistaken for "in free
+  fall", every impact was labelled a fall, and the weightlessness gate stayed open. It is now judged
+  from the **gravity-included total acceleration** (~1 g at rest; only true weightlessness tends to 0).
+- The post-weightlessness watch window was narrowed from 4 s to 2 s (so "fall" tracks the real
+  landing timing more closely).
+
+**Note**
+
+- This is a heuristic **tightening**, not added sensitivity: the cost remains that **a light
+  collision (person still moving) does not alert** — the feature targets "the person can no longer
+  move", not "an impact happened". The criteria and trade-offs are stated honestly on the settings
+  page's explainer card (including "why setting the phone down no longer triggers").
+
+---
+
 ## [2.0.28] - 2026-10-03
 
 ### 强化生命守护：告警强提醒 + 检测算法优化（issue #32）

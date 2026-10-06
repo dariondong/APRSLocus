@@ -204,6 +204,41 @@ CARDS = [
 # 只列「重点版本」：中间几十个纯修 bug 的版本归纳进文字说明，完整记录指向 Releases。
 CL = [
     {
+        'ver': 'v2.0.29', 'date': '2026-10-03',
+        'items': [
+            ('fix',
+             T('**稍微使劲放手机就触发碰撞提醒**（issue #32 后续）：旧判据是「一个冲击尖峰 + 之后 '
+               '12 秒不动」，而放手机恰好同时满足这两条。阈值调高也救不了 —— 这是判据本身的问题。'
+               '现在把两种事件的要求**分开**：**摔倒**要有自由落体（失重）再落地冲击；**碰撞**没有'
+               '失重可依据，就要求冲击**明显更狠**（约两倍阈值）。真实车祸峰值动辄 20g 以上，照样抓得到，'
+               '轻放手机的 3~8g 被挡掉。',
+               '**稍微使勁放手機就觸發碰撞提醒**（issue #32 後續）：舊判據是「一個衝擊尖峰 + 之後 '
+               '12 秒不動」，而放手機恰好同時滿足這兩條。閾值調高也救不了 —— 這是判據本身的問題。'
+               '現在把兩種事件的要求**分開**：**摔倒**要有自由落體（失重）再落地衝擊；**碰撞**沒有'
+               '失重可依據，就要求衝擊**明顯更狠**（約兩倍閾值）。真實車禍峰值動輒 20g 以上，照樣抓得到，'
+               '輕放手機的 3~8g 被擋掉。',
+               '**Setting the phone down a bit firmly triggered a crash alert** (issue #32 follow-up): '
+               'the old rule was "an impact spike + then 12 s of stillness", and setting the phone down '
+               'satisfies both at once. Raising the threshold cannot help — it is a flaw in the rule '
+               'itself. The two events now have **separate** requirements: a **fall** needs a free fall '
+               '(weightlessness) before the landing impact; a **crash**, with no weightlessness to rely '
+               'on, must be **much harder** (about twice the threshold). A real vehicle crash peaks at '
+               '20 g or more and still triggers, while a 3–8 g set-down is rejected.')),
+            ('fix',
+             T('**修一个自由落体判据的 bug**：此前判「失重」用的是**去掉重力**的线性加速度，而它在'
+               '静止时恒为 0 —— 于是「放着不动」被当成了「一直在自由落体」，每次冲击都被判成摔倒。'
+               '现在改用**含重力的总加速度**（静止≈1g，只有真失重才趋近 0）。说明卡也据实更新了。',
+               '**修一個自由落體判據的 bug**：此前判「失重」用的是**去掉重力**的線性加速度，而它在'
+               '靜止時恆為 0 —— 於是「放著不動」被當成了「一直在自由落體」，每次衝擊都被判成摔倒。'
+               '現在改用**含重力的總加速度**（靜止≈1g，只有真失重才趨近 0）。說明卡也據實更新了。',
+               '**Fixed a free-fall detection bug**: weightlessness used to be judged from the '
+               '**gravity-removed** linear acceleration, which is always 0 at rest — so "sitting still" '
+               'was mistaken for "in free fall" and every impact was labelled a fall. It now uses the '
+               '**gravity-included total acceleration** (~1 g at rest; only true weightlessness tends '
+               'to 0). The explainer card was updated to match.')),
+        ],
+    },
+    {
         'ver': 'v2.0.28', 'date': '2026-10-03',
         'items': [
             ('new',

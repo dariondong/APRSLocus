@@ -7830,8 +7830,7 @@ By tapping "Agree and connect" you confirm that you have read, understood, and a
   String get crashEnabled => 'Enable crash/fall alerts';
 
   @override
-  String get crashHowItWorks => 'The test is **two-stage**: (1) a sharp spike in acceleration (both crashes and falls produce one); (2) then almost no movement for 12 seconds. Both must hold.\n\nWhy the second stage: with the spike alone, **speed bumps, a phone dropped on a desk and a good shake** all qualify, and an alert that fires several times a day gets ignored. The trade-off is that **a minor impact (where you can still move) will not alert** — this feature is about "I cannot move", not "a collision happened".';
-
+  String get crashHowItWorks => 'There are two criteria. A **fall** needs ① a free fall first (weightlessness — total acceleration near 0), ② a landing impact, and ③ ~12 s of no motion afterwards. A **crash** has no weightlessness to rely on, so it demands a **much harder** impact (about twice the sensitivity threshold) plus the same ~12 s of stillness.\n\nWhy all this: on a single spike alone, **setting the phone down a bit firmly, speed bumps, a shake** all count — and an alert that fires several times a day is one nobody keeps. Splitting "fall (with weightlessness)" from "crash (no weightlessness, must be harder)" is exactly what keeps ordinary actions like setting the phone down from triggering. The cost is that **a light collision does not alert** — this feature is aimed at "the person can no longer move", not "an impact happened".';
   @override
   String get crashNoSensor => 'This device has no accelerometer, so detection is unavailable';
 
@@ -7845,8 +7844,7 @@ By tapping "Agree and connect" you confirm that you have read, understood, and a
   String get crashAlarmTitle => 'Possible crash or fall detected';
 
   @override
-  String get crashAlarmBody => 'The phone detected a strong impact, followed by no significant movement (about 12 seconds).\n\nIf you are fine, tap "I am fine". If you feel unwell or cannot move, call emergency services now, or send a help message to stations within 100 km.\n\n**This is a heuristic, not engineering-grade crash detection**: a speed bump or dropping the phone can trigger it.';
-
+  String get crashAlarmBody => 'The phone detected a strong impact, and there has been no clear movement for about 12 seconds since.\n\nIf you are fine, just tap "I am fine". If you feel unwell or cannot move, call emergency services now, or send a help message to stations within 100 km.\n\n**This is a heuristic judgement, not engineering-grade crash detection**.';
   @override
   String get crashNotif => 'Life guard: possible crash detected';
 
@@ -7899,15 +7897,12 @@ By tapping "Agree and connect" you confirm that you have read, understood, and a
   String get crashSensFirm => "Firm";
 
   @override
-  String get crashSensHint => "A fixed threshold cannot fit everyone: a phone in a cycling pocket trips the sensitive setting on every bump, while a bar-mounted phone needs the firm setting or it false-alarms the whole ride. Default is Standard. Sensitivity only affects **detection** (which impact counts), not what the alarm does afterwards.";
-
+  String get crashSensHint => 'Sensitivity decides how strong an impact counts: a fall uses this threshold, a crash demands about twice it. Cycling with the phone in a pocket — use Firm; so does a bar mount. Default is Standard. Sensitivity only affects **detection** (which impact counts), not what the alarm does.';
   @override
   String get crashFallAlarmTitle => "Possible fall detected";
 
   @override
-  String get crashFallAlarmBody => "The phone free-fell, then took a landing impact, then stayed still for about 12 seconds — the classic acceleration signature of a fall.\n\nIf you are fine, tap \"I'm OK\"; if you are unwell or cannot move, call emergency services now or send a help message to stations within 100 km.\n\n**This is a heuristic, not engineering-grade detection**: dropping the phone from a pocket or hand can also match it.";
-
+  String get crashFallAlarmBody => 'The phone free-fell, then took a landing impact, and has shown no clear movement since for about 12 seconds — the typical acceleration signature of a fall.\n\nIf you are fine, just tap "I am fine". If you feel unwell or cannot move, call emergency services now, or send a help message to stations within 100 km.\n\n**This is a heuristic judgement, not engineering-grade detection**.';
   @override
-  String get crashKindHint => "It now also tells **crashes** and **falls** apart: a fall almost always starts with a brief free fall (magnitude near 0) before the landing impact, whereas a vehicle crash does not. So beyond the existing \"impact + then still\", it also checks for a free fall just before the impact — present means a fall, absent means a crash. This only changes the **wording and icon**; both are handled exactly the same (I'm OK / call / ask for help).";
-
+  String get crashKindHint => 'It distinguishes a **crash** from a **fall**: a fall almost always starts with a free fall (weightlessness — total acceleration near 0) before the landing impact, whereas a vehicle crash does not. The rule is therefore: with weightlessness, label it a **fall** (use the sensitivity threshold); without it, label it a **crash** and require an impact about twice the threshold (so actions like setting the phone down do not false-alarm). This only makes the wording more accurate — both are handled exactly the same (I am fine / call / ask for help).';
 }

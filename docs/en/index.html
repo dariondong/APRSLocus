@@ -567,6 +567,16 @@
 <!-- site-sync:changelog -->
     <div class="cl-version reveal">
       <div class="cl-head">
+        <span class="cl-tag">v2.0.29</span>
+        <span class="cl-date">2026-10-03</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot fix"></span><b>Setting the phone down a bit firmly triggered a crash alert</b> (issue #32 follow-up): the old rule was "an impact spike + then 12 s of stillness", and setting the phone down satisfies both at once. Raising the threshold cannot help — it is a flaw in the rule itself. The two events now have <b>separate</b> requirements: a <b>fall</b> needs a free fall (weightlessness) before the landing impact; a <b>crash</b>, with no weightlessness to rely on, must be <b>much harder</b> (about twice the threshold). A real vehicle crash peaks at 20 g or more and still triggers, while a 3–8 g set-down is rejected.</div>
+        <div class="cl-item"><span class="cl-dot fix"></span><b>Fixed a free-fall detection bug</b>: weightlessness used to be judged from the <b>gravity-removed</b> linear acceleration, which is always 0 at rest — so "sitting still" was mistaken for "in free fall" and every impact was labelled a fall. It now uses the <b>gravity-included total acceleration</b> (~1 g at rest; only true weightlessness tends to 0). The explainer card was updated to match.</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
         <span class="cl-tag">v2.0.28</span>
         <span class="cl-date">2026-10-03</span>
       </div>

@@ -7880,8 +7880,7 @@ Al pulsar "Aceptar y conectar" confirmas que has leído, entendido y aceptado lo
   String get crashEnabled => 'Activar avisos de choque/caída';
 
   @override
-  String get crashHowItWorks => 'La prueba es **en dos etapas**: (1) un pico brusco de aceleración (tanto choques como caídas lo producen); (2) después, casi sin movimiento durante 12 segundos. Deben cumplirse las dos.\n\nPor qué la segunda: con solo el pico, **un badén, el móvil cayéndose en la mesa o agitarlo** ya cuentan, y un aviso que suena varias veces al día se ignora. El coste es que **un impacto leve (si aún puedes moverte) no avisa** — esto es para "no puedo moverme", no para "hubo un golpe".';
-
+  String get crashHowItWorks => 'Hay dos criterios. Una **caída** necesita ① una caída libre previa (ingravidez — aceleración total cercana a 0), ② un impacto de aterrizaje y ③ ~12 s sin movimiento después. Un **choque** no tiene ingravidez en que apoyarse, así que exige un impacto **mucho más fuerte** (unas dos veces el umbral de sensibilidad) y la misma quietud de ~12 s.\n\n¿Por qué tanto? Con un solo pico, **dejar el teléfono un poco fuerte, un badén, sacudirlo** cuentan todos, y una alerta que suena varias veces al día es una que nadie mira. Separar «caída (con ingravidez)» de «choque (sin ingravidez, más fuerte)» es justo lo que evita que acciones cotidianas como dejar el teléfono la disparen. El coste es que **una colisión leve no avisa** — esta función apunta a «la persona ya no puede moverse», no a «hubo un impacto».';
   @override
   String get crashNoSensor => 'Este dispositivo no tiene acelerómetro; no se puede detectar';
 
@@ -7895,8 +7894,7 @@ Al pulsar "Aceptar y conectar" confirmas que has leído, entendido y aceptado lo
   String get crashAlarmTitle => 'Posible choque o caída detectado';
 
   @override
-  String get crashAlarmBody => 'El teléfono detectó un impacto fuerte y después ningún movimiento significativo (unos 12 segundos).\n\nSi estás bien, pulsa "Estoy bien". Si te encuentras mal o no puedes moverte, llama ya a emergencias o envía un mensaje de ayuda a las estaciones en 100 km.\n\n**Es una heurística, no detección de choques de nivel ingenieril**: un badén o dejar caer el móvil pueden activarla.';
-
+  String get crashAlarmBody => 'El teléfono detectó un impacto fuerte y no ha habido movimiento claro durante unos 12 segundos.\n\nSi estás bien, pulsa «Estoy bien». Si te encuentras mal o no puedes moverte, llama ya a emergencias, o envía un mensaje de ayuda a las estaciones en 100 km.\n\n**Esto es un juicio heurístico, no detección de choques de nivel ingenieril**.';
   @override
   String get crashNotif => 'Guardián vital: posible choque';
 
@@ -7949,15 +7947,12 @@ Al pulsar "Aceptar y conectar" confirmas que has leído, entendido y aceptado lo
   String get crashSensFirm => "Firme";
 
   @override
-  String get crashSensHint => "Un umbral fijo no sirve para todos: un teléfono en el bolsillo dispara el ajuste sensible con cada bache, mientras que uno fijado al manillar necesita el ajuste firme o dará falsas alarmas todo el trayecto. Por defecto: Estándar. La sensibilidad solo afecta a la **detección** (qué impacto cuenta), no a lo que hace la alarma después.";
-
+  String get crashSensHint => 'La sensibilidad decide qué impacto cuenta: una caída usa este umbral, un choque exige unas dos veces más. En bici con el teléfono en el bolsillo usa Firme; igual con soporte de manillar. Por defecto, Estándar. La sensibilidad solo afecta a la **detección** (qué impacto cuenta), no a lo que hace la alerta.';
   @override
   String get crashFallAlarmTitle => "Posible caída detectada";
 
   @override
-  String get crashFallAlarmBody => "El teléfono cayó libremente, luego sufrió un impacto de aterrizaje y después estuvo quieto unos 12 segundos: la firma de aceleración típica de una caída.\n\nSi estás bien, pulsa \"Estoy bien\"; si te encuentras mal o no puedes moverte, llama ahora a emergencias o envía un mensaje de ayuda a las estaciones a menos de 100 km.\n\n**Es una heurística, no una detección de nivel ingenieril**: dejarse caer el teléfono desde el bolsillo o la mano también puede cumplirla.";
-
+  String get crashFallAlarmBody => 'El teléfono cayó libremente, luego recibió un impacto de aterrizaje y desde entonces no muestra movimiento claro durante unos 12 segundos — la firma de aceleración típica de una caída.\n\nSi estás bien, pulsa «Estoy bien». Si te encuentras mal o no puedes moverte, llama ya a emergencias, o envía un mensaje de ayuda a las estaciones en 100 km.\n\n**Esto es un juicio heurístico, no detección de nivel ingenieril**.';
   @override
-  String get crashKindHint => "Ahora también distingue **choques** de **caídas**: una caída casi siempre empieza con una breve caída libre (magnitud cerca de 0) antes del impacto, mientras que un choque de vehículo no. Así, además del \"impacto + luego quieto\", comprueba si hubo caída libre justo antes del impacto: si la hay, es caída; si no, choque. Solo cambia el **texto y el icono**; ambos se tratan igual (Estoy bien / llamar / pedir ayuda).";
-
+  String get crashKindHint => 'Distingue un **choque** de una **caída**: una caída casi siempre empieza con una caída libre (ingravidez — aceleración total cercana a 0) antes del impacto de aterrizaje, mientras que un choque de vehículo no. La regla es: con ingravidez, «caída» (usa el umbral de sensibilidad); sin ella, «choque» y exige un impacto de unas dos veces el umbral (así acciones como dejar el teléfono no se disparan). Esto solo hace más preciso el texto: ambos se tratan igual (estoy bien / llamar / pedir ayuda).';
 }

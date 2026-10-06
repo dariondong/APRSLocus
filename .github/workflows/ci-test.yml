@@ -188,6 +188,15 @@ jobs:
       - name: Check turn-based beaconing (algorithm regression)
         run: python3 tool/sim_turn_dot.py --check
 
+      # 碰撞/摔倒检测的算法回归（纯 Python，1:1 移植自 MotionManager.kt /
+      # MotionPlugin.swift），并校验 Android↔iOS↔仿真三处常量一致。
+      # 核心断言：**把手机放在桌上稍微使劲不许触发**（v2.0.28 的误报 —— 旧判据
+      # 「冲击 + 静止」恰好被放手机满足，且失重判据误用了去重力的线性模）、
+      # 真摔倒/车祸仍要报、失重后才有摔倒、冷却与启动宽限期仍生效。
+      # 这些编译/analyze 全绿、只有真机摔一下才知道，只能靠它在本机与 CI 提前拦。
+      - name: Check crash/fall detection (algorithm regression)
+        run: python3 tool/sim_crash.py --check
+
       # 第三方包（DTI `}`）解包：这类报文**只有真机收得到**才知道是坑。
       # 欧洲的 iGate / 中继大量用 `}` 把**整条报文**再包一层，不解包时内层的
       # `:收件人:文本` 会落到默认类型「位置」—— 数据包页把消息标成位置，

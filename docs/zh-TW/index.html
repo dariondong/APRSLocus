@@ -573,6 +573,16 @@
 <!-- site-sync:changelog -->
     <div class="cl-version reveal">
       <div class="cl-head">
+        <span class="cl-tag">v2.0.29</span>
+        <span class="cl-date">2026-10-03</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot fix"></span><b>稍微使勁放手機就觸發碰撞提醒</b>（issue #32 後續）：舊判據是「一個衝擊尖峰 + 之後 12 秒不動」，而放手機恰好同時滿足這兩條。閾值調高也救不了 —— 這是判據本身的問題。現在把兩種事件的要求<b>分開</b>：<b>摔倒</b>要有自由落體（失重）再落地衝擊；<b>碰撞</b>沒有失重可依據，就要求衝擊<b>明顯更狠</b>（約兩倍閾值）。真實車禍峰值動輒 20g 以上，照樣抓得到，輕放手機的 3~8g 被擋掉。</div>
+        <div class="cl-item"><span class="cl-dot fix"></span><b>修一個自由落體判據的 bug</b>：此前判「失重」用的是<b>去掉重力</b>的線性加速度，而它在靜止時恆為 0 —— 於是「放著不動」被當成了「一直在自由落體」，每次衝擊都被判成摔倒。現在改用<b>含重力的總加速度</b>（靜止≈1g，只有真失重才趨近 0）。說明卡也據實更新了。</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
         <span class="cl-tag">v2.0.28</span>
         <span class="cl-date">2026-10-03</span>
       </div>

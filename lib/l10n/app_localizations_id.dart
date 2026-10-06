@@ -7840,8 +7840,7 @@ Dengan menekan "Setuju dan sambung", Anda menyatakan telah membaca, memahami, da
   String get crashEnabled => 'Aktifkan peringatan benturan/jatuh';
 
   @override
-  String get crashHowItWorks => 'Ujinya **dua tahap**: (1) lonjakan akselerasi tajam (benturan maupun jatuh menghasilkannya); (2) lalu nyaris tanpa gerakan selama 12 detik. Keduanya harus terpenuhi.\n\nAlasan tahap kedua: dengan lonjakan saja, **polisi tidur, ponsel jatuh ke meja, dan menggoyang-goyang** semuanya memicu, dan peringatan yang berbunyi berkali-kali sehari akan diabaikan. Konsekuensinya **benturan ringan (masih bisa bergerak) tidak akan memicu** — fitur ini untuk "saya tidak bisa bergerak", bukan "telah terjadi benturan".';
-
+  String get crashHowItWorks => 'Ada dua kriteria. Sebuah **jatuh** butuh ① jatuh bebas lebih dulu (tanpa bobot — percepatan total mendekati 0), ② benturan saat mendarat, dan ③ ~12 detik tanpa gerak sesudahnya. Sebuah **tabrakan** tidak punya tanpa-bobot untuk diandalkan, jadi menuntut benturan yang **jauh lebih keras** (sekitar dua kali ambang sensitivitas) plus hening ~12 detik yang sama.\n\nKenapa sejauh ini: dengan satu lonjakan saja, **meletakkan ponsel agak keras, polisi tidur, menggoyang** semuanya terhitung — dan peringatan yang berbunyi beberapa kali sehari adalah yang tak lagi dipedulikan. Memisahkan "jatuh (ada tanpa bobot)" dari "tabrakan (tanpa tanpa bobot, harus lebih keras)" justru mencegah tindakan sehari-hari seperti meletakkan ponsel memicunya. Konsekuensinya **tabrakan ringan tidak memberi peringatan** — fitur ini ditujukan untuk "orang sudah tidak bisa bergerak", bukan "telah terjadi benturan".';
   @override
   String get crashNoSensor => 'Perangkat ini tidak punya akselerometer, jadi tidak bisa mendeteksi';
 
@@ -7855,8 +7854,7 @@ Dengan menekan "Setuju dan sambung", Anda menyatakan telah membaca, memahami, da
   String get crashAlarmTitle => 'Kemungkinan benturan atau jatuh terdeteksi';
 
   @override
-  String get crashAlarmBody => 'Ponsel mendeteksi benturan kuat, lalu nyaris tidak ada gerakan (sekitar 12 detik).\n\nJika Anda baik-baik saja, tekan "Saya tidak apa-apa". Jika merasa tidak enak badan atau tidak bisa bergerak, segera hubungi layanan darurat atau kirim pesan bantuan ke stasiun dalam 100 km.\n\n**Ini penilaian heuristik, bukan deteksi benturan tingkat rekayasa**: polisi tidur atau ponsel terjatuh juga bisa memicunya.';
-
+  String get crashAlarmBody => 'Ponsel mendeteksi benturan keras, dan tidak ada gerakan jelas selama sekitar 12 detik sesudahnya.\n\nJika Anda baik-baik saja, cukup ketuk "Saya baik-baik saja". Jika merasa tidak enak badan atau tidak bisa bergerak, segera hubungi layanan darurat, atau kirim pesan minta bantuan ke stasiun dalam 100 km.\n\n**Ini penilaian heuristik, bukan deteksi tabrakan sekelas rekayasa**.';
   @override
   String get crashNotif => 'Pelindung nyawa: kemungkinan benturan';
 
@@ -7909,15 +7907,12 @@ Dengan menekan "Setuju dan sambung", Anda menyatakan telah membaca, memahami, da
   String get crashSensFirm => "Kuat";
 
   @override
-  String get crashSensHint => "Ambang tetap tidak cocok untuk semua: ponsel di saku memicu setelan peka pada setiap guncangan, sedangkan ponsel terpasang di setang perlu setelan kuat agar tidak salah alarm sepanjang perjalanan. Bawaan: Standar. Sensitivitas hanya memengaruhi **deteksi** (benturan mana yang dihitung), bukan tindakan alarm setelahnya.";
-
+  String get crashSensHint => 'Sensitivitas menentukan seberapa kuat benturan yang dihitung: jatuh memakai ambang ini, tabrakan menuntut sekitar dua kalinya. Bersepeda dengan ponsel di kantong — pakai Kuat; begitu pula pemasangan di stang. Bawaan Standar. Sensitivitas hanya memengaruhi **deteksi** (benturan mana yang dihitung), bukan tindakan alarmnya.';
   @override
   String get crashFallAlarmTitle => "Kemungkinan terjatuh terdeteksi";
 
   @override
-  String get crashFallAlarmBody => "Ponsel jatuh bebas, lalu menerima benturan saat mendarat, lalu tidak bergerak sekitar 12 detik — pola akselerasi khas terjatuh.\n\nJika Anda baik-baik saja, ketuk \"Saya baik\"; jika Anda tidak enak badan atau tidak bisa bergerak, segera hubungi layanan darurat atau kirim pesan bantuan ke stasiun dalam 100 km.\n\n**Ini heuristik, bukan deteksi sekelas rekayasa**: ponsel yang terlepas dari saku atau tangan juga bisa memicunya.";
-
+  String get crashFallAlarmBody => 'Ponsel jatuh bebas, lalu menerima benturan mendarat, dan sejak itu tidak ada gerakan jelas selama sekitar 12 detik — ciri percepatan khas sebuah jatuh.\n\nJika Anda baik-baik saja, cukup ketuk "Saya baik-baik saja". Jika merasa tidak enak badan atau tidak bisa bergerak, segera hubungi layanan darurat, atau kirim pesan minta bantuan ke stasiun dalam 100 km.\n\n**Ini penilaian heuristik, bukan deteksi sekelas rekayasa**.';
   @override
-  String get crashKindHint => "Kini juga membedakan **benturan** dan **terjatuh**: terjatuh hampir selalu dimulai dengan jatuh bebas singkat (magnitudo mendekati 0) sebelum benturan mendarat, sedangkan benturan kendaraan tidak. Jadi selain \"benturan + lalu diam\", sistem juga memeriksa apakah ada jatuh bebas tepat sebelum benturan — ada berarti terjatuh, tidak ada berarti benturan. Ini hanya mengubah **teks dan ikon**; keduanya ditangani sama (Saya baik / telepon / minta bantuan).";
-
+  String get crashKindHint => 'Membedakan **tabrakan** dari **jatuh**: jatuh hampir selalu diawali jatuh bebas (tanpa bobot — percepatan total mendekati 0) sebelum benturan mendarat, sedangkan tabrakan kendaraan tidak. Jadi aturannya: bila ada tanpa bobot, sebut **jatuh** (pakai ambang sensitivitas); bila tidak, sebut **tabrakan** dan tuntut benturan sekitar dua kali ambang (sehingga tindakan seperti meletakkan ponsel tidak salah peringatan). Ini hanya membuat penyebutan lebih akurat — keduanya ditangani sama (saya baik-baik saja / telepon / minta bantuan).';
 }
