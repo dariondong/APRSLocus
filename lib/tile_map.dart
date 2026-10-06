@@ -156,14 +156,17 @@ class _TileMapViewState extends State<TileMapView> {
     return LayoutBuilder(
       builder: (context, constraints) {
         final size = constraints.biggest;
-        final z = widget.zoom.floor().clamp(0, 19);
-        // 屏幕像素密度 > 1 且图源支持 2× 时取高清瓦片。
+        // 选层级用 round 而非 floor：用 floor 时整档 [z, z+1) 都取 z 级瓦片，
+        // 越靠近 z+1 被拉得越大（z=12.9 时 1.93x，dpr 再乘 2~3）。round 把放大
+        // 封顶在 √2≈1.41x，后半档改成缩小（0.71~1x），观感明显更锐。
+        // 代价：过半档会取到更高一级瓦片，请求量略增（地图级 z 不变，仍是 |Δ|≤1）。
+        final z = widget.zoom.round().clamp(0, 19);
+        // 屏幕像素密度 > 1 且图源支持 2× 时取高清瓦片（与选层级无关的另一层补偿）。
         //
-        // 根因：瓦片按 256 **逻辑**像素绘制，在 dpr=2/3 的屏上要被拉成
-        // 512/768 **物理**像素 —— 拿 256 的原图去填，放大 2~3 倍，必然糊。
-        // 高清源给的是 512px 图，按同样的逻辑尺寸画，物理上就 1:1 了。
-        // 注意 dpr 只与**屏幕**有关，与 zoom 是否为整数无关，所以这里必须
-        // 读 MediaQuery（而不是拿 zoom 的小数部分去凑）。
+        // 实测（curl 拉高德瓦片看像素）：只有高德街道的 wprd 主机 + scl=2 给
+        // 512px，其余所有图源（Carto/OSM/Esri/腾讯/高德卫星）都只给 256px，
+        // 没有 2× 变体 —— 所以「糊」的主因不在图源，而在上面 round 选的层级；
+        // 高清瓦片只是对高德街道多补一档，其它图源靠 round 这一处改善。
         final dpr = MediaQuery.of(context).devicePixelRatio;
         final hd = dpr > 1.01 && supportsHd(widget.mapType);
         final proj = projectionFor(widget.mapType);
