@@ -2755,12 +2755,13 @@
   "stationRetentionTip": "この日数を超えて受信していない局は、起動時に自動で整理されます。0 = 自動整理オフ（手動整理は可能）。お気に入り・手動追加・自分の局は整理されません。",
   "pruneOldData": "古い局を整理",
   "pruneOldDataDesc": "しばらく受信していない局を削除して、必要なものだけ残す",
-  "pruneNow": "今すぐ整理",
   "pruneHint": "整理されるのは通常の局だけです。お気に入りと手動追加は残ります。元に戻せません。",
   "pruneNone": "整理する局はありません",
   "pruneConfirm": "{n} 日間受信していない局 {m} 件を整理します（お気に入り・手動追加は残ります）。元に戻せません。",
   "pruneDone": "古い局を {n} 件整理しました",
   "retentionOff": "自動整理はオフです（保持日数 0）。手動で整理するか、日数を設定してください",
   "@pruneConfirm": {"placeholders": {"n": {"type": "String"}, "m": {"type": "String"}}},
-  "@pruneDone": {"placeholders": {"n": {"type": "String"}}}
+  "@pruneDone": {"placeholders": {"n": {"type": "String"}}},
+  "prunePreview": "{n} 件を整理します",
+  "@prunePreview": {"placeholders": {"n": {"type": "String"}}}
 }

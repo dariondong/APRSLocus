@@ -339,12 +339,12 @@ KEYS = {
         'Elimina las estaciones sin recibir desde hace tiempo y conserva las útiles',
         'Hapus stasiun yang lama tidak terdengar, sisakan yang masih berguna',
     ),
-    'pruneNow': (
-        '立即清理', '立即清理',
-        'Prune now',
-        '今すぐ整理',
-        'Limpiar ahora',
-        'Bersihkan sekarang',
+    'prunePreview': (
+        '将清理 {n} 个', '將清理 {n} 個',
+        'Will prune {n}',
+        '{n} 件を整理します',
+        'Se eliminarán {n}',
+        'Akan membersihkan {n}',
     ),
     'pruneHint': (
         '只清理普通台站；收藏与手动添加的台站会保留。清理不可恢复。',
@@ -396,6 +396,7 @@ KEYS = {
 
 # ── 占位符声明（可空）──
 META = {
+    'prunePreview': '{"placeholders": {"n": {"type": "String"}}}',
     'pruneConfirm': '{"placeholders": {"n": {"type": "String"}, "m": {"type": "String"}}}',
     'pruneDone': '{"placeholders": {"n": {"type": "String"}}}',
     'beaconCoarseForced': '{"placeholders": {"s": {"type": "String"}}}',

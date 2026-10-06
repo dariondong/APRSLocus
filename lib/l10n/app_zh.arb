@@ -3270,12 +3270,13 @@
   "stationRetentionTip": "超过这个天数没再听到的台站，会在启动时自动清理。0 = 关闭自动清理（仍可手动清理）。收藏 / 手动添加 / 你自己的台站永不清理。",
   "pruneOldData": "清理过时台站",
   "pruneOldDataDesc": "按天数清理长期没再听到的台站，只留下还有用的",
-  "pruneNow": "立即清理",
   "pruneHint": "只清理普通台站；收藏与手动添加的台站会保留。清理不可恢复。",
   "pruneNone": "没有需要清理的台站",
   "pruneConfirm": "将清理 {n} 天没有再听到的 {m} 个台站（收藏 / 手动添加的会保留），此操作不可恢复。",
   "pruneDone": "已清理 {n} 个过时台站",
   "retentionOff": "未启用自动清理（保留天数为 0）；可手动清理，或先设置保留天数",
   "@pruneConfirm": {"placeholders": {"n": {"type": "String"}, "m": {"type": "String"}}},
-  "@pruneDone": {"placeholders": {"n": {"type": "String"}}}
+  "@pruneDone": {"placeholders": {"n": {"type": "String"}}},
+  "prunePreview": "将清理 {n} 个",
+  "@prunePreview": {"placeholders": {"n": {"type": "String"}}}
 }

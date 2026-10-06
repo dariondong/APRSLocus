@@ -7928,9 +7928,6 @@ Dengan menekan "Setuju dan sambung", Anda menyatakan telah membaca, memahami, da
   String get pruneOldDataDesc => "Hapus stasiun yang lama tidak terdengar, sisakan yang masih berguna";
 
   @override
-  String get pruneNow => "Bersihkan sekarang";
-
-  @override
   String get pruneHint => "Hanya stasiun biasa yang dibersihkan; favorit dan kontak manual dipertahankan. Tidak bisa dibatalkan.";
 
   @override
@@ -7944,5 +7941,8 @@ Dengan menekan "Setuju dan sambung", Anda menyatakan telah membaca, memahami, da
 
   @override
   String get retentionOff => "Pembersihan otomatis nonaktif (retensi 0); bersihkan manual, atau atur jumlah hari dulu";
+
+  @override
+  String prunePreview(String n) => "Akan membersihkan $n";
 
 }

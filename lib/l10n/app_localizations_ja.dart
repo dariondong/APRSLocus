@@ -7707,9 +7707,6 @@ class AppLocalizationsJa extends AppLocalizations {
   String get pruneOldDataDesc => "しばらく受信していない局を削除して、必要なものだけ残す";
 
   @override
-  String get pruneNow => "今すぐ整理";
-
-  @override
   String get pruneHint => "整理されるのは通常の局だけです。お気に入りと手動追加は残ります。元に戻せません。";
 
   @override
@@ -7723,5 +7720,8 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get retentionOff => "自動整理はオフです（保持日数 0）。手動で整理するか、日数を設定してください";
+
+  @override
+  String prunePreview(String n) => "$n 件を整理します";
 
 }

@@ -7968,9 +7968,6 @@ Al pulsar "Aceptar y conectar" confirmas que has leído, entendido y aceptado lo
   String get pruneOldDataDesc => "Elimina las estaciones sin recibir desde hace tiempo y conserva las útiles";
 
   @override
-  String get pruneNow => "Limpiar ahora";
-
-  @override
   String get pruneHint => "Solo se eliminan estaciones normales; los favoritos y contactos manuales se conservan. No se puede deshacer.";
 
   @override
@@ -7984,5 +7981,8 @@ Al pulsar "Aceptar y conectar" confirmas que has leído, entendido y aceptado lo
 
   @override
   String get retentionOff => "La limpieza automática está desactivada (retención 0); limpia manualmente o define un número de días primero";
+
+  @override
+  String prunePreview(String n) => "Se eliminarán $n";
 
 }

@@ -7617,9 +7617,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get pruneOldDataDesc => "按天数清理长期没再听到的台站，只留下还有用的";
 
   @override
-  String get pruneNow => "立即清理";
-
-  @override
   String get pruneHint => "只清理普通台站；收藏与手动添加的台站会保留。清理不可恢复。";
 
   @override
@@ -7633,6 +7630,9 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get retentionOff => "未启用自动清理（保留天数为 0）；可手动清理，或先设置保留天数";
+
+  @override
+  String prunePreview(String n) => "将清理 $n 个";
 
 }
 
@@ -15260,9 +15260,6 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   String get pruneOldDataDesc => "依天數清理長期沒再聽到的台站，只留下還有用的";
 
   @override
-  String get pruneNow => "立即清理";
-
-  @override
   String get pruneHint => "只清理一般台站；收藏與手動新增的台站會保留。清理不可恢復。";
 
   @override
@@ -15276,5 +15273,8 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get retentionOff => "未啟用自動清理（保留天數為 0）；可手動清理，或先設定保留天數";
+
+  @override
+  String prunePreview(String n) => "將清理 $n 個";
 
 }

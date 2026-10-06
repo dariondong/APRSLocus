@@ -2671,12 +2671,13 @@
   "stationRetentionTip": "Stations not heard from for longer than this are pruned automatically at startup. 0 = off (manual prune is still available). Favorites, manual contacts and your own station are never pruned.",
   "pruneOldData": "Prune stale stations",
   "pruneOldDataDesc": "Remove stations not heard from in a while, keeping the useful ones",
-  "pruneNow": "Prune now",
   "pruneHint": "Only ordinary stations are pruned; favorites and manual contacts are kept. Pruning cannot be undone.",
   "pruneNone": "Nothing to prune",
   "pruneConfirm": "About to prune {m} station(s) not heard from in {n} days (favorites / manual contacts are kept). This cannot be undone.",
   "pruneDone": "Pruned {n} stale station(s)",
   "retentionOff": "Auto-prune is off (retention is 0); prune manually, or set a number of days first",
   "@pruneConfirm": {"placeholders": {"n": {"type": "String"}, "m": {"type": "String"}}},
-  "@pruneDone": {"placeholders": {"n": {"type": "String"}}}
+  "@pruneDone": {"placeholders": {"n": {"type": "String"}}},
+  "prunePreview": "Will prune {n}",
+  "@prunePreview": {"placeholders": {"n": {"type": "String"}}}
 }

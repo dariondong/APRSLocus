@@ -7918,9 +7918,6 @@ By tapping "Agree and connect" you confirm that you have read, understood, and a
   String get pruneOldDataDesc => "Remove stations not heard from in a while, keeping the useful ones";
 
   @override
-  String get pruneNow => "Prune now";
-
-  @override
   String get pruneHint => "Only ordinary stations are pruned; favorites and manual contacts are kept. Pruning cannot be undone.";
 
   @override
@@ -7934,5 +7931,8 @@ By tapping "Agree and connect" you confirm that you have read, understood, and a
 
   @override
   String get retentionOff => "Auto-prune is off (retention is 0); prune manually, or set a number of days first";
+
+  @override
+  String prunePreview(String n) => "Will prune $n";
 
 }

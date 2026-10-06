@@ -4079,9 +4079,6 @@ class _DataSettingsPageState extends State<DataSettingsPage> {
               child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                _clearDataItem(S.of(context).pruneOldData,
-                    S.of(context).nItems('${st.prunableStationCount}')),
-                const SizedBox(height: 6),
                 if (st.stationRetentionDays <= 0)
                   Padding(
                     padding: const EdgeInsets.only(bottom: 4),
@@ -4096,7 +4093,10 @@ class _DataSettingsPageState extends State<DataSettingsPage> {
                     onPressed:
                         st.prunableStationCount == 0 ? null : _confirmPrune,
                     icon: const Icon(Icons.delete_sweep_rounded, size: 16),
-                    label: Text(S.of(context).pruneNow),
+                    label: Text(st.prunableStationCount == 0
+                        ? S.of(context).pruneNone
+                        : S.of(context)
+                            .prunePreview('${st.prunableStationCount}')),
                     style: OutlinedButton.styleFrom(
                       foregroundColor: C.orange,
                       side: BorderSide(color: C.orange.withValues(alpha: 0.4)),

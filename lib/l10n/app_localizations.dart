@@ -13548,12 +13548,6 @@ abstract class AppLocalizations {
   /// **'按天数清理长期没再听到的台站，只留下还有用的'**
   String get pruneOldDataDesc;
 
-  /// No description provided for @pruneNow.
-  ///
-  /// In zh, this message translates to:
-  /// **'立即清理'**
-  String get pruneNow;
-
   /// No description provided for @pruneHint.
   ///
   /// In zh, this message translates to:
@@ -13583,6 +13577,12 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'未启用自动清理（保留天数为 0）；可手动清理，或先设置保留天数'**
   String get retentionOff;
+
+  /// No description provided for @prunePreview.
+  ///
+  /// In zh, this message translates to:
+  /// **'将清理 {n} 个'**
+  String prunePreview(String n);
 
 }
 

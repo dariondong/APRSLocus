@@ -2755,12 +2755,13 @@
   "stationRetentionTip": "Stasiun yang tidak terdengar lebih lama dari ini akan dibersihkan otomatis saat mulai. 0 = nonaktif (bersihkan manual tetap tersedia). Favorit, kontak manual, dan stasiun Anda sendiri tidak pernah dibersihkan.",
   "pruneOldData": "Bersihkan stasiun usang",
   "pruneOldDataDesc": "Hapus stasiun yang lama tidak terdengar, sisakan yang masih berguna",
-  "pruneNow": "Bersihkan sekarang",
   "pruneHint": "Hanya stasiun biasa yang dibersihkan; favorit dan kontak manual dipertahankan. Tidak bisa dibatalkan.",
   "pruneNone": "Tidak ada yang perlu dibersihkan",
   "pruneConfirm": "Akan membersihkan {m} stasiun yang {n} hari tidak terdengar (favorit / kontak manual dipertahankan). Tidak bisa dibatalkan.",
   "pruneDone": "Membersihkan {n} stasiun usang",
   "retentionOff": "Pembersihan otomatis nonaktif (retensi 0); bersihkan manual, atau atur jumlah hari dulu",
   "@pruneConfirm": {"placeholders": {"n": {"type": "String"}, "m": {"type": "String"}}},
-  "@pruneDone": {"placeholders": {"n": {"type": "String"}}}
+  "@pruneDone": {"placeholders": {"n": {"type": "String"}}},
+  "prunePreview": "Akan membersihkan {n}",
+  "@prunePreview": {"placeholders": {"n": {"type": "String"}}}
 }
