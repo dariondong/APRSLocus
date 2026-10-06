@@ -2173,37 +2173,9 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                             c: C.ink, w: FontWeight.w600),
                       ),
                     ),
-                    // 立即上报（信标开时绿色；关时置灰仍可发一次）
-                    ClickCursor(
-                      child: GestureDetector(
-                        onTap: () {
-                          st.sendBeacon();
-                          // 还没本轮定位时上报闸会挡住它，如实提示（别弹假的已发送）。
-                          _toastMsg(st.myPositionReportable
-                              ? S.of(context).positionBeaconDetail(
-                                  st.myGrid,
-                                  st.beaconAttachedDetail,
-                                )
-                              : S.of(context).beaconWaitingFix);
-                        },
-                        child: Container(
-                          // **不能是 const**：里面的档位判断是运行期表达式
-                          // （CI 报 invalid_constant）。
-                          padding: EdgeInsets.symmetric(
-                              horizontal: st.beaconBarDetailed ? 14 : 12,
-                              vertical: st.beaconBarDetailed ? 7 : 5),
-                          decoration: BoxDecoration(
-                            color: C.blue,
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Text(
-                            S.of(context).manualBeacon,
-                            style: ts(st.beaconBarDetailed ? 11 : 10,
-                                c: Colors.white, w: FontWeight.w700),
-                          ),
-                        ),
-                      ),
-                    ),
+                    // 上报动作组（切换自动上报 + 立即上报）——三处共用同一个
+                    // widgets.ReportActions，不再各写一份（见该 widget 说明）。
+                    ReportActions(state: st),
                   ],
                 ),
                 // ── 详细档：一行「当前触发条件」（issue #21-2）──
@@ -2307,12 +2279,6 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
   static String _fmtDistM(double m) {
     if (m < 1000) return '${m.round()} m';
     return '${(m / 1000).toStringAsFixed(m >= 10000 ? 0 : 1)} km';
-  }
-
-  void _toastMsg(String m) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(m), behavior: SnackBarBehavior.floating),
-    );
   }
 
   Widget _bottomControls(Offset? hoverPos) {

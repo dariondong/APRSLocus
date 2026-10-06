@@ -1432,6 +1432,10 @@ class _BeaconSettingsPageState extends State<BeaconSettingsPage> {
           children: [
             SettingsSwitch(S.of(context).beaconEnabled, value: st.beaconEnabled,
                 onChanged: st.setBeaconEnabled),
+            // 用户反馈「上报的开关到处都有、不知道点哪个」——这里明确指路：
+            // 这个开关在主界面（地图）也有一键入口，且带「立即上报」。见
+            // widgets.ReportActions。
+            SettingsHint(S.of(context).autoReportEntryHint),
             // 上报状态栏样式：经典（单行）/ 详细（多一行判据，每秒刷新）。
             // 放在信标这一节里：它描述的就是「信标什么时候会发」。（issue #21-2）
             Padding(

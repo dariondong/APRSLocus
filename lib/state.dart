@@ -114,7 +114,7 @@ class SmartBeaconTier {
 
 class AppState extends ChangeNotifier {
   /// 应用版本（用于信标备注、APRSlocus 识别）
-  static const appVersion = '2.0.32';
+  static const appVersion = '2.0.33';
   // 我的电台
   String myCall = 'BV2AAA';
   int mySsid = 0; // 0 = 无后缀, 1-15 = -1 到 -15
@@ -4778,6 +4778,28 @@ class AppState extends ChangeNotifier {
     _updateNotification();
   }
 
+  /// 一键切换「自动上报」总开关（地图状态栏 / 我的面板 / 沉浸页共用）。
+  ///
+  /// 打开时若卡在**射频信标**这一关（[beaconNeedsRfEnable]），顺手把它一起
+  /// 打开 —— 否则用户点了「开启」却因为射频信标没开而什么都不发，正是
+  /// 「点了没反应」的老毛病。返回实际发生了什么，供界面如实提示。
+  ///
+  /// **不动**智能分档 / 距离 / 转弯这些细节开关：那些是「怎么发」，由设置页管；
+  /// 这里只回答「发不发」。手动「立即上报」不经过本方法（永远是独立动作）。
+  Future<AutoReportResult> toggleAutoReport() async {
+    if (beaconEnabled) {
+      setBeaconEnabled(false);
+      return const AutoReportResult(on: false, rfEnabled: false);
+    }
+    setBeaconEnabled(true);
+    final needRf = beaconNeedsRfEnable;
+    if (needRf) await enableRfBeacon();
+    // 刚打开自动上报时，如果已经有本轮定位，立刻补发一次让用户马上在地图上
+    // 看到自己（否则要干等一个间隔）。没有本轮定位则由上报闸挡住，不误发。
+    if (myPositionReportable) sendBeacon();
+    return AutoReportResult(on: true, rfEnabled: needRf);
+  }
+
   /// 是否允许**自动**周期上报。
   ///
   /// 「会不会真的自动发出去」只有这一个出口 —— 散在两处必然漂移（见
@@ -8262,6 +8284,17 @@ enum StepsStatus {
 
   /// 有数据
   ok,
+}
+
+/// [AppState.toggleAutoReport] 的结果：界面据此提示「开了 / 关了 / 顺带开了射频信标」。
+class AutoReportResult {
+  /// 切换后自动上报是否开启。
+  final bool on;
+
+  /// 本次是否顺带打开了射频信标（只有打开时才可能为 true）。
+  final bool rfEnabled;
+
+  const AutoReportResult({required this.on, required this.rfEnabled});
 }
 
 /// 自动上报阶段（结构化，供 UI 本地化；见 [AppState.beaconPhase]）

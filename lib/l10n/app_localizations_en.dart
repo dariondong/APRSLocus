@@ -861,7 +861,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get beaconDisabled => 'Disabled';
 
   @override
-  String get beaconEnabled => 'Enable beaconing';
+  String get beaconEnabled => 'Auto-report';
 
   @override
   String get beaconForceCoarse => 'Beacon network (coarse) fixes anyway';
@@ -988,7 +988,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get beaconWarnTitle => 'Beacon interval too short';
 
   @override
-  String get beaconingSection => 'Beaconing';
+  String get beaconingSection => 'Auto-report';
 
   @override
   String get beaconsSent => 'Beacons sent';
@@ -5373,7 +5373,7 @@ By tapping "Agree and connect" you confirm that you have read, understood, and a
   String get settings => 'Settings';
 
   @override
-  String get settingsBeaconSubtitle => 'Transmit interval & report content';
+  String get settingsBeaconSubtitle => 'Report switch, interval & content';
 
   @override
   String get settingsChatManageSubtitle => 'Contacts and chat data';
@@ -7549,6 +7549,45 @@ By tapping "Agree and connect" you confirm that you have read, understood, and a
 
   @override
   String beaconBarDetailedOption => 'Detailed';
+
+  @override
+  String get autoReportEntryHint => 'You can change this anytime from the main screen: tap the “AUTO / ONCE” button on the map (bottom-left / bottom bar) to switch, and “Report now” beside it to send immediately.';
+
+  @override
+  String get reportActions => 'Report';
+
+  @override
+  String get reportNow => 'Report now';
+
+  @override
+  String get reportAutoStart => 'Start auto';
+
+  @override
+  String get reportAutoStop => 'Stop auto';
+
+  @override
+  String get reportTagAuto => 'AUTO';
+
+  @override
+  String get reportTagOnce => 'ONCE';
+
+  @override
+  String get reportStatusAuto => 'Auto-reporting';
+
+  @override
+  String get reportStatusOnce => 'Single report';
+
+  @override
+  String get reportToggleHint => 'Tap to switch: Auto = transmit on interval / distance / turn; Single = only when you tap “Report now”. Either way you can always send one manually.';
+
+  @override
+  String get reportRfEnabledToast => 'RF beacon enabled — auto-reporting started';
+
+  @override
+  String get reportEnabledToast => 'Auto-report turned on';
+
+  @override
+  String get reportDisabledToast => 'Auto-report off — single report only';
 
   @override
   String beaconBarStyleTip => 'Classic: one line (status + send now). Detailed: an extra line showing which tier is active, the seconds left, how many metres the distance trigger still needs, and how many degrees the turn trigger still needs — refreshed once a second.';

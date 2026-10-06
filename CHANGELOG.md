@@ -1,5 +1,56 @@
 # 更新日志
 
+## [2.0.33] - 2026-10-03
+
+### 上报界面合并：一处开关，两处按钮
+
+**背景**
+
+- 用户反馈上报的开关「很乱」：地图状态栏、我的位置面板、沉浸页各写了一套
+  「立即上报」，文案与行为慢慢长歪；「开通自动上报」又散落在设置页、面板里，
+  同一个开关（`beaconEnabled`）在设置页叫「启用位置信标」、在别处叫别的名字。
+- 地图状态栏的「立即上报」在没拿到本轮定位时按下去会被上报闸拦下，却仍弹
+  「已发送」，是一条**假成功**提示。
+
+**改进**
+
+- 新增共用组件 `widgets.ReportActions`：**切换自动上报** + **立即上报** 两个
+  按钮并排，地图状态栏、我的位置面板、沉浸页三处**同一份**。左侧胶囊显示当前
+  模式（绿=自动 / 灰=单次），点一下切换；右侧「立即上报」任何模式下都立刻发一次。
+- 设置页「启用位置信标」统一改名为「自动上报」，节标题同名为「自动上报」，
+  并加一行说明指向主界面的一键入口 —— 从此只有一个名字、一个位置。
+- 一键切换在打开自动上报时，若卡在射频信标，**顺手一并打开并如实提示**，
+  杜绝「点了没反应」；有本轮定位时立刻补发一次。
+- 「立即上报」统一为：没拿到本轮定位时**如实提示「等待定位」**，不再弹假的已发送。
+
+---
+---
+
+## [2.0.33] - 2026-10-03 (English)
+
+### Report UI consolidated: one switch, two buttons
+
+**Context**
+
+- Users reported the reporting controls are "messy": the map status bar, the My-position
+  panel and the immersive page each had their own "report now", and the auto-report switch was
+  scattered across settings and panels — the same `beaconEnabled` field was called
+  "Enable beaconing" in settings and something else elsewhere.
+- The map status bar's "report now" still showed a "sent" toast when pressed with no fresh
+  fix, even though the send gate blocked it — a **false success**.
+
+**Changes**
+
+- New shared widget `widgets.ReportActions`: a **toggle auto-report** button and a
+  **report now** button side by side, used by all three surfaces (map status bar, My-position
+  panel, immersive page). The left pill shows the current mode (green = auto, grey = single);
+  tap it to switch. The right button sends one report immediately in either mode.
+- Settings' "Enable beaconing" renamed to "Auto-report", section title likewise, plus a hint
+  pointing at the main-screen control — one name, one place.
+- Toggling auto-report on now also enables the RF beacon if that was the blocker, and says so;
+  it sends one report right away when a fresh fix exists.
+- "Report now" now honestly shows "waiting for fix" instead of a false "sent" toast.
+
 ## [2.0.32] - 2026-10-03
 
 ### 改进：数据维护页重排 + 恢复出厂

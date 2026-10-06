@@ -869,7 +869,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get beaconDisabled => 'Desactivado';
 
   @override
-  String get beaconEnabled => 'Activar baliza de posición';
+  String get beaconEnabled => 'Reporte automático';
 
   @override
   String get beaconForceCoarse =>
@@ -999,7 +999,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get beaconWarnTitle => 'Intervalo de baliza demasiado corto';
 
   @override
-  String get beaconingSection => 'Balizamiento';
+  String get beaconingSection => 'Reporte automático';
 
   @override
   String get beaconsSent => 'Balizas enviadas';
@@ -5416,7 +5416,7 @@ Al pulsar "Aceptar y conectar" confirmas que has leído, entendido y aceptado lo
   String get settings => 'Ajustes';
 
   @override
-  String get settingsBeaconSubtitle => 'Intervalo de envío y contenido';
+  String get settingsBeaconSubtitle => 'Interruptor, intervalo y contenido';
 
   @override
   String get settingsChatManageSubtitle => 'Contactos y datos de chat';
@@ -7599,6 +7599,45 @@ Al pulsar "Aceptar y conectar" confirmas que has leído, entendido y aceptado lo
 
   @override
   String beaconBarDetailedOption => 'Detallada';
+
+  @override
+  String get autoReportEntryHint => 'Puedes cambiarlo en cualquier momento desde la pantalla principal: toca el botón «AUTO / ÚNICA» del mapa (abajo-izquierda / barra inferior) para alternar, y «Reportar ahora» para enviar ya.';
+
+  @override
+  String get reportActions => 'Reportar';
+
+  @override
+  String get reportNow => 'Reportar ahora';
+
+  @override
+  String get reportAutoStart => 'Iniciar auto';
+
+  @override
+  String get reportAutoStop => 'Detener auto';
+
+  @override
+  String get reportTagAuto => 'AUTO';
+
+  @override
+  String get reportTagOnce => 'ÚNICA';
+
+  @override
+  String get reportStatusAuto => 'Reporte automático';
+
+  @override
+  String get reportStatusOnce => 'Reporte único';
+
+  @override
+  String get reportToggleHint => 'Toca para cambiar: Auto = transmite por intervalo / distancia / giro; Única = solo al pulsar «Reportar ahora». En ambos puedes enviar una manual.';
+
+  @override
+  String get reportRfEnabledToast => 'Baliza RF activada: reporte automático iniciado';
+
+  @override
+  String get reportEnabledToast => 'Reporte automático activado';
+
+  @override
+  String get reportDisabledToast => 'Reporte automático desactivado: solo única';
 
   @override
   String beaconBarStyleTip => 'Clásica: una línea (estado + enviar ahora). Detallada: una línea extra con el nivel activo, los segundos restantes, los metros que faltan para el disparo por distancia y los grados para el de giro (se actualiza cada segundo).';

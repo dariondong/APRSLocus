@@ -861,7 +861,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get beaconDisabled => 'Nonaktif';
 
   @override
-  String get beaconEnabled => 'Aktifkan beacon posisi';
+  String get beaconEnabled => 'Lapor otomatis';
 
   @override
   String get beaconForceCoarse => 'Tetap pancarkan posisi jaringan (kasar)';
@@ -988,7 +988,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get beaconWarnTitle => 'Interval beacon terlalu pendek';
 
   @override
-  String get beaconingSection => 'Beaconing';
+  String get beaconingSection => 'Lapor otomatis';
 
   @override
   String get beaconsSent => 'Beacon terkirim';
@@ -5386,7 +5386,7 @@ Dengan menekan "Setuju dan sambung", Anda menyatakan telah membaca, memahami, da
   String get settings => 'Pengaturan';
 
   @override
-  String get settingsBeaconSubtitle => 'Interval kirim & isi laporan';
+  String get settingsBeaconSubtitle => 'Sakelar, interval & isi laporan';
 
   @override
   String get settingsChatManageSubtitle => 'Kontak dan data obrolan';
@@ -7559,6 +7559,45 @@ Dengan menekan "Setuju dan sambung", Anda menyatakan telah membaca, memahami, da
 
   @override
   String beaconBarDetailedOption => 'Detail';
+
+  @override
+  String get autoReportEntryHint => 'Sakelar ini bisa diubah kapan saja di layar utama: ketuk tombol "AUTO / SEKALI" di peta (kiri-bawah / bilah bawah) untuk beralih, dan "Lapor sekarang" di sampingnya untuk kirim segera.';
+
+  @override
+  String get reportActions => 'Lapor';
+
+  @override
+  String get reportNow => 'Lapor sekarang';
+
+  @override
+  String get reportAutoStart => 'Mulai otomatis';
+
+  @override
+  String get reportAutoStop => 'Hentikan otomatis';
+
+  @override
+  String get reportTagAuto => 'AUTO';
+
+  @override
+  String get reportTagOnce => 'SEKALI';
+
+  @override
+  String get reportStatusAuto => 'Lapor otomatis';
+
+  @override
+  String get reportStatusOnce => 'Lapor sekali';
+
+  @override
+  String get reportToggleHint => 'Ketuk untuk beralih: Otomatis = kirim sesuai interval / jarak / belokan; Sekali = hanya saat Anda menekan "Lapor sekarang". Keduanya tetap bisa dikirim manual.';
+
+  @override
+  String get reportRfEnabledToast => 'Beacon RF aktif — lapor otomatis dimulai';
+
+  @override
+  String get reportEnabledToast => 'Lapor otomatis diaktifkan';
+
+  @override
+  String get reportDisabledToast => 'Lapor otomatis dimatikan — hanya sekali';
 
   @override
   String beaconBarStyleTip => 'Klasik: satu baris (status + kirim sekarang). Detail: satu baris tambahan berisi tingkat aktif, sisa detik, sisa meter pemicu jarak, dan sisa derajat pemicu belokan — diperbarui tiap detik.';

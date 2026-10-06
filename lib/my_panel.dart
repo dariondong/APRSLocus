@@ -247,93 +247,40 @@ class MyPanel extends StatelessWidget {
                         ),
                       ),
                     ),
-                    if (!state.beaconEnabled)
-                      GestureDetector(
-                        onTap: () {
-                          state.setBeaconEnabled(true);
-                          if (fix) {
-                            state.sendBeacon();
-                          }
-                        },
-                        child: Text(
-                          '开启自动上报',
-                          style: ts(10, c: C.blue, w: FontWeight.w700),
-                        ),
-                      ),
                   ],
                 ),
               ),
             SizedBox(height: 10),
           ],
-          // 操作按钮
-          Row(
-            children: [
-              Expanded(
-                child: OutlinedButton.icon(
-                  // 只读模式（只启用 PKWDWPL）下没有发射链路，按钮**置灰**
-                  // 并在文案里说明原因。不隐藏它：位置突然少一个按钮会让人
-                  // 找不到，而置灰 + 说明反而能直接回答「为什么发不出去」。
-                  onPressed: state.readOnlyMode
-                      ? null
-                      : () {
-                          if (fix) {
-                            state.sendBeacon();
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(
-                                  state.connected
-                                      ? S
-                                            .of(context)
-                                            .beaconSentAprsIs(
-                                                state.myGrid)
-                                      : S
-                                            .of(context)
-                                            .beaconSentDemo(
-                                                state.myGrid),
-                                ),
-                                behavior: SnackBarBehavior.floating,
-                              ),
-                            );
-                          } else {
-                            state.startTracking();
-                          }
-                        },
-                  icon: Icon(
-                    fix
-                        ? Icons.send_rounded
-                        : Icons.my_location_rounded,
-                    size: 18,
-                  ),
-                  label: Text(
-                    state.readOnlyMode
-                        ? S.of(context).pkwdwplRxOnly
-                        : (fix
-                            ? S.of(context).beaconNow
-                            : S.of(context).getLocation),
-                  ),
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: state.readOnlyMode
-                        ? C.grey
-                        : (fix ? C.green : C.blue),
-                    side: BorderSide(
-                      color: (state.readOnlyMode
-                              ? C.greyLight
-                              : (fix ? C.green : C.blue))
-                          .withValues(alpha: 0.5),
-                    ),
-                    // 手动上报是主页最高频的动作，给足触摸目标
-                    // （44 高 ≈ Material 的最小可点区域，原 8 内边距只有 34）
-                    minimumSize: const Size(0, 44),
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 12, vertical: 12),
-                    textStyle: ts(13, w: FontWeight.w700),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
+          // 上报动作组（切换 自动上报 / 立即上报）——与地图状态栏、沉浸页同一份。
+          // 只读模式（只开 PKWDWPL）没有发射链路，整组说明原因；不隐藏它：
+          // 按钮突然消失会让人找不到，置灰 + 说明能直接回答「为什么发不出去」。
+          if (state.readOnlyMode)
+            Row(
+              children: [
+                Expanded(
+                  child: OutlinedButton.icon(
+                    onPressed: null,
+                    icon: const Icon(Icons.download_rounded, size: 16),
+                    label: Text(S.of(context).pkwdwplRxOnly),
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: C.grey,
+                      side: BorderSide(color: C.greyLight.withValues(alpha: 0.5)),
+                      minimumSize: const Size(0, 44),
+                      textStyle: ts(13, w: FontWeight.w700),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12)),
                     ),
                   ),
                 ),
-              ),
-              SizedBox(width: 8),
+              ],
+            )
+          else
+            ReportActions(state: state),
+          const SizedBox(height: 8),
+          // 连接按钮
+          Row(
+            children: [
               Expanded(
                 child: OutlinedButton.icon(
                   onPressed: state.toggleConnect,

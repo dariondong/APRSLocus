@@ -11418,6 +11418,84 @@ abstract class AppLocalizations {
   /// **'静止/低速'**
   String get tierIdleShort;
 
+  /// No description provided for @reportActions.
+  ///
+  /// In zh, this message translates to:
+  /// **"上报"**
+  String get reportActions;
+
+  /// No description provided for @reportNow.
+  ///
+  /// In zh, this message translates to:
+  /// **"立即上报"**
+  String get reportNow;
+
+  /// No description provided for @reportAutoStart.
+  ///
+  /// In zh, this message translates to:
+  /// **"开启自动上报"**
+  String get reportAutoStart;
+
+  /// No description provided for @reportAutoStop.
+  ///
+  /// In zh, this message translates to:
+  /// **"停止自动上报"**
+  String get reportAutoStop;
+
+  /// No description provided for @reportTagAuto.
+  ///
+  /// In zh, this message translates to:
+  /// **"自动"**
+  String get reportTagAuto;
+
+  /// No description provided for @reportTagOnce.
+  ///
+  /// In zh, this message translates to:
+  /// **"单次"**
+  String get reportTagOnce;
+
+  /// No description provided for @reportStatusAuto.
+  ///
+  /// In zh, this message translates to:
+  /// **"自动上报中"**
+  String get reportStatusAuto;
+
+  /// No description provided for @reportStatusOnce.
+  ///
+  /// In zh, this message translates to:
+  /// **"单次上报"**
+  String get reportStatusOnce;
+
+  /// No description provided for @reportToggleHint.
+  ///
+  /// In zh, this message translates to:
+  /// **"点一下切换：自动上报＝按间隔 / 距离 / 转弯自动发射；单次上报＝只有点「立即上报」才发射（两者都可以随时手动发一次）。"**
+  String get reportToggleHint;
+
+  /// No description provided for @reportRfEnabledToast.
+  ///
+  /// In zh, this message translates to:
+  /// **"已开启射频信标并开始自动上报"**
+  String get reportRfEnabledToast;
+
+  /// No description provided for @reportEnabledToast.
+  ///
+  /// In zh, this message translates to:
+  /// **"已开启自动上报"**
+  String get reportEnabledToast;
+
+  /// No description provided for @reportDisabledToast.
+  ///
+  /// In zh, this message translates to:
+  /// **"已停止自动上报，改为仅单次上报"**
+  String get reportDisabledToast;
+
+  /// No description provided for @autoReportEntryHint.
+  ///
+  /// In zh, this message translates to:
+  /// **"开关随时可在主界面改：地图左下/底部的「自动 / 单次」按钮点一下即切换，旁边「立即上报」立即发一次。"**
+  String get autoReportEntryHint;
+
   /// No description provided for @tierIdleTitle.
   ///
   /// In zh, this message translates to:

@@ -823,7 +823,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get beaconDisabled => '已关闭';
 
   @override
-  String get beaconEnabled => '启用位置信标';
+  String get beaconEnabled => '自动上报';
 
   @override
   String get beaconForceCoarse => '强制接受网络定位自动上报';
@@ -949,7 +949,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get beaconWarnTitle => '信标间隔过短';
 
   @override
-  String get beaconingSection => '信标上报';
+  String get beaconingSection => '自动上报';
 
   @override
   String get beaconsSent => '信标发送次数';
@@ -5168,7 +5168,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settings => '设置';
 
   @override
-  String get settingsBeaconSubtitle => '发送间隔与上报内容';
+  String get settingsBeaconSubtitle => '上报开关、间隔与内容';
 
   @override
   String get settingsChatManageSubtitle => '联系人与聊天数据';
@@ -7250,6 +7250,45 @@ class AppLocalizationsZh extends AppLocalizations {
   String beaconBarDetailedOption => '详细';
 
   @override
+  String get autoReportEntryHint => '开关随时可在主界面改：地图左下/底部的「自动 / 单次」按钮点一下即切换，旁边「立即上报」立即发一次。';
+
+  @override
+  String get reportActions => '上报';
+
+  @override
+  String get reportNow => '立即上报';
+
+  @override
+  String get reportAutoStart => '开启自动上报';
+
+  @override
+  String get reportAutoStop => '停止自动上报';
+
+  @override
+  String get reportTagAuto => '自动';
+
+  @override
+  String get reportTagOnce => '单次';
+
+  @override
+  String get reportStatusAuto => '自动上报中';
+
+  @override
+  String get reportStatusOnce => '单次上报';
+
+  @override
+  String get reportToggleHint => '点一下切换：自动上报＝按间隔 / 距离 / 转弯自动发射；单次上报＝只有点「立即上报」才发射（两者都可以随时手动发一次）。';
+
+  @override
+  String get reportRfEnabledToast => '已开启射频信标并开始自动上报';
+
+  @override
+  String get reportEnabledToast => '已开启自动上报';
+
+  @override
+  String get reportDisabledToast => '已停止自动上报，改为仅单次上报';
+
+  @override
   String beaconBarStyleTip => '经典＝一行（状态 + 立即上报）；详细＝多一行判据：当前档位、还差多少秒、距离打点还差多少米、转弯还差多少度，并每秒刷新一次。';
 
   @override
@@ -8493,7 +8532,7 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   String get beaconDisabled => '已關閉';
 
   @override
-  String get beaconEnabled => '啟用位置信標';
+  String get beaconEnabled => '自動上報';
 
   @override
   String get beaconForceCoarse => '強制接受網路定位自動上報';
@@ -8619,7 +8658,7 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   String get beaconWarnTitle => '信標間隔過短';
 
   @override
-  String get beaconingSection => '信標上報';
+  String get beaconingSection => '自動上報';
 
   @override
   String get beaconsSent => '信標傳送次數';
@@ -12839,7 +12878,7 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   String get settings => '設定';
 
   @override
-  String get settingsBeaconSubtitle => '傳送間隔與上報內容';
+  String get settingsBeaconSubtitle => '上報開關、間隔與內容';
 
   @override
   String get settingsChatManageSubtitle => '聯絡人與聊天資料';
@@ -14918,6 +14957,45 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String beaconBarDetailedOption => '詳細';
+
+  @override
+  String get autoReportEntryHint => '開關隨時可在主介面改：地圖左下/底部的「自動 / 單次」按鈕點一下即切換，旁邊「立即上報」立即發一次。';
+
+  @override
+  String get reportActions => '上報';
+
+  @override
+  String get reportNow => '立即上報';
+
+  @override
+  String get reportAutoStart => '開啟自動上報';
+
+  @override
+  String get reportAutoStop => '停止自動上報';
+
+  @override
+  String get reportTagAuto => '自動';
+
+  @override
+  String get reportTagOnce => '單次';
+
+  @override
+  String get reportStatusAuto => '自動上報中';
+
+  @override
+  String get reportStatusOnce => '單次上報';
+
+  @override
+  String get reportToggleHint => '點一下切換：自動上報＝按間隔 / 距離 / 轉彎自動發射；單次上報＝只有點「立即上報」才發射（兩者都可以隨時手動發一次）。';
+
+  @override
+  String get reportRfEnabledToast => '已開啟射頻信標並開始自動上報';
+
+  @override
+  String get reportEnabledToast => '已開啟自動上報';
+
+  @override
+  String get reportDisabledToast => '已停止自動上報，改為僅單次上報';
 
   @override
   String beaconBarStyleTip => '經典＝一行（狀態 + 立即上報）；詳細＝多一行判據：目前檔位、還差多少秒、距離打點還差多少公尺、轉彎還差多少度，並每秒更新一次。';

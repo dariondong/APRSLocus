@@ -831,7 +831,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get beaconDisabled => 'オフ';
 
   @override
-  String get beaconEnabled => '位置ビーコンを有効化';
+  String get beaconEnabled => '自動送信';
 
   @override
   String get beaconForceCoarse => 'ネットワーク測位でも自動送信する';
@@ -957,7 +957,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get beaconWarnTitle => 'ビーコン間隔が短すぎます';
 
   @override
-  String get beaconingSection => 'ビーコン送信';
+  String get beaconingSection => '自動送信';
 
   @override
   String get beaconsSent => 'ビーコン送信回数';
@@ -5226,7 +5226,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get settings => '設定';
 
   @override
-  String get settingsBeaconSubtitle => '送信間隔と送信内容';
+  String get settingsBeaconSubtitle => '送信スイッチ・間隔・内容';
 
   @override
   String get settingsChatManageSubtitle => '連絡先とチャットデータ';
@@ -7338,6 +7338,45 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String beaconBarDetailedOption => '詳細';
+
+  @override
+  String get autoReportEntryHint => 'このスイッチはメイン画面でいつでも変更できます：地図左下/下部の「自動 / 単発」ボタンをタップで切替、隣の「今すぐ送信」で即時送信します。';
+
+  @override
+  String get reportActions => 'レポート';
+
+  @override
+  String get reportNow => '今すぐ送信';
+
+  @override
+  String get reportAutoStart => '自動送信を開始';
+
+  @override
+  String get reportAutoStop => '自動送信を停止';
+
+  @override
+  String get reportTagAuto => '自動';
+
+  @override
+  String get reportTagOnce => '単発';
+
+  @override
+  String get reportStatusAuto => '自動送信中';
+
+  @override
+  String get reportStatusOnce => '単発送信';
+
+  @override
+  String get reportToggleHint => 'タップで切替：自動＝間隔 / 距離 / ターンで自動送信、単発＝「今すぐ送信」を押したときだけ送信（どちらも手動送信は可能）。';
+
+  @override
+  String get reportRfEnabledToast => 'RF ビーコンを有効化し、自動送信を開始しました';
+
+  @override
+  String get reportEnabledToast => '自動送信を開始しました';
+
+  @override
+  String get reportDisabledToast => '自動送信を停止しました（単発のみ）';
 
   @override
   String beaconBarStyleTip => 'クラシック：1行（状態＋今すぐ送信）。詳細：有効な段、残り秒数、距離トリガまであと何メートル、旋回トリガまであと何度を表示する行を追加（毎秒更新）。';

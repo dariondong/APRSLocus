@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'theme.dart';
 import 'material.dart';
 import 'models.dart';
+import 'state.dart';
 import 'l10n/app_localizations.dart';
 
 /// 界面本地化便捷别名
@@ -614,6 +615,146 @@ class ClickCursor extends StatelessWidget {
         cursor: SystemMouseCursors.click,
         child: child,
       );
+}
+
+/// ─── 上报动作组（地图状态栏 / 我的位置面板 / 沉浸页 共用）───
+///
+/// 用户反馈「上报的开关散得到处都是，很乱」。整改后只有一条规则：
+///
+///   **自动上报与手动上报是同一件事的两个按钮，永远并排出现。**
+///
+///   * 左：**状态切换**胶囊 —— 显示当前模式（自动 / 单次），点一下切换；
+///   * 右：**立即上报** —— 无论哪个模式都立刻发一次。
+///
+/// 这三个界面以前各写了一套「立即上报」的逻辑与文案，慢慢长歪；现在只有这一份。
+/// 「自动上报」背后其实不止一个开关（射频信标 / 粗定位强制 / 智能分档），
+/// 但**用户只需要面对这一个总开关**：打开时若卡在射频信标，[AppState.toggleAutoReport]
+/// 会顺手一并打开（并如实提示），免得又出现「点了没反应」。
+///
+/// 布局刻意用短标签（自动 / 单次）而不是整句：这三处都很窄（横屏竖条内的
+/// 「我的位置」面板只有约 184px 可用），整句一定溢出。完整含义放在 tooltip 与
+/// 无障碍标签里（`reportToggleHint` / `reportAutoStart`）。
+class ReportActions extends StatelessWidget {
+  final AppState state;
+
+  /// 深色底（沉浸页的黑卡片）：用浅色文字与描边。
+  final bool onDark;
+
+  const ReportActions({
+    super.key,
+    required this.state,
+    this.onDark = false,
+  });
+
+  Future<void> _toggle(BuildContext context) async {
+    final r = await state.toggleAutoReport();
+    if (!context.mounted) return;
+    final s = S.of(context);
+    final msg = !r.on
+        ? s.reportDisabledToast
+        : (r.rfEnabled ? s.reportRfEnabledToast : s.reportEnabledToast);
+    _toast(context, msg);
+  }
+
+  void _reportNow(BuildContext context) {
+    final s = S.of(context);
+    final ok = state.myPositionReportable;
+    state.sendBeacon();
+    // 还没本轮定位时上报闸会挡住它，如实提示（别弹一个假的「已发送」）。
+    _toast(
+      context,
+      ok
+          ? s.positionBeaconDetail(state.myGrid, state.beaconAttachedDetail)
+          : s.beaconWaitingFix,
+    );
+  }
+
+  static void _toast(BuildContext context, String m) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(m), behavior: SnackBarBehavior.floating),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final s = S.of(context);
+    final on = state.beaconEnabled;
+
+    // 状态胶囊：绿=自动上报中；灰=单次。文字直接写模式，点它切换。
+    final toggleFg = on ? Colors.white : (onDark ? Colors.white : C.slate);
+    final toggleBg = on
+        ? C.green
+        : (onDark ? Colors.white.withValues(alpha: 0.16) : C.greyBg);
+    final toggle = ClickCursor(
+      child: GestureDetector(
+        onTap: () => _toggle(context),
+        child: Tooltip(
+          message: s.reportToggleHint,
+          child: Semantics(
+            button: true,
+            label: on ? s.reportAutoStop : s.reportAutoStart,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
+              decoration: BoxDecoration(
+                color: toggleBg,
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(
+                  color: on ? C.green : (onDark ? Colors.white30 : C.grey),
+                ),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    on
+                        ? Icons.pause_circle_filled_rounded
+                        : Icons.play_circle_fill_rounded,
+                    size: 13,
+                    color: toggleFg,
+                  ),
+                  const SizedBox(width: 4),
+                  Text(
+                    on ? s.reportTagAuto : s.reportTagOnce,
+                    style: ts(10.5, c: toggleFg, w: FontWeight.w700),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+
+    // 立即上报：始终可用（关自动上报时它就是唯一的上报方式）。
+    final now = ClickCursor(
+      child: GestureDetector(
+        onTap: () => _reportNow(context),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
+          decoration: BoxDecoration(
+            color: onDark ? Colors.white : C.blue,
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(Icons.send_rounded,
+                  size: 13, color: onDark ? C.blue : Colors.white),
+              const SizedBox(width: 4),
+              Text(s.reportNow,
+                  style: ts(10.5,
+                      c: onDark ? C.blue : Colors.white, w: FontWeight.w700)),
+            ],
+          ),
+        ),
+      ),
+    );
+
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [toggle, const SizedBox(width: 6), now],
+    );
+  }
 }
 
 /// Round small button

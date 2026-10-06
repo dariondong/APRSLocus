@@ -615,6 +615,9 @@ class _ImmersiveMapPageState extends State<ImmersiveMapPage>
         const SizedBox(height: 2),
         Text('${s.beaconsSent} ${st.beaconsSent}${on ? '' : ' · ${s.beaconOff}'}',
             style: ts(9, c: Colors.white.withValues(alpha: 0.6))),
+        const SizedBox(height: 8),
+        // 与地图状态栏 / 我的面板同一份上报动作组（深色底版本）。
+        ReportActions(state: st, onDark: true),
       ],
     );
   }
