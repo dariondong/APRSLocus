@@ -294,10 +294,110 @@ KEYS = {
         'bebas tepat sebelum benturan — ada berarti terjatuh, tidak ada berarti benturan. Ini hanya '
         'mengubah **teks dan ikon**; keduanya ditangani sama (Saya baik / telepon / minta bantuan).',
     ),
+    # ── 数据维护：按天数清理过时台站（issue #33）──
+    #
+    # 用户要求「清空 xx 天之前的台站数据包，或者更精确地清理过时数据」。
+    # 本应用里会落盘的「台站数据」就是 stations 条目本身（packets 只在内存），
+    # 故这里给出「台站保留天数」+「立即清理」两件事。文案要把「保留什么」
+    # （收藏/手动/自己）与「不可恢复」说清楚，避免用户误以为会连收藏一起删。
+    'stationRetention': (
+        '台站保留天数', '台站保留天數',
+        'Station retention (days)',
+        '局の保持日数',
+        'Retención de estaciones (días)',
+        'Retensi stasiun (hari)',
+    ),
+    'stationRetentionTip': (
+        '超过这个天数没再听到的台站，会在启动时自动清理。0 = 关闭自动清理（仍可手动清理）。'
+        '收藏 / 手动添加 / 你自己的台站永不清理。',
+        '超過這個天數沒再聽到的台站，會在啟動時自動清理。0 = 關閉自動清理（仍可手動清理）。'
+        '收藏 / 手動新增 / 你自己的台站永不清理。',
+        'Stations not heard from for longer than this are pruned automatically at startup. '
+        '0 = off (manual prune is still available). Favorites, manual contacts and your own '
+        'station are never pruned.',
+        'この日数を超えて受信していない局は、起動時に自動で整理されます。0 = 自動整理オフ'
+        '（手動整理は可能）。お気に入り・手動追加・自分の局は整理されません。',
+        'Las estaciones sin recibir durante más de estos días se eliminan automáticamente al '
+        'iniciar. 0 = desactivado (la limpieza manual sigue disponible). Los favoritos, los '
+        'contactos manuales y tu propia estación nunca se eliminan.',
+        'Stasiun yang tidak terdengar lebih lama dari ini akan dibersihkan otomatis saat mulai. '
+        '0 = nonaktif (bersihkan manual tetap tersedia). Favorit, kontak manual, dan stasiun '
+        'Anda sendiri tidak pernah dibersihkan.',
+    ),
+    'pruneOldData': (
+        '清理过时台站', '清理過時台站',
+        'Prune stale stations',
+        '古い局を整理',
+        'Limpiar estaciones obsoletas',
+        'Bersihkan stasiun usang',
+    ),
+    'pruneOldDataDesc': (
+        '按天数清理长期没再听到的台站，只留下还有用的',
+        '依天數清理長期沒再聽到的台站，只留下還有用的',
+        'Remove stations not heard from in a while, keeping the useful ones',
+        'しばらく受信していない局を削除して、必要なものだけ残す',
+        'Elimina las estaciones sin recibir desde hace tiempo y conserva las útiles',
+        'Hapus stasiun yang lama tidak terdengar, sisakan yang masih berguna',
+    ),
+    'pruneNow': (
+        '立即清理', '立即清理',
+        'Prune now',
+        '今すぐ整理',
+        'Limpiar ahora',
+        'Bersihkan sekarang',
+    ),
+    'pruneHint': (
+        '只清理普通台站；收藏与手动添加的台站会保留。清理不可恢复。',
+        '只清理一般台站；收藏與手動新增的台站會保留。清理不可恢復。',
+        'Only ordinary stations are pruned; favorites and manual contacts are kept. '
+        'Pruning cannot be undone.',
+        '整理されるのは通常の局だけです。お気に入りと手動追加は残ります。元に戻せません。',
+        'Solo se eliminan estaciones normales; los favoritos y contactos manuales se conservan. '
+        'No se puede deshacer.',
+        'Hanya stasiun biasa yang dibersihkan; favorit dan kontak manual dipertahankan. '
+        'Tidak bisa dibatalkan.',
+    ),
+    'pruneNone': (
+        '没有需要清理的台站', '沒有需要清理的台站',
+        'Nothing to prune',
+        '整理する局はありません',
+        'No hay nada que limpiar',
+        'Tidak ada yang perlu dibersihkan',
+    ),
+    'pruneConfirm': (
+        '将清理 {n} 天没有再听到的 {m} 个台站（收藏 / 手动添加的会保留），此操作不可恢复。',
+        '將清理 {n} 天沒再聽到的 {m} 個台站（收藏 / 手動新增的會保留），此操作不可恢復。',
+        'About to prune {m} station(s) not heard from in {n} days (favorites / manual contacts '
+        'are kept). This cannot be undone.',
+        '{n} 日間受信していない局 {m} 件を整理します（お気に入り・手動追加は残ります）。'
+        '元に戻せません。',
+        'Se eliminarán {m} estación(es) sin recibir en {n} días (los favoritos / contactos '
+        'manuales se conservan). No se puede deshacer.',
+        'Akan membersihkan {m} stasiun yang {n} hari tidak terdengar (favorit / kontak manual '
+        'dipertahankan). Tidak bisa dibatalkan.',
+    ),
+    'pruneDone': (
+        '已清理 {n} 个过时台站', '已清理 {n} 個過時台站',
+        'Pruned {n} stale station(s)',
+        '古い局を {n} 件整理しました',
+        'Se eliminaron {n} estación(es) obsoletas',
+        'Membersihkan {n} stasiun usang',
+    ),
+    'retentionOff': (
+        '未启用自动清理（保留天数为 0）；可手动清理，或先设置保留天数',
+        '未啟用自動清理（保留天數為 0）；可手動清理，或先設定保留天數',
+        'Auto-prune is off (retention is 0); prune manually, or set a number of days first',
+        '自動整理はオフです（保持日数 0）。手動で整理するか、日数を設定してください',
+        'La limpieza automática está desactivada (retención 0); limpia manualmente o define '
+        'un número de días primero',
+        'Pembersihan otomatis nonaktif (retensi 0); bersihkan manual, atau atur jumlah hari dulu',
+    ),
 }
 
 # ── 占位符声明（可空）──
 META = {
+    'pruneConfirm': '{"placeholders": {"n": {"type": "String"}, "m": {"type": "String"}}}',
+    'pruneDone': '{"placeholders": {"n": {"type": "String"}}}',
     'beaconCoarseForced': '{"placeholders": {"s": {"type": "String"}}}',
     'txNoFixKeptStatus': '{"placeholders": {"parts": {"type": "String"}}}',
     'connStatusSent': '{"placeholders": {"call": {"type": "String"}}}',

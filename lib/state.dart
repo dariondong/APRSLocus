@@ -113,7 +113,7 @@ class SmartBeaconTier {
 
 class AppState extends ChangeNotifier {
   /// 应用版本（用于信标备注、APRSlocus 识别）
-  static const appVersion = '2.0.29';
+  static const appVersion = '2.0.30';
   // 我的电台
   String myCall = 'BV2AAA';
   int mySsid = 0; // 0 = 无后缀, 1-15 = -1 到 -15
@@ -1897,6 +1897,68 @@ class AppState extends ChangeNotifier {
     _notify();
   }
 
+  /// 设置台站保留天数（0–3650；0 = 关闭自动清理，仅保留手动入口）。
+  void setStationRetentionDays(int n) {
+    stationRetentionDays = n.clamp(0, 3650);
+    persist();
+    _notify();
+  }
+
+  /// 会因 [pruneOldStations] 被清理的台站数量（收藏 / 手动 / 自己的不计入）。
+  /// 未开启保留天数时返回 0。
+  int get prunableStationCount {
+    if (stationRetentionDays <= 0) return 0;
+    return _prunableStations(
+      maxAge: Duration(days: stationRetentionDays),
+      now: DateTime.now(),
+    ).length;
+  }
+
+  List<Station> _prunableStations(
+      {required Duration maxAge, required DateTime now}) {
+    final cutoff = now.subtract(maxAge);
+    final self = myFullCall.toUpperCase();
+    return stations
+        .where((s) => !s.favorite && !s.manual)
+        .where((s) => s.call.toUpperCase() != self)
+        .where((s) => s.lastHeard.isBefore(cutoff))
+        .toList();
+  }
+
+  /// 清理超过 [days] 天没有再听到的台站，返回清理条数。
+  ///
+  /// **收藏 / 手动添加 / 自己的台站永不清理** —— 用户明确标记过的目标不该因为
+  /// 「这几天没听到」就被自动删掉（保留规则与 [setMaxStations] 的条数上限一致）。
+  ///
+  /// 「台站数据包」在本应用里就是台站条目本身（`packets` 只是内存里的最近收包
+  /// 列表，重启即空、不进磁盘），所以这里的「过时数据」指的就是陈旧的台站条目
+  /// 及其轨迹/遥测记忆。清理是**不可逆**的，故仅由用户显式触发或由已开启的
+  /// 自动清理触发，绝不静默全清。
+  int pruneOldStations([int? days]) {
+    final d = (days ?? stationRetentionDays);
+    if (d <= 0) return 0;
+    final doomed = _prunableStations(
+      maxAge: Duration(days: d),
+      now: DateTime.now(),
+    );
+    if (doomed.isEmpty) return 0;
+    final calls = doomed.map((s) => s.call).toSet();
+    stations.removeWhere((s) => calls.contains(s.call));
+    _bumpStationsVersion();
+    _saveStations();
+    _notify();
+    return calls.length;
+  }
+
+  /// 启动时按已保存的保留天数自动清理一次（未开启则什么都不做）。
+  void _autoPruneStations() {
+    if (stationRetentionDays <= 0) return;
+    final n = pruneOldStations(stationRetentionDays);
+    if (n > 0) {
+      _log(LogLevel.info, '数据维护', '自动清理 ${stationRetentionDays} 天前的台站：$n 个');
+    }
+  }
+
   // 连接
   /// 当前连接（数据来源）状态。TNC 模式下它表示「TNC 链路已建立」，
   /// 因此上层（连接卡片、状态栏、通知）无需分辨数据来源 —— 详见 [_syncConnFromLink]。
@@ -3029,6 +3091,14 @@ class AppState extends ChangeNotifier {
 
   /// 单个台站的轨迹点数上限。原先硬编码 60，导致运动轨迹显示很不完整。
   int maxTrackPts = 300;
+
+  /// 台站保留天数（数据维护）。超过该天数没有再听到的台站会被自动清理，
+  /// 避免历史台站无限堆积；0 = 关闭自动清理（只保留手动入口）。
+  ///
+  /// 与 [maxStations]（条数上限）互补：条数上限管「最多留几个」，
+  /// 这个管「最久留多久」——两者都只在各自触发时才裁剪。收藏 / 手动
+  /// 添加 / 自己的台站**永不被自动清理**（见 [pruneOldStations]）。
+  int stationRetentionDays = 0;
   bool filterFollow = true; // 过滤中心跟随我的位置
 
   /// 未连接时的待发送队列（重连成功后补发）
@@ -3362,6 +3432,8 @@ class AppState extends ChangeNotifier {
       // 同步到模型层，供 effectiveStatus / 地图绘制使用
       _applyOnlineWindow();
       maxTrackPts = p.getInt('maxTrackPts') ?? maxTrackPts;
+      stationRetentionDays =
+          p.getInt('stationRetentionDays') ?? stationRetentionDays;
       filterFollow = p.getBool('filterFollow') ?? filterFollow;
       // 按国家接收
       try {
@@ -3482,6 +3554,9 @@ class AppState extends ChangeNotifier {
       _recalcUnread();
       // 加载收藏/手动联系人
       _loadStations(p);
+      // 数据维护：若用户开启了「台站保留天数」，启动时顺带清一次过时台站
+      // （放在 _loadStations 之后，且不会碰收藏/手动条目）。
+      _autoPruneStations();
       // 应用保存的主题（深色/自定义色）——必须在 initialized 前，避免先渲染默认皮肤
       // 主题要在 applySavedTheme 之前加载：后者会读当前主题的令牌覆写
       await ThemeController.instance.load(p);
@@ -3614,6 +3689,7 @@ class AppState extends ChangeNotifier {
     await p.setInt('maxPackets', maxPackets);
     await p.setInt('onlineWindowMin', onlineWindowMin);
     await p.setInt('maxTrackPts', maxTrackPts);
+    await p.setInt('stationRetentionDays', stationRetentionDays);
     await p.setBool('filterFollow', filterFollow);
     await p.setStringList('receiveCountries', receiveCountries);
     await p.setStringList('guideSeen', guideSeen.toList());

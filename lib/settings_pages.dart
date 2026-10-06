@@ -2172,6 +2172,8 @@ class _ConnectionSettingsPageState extends State<ConnectionSettingsPage> {
   late final TextEditingController _maxTrackPts;
   // 在线判定时长（分钟）——原先写死 5 分钟，现改为用户可配置
   late final TextEditingController _onlineWindow;
+  // 台站保留天数（0 = 关闭自动清理）——数据维护：过时台站自动清理
+  late final TextEditingController _retention;
 
   bool _configDirty = false;
   String _origServer = '';
@@ -2199,6 +2201,7 @@ class _ConnectionSettingsPageState extends State<ConnectionSettingsPage> {
     _maxPackets = TextEditingController(text: '${st.maxPackets}');
     _maxTrackPts = TextEditingController(text: '${st.maxTrackPts}');
     _onlineWindow = TextEditingController(text: '${st.onlineWindowMin}');
+    _retention = TextEditingController(text: '${st.stationRetentionDays}');
     _origServer = st.aprs.server;
     _origPort = st.aprs.port;
     _origPass = st.aprs.passcode;
@@ -2222,6 +2225,7 @@ class _ConnectionSettingsPageState extends State<ConnectionSettingsPage> {
     _maxPackets.dispose();
     _maxTrackPts.dispose();
     _onlineWindow.dispose();
+    _retention.dispose();
     super.dispose();
   }
 
@@ -2956,6 +2960,12 @@ class _ConnectionSettingsPageState extends State<ConnectionSettingsPage> {
             tip: S.of(context).onlineWindowTip, onChanged: (v) {
           final n = int.tryParse(v);
           if (n != null) st.setOnlineWindowMin(n);
+        }),
+        // 台站保留天数（数据维护）：过时台站自动清理的上限天数
+        SettingsInput(S.of(context).stationRetention, _retention,
+            tip: S.of(context).stationRetentionTip, onChanged: (v) {
+          final n = int.tryParse(v);
+          if (n != null) st.setStationRetentionDays(n);
         }),
       ],
     );
@@ -4055,6 +4065,53 @@ class _DataSettingsPageState extends State<DataSettingsPage> {
           ],
         ),
         const SizedBox(height: 16),
+        // 单项：按天数清理**过时台站**（不是全清）——长期没再听到的普通台站，
+        // 收藏 / 手动添加的保留。与上面「清空台站列表」互补：那是「全清」，
+        // 这是「只清过时的」。保留天数在「连接设置 → 存储上限」里配置。
+        SettingsSectionCard(
+          title: S.of(context).pruneOldData,
+          subtitle: S.of(context).pruneOldDataDesc,
+          icon: Icons.delete_sweep_rounded,
+          color: C.orange,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(14),
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                _clearDataItem(S.of(context).pruneOldData,
+                    S.of(context).nItems('${st.prunableStationCount}')),
+                const SizedBox(height: 6),
+                if (st.stationRetentionDays <= 0)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 4),
+                    child: Text(S.of(context).retentionOff,
+                        style: ts(11, c: C.orange, h: 1.4)),
+                  ),
+                Text(S.of(context).pruneHint, style: ts(11, c: C.grey, h: 1.4)),
+                const SizedBox(height: 12),
+                SizedBox(
+                  width: double.infinity,
+                  child: OutlinedButton.icon(
+                    onPressed:
+                        st.prunableStationCount == 0 ? null : _confirmPrune,
+                    icon: const Icon(Icons.delete_sweep_rounded, size: 16),
+                    label: Text(S.of(context).pruneNow),
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: C.orange,
+                      side: BorderSide(color: C.orange.withValues(alpha: 0.4)),
+                      padding: const EdgeInsets.symmetric(vertical: 11),
+                      textStyle: ts(12, w: FontWeight.w700),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12)),
+                    ),
+                  ),
+                ),
+              ]),
+            ),
+          ],
+        ),
+        const SizedBox(height: 16),
         SettingsSectionCard(
           title: S.of(context).clearAllData,
           subtitle: S.of(context).settingsClearDataSubtitle,
@@ -4209,6 +4266,54 @@ class _DataSettingsPageState extends State<DataSettingsPage> {
             },
             style: FilledButton.styleFrom(
               backgroundColor: C.red,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12)),
+            ),
+            child: Text(S.of(context).clear,
+                style: ts(13, c: Colors.white, w: FontWeight.w600)),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// 按天数清理**过时台站**（收藏 / 手动添加的保留）。与全清不同：只删
+  /// `lastHeard` 早于保留阈值的普通台站，且同样不可恢复，故先确认。
+  void _confirmPrune() {
+    final days = st.stationRetentionDays;
+    final n = st.prunableStationCount;
+    if (n == 0) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(S.of(context).pruneNone)),
+      );
+      return;
+    }
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title:
+            Text(S.of(context).pruneOldData, style: ts(16, w: FontWeight.w700)),
+        content: Text(S.of(context).pruneConfirm('$days', '$n'),
+            style: ts(13, c: C.slate)),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(S.of(context).cancel, style: ts(13, c: C.grey)),
+          ),
+          FilledButton(
+            onPressed: () {
+              final removed = st.pruneOldStations(days);
+              Navigator.pop(context);
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(S.of(context).pruneDone('$removed')),
+                  backgroundColor: C.green,
+                ),
+              );
+            },
+            style: FilledButton.styleFrom(
+              backgroundColor: C.orange,
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12)),
             ),

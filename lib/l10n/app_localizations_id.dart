@@ -7915,4 +7915,34 @@ Dengan menekan "Setuju dan sambung", Anda menyatakan telah membaca, memahami, da
   String get crashFallAlarmBody => 'Ponsel jatuh bebas, lalu menerima benturan mendarat, dan sejak itu tidak ada gerakan jelas selama sekitar 12 detik — ciri percepatan khas sebuah jatuh.\n\nJika Anda baik-baik saja, cukup ketuk "Saya baik-baik saja". Jika merasa tidak enak badan atau tidak bisa bergerak, segera hubungi layanan darurat, atau kirim pesan minta bantuan ke stasiun dalam 100 km.\n\n**Ini penilaian heuristik, bukan deteksi sekelas rekayasa**.';
   @override
   String get crashKindHint => 'Membedakan **tabrakan** dari **jatuh**: jatuh hampir selalu diawali jatuh bebas (tanpa bobot — percepatan total mendekati 0) sebelum benturan mendarat, sedangkan tabrakan kendaraan tidak. Jadi aturannya: bila ada tanpa bobot, sebut **jatuh** (pakai ambang sensitivitas); bila tidak, sebut **tabrakan** dan tuntut benturan sekitar dua kali ambang (sehingga tindakan seperti meletakkan ponsel tidak salah peringatan). Ini hanya membuat penyebutan lebih akurat — keduanya ditangani sama (saya baik-baik saja / telepon / minta bantuan).';
+  @override
+  String get stationRetention => "Retensi stasiun (hari)";
+
+  @override
+  String get stationRetentionTip => "Stasiun yang tidak terdengar lebih lama dari ini akan dibersihkan otomatis saat mulai. 0 = nonaktif (bersihkan manual tetap tersedia). Favorit, kontak manual, dan stasiun Anda sendiri tidak pernah dibersihkan.";
+
+  @override
+  String get pruneOldData => "Bersihkan stasiun usang";
+
+  @override
+  String get pruneOldDataDesc => "Hapus stasiun yang lama tidak terdengar, sisakan yang masih berguna";
+
+  @override
+  String get pruneNow => "Bersihkan sekarang";
+
+  @override
+  String get pruneHint => "Hanya stasiun biasa yang dibersihkan; favorit dan kontak manual dipertahankan. Tidak bisa dibatalkan.";
+
+  @override
+  String get pruneNone => "Tidak ada yang perlu dibersihkan";
+
+  @override
+  String pruneConfirm(String n, String m) => "Akan membersihkan $m stasiun yang $n hari tidak terdengar (favorit / kontak manual dipertahankan). Tidak bisa dibatalkan.";
+
+  @override
+  String pruneDone(String n) => "Membersihkan $n stasiun usang";
+
+  @override
+  String get retentionOff => "Pembersihan otomatis nonaktif (retensi 0); bersihkan manual, atau atur jumlah hari dulu";
+
 }

@@ -1,5 +1,67 @@
 # 更新日志
 
+## [2.0.30] - 2026-10-03
+
+### 数据维护：按天数清理过时的台站数据（issue #33）
+
+**新增**
+
+- **台站保留天数**（设置 → 连接 → 存储上限）：超过这个天数**没再听到**的台站，会在启动时
+  自动清理一次，避免历史台站无限堆积。默认 `0` = 关闭自动清理。
+- **「清理过时台站」入口**（设置 → 数据维护）：手动按天数清一次，并**先显示将清理多少个**，
+  确认后才执行；保留天数为 0 时提示可手动清理或先去设置天数。
+
+**取什么、留什么**
+
+- **只清普通台站**；**收藏 / 手动添加 / 你自己的台站永不被清理** —— 用户明确标记过的目标
+  不该因为「这几天没听到」就被自动删掉（与「台站数量上限」是同一套保留规则）。
+- 恰好卡在阈值上的台站**保留**（判据是「严格早于」才清）。
+- 「台站数据」在这里指的就是台站条目本身及其轨迹 / 遥测记忆（收包列表只在内存、重启即空、
+  不进磁盘）；清理**不可恢复**，所以只在用户显式触发或已开启的自动清理时发生，绝不静默全清。
+- 保留天数纳入备份，换机后不会静默变回「关闭」。
+
+**测试**
+
+- 新增 `tool/sim_prune.py`：1:1 移植清理判据的算法级仿真 + 回归断言（`--check`），
+  校验 Dart 判据与仿真一致，并断言「收藏/手动/自己永不被清、恰好卡阈值保留、
+  保留天数 0 时不清、只清更旧的普通台站」，接进 CI。
+
+---
+
+## [2.0.30] - 2026-10-03 (English)
+
+### Data maintenance: prune stale stations by age (issue #33)
+
+**Added**
+
+- **Station retention (days)** (Settings → Connection → Storage limits): stations **not heard from**
+  for longer than this are pruned automatically at startup, so old stations do not pile up forever.
+  Default `0` = auto-prune off.
+- **"Prune stale stations"** (Settings → Data maintenance): prune manually by age, showing **how many
+  will be removed** first and confirming before acting; when retention is 0 it suggests pruning
+  manually or setting a number of days first.
+
+**What is kept**
+
+- **Only ordinary stations are pruned**; **favorites, manual contacts and your own station are never
+  pruned** — targets you explicitly marked should not be deleted just because they have not been
+  heard from for a few days (the same keep-rule as the station count limit).
+- A station exactly at the threshold is **kept** (the rule prunes only strictly older entries).
+- "Station data" here means the station entries themselves plus their track / telemetry memory
+  (the RX packet list is memory-only, empty after a restart, never written to disk). Pruning is
+  **irreversible**, so it only happens when you trigger it or when auto-prune is enabled — never a
+  silent full wipe.
+- The retention setting is included in backups, so it does not silently revert to "off" on a new device.
+
+**Tests**
+
+- Added `tool/sim_prune.py`: an algorithm-level simulation of the prune rule with regression
+  assertions (`--check`) that verify the Dart rule matches the simulation and assert
+  "favorites/manual/self are never pruned, at-threshold is kept, retention 0 prunes nothing,
+  only strictly older ordinary stations are removed", wired into CI.
+
+---
+
 ## [2.0.29] - 2026-10-03
 
 ### 修好生命守护「放手机就触发」的误报（issue #32 后续）

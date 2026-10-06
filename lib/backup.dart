@@ -116,6 +116,9 @@ const List<BackupGroupSpec> kBackupGroups = [
     'locationMode', 'useSimLocation',
     'filterLat', 'filterLng', 'filterRadius', 'maxStations', 'maxPackets',
     'onlineWindowMin', 'maxTrackPts', 'filterFollow',
+    // 台站保留天数（数据维护）：与 maxTrackPts 同属「本地保留多少数据」的设置，
+    // 换机后不该被静默重置回 0（关闭），否则用户会以为「自动清理怎么不工作了」。
+    'stationRetentionDays',
     'receiveCountries', 'receiveOthers', 'labLandscape', 'oobeDone',
     // 功能引导的「已看过」集合：与 oobeDone 同类（都是「新手引导走没走过」）。
     // 换机后不该把用户已经看过的提示卡再弹一遍 —— 那正是引导最烦人的地方。

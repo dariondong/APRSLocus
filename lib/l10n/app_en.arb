@@ -2666,5 +2666,17 @@
   "crashSensHint": "Sensitivity decides how strong an impact counts: a fall uses this threshold, a crash demands about twice it. Cycling with the phone in a pocket — use Firm; so does a bar mount. Default is Standard. Sensitivity only affects **detection** (which impact counts), not what the alarm does.",
   "crashFallAlarmTitle": "Possible fall detected",
   "crashFallAlarmBody": "The phone free-fell, then took a landing impact, and has shown no clear movement since for about 12 seconds — the typical acceleration signature of a fall.\n\nIf you are fine, just tap \"I am fine\". If you feel unwell or cannot move, call emergency services now, or send a help message to stations within 100 km.\n\n**This is a heuristic judgement, not engineering-grade detection**.",
-  "crashKindHint": "It distinguishes a **crash** from a **fall**: a fall almost always starts with a free fall (weightlessness — total acceleration near 0) before the landing impact, whereas a vehicle crash does not. The rule is therefore: with weightlessness, label it a **fall** (use the sensitivity threshold); without it, label it a **crash** and require an impact about twice the threshold (so actions like setting the phone down do not false-alarm). This only makes the wording more accurate — both are handled exactly the same (I am fine / call / ask for help)."
+  "crashKindHint": "It distinguishes a **crash** from a **fall**: a fall almost always starts with a free fall (weightlessness — total acceleration near 0) before the landing impact, whereas a vehicle crash does not. The rule is therefore: with weightlessness, label it a **fall** (use the sensitivity threshold); without it, label it a **crash** and require an impact about twice the threshold (so actions like setting the phone down do not false-alarm). This only makes the wording more accurate — both are handled exactly the same (I am fine / call / ask for help).",
+  "stationRetention": "Station retention (days)",
+  "stationRetentionTip": "Stations not heard from for longer than this are pruned automatically at startup. 0 = off (manual prune is still available). Favorites, manual contacts and your own station are never pruned.",
+  "pruneOldData": "Prune stale stations",
+  "pruneOldDataDesc": "Remove stations not heard from in a while, keeping the useful ones",
+  "pruneNow": "Prune now",
+  "pruneHint": "Only ordinary stations are pruned; favorites and manual contacts are kept. Pruning cannot be undone.",
+  "pruneNone": "Nothing to prune",
+  "pruneConfirm": "About to prune {m} station(s) not heard from in {n} days (favorites / manual contacts are kept). This cannot be undone.",
+  "pruneDone": "Pruned {n} stale station(s)",
+  "retentionOff": "Auto-prune is off (retention is 0); prune manually, or set a number of days first",
+  "@pruneConfirm": {"placeholders": {"n": {"type": "String"}, "m": {"type": "String"}}},
+  "@pruneDone": {"placeholders": {"n": {"type": "String"}}}
 }

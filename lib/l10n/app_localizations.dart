@@ -13524,6 +13524,66 @@ abstract class AppLocalizations {
   /// **'现在会顺便区分**碰撞**与**摔倒**：摔倒几乎总是先有一段自由落体（模接近 0），再是落地冲击；车祸撞击没有那一段。所以在原有「冲击 + 随后静止」之外，再看冲击前有没有自由落体 —— 有就按「摔倒」提醒，没有就按「碰撞」。这只改**提示文字与图标**，两类的处理方式完全一样（都是我没事 / 打电话 / 求助）。'**
   String get crashKindHint;
 
+  /// No description provided for @stationRetention.
+  ///
+  /// In zh, this message translates to:
+  /// **'台站保留天数'**
+  String get stationRetention;
+
+  /// No description provided for @stationRetentionTip.
+  ///
+  /// In zh, this message translates to:
+  /// **'超过这个天数没再听到的台站，会在启动时自动清理。0 = 关闭自动清理（仍可手动清理）。收藏 / 手动添加 / 你自己的台站永不清理。'**
+  String get stationRetentionTip;
+
+  /// No description provided for @pruneOldData.
+  ///
+  /// In zh, this message translates to:
+  /// **'清理过时台站'**
+  String get pruneOldData;
+
+  /// No description provided for @pruneOldDataDesc.
+  ///
+  /// In zh, this message translates to:
+  /// **'按天数清理长期没再听到的台站，只留下还有用的'**
+  String get pruneOldDataDesc;
+
+  /// No description provided for @pruneNow.
+  ///
+  /// In zh, this message translates to:
+  /// **'立即清理'**
+  String get pruneNow;
+
+  /// No description provided for @pruneHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'只清理普通台站；收藏与手动添加的台站会保留。清理不可恢复。'**
+  String get pruneHint;
+
+  /// No description provided for @pruneNone.
+  ///
+  /// In zh, this message translates to:
+  /// **'没有需要清理的台站'**
+  String get pruneNone;
+
+  /// No description provided for @pruneConfirm.
+  ///
+  /// In zh, this message translates to:
+  /// **'将清理 {n} 天没有再听到的 {m} 个台站（收藏 / 手动添加的会保留），此操作不可恢复。'**
+  String pruneConfirm(String n, String m);
+
+  /// No description provided for @pruneDone.
+  ///
+  /// In zh, this message translates to:
+  /// **'已清理 {n} 个过时台站'**
+  String pruneDone(String n);
+
+  /// No description provided for @retentionOff.
+  ///
+  /// In zh, this message translates to:
+  /// **'未启用自动清理（保留天数为 0）；可手动清理，或先设置保留天数'**
+  String get retentionOff;
+
 }
 
 class _AppLocalizationsDelegate

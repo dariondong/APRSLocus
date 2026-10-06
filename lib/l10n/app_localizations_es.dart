@@ -7955,4 +7955,34 @@ Al pulsar "Aceptar y conectar" confirmas que has leído, entendido y aceptado lo
   String get crashFallAlarmBody => 'El teléfono cayó libremente, luego recibió un impacto de aterrizaje y desde entonces no muestra movimiento claro durante unos 12 segundos — la firma de aceleración típica de una caída.\n\nSi estás bien, pulsa «Estoy bien». Si te encuentras mal o no puedes moverte, llama ya a emergencias, o envía un mensaje de ayuda a las estaciones en 100 km.\n\n**Esto es un juicio heurístico, no detección de nivel ingenieril**.';
   @override
   String get crashKindHint => 'Distingue un **choque** de una **caída**: una caída casi siempre empieza con una caída libre (ingravidez — aceleración total cercana a 0) antes del impacto de aterrizaje, mientras que un choque de vehículo no. La regla es: con ingravidez, «caída» (usa el umbral de sensibilidad); sin ella, «choque» y exige un impacto de unas dos veces el umbral (así acciones como dejar el teléfono no se disparan). Esto solo hace más preciso el texto: ambos se tratan igual (estoy bien / llamar / pedir ayuda).';
+  @override
+  String get stationRetention => "Retención de estaciones (días)";
+
+  @override
+  String get stationRetentionTip => "Las estaciones sin recibir durante más de estos días se eliminan automáticamente al iniciar. 0 = desactivado (la limpieza manual sigue disponible). Los favoritos, los contactos manuales y tu propia estación nunca se eliminan.";
+
+  @override
+  String get pruneOldData => "Limpiar estaciones obsoletas";
+
+  @override
+  String get pruneOldDataDesc => "Elimina las estaciones sin recibir desde hace tiempo y conserva las útiles";
+
+  @override
+  String get pruneNow => "Limpiar ahora";
+
+  @override
+  String get pruneHint => "Solo se eliminan estaciones normales; los favoritos y contactos manuales se conservan. No se puede deshacer.";
+
+  @override
+  String get pruneNone => "No hay nada que limpiar";
+
+  @override
+  String pruneConfirm(String n, String m) => "Se eliminarán $m estación(es) sin recibir en $n días (los favoritos / contactos manuales se conservan). No se puede deshacer.";
+
+  @override
+  String pruneDone(String n) => "Se eliminaron $n estación(es) obsoletas";
+
+  @override
+  String get retentionOff => "La limpieza automática está desactivada (retención 0); limpia manualmente o define un número de días primero";
+
 }

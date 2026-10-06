@@ -197,6 +197,11 @@ jobs:
       - name: Check crash/fall detection (algorithm regression)
         run: python3 tool/sim_crash.py --check
 
+      # 台站保留/清理（数据维护，issue #33）：判据与 lib/state.dart 一致，
+      # 并断言「收藏/手动/自己永不被清、恰好卡阈值保留、保留天数 0 时不清」。
+      - name: Check station retention/prune (algorithm regression)
+        run: python3 tool/sim_prune.py --check
+
       # 第三方包（DTI `}`）解包：这类报文**只有真机收得到**才知道是坑。
       # 欧洲的 iGate / 中继大量用 `}` 把**整条报文**再包一层，不解包时内层的
       # `:收件人:文本` 会落到默认类型「位置」—— 数据包页把消息标成位置，

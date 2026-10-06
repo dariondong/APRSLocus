@@ -567,6 +567,15 @@
 <!-- site-sync:changelog -->
     <div class="cl-version reveal">
       <div class="cl-head">
+        <span class="cl-tag">v2.0.30</span>
+        <span class="cl-date">2026-10-03</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot new"></span><b>Data maintenance: prune stale stations by age</b> (issue #33): a <b>station retention (days)</b> setting prunes stations <b>not heard from</b> for longer than that at startup, and the Data maintenance page adds a <b>prune now</b> action that first shows how many will be removed. <b>Only ordinary stations are pruned</b> — favorites, manual contacts and your own station are never pruned, and stations exactly at the threshold are kept; retention 0 = auto-prune off. Pruning is irreversible, so there is never a silent full wipe.</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
         <span class="cl-tag">v2.0.29</span>
         <span class="cl-date">2026-10-03</span>
       </div>

@@ -2750,5 +2750,17 @@
   "crashSensHint": "La sensibilidad decide qué impacto cuenta: una caída usa este umbral, un choque exige unas dos veces más. En bici con el teléfono en el bolsillo usa Firme; igual con soporte de manillar. Por defecto, Estándar. La sensibilidad solo afecta a la **detección** (qué impacto cuenta), no a lo que hace la alerta.",
   "crashFallAlarmTitle": "Posible caída detectada",
   "crashFallAlarmBody": "El teléfono cayó libremente, luego recibió un impacto de aterrizaje y desde entonces no muestra movimiento claro durante unos 12 segundos — la firma de aceleración típica de una caída.\n\nSi estás bien, pulsa «Estoy bien». Si te encuentras mal o no puedes moverte, llama ya a emergencias, o envía un mensaje de ayuda a las estaciones en 100 km.\n\n**Esto es un juicio heurístico, no detección de nivel ingenieril**.",
-  "crashKindHint": "Distingue un **choque** de una **caída**: una caída casi siempre empieza con una caída libre (ingravidez — aceleración total cercana a 0) antes del impacto de aterrizaje, mientras que un choque de vehículo no. La regla es: con ingravidez, «caída» (usa el umbral de sensibilidad); sin ella, «choque» y exige un impacto de unas dos veces el umbral (así acciones como dejar el teléfono no se disparan). Esto solo hace más preciso el texto: ambos se tratan igual (estoy bien / llamar / pedir ayuda)."
+  "crashKindHint": "Distingue un **choque** de una **caída**: una caída casi siempre empieza con una caída libre (ingravidez — aceleración total cercana a 0) antes del impacto de aterrizaje, mientras que un choque de vehículo no. La regla es: con ingravidez, «caída» (usa el umbral de sensibilidad); sin ella, «choque» y exige un impacto de unas dos veces el umbral (así acciones como dejar el teléfono no se disparan). Esto solo hace más preciso el texto: ambos se tratan igual (estoy bien / llamar / pedir ayuda).",
+  "stationRetention": "Retención de estaciones (días)",
+  "stationRetentionTip": "Las estaciones sin recibir durante más de estos días se eliminan automáticamente al iniciar. 0 = desactivado (la limpieza manual sigue disponible). Los favoritos, los contactos manuales y tu propia estación nunca se eliminan.",
+  "pruneOldData": "Limpiar estaciones obsoletas",
+  "pruneOldDataDesc": "Elimina las estaciones sin recibir desde hace tiempo y conserva las útiles",
+  "pruneNow": "Limpiar ahora",
+  "pruneHint": "Solo se eliminan estaciones normales; los favoritos y contactos manuales se conservan. No se puede deshacer.",
+  "pruneNone": "No hay nada que limpiar",
+  "pruneConfirm": "Se eliminarán {m} estación(es) sin recibir en {n} días (los favoritos / contactos manuales se conservan). No se puede deshacer.",
+  "pruneDone": "Se eliminaron {n} estación(es) obsoletas",
+  "retentionOff": "La limpieza automática está desactivada (retención 0); limpia manualmente o define un número de días primero",
+  "@pruneConfirm": {"placeholders": {"n": {"type": "String"}, "m": {"type": "String"}}},
+  "@pruneDone": {"placeholders": {"n": {"type": "String"}}}
 }

@@ -7905,4 +7905,34 @@ By tapping "Agree and connect" you confirm that you have read, understood, and a
   String get crashFallAlarmBody => 'The phone free-fell, then took a landing impact, and has shown no clear movement since for about 12 seconds — the typical acceleration signature of a fall.\n\nIf you are fine, just tap "I am fine". If you feel unwell or cannot move, call emergency services now, or send a help message to stations within 100 km.\n\n**This is a heuristic judgement, not engineering-grade detection**.';
   @override
   String get crashKindHint => 'It distinguishes a **crash** from a **fall**: a fall almost always starts with a free fall (weightlessness — total acceleration near 0) before the landing impact, whereas a vehicle crash does not. The rule is therefore: with weightlessness, label it a **fall** (use the sensitivity threshold); without it, label it a **crash** and require an impact about twice the threshold (so actions like setting the phone down do not false-alarm). This only makes the wording more accurate — both are handled exactly the same (I am fine / call / ask for help).';
+  @override
+  String get stationRetention => "Station retention (days)";
+
+  @override
+  String get stationRetentionTip => "Stations not heard from for longer than this are pruned automatically at startup. 0 = off (manual prune is still available). Favorites, manual contacts and your own station are never pruned.";
+
+  @override
+  String get pruneOldData => "Prune stale stations";
+
+  @override
+  String get pruneOldDataDesc => "Remove stations not heard from in a while, keeping the useful ones";
+
+  @override
+  String get pruneNow => "Prune now";
+
+  @override
+  String get pruneHint => "Only ordinary stations are pruned; favorites and manual contacts are kept. Pruning cannot be undone.";
+
+  @override
+  String get pruneNone => "Nothing to prune";
+
+  @override
+  String pruneConfirm(String n, String m) => "About to prune $m station(s) not heard from in $n days (favorites / manual contacts are kept). This cannot be undone.";
+
+  @override
+  String pruneDone(String n) => "Pruned $n stale station(s)";
+
+  @override
+  String get retentionOff => "Auto-prune is off (retention is 0); prune manually, or set a number of days first";
+
 }

@@ -7604,6 +7604,36 @@ class AppLocalizationsZh extends AppLocalizations {
   String get crashFallAlarmBody => '手機先自由落體、隨後一次落地衝擊，再之後一直沒有明顯移動（約 12 秒）—— 這是摔倒的典型加速度特徵。\n\n如果你沒事，按「我沒事」即可；如果身體不適或無法行動，請立即撥打急救電話，或向附近 100 公里內的臺站發出求助訊息。\n\n**這是啟發式判斷，不是工程級偵測**。';
   @override
   String get crashKindHint => '會區分**碰撞**與**摔倒**：摔倒幾乎總是先有一段自由落體（失重，總加速度接近 0），再是落地衝擊；車禍撞擊沒有那一段。所以判據是 —— 有失重就按「摔倒」（用靈敏度閾值）；沒有失重就按「碰撞」，並要求衝擊約兩倍於閾值才認（這樣「把手機放在桌上」這類動作不會誤報）。這只是把判斷說得更準，兩類的處理方式完全一樣（都是我沒事 / 打電話 / 求助）。';
+  @override
+  String get stationRetention => "台站保留天数";
+
+  @override
+  String get stationRetentionTip => "超过这个天数没再听到的台站，会在启动时自动清理。0 = 关闭自动清理（仍可手动清理）。收藏 / 手动添加 / 你自己的台站永不清理。";
+
+  @override
+  String get pruneOldData => "清理过时台站";
+
+  @override
+  String get pruneOldDataDesc => "按天数清理长期没再听到的台站，只留下还有用的";
+
+  @override
+  String get pruneNow => "立即清理";
+
+  @override
+  String get pruneHint => "只清理普通台站；收藏与手动添加的台站会保留。清理不可恢复。";
+
+  @override
+  String get pruneNone => "没有需要清理的台站";
+
+  @override
+  String pruneConfirm(String n, String m) => "将清理 $n 天没有再听到的 $m 个台站（收藏 / 手动添加的会保留），此操作不可恢复。";
+
+  @override
+  String pruneDone(String n) => "已清理 $n 个过时台站";
+
+  @override
+  String get retentionOff => "未启用自动清理（保留天数为 0）；可手动清理，或先设置保留天数";
+
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
@@ -15216,5 +15246,35 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 **這是啟發式判斷，不是工程級偵測**。';
   @override
   String get crashKindHint => "現在會順便區分**碰撞**與**摔倒**：摔倒幾乎總是先有一段自由落體（模接近 0），再是落地衝擊；車禍撞擊沒有那一段。所以在原有「衝擊 + 隨後靜止」之外，再看衝擊前有沒有自由落體 —— 有就按「摔倒」提醒，沒有就按「碰撞」。這只改**提示文字與圖示**，兩類的處理方式完全一樣（都是我沒事 / 打電話 / 求助）。";
+
+  @override
+  String get stationRetention => "台站保留天數";
+
+  @override
+  String get stationRetentionTip => "超過這個天數沒再聽到的台站，會在啟動時自動清理。0 = 關閉自動清理（仍可手動清理）。收藏 / 手動新增 / 你自己的台站永不清理。";
+
+  @override
+  String get pruneOldData => "清理過時台站";
+
+  @override
+  String get pruneOldDataDesc => "依天數清理長期沒再聽到的台站，只留下還有用的";
+
+  @override
+  String get pruneNow => "立即清理";
+
+  @override
+  String get pruneHint => "只清理一般台站；收藏與手動新增的台站會保留。清理不可恢復。";
+
+  @override
+  String get pruneNone => "沒有需要清理的台站";
+
+  @override
+  String pruneConfirm(String n, String m) => "將清理 $n 天沒再聽到的 $m 個台站（收藏 / 手動新增的會保留），此操作不可恢復。";
+
+  @override
+  String pruneDone(String n) => "已清理 $n 個過時台站";
+
+  @override
+  String get retentionOff => "未啟用自動清理（保留天數為 0）；可手動清理，或先設定保留天數";
 
 }

@@ -204,6 +204,29 @@ CARDS = [
 # 只列「重点版本」：中间几十个纯修 bug 的版本归纳进文字说明，完整记录指向 Releases。
 CL = [
     {
+        'ver': 'v2.0.30', 'date': '2026-10-03',
+        'items': [
+            ('new',
+             T('**数据维护：按天数清理过时台站**（issue #33）：设置里可设「台站保留天数」，'
+               '超过该天数**没再听到**的台站会在启动时自动清理；「数据维护」页还提供**立即清理**'
+               '入口，并先显示会清掉多少个。**只清普通台站** —— 收藏 / 手动添加 / 你自己的台站'
+               '永不被清理，恰好卡在阈值上的也保留；保留天数 0 = 关闭自动清理。清理不可恢复，'
+               '所以绝不静默全清。',
+               '**資料維護：依天數清理過時台站**（issue #33）：設定裡可設「台站保留天數」，'
+               '超過該天數**沒再聽到**的台站會在啟動時自動清理；「資料維護」頁還提供**立即清理**'
+               '入口，並先顯示會清掉多少個。**只清一般台站** —— 收藏 / 手動新增 / 你自己的台站'
+               '永不被清理，恰好卡在閾值上的也保留；保留天數 0 = 關閉自動清理。清理不可恢復，'
+               '所以絕不靜默全清。',
+               '**Data maintenance: prune stale stations by age** (issue #33): a **station retention '
+               '(days)** setting prunes stations **not heard from** for longer than that at startup, '
+               'and the Data maintenance page adds a **prune now** action that first shows how many '
+               'will be removed. **Only ordinary stations are pruned** — favorites, manual contacts '
+               'and your own station are never pruned, and stations exactly at the threshold are '
+               'kept; retention 0 = auto-prune off. Pruning is irreversible, so there is never a '
+               'silent full wipe.')),
+        ],
+    },
+    {
         'ver': 'v2.0.29', 'date': '2026-10-03',
         'items': [
             ('fix',

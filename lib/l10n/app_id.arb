@@ -2750,5 +2750,17 @@
   "crashSensHint": "Sensitivitas menentukan seberapa kuat benturan yang dihitung: jatuh memakai ambang ini, tabrakan menuntut sekitar dua kalinya. Bersepeda dengan ponsel di kantong — pakai Kuat; begitu pula pemasangan di stang. Bawaan Standar. Sensitivitas hanya memengaruhi **deteksi** (benturan mana yang dihitung), bukan tindakan alarmnya.",
   "crashFallAlarmTitle": "Kemungkinan terjatuh terdeteksi",
   "crashFallAlarmBody": "Ponsel jatuh bebas, lalu menerima benturan mendarat, dan sejak itu tidak ada gerakan jelas selama sekitar 12 detik — ciri percepatan khas sebuah jatuh.\n\nJika Anda baik-baik saja, cukup ketuk \"Saya baik-baik saja\". Jika merasa tidak enak badan atau tidak bisa bergerak, segera hubungi layanan darurat, atau kirim pesan minta bantuan ke stasiun dalam 100 km.\n\n**Ini penilaian heuristik, bukan deteksi sekelas rekayasa**.",
-  "crashKindHint": "Membedakan **tabrakan** dari **jatuh**: jatuh hampir selalu diawali jatuh bebas (tanpa bobot — percepatan total mendekati 0) sebelum benturan mendarat, sedangkan tabrakan kendaraan tidak. Jadi aturannya: bila ada tanpa bobot, sebut **jatuh** (pakai ambang sensitivitas); bila tidak, sebut **tabrakan** dan tuntut benturan sekitar dua kali ambang (sehingga tindakan seperti meletakkan ponsel tidak salah peringatan). Ini hanya membuat penyebutan lebih akurat — keduanya ditangani sama (saya baik-baik saja / telepon / minta bantuan)."
+  "crashKindHint": "Membedakan **tabrakan** dari **jatuh**: jatuh hampir selalu diawali jatuh bebas (tanpa bobot — percepatan total mendekati 0) sebelum benturan mendarat, sedangkan tabrakan kendaraan tidak. Jadi aturannya: bila ada tanpa bobot, sebut **jatuh** (pakai ambang sensitivitas); bila tidak, sebut **tabrakan** dan tuntut benturan sekitar dua kali ambang (sehingga tindakan seperti meletakkan ponsel tidak salah peringatan). Ini hanya membuat penyebutan lebih akurat — keduanya ditangani sama (saya baik-baik saja / telepon / minta bantuan).",
+  "stationRetention": "Retensi stasiun (hari)",
+  "stationRetentionTip": "Stasiun yang tidak terdengar lebih lama dari ini akan dibersihkan otomatis saat mulai. 0 = nonaktif (bersihkan manual tetap tersedia). Favorit, kontak manual, dan stasiun Anda sendiri tidak pernah dibersihkan.",
+  "pruneOldData": "Bersihkan stasiun usang",
+  "pruneOldDataDesc": "Hapus stasiun yang lama tidak terdengar, sisakan yang masih berguna",
+  "pruneNow": "Bersihkan sekarang",
+  "pruneHint": "Hanya stasiun biasa yang dibersihkan; favorit dan kontak manual dipertahankan. Tidak bisa dibatalkan.",
+  "pruneNone": "Tidak ada yang perlu dibersihkan",
+  "pruneConfirm": "Akan membersihkan {m} stasiun yang {n} hari tidak terdengar (favorit / kontak manual dipertahankan). Tidak bisa dibatalkan.",
+  "pruneDone": "Membersihkan {n} stasiun usang",
+  "retentionOff": "Pembersihan otomatis nonaktif (retensi 0); bersihkan manual, atau atur jumlah hari dulu",
+  "@pruneConfirm": {"placeholders": {"n": {"type": "String"}, "m": {"type": "String"}}},
+  "@pruneDone": {"placeholders": {"n": {"type": "String"}}}
 }
