@@ -276,12 +276,25 @@ const Map<String, String> tileHeaders = {
   'Referer': 'https://www.amap.com/',
 };
 
-/// 高德瓦片：按 tx+ty 哈希轮询 4 个子域名，避免单域名限流
-String _gaodeUrl(int tx, int ty, int z, {int style = 7}) {
+/// 高德瓦片：按 tx+ty 哈希轮询 4 个子域名，避免单域名限流。
+///
+/// **高清（hd）**：只有街道图（`style=7`）支持 —— 换用较新的 `wprd` 主机并带
+/// `scl=2`，返回 **512×512** 的瓦片。实测：老的 `webrd` 主机加 `scale=2`/`scl=2`
+/// 仍只给 256，卫星图（`style=6`）加 `scl=2` 也仍是 256，所以都不切换。
+/// 普通路径保持 `webrd` 原样，行为与旧版逐字节一致（降低回归风险）。
+String _gaodeUrl(int tx, int ty, int z, {int style = 7, bool hd = false}) {
   final s = ((tx * 7 + ty * 13) % 4) + 1;
-  return 'https://webrd0$s.is.autonavi.com/appmaptile'
-      '?lang=zh_cn&size=1&scale=1&style=$style&x=$tx&y=$ty&z=$z';
+  final host = hd ? 'wprd0$s' : 'webrd0$s';
+  final scl = hd ? '&scl=2' : '';
+  return 'https://$host.is.autonavi.com/appmaptile'
+      '?lang=zh_cn&size=1&scale=1$scl&style=$style&x=$tx&y=$ty&z=$z';
 }
+
+/// 该图源是否提供高清（2×）瓦片。目前仅高德街道图 [MapType.gaode]。
+bool supportsHd(MapType t) => t == MapType.gaode;
+
+/// 高清瓦片的缓存 / 来源键（与 1× 区分，避免同一 z/x/y 两种分辨率互相顶掉）。
+String hdSourceName(MapType t) => '${t.name}_hd';
 
 /// 该图源是否为 GCJ-02（火星坐标）瓦片。
 /// 国内图源（高德/腾讯）均为 GCJ-02，而 APRS 数据是 WGS-84，
@@ -353,10 +366,11 @@ String _fillTemplate(String tpl, int tx, int ty, int z) {
 ///
 /// 在线渲染与离线下载**共用这一个函数**：两处各写一份 URL 拼接迟早会
 /// 漂移成「下载得到的和显示要的不是同一张图」。
-String tileUrl(MapType t, int tx, int ty, int z) {
+String tileUrl(MapType t, int tx, int ty, int z, {bool hd = false}) {
   switch (t) {
     case MapType.gaode:
-      return _gaodeUrl(tx, ty, z, style: 7);
+      // 只有它支持 2×（512px）；hd 由调用方按屏幕像素密度决定
+      return _gaodeUrl(tx, ty, z, style: 7, hd: hd);
     case MapType.gaode_sat:
       return _gaodeUrl(tx, ty, z, style: 6);
     case MapType.tencent:

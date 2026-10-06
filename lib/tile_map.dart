@@ -157,6 +157,15 @@ class _TileMapViewState extends State<TileMapView> {
       builder: (context, constraints) {
         final size = constraints.biggest;
         final z = widget.zoom.floor().clamp(0, 19);
+        // 屏幕像素密度 > 1 且图源支持 2× 时取高清瓦片。
+        //
+        // 根因：瓦片按 256 **逻辑**像素绘制，在 dpr=2/3 的屏上要被拉成
+        // 512/768 **物理**像素 —— 拿 256 的原图去填，放大 2~3 倍，必然糊。
+        // 高清源给的是 512px 图，按同样的逻辑尺寸画，物理上就 1:1 了。
+        // 注意 dpr 只与**屏幕**有关，与 zoom 是否为整数无关，所以这里必须
+        // 读 MediaQuery（而不是拿 zoom 的小数部分去凑）。
+        final dpr = MediaQuery.of(context).devicePixelRatio;
+        final hd = dpr > 1.01 && supportsHd(widget.mapType);
         final proj = projectionFor(widget.mapType);
         final centerPx =
             proj.latLngToPx(widget.centerLat, widget.centerLng, widget.zoom);
@@ -185,6 +194,7 @@ class _TileMapViewState extends State<TileMapView> {
               child: _Tile(
                   tx: wx, ty: ty, z: z, scale: scale,
                   mapType: widget.mapType,
+                  hd: hd,
                   cacheEnabled: widget.cacheEnabled,
                   offlineOnly: widget.offlineOnly,
                   deferLoad: _gesturing),
@@ -390,6 +400,9 @@ class _Tile extends StatefulWidget {
   final double scale;
   final MapType mapType;
 
+  /// 取高清（512px）瓦片。由父级按屏幕像素密度决定（见 [_TileMapViewState.build]）。
+  final bool hd;
+
   /// 是否把在线瓦片写入磁盘缓存
   final bool cacheEnabled;
 
@@ -405,6 +418,7 @@ class _Tile extends StatefulWidget {
     required this.z,
     required this.scale,
     this.mapType = MapType.gaode,
+    this.hd = false,
     this.cacheEnabled = true,
     this.offlineOnly = false,
     this.deferLoad = false,
@@ -438,6 +452,7 @@ class _TileState extends State<_Tile> {
   void didUpdateWidget(covariant _Tile old) {
     super.didUpdateWidget(old);
     if (old.mapType != widget.mapType ||
+        old.hd != widget.hd ||
         old.offlineOnly != widget.offlineOnly ||
         old.cacheEnabled != widget.cacheEnabled ||
         old.z != widget.z ||
@@ -475,6 +490,11 @@ class _TileState extends State<_Tile> {
 
   double get _px => 256.0 * widget.scale;
 
+  /// 本瓦片的缓存来源键。高清瓦片与 1× 分开存 —— 同一 z/x/y 的 256 与 512
+  /// 是两张不同的图，共用一份缓存会互相顶掉（切到高清后看到的是旧 1× 图）。
+  String get _src =>
+      widget.hd ? hdSourceName(widget.mapType) : widget.mapType.name;
+
   /// 记录解析结果。几何不在这里算 —— 见 [build] 与 [didUpdateWidget]。
   void _setBytes(Uint8List? b, {int upSteps = 0, (int, int) quad = (0, 0)}) {
     if (!mounted) return;
@@ -497,7 +517,9 @@ class _TileState extends State<_Tile> {
         height: px,
         fit: BoxFit.fill,
         gaplessPlayback: true,
-        filterQuality: FilterQuality.medium,
+        // high（双三次）：瓦片在非整数 zoom / 高 dpr 下几乎总要被放大一点，
+        // medium（双线性）是放大时最糊的一档。贵不了多少，观感差别明显。
+        filterQuality: FilterQuality.high,
       );
     }
     // 祖先图有 f×f 个本瓦片那么大，只露出本瓦片所在的那一格
@@ -515,7 +537,7 @@ class _TileState extends State<_Tile> {
             height: px * f,
             fit: BoxFit.fill,
             gaplessPlayback: true,
-            filterQuality: FilterQuality.medium,
+            filterQuality: FilterQuality.high,
           ),
         ),
       ),
@@ -523,18 +545,25 @@ class _TileState extends State<_Tile> {
   }
 
   Future<void> _resolve() async {
-    final src = widget.mapType.name;
+    final src = _src;
 
-    // 1) 本图源缓存
+    // 1) 本图源缓存（高清模式先找 512，再退到 1×）
     if (TileCache.available) {
       final hit = await TileCache.get(src, widget.z, widget.tx, widget.ty);
       if (hit != null) return _setBytes(hit);
+      if (widget.hd) {
+        final lo = await TileCache.get(
+            widget.mapType.name, widget.z, widget.tx, widget.ty);
+        if (lo != null) return _setBytes(lo);
+      }
     }
 
     // 2) 在线
     if (!widget.offlineOnly) {
       for (final t in _onlineCandidates) {
-        final url = tileUrl(t, widget.tx, widget.ty, widget.z);
+        // 只有「本图源」才用高清：候选是 carto/osm，它们没有 2× 变体
+        final isHd = widget.hd && t == widget.mapType;
+        final url = tileUrl(t, widget.tx, widget.ty, widget.z, hd: isHd);
         if (url.isEmpty) continue;
         try {
           final bytes = await httpGetBytes(
@@ -546,8 +575,12 @@ class _TileState extends State<_Tile> {
           if (widget.cacheEnabled && !_triedWrite) {
             _triedWrite = true;
             // 落盘不阻塞显示：写盘失败（无权限/满盘）不该让瓦片显示不出来
-            unawaited(
-                TileCache.put(t.name, widget.z, widget.tx, widget.ty, bytes));
+            unawaited(TileCache.put(
+                isHd ? hdSourceName(t) : t.name,
+                widget.z,
+                widget.tx,
+                widget.ty,
+                bytes));
           }
           return _setBytes(bytes);
         } catch (_) {
@@ -562,8 +595,14 @@ class _TileState extends State<_Tile> {
       return _setBytes(up.bytes, upSteps: up.upSteps, quad: up.quad);
     }
 
-    // 4) 其它同坐标系图源的缓存（之前用别的图源浏览过这块区域）
+    // 4) 其它同坐标系图源的缓存（之前用别的图源浏览过这块区域）；高清模式下
+    //    也接受「本图源的 1× 缓存」——离线包是按 1× 下的，不能因此白屏。
     if (TileCache.available) {
+      if (widget.hd) {
+        final lo = await TileCache.get(
+            widget.mapType.name, widget.z, widget.tx, widget.ty);
+        if (lo != null) return _setBytes(lo);
+      }
       for (final t in MapType.values) {
         if (t == widget.mapType || !_sameDatum(t)) continue;
         final hit = await TileCache.get(t.name, widget.z, widget.tx, widget.ty);
@@ -588,6 +627,14 @@ class _TileState extends State<_Tile> {
     final me = TileId(widget.z, widget.tx, widget.ty);
     var cur = me.parent;
     for (var steps = 1; steps <= 4 && cur != null; steps++) {
+      // 高清模式：先找高清祖先，再退到 1× 祖先（离线包只有 1×）
+      if (widget.hd) {
+        final hi = await TileCache.get(
+            hdSourceName(widget.mapType), cur.z, cur.x, cur.y);
+        if (hi != null) {
+          return (bytes: hi, upSteps: steps, quad: me.quadIn(cur));
+        }
+      }
       final hit =
           await TileCache.get(widget.mapType.name, cur.z, cur.x, cur.y);
       if (hit != null) {
