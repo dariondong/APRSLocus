@@ -6,10 +6,13 @@ import io
 import json
 import os
 import re
+import sys
 import xml.etree.ElementTree as ET
 from html.parser import HTMLParser
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from check_embedded_js import mask as _mask_js  # noqa: E402  状态机掩码，比正则可靠
 VOID = {'area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input',
         'link', 'meta', 'param', 'source', 'track', 'wbr'}
 FAILS = []
@@ -346,10 +349,10 @@ def main():
     chk('跨页搜索容器 + 脚本',
         all('manualResults' in read(b0 + '/start.html')
             and "fetch('_index.json')" in read(b0 + '/start.html') for b0, _ in BASES))
-    chk('css 缓存版本 v6、无 v5 残留',
-        'style.css?v=6' in read('docs/manual/start.html')
-        and 'style.css?v=5' not in read('docs/manual/start.html')
-        and 'style.css?v=6' in read('docs/index.html'))
+    chk('css 缓存版本 v7、无 v6 残留',
+        'style.css?v=7' in read('docs/manual/start.html')
+        and 'style.css?v=6' not in read('docs/manual/start.html')
+        and 'style.css?v=7' in read('docs/index.html'))
     chk('永久链接文案三语',
         '本节永久链接' in read('docs/manual/start.html')
         and '本節永久連結' in read('docs/zh-TW/manual/start.html')
@@ -361,13 +364,11 @@ def main():
     chk('JSON-LD dateModified', 'dateModified' in read('docs/manual/start.html'))
 
     js = read('docs/js/main.js')
-    j = re.sub(r'/\*.*?\*/', '', js, flags=re.S)
-    # 必须同时剥离单行注释：main.js 的 // 注释里有未闭合括号（HEAD 就有），
-    # 不剥会把注释里的括号计入，产生假 FAIL
-    j = re.sub(r'//[^\n]*', '', j)
-    j = re.sub(r'`(?:[^`\\]|\\.)*`', '``', j)
-    j = re.sub(r'"(?:[^"\\]|\\.)*"', '""', j)
-    j = re.sub(r"'(?:[^'\\]|\\.)*'", "''", j)
+    # 用 check_embedded_js 的状态机掩码（字符串 / 模板串 / 正则 / 注释），
+    # 不要在这里用正则硬剥：main.js 里 `'"'` 这种「单引号里套双引号」
+    # 会让朴素的 `"..."` 正则错配、把后续内容整段掩掉，括号数随之失真
+    # —— 曾因此对本就平衡的 main.js 报了一次假 FAIL（已修）。
+    j, _jerr = _mask_js(js)
     chk('js braces/parens balanced',
         j.count('{') == j.count('}') and j.count('(') == j.count(')'))
     chk('js theme + aria + null-safe canvas',

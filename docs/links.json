@@ -26,7 +26,8 @@
         "zh-TW": "APRS 即時地圖與直播服務",
         "en": "Live APRS map and streaming service"
       },
-      "url": "https://aprs.tv"
+      "url": "https://aprs.tv",
+      "logo": "https://aprs.tv/site/icon-512.png"
     }
   ]
 }

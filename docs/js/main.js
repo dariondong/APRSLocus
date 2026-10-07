@@ -355,4 +355,34 @@
       .catch(() => {});
   })();
 
+  /* ── 更新日志折叠：默认只展开最近几条，其余点击「展开全部」 ──
+     折叠走 CSS 类（display:none），DOM 里保留全部条目 ——
+     tool/check_site.py 要逐条核对生成器里的每个版本号都出现在页面上。 */
+  const clList = document.querySelector(".changelog-list");
+  const clMore = document.querySelector(".changelog-more");
+  if (clList && clMore) {
+    const clVers = Array.from(clList.querySelectorAll(".cl-version"));
+    const clBtn = clMore.querySelector("button");
+    const clSpan = clBtn ? clBtn.querySelector("span") : null;
+    const clLimit = parseInt(clMore.dataset.limit, 10) || 4;
+    if (clBtn && clVers.length > clLimit) {
+      const hidden = clVers.slice(clLimit);
+      hidden.forEach((el) => el.classList.add("cl-collapsed"));
+      const syncLabel = () => {
+        const expanded = clBtn.getAttribute("aria-expanded") === "true";
+        const fmt = expanded ? clBtn.dataset.labelLess : clBtn.dataset.labelMore;
+        if (clSpan && fmt) clSpan.textContent = fmt.replace("{n}", hidden.length);
+      };
+      syncLabel();
+      clBtn.addEventListener("click", () => {
+        const next = clBtn.getAttribute("aria-expanded") !== "true";
+        clBtn.setAttribute("aria-expanded", String(next));
+        hidden.forEach((el) => el.classList.toggle("cl-collapsed", !next));
+        syncLabel();
+      });
+    } else {
+      clMore.style.display = "none";
+    }
+  }
+
 })();

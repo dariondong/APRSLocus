@@ -631,6 +631,21 @@ body.loaded .hero::after { transform: translate(-50%,-50%) scale(1); opacity: 1;
 .cl-dot.fix { background: var(--red); }
 .cl-dot.new { background: var(--green); }
 .cl-dot.up { background: var(--amber); }
+
+/* 更新日志折叠：首页默认只展开最近若干条，其余收进「展开全部」。
+   注意折叠走的是 CSS（display:none），DOM 里**保留全部条目** ——
+   tool/check_site.py 要逐条核对生成器里的每个版本号是否出现在页面上。 */
+.cl-version.cl-collapsed { display: none; }
+.changelog-more { display: flex; justify-content: center; margin: 4px auto 0; max-width: 720px; }
+.changelog-more button { font: inherit; font-size: 14px; font-weight: 600; color: var(--text-dim);
+  background: rgba(255, 255, 255, .62); border: 1px solid rgba(15, 40, 90, .08); border-radius: 12px;
+  padding: 10px 22px; cursor: pointer; box-shadow: 0 6px 18px -14px rgba(20, 40, 80, .5);
+  transition: background .25s var(--ease), transform .25s var(--ease), box-shadow .25s var(--ease), color .25s; }
+.changelog-more button:hover { background: rgba(255, 255, 255, .95); transform: translateY(-2px);
+  box-shadow: 0 14px 30px -18px rgba(20, 40, 80, .55); color: var(--cyan); }
+:root[data-theme="dark"] .changelog-more button { background: rgba(255, 255, 255, .06);
+  border-color: rgba(255, 255, 255, .12); color: #cbd5e1; box-shadow: none; }
+:root[data-theme="dark"] .changelog-more button:hover { background: rgba(255, 255, 255, .13); color: #fff; }
 .cl-more { text-align: center; margin-top: 6px; font-size: 14px; color: var(--text-faint); }
 .cl-more a { color: var(--cyan); font-weight: 600; }
 .cl-more a:hover { text-decoration: underline; }
@@ -683,13 +698,18 @@ body.loaded .hero::after { transform: translate(-50%,-50%) scale(1); opacity: 1;
 .disclaimer { opacity: .85; }
 
 /* 友情链接：页脚独占一行（介于导航与版权之间），三语共用同一份数据（docs/links.json） */
-.footer-friends { display: flex; align-items: center; gap: 12px 18px; flex-wrap: wrap; padding-top: 26px; }
-.footer-friends-label { color: var(--text-faint); font-size: 13px; }
-.flink { display: inline-flex; align-items: center; gap: 9px; padding: 6px 12px; border-radius: 10px; background: rgba(255, 255, 255, .55); transition: background .25s, transform .25s; }
-.flink:hover { background: rgba(255, 255, 255, .85); transform: translateY(-1px); }
-.flink-logo { width: 22px; height: 22px; border-radius: 7px; object-fit: cover; flex: 0 0 auto; }
-.flink-text { display: flex; flex-direction: column; line-height: 1.3; }
-.flink-name { color: var(--text-dim); font-size: 14px; }
+.footer-friends { display: flex; align-items: center; flex-wrap: wrap; gap: 10px 12px; padding-top: 26px; }
+.footer-friends-label { color: var(--text-faint); font-size: 13px; letter-spacing: .3px; padding-right: 2px; }
+.flink { display: inline-flex; align-items: center; gap: 10px; padding: 8px 14px 8px 9px; border-radius: 12px;
+  background: rgba(255, 255, 255, .62); border: 1px solid rgba(15, 40, 90, .06);
+  box-shadow: 0 6px 18px -14px rgba(20, 40, 80, .5);
+  transition: background .25s var(--ease), transform .25s var(--ease), box-shadow .25s var(--ease), border-color .25s var(--ease); }
+.flink:hover { background: rgba(255, 255, 255, .92); transform: translateY(-2px);
+  box-shadow: 0 14px 30px -18px rgba(20, 40, 80, .55); border-color: rgba(15, 40, 90, .12); }
+.flink-logo { width: 28px; height: 28px; border-radius: 8px; object-fit: cover; flex: 0 0 auto;
+  background: #fff; box-shadow: 0 1px 4px rgba(15, 40, 90, .12); }
+.flink-text { display: flex; flex-direction: column; line-height: 1.28; min-width: 0; }
+.flink-name { color: var(--text-dim); font-size: 14px; font-weight: 600; }
 .flink-desc { color: var(--text-faint); font-size: 12px; }
 
 /* ── 16. 悬浮工具（进度条 / 回到顶部 / Toast） ── */
@@ -1149,8 +1169,9 @@ body.loaded .hero-phone {
 }
 :root[data-theme="dark"] .footer-top { border-bottom-color: rgba(255, 255, 255, .08); }
 :root[data-theme="dark"] .footer-links a:hover { background: rgba(255, 255, 255, .08); }
-:root[data-theme="dark"] .flink { background: rgba(255, 255, 255, .06); }
-:root[data-theme="dark"] .flink:hover { background: rgba(255, 255, 255, .12); }
+:root[data-theme="dark"] .flink { background: rgba(255, 255, 255, .06); border-color: rgba(255, 255, 255, .10); box-shadow: none; }
+:root[data-theme="dark"] .flink:hover { background: rgba(255, 255, 255, .13); border-color: rgba(255, 255, 255, .18); }
+:root[data-theme="dark"] .flink-logo { background: rgba(255, 255, 255, .12); box-shadow: none; }
 :root[data-theme="dark"] .backtop {
   background: rgba(255, 255, 255, .08);
   border-color: rgba(255, 255, 255, .18);
