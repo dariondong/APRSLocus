@@ -229,6 +229,12 @@ jobs:
       - name: Test coarse-fix beacon override
         run: flutter test test/beacon_coarse_force_test.dart
 
+      # 「连接后由用户手动确认才开始上报」（v2.0.36）：新闸 beaconArmed 每次连接
+      # 复位、不持久化 —— 这几条错了不会编译失败、analyze 也全绿，只会表现成
+      # 「连上就自动把位置发出去」，正是用户要求去掉的行为，所以钉在 CI。
+      - name: Test manual report confirmation
+        run: flutter test test/report_confirm_test.dart
+
       - name: Test third-party packet unwrapping
         run: flutter test test/third_party_packet_test.dart
 
