@@ -1,5 +1,68 @@
 # 更新日志
 
+## [2.0.35] - 2026-10-06
+
+### 修复：模拟位置（手动定位）重启后不自动生效
+
+**背景**
+
+- 用户反馈：开启「模拟位置」并选择「手动定位」，保存好坐标后重启 App，
+  不会自动应用已保存的坐标 —— 界面一直显示「等待定位」，必须再手动点一次
+  「应用坐标」才能定位、上报。
+
+**原因**
+
+- 启动时 `_loadPrefs` 把保存的 `myLat/myLng` **一律**当成「上一次的实时定位」，
+  关掉上报闸（`_pendingSavedPos = true`、状态「已保存位置」）。对 GPS 模式这是
+  对的 —— 防止定位还没开启就把旧坐标当「我在哪」发出去。
+- 但「模拟位置」模式下保存的坐标**就是**用户显式选定的位置；而 GPS 的自动定位
+  路径（构造器里延时 `startTracking`）又被 `useSimLocation` 挡掉，于是这个闸
+  永远打不开 —— 坐标装回来了，却永远停在「等待定位」。
+
+**改进**
+
+- 载入坐标后，若 `useSimLocation` 为真，则**放行**：清掉「上次保存的位置」标记、
+  状态置「模拟位置」，并同步过滤中心（`filterFollow` 时）——启动即恢复可上报。
+- 顺带把模拟位置的**保活前台服务**也在启动时拉起（与 GPS 模式对称）：此前它只在
+  「应用坐标」时才启动，重启后切后台连接会被冻结、信标定时器停摆。
+
+---
+---
+
+## [2.0.35] - 2026-10-06 (English)
+
+### Fix: simulated location (manual fix) not applied after restart
+
+**Context**
+
+- Users reported: with "simulated location" on and "manual fix" selected, after saving
+  coordinates and restarting the app the saved coordinates were not applied automatically —
+  the UI kept showing "waiting for location", and you had to tap "Apply coordinates" again to
+  get a fix and report.
+
+**Cause**
+
+- At startup `_loadPrefs` treated the saved `myLat/myLng` **unconditionally** as "last round's
+  live fix" and closed the reporting gate (`_pendingSavedPos = true`, status "saved position").
+  For GPS mode that is correct — it prevents reporting a stale coordinate as "where I am"
+  before location is even on.
+- But in simulated mode the saved coordinates **are** the position the user explicitly chose;
+  and the GPS auto-locate path (the delayed `startTracking` in the constructor) is skipped when
+  `useSimLocation` is set — so the gate could never open: the coordinates were restored yet the
+  UI stayed at "waiting for location".
+
+**Changes**
+
+- After loading the coordinates, if `useSimLocation` is true they are **accepted**: clear the
+  "saved position" flag, set the status to "simulated location", and sync the filter center
+  (when `filterFollow` is on) — so it is reportable again right at startup.
+- Also start the simulated-mode **keep-alive foreground service** at boot (symmetric with GPS
+  mode): previously it only started on "Apply coordinates", so after a restart the connection
+  could be frozen in the background and the beacon timer stalled.
+
+---
+---
+
 ## [2.0.34] - 2026-10-03
 
 ### 修复：非整数缩放级别下地图发糊

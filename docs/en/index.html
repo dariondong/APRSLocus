@@ -567,6 +567,15 @@
 <!-- site-sync:changelog -->
     <div class="cl-version reveal">
       <div class="cl-head">
+        <span class="cl-tag">v2.0.35</span>
+        <span class="cl-date">2026-10-06</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot fix"></span><b>Simulated location not applied after restart</b>: after choosing "simulated location + manual fix" and saving coordinates, the next launch restored the coordinates but kept the reporting gate closed — the UI sat at "waiting for location" and you had to tap "Apply coordinates" again. Cause: startup treated any saved coordinates as "last round's live fix" and closed the gate (correct for GPS, to avoid reporting a stale position with location off), while the GPS auto-locate path is skipped in simulated mode — so the gate never opened. Now, in simulated mode the saved coordinates <b>are</b> the chosen position: they are accepted on startup and the filter center follows; the simulated-mode keep-alive foreground service is also started at boot, symmetric with GPS mode.</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
         <span class="cl-tag">v2.0.34</span>
         <span class="cl-date">2026-10-03</span>
       </div>

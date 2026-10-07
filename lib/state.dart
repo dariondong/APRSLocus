@@ -114,7 +114,7 @@ class SmartBeaconTier {
 
 class AppState extends ChangeNotifier {
   /// 应用版本（用于信标备注、APRSlocus 识别）
-  static const appVersion = '2.0.34';
+  static const appVersion = '2.0.35';
   // 我的电台
   String myCall = 'BV2AAA';
   int mySsid = 0; // 0 = 无后缀, 1-15 = -1 到 -15
@@ -3726,6 +3726,17 @@ class AppState extends ChangeNotifier {
         _pendingSavedPos = true;
         locStatus = '已保存位置';
       }
+      // 模拟位置（手动定位）模式下，保存的 myLat/myLng **就是**用户选定的坐标，
+      // 不是「上一次的实时定位」—— 上面那套「先关着上报闸」对它不适用。
+      // 而系统 GPS 的那条自动定位路径（见构造器里的延时 startTracking）会被
+      // useSimLocation 挡掉，所以这里必须放行：否则启动后坐标虽然装回来了，
+      // 上报闸却一直关着（locStatus 停在「已保存位置」/界面显示「等待定位」），
+      // 用户得再点一次「应用坐标」才恢复 —— 正是用户反馈的现象。
+      if (useSimLocation && savedLat != null && savedLng != null) {
+        _pendingSavedPos = false;
+        locStatus = '模拟位置';
+        _syncFilterToPosition(); // 过滤中心跟随手动坐标（filterFollow 时）
+      }
       // 注意：devMode 不持久化，启动始终为干净的演示关闭状态
       // 加载消息
       final msgsJson = p.getString('messages');
@@ -4214,11 +4225,19 @@ class AppState extends ChangeNotifier {
       _lastTx = DateTime.now();
       _updateNotification(); // 定期刷新通知内容（台站数/收包数）
     });
-    // 启动后自动获取定位：仅在 OOBE 已完成（非首次）且非模拟位置时进行；
+    // 启动后自动获取定位：仅在 OOBE 已完成（非首次）时进行；
     // 首次启动的权限请求移到 OOBE 完成后由 _requestLocationAfterOobe 触发。
     Future.delayed(const Duration(milliseconds: 900), () async {
       if (_disposed || !initialized) return;
-      if (!oobeDone || useSimLocation) return;
+      if (!oobeDone) return;
+      if (useSimLocation) {
+        // 模拟位置不读 GPS，但要**对称地**把保活前台服务拉起来：GPS 模式启动就
+        // 有服务在跑，模拟位置若只在「应用坐标」时才起，重启后切后台连接会被冻结、
+        // 信标定时器也停摆（用户会以为「模拟位置后台不上报」）。
+        await startTracking();
+        _updateNotification();
+        return;
+      }
       for (int i = 0; i < 15; i++) {
         final ok = await startTracking();
         if (ok) break;

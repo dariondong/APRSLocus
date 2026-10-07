@@ -166,6 +166,16 @@ def main() -> int:
     need('lib/state.dart',
          "_pendingSavedPos = true;\n        locStatus = '已保存位置';",
          '「已保存位置」没有标记为「本轮尚未定位」—— 上报闸会误开')
+    # 模拟位置（手动定位）模式：保存的坐标**就是**用户选定的坐标，不是
+    # 「上一次的实时定位」。启动时若照搬上面那套「先关着上报闸」，而 GPS 自动
+    # 定位路径又会被 useSimLocation 挡掉，上报闸就永远开不了 —— 界面一直显示
+    # 「等待定位」，用户必须再点一次「应用坐标」才恢复（用户报的正是这个）。
+    need('lib/state.dart',
+         'if (useSimLocation && savedLat != null && savedLng != null) {\n'
+         '        _pendingSavedPos = false;\n'
+         "        locStatus = '模拟位置';",
+         '启动时没有为模拟位置放行保存的坐标 —— 手动定位必须再点一次'
+         '「应用坐标」才会生效（用户报的正是这个）')
     need('lib/state.dart', 'if (!lastKnown) _pendingSavedPos = false;',
          '_onFix 没有在本轮真实定位时打开上报闸（lastKnown 缓存点不算）')
     need('lib/state.dart',

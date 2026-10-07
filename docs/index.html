@@ -642,6 +642,15 @@ html{overflow-x:hidden}
 <!-- site-sync:changelog -->
     <div class="cl-version reveal">
       <div class="cl-head">
+        <span class="cl-tag">v2.0.35</span>
+        <span class="cl-date">2026-10-06</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot fix"></span><b>模拟位置重启后不自动生效</b>：选了「模拟位置 + 手动定位」并保存了坐标后，下次启动 App 虽然把坐标装了回来，上报闸却一直关着 —— 界面停在「等待定位」，必须再点一次「应用坐标」才能定位上报。原因：启动时把保存的坐标一律当成「上次的实时定位」关闸（GPS 模式下这是对的，防止定位没开就报旧坐标），而 GPS 的自动定位路径又会被「模拟位置」挡掉，于是这个闸永远开不了。现在模拟位置下保存的坐标<b>就是</b>用户选定的坐标，启动即放行、并同步过滤中心；顺带把模拟位置的保活前台服务也在启动时拉起（与 GPS 模式对称）。</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
         <span class="cl-tag">v2.0.34</span>
         <span class="cl-date">2026-10-03</span>
       </div>

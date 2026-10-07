@@ -573,6 +573,15 @@
 <!-- site-sync:changelog -->
     <div class="cl-version reveal">
       <div class="cl-head">
+        <span class="cl-tag">v2.0.35</span>
+        <span class="cl-date">2026-10-06</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot fix"></span><b>模擬位置重啟後不自動生效</b>：選了「模擬位置 + 手動定位」並儲存座標後，下次啟動 App 雖然把座標裝了回來，上報閘卻一直關著 —— 介面停在「等待定位」，必須再點一次「套用座標」才能定位上報。原因：啟動時把儲存的座標一律當成「上次的即時定位」關閘（GPS 模式下這是對的，避免定位沒開就報舊座標），而 GPS 的自動定位路徑又會被「模擬位置」擋掉，於是這個閘永遠開不了。現在模擬位置下儲存的座標<b>就是</b>使用者選定的座標，啟動即放行、並同步過濾中心；順帶把模擬位置的保活前景服務也在啟動時拉起（與 GPS 模式對稱）。</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
         <span class="cl-tag">v2.0.34</span>
         <span class="cl-date">2026-10-03</span>
       </div>

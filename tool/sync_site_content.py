@@ -204,6 +204,37 @@ CARDS = [
 # 只列「重点版本」：中间几十个纯修 bug 的版本归纳进文字说明，完整记录指向 Releases。
 CL = [
     {
+        'ver': 'v2.0.35', 'date': '2026-10-06',
+        'items': [
+            ('fix',
+             T('**模拟位置重启后不自动生效**：选了「模拟位置 + 手动定位」并保存了坐标后，'
+               '下次启动 App 虽然把坐标装了回来，上报闸却一直关着 —— 界面停在「等待定位」，'
+               '必须再点一次「应用坐标」才能定位上报。原因：启动时把保存的坐标一律当成'
+               '「上次的实时定位」关闸（GPS 模式下这是对的，防止定位没开就报旧坐标），'
+               '而 GPS 的自动定位路径又会被「模拟位置」挡掉，于是这个闸永远开不了。现在'
+               '模拟位置下保存的坐标**就是**用户选定的坐标，启动即放行、并同步过滤中心；'
+               '顺带把模拟位置的保活前台服务也在启动时拉起（与 GPS 模式对称）。',
+               '**模擬位置重啟後不自動生效**：選了「模擬位置 + 手動定位」並儲存座標後，'
+               '下次啟動 App 雖然把座標裝了回來，上報閘卻一直關著 —— 介面停在「等待定位」，'
+               '必須再點一次「套用座標」才能定位上報。原因：啟動時把儲存的座標一律當成'
+               '「上次的即時定位」關閘（GPS 模式下這是對的，避免定位沒開就報舊座標），'
+               '而 GPS 的自動定位路徑又會被「模擬位置」擋掉，於是這個閘永遠開不了。現在'
+               '模擬位置下儲存的座標**就是**使用者選定的座標，啟動即放行、並同步過濾中心；'
+               '順帶把模擬位置的保活前景服務也在啟動時拉起（與 GPS 模式對稱）。',
+               '**Simulated location not applied after restart**: after choosing '
+               '"simulated location + manual fix" and saving coordinates, the next launch '
+               'restored the coordinates but kept the reporting gate closed — the UI sat at '
+               '"waiting for location" and you had to tap "Apply coordinates" again. Cause: '
+               'startup treated any saved coordinates as "last round\'s live fix" and closed '
+               'the gate (correct for GPS, to avoid reporting a stale position with location '
+               'off), while the GPS auto-locate path is skipped in simulated mode — so the '
+               'gate never opened. Now, in simulated mode the saved coordinates **are** the '
+               'chosen position: they are accepted on startup and the filter center follows; '
+               'the simulated-mode keep-alive foreground service is also started at boot, '
+               'symmetric with GPS mode.')),
+        ],
+    },
+    {
         'ver': 'v2.0.34', 'date': '2026-10-03',
         'items': [
             ('fix',
