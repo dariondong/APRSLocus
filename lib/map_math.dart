@@ -351,6 +351,17 @@ const _esriStreetUrl =
     'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}';
 const _esriSatUrl =
     'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}';
+// Esri 地形系列（免 key）。三张各司其职，不是重复：
+//   Topo      带等高线 + 路网/地名标注，最像「有等高线的地形图」；
+//   ShadedRelief 纯地形浮雕（无标注）；
+//   Hillshade 只画山体阴影（透明底，适合叠在其它图层上看沟壑）。
+// 都只给 256px，清晰度靠上层 zoom.round() 选层级（见 tile_map 的说明）。
+const _esriTopoUrl =
+    'https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}';
+const _esriReliefUrl =
+    'https://server.arcgisonline.com/ArcGIS/rest/services/World_Shaded_Relief/MapServer/tile/{z}/{y}/{x}';
+const _esriHillshadeUrl =
+    'https://server.arcgisonline.com/ArcGIS/rest/services/Elevation/World_Hillshade/MapServer/tile/{z}/{y}/{x}';
 
 /// 替换 {z}/{x}/{y}/{s}，{s} 为子域名轮询（a/b/c）
 String _fillTemplate(String tpl, int tx, int ty, int z) {
@@ -393,6 +404,12 @@ String tileUrl(MapType t, int tx, int ty, int z, {bool hd = false}) {
       return _fillTemplate(_esriStreetUrl, tx, ty, z);
     case MapType.esri_sat:
       return _fillTemplate(_esriSatUrl, tx, ty, z);
+    case MapType.esri_topo:
+      return _fillTemplate(_esriTopoUrl, tx, ty, z);
+    case MapType.esri_relief:
+      return _fillTemplate(_esriReliefUrl, tx, ty, z);
+    case MapType.esri_hillshade:
+      return _fillTemplate(_esriHillshadeUrl, tx, ty, z);
     case MapType.baidu:
     case MapType.baidu_sat:
       // 上层列/行 → 百度瓦片编号（y 朝北）：见 [BaiduProjection] 的说明
@@ -424,7 +441,12 @@ enum MapType {
   carto_voyager('Carto 航行者', group: '其他'),
   osm('OSM 标准', group: '其他'),
   osm_hot('OSM 人道', group: '其他'),
-  open_topo('OpenTopo 地形', group: '其他'),
+  // 地形/等高线一组：OpenTopo 与三张 Esri 地形底图同属「地形」，
+  // 放在一起才找得到（此前 OpenTopo 混在「其他」里）。
+  open_topo('OpenTopo 地形', group: '地形'),
+  esri_topo('Esri 地形(等高线)', group: '地形'),
+  esri_relief('Esri 地形浮雕', group: '地形'),
+  esri_hillshade('Esri 山体阴影', group: '地形'),
   esri_street('Esri 街道', group: '其他'),
   esri_sat('Esri 影像', group: '其他');
 

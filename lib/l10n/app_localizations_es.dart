@@ -4059,6 +4059,18 @@ Al pulsar "Aceptar y conectar" confirmas que has leído, entendido y aceptado lo
   @override
   String get mapTypeOpenTopo => 'OpenTopo terreno';
 
+
+  @override
+  String get terrainGroup => 'Terreno';
+
+  @override
+  String get mapTypeEsriTopo => 'Esri topo (curvas)';
+
+  @override
+  String get mapTypeEsriRelief => 'Esri relieve sombreado';
+
+  @override
+  String get mapTypeEsriHillshade => 'Esri sombreado';
   @override
   String get mapTypeOsm => 'OSM estándar';
 

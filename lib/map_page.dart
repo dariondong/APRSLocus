@@ -1535,7 +1535,9 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
               Text(
                 group == '高德'
                     ? S.of(context).amapGroup
-                    : S.of(context).otherType,
+                    : group == '地形'
+                        ? S.of(context).terrainGroup
+                        : S.of(context).otherType,
                 style: ts(10, c: color, w: FontWeight.w700),
               ),
             ],
@@ -1870,6 +1872,8 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                         children: [
                           // 高德系列
                           _mapTypeGroup('高德', C.blue, () => entry.remove()),
+                          // 地形/等高线
+                          _mapTypeGroup('地形', C.green, () => entry.remove()),
                           // 其他地图
                           _mapTypeGroup('其他', C.slate, () => entry.remove()),
                         ],

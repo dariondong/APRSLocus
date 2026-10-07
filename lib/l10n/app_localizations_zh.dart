@@ -3872,6 +3872,18 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String get mapTypeOpenTopo => 'OpenTopo 地形';
 
+
+  @override
+  String get terrainGroup => '地形';
+
+  @override
+  String get mapTypeEsriTopo => 'Esri 地形(等高线)';
+
+  @override
+  String get mapTypeEsriRelief => 'Esri 地形浮雕';
+
+  @override
+  String get mapTypeEsriHillshade => 'Esri 山体阴影';
   @override
   String get mapTypeOsm => 'OSM 标准';
 
@@ -11586,6 +11598,18 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   @override
   String get mapTypeOpenTopo => 'OpenTopo 地形';
 
+
+  @override
+  String get terrainGroup => '地形';
+
+  @override
+  String get mapTypeEsriTopo => 'Esri 地形(等高線)';
+
+  @override
+  String get mapTypeEsriRelief => 'Esri 地形浮雕';
+
+  @override
+  String get mapTypeEsriHillshade => 'Esri 山體陰影';
   @override
   String get mapTypeOsm => 'OSM 標準';
 

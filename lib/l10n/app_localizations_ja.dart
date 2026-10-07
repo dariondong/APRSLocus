@@ -3922,6 +3922,18 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String get mapTypeOpenTopo => 'OpenTopo 地形';
 
+
+  @override
+  String get terrainGroup => '地形';
+
+  @override
+  String get mapTypeEsriTopo => 'Esri 地形(等高線)';
+
+  @override
+  String get mapTypeEsriRelief => 'Esri 陰影起伏';
+
+  @override
+  String get mapTypeEsriHillshade => 'Esri 陰影';
   @override
   String get mapTypeOsm => 'OSM 標準';
 

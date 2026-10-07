@@ -4033,6 +4033,18 @@ By tapping "Agree and connect" you confirm that you have read, understood, and a
   @override
   String get mapTypeOpenTopo => 'OpenTopo Terrain';
 
+
+  @override
+  String get terrainGroup => 'Terrain';
+
+  @override
+  String get mapTypeEsriTopo => 'Esri Topo (contours)';
+
+  @override
+  String get mapTypeEsriRelief => 'Esri Shaded Relief';
+
+  @override
+  String get mapTypeEsriHillshade => 'Esri Hillshade';
   @override
   String get mapTypeOsm => 'OSM Standard';
 

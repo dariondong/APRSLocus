@@ -204,6 +204,31 @@ CARDS = [
 # 只列「重点版本」：中间几十个纯修 bug 的版本归纳进文字说明，完整记录指向 Releases。
 CL = [
     {
+        'ver': 'v2.0.37', 'date': '2026-10-07',
+        'items': [
+            ('new',
+             T('**地形 / 等高线图图层**：地图底图新增「地形」分组，一次给到四张对登山友好的'
+               '地形底图 —— `OpenTopo 地形`（带等高线，从「其他」移入）、`Esri 地形(等高线)`'
+               '（路网 + 地名 + 等高线，最像纸质等高线地形图）、`Esri 地形浮雕`（纯浮雕，'
+               '看整体地形最干净）、`Esri 山体阴影`（只看沟壑走向）。四张都免 Key、可离线'
+               '下载、与 OSM 互为兜底；它们本就是 WGS-84 国际瓦片，因此不做 GCJ 纠偏，'
+               '不会整体偏位。',
+               '**地形 / 等高線圖圖層**：地圖底圖新增「地形」分組，一次給到四張對登山友善'
+               '的地形底圖 —— `OpenTopo 地形`（帶等高線，從「其他」移入）、`Esri 地形(等高線)`'
+               '（路網 + 地名 + 等高線，最像紙本等高線地形圖）、`Esri 地形浮雕`（純浮雕，'
+               '看整體地形最乾淨）、`Esri 山體陰影`（只看溝壑走向）。四張都免 Key、可離線'
+               '下載、與 OSM 互為兜底；它們本就是 WGS-84 國際圖磚，因此不做 GCJ 糾偏，'
+               '不會整體偏位。',
+               '**Terrain / contour layers**: the basemaps gain a "Terrain" group with four '
+               'hiking-friendly layers — `OpenTopo Terrain` (with contours, moved out of '
+               '"Others"), `Esri Topo (contours)` (roads + labels + contours, closest to a '
+               'paper contour map), `Esri Shaded Relief` (pure relief, cleanest for overall '
+               'terrain) and `Esri Hillshade` (valley direction only). All four are key-free, '
+               'offline-downloadable and fall back to OSM; being native WGS-84 international '
+               'tiles, they are not GCJ-shifted and will not offset.')),
+        ],
+    },
+    {
         'ver': 'v2.0.36', 'date': '2026-10-03',
         'items': [
             ('up',

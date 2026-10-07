@@ -1,5 +1,68 @@
 # 更新日志
 
+## [2.0.37] - 2026-10-07
+
+### 新增：地形 / 等高线图图层
+
+**需求**
+
+- 用户反馈：希望地图能加一些**等高线图 / 地形图**图层，看山势、沟壑与海拔起伏。
+
+**改动**
+
+- 底图新增 **「地形」分组**（原来 OpenTopo 混在「其他」里，与街道/卫星并列，
+  不好找），组内共四张：
+  - `OpenTopo 地形`：既有图源，带等高线的地形图（移入本组）；
+  - `Esri 地形(等高线)`：路网 + 地名 + 等高线，最接近「纸质等高线地形图」；
+  - `Esri 地形浮雕`：纯地形浮雕，无标注，看整体地形最干净；
+  - `Esri 山体阴影`：只画山体阴影，看沟壑走向最清楚。
+- 四张都是**免 Key 的 256px 国际瓦片**（WGS-84），与 OSM 互为兜底、可离线下载；
+  但都**不做 GCJ 纠偏** —— 它们本就是 WGS-84，纠偏反而会整体偏出数百米。
+- 底层复用既有瓦片管线（在线 / 离线 / 祖先放大 / 占位四级降级），未引入新依赖。
+
+**测试**
+
+- 新增 `test/terrain_layers_test.dart`：钉住「分组 / WGS-84 / 可离线 / Esri 的
+  z/y/x 坐标顺序」——这些写错了编译能过、analyze 也全绿，只会取到另一张图或
+  整体偏位，所以挂进 CI（`.github/workflows/ci-test.yml`）。
+
+---
+---
+
+## [2.0.37] - 2026-10-07 (English)
+
+### New: terrain / contour map layers
+
+**Request**
+
+- Reported: wanted **contour / terrain** layers on the map to read ridgelines,
+  valleys and elevation.
+
+**Changes**
+
+- Added a **"Terrain" group** to the basemaps (OpenTopo used to sit among
+  "Others" next to streets/satellite and was hard to find), with four layers:
+  - `OpenTopo Terrain`: existing source, terrain map with contours (moved here);
+  - `Esri Topo (contours)`: roads + labels + contours, closest to a paper
+    contour topo map;
+  - `Esri Shaded Relief`: pure relief, no labels — cleanest for overall terrain;
+  - `Esri Hillshade`: hillshade only — clearest for valley direction.
+- All four are **key-free 256px international tiles** (WGS-84), fall back to OSM
+  and can be downloaded offline. They are **not** GCJ-shifted — they are already
+  WGS-84, and shifting them would offset everything by hundreds of metres.
+- Reuses the existing tile pipeline (online / offline / ancestor upscale /
+  placeholder), no new dependencies.
+
+**Tests**
+
+- Added `test/terrain_layers_test.dart` pinning the group, WGS-84 datum,
+  offline capability and Esri's z/y/x tile order — all of which compile and pass
+  analyze while silently fetching the wrong tile or shifting the map, so it is
+  wired into CI (`.github/workflows/ci-test.yml`).
+
+---
+---
+
 ## [2.0.36] - 2026-10-03
 
 ### 优化：连接后由用户手动确认「开始上报」

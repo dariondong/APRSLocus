@@ -235,6 +235,12 @@ jobs:
       - name: Test manual report confirmation
         run: flutter test test/report_confirm_test.dart
 
+      # 地形/等高线图层（v2.0.37）：Esri 地形瓦片是 z/y/x 坐标顺序、且必须判成
+      # WGS-84。这两点写错了**编译能过、analyze 也全绿**，只会表现成「取到别的
+      # 一张图」或「整图偏出 500m」，所以钉在 CI。
+      - name: Test terrain layers
+        run: flutter test test/terrain_layers_test.dart
+
       - name: Test third-party packet unwrapping
         run: flutter test test/third_party_packet_test.dart
 

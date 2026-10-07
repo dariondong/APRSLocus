@@ -4036,6 +4036,18 @@ Dengan menekan "Setuju dan sambung", Anda menyatakan telah membaca, memahami, da
   @override
   String get mapTypeOpenTopo => 'OpenTopo Terrain';
 
+
+  @override
+  String get terrainGroup => 'Terrain';
+
+  @override
+  String get mapTypeEsriTopo => 'Esri Topo (kontur)';
+
+  @override
+  String get mapTypeEsriRelief => 'Esri relief bayangan';
+
+  @override
+  String get mapTypeEsriHillshade => 'Esri bayangan bukit';
   @override
   String get mapTypeOsm => 'OSM Standar';
 

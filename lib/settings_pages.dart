@@ -3847,6 +3847,12 @@ class _DisplaySettingsPageState extends State<DisplaySettingsPage> {
 
   /// 地图类型选择
   Widget _mapTypeSelector() {
+    // 分组按枚举**声明顺序**去重，而不是写死 ['高德','其他'] —— 写死的话
+    // 新增分组（如「地形」）会悄悄漏掉：地图页菜单里有、设置页却选不到。
+    final groups = <String>[];
+    for (final t in MapType.values) {
+      if (!groups.contains(t.group)) groups.add(t.group);
+    }
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
       decoration: BoxDecoration(
@@ -3856,17 +3862,19 @@ class _DisplaySettingsPageState extends State<DisplaySettingsPage> {
         children: [
           Text(S.of(context).mapType, style: ts(12, c: C.slate)),
           SizedBox(height: 8),
-          // 注意：这里用 MapType.group 的原始判别值（'高德'/'其他'）做分组，
-          // 它们同时是数据实参——不能替换成 l10n 文案，否则分组会失效；
-          // 展示用的标题改走 domesticMaps / internationalMaps。
-          for (final group in const ['高德', '其他']) ...[
+          // 注意：这里用 MapType.group 的原始判别值（'高德'/'地形'/'其他'）做
+          // 分组，它们同时是数据实参——不能替换成 l10n 文案，否则分组会失效；
+          // 展示用的标题改走 domesticMaps / terrainGroup / internationalMaps。
+          for (final group in groups) ...[
             if (MapType.values.any((t) => t.group == group)) ...[
               Padding(
                 padding: const EdgeInsets.only(top: 4, bottom: 4),
                 child: Text(
                   group == '高德'
                       ? S.of(context).domesticMaps
-                      : S.of(context).internationalMaps,
+                      : group == '地形'
+                          ? S.of(context).terrainGroup
+                          : S.of(context).internationalMaps,
                   style: ts(10, c: C.grey, w: FontWeight.w700),
                 ),
               ),

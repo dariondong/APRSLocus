@@ -6936,6 +6936,30 @@ abstract class AppLocalizations {
   /// **'OpenTopo 地形'**
   String get mapTypeOpenTopo;
 
+
+  /// No description provided for @terrainGroup.
+  ///
+  /// In zh, this message translates to:
+  /// **"地形"**
+  String get terrainGroup;
+
+  /// No description provided for @mapTypeEsriTopo.
+  ///
+  /// In zh, this message translates to:
+  /// **"Esri 地形(等高线)"**
+  String get mapTypeEsriTopo;
+
+  /// No description provided for @mapTypeEsriRelief.
+  ///
+  /// In zh, this message translates to:
+  /// **"Esri 地形浮雕"**
+  String get mapTypeEsriRelief;
+
+  /// No description provided for @mapTypeEsriHillshade.
+  ///
+  /// In zh, this message translates to:
+  /// **"Esri 山体阴影"**
+  String get mapTypeEsriHillshade;
   /// No description provided for @mapTypeOsm.
   ///
   /// In zh, this message translates to:
