@@ -3934,6 +3934,18 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get mapTypeEsriHillshade => 'Esri 陰影';
+
+  @override
+  String get tiandituGroup => '天地図';
+
+  @override
+  String get mapTypeTianditu => '天地図 ベクター';
+
+  @override
+  String get mapTypeTiandituImg => '天地図 衛星写真';
+
+  @override
+  String get mapTypeTiandituTer => '天地図 地形';
   @override
   String get mapTypeOsm => 'OSM 標準';
 

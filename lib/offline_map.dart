@@ -479,8 +479,14 @@ class OfflineDownloader extends ChangeNotifier {
 
     Future<void> one(int z, int x, int y) async {
       if (t.canceled) return;
+      final annLayer = annotationLayerOf(r.type);
       if (TileCache.available &&
-          await TileCache.get(r.mapType, z, x, y) != null) {
+          await TileCache.get(r.mapType, z, x, y) != null &&
+          // 天地图等带注记层的图源：底图与注记都下到才算完成，
+          // 否则离线时会出现「有底图无地名」的半成品。
+          (annLayer == null ||
+              await TileCache.get(annotationSourceName(r.type), z, x, y) !=
+                  null)) {
         r.done++;
         _bumpNotify(t);
         return;
@@ -508,6 +514,27 @@ class OfflineDownloader extends ChangeNotifier {
         if (!ok) {
           r.failed++;
           return;
+        }
+        // 注记层：尽力而为 —— 失败不判整张失败（底图已在，仍可用），
+        // 下次续传会因「注记缺失」重新尝试。
+        if (annLayer != null) {
+          final aurl = annotationUrl(r.type, x, y, z);
+          if (aurl.isNotEmpty) {
+            try {
+              final ab = await httpGetBytes(
+                Uri.parse(aurl),
+                headers: tileHeaders,
+                timeout: const Duration(seconds: 20),
+              );
+              if (looksLikeImage(ab)) {
+                await TileCache.put(
+                    annotationSourceName(r.type), z, x, y, ab);
+              }
+            } catch (_) {
+              // 忽略：注记缺失不影响底图
+            }
+            if (t.canceled) return;
+          }
         }
         t.failStreak = 0;
         r.done++;
@@ -589,6 +616,7 @@ class OfflineDownloader extends ChangeNotifier {
       await Future.wait(batch);
     }
 
+    final annRemove = annotationLayerOf(r.type) != null;
     for (var z = r.minZoom; z <= r.maxZoom; z++) {
       final n = 1 << z;
       final rng = tileRange(tb, z, r.tileProjection);
@@ -596,6 +624,12 @@ class OfflineDownloader extends ChangeNotifier {
         for (var x = rng.x0; x <= rng.x1; x++) {
           final wx = ((x % n) + n) % n;
           pending.add(TileCache.remove(r.mapType, z, wx, y));
+          // 注记层与底图分文件存储，删区域时要一并删掉，否则只删底图会留下
+          // 一份永远取不到、也永远清不掉的注记缓存。
+          if (annRemove) {
+            pending.add(
+                TileCache.remove(annotationSourceName(r.type), z, wx, y));
+          }
           await flush();
           done++;
           if (done % 200 == 0) {

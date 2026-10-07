@@ -4071,6 +4071,18 @@ Al pulsar "Aceptar y conectar" confirmas que has leído, entendido y aceptado lo
 
   @override
   String get mapTypeEsriHillshade => 'Esri sombreado';
+
+  @override
+  String get tiandituGroup => 'Tianditu';
+
+  @override
+  String get mapTypeTianditu => 'Tianditu vectorial';
+
+  @override
+  String get mapTypeTiandituImg => 'Tianditu imágenes';
+
+  @override
+  String get mapTypeTiandituTer => 'Tianditu terreno';
   @override
   String get mapTypeOsm => 'OSM estándar';
 

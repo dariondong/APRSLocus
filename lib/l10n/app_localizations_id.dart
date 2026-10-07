@@ -4048,6 +4048,18 @@ Dengan menekan "Setuju dan sambung", Anda menyatakan telah membaca, memahami, da
 
   @override
   String get mapTypeEsriHillshade => 'Esri bayangan bukit';
+
+  @override
+  String get tiandituGroup => 'Tianditu';
+
+  @override
+  String get mapTypeTianditu => 'Tianditu Vektor';
+
+  @override
+  String get mapTypeTiandituImg => 'Tianditu Citra';
+
+  @override
+  String get mapTypeTiandituTer => 'Tianditu Terrain';
   @override
   String get mapTypeOsm => 'OSM Standar';
 

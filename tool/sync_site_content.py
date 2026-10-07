@@ -204,6 +204,39 @@ CARDS = [
 # 只列「重点版本」：中间几十个纯修 bug 的版本归纳进文字说明，完整记录指向 Releases。
 CL = [
     {
+        'ver': 'v2.0.38', 'date': '2026-10-07',
+        'items': [
+            ('new',
+             T('**天地图图层**：底图新增「天地图」分组，共三张 —— `天地图 矢量`（vec）、'
+               '`天地图 影像`（img）、`天地图 地形`（ter）。天地图的底图**本身不含地名**，'
+               '文字在单独的透明注记层（cva/cia/cta），因此每张底图都会**叠上对应注记**'
+               '（矢量叠 cva、影像叠 cia、地形叠 cta）；底图与注记分开缓存、离线时一起'
+               '下载，不会出现「有图无地名」。天地图实测为 **WGS-84**（与 Esri/OSM 影像'
+               '零偏移），因此不做 GCJ 纠偏，可与 OSM 互为兜底；瓦片支持到 z18。Key 走'
+               '构建期注入（CI Secret `TIANDITU_KEY`），源码不落 key；未配置时自动退到'
+               ' OSM，地图照常可用。',
+               '**天地圖圖層**：底圖新增「天地圖」分組，共三張 —— `天地圖 向量`（vec）、'
+               '`天地圖 影像`（img）、`天地圖 地形`（ter）。天地圖的底圖**本身不含地名**，'
+               '文字在單獨的透明註記層（cva/cia/cta），因此每張底圖都會**疊上對應註記**'
+               '（向量疊 cva、影像疊 cia、地形疊 cta）；底圖與註記分開快取、離線時一起'
+               '下載，不會出現「有圖無地名」。天地圖實測為 **WGS-84**（與 Esri/OSM 影像'
+               '零偏移），因此不做 GCJ 糾偏，可與 OSM 互為兜底；圖磚支援到 z18。Key 走'
+               '建置期注入（CI Secret `TIANDITU_KEY`），原始碼不落 key；未設定時自動退到'
+               ' OSM，地圖照常可用。',
+               '**Tianditu layers**: the basemaps gain a "Tianditu" group with three '
+               'layers — `Tianditu Vector` (vec), `Tianditu Imagery` (img) and '
+               '`Tianditu Terrain` (ter). Their base tiles carry **no place labels**; text '
+               'lives in separate transparent annotation layers (cva/cia/cta), so each '
+               'basemap is **composited with its matching overlay** (vector+cva, '
+               'imagery+cia, terrain+cta). Base and annotation are cached separately and '
+               'downloaded together offline, so you never get a map with no place names. '
+               'Tianditu is measured as **WGS-84** (zero offset vs Esri/OSM imagery), so '
+               'it is not GCJ-shifted and falls back to OSM; tiles go up to z18. The key '
+               'is injected at build time (CI Secret `TIANDITU_KEY`), never committed to '
+               'source; when absent the map falls back to OSM and stays usable.')),
+        ],
+    },
+    {
         'ver': 'v2.0.37', 'date': '2026-10-07',
         'items': [
             ('new',

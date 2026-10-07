@@ -10,7 +10,7 @@ A lightweight APRS client built for amateur radio enthusiasts — real-time posi
 
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](LICENSE)
 [![Platform](https://img.shields.io/badge/Platform-Android%20%7C%20Windows%20%7C%20iOS%20%7C%20Linux%20%7C%20macOS%20%7C%20Web-lightgrey.svg)]()
-[![Version](https://img.shields.io/badge/Version-2.0.37-green.svg)]()
+[![Version](https://img.shields.io/badge/Version-2.0.38-green.svg)]()
 [![Flutter](https://img.shields.io/badge/Flutter-3.x-blueviolet.svg)](https://flutter.dev)
 
 Author: [BG7LZQ (Darion)](https://theez.top) · Website: [aprslocus.theez.top](https://aprslocus.theez.top/) · Latest release: [GitHub Releases](https://github.com/dariondong/APRSLocus/releases)
@@ -42,7 +42,7 @@ Author: [BG7LZQ (Darion)](https://theez.top) · Website: [aprslocus.theez.top](h
 ## ✨ Features
 
 ### 🗺️ Real-Time Map Tracking
-- **Multiple map types**: AMap (Standard / Satellite) / Vector map / Carto (Light · Dark · Voyager) / OSM (Standard · Humanitarian) / OpenTopo terrain / Esri (Streets · Imagery), switchable in Settings with one tap
+- **Multiple map types**: AMap (Standard / Satellite) / Vector map / Carto (Light · Dark · Voyager) / OSM (Standard · Humanitarian) / Terrain (OpenTopo, Esri contours · relief · hillshade) / Tianditu (Vector · Imagery · Terrain) / Esri (Streets · Imagery), switchable in Settings with one tap
 - **Vector map**: rendered on-device with `flutter_map` + `vector_map_tiles`, low data usage and crisp zooming, **no API key required**, WGS-84 coordinates; supports my track and selected station track
 - **AMap tiles (GCJ-02)**: aligns seamlessly for domestic positioning in China, with built-in WGS-84 ↔ GCJ-02 conversion
 - **Live station display**: every station at a glance; online / moving / stationary / offline distinguished by green / blue / yellow / grey, active stations pulse-animated
@@ -182,7 +182,7 @@ After the wizard the app connects to APRS-IS, starts reporting position, and rec
 ## 📚 User Guide
 
 ### 🗺️ Map Page
-- Switch map type: Settings → Display → Map type (AMap / AMap Satellite / Vector / Carto series / OSM series / OpenTopo / Esri)
+- Switch map type: Settings → Display → Map type (AMap / AMap Satellite / Vector / Carto series / OSM series / Terrain series / Tianditu series / Esri)
 - Toggle clustering from the map control bar
 - Show / hide my track and selected station track
 - Search box on top to jump to a station by callsign; tap a marker for details
@@ -247,7 +247,7 @@ Full **37 official symbol tables, 3571 standard icons**, all rendered from bundl
 | Category | Tech |
 |------|------|
 | **Framework** | [Flutter](https://flutter.dev) (Dart 3.x) |
-| **Maps** | [AMap](https://lbs.amap.com) (tiles), [flutter_map](https://pub.dev/packages/flutter_map), [vector_map_tiles](https://pub.dev/packages/vector_map_tiles), Carto, OpenStreetMap, OpenTopoMap, Esri ArcGIS |
+| **Maps** | [AMap](https://lbs.amap.com) (tiles), [Tianditu](https://www.tianditu.gov.cn) (tiles), [flutter_map](https://pub.dev/packages/flutter_map), [vector_map_tiles](https://pub.dev/packages/vector_map_tiles), Carto, OpenStreetMap, OpenTopoMap, Esri ArcGIS |
 | **Network** | APRS-IS (TCP Socket / WebSocket) |
 | **Protocol** | APRS 1.0 (position / message / weather / status / object / Mic-E …) |
 | **Location** | Android FusedLocationProvider + foreground service |
@@ -266,7 +266,7 @@ APRSLocus/
 │   ├── home_page.dart        # Main shell (5 tabs: map / stations / messages / packets / settings)
 │   ├── map_page.dart         # Map page
 │   ├── vector_map.dart       # Vector map (flutter_map)
-│   ├── tile_map.dart         # Tile maps (AMap / Carto / OSM / OpenTopo / Esri)
+│   ├── tile_map.dart         # Tile maps (AMap / Carto / OSM / Terrain / Tianditu / Esri)
 │   ├── stations_page.dart    # Station list
 │   ├── station_detail.dart   # Station detail
 │   ├── messages_page.dart    # Messages (private + group)
@@ -397,6 +397,7 @@ Since 1.5.2 Android uses the official release signature, identical between CI an
 ## 🙏 Thanks & Contributing
 
 - [AMap](https://lbs.amap.com) — map tiles / JS API
+- [Tianditu](https://www.tianditu.gov.cn) — national platform basemap tiles
 - [APRS-IS](https://aprs-is.net) — global APRS network
 - [flutter_map](https://pub.dev/packages/flutter_map) / [vector_map_tiles](https://pub.dev/packages/vector_map_tiles) — vector rendering
 - [OpenFreeMap](https://openfreemap.org) — free vector tiles

@@ -1537,7 +1537,9 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                     ? S.of(context).amapGroup
                     : group == '地形'
                         ? S.of(context).terrainGroup
-                        : S.of(context).otherType,
+                        : group == '天地图'
+                            ? S.of(context).tiandituGroup
+                            : S.of(context).otherType,
                 style: ts(10, c: color, w: FontWeight.w700),
               ),
             ],
@@ -1874,6 +1876,8 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                           _mapTypeGroup('高德', C.blue, () => entry.remove()),
                           // 地形/等高线
                           _mapTypeGroup('地形', C.green, () => entry.remove()),
+                          // 天地图（需 Key）
+                          _mapTypeGroup('天地图', C.cyan, () => entry.remove()),
                           // 其他地图
                           _mapTypeGroup('其他', C.slate, () => entry.remove()),
                         ],

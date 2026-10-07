@@ -4045,6 +4045,18 @@ By tapping "Agree and connect" you confirm that you have read, understood, and a
 
   @override
   String get mapTypeEsriHillshade => 'Esri Hillshade';
+
+  @override
+  String get tiandituGroup => 'Tianditu';
+
+  @override
+  String get mapTypeTianditu => 'Tianditu Vector';
+
+  @override
+  String get mapTypeTiandituImg => 'Tianditu Imagery';
+
+  @override
+  String get mapTypeTiandituTer => 'Tianditu Terrain';
   @override
   String get mapTypeOsm => 'OSM Standard';
 

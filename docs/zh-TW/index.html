@@ -573,6 +573,15 @@
 <!-- site-sync:changelog -->
     <div class="cl-version reveal">
       <div class="cl-head">
+        <span class="cl-tag">v2.0.38</span>
+        <span class="cl-date">2026-10-07</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot new"></span><b>天地圖圖層</b>：底圖新增「天地圖」分組，共三張 —— <code>天地圖 向量</code>（vec）、<code>天地圖 影像</code>（img）、<code>天地圖 地形</code>（ter）。天地圖的底圖<b>本身不含地名</b>，文字在單獨的透明註記層（cva/cia/cta），因此每張底圖都會<b>疊上對應註記</b>（向量疊 cva、影像疊 cia、地形疊 cta）；底圖與註記分開快取、離線時一起下載，不會出現「有圖無地名」。天地圖實測為 <b>WGS-84</b>（與 Esri/OSM 影像零偏移），因此不做 GCJ 糾偏，可與 OSM 互為兜底；圖磚支援到 z18。Key 走建置期注入（CI Secret <code>TIANDITU_KEY</code>），原始碼不落 key；未設定時自動退到 OSM，地圖照常可用。</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
         <span class="cl-tag">v2.0.37</span>
         <span class="cl-date">2026-10-07</span>
       </div>

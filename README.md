@@ -10,7 +10,7 @@
 
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](LICENSE)
 [![Platform](https://img.shields.io/badge/Platform-Android%20%7C%20Windows%20%7C%20iOS%20%7C%20Linux%20%7C%20macOS%20%7C%20Web-lightgrey.svg)]()
-[![Version](https://img.shields.io/badge/Version-2.0.37-green.svg)]()
+[![Version](https://img.shields.io/badge/Version-2.0.38-green.svg)]()
 [![Flutter](https://img.shields.io/badge/Flutter-3.x-blueviolet.svg)](https://flutter.dev)
 
 作者：[BG7LZQ (Darion)](https://theez.top) · 官网：[aprslocus.theez.top](https://aprslocus.theez.top/) · 最新版发布：[GitHub Releases](https://github.com/dariondong/APRSLocus/releases)
@@ -42,7 +42,7 @@
 ## ✨ 核心特性
 
 ### 🗺️ 实时地图追踪
-- **多地图类型**：国内地图（高德地图·高德卫星、腾讯地图·腾讯卫星、百度地图·百度卫星）/ 矢量地图（标准·Carto Positron）/ Carto（浅色·深色·航行者）/ OSM（标准·人道）/ OpenTopo 地形 / Esri（街道·影像），设置页一键切换
+- **多地图类型**：国内地图（高德地图·高德卫星、腾讯地图·腾讯卫星、百度地图·百度卫星）/ 矢量地图（标准·Carto Positron）/ Carto（浅色·深色·航行者）/ OSM（标准·人道）/ 地形（OpenTopo、Esri 等高线·浮雕·山体阴影）/ 天地图（矢量·影像·地形）/ Esri（街道·影像），设置页一键切换
 - **离线地图**：支持框选矩形区域下载离线瓦片包与存储管理，无网环境下正常浏览地图
 - **矢量地图**：基于 `flutter_map` + `vector_map_tiles` 客户端实时渲染，数据量小、缩放清晰、**无需 API Key**，坐标为 WGS-84，支持显示我的轨迹与选中台站轨迹
 - **国内坐标与投影对齐**：高德/腾讯（GCJ-02）与百度（BD-09）瓦片无缝对齐，内置 WGS-84 ↔ GCJ-02 ↔ BD-09 坐标转换与百度专用投影计算
@@ -176,7 +176,7 @@
 ## 📚 使用指南
 
 ### 🗺️ 地图页
-- 切换地图类型：设置 → 显示 → 地图类型（高德 / 腾讯 / 百度 / 矢量 / Carto 系列 / OSM 系列 / OpenTopo / Esri）
+- 切换地图类型：设置 → 显示 → 地图类型（高德 / 腾讯 / 百度 / 矢量 / Carto 系列 / OSM 系列 / 地形系列 / 天地图系列 / Esri）
 - 离线地图：设置 → 数据 → 离线地图（按矩形区域下载与离线浏览）
 - 开启台站聚合：地图控制栏聚合开关
 - 显示 / 隐藏自身轨迹与选中台站轨迹
@@ -244,7 +244,7 @@ BG7LZQ-3>APALOC,TCPIP*:!2148.90N/11049.14E/> /A=000328 090/050 Bat:70% APRSlocus
 | 类别 | 技术 |
 |------|------|
 | **框架** | [Flutter](https://flutter.dev)（Dart 3.x） |
-| **地图** | [高德地图](https://lbs.amap.com)（瓦片）、[flutter_map](https://pub.dev/packages/flutter_map)、[vector_map_tiles](https://pub.dev/packages/vector_map_tiles)、Carto、OpenStreetMap、OpenTopoMap、Esri ArcGIS |
+| **地图** | [高德地图](https://lbs.amap.com)（瓦片）、[天地图](https://www.tianditu.gov.cn)（瓦片）、[flutter_map](https://pub.dev/packages/flutter_map)、[vector_map_tiles](https://pub.dev/packages/vector_map_tiles)、Carto、OpenStreetMap、OpenTopoMap、Esri ArcGIS |
 | **网络** | APRS-IS（TCP Socket / WebSocket） |
 | **协议** | APRS 1.0（位置 / 消息 / 气象 / 状态 / 物体 / Mic-E 等） |
 | **定位** | Android FusedLocationProvider + 前台服务 |
@@ -264,7 +264,7 @@ APRSLocus/
 │   ├── shell2.dart           # 主界面 2.0 外壳（沉浸地图基底 + 胶囊导航）
 │   ├── map_page.dart         # 地图页
 │   ├── vector_map.dart       # 矢量地图（flutter_map）
-│   ├── tile_map.dart         # 瓦片地图（高德 / 腾讯 / 百度 / Carto / OSM / OpenTopo / Esri）
+│   ├── tile_map.dart         # 瓦片地图（高德 / 腾讯 / 百度 / Carto / OSM / 地形 / 天地图 / Esri）
 │   ├── offline_map_page.dart # 离线地图管理页
 │   ├── stations_page.dart    # 台站列表
 │   ├── station_detail.dart   # 台站详情
@@ -404,6 +404,7 @@ Android 端使用前台服务持续定位以保持 APRS 在线，可在"定位 /
 ## 🙏 致谢与贡献
 
 - [高德地图](https://lbs.amap.com) — 地图瓦片 / JS API 服务
+- [天地图](https://www.tianditu.gov.cn) — 国家地理信息公共服务平台底图瓦片
 - [APRS-IS](https://aprs-is.net) — 全球 APRS 数据网络
 - [flutter_map](https://pub.dev/packages/flutter_map) / [vector_map_tiles](https://pub.dev/packages/vector_map_tiles) — 矢量地图渲染
 - [OpenFreeMap](https://openfreemap.org) — 免费矢量瓦片底图

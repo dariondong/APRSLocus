@@ -3862,9 +3862,9 @@ class _DisplaySettingsPageState extends State<DisplaySettingsPage> {
         children: [
           Text(S.of(context).mapType, style: ts(12, c: C.slate)),
           SizedBox(height: 8),
-          // 注意：这里用 MapType.group 的原始判别值（'高德'/'地形'/'其他'）做
-          // 分组，它们同时是数据实参——不能替换成 l10n 文案，否则分组会失效；
-          // 展示用的标题改走 domesticMaps / terrainGroup / internationalMaps。
+          // 注意：这里用 MapType.group 的原始判别值（'高德'/'地形'/'天地图'/'其他'）
+          // 做分组，它们同时是数据实参——不能替换成 l10n 文案，否则分组会失效；
+          // 展示用的标题改走 domesticMaps / terrainGroup / tiandituGroup / internationalMaps。
           for (final group in groups) ...[
             if (MapType.values.any((t) => t.group == group)) ...[
               Padding(
@@ -3874,7 +3874,9 @@ class _DisplaySettingsPageState extends State<DisplaySettingsPage> {
                       ? S.of(context).domesticMaps
                       : group == '地形'
                           ? S.of(context).terrainGroup
-                          : S.of(context).internationalMaps,
+                          : group == '天地图'
+                              ? S.of(context).tiandituGroup
+                              : S.of(context).internationalMaps,
                   style: ts(10, c: C.grey, w: FontWeight.w700),
                 ),
               ),

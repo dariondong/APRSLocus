@@ -675,7 +675,7 @@ class _OfflineRegionPickerPageState extends State<OfflineRegionPickerPage> {
                             border: Border.all(
                                 color: _type == t ? C.blue : C.border),
                           ),
-                          child: Text(t.label,
+                          child: Text(localizedMapTypeLabel(context, t.name),
                               style: ts(11,
                                   c: _type == t ? Colors.white : C.slate,
                                   w: FontWeight.w600)),

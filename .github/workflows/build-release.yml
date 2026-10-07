@@ -52,7 +52,7 @@ jobs:
         run: flutter pub get
 
       - name: Build Windows (Release)
-        run: flutter build windows --release --dart-define=QWEATHER_KEY=${{ secrets.QWEATHER_KEY }} --dart-define=QWEATHER_HOST=${{ secrets.QWEATHER_HOST || 'pf4ewvjfqj.re.qweatherapi.com' }}
+        run: flutter build windows --release --dart-define=QWEATHER_KEY=${{ secrets.QWEATHER_KEY }} --dart-define=QWEATHER_HOST=${{ secrets.QWEATHER_HOST || 'pf4ewvjfqj.re.qweatherapi.com' }} --dart-define=TIANDITU_KEY=${{ secrets.TIANDITU_KEY }}
 
       - name: Setup Inno Setup
         shell: pwsh
@@ -135,7 +135,7 @@ jobs:
       # 这样 64 位用户走的还是原来那条路，**应用内更新逻辑一行都不用改**。
       # 这条不变量由 tool/check_release_assets.py 盯着（改名字/改顺序都会当场报红）。
       - name: Build APK (Release, split per ABI)
-        run: flutter build apk --release --split-per-abi --dart-define=QWEATHER_KEY=${{ secrets.QWEATHER_KEY }} --dart-define=QWEATHER_HOST=${{ secrets.QWEATHER_HOST || 'pf4ewvjfqj.re.qweatherapi.com' }}
+        run: flutter build apk --release --split-per-abi --dart-define=QWEATHER_KEY=${{ secrets.QWEATHER_KEY }} --dart-define=QWEATHER_HOST=${{ secrets.QWEATHER_HOST || 'pf4ewvjfqj.re.qweatherapi.com' }} --dart-define=TIANDITU_KEY=${{ secrets.TIANDITU_KEY }}
 
       - name: Rename APKs (split per ABI)
         shell: bash
@@ -194,7 +194,7 @@ jobs:
         run: flutter pub get
 
       - name: Build iOS (Release, no codesign)
-        run: flutter build ios --release --dart-define=QWEATHER_KEY=${{ secrets.QWEATHER_KEY }} --dart-define=QWEATHER_HOST=${{ secrets.QWEATHER_HOST || 'pf4ewvjfqj.re.qweatherapi.com' }} --no-codesign
+        run: flutter build ios --release --dart-define=QWEATHER_KEY=${{ secrets.QWEATHER_KEY }} --dart-define=QWEATHER_HOST=${{ secrets.QWEATHER_HOST || 'pf4ewvjfqj.re.qweatherapi.com' }} --dart-define=TIANDITU_KEY=${{ secrets.TIANDITU_KEY }} --no-codesign
 
       # 把 .app 封成**未签名 .ipa**。为什么非有这一步不可：
       # `.app` 是**目录**，而 action-gh-release 对目录是**静默跳过** ——

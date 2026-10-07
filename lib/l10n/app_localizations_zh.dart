@@ -3884,6 +3884,18 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get mapTypeEsriHillshade => 'Esri 山体阴影';
+
+  @override
+  String get tiandituGroup => '天地图';
+
+  @override
+  String get mapTypeTianditu => '天地图 矢量';
+
+  @override
+  String get mapTypeTiandituImg => '天地图 影像';
+
+  @override
+  String get mapTypeTiandituTer => '天地图 地形';
   @override
   String get mapTypeOsm => 'OSM 标准';
 
@@ -11610,6 +11622,18 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get mapTypeEsriHillshade => 'Esri 山體陰影';
+
+  @override
+  String get tiandituGroup => '天地圖';
+
+  @override
+  String get mapTypeTianditu => '天地圖 向量';
+
+  @override
+  String get mapTypeTiandituImg => '天地圖 影像';
+
+  @override
+  String get mapTypeTiandituTer => '天地圖 地形';
   @override
   String get mapTypeOsm => 'OSM 標準';
 

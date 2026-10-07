@@ -1,5 +1,87 @@
 # 更新日志
 
+## [2.0.38] - 2026-10-07
+
+### 新增：天地图图层（矢量 / 影像 / 地形）
+
+**需求**
+
+- 用户要求：在既有地形图之外**再加天地图**，而且「什么图都添加」——把天地图能用
+  的图层类型都补上。
+
+**改动**
+
+- 底图新增 **「天地图」分组**，共三张（国家地理信息公共服务平台，WMTS 瓦片）：
+  - `天地图 矢量`（`vec`）：路网 + 建筑轮廓的矢量底图；
+  - `天地图 影像`（`img`）：卫星影像底图；
+  - `天地图 地形`（`ter`）：地形晕渲底图，看山势起伏。
+- **每张底图都叠一层注记**：天地图的 `vec`/`img`/`ter` **自身不含地名**，文字单独
+  放在透明底的注记层（`cva`/`cia`/`cta`）。实现上把底图与注记**分两张瓦片**分别
+  缓存（来源键 `xxx` 与 `xxx_ann`，否则同格互相顶掉），渲染时叠在一起；离线下载也
+  把注记一并下下来 —— 否则离线后只剩一张没有地名的图。
+- 天地图经实测为 **WGS-84**（与 Esri/OSM 影像做相位相关，偏移 0px；若是 GCJ-02
+  同一位置会偏出 50~70px），因此**不做纠偏**，与 OSM 互为兜底、可离线下载。
+  瓦片实测支持到 **z18**（z19 已无数据），子域名轮询 `t0..t7`。
+- **Key 走构建期注入**：`const String.fromEnvironment('TIANDITU_KEY')`，与和风
+  天气 key 同款；CI 从仓库 Secret `TIANDITU_KEY` 读取后以 `--dart-define` 注入
+  （Windows / Android / iOS / macOS 四个构建都加）。源码不落 key。
+- **没有配置 Key 时**：天地图瓦片 URL 返回空串，候选链自动退到 OSM（同为 WGS-84），
+  地图照常可用 —— 不出现白屏或错位。
+
+**测试**
+
+- 新增 `test/tianditu_layers_test.dart`：钉住「分组 / WGS-84 / 可离线 / 注记层映射
+  （vec→cva、img→cia、ter→cta）/ 底图与注记的缓存键必须分开 / 非天地图图源不得有
+  注记层」，并挂进 CI（`.github/workflows/ci-test.yml`）。
+
+---
+---
+
+## [2.0.38] - 2026-10-07 (English)
+
+### New: Tianditu map layers (vector / imagery / terrain)
+
+**Request**
+
+- Asked to add **Tianditu (天地图)** on top of the existing terrain layers, and to
+  add "every layer type" it offers.
+
+**Changes**
+
+- Added a **"Tianditu" group** with three basemaps (National Platform for Common
+  Geospatial Information Services, WMTS tiles):
+  - `Tianditu Vector` (`vec`): road network + building footprints;
+  - `Tianditu Imagery` (`img`): satellite imagery;
+  - `Tianditu Terrain` (`ter`): shaded terrain relief.
+- **Each basemap is composited with an annotation overlay**: Tianditu's
+  `vec`/`img`/`ter` tiles carry **no place labels** — text lives in separate
+  transparent annotation layers (`cva`/`cia`/`cta`). The base and the annotation
+  are cached as **two tiles** (source keys `xxx` and `xxx_ann`, otherwise they
+  overwrite each other for the same cell) and drawn stacked; the offline
+  downloader fetches the annotation too, so offline maps don't lose all place
+  names.
+- Measured as **WGS-84** (phase correlation against Esri/OSM imagery: 0px offset;
+  a GCJ-02 source would be off by 50–70px), so **no GCJ shift** — falls back to
+  OSM and downloads offline. Tiles verified up to **z18** (z19 has no data);
+  subdomains round-robin `t0..t7`.
+- **Key injected at build time**: `const String.fromEnvironment('TIANDITU_KEY')`,
+  same pattern as the QWeather key; CI reads the repo Secret `TIANDITU_KEY` and
+  passes it via `--dart-define` for all four builds (Windows / Android / iOS /
+  macOS). No key is committed to source.
+- **When the key is absent**: the Tianditu URL builder returns an empty string and
+  the candidate chain falls back to OSM (same WGS-84 datum) — the map stays usable,
+  with no blank tiles or offsets.
+
+**Tests**
+
+- Added `test/tianditu_layers_test.dart` pinning the group, WGS-84 datum, offline
+  capability, the label-layer mapping (`vec`→`cva`, `img`→`cia`, `ter`→`cta`),
+  the separate cache keys for base vs annotation, and that non-Tianditu sources
+  have no annotation layer; wired into CI (`.github/workflows/ci-test.yml`).
+
+---
+---
+
 ## [2.0.37] - 2026-10-07
 
 ### 新增：地形 / 等高线图图层

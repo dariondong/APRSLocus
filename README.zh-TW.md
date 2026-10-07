@@ -10,7 +10,7 @@
 
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](LICENSE)
 [![Platform](https://img.shields.io/badge/Platform-Android%20%7C%20Windows%20%7C%20iOS%20%7C%20Linux%20%7C%20macOS%20%7C%20Web-lightgrey.svg)]()
-[![Version](https://img.shields.io/badge/Version-2.0.37-green.svg)]()
+[![Version](https://img.shields.io/badge/Version-2.0.38-green.svg)]()
 [![Flutter](https://img.shields.io/badge/Flutter-3.x-blueviolet.svg)](https://flutter.dev)
 
 作者：[BG7LZQ (Darion)](https://theez.top) · 官網：[aprslocus.theez.top](https://aprslocus.theez.top/) · 最新版發布：[GitHub Releases](https://github.com/dariondong/APRSLocus/releases)
@@ -42,7 +42,7 @@
 ## ✨ 核心特性
 
 ### 🗺️ 實時地圖追蹤
-- **多地圖類型**：高德普通 / 高德衛星 / 矢量地圖 / Carto（淺色·深色·航行者）/ OSM（標準·人道）/ OpenTopo 地形 / Esri（街道·影像），設置頁一鍵切換
+- **多地圖類型**：高德普通 / 高德衛星 / 矢量地圖 / Carto（淺色·深色·航行者）/ OSM（標準·人道）/ 地形（OpenTopo、Esri 等高線·浮雕·山體陰影）/ 天地圖（向量·影像·地形）/ Esri（街道·影像），設置頁一鍵切換
 - **矢量地圖**：基於 `flutter_map` + `vector_map_tiles` 客戶端實時渲染，數據量小、縮放清晰、**無需 API Key**，坐標為 WGS-84，支持顯示我的軌跡與選中臺站軌跡
 - **高德瓦片（GCJ-02）**：國內定位無縫對齊，內置 WGS-84 ↔ GCJ-02 坐標轉換
 - **實時臺站顯示**：所有臺站位置一目了然，在線 / 移動 / 靜止 / 離線狀態以綠 / 藍 / 黃 / 灰區分，活躍臺站帶脈衝動畫
@@ -180,7 +180,7 @@
 ## 📚 使用指南
 
 ### 🗺️ 地圖頁
-- 切換地圖類型：設置 → 顯示 → 地圖類型（高德 / 高德衛星 / 矢量 / Carto 系列 / OSM 系列 / OpenTopo / Esri）
+- 切換地圖類型：設置 → 顯示 → 地圖類型（高德 / 高德衛星 / 矢量 / Carto 系列 / OSM 系列 / 地形系列 / 天地圖系列 / Esri）
 - 開啟臺站聚合：地圖控制欄聚合開關
 - 顯示 / 隱藏自身軌跡與選中臺站軌跡
 - 頂部搜索框按呼號快速定位臺站，點擊臺站 Marker 查看詳情
@@ -245,7 +245,7 @@ BG7LZQ-3>APALOC,TCPIP*:!2148.90N/11049.14E/> /A=000328 090/050 Bat:70% APRSlocus
 | 類別 | 技術 |
 |------|------|
 | **框架** | [Flutter](https://flutter.dev)（Dart 3.x） |
-| **地圖** | [高德地圖](https://lbs.amap.com)（瓦片）、[flutter_map](https://pub.dev/packages/flutter_map)、[vector_map_tiles](https://pub.dev/packages/vector_map_tiles)、Carto、OpenStreetMap、OpenTopoMap、Esri ArcGIS |
+| **地圖** | [高德地圖](https://lbs.amap.com)（瓦片）、[天地圖](https://www.tianditu.gov.cn)（瓦片）、[flutter_map](https://pub.dev/packages/flutter_map)、[vector_map_tiles](https://pub.dev/packages/vector_map_tiles)、Carto、OpenStreetMap、OpenTopoMap、Esri ArcGIS |
 | **網絡** | APRS-IS（TCP Socket / WebSocket） |
 | **協議** | APRS 1.0（位置 / 消息 / 氣象 / 狀態 / 物體 / Mic-E 等） |
 | **定位** | Android FusedLocationProvider + 前臺服務 |
@@ -264,7 +264,7 @@ APRSLocus/
 │   ├── home_page.dart        # 主界面（5 Tab：地圖 / 臺站 / 消息 / 數據包 / 設置）
 │   ├── map_page.dart         # 地圖頁
 │   ├── vector_map.dart       # 矢量地圖（flutter_map）
-│   ├── tile_map.dart         # 瓦片地圖（高德 / Carto / OSM / OpenTopo / Esri）
+│   ├── tile_map.dart         # 瓦片地圖（高德 / Carto / OSM / 地形 / 天地圖 / Esri）
 │   ├── stations_page.dart    # 臺站列表
 │   ├── station_detail.dart   # 臺站詳情
 │   ├── messages_page.dart    # 消息頁（單聊 + 群聊）
@@ -395,6 +395,7 @@ Android 端使用前臺服務持續定位以保持 APRS 在線，可在"定位 /
 ## 🙏 致謝與貢獻
 
 - [高德地圖](https://lbs.amap.com) — 地圖瓦片 / JS API 服務
+- [天地圖](https://www.tianditu.gov.cn) — 國家地理信息公共服務平臺底圖瓦片
 - [APRS-IS](https://aprs-is.net) — 全球 APRS 數據網絡
 - [flutter_map](https://pub.dev/packages/flutter_map) / [vector_map_tiles](https://pub.dev/packages/vector_map_tiles) — 矢量地圖渲染
 - [OpenFreeMap](https://openfreemap.org) — 免費矢量瓦片底圖

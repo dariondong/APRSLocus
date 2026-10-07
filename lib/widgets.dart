@@ -201,6 +201,9 @@ String localizedMapTypeLabel(BuildContext context, String name) =>
       'esri_hillshade' => S.of(context).mapTypeEsriHillshade,
       'esri_street' => S.of(context).mapTypeEsriStreet,
       'esri_sat' => S.of(context).mapTypeEsriSat,
+      'tianditu' => S.of(context).mapTypeTianditu,
+      'tianditu_img' => S.of(context).mapTypeTiandituImg,
+      'tianditu_ter' => S.of(context).mapTypeTiandituTer,
       _ => name,
     };
 

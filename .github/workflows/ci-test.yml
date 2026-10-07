@@ -241,6 +241,12 @@ jobs:
       - name: Test terrain layers
         run: flutter test test/terrain_layers_test.dart
 
+      # 天地图图层（v2.0.38）：WGS-84（误判成 GCJ 会整图偏 500m）、注记层映射
+      # （vec→cva/img→cia/ter→cta，漏了就是「有图无地名」）、底图与注记缓存键
+      # 必须分开 —— 这些写错了编译能过、analyze 也全绿，只能靠测试钉住。
+      - name: Test Tianditu layers
+        run: flutter test test/tianditu_layers_test.dart
+
       - name: Test third-party packet unwrapping
         run: flutter test test/third_party_packet_test.dart
 
@@ -312,7 +318,7 @@ jobs:
         run: flutter pub get
 
       - name: Build Windows (Release)
-        run: flutter build windows --release --dart-define=QWEATHER_KEY=${{ secrets.QWEATHER_KEY }} --dart-define=QWEATHER_HOST=${{ secrets.QWEATHER_HOST || 'pf4ewvjfqj.re.qweatherapi.com' }}
+        run: flutter build windows --release --dart-define=QWEATHER_KEY=${{ secrets.QWEATHER_KEY }} --dart-define=QWEATHER_HOST=${{ secrets.QWEATHER_HOST || 'pf4ewvjfqj.re.qweatherapi.com' }} --dart-define=TIANDITU_KEY=${{ secrets.TIANDITU_KEY }}
 
       - name: Upload Windows build
         uses: actions/upload-artifact@v4
@@ -343,7 +349,7 @@ jobs:
         run: flutter pub get
 
       - name: Build APK (Release, debug 签名)
-        run: flutter build apk --release --dart-define=QWEATHER_KEY=${{ secrets.QWEATHER_KEY }} --dart-define=QWEATHER_HOST=${{ secrets.QWEATHER_HOST || 'pf4ewvjfqj.re.qweatherapi.com' }}
+        run: flutter build apk --release --dart-define=QWEATHER_KEY=${{ secrets.QWEATHER_KEY }} --dart-define=QWEATHER_HOST=${{ secrets.QWEATHER_HOST || 'pf4ewvjfqj.re.qweatherapi.com' }} --dart-define=TIANDITU_KEY=${{ secrets.TIANDITU_KEY }}
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
@@ -376,7 +382,7 @@ jobs:
         run: flutter pub get
 
       - name: Build iOS (Release, no codesign)
-        run: flutter build ios --release --dart-define=QWEATHER_KEY=${{ secrets.QWEATHER_KEY }} --dart-define=QWEATHER_HOST=${{ secrets.QWEATHER_HOST || 'pf4ewvjfqj.re.qweatherapi.com' }} --no-codesign
+        run: flutter build ios --release --dart-define=QWEATHER_KEY=${{ secrets.QWEATHER_KEY }} --dart-define=QWEATHER_HOST=${{ secrets.QWEATHER_HOST || 'pf4ewvjfqj.re.qweatherapi.com' }} --dart-define=TIANDITU_KEY=${{ secrets.TIANDITU_KEY }} --no-codesign
 
       - name: Package IPA (unsigned)
         shell: bash

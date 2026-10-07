@@ -567,6 +567,15 @@
 <!-- site-sync:changelog -->
     <div class="cl-version reveal">
       <div class="cl-head">
+        <span class="cl-tag">v2.0.38</span>
+        <span class="cl-date">2026-10-07</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot new"></span><b>Tianditu layers</b>: the basemaps gain a "Tianditu" group with three layers — <code>Tianditu Vector</code> (vec), <code>Tianditu Imagery</code> (img) and <code>Tianditu Terrain</code> (ter). Their base tiles carry <b>no place labels</b>; text lives in separate transparent annotation layers (cva/cia/cta), so each basemap is <b>composited with its matching overlay</b> (vector+cva, imagery+cia, terrain+cta). Base and annotation are cached separately and downloaded together offline, so you never get a map with no place names. Tianditu is measured as <b>WGS-84</b> (zero offset vs Esri/OSM imagery), so it is not GCJ-shifted and falls back to OSM; tiles go up to z18. The key is injected at build time (CI Secret <code>TIANDITU_KEY</code>), never committed to source; when absent the map falls back to OSM and stays usable.</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
         <span class="cl-tag">v2.0.37</span>
         <span class="cl-date">2026-10-07</span>
       </div>

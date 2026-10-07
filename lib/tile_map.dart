@@ -435,20 +435,35 @@ class _TileState extends State<_Tile> {
   /// 已解析到的像素。null = 还没解析出来 / 最终没有可用的图
   Uint8List? _bytes;
 
+  /// 注记叠加瓦片（天地图 cva/cia/cta 等透明底文字层）。null = 无注记 / 未解析出。
+  /// 与 [_bytes] 独立：底图加载失败不该拖累注记，反之亦然。
+  Uint8List? _annBytes;
+
   /// 0 = 本瓦片的原图；n>0 = 用向上 n 级的祖先瓦片放大顶替
   int _upSteps = 0;
 
   /// 顶替时本瓦片在祖先图内的象限位置（每格 = 1 个本瓦片边长）
   (int, int) _quad = (0, 0);
 
+  /// 注记层独立的一套「祖先放大」几何（与底图 [_upSteps]/[_quad] 无关，
+  /// 因为注记可能从不同图源/不同祖先解析出来）
+  int _annUpSteps = 0;
+  (int, int) _annQuad = (0, 0);
+
   /// 本次是否已尝试落盘：同一张瓦片被多次重建时不重复写
   bool _triedWrite = false;
+
+  /// 注记层的落盘去重（与 [_triedWrite] 分开）
+  bool _triedAnnWrite = false;
 
   @override
   void initState() {
     super.initState();
     // 拖动期间新滚进来的瓦片先不加载（等手势停下，见 _TileMapViewState）。
-    if (!widget.deferLoad) _resolve();
+    if (!widget.deferLoad) {
+      _resolve();
+      _resolveAnnotation();
+    }
   }
 
   @override
@@ -462,12 +477,20 @@ class _TileState extends State<_Tile> {
         old.tx != widget.tx ||
         old.ty != widget.ty) {
       _bytes = null;
+      _annBytes = null;
       _upSteps = 0;
       _triedWrite = false;
-      if (!widget.deferLoad) _resolve();
+      _triedAnnWrite = false;
+      if (!widget.deferLoad) {
+        _resolve();
+        _resolveAnnotation();
+      }
     }
     // 手势结束（deferLoad: true → false）：把拖动期间欠下的加载补上。
-    if (old.deferLoad && !widget.deferLoad) _resolve();
+    if (old.deferLoad && !widget.deferLoad) {
+      _resolve();
+      _resolveAnnotation();
+    }
     // 只有 scale 变化（捏合/滚轮缩放）时**不重新解析**：图还是同一张，
     // 只是要按新的像素边长画。几何一律在 build() 里按当前 _px 现算 ——
     // 若把「算好尺寸的 Widget」存起来，缩放动画中瓦片会停在旧尺寸上，
@@ -508,12 +531,22 @@ class _TileState extends State<_Tile> {
     });
   }
 
-  /// 按**当前**缩放比现算尺寸的图像
-  Widget _tileImage() {
+  /// 记录注记层解析结果（几何与底图分开，见 [_annUpSteps]）
+  void _setAnnBytes(Uint8List? b, {int upSteps = 0, (int, int) quad = (0, 0)}) {
+    if (!mounted) return;
+    setState(() {
+      _annBytes = b;
+      _annUpSteps = b == null ? 0 : upSteps;
+      _annQuad = quad;
+    });
+  }
+
+  /// 按**当前**缩放比现算尺寸的图像（底图与注记通用）。
+  Widget _tileImageBytes(Uint8List bytes, int upSteps, (int, int) quad) {
     final px = _px;
     final provider =
-        ResizeImage(MemoryImage(_bytes!), width: 256, allowUpscaling: true);
-    if (_upSteps == 0) {
+        ResizeImage(MemoryImage(bytes), width: 256, allowUpscaling: true);
+    if (upSteps == 0) {
       return Image(
         image: provider,
         width: px,
@@ -526,14 +559,14 @@ class _TileState extends State<_Tile> {
       );
     }
     // 祖先图有 f×f 个本瓦片那么大，只露出本瓦片所在的那一格
-    final f = 1 << _upSteps;
+    final f = 1 << upSteps;
     return ClipRect(
       child: OverflowBox(
         maxWidth: px * f,
         maxHeight: px * f,
         alignment: Alignment.topLeft,
         child: Transform.translate(
-          offset: Offset(-_quad.$1 * px, -_quad.$2 * px),
+          offset: Offset(-quad.$1 * px, -quad.$2 * px),
           child: Image(
             image: provider,
             width: px * f,
@@ -546,6 +579,8 @@ class _TileState extends State<_Tile> {
       ),
     );
   }
+
+  Widget _tileImage() => _tileImageBytes(_bytes!, _upSteps, _quad);
 
   Future<void> _resolve() async {
     final src = _src;
@@ -648,13 +683,93 @@ class _TileState extends State<_Tile> {
     return null;
   }
 
+  /// 解析注记叠加层（天地图 cva/cia/cta）。
+  ///
+  /// 只对带注记的图源做事，其余图源直接返回（无网络、无磁盘开销）。
+  /// 解析链与底图**独立**：缓存 → 在线 → 祖先放大 → 同注记层其它图源的缓存。
+  /// 注记是**透明底 PNG**，即使只拿到父级放大版，叠上去也只是文字略糊，**不会**
+  /// 盖住底图（这一点与底图有别 —— 底图放大错位会整片偏），所以这里大胆复用
+  /// 祖先兜底，不像底图那样严格。
+  Future<void> _resolveAnnotation() async {
+    final annLayer = annotationLayerOf(widget.mapType);
+    if (annLayer == null) {
+      if (_annBytes != null) _setAnnBytes(null);
+      return;
+    }
+    final key = annotationSourceName(widget.mapType);
+
+    // 1) 注记缓存
+    if (TileCache.available) {
+      final hit = await TileCache.get(key, widget.z, widget.tx, widget.ty);
+      if (hit != null) return _setAnnBytes(hit);
+    }
+
+    // 2) 在线（离线模式不发请求）
+    if (!widget.offlineOnly) {
+      final url = annotationUrl(widget.mapType, widget.tx, widget.ty, widget.z);
+      if (url.isNotEmpty) {
+        try {
+          final bytes = await httpGetBytes(
+            Uri.parse(url),
+            headers: tileHeaders,
+            timeout: const Duration(seconds: 15),
+          );
+          if (looksLikeImage(bytes)) {
+            if (widget.cacheEnabled && !_triedAnnWrite) {
+              _triedAnnWrite = true;
+              unawaited(
+                  TileCache.put(key, widget.z, widget.tx, widget.ty, bytes));
+            }
+            return _setAnnBytes(bytes);
+          }
+        } catch (_) {
+          // 落到祖先 / 同坐标系缓存
+        }
+      }
+    }
+
+    // 3) 祖先注记放大
+    if (TileCache.available) {
+      final me = TileId(widget.z, widget.tx, widget.ty);
+      var cur = me.parent;
+      for (var steps = 1; steps <= 4 && cur != null; steps++) {
+        final hit = await TileCache.get(key, cur.z, cur.x, cur.y);
+        if (hit != null) {
+          return _setAnnBytes(hit, upSteps: steps, quad: me.quadIn(cur));
+        }
+        cur = cur.parent;
+      }
+
+      // 4) 其它**使用同一注记层**的图源缓存（如从矢量切到影像注记层相同的情况不
+      //    存在，但同层不同图源仍可能命中）；按层名找，避免取到别层的注记。
+      for (final t in MapType.values) {
+        if (t == widget.mapType) continue;
+        if (annotationLayerOf(t) != annLayer) continue;
+        final hit =
+            await TileCache.get(annotationSourceName(t), widget.z, widget.tx, widget.ty);
+        if (hit != null) return _setAnnBytes(hit);
+      }
+    }
+
+    _setAnnBytes(null);
+  }
+
   @override
   Widget build(BuildContext context) {
     // 尺寸始终占住（避免 Stack 布局抖动）；几何按当前缩放比现算
-    return SizedBox(
-      width: _px,
-      height: _px,
-      child: _bytes == null ? const SizedBox.shrink() : _tileImage(),
+    final hasBase = _bytes != null;
+    final hasAnn = _annBytes != null;
+    if (!hasBase && !hasAnn) {
+      return SizedBox(width: _px, height: _px);
+    }
+    // 底图与注记各自盖住同一格；注记在上（透明底文字层盖住底图）
+    Widget stack = Stack(
+      fit: StackFit.passthrough,
+      children: [
+        if (hasBase) _tileImage(),
+        if (hasAnn) _tileImageBytes(_annBytes!, _annUpSteps, _annQuad),
+      ],
     );
+    return SizedBox(width: _px, height: _px, child: stack);
   }
 }

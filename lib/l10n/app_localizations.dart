@@ -6960,6 +6960,30 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **"Esri 山体阴影"**
   String get mapTypeEsriHillshade;
+
+  /// No description provided for @tiandituGroup.
+  ///
+  /// In zh, this message translates to:
+  /// **"天地图"**
+  String get tiandituGroup;
+
+  /// No description provided for @mapTypeTianditu.
+  ///
+  /// In zh, this message translates to:
+  /// **"天地图 矢量"**
+  String get mapTypeTianditu;
+
+  /// No description provided for @mapTypeTiandituImg.
+  ///
+  /// In zh, this message translates to:
+  /// **"天地图 影像"**
+  String get mapTypeTiandituImg;
+
+  /// No description provided for @mapTypeTiandituTer.
+  ///
+  /// In zh, this message translates to:
+  /// **"天地图 地形"**
+  String get mapTypeTiandituTer;
   /// No description provided for @mapTypeOsm.
   ///
   /// In zh, this message translates to:
