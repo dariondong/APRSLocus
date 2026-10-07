@@ -289,9 +289,11 @@ def main():
     chk('解说页赞助卡片含全部 %d 位' % len(ents), bool(ents) and not gmiss, gmiss[:3])
 
     print('[friend links]')
-    # 友链的唯一真源是 docs/links.json，静态渲染进三个语言页的页脚
-    # （tool/sync_friend_links_site.py）。这里逐条点名：忘了跑脚本 / 漏某个语言
-    # 都会当场报。渲进页脚是**静态**的（没有运行时 fetch 兜底），所以更得盯着。
+    # 友链的唯一真源是 docs/links.json，静态渲染进三个语言页的**独立区块**
+    # （tool/sync_friend_links_site.py），已**不再**塞在页脚里 ——
+    # 曾经的页脚一行又挤又难看，现在是一整块 section（位于页脚之前）。
+    # 这里逐条点名：忘了跑脚本 / 漏某个语言 / 又退回页脚 都会当场报。
+    # 渲进页面是**静态**的（没有运行时 fetch 兜底），所以更得盯着。
     try:
         _lk = json.loads(read('docs/links.json'))
         flinks = [lk for lk in (_lk.get('links') or []) if lk.get('url')]
@@ -310,11 +312,16 @@ def main():
             continue
         if flabel[lang] not in s:
             fmiss.append('%s 缺标题「%s」' % (rel, flabel[lang]))
+        # 独立区块（不在页脚里），且整块位于页脚注释之前
+        if '<section class="section alt" id="friends">' not in s:
+            fmiss.append('%s 缺友情链接独立 section' % rel)
+        elif s.index('<!-- friends-sync -->') > s.index('<footer'):
+            fmiss.append('%s 友链仍挤在页脚（应在页脚之前）' % rel)
         for lk in flinks:
             nm = _sp_pick(lk.get('name'), None, lang)
             if nm and not _sp_hit(nm, s, 'class="flink-name">%s</span>'):
                 fmiss.append('%s 缺 %s' % (rel, nm))
-    chk('友情链接 %d 条 × 三语页脚齐备' % len(flinks), bool(flinks) and not fmiss, fmiss[:3])
+    chk('友情链接 %d 条 × 三语独立区块齐备' % len(flinks), bool(flinks) and not fmiss, fmiss[:3])
 
     print('[css / js]')
     css = read('docs/css/style.css')

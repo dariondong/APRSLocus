@@ -1,23 +1,20 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""把 links.json（友情链接）渲染进官网三个语言页的**页脚**。
+"""把 links.json（友情链接）渲染成官网三个语言页的**独立区块**。
 
 ## 为什么要有这个脚本
 
-页脚在 `docs/index.html` / `docs/zh-TW/index.html` / `docs/en/index.html`
-三处**各手写一份**。友情链接若也手写三份，加一个站必然漏一两个语言
-（赞助名单当初就是这样走样的，最后改为「一份真源 + 渲染脚本」）。
-所以这里沿用同一套做法：
+友情链接是「一份真源 + 渲染脚本」：`docs/links.json` 是唯一真源，
+本脚本把它渲染进页面，块用标记包起来保证幂等：
 
-* **唯一真源**：`docs/links.json`；
-* 本脚本把它渲染成静态 HTML 插进三语页脚，块用标记包起来保证幂等：
+    <!-- friends-sync --> ... <!-- /friends-sync -->
 
-      <!-- friends-sync --> ... <!-- /friends-sync -->
+最初渲进的是**页脚**一行，几枚 chip 挤在版权上面很难看。现在改成
+**独立一整块 section**（介于社区与页脚之间），每枚友链是一张卡片
+（logo + 名称 + 简介）。数据源与渲染方式不变，只是版式换了地方。
 
-友情链接是**纯静态**的（没有运行时 fetch），所以两个入口都要跑：
-新增/修改友链后，重新跑本脚本再推送。
+友情链接是**纯静态**的（没有运行时 fetch），所以改完数据要重跑本脚本：
 
-跑法：
     python3 tool/sync_friend_links_site.py
 
 之后推送即可（GitHub Pages 会自动部署）。
@@ -35,8 +32,20 @@ PAGES = {
 
 OPEN, CLOSE = '<!-- friends-sync -->', '<!-- /friends-sync -->'
 
-# 页脚里那三个字，按语言写；换语言时也要改这里
-LABEL = {'zh': '友情链接', 'zh-TW': '友情連結', 'en': 'Friendly Links'}
+# 区块标题与一句说明，按语言写；换语言时也要改这里
+HEAD = {
+    'zh': ('友情链接', '与同行者的网站对望，感谢互相链接。'),
+    'zh-TW': ('友情連結', '與同行者的網站對望，感謝互相連結。'),
+    'en': ('Friendly Links', 'Sites we are glad to link with.'),
+}
+
+# 页脚的锚点：新区块插在它**前面**。三语页的注释语言不同，故按语言给。
+# 锚点找不到就报错，免得页面结构变了却静默插到别处。
+FOOTER_ANCHOR = {
+    'zh': '<!-- ═══════════ 页脚 ═══════════ -->',
+    'zh-TW': '<!-- ═══════════ 頁腳 ═══════════ -->',
+    'en': '<!-- ═══════════ Footer ═══════════ -->',
+}
 
 
 def pick(mapv, lang):
@@ -57,25 +66,31 @@ def esc(v):
 
 
 def render(links, lang):
-    out = [OPEN, '    ' + '<div class="footer-friends">',
-           '      <span class="footer-friends-label">%s</span>' % esc(LABEL[lang])]
+    title, note = HEAD[lang]
+    out = [OPEN,
+           '<section class="section alt" id="friends">',
+           '  <div class="section-head reveal">',
+           '    <h2>%s</h2>' % esc(title),
+           '    <p>%s</p>' % esc(note),
+           '  </div>',
+           '  <div class="links-grid">']
     for lk in links:
         name = pick(lk.get('name'), lang)
         desc = pick(lk.get('desc'), lang)
         url = lk.get('url') or ''
         logo = lk.get('logo') or ''
-        img = ('<img class="flink-logo" src="%s" alt="%s" loading="lazy" '
+        img = ('<img class="link-card-logo" src="%s" alt="%s" loading="lazy" '
                'referrerpolicy="no-referrer">' % (esc(logo), esc(name))
                ) if logo else ''
         text = '<span class="flink-name">%s</span>' % esc(name)
         if desc:
             text += '<span class="flink-desc">%s</span>' % esc(desc)
         out.append(
-            '      <a class="flink" href="%s" target="_blank" rel="noopener">\n'
-            '        %s\n'
-            '        <span class="flink-text">%s</span>\n'
-            '      </a>' % (esc(url), img, text))
-    out += ['    </div>', CLOSE]
+            '    <a class="link-card reveal" href="%s" target="_blank" rel="noopener">\n'
+            '      %s\n'
+            '      <span class="link-card-text">%s</span>\n'
+            '    </a>' % (esc(url), img, text))
+    out += ['  </div>', '</section>', CLOSE]
     return '\n'.join(out)
 
 
@@ -86,12 +101,11 @@ def main():
     if not links:
         raise SystemExit('links.json 里没有有效的 links —— 数据源有问题')
 
-    anchor = '    <div class="footer-bottom">'
     for lang, rel in PAGES.items():
         path = os.path.join(ROOT, rel)
         s = io.open(path, encoding='utf-8', newline='').read()
 
-        # 幂等：先删掉旧的标记块
+        # 幂等：先删掉旧的标记块（无论它当初插在页脚还是别处）
         if OPEN in s:
             a = s.index(OPEN)
             b = s.index(CLOSE) + len(CLOSE)
@@ -100,15 +114,15 @@ def main():
                 b += 1
             s = s[:a] + s[b:]
 
-        idx = s.find(anchor)
+        idx = s.find(FOOTER_ANCHOR[lang])
         if idx < 0:
-            raise SystemExit('在 %s 里找不到 footer-bottom 锚点 —— 页脚结构变了？' % rel)
-        s = s[:idx] + render(links, lang) + '\n' + s[idx:]
+            raise SystemExit('在 %s 里找不到页脚锚点 —— 页面结构变了？' % rel)
+        s = s[:idx] + render(links, lang) + '\n\n' + s[idx:]
 
         io.open(path, 'w', encoding='utf-8', newline='').write(s)
-        print('%-24s 写入 %d 个友链' % (rel, len(links)))
+        print('%-24s 写入 %d 个友链（独立区块）' % (rel, len(links)))
 
-    print('\n✅ 三个语言页页脚已同步友情链接（更新于 %s）' % data.get('updated'))
+    print('\n✅ 三个语言页已同步友情链接区块（更新于 %s）' % data.get('updated'))
 
 
 if __name__ == '__main__':

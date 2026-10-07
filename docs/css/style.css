@@ -697,20 +697,20 @@ body.loaded .hero::after { transform: translate(-50%,-50%) scale(1); opacity: 1;
 .footer-links a:hover, .footer-bottom a:hover { background-size: 100% 1.5px; }
 .disclaimer { opacity: .85; }
 
-/* 友情链接：页脚独占一行（介于导航与版权之间），三语共用同一份数据（docs/links.json） */
-.footer-friends { display: flex; align-items: center; flex-wrap: wrap; gap: 10px 12px; padding-top: 26px; }
-.footer-friends-label { color: var(--text-faint); font-size: 13px; letter-spacing: .3px; padding-right: 2px; }
-.flink { display: inline-flex; align-items: center; gap: 10px; padding: 8px 14px 8px 9px; border-radius: 12px;
+/* 友情链接：独立区块（介于社区与页脚之间的一整块 section），
+   三语共用同一份数据（docs/links.json），由 tool/sync_friend_links_site.py 渲染 */
+.links-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; max-width: 1200px; }
+.link-card { display: flex; align-items: center; gap: 14px; padding: 18px 20px; border-radius: 16px;
   background: rgba(255, 255, 255, .62); border: 1px solid rgba(15, 40, 90, .06);
-  box-shadow: 0 6px 18px -14px rgba(20, 40, 80, .5);
-  transition: background .25s var(--ease), transform .25s var(--ease), box-shadow .25s var(--ease), border-color .25s var(--ease); }
-.flink:hover { background: rgba(255, 255, 255, .92); transform: translateY(-2px);
-  box-shadow: 0 14px 30px -18px rgba(20, 40, 80, .55); border-color: rgba(15, 40, 90, .12); }
-.flink-logo { width: 28px; height: 28px; border-radius: 8px; object-fit: cover; flex: 0 0 auto;
-  background: #fff; box-shadow: 0 1px 4px rgba(15, 40, 90, .12); }
-.flink-text { display: flex; flex-direction: column; line-height: 1.28; min-width: 0; }
-.flink-name { color: var(--text-dim); font-size: 14px; font-weight: 600; }
-.flink-desc { color: var(--text-faint); font-size: 12px; }
+  box-shadow: 0 12px 32px -24px rgba(20, 40, 80, .5); text-decoration: none;
+  transition: transform .25s var(--ease), box-shadow .25s var(--ease), background .25s var(--ease), border-color .25s var(--ease); }
+.link-card:hover { transform: translateY(-3px); background: rgba(255, 255, 255, .95);
+  box-shadow: 0 22px 46px -26px rgba(20, 40, 80, .55); border-color: rgba(15, 40, 90, .12); }
+.link-card-logo { width: 46px; height: 46px; border-radius: 12px; object-fit: cover; flex: 0 0 auto;
+  background: #fff; box-shadow: 0 1px 5px rgba(15, 40, 90, .14); }
+.link-card-text { display: flex; flex-direction: column; line-height: 1.35; min-width: 0; }
+.flink-name { color: var(--text); font-size: 15.5px; font-weight: 700; }
+.flink-desc { color: var(--text-faint); font-size: 12.5px; }
 
 /* ── 16. 悬浮工具（进度条 / 回到顶部 / Toast） ── */
 .scroll-progress {
@@ -1169,9 +1169,9 @@ body.loaded .hero-phone {
 }
 :root[data-theme="dark"] .footer-top { border-bottom-color: rgba(255, 255, 255, .08); }
 :root[data-theme="dark"] .footer-links a:hover { background: rgba(255, 255, 255, .08); }
-:root[data-theme="dark"] .flink { background: rgba(255, 255, 255, .06); border-color: rgba(255, 255, 255, .10); box-shadow: none; }
-:root[data-theme="dark"] .flink:hover { background: rgba(255, 255, 255, .13); border-color: rgba(255, 255, 255, .18); }
-:root[data-theme="dark"] .flink-logo { background: rgba(255, 255, 255, .12); box-shadow: none; }
+:root[data-theme="dark"] .link-card { background: rgba(255, 255, 255, .06); border-color: rgba(255, 255, 255, .10); box-shadow: none; }
+:root[data-theme="dark"] .link-card:hover { background: rgba(255, 255, 255, .13); border-color: rgba(255, 255, 255, .18); }
+:root[data-theme="dark"] .link-card-logo { background: rgba(255, 255, 255, .12); box-shadow: none; }
 :root[data-theme="dark"] .backtop {
   background: rgba(255, 255, 255, .08);
   border-color: rgba(255, 255, 255, .18);
