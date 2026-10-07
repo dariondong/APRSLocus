@@ -504,6 +504,32 @@ class AppState extends ChangeNotifier {
   /// 连接成功后首次询问“自动上报位置”的回调（由首页绑定并弹出选择）
   void Function()? onAskBeaconAuto;
 
+  /// **本次连接**是否已由用户确认「开始上报」。
+  ///
+  /// 用户要求：无论用哪种方式定位，**连上服务器后都不要自动上报**，必须由用户
+  /// 手动点一下正式的「开始上报」按钮，确认坐标有效之后才开始上报。
+  ///
+  /// 与 [beaconEnabled] 的区别：
+  ///   * [beaconEnabled] 是**持久**的自动上报总开关（用户设置里选的）；
+  ///   * [beaconArmed] 是**每次连接**的一次性确认，掉线/重连/重开 App 都会复位，
+  ///     所以老用户不会因为它而被静默恢复成自动上报。
+  ///
+  /// ⚠️ 不持久化是刻意的：持久化就等于「确认一次，以后永远自动」，
+  /// 又绕回用户反对的「连上就自动上报」。
+  bool beaconArmed = true;
+
+  /// 用户点了正式的「开始上报」按钮 → 本次连接内放行自动上报。
+  ///
+  /// 打开自动上报总开关（若尚未打开），已有有效本轮定位时顺带立刻补发一次，
+  /// 让用户马上在地图上看到自己；没有有效定位时先只放行，等拿到定位后
+  /// 由定时器按间隔发出（不会误发旧坐标，见 [myPositionReportable]）。
+  void beginReporting() {
+    beaconArmed = true;
+    if (!beaconEnabled) setBeaconEnabled(true);
+    if (myPositionReportable) sendBeacon();
+    _notify();
+  }
+
   // 信标上报内容选项
   bool beaconIncludeSpeed = true; // 速度
   bool beaconIncludeCourse = true; // 方位角
@@ -2691,8 +2717,19 @@ class AppState extends ChangeNotifier {
   void debugSyncSteps() => _syncSteps();
 
   void _setLinkUp(String src, bool up) {
+    final wasConnected = connected;
     _linkUp[src] = up;
     _refreshConnected();
+    // 连接状态发生翻转 → 复位本次连接的「开始上报」确认。
+    //
+    // 用户要求：无论用哪种方式定位，**连上服务器后不要自动上报**，必须由用户
+    // 手动点一下「开始上报」再发。所以每次「从断到连」都把确认复位；
+    // 反过来「从连到断」也复位，这样下一次连上同样要重新确认。
+    // 只有真正翻转才动它：同一状态被重复设置（幂等重连）不该打断用户已做的确认。
+    if (connected != wasConnected) {
+      beaconArmed = false;
+      _notify();
+    }
   }
 
   /// 该链路是否因**设备冲突**而根本不可能连上。
@@ -4827,8 +4864,15 @@ class AppState extends ChangeNotifier {
   ///   ① 链路可用（[connected]）；
   ///   ② 信标开着（[beaconEnabled]）；
   ///   ③ **本轮已重新拿到定位**（[myPositionReportable]）；
-  ///   ④ **当前定位不是粗定位**（[myFixCoarse]）；
-  ///   ⑤ 射频来源（TNC/音频）还需用户显式开启「射频信标」。
+  ///   ④ **本次连接已由用户确认「开始上报」**（[beaconArmed]）；
+  ///   ⑤ **当前定位不是粗定位**（[myFixCoarse]）；
+  ///   ⑥ 射频来源（TNC/音频）还需用户显式开启「射频信标」。
+  ///
+  /// ── 条件 ④：为什么连上还不算数（本次改动）──
+  ///
+  /// 用户要求：无论用哪种方式定位，连上服务器后**都不要自动上报**，必须由用户
+  /// 手动点一下「开始上报」、确认坐标有效之后才开始。否则一连上就抢在用户看清
+  /// 坐标之前把位置发出去。它每次连接都会复位（见 [_setLinkUp]）。
   ///
   /// ── 条件 ③：为什么「有位置」还不够（本次改动）──
   ///
@@ -4849,12 +4893,13 @@ class AppState extends ChangeNotifier {
   /// 本轮定位时那个位置就是错的，见 [_sendBeaconNow]）。
   ///
   /// 唯一的例外是 [beaconForceCoarse]：用户明确选择了「就要发网络定位」
-  /// （没有 GPS 的设备）时才放开条件 ④ —— 它是**用户自己的决定**，
-  /// 而不是代码替他默认。它**不**放开条件 ③：强制的是「网络点也发」，
-  /// 不是「没有新定位也发」。
+  /// （没有 GPS 的设备）时才放开条件 ⑤ —— 它是**用户自己的决定**，
+  /// 而不是代码替他默认。它**不**放开条件 ③/④：强制的是「网络点也发」，
+  /// 不是「没有新定位也发」，也不是「不用确认就发」。
   bool get canAutoBeacon => connected &&
       beaconEnabled &&
       myPositionReportable &&
+      beaconArmed &&
       (!myFixCoarse || beaconForceCoarse || locationMode == 'network') &&
       (!usingRf || (usingTnc ? tnc.config.rfBeacon : audio.config.rfBeacon));
 
@@ -4933,14 +4978,10 @@ class AppState extends ChangeNotifier {
       // 但射频也不发 CONNECT 帧，不存在这个覆盖问题）。
       final customFrame = _customStatusFrame();
       if (customFrame != null) _customStatusLost = !aprs.send(customFrame);
-      // 连接成功：若主界面已就绪且尚未问过“是否自动上报”，延迟触发询问。
-      // 不在此置位 beaconAutoAsked —— 用户做出选择后才记位，避免漏弹后永久丢失。
-      if (!beaconAutoAsked && beaconEnabled) {
-        Future.delayed(const Duration(milliseconds: 500), () {
-          if (_disposed) return;
-          maybeAskBeaconAuto();
-        });
-      }
+      // 连接成功：**不再**自动弹「是否自动上报」询问。
+      // 用户要求：连上后不自动上报，界面给一个正式的「开始上报」按钮，由用户
+      // 手动确认（见 [beginReporting] / [BeaconPhase.needConfirm]）。
+      // 保留 beaconAutoAsked / onAskBeaconAuto 字段仅为兼容旧备份，不再触发。
     } else {
       final backoff = [8, 16, 32, 60][_reconnectAttempt.clamp(0, 3)];
       setConnStatus(ConnPhase.retryServer, seconds: backoff);
@@ -8165,6 +8206,10 @@ class AppState extends ChangeNotifier {
     // 这一类 bug 的根因是把「是否会发射」判断散落在两处，所以此处必须与
     // canAutoBeacon 用同一个条件（rfBeaconEnabled）。
     if (!rfBeaconEnabled) return BeaconPhase.rfDisabled;
+    // 连上之后用户还没点「开始上报」：即使有坐标也**先不自动发**（见 user 要求，
+    // 与 canAutoBeacon 条件 ④ 同源）。这一档要盖过下面的来源/粗定位说明 ——
+    // 因为此刻用户首先要做的动作是「确认开始」，其它细节都是确认之后的事。
+    if (!beaconArmed) return BeaconPhase.needConfirm;
     // **顺序有讲究**：佳明优先于粗定位 —— 位置来自手表时，粗定位那条已经不生效
     // （佳明新鲜时手机 GPS 整个让位，见 _onFix），显示「网络定位中」会是错的。
     if (garmin.on && garmin.fresh) return BeaconPhase.garmin;
@@ -8196,6 +8241,8 @@ class AppState extends ChangeNotifier {
         return l.beaconNotConnected;
       case BeaconPhase.rfDisabled:
         return l.beaconRfBeaconOff;
+      case BeaconPhase.needConfirm:
+        return l.beaconNeedConfirm;
       case BeaconPhase.coarseFix:
         return l.beaconCoarseFix;
       case BeaconPhase.coarseForced:
@@ -8324,6 +8371,10 @@ enum BeaconPhase {
   /// 射频来源（TNC / 音频）未打开「射频信标」——此时不会自动发射，
   /// UI 必须显示原因并提供一键开启，而不是继续倒计时。
   rfDisabled,
+  /// 已连上服务器，但用户还没点「开始上报」（[AppState.beaconArmed] 为假）——
+  /// 此时不会自动发射，UI 必须给一个正式的「开始上报」按钮，而不是继续倒计时。
+  /// 这是每次连接的一次性确认（见 user 要求：手动确认后才开始上报）。
+  needConfirm,
   /// 当前是**粗定位**（网络/基站/被动）——自动上报已暂停（见 [canAutoBeacon]），
   /// UI 必须说明原因，而不是继续倒计时。
   coarseFix,

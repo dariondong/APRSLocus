@@ -204,6 +204,46 @@ CARDS = [
 # 只列「重点版本」：中间几十个纯修 bug 的版本归纳进文字说明，完整记录指向 Releases。
 CL = [
     {
+        'ver': 'v2.0.36', 'date': '2026-10-03',
+        'items': [
+            ('up',
+             T('**连上服务器后手动确认再上报**：无论用哪种方式定位，连上服务器后都'
+               '**不再自动上报位置**。主界面上报动作组给出一枚正式的「开始上报」'
+               '按钮 —— 拿到本轮有效定位前置灰显示「等待定位」，确认坐标有效后点一下'
+               '才开始按间隔自动上报，并立刻补发一次让用户在地图上看到自己。断开 / '
+               '重连 / 重开 App 都会复位这个确认，绝不回到「连上就自动上报」；'
+               '顺带去掉了连接成功后自动弹出的询问弹窗，改为这枚按钮（不打扰）。',
+               '**連上伺服器後手動確認再上報**：無論用哪種方式定位，連上伺服器後都'
+               '**不再自動上報位置**。主介面上報動作組給出一枚正式的「開始上報」'
+               '按鈕 —— 拿到本輪有效定位前置灰顯示「等待定位」，確認座標有效後點一下'
+               '才開始按間隔自動上報，並立刻補發一次讓使用者在地圖上看到自己。斷線 / '
+               '重連 / 重開 App 都會復位這個確認，絕不回到「連上就自動上報」；'
+               '順帶去掉了連線成功後自動彈出的詢問彈窗，改為這枚按鈕（不打擾）。',
+               '**Manual confirmation before reporting**: whatever positioning method is '
+               'used, the app **no longer auto-reports the position after connecting**. The '
+               'report action group now shows a formal "Start reporting" button — disabled as '
+               '"Waiting for fix" until a valid fix for this round arrives, then one tap starts '
+               'interval reporting and sends an immediate beacon so you can see yourself on the '
+               'map. Disconnect / reconnect / restart all reset this confirmation, never falling '
+               'back to "auto-report on connect"; the post-connect popup was also replaced by '
+               'this button (non-intrusive).')),
+            ('up',
+             T('**荣誉墙更好看**：成员荣誉墙加上工具条 —— 搜索框（按姓名 / 呼号 / 称号'
+               '过滤）、实时概览（多少位伙伴、多少枚徽章）、以及可横向滚动的徽章图例'
+               '（点一下直达对应分组）。卡片、分组标题与响应式布局一并打磨，键盘也能'
+               '导航；**荣誉卡的导出样式（PNG）保持原样不变**。',
+               '**榮譽牆更好看**：成員榮譽牆加上工具列 —— 搜尋框（依姓名 / 呼號 / 稱號'
+               '篩選）、即時概覽（多少位夥伴、多少枚徽章）、以及可橫向捲動的徽章圖例'
+               '（點一下直達對應分組）。卡片、分組標題與響應式版面一併打磨，鍵盤也能'
+               '導覽；**榮譽卡的匯出樣式（PNG）維持原樣不變**。',
+               '**Nicer honor wall**: the member honor wall gains a toolbar — a search box '
+               '(filter by name / callsign / honor), a live overview (members, badges) and a '
+               'horizontally scrollable badge legend that jumps to each group. Cards, group '
+               'headings and the responsive layout were polished, and it is keyboard '
+               'navigable; **the exported honor-card (PNG) style is left untouched**.')),
+        ],
+    },
+    {
         'ver': 'v2.0.35', 'date': '2026-10-06',
         'items': [
             ('fix',

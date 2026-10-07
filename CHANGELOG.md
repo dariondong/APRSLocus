@@ -1,5 +1,69 @@
 # 更新日志
 
+## [2.0.36] - 2026-10-03
+
+### 优化：连接后由用户手动确认「开始上报」
+
+**背景**
+
+- 用户反馈：无论用哪种方式定位，连上服务器后**不应该自动上报位置**，要由用户
+  手动确定、确认坐标有效之后才开始上报。
+
+**原因**
+
+- 此前连上服务器、信标开关开着、又已拿到本轮定位时，定时器会**立刻**开始自动
+  上报 —— 用户还没看清当前坐标是否正确，位置就已经发到全网。
+
+**改进**
+
+- 新增「本次连接是否已确认开始上报」的闸（`beaconArmed`）：连上服务器后它**默认
+  关着**，`canAutoBeacon` 不成立，因此**任何定位方式都不会自动上报**。
+- 连接状态下，主界面上报动作组会显示一枚醒目的正式**「开始上报」**按钮（不用弹窗、
+  不打扰）：拿到本轮有效定位前按钮置灰显示「等待定位」，确认坐标有效后再点一下即
+  开始按间隔自动上报，并立刻补发一次让用户在地图上看到自己。
+- 断开 / 重连 / 重开 App 都会**复位**这个确认（不持久化）—— 绝不回到「连上就自动
+  上报」，与用户要求的「每次都要手动确认」一致。
+- 顺带去掉连接成功后自动弹出的「是否自动上报」询问弹窗：改为上面那枚正式按钮
+  （用户明确表示不用提示、只要按钮）。
+- `tool/check_pos_quality.py` 增加回归守卫；新增 `test/report_confirm_test.dart`。
+
+---
+---
+
+## [2.0.36] - 2026-10-03 (English)
+
+### Improvement: manual "start reporting" confirmation after connecting
+
+**Context**
+
+- Reported: whatever positioning method is used, the app **should not auto-report the
+  position after connecting** to the server — the user must confirm the coordinates are
+  valid and start reporting manually.
+
+**Cause**
+
+- Previously, once connected (beacon switch on, fresh fix available) the timer started
+  auto-reporting **immediately** — the position went out to the network before the user
+  could even check whether the current coordinate was correct.
+
+**Changes**
+
+- New per-connection gate `beaconArmed`: it is **off by default on each new connection**,
+  so `canAutoBeacon` is false and **no positioning method auto-reports**.
+- While connected, the report action group shows a prominent formal **"Start reporting"**
+  button (no popup, non-intrusive): it stays disabled showing "Waiting for fix" until a
+  valid fix for this round arrives, then one tap starts interval reporting and sends an
+  immediate beacon so the user can see themselves on the map.
+- Disconnect / reconnect / app restart all **reset** this confirmation (not persisted) —
+  never falling back to "auto-report on connect", matching the requested per-connection
+  manual confirmation.
+- Also removed the post-connect "auto-report?" popup in favor of that button (the user
+  explicitly asked for no prompt, just a button).
+- Added a regression guard in `tool/check_pos_quality.py` and `test/report_confirm_test.dart`.
+
+---
+---
+
 ## [2.0.35] - 2026-10-06
 
 ### 修复：模拟位置（手动定位）重启后不自动生效

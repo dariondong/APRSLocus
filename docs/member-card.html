@@ -27,25 +27,50 @@
   .hero h1{font-size:clamp(26px,5vw,44px);font-weight:900;letter-spacing:-.02em}
   .hero h1 em{font-style:normal;background:linear-gradient(90deg,#0c2f7a,#0ea5c4);-webkit-background-clip:text;background-clip:text;color:transparent}
   .hero p{color:#7b879d;font-size:14px;margin-top:8px}
+  /* 荣誉墙工具条：搜索 + 概览 */
+  .bar{display:flex;align-items:center;gap:12px;margin:0 0 18px;flex-wrap:wrap}
+  .search{flex:1 1 220px;min-width:200px;display:flex;align-items:center;gap:9px;background:#fff;border:1px solid #e4e8f1;
+    border-radius:13px;padding:9px 14px;box-shadow:0 6px 18px -14px rgba(20,35,70,.5);transition:.2s}
+  .search:focus-within{border-color:#bccbe6;box-shadow:0 10px 24px -16px rgba(20,35,70,.55)}
+  .search svg{width:16px;height:16px;color:#9aa4b8;flex:0 0 auto}
+  .search input{flex:1;min-width:0;font:inherit;font-size:14px;color:#1a2338;background:transparent;border:0;outline:0}
+  .search input::placeholder{color:#a3adc0}
+  .wct{font-size:12.5px;color:#7b879d;white-space:nowrap}
+  .wct b{color:#1a2338;font-weight:800}
+  /* 图例：一键跳到某枚徽章 */
+  .legend{display:flex;gap:8px;overflow-x:auto;padding:2px 2px 14px;margin:0 -2px;scrollbar-width:thin;-webkit-overflow-scrolling:touch}
+  .legend button{flex:0 0 auto;display:inline-flex;align-items:center;gap:7px;font:inherit;font-size:12.5px;font-weight:700;color:#43506b;
+    background:#fff;border:1px solid #e7ebf3;border-radius:999px;padding:6px 13px;cursor:pointer;white-space:nowrap;transition:.18s}
+  .legend button:hover{border-color:#c8d3e8;transform:translateY(-1px)}
+  .legend button .ld{width:8px;height:8px;border-radius:50%;flex:0 0 auto}
+  .legend button .ln{color:#9aa4b8;font-weight:800}
   /* 分组区 */
-  .group{margin:0 0 30px}
-  .gh{display:flex;align-items:center;gap:10px;margin-bottom:14px}
-  .gh .dot{width:8px;height:8px;border-radius:50%}
-  .gh h3{font-size:15px;font-weight:800;letter-spacing:.5px}
-  .gh span{color:#a3adc0;font-size:12px;margin-left:auto}
-  .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px}
-  .mcard{background:#fff;border:1px solid #e9ecf4;border-radius:18px;padding:18px 12px 14px;text-align:center;cursor:pointer;
-    transition:.2s cubic-bezier(.2,.8,.2,1);box-shadow:0 10px 26px -22px rgba(20,35,70,.6)}
-  .mcard:hover{transform:translateY(-4px);border-color:#cdd8ec;box-shadow:0 20px 40px -24px rgba(20,35,70,.6)}
+  .group{margin:0 0 34px;scroll-margin-top:84px}
+  .group:last-child{margin-bottom:12px}
+  .gh{display:flex;align-items:center;gap:11px;margin-bottom:16px;padding-bottom:11px;border-bottom:1px solid rgba(30,50,90,.07)}
+  .gh .dot{width:10px;height:10px;border-radius:3px;flex:0 0 auto;transform:rotate(45deg)}
+  .gh h3{font-size:16px;font-weight:800;letter-spacing:.4px}
+  .gh .gh-sub{color:#a3adc0;font-size:12px;margin-left:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .gh .gh-n{color:#7b879d;font-size:12.5px;font-weight:800;margin-left:auto;background:#eef1f8;border-radius:999px;padding:2px 11px;flex:0 0 auto}
+  .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:14px}
+  .mcard{position:relative;overflow:hidden;background:#fff;border:1px solid #e9ecf4;border-radius:20px;padding:20px 14px 16px;text-align:center;cursor:pointer;
+    transition:.24s cubic-bezier(.2,.8,.2,1);box-shadow:0 12px 30px -24px rgba(20,35,70,.55)}
+  .mcard::before{content:"";position:absolute;inset:0 0 auto 0;height:4px;background:var(--accent,#3b6ef5);opacity:.9}
+  .mcard:hover{transform:translateY(-5px);border-color:#cdd8ec;box-shadow:0 24px 44px -26px rgba(20,35,70,.6)}
+  .mcard:focus-visible{outline:2px solid #3b6ef5;outline-offset:3px}
   .mcard.grp{cursor:default}
-  .mcard.grp:hover{transform:none}
-  .av{width:52px;height:52px;border-radius:16px;margin:0 auto 10px;display:flex;align-items:center;justify-content:center;
-    font-size:20px;font-weight:900;color:#fff;box-shadow:0 8px 18px rgba(20,35,70,.18)}
-  .mcard .call{font-size:15px;font-weight:900;letter-spacing:1px;font-family:ui-monospace,'SF Mono',Consolas,monospace}
-  .mcard .who{font-size:12px;color:#6a7590;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .mcard .role{display:inline-block;margin-top:8px;font-size:10px;font-weight:700;color:#54617c;background:#eef1f8;border-radius:999px;padding:3px 9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
-  .mcard .tag2{display:inline-block;margin-top:8px;font-size:10px;font-weight:700;color:#0e7a4d;background:#e6f6ee;border-radius:999px;padding:3px 9px}
+  .mcard.grp:hover{transform:none;box-shadow:0 12px 30px -26px rgba(20,35,70,.5)}
+  .av{width:56px;height:56px;border-radius:18px;margin:2px auto 12px;display:flex;align-items:center;justify-content:center;
+    font-size:21px;font-weight:900;color:#fff;background:linear-gradient(140deg,var(--accent,#3b6ef5),color-mix(in srgb,var(--accent,#3b6ef5) 70%,#0b1226));
+    box-shadow:0 10px 20px -6px var(--accent,rgba(20,35,70,.18)),inset 0 0 0 1px rgba(255,255,255,.35)}
+  .mcard .call{font-size:15.5px;font-weight:900;letter-spacing:1px;font-family:ui-monospace,'SF Mono',Consolas,monospace;color:#141e38}
+  .mcard .who{font-size:12.5px;color:#6a7590;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .mcard .role{display:inline-block;margin-top:10px;font-size:10.5px;font-weight:700;color:var(--accent,#54617c);background:color-mix(in srgb,var(--accent,#54617c) 12%,#fff);
+    border:1px solid color-mix(in srgb,var(--accent,#54617c) 26%,#fff);border-radius:999px;padding:3px 11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+  .mcard .tag2{display:inline-block;margin-top:10px;font-size:10.5px;font-weight:700;color:#0e7a4d;background:#e6f6ee;border:1px solid #c7ecda;border-radius:999px;padding:3px 11px}
   .mcard .heart{margin-top:8px;font-size:13px}
+  .nores{grid-column:1/-1;text-align:center;color:#9aa3b6;font-size:13.5px;padding:22px 0 6px}
+  .hidden{display:none!important}
   /* 会员卡预览 */
   .prehead{display:flex;align-items:center;gap:10px;margin:8px 0 16px}
   .prehead::after{content:"";flex:1;height:1px;background:rgba(30,50,90,.08)}
@@ -88,6 +113,13 @@
   .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(90px);background:#16213b;color:#fff;font-size:13px;padding:10px 20px;border-radius:11px;opacity:0;transition:.28s;z-index:60;box-shadow:0 12px 30px rgba(0,0,0,.4)}
   .toast.show{opacity:1;transform:translateX(-50%)}
   @media(max-width:520px){.p-role{margin-left:0}}
+  @media(max-width:560px){
+    .wrap{padding-left:13px;padding-right:13px}
+    .cards{grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:11px}
+    .mcard{padding:16px 10px 13px;border-radius:17px}
+    .av{width:48px;height:48px;border-radius:15px;font-size:18px;margin-bottom:10px}
+    .gh h3{font-size:15px}
+  }
 </style>
 </head>
 <body>
@@ -107,7 +139,17 @@
     <p data-i18n="desc">每一位点亮 APRSlocus 的伙伴，都值得一张纪念卡。</p>
   </div>
 
-  <!-- 成员名录（分组） -->
+  <!-- 荣誉墙工具条：搜索 + 概览 -->
+  <div class="bar">
+    <label class="search">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
+      <input id="q" type="search" autocomplete="off" placeholder="搜索成员 / 呼号 / 称号">
+    </label>
+    <span class="wct" id="wct"></span>
+  </div>
+  <div class="legend" id="legend"></div>
+
+  <!-- 成员名录（按徽章分组） -->
   <div id="walls"></div>
 
   <!-- 单会员卡预览 -->
@@ -276,15 +318,21 @@ const TX={
  "zh":{mem:"APRSLOCUS · 荣誉墙",t1:"成员荣誉墙",t2:"勋章与成就",
    desc:"每一位点亮 APRSlocus 的伙伴，都值得一张荣誉卡。",card:"荣誉卡预览",
    foot:"APRSlocus · 电波无限，感谢同行",saved:"已保存 PNG",export:"导出 PNG",next:"下一位",
-   contribution:"贡献",quote:"寄语",role:"角色",no:"#",sponsor:"赞助同行",groupT:"同行团体"},
+   contribution:"贡献",quote:"寄语",role:"角色",no:"#",sponsor:"赞助同行",groupT:"同行团体",
+   searchPh:"搜索成员 / 呼号 / 称号",cntTitle:"位伙伴",cntBadges:"枚徽章",nores:"没有匹配的成员",
+   ach:"成就",allBadges:"全部徽章"},
  "zh-TW":{mem:"APRSLOCUS · 榮譽牆",t1:"成員榮譽牆",t2:"勳章與成就",
    desc:"每一位點亮 APRSlocus 的夥伴，都值得一張紀念卡。",card:"會員卡預覽",
    foot:"APRSlocus · 電波無限，感謝同行",saved:"已儲存 PNG",export:"匯出 PNG",next:"下一位",
-   contribution:"貢獻",quote:"寄語",role:"角色",no:"#",sponsor:"贊助同行",groupT:"同行團體"},
+   contribution:"貢獻",quote:"寄語",role:"角色",no:"#",sponsor:"贊助同行",groupT:"同行團體",
+   searchPh:"搜尋成員 / 呼號 / 稱號",cntTitle:"位夥伴",cntBadges:"枚徽章",nores:"沒有符合的成員",
+   ach:"成就",allBadges:"全部徽章"},
  "en":{mem:"APRSLOCUS · HONOR WALL",t1:"Member honor wall",t2:"Badges & achievements",
    desc:"Every friend who lit up APRSlocus deserves a card of their own.",card:"Member card",
    foot:"APRSlocus · Endless waves, thank you",saved:"PNG saved",export:"Export PNG",next:"Next",
-   contribution:"Contribution",quote:"Words",role:"Role",no:"#",sponsor:"Sponsors",groupT:"Groups"}
+   contribution:"Contribution",quote:"Words",role:"Role",no:"#",sponsor:"Sponsors",groupT:"Groups",
+   searchPh:"Search name, callsign or honor",cntTitle:"members",cntBadges:"badges",nores:"No matching members",
+   ach:"Achievements",allBadges:"All badges"}
 };
 const W=1040,H=680,SF=2.5;
 let lang="zh",idx=0;const cv=document.getElementById("cv");
@@ -340,44 +388,78 @@ function ui(){
  document.querySelectorAll("[data-i18n]").forEach(e=>{const k=e.dataset.i18n;if(TX[lang][k]!=null)e.textContent=TX[lang][k];});
  document.querySelectorAll(".langs button").forEach(b=>b.classList.toggle("on",b.dataset.lang===lang));
  document.documentElement.lang=lang==="zh"?"zh-CN":lang==="zh-TW"?"zh-Hant":"en";
+ const qi=document.getElementById("q");if(qi&&TX[lang].searchPh)qi.placeholder=TX[lang].searchPh;
  const cl=document.getElementById("calls");cl.innerHTML="";
  CARDS.forEach((c,i)=>{const b=document.createElement("button");
   b.textContent=c.kind==="p"?c.p.call:labelOf(c);
   if(i===idx)b.classList.add("on");b.onclick=()=>pick(i);cl.appendChild(b);});}
 function wallSection(hkey, people){
- const hc=honorColor(hkey); const hname=honorLabel(hkey);
- return `<div class="group"><div class="gh"><span class="dot" style="background:${hc}"></span>
-  <h3>${hname}</h3><span>${people.length}</span></div>
+ const hc=honorColor(hkey); const hname=honorLabel(hkey); const sub=honorCriteria(hkey);
+ return `<section class="group" data-h="${hkey}"><div class="gh"><span class="dot" style="background:${hc}"></span>
+  <h3>${hname}</h3><span class="gh-sub">${sub}</span><span class="gh-n">${people.length}</span></div>
   <div class="cards">${people.map(p=>`
-   <div class="mcard" onclick="pick(${PEOPLE.indexOf(p)})">
-     <div class="av" style="background:linear-gradient(140deg,${hc},${hc})">${(p.call.replace(/[0-9-]/g,"")[0]||"A").toUpperCase()}</div>
+   <div class="mcard" style="--accent:${hc}" tabindex="0" onclick="pick(${PEOPLE.indexOf(p)})">
+     <div class="av">${(p.call.replace(/[0-9-]/g,"")[0]||"A").toUpperCase()}</div>
      <div class="call">${p.call}</div>
      <div class="who">${p.who&&(p.who[lang]||p.who.zh)!==p.call?(p.who[lang]||p.who.zh):""}</div>
      <div class="role">${hname}</div>
    </div>`).join("")}
-  </div></div>`;}
+  </div></section>`;}
+function groupSection(groups){
+ return `<section class="group" data-h="__group"><div class="gh"><span class="dot" style="background:#7c5cff"></span>
+  <h3>${TX[lang].groupT}</h3><span class="gh-sub">${TX[lang].sponsor}</span><span class="gh-n">${groups.length}</span></div>
+  <div class="cards">${groups.map(g=>`
+   <div class="mcard grp" style="--accent:${g.c}" tabindex="0" onclick="pick(${PEOPLE.length+GROUPS.indexOf(g)})">
+     <div class="av">${T(g.name).trim().charAt(0).toUpperCase()}</div>
+     <div class="call">${T(g.name)}</div>
+     <div class="who">${T(g.role)}</div>
+     <div class="tag2">${g.tag?T(g.tag):TX[lang].sponsor}</div>
+   </div>`).join("")}
+  </div></section>`;}
+function matchP(p,q){ if(!q) return true;
+ const hs=honorDefsOf(p).map(k=>honorLabel(k)+" "+k).join(" ");
+ const hay=[p.call,(p.who&&(p.who[lang]||p.who.zh))||"",(p.role&&(p.role[lang]||p.role.zh))||"",hs].join(" ").toLowerCase();
+ return hay.indexOf(q)>=0;}
+function matchG(g,q){ if(!q) return true;
+ return [T(g.name),T(g.role),g.tag?T(g.tag):""].join(" ").toLowerCase().indexOf(q)>=0;}
+function jump(hk){
+ if(hk==="top"){window.scrollTo({top:0,behavior:"smooth"});return;}
+ const el=document.querySelector('.group[data-h="'+hk+'"]');
+ if(el)el.scrollIntoView({behavior:"smooth",block:"start"});}
+function buildLegend(){
+ const el=document.getElementById("legend"); if(!el) return;
+ const order=["kaishan","developer","earlyMember","mostBrain","firstFix","jadeGift","sower","iSelfReliant"];
+ let html=`<button onclick="jump('top')"><span class="ld" style="background:linear-gradient(140deg,#0c2f7a,#0ea5c4)"></span>${TX[lang].allBadges}</button>`;
+ for(const hk of order){
+   const n=PEOPLE.filter(p=>honorDefsOf(p).includes(hk)).length;
+   if(!n) continue;
+   html+=`<button onclick="jump('${hk}')"><span class="ld" style="background:${honorColor(hk)}"></span>${honorLabel(hk)}<span class="ln">${n}</span></button>`;
+ }
+ el.innerHTML=html;}
 function walls(){
- // 按徽章分类展示（替代按角色分组）
- const honorOrder=["kaishan","developer","earlyMember","mostBrain","firstFix","jadeGift","sower","iSelfReliant"];
- let html="";
- for(const hk of honorOrder){
-   const holders=PEOPLE.filter(p=>honorDefsOf(p).includes(hk));
-   if(holders.length) html+=wallSection(hk,holders);
+ // 按徽章分类展示（替代按角色分组）；带搜索过滤
+ const qi=document.getElementById("q");
+ const q=(qi?qi.value:"").trim().toLowerCase();
+ const order=["kaishan","developer","earlyMember","mostBrain","firstFix","jadeGift","sower","iSelfReliant"];
+ let parts=[], total=0, badges=0;
+ for(const hk of order){
+   const all=PEOPLE.filter(p=>honorDefsOf(p).includes(hk));
+   if(!all.length) continue;
+   badges++;
+   const keep=all.filter(p=>matchP(p,q));
+   total+=keep.length;
+   if(keep.length) parts.push(wallSection(hk,keep));
  }
  // 团体（赞助类）单独保留底部
  if(GROUPS&&GROUPS.length){
-   html+=`<div class="group"><div class="gh"><span class="dot" style="background:#7c5cff"></span>
-     <h3>${TX[lang].groupT}</h3><span>${GROUPS.length}</span></div>
-     <div class="cards">${GROUPS.map((g,gi)=>`
-       <div class="mcard" onclick="pick(${PEOPLE.length+gi})">
-         <div class="av" style="background:linear-gradient(140deg,${g.c},${g.c})">${T(g.name).trim().charAt(0).toUpperCase()}</div>
-         <div class="call">${T(g.name)}</div>
-         <div class="who">${T(g.role)}</div>
-         <div class="tag2">${g.tag?T(g.tag):TX[lang].sponsor}</div>
-       </div>`).join("")}
-     </div></div>`;
+   const keep=GROUPS.filter(g=>matchG(g,q));
+   if(keep.length) parts.push(groupSection(keep));
  }
- document.getElementById("walls").innerHTML=html;}
+ const host=document.getElementById("walls");
+ host.innerHTML=parts.length?parts.join(""):`<div class="nores">${TX[lang].nores}</div>`;
+ const wct=document.getElementById("wct");
+ if(wct)wct.innerHTML=`<b>${total}</b> ${TX[lang].cntTitle} · <b>${badges}</b> ${TX[lang].cntBadges}`;
+ buildLegend();}
 
 function cardColor(c){return c.kind==="p"?c.p.c:c.g.c;}
 function draw(){
@@ -520,6 +602,13 @@ lang=detect();
 const qc=new URLSearchParams(location.search).get("call");
 const fi=qc?CARDS.findIndex(x=>x.kind==="p"&&x.p.call.toUpperCase()===(qc||"").toUpperCase()):-1;if(fi>=0)idx=fi;
 ui();walls();profile();draw();
+/* 搜索框：输入即过滤，Esc 清空 */
+const qEl=document.getElementById("q");
+if(qEl){let t=null;qEl.addEventListener("input",()=>{clearTimeout(t);t=setTimeout(walls,90);});
+ qEl.addEventListener("keydown",e=>{if(e.key==="Escape"){qEl.value="";walls();}});}
+/* 键盘可达：卡片上回车/空格 = 打开预览 */
+document.getElementById("walls").addEventListener("keydown",e=>{
+ if(e.key==="Enter"||e.key===" "){const c=e.target.closest(".mcard");if(c){e.preventDefault();c.click();}}});
 /* 从同目录 members.json 拉取最新名单/资料（与 App 徽标共用数据源，改名单无需发版） */
 fetch("members.json").then(r=>r.ok?r.json():null).then(d=>applyRemote(d)).catch(()=>{});
 /* 加载 FIRST FIX 授勋名单（官网 firstfix.json） */

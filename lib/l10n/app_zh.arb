@@ -2549,6 +2549,8 @@
   "@achievementsProgress": {"placeholders": {"n": {"type": "String"}, "m": {"type": "String"}}},
   "beaconNotConnected": "未连接",
   "beaconWaitingFix": "等待定位",
+  "beaconNeedConfirm": "待确认上报",
+  "reportStartNow": "开始上报",
   "beaconSoon": "即将",
   "beaconNextIn": "距下次上报 {s}",
   "@beaconNextIn": {"placeholders": {"s": {"type": "String"}}},

@@ -1833,6 +1833,8 @@
   "achievementsProgress": "実績 {n}/{m}",
   "beaconNotConnected": "未接続",
   "beaconWaitingFix": "測位を待機中",
+  "beaconNeedConfirm": "送信の確認待ち",
+  "reportStartNow": "送信を開始",
   "beaconSoon": "まもなく",
   "beaconNextIn": "次回送信まで {s}",
   "beaconImminent": "まもなく送信…",

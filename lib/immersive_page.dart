@@ -577,6 +577,8 @@ class _ImmersiveMapPageState extends State<ImmersiveMapPage>
     // 倒计时；判据只用结构化的 beaconPhase（与 AppState.canAutoBeacon 同源）。
     final String? note = switch (st.beaconPhase) {
       BeaconPhase.rfDisabled => s.beaconRfBeaconOff,
+      // 连上但还没点「开始上报」：大字号也点明，别让它像个坏掉的倒计时。
+      BeaconPhase.needConfirm => s.beaconNeedConfirm,
       BeaconPhase.coarseFix => s.beaconCoarseFix,
       // 强制上报下的粗定位：会发射，但必须说清发的是网络定位（否则这一页
       // 看起来与正常 GPS 上报完全一样）。

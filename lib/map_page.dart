@@ -2111,6 +2111,8 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
     final label = switch (st.beaconPhase) {
       BeaconPhase.off => S.of(context).beaconOffChip,
       BeaconPhase.rfDisabled => S.of(context).beaconRfBeaconOff,
+      // 连上但还没点「开始上报」：提示去点那个正式按钮（见 ReportActions）。
+      BeaconPhase.needConfirm => S.of(context).beaconNeedConfirm,
       BeaconPhase.coarseFix => S.of(context).beaconCoarseFix,
       // 开了「强制接受网络定位自动上报」时它**会真的发射**，所以这一档跟的是
       // 倒计时；但文案里必须点明「发的是网络定位（粗）」—— 见 [BeaconPhase.coarseForced]。
@@ -2135,6 +2137,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
     final c = !on
         ? C.slate
         : switch (st.beaconPhase) {
+            BeaconPhase.needConfirm => C.orange,
             BeaconPhase.coarseFix => C.orange,
             BeaconPhase.coarseForced => C.orange,
             BeaconPhase.garmin => C.red,

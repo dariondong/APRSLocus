@@ -1833,6 +1833,8 @@
   "achievementsProgress": "{n}/{m} pencapaian",
   "beaconNotConnected": "Belum tersambung",
   "beaconWaitingFix": "Menunggu posisi",
+  "beaconNeedConfirm": "Konfirmasi lapor",
+  "reportStartNow": "Mulai lapor",
   "beaconSoon": "Segera",
   "beaconNextIn": "Laporan berikutnya dalam {s}",
   "beaconImminent": "Segera melapor…",

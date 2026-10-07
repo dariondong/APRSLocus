@@ -1957,6 +1957,8 @@
   "@achievementsProgress": {"placeholders": {"n": {"type": "String"}, "m": {"type": "String"}}},
   "beaconNotConnected": "Not connected",
   "beaconWaitingFix": "Waiting for fix",
+  "beaconNeedConfirm": "Confirm to report",
+  "reportStartNow": "Start reporting",
   "beaconSoon": "Due now",
   "beaconNextIn": "Next report in {s}",
   "@beaconNextIn": {"placeholders": {"s": {"type": "String"}}},

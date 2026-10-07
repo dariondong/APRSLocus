@@ -1689,6 +1689,18 @@ abstract class AppLocalizations {
   /// **'等待定位'**
   String get beaconWaitingFix;
 
+  /// No description provided for @beaconNeedConfirm.
+  ///
+  /// In zh, this message translates to:
+  /// **'待确认上报'**
+  String get beaconNeedConfirm;
+
+  /// No description provided for @reportStartNow.
+  ///
+  /// In zh, this message translates to:
+  /// **'开始上报'**
+  String get reportStartNow;
+
   /// No description provided for @beaconWarnBody.
   ///
   /// In zh, this message translates to:

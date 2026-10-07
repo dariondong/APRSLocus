@@ -201,6 +201,36 @@ def main() -> int:
          '主页按钮没有按上报闸显示 —— 只有保存位置时会显示「立即上报」'
          '并弹「已发送」，其实什么都没发')
 
+    # ── 连接后手动确认才上报（本次改动）──
+    #
+    # 用户要求：无论用哪种方式定位，**连上服务器后不要自动上报**，必须由用户
+    # 手动点一下正式的「开始上报」按钮、确认坐标有效之后才开始。否则一连上就
+    # 抢在用户看清坐标之前把位置发出去。
+    need('lib/state.dart', 'bool beaconArmed = true;',
+         '没有「本次连接已确认开始上报」的闸（beaconArmed）—— '
+         '连上后会自动上报，用户要求手动确认后才开始')
+    need('lib/state.dart', '  bool get canAutoBeacon => connected &&\n'
+         '      beaconEnabled &&\n'
+         '      myPositionReportable &&\n'
+         '      beaconArmed &&',
+         'canAutoBeacon 没有过 beaconArmed —— 连上后未确认就会自动上报')
+    need('lib/state.dart', 'if (connected != wasConnected) {\n'
+         '      beaconArmed = false;',
+         '_setLinkUp 没有在连接翻转时复位 beaconArmed —— '
+         '老连接残留的确认会让新连接又变成自动上报')
+    need('lib/state.dart', 'if (!beaconArmed) return BeaconPhase.needConfirm;',
+         'beaconPhase 没有把「还没点开始上报」报成 needConfirm —— '
+         '界面会显示一个照走的倒计时，到点却什么都不发')
+    need('lib/state.dart', 'void beginReporting() {',
+         '没有 beginReporting —— 「开始上报」按钮没有入口')
+    need('lib/state.dart', '  needConfirm,\n  /// 当前是**粗定位',
+         'BeaconPhase 少了 needConfirm 这一档')
+    # UI 侧：正式按钮必须真的出现，且与 beaconArmed 同源。
+    need('lib/widgets.dart', 'if (state.connected && !state.beaconArmed) {',
+         'ReportActions 没有「开始上报」按钮 —— 用户无处确认上报')
+    need('lib/widgets.dart', 'state.beginReporting();',
+         '「开始上报」按钮没有调用 beginReporting')
+
     # 静止防抖
     need('lib/state.dart', '_selfFilter.feed(', '静止防抖滤波器没接上')
     need('lib/state.dart', 'final SelfFixFilter _selfFilter',

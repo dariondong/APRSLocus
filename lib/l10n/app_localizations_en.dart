@@ -973,6 +973,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get beaconWaitingFix => 'Waiting for fix';
+  @override
+  String get beaconNeedConfirm => 'Confirm to report';
+  @override
+  String get reportStartNow => 'Start reporting';
 
   @override
   String get beaconWarnBody =>

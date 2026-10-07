@@ -669,6 +669,13 @@ class ReportActions extends StatelessWidget {
     );
   }
 
+  /// 用户点了正式的「开始上报」：确认坐标有效后开始（本次连接内）自动上报。
+  void _startReporting(BuildContext context) {
+    final s = S.of(context);
+    state.beginReporting();
+    _toast(context, s.reportEnabledToast);
+  }
+
   static void _toast(BuildContext context, String m) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text(m), behavior: SnackBarBehavior.floating),
@@ -679,6 +686,40 @@ class ReportActions extends StatelessWidget {
   Widget build(BuildContext context) {
     final s = S.of(context);
     final on = state.beaconEnabled;
+
+    // ── 上报前的正式确认（本次改动）──
+    //
+    // 用户要求：连上服务器后**不要**自动上报；给一个正式的「开始上报」按钮，
+    // 由用户手动确认后再开始。做成一枚醒目的实心按钮，而不是弹窗（用户明确说
+    // 不用提示、只要按钮）。坐标还没拿到本轮定位时按钮置灰 —— 「确认坐标有效」
+    // 之后它才可点（与 myPositionReportable 同源）。
+    if (state.connected && !state.beaconArmed) {
+      final ready = state.myPositionReportable;
+      return ClickCursor(
+        child: FilledButton.icon(
+          onPressed: ready ? () => _startReporting(context) : null,
+          icon: Icon(
+            ready ? Icons.send_rounded : Icons.location_searching_rounded,
+            size: 14,
+          ),
+          label: Text(
+            ready ? s.reportStartNow : s.beaconWaitingFix,
+            style: ts(11.5, w: FontWeight.w700, c: Colors.white),
+          ),
+          style: FilledButton.styleFrom(
+            backgroundColor: C.green,
+            disabledBackgroundColor: C.greyBg,
+            disabledForegroundColor: C.slate,
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            minimumSize: const Size(0, 0),
+            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(9),
+            ),
+          ),
+        ),
+      );
+    }
 
     // 状态胶囊：绿=自动上报中；灰=单次。文字直接写模式，点它切换。
     final toggleFg = on ? Colors.white : (onDark ? Colors.white : C.slate);

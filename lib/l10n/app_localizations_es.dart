@@ -984,6 +984,10 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get beaconWaitingFix => 'Esperando posición';
+  @override
+  String get beaconNeedConfirm => 'Confirma el envío';
+  @override
+  String get reportStartNow => 'Iniciar reporte';
 
   @override
   String get beaconWarnBody =>

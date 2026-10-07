@@ -973,6 +973,10 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get beaconWaitingFix => 'Menunggu posisi';
+  @override
+  String get beaconNeedConfirm => 'Konfirmasi lapor';
+  @override
+  String get reportStartNow => 'Mulai lapor';
 
   @override
   String get beaconWarnBody =>

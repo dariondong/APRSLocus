@@ -1832,6 +1832,8 @@
   "achievementsProgress": "{n}/{m} logros",
   "beaconNotConnected": "Sin conexión",
   "beaconWaitingFix": "Esperando posición",
+  "beaconNeedConfirm": "Confirma el envío",
+  "reportStartNow": "Iniciar reporte",
   "beaconSoon": "Ahora",
   "beaconNextIn": "Próximo informe en {s}",
   "beaconImminent": "Informando…",

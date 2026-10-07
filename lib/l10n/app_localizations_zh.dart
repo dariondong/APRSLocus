@@ -934,6 +934,10 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get beaconWaitingFix => '等待定位';
+  @override
+  String get beaconNeedConfirm => '待确认上报';
+  @override
+  String get reportStartNow => '开始上报';
 
   @override
   String get beaconWarnBody =>
@@ -8643,6 +8647,10 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get beaconWaitingFix => '等待定位';
+  @override
+  String get beaconNeedConfirm => '待確認上報';
+  @override
+  String get reportStartNow => '開始上報';
 
   @override
   String get beaconWarnBody =>

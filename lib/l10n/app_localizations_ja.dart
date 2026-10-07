@@ -942,6 +942,10 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get beaconWaitingFix => '測位を待機中';
+  @override
+  String get beaconNeedConfirm => '送信の確認待ち';
+  @override
+  String get reportStartNow => '送信を開始';
 
   @override
   String get beaconWarnBody =>

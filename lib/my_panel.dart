@@ -149,6 +149,7 @@ class MyPanel extends StatelessWidget {
                 // AppState.canAutoBeacon 同源，两处漂移就是「倒计时走着不发」）。
                 switch (state.beaconPhase) {
                   BeaconPhase.rfDisabled => S.of(context).beaconRfBeaconOff,
+                  BeaconPhase.needConfirm => S.of(context).beaconNeedConfirm,
                   BeaconPhase.coarseFix => S.of(context).beaconCoarseFix,
                   // 强制接受网络定位时它**会发射**，所以不再是「不报」而是
                   // 「报的是网络定位」—— 这一档也不能退回普通倒计时。
@@ -158,6 +159,7 @@ class MyPanel extends StatelessWidget {
                 },
                 style: ts(10,
                     c: (state.beaconNeedsRfEnable ||
+                            state.beaconPhase == BeaconPhase.needConfirm ||
                             state.beaconPhase == BeaconPhase.coarseFix ||
                             state.beaconPhase == BeaconPhase.coarseForced)
                         ? C.orange
