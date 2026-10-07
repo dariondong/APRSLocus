@@ -1,0 +1,68 @@
+name: Get SHA1
+
+# 手动触发：打印 Android 签名证书的 SHA-1（以及 SHA-256）。
+#
+# 用途：把 SHA-1 填到需要「应用签名指纹」的地方 —— 高德/腾讯地图开放平台的
+# Android Key、微信开放平台、以及部分推送 SDK。
+#
+# ⚠ 密钥名以**本仓库现有配置**为准（见 build-release.yml 的 "Setup Android
+#   signing keys"）：
+#     - secrets.ANDROID_KEYSTORE_BASE64   （keystore 的 base64）
+#     - secrets.ANDROID_KEYSTORE_PASSWORD （store 与 key 共用同一个密码）
+#     - keystore 别名固定为 `aprslocus`（build.gradle 里 keyAlias 读的是
+#       key.properties，而它写成 keyAlias=aprslocus）—— 不叫 KEY_ALIAS，
+#       也不存在单独的 KEY_PASSWORD。
+#   secret 名写错不会报「未配置」，而是直接 `Invalid keystore format` /
+#   取不到条目 —— 所以这里按真实配置来。
+
+on:
+  workflow_dispatch:
+
+jobs:
+  get-sha1:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Check secrets are configured
+        run: |
+          if [ -z "$KEYSTORE_BASE64" ]; then
+            echo "::error::缺少 secrets.ANDROID_KEYSTORE_BASE64（Settings → Secrets and variables → Actions）"
+            exit 1
+          fi
+        env:
+          KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+
+      - name: Decode keystore
+        run: echo "$KEYSTORE_BASE64" | base64 -d > release.jks
+        env:
+          KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+
+      # ⚠ 不能写成 `keytool ... | grep -i SHA1 >> $GITHUB_STEP_SUMMARY`：
+      #   管道里 grep 一旦没匹配到（或 keytool 失败），在默认 `bash -e -o pipefail`
+      #   下这一步会**静默失败/中断**；而且 SHA-1 与 SHA-256 的标签都含 "SHA"，
+      #   用 `-i SHA1` 只捞得到 SHA1 那一行、漏掉 SHA256。
+      #   这里先存完整输出，再展示指纹。
+      #
+      # 也不再写死别名：**不带 -alias 的 `keytool -list -v` 会列出库里所有条目**，
+      # 顺带把真实别名打出来 —— 就不依赖「别名一定是 aprslocus」这个假设了。
+      - name: Get SHA1 / SHA256
+        run: |
+          keytool -list -v -keystore release.jks \
+            -storepass "$KEYSTORE_PASSWORD" > keytool.txt 2>&1
+          echo '### 签名证书指纹' >> "$GITHUB_STEP_SUMMARY"
+          echo '' >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          grep -E '别名|Alias name|SHA1|SHA256' keytool.txt >> "$GITHUB_STEP_SUMMARY" || true
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          cat keytool.txt
+        env:
+          KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+
+      - name: Clean up
+        if: always()
+        run: rm -f release.jks keytool.txt
