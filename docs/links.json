@@ -22,9 +22,9 @@
         "en": "APRS.TV"
       },
       "desc": {
-        "zh": "APRS 实时地图与直播服务",
-        "zh-TW": "APRS 即時地圖與直播服務",
-        "en": "Live APRS map and streaming service"
+        "zh": "APRS 实时地图",
+        "zh-TW": "APRS 即時地圖",
+        "en": "Live APRS map"
       },
       "url": "https://aprs.tv",
       "logo": "https://aprs.tv/pwa-icons/apple-touch-icon.png"
