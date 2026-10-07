@@ -1,6 +1,6 @@
 {
-  "version": 58,
-  "updated": "2026-10-04",
+  "version": 59,
+  "updated": "2026-10-07",
   "developers": [
     {
       "call": "BG7LZQ",
@@ -1624,6 +1624,54 @@
       "primary": "jadeGift",
       "grp": "support",
       "c": "#0EA5B7"
+    },
+    {
+      "call": "BG2WX",
+      "who": {
+        "zh": "BG2WX",
+        "zh-TW": "BG2WX",
+        "en": "BG2WX"
+      },
+      "role": {
+        "zh": "赞助支持",
+        "zh-TW": "贊助支持",
+        "en": "Sponsorship support"
+      },
+      "brief": {
+        "zh": "以琼琚相赠，让这束电波行得更远。",
+        "zh-TW": "以瓊琚相贈，讓這束電波行得更遠。",
+        "en": "Gifted with jade, so this signal may reach farther."
+      },
+      "contrib": {
+        "zh": "馈赠支持 APRSlocus 的持续开发与运营，让这盏信标灯一直亮着。",
+        "zh-TW": "饋贈支持 APRSlocus 的持續開發與營運，讓這盞信標燈一直亮著。",
+        "en": "Gifted support for the ongoing development and operation of APRSlocus, keeping this beacon burning."
+      },
+      "quote": {
+        "zh": "赠我以琼琚，报之以电波。",
+        "zh-TW": "贈我以瓊琚，報之以電波。",
+        "en": "Gifted with jade, answered with radio waves."
+      },
+      "tags": {
+        "zh": [
+          "馈赠支持",
+          "赞助"
+        ],
+        "zh-TW": [
+          "饋贈支持",
+          "贊助"
+        ],
+        "en": [
+          "Gift support",
+          "Sponsorship"
+        ]
+      },
+      "c": "#0EA5B7",
+      "grp": "support",
+      "honors": [
+        "jadeGift"
+      ],
+      "primary": "jadeGift"
     },
     {
       "call": "BA7NFI",
