@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>APRSLocus 软件名片 · Software Card</title>
-<meta name="description" content="APRSLocus 软件简介名片：供友链 / 项目主页引用，或一键导出 PNG。">
+<title>APRSLocus 软件名片（横版长条）· Software Card</title>
+<meta name="description" content="APRSLocus 软件简介名片（横版长条）：供友链 / 项目主页引用，或一键导出 PNG。">
 <style>
   :root{
     --ink:#1b2233;
@@ -14,54 +14,60 @@
     --brand2:#0ea5b7;
     --card:#ffffff;
     --bg0:#eef2f9;
-    --bg1:#e3e9f4;
+    --bg1:#e2e8f4;
   }
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
   html,body{margin:0}
   body{
     min-height:100vh;display:flex;flex-direction:column;align-items:center;
-    justify-content:center;gap:18px;padding:28px 16px;
-    background:radial-gradient(1200px 600px at 50% -10%,var(--bg0),var(--bg1));
+    justify-content:center;gap:18px;padding:26px 16px;
+    background:radial-gradient(1400px 700px at 50% -10%,var(--bg0),var(--bg1));
     font-family:"PingFang SC","Hiragino Sans GB","Microsoft YaHei",
                 system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans SC",
                 "Noto Sans CJK SC",sans-serif;
     color:var(--ink);
   }
 
-  /* ---------- 名片本体（软件简介，供友链引用 / 导出 PNG） ---------- */
+  /* ---------- 横版长条名片 ---------- */
   .card{
-    position:relative;width:420px;max-width:100%;
-    background:var(--card);border-radius:22px;
+    position:relative;width:920px;max-width:100%;
+    background:var(--card);border-radius:20px;overflow:hidden;
     box-shadow:0 24px 60px -18px rgba(29,45,90,.28),
                0 6px 18px -8px rgba(29,45,90,.14);
-    overflow:hidden;
   }
-  .card::before{ /* 顶部渐变条 */
-    content:"";position:absolute;inset:0 0 auto 0;height:6px;
-    background:linear-gradient(90deg,var(--brand),var(--brand2));
+  .accent{height:6px;background:linear-gradient(90deg,var(--brand),var(--brand2))}
+
+  .body{display:grid;grid-template-columns:1.24fr 1fr auto}
+
+  .col{padding:22px 26px 24px}
+  .col.side{border-left:1px solid var(--line)}
+  .foot{
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    gap:9px;text-align:center;padding:22px 24px;min-width:176px;
+    border-left:1px solid var(--line);
+    background:linear-gradient(180deg,#fbfcff,#f4f7fd);
   }
 
-  .hdr{display:flex;align-items:center;gap:13px;padding:26px 26px 16px}
-  .blogo{width:46px;height:46px;border-radius:13px;object-fit:cover;flex:0 0 auto;
-    box-shadow:0 8px 20px -8px rgba(56,189,248,.7)}
-  .hdr-t{display:flex;flex-direction:column;gap:3px;min-width:0}
-  .app{font-size:23px;font-weight:800;letter-spacing:.2px;line-height:1.15}
-  .sub{font-size:12.5px;color:var(--sub)}
+  .hdr{display:flex;align-items:center;gap:12px}
+  .blogo{width:44px;height:44px;border-radius:12px;object-fit:cover;flex:0 0 auto;
+    box-shadow:0 8px 20px -9px rgba(56,189,248,.75)}
+  .hdr-t{display:flex;flex-direction:column;gap:2px;min-width:0}
+  .app{font-size:21px;font-weight:800;letter-spacing:.2px;line-height:1.12}
+  .sub{font-size:12px;color:var(--sub)}
   .tag{
-    margin-left:auto;font-size:11.5px;font-weight:700;color:var(--brand);
+    margin-left:auto;flex:0 0 auto;font-size:11.5px;font-weight:700;color:var(--brand);
     background:#eef3fe;border:1px solid #dbe5fd;border-radius:999px;
     padding:5px 11px;white-space:nowrap;
   }
 
-  .hr{height:1px;background:var(--line);margin:0 26px}
-
-  .hero{padding:18px 26px 6px}
   .headline{
-    font-size:18px;font-weight:800;letter-spacing:.2px;line-height:1.4;
+    margin-top:15px;font-size:19px;font-weight:800;letter-spacing:.2px;
+    line-height:1.35;
   }
   .headline span{color:var(--brand)}
+  .desc{margin:9px 0 0;font-size:12.5px;line-height:1.78;color:var(--sub)}
 
-  .chips{display:flex;flex-wrap:wrap;gap:8px;padding:14px 26px 2px}
+  .chips{display:flex;flex-wrap:wrap;gap:8px}
   .chip{
     font-size:12.5px;font-weight:700;border-radius:999px;padding:7px 14px;
     line-height:1;border:1px solid var(--line);color:var(--sub);
@@ -69,42 +75,27 @@
   }
   .chip.hot{color:var(--brand);background:#eef3fe;border-color:#dbe5fd}
 
-  .about{padding:14px 26px 6px}
-  .about p{margin:0;font-size:12.5px;line-height:1.85;color:var(--sub)}
-
-  .plat{display:flex;align-items:baseline;gap:14px;padding:8px 26px 4px}
-  .plat .k{font-size:12.5px;color:var(--sub);flex:0 0 auto}
+  .plat{margin-top:16px;display:flex;flex-direction:column;gap:5px}
+  .plat .k{font-size:11px;font-weight:800;letter-spacing:.6px;color:#98a1b5}
   .plat .v{font-size:12.5px;font-weight:600;color:var(--ink)}
 
-  .foot{
-    display:flex;align-items:center;gap:14px;
-    margin-top:16px;padding:16px 26px 22px;
-    border-top:1px solid var(--line);
-  }
-  .qr{width:64px;height:64px;border-radius:8px;flex:0 0 auto;background:#fff;
-    box-shadow:0 2px 8px -4px rgba(15,40,90,.3)}
-  .foot-t{display:flex;flex-direction:column;gap:3px;min-width:0}
-  .url{font-size:14px;font-weight:800;color:var(--brand);letter-spacing:.2px}
-  .foothint{font-size:12px;color:var(--sub)}
+  .qr{width:104px;height:104px;border-radius:10px;flex:0 0 auto;background:#fff;
+    box-shadow:0 4px 12px -6px rgba(15,40,90,.35)}
+  .url{font-size:13px;font-weight:800;color:var(--brand);letter-spacing:.2px;word-break:break-all}
+  .foothint{font-size:11.5px;line-height:1.5;color:var(--sub)}
 
   /* ---------- 操作条 ---------- */
-  .bar{width:420px;max-width:100%;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .bar{width:920px;max-width:100%;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
   .bar button{
     font:inherit;font-size:14px;font-weight:700;cursor:pointer;
     border:0;border-radius:12px;padding:12px 20px;color:#fff;
     background:linear-gradient(140deg,var(--brand),var(--brand2));
     box-shadow:0 10px 22px -12px rgba(59,110,245,.9);
   }
-  .bar button.ghost{
-    background:#fff;color:var(--ink);border:1px solid var(--line);
-    box-shadow:0 6px 16px -12px rgba(29,45,90,.5);
-  }
+  .bar button.ghost{background:#fff;color:var(--ink);border:1px solid var(--line);box-shadow:0 6px 16px -12px rgba(29,45,90,.5)}
   .bar button:active{transform:translateY(1px)}
   .lang{margin-left:auto;display:flex;gap:6px}
-  .lang button{
-    padding:9px 12px;font-size:13px;background:#fff;color:var(--sub);
-    border:1px solid var(--line);box-shadow:none;
-  }
+  .lang button{padding:9px 12px;font-size:13px;background:#fff;color:var(--sub);border:1px solid var(--line);box-shadow:none}
   .lang button.on{color:var(--brand);border-color:#c9d8fb;background:#eef3fe}
   .hint{margin:0;font-size:12px;color:#8a93a8;text-align:center}
 
@@ -115,62 +106,70 @@
     transition:opacity .22s,transform .22s;
   }
   .toast.on{opacity:1;transform:translate(-50%,0)}
+
+  /* 窄屏退回竖排（导出的仍是当前看到的版式） */
+  @media (max-width:760px){
+    .body{grid-template-columns:1fr}
+    .col.side,.foot{border-left:0;border-top:1px solid var(--line)}
+    .foot{flex-direction:row;justify-content:flex-start;text-align:left;gap:14px}
+    .card{width:100%}
+  }
 </style>
 </head>
 <body>
 
   <div class="card" id="card">
-    <div class="hdr">
-      <img class="blogo" id="logo" src="assets/logo.png" alt="APRSLocus">
-      <div class="hdr-t">
-        <div class="app">APRSLocus</div>
-        <div class="sub i18n"
-             data-zh="业余无线电 · APRS 客户端"
-             data-tw="業餘無線電 · APRS 用戶端"
-             data-en="Amateur radio · APRS client">业余无线电 · APRS 客户端</div>
+    <div class="accent" id="accent"></div>
+    <div class="body">
+
+      <div class="col main">
+        <div class="hdr">
+          <img class="blogo" id="logo" src="assets/logo.png" alt="APRSLocus">
+          <div class="hdr-t">
+            <div class="app">APRSLocus</div>
+            <div class="sub i18n"
+                 data-zh="业余无线电 · APRS 客户端"
+                 data-tw="業餘無線電 · APRS 用戶端"
+                 data-en="Amateur radio · APRS client">业余无线电 · APRS 客户端</div>
+          </div>
+          <div class="tag i18n"
+               data-zh="软件名片" data-tw="軟體名片" data-en="Software card">软件名片</div>
+        </div>
+
+        <div class="headline i18n"
+             data-zh="跨平台 <span>APRS</span> 客户端，触达天空"
+             data-tw="跨平台 <span>APRS</span> 用戶端，觸達天空"
+             data-en="A cross-platform <span>APRS</span> client — touch the sky">跨平台 <span>APRS</span> 客户端，触达天空</div>
+
+        <p class="desc i18n" id="desc"
+           data-zh="实时台站与轨迹、消息收发、离线地图，支持 Android、Windows、iOS 与 macOS —— 开源免费。"
+           data-tw="即時台站與軌跡、訊息收發、離線地圖，支援 Android、Windows、iOS 與 macOS —— 開源免費。"
+           data-en="Live stations and tracks, messaging, and offline maps across Android, Windows, iOS and macOS — open source and free.">实时台站与轨迹、消息收发、离线地图，支持 Android、Windows、iOS 与 macOS —— 开源免费。</p>
       </div>
-      <div class="tag i18n"
-           data-zh="软件名片" data-tw="軟體名片" data-en="Software card">软件名片</div>
-    </div>
 
-    <div class="hr"></div>
+      <div class="col side">
+        <div class="chips">
+          <span class="chip hot i18n" data-zh="实时地图与台站" data-tw="即時地圖與台站" data-en="Live map &amp; stations">实时地图与台站</span>
+          <span class="chip i18n" data-zh="轨迹与消息" data-tw="軌跡與訊息" data-en="Tracks &amp; messaging">轨迹与消息</span>
+          <span class="chip i18n" data-zh="离线地图" data-tw="離線地圖" data-en="Offline maps">离线地图</span>
+          <span class="chip i18n" data-zh="多语言界面" data-tw="多語言介面" data-en="6 UI languages">多语言界面</span>
+          <span class="chip i18n" data-zh="开源免费" data-tw="開源免費" data-en="Open source">开源免费</span>
+        </div>
+        <div class="plat">
+          <div class="k i18n" data-zh="平台" data-tw="平台" data-en="Platforms">平台</div>
+          <div class="v">Android · Windows · iOS · macOS</div>
+        </div>
+      </div>
 
-    <div class="hero">
-      <div class="headline i18n"
-           data-zh="跨平台 <span>APRS</span> 客户端，触达天空"
-           data-tw="跨平台 <span>APRS</span> 用戶端，觸達天空"
-           data-en="A cross-platform <span>APRS</span> client — touch the sky">跨平台 <span>APRS</span> 客户端，触达天空</div>
-    </div>
-
-    <div class="chips">
-      <span class="chip hot i18n" data-zh="实时地图与台站" data-tw="即時地圖與台站" data-en="Live map &amp; stations">实时地图与台站</span>
-      <span class="chip i18n" data-zh="轨迹与消息" data-tw="軌跡與訊息" data-en="Tracks &amp; messaging">轨迹与消息</span>
-      <span class="chip i18n" data-zh="离线地图" data-tw="離線地圖" data-en="Offline maps">离线地图</span>
-      <span class="chip i18n" data-zh="多语言界面" data-tw="多語言介面" data-en="6 UI languages">多语言界面</span>
-      <span class="chip i18n" data-zh="开源免费" data-tw="開源免費" data-en="Open source">开源免费</span>
-    </div>
-
-    <div class="about">
-      <p id="desc"
-         data-zh="APRSLocus 是一个跨平台、多语言的业余无线电 APRS 客户端：实时台站与轨迹、消息收发、离线地图，支持 Android、Windows、iOS 与 macOS。"
-         data-tw="APRSLocus 是一個跨平台、多語言的業餘無線電 APRS 用戶端：即時台站與軌跡、訊息收發、離線地圖，支援 Android、Windows、iOS 與 macOS。"
-         data-en="APRSLocus is a cross-platform, multilingual APRS client — live stations and tracks, messaging, and offline maps across Android, Windows, iOS and macOS.">APRSLocus 是一个跨平台、多语言的业余无线电 APRS 客户端：实时台站与轨迹、消息收发、离线地图，支持 Android、Windows、iOS 与 macOS。</p>
-    </div>
-
-    <div class="plat">
-      <span class="k i18n" data-zh="平台" data-tw="平台" data-en="Platforms">平台</span>
-      <span class="v">Android · Windows · iOS · macOS</span>
-    </div>
-
-    <div class="foot">
-      <img class="qr" id="qr" src="assets/qr.png" alt="aprslocus.theez.top">
-      <div class="foot-t">
+      <div class="foot">
+        <img class="qr" id="qr" src="assets/qr.png" alt="aprslocus.theez.top">
         <div class="url" id="url">aprslocus.theez.top</div>
         <div class="foothint i18n"
-             data-zh="扫码或访问官网 · 欢迎友链交换"
-             data-tw="掃碼或訪問官網 · 歡迎友鏈交換"
-             data-en="Scan or visit the site · link exchange welcome">扫码或访问官网 · 欢迎友链交换</div>
+             data-zh="扫码访问官网<br>欢迎友链交换"
+             data-tw="掃碼訪問官網<br>歡迎友鏈交換"
+             data-en="Scan to visit<br>link exchange welcome">扫码访问官网<br>欢迎友链交换</div>
       </div>
+
     </div>
   </div>
 
@@ -183,7 +182,7 @@
       <button data-lang="en">EN</button>
     </div>
   </div>
-  <p class="hint">本站官网名片，可供友链 / 项目主页引用 · 支持导出 PNG</p>
+  <p class="hint">本站官网名片 · 横版长条 · 可供友链 / 项目主页引用 · 支持导出 PNG</p>
 
   <div class="toast" id="toast"></div>
 
@@ -191,11 +190,11 @@
 "use strict";
 
 /* ======================================================================
-   把名片渲染成 PNG。做法：直接读取页面上每个元素的几何与样式，
-   在 canvas 上按 3 倍像素重画一遍。好处是——保存出来的图和你看到的
-   完全一致，不用维护两套排版。中文用同样的字体栈，不会变豆腐块。
+   把名片渲染成 PNG：读取页面上每个元素的几何与样式，在 canvas 上按 3 倍像素
+   重画一遍 —— 保存出来的图和你看到的完全一致，不用维护两套排版；中文用同一
+   套字体栈，不会变豆腐块。
    ====================================================================== */
-var S = 3;                       // 输出倍率，3 倍足够高清
+var S = 3;
 var BRAND = "#3b6ef5";
 var BRAND2 = "#0ea5b7";
 
@@ -219,8 +218,8 @@ function fontOf(el){
   var s = getComputedStyle(el);
   var w = parseInt(s.fontWeight, 10);
   if (isNaN(w)) w = 400;
-  // canvas 的 font 只认 400/700（normal/bold）；写成 600/750 之类会让整条
-  // font 判为非法并静默退回 10px —— 导出图会突然「全部变小」。
+  // canvas 的 font 只认 400/700；写成 600/750 会让整条 font 判为非法并静默
+  // 退回 10px —— 导出图会突然「全部变小」。
   w = (w >= 600) ? 700 : 400;
   return s.fontStyle + " " + w + " " + s.fontSize + " " + s.fontFamily;
 }
@@ -242,7 +241,7 @@ function fillTextEl(c, el, o, base){
   c.fillText(txt(el), x, r.y + r.h / 2 + (o.dy || 0));
 }
 
-/* 圆角胶囊：按元素的底色 / 描边色画一个 pill，再居中写文字。 */
+/* 圆角胶囊：按元素的底色 / 描边色画 pill，再居中写字。 */
 function fillPill(c, el, base){
   var r = rectOf(el, base);
   var s = getComputedStyle(el);
@@ -310,8 +309,8 @@ function fillRich(c, el, base){
 
 function wrapLines(c, text, maxW){
   var out = [], cur = "";
-  // 按空白 + 逐字（中日韩 / 中文标点）切分：中文没有词间空格，
-  // 必须允许在任意汉字间断行。
+  // 按空白 + 逐字（中日韩 / 中文标点）切分：中文没有词间空格，必须允许在
+  // 任意汉字间断行。
   var tokens = text.split(/(\s+|[\u4e00-\u9fff\u3000-\u303f，。；：、！？（）])/);
   for (var i = 0; i < tokens.length; i++){
     var t = tokens[i];
@@ -328,6 +327,28 @@ function wrapLines(c, text, maxW){
   return out;
 }
 
+/* 带 <br> 的短文本（页脚提示）：按行拆开逐行绘制。 */
+function fillLines(c, el, base){
+  if (!el) return;
+  var r = rectOf(el, base);
+  var s = getComputedStyle(el);
+  var lh = parseFloat(s.lineHeight) || parseFloat(s.fontSize) * 1.5;
+  var segs = [];
+  el.childNodes.forEach(function(n){
+    if (n.nodeType === 1 && n.tagName === "BR") segs.push("\n");
+    else segs.push(n.textContent);
+  });
+  var lines = segs.join("").split("\n");
+  c.font = fontOf(el);
+  c.fillStyle = s.color;
+  c.textAlign = "center";
+  c.textBaseline = "middle";
+  var y0 = r.y + (r.h - lines.length * lh) / 2 + lh / 2;
+  lines.forEach(function(t, i){
+    c.fillText(t.trim(), r.x + r.w / 2, y0 + i * lh);
+  });
+}
+
 function render(){
   var card = document.getElementById("card");
   var base = card.getBoundingClientRect();
@@ -339,43 +360,45 @@ function render(){
   var c = cv.getContext("2d");
   c.scale(S, S);
 
-  // 卡片底 + 顶条
-  roundRect(c, 0, 0, W, H, 22);
+  // 白色圆角底
+  roundRect(c, 0, 0, W, H, 20);
   c.fillStyle = "#ffffff";
   c.fill();
-  c.save();
-  roundRect(c, 0, 0, W, H, 22);
-  c.clip();
-  var g = c.createLinearGradient(0, 0, W, 0);
-  g.addColorStop(0, BRAND);
-  g.addColorStop(1, BRAND2);
-  c.fillStyle = g;
-  c.fillRect(0, 0, W, 6);
-  c.restore();
 
-  // 分割线（.hr 与页脚顶线）
-  card.querySelectorAll(".hr").forEach(function(el){
-    var r = rectOf(el, base);
-    c.fillStyle = getComputedStyle(el).backgroundColor;
-    c.fillRect(r.x, r.y, r.w, Math.max(1, r.h));
-  });
+  // 顶部渐变条（裁进圆角）
+  var ac = document.getElementById("accent");
+  if (ac){
+    var ar = rectOf(ac, base);
+    c.save();
+    roundRect(c, 0, 0, W, H, 20);
+    c.clip();
+    var g = c.createLinearGradient(0, 0, W, 0);
+    g.addColorStop(0, BRAND);
+    g.addColorStop(1, BRAND2);
+    c.fillStyle = g;
+    c.fillRect(ar.x, ar.y, ar.w, ar.h);
+    c.restore();
+  }
 
-  // 品牌 logo + 标题
-  drawImg(c, document.getElementById("logo"), base, 13);
+  // 竖分隔线（两列之间的 border-left）
+  var body = card.querySelector(".body");
+  if (body){
+    var br = rectOf(body, base);
+    card.querySelectorAll(".col.side, .foot").forEach(function(el){
+      var r = rectOf(el, base);
+      c.fillStyle = getComputedStyle(el).borderLeftColor;
+      c.fillRect(r.x, br.y, 1, br.h);
+    });
+  }
+
+  // 左列
+  drawImg(c, document.getElementById("logo"), base, 12);
   fillTextEl(c, card.querySelector(".app"), {}, base);
   fillTextEl(c, card.querySelector(".sub"), {}, base);
-
-  // 右上角胶囊
   var tag = card.querySelector(".tag");
   if (tag) fillPill(c, tag, base);
-
-  // 主标语（内含 <span> 强调色，交给富文本渲染器折行上色）
   fillRich(c, card.querySelector(".headline"), base);
 
-  // 特性胶囊
-  card.querySelectorAll(".chip").forEach(function(chip){ fillPill(c, chip, base); });
-
-  // 正文：按元素宽度自己折行（canvas 不会自动换行）
   var desc = document.getElementById("desc");
   if (desc){
     var dr = rectOf(desc, base);
@@ -384,31 +407,24 @@ function render(){
     c.fillStyle = ds.color;
     c.textAlign = "left";
     c.textBaseline = "top";
-    var dlh = parseFloat(ds.lineHeight) || (parseFloat(ds.fontSize) * 1.85);
-    var lines = wrapLines(c, txt(desc), dr.w);
-    lines.forEach(function(line, i){
+    var dlh = parseFloat(ds.lineHeight) || (parseFloat(ds.fontSize) * 1.78);
+    wrapLines(c, txt(desc), dr.w).forEach(function(line, i){
       c.fillText(line, dr.x, dr.y + i * dlh + (dlh - parseFloat(ds.fontSize)) / 2);
     });
   }
 
-  // 平台行
+  // 中列
+  card.querySelectorAll(".chip").forEach(function(chip){ fillPill(c, chip, base); });
   var plat = card.querySelector(".plat");
   if (plat){
     fillTextEl(c, plat.querySelector(".k"), {}, base);
     fillTextEl(c, plat.querySelector(".v"), {}, base);
   }
 
-  // 页脚：顶线 + 二维码 + 官网 + 提示
-  var foot = card.querySelector(".foot");
-  if (foot){
-    var fs = getComputedStyle(foot);
-    var fr = rectOf(foot, base);
-    c.fillStyle = fs.borderTopColor;
-    c.fillRect(fr.x, fr.y, fr.w, 1);
-  }
-  drawImg(c, document.getElementById("qr"), base, 8);
-  fillTextEl(c, document.getElementById("url"), {}, base);
-  fillTextEl(c, card.querySelector(".foothint"), {}, base);
+  // 右列（二维码 + 官网 + 提示）
+  drawImg(c, document.getElementById("qr"), base, 10);
+  fillTextEl(c, document.getElementById("url"), { align: "center" }, base);
+  fillLines(c, card.querySelector(".foothint"), base);
 
   return cv;
 }
@@ -445,7 +461,8 @@ document.getElementById("copy").addEventListener("click", function(){
   }
 });
 
-/* 语言切换：只换带 data-* 的文案（标题里的 <span> 用 innerHTML 保留强调色） */
+/* 语言切换：只换带 data-* 的文案（含 <span> 的用 innerHTML 保留强调色，
+   含 <br> 的同样保留换行） */
 document.querySelectorAll(".lang button").forEach(function(btn){
   btn.addEventListener("click", function(){
     var lang = btn.getAttribute("data-lang");
@@ -456,7 +473,7 @@ document.querySelectorAll(".lang button").forEach(function(btn){
     document.querySelectorAll("[data-zh]").forEach(function(el){
       var v = el.getAttribute("data-" + key);
       if (v == null) return;
-      if (el.querySelector("span")) el.innerHTML = v;
+      if (el.querySelector("span, br")) el.innerHTML = v;
       else el.textContent = v;
     });
   });
