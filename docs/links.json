@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-03",
+  "updated": "2026-10-07",
   "links": [
     {
       "name": {
@@ -14,6 +14,19 @@
       },
       "url": "https://www.BA4IZZ.cn",
       "logo": "https://www.BA4IZZ.cn/logo.png"
+    },
+    {
+      "name": {
+        "zh": "APRS.TV",
+        "zh-TW": "APRS.TV",
+        "en": "APRS.TV"
+      },
+      "desc": {
+        "zh": "APRS 实时地图与直播服务",
+        "zh-TW": "APRS 即時地圖與直播服務",
+        "en": "Live APRS map and streaming service"
+      },
+      "url": "https://aprs.tv"
     }
   ]
 }

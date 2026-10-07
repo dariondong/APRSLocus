@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>APRSLocus 名片 · Ham Card</title>
+<style>
+  :root{
+    --ink:#1b2233;
+    --sub:#5b6478;
+    --line:#e8ebf3;
+    --brand:#3b6ef5;
+    --brand2:#0ea5b7;
+    --gold:#b8891f;
+    --goldbg:#fbf3da;
+    --card:#ffffff;
+    --bg0:#eef2f9;
+    --bg1:#e3e9f4;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0}
+  body{
+    min-height:100vh;display:flex;flex-direction:column;align-items:center;
+    justify-content:center;gap:18px;padding:28px 16px;
+    background:radial-gradient(1200px 600px at 50% -10%,var(--bg0),var(--bg1));
+    font-family:"PingFang SC","Hiragino Sans GB","Microsoft YaHei",
+                system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans SC",
+                "Noto Sans CJK SC",sans-serif;
+    color:var(--ink);
+  }
+
+  /* ---------- 名片本体 ---------- */
+  .card{
+    position:relative;width:400px;max-width:100%;
+    background:var(--card);border-radius:22px;
+    box-shadow:0 24px 60px -18px rgba(29,45,90,.28),
+               0 6px 18px -8px rgba(29,45,90,.14);
+    overflow:hidden;
+  }
+  .card::before{ /* 顶部渐变条 */
+    content:"";position:absolute;inset:0 0 auto 0;height:6px;
+    background:linear-gradient(90deg,var(--brand),var(--brand2));
+  }
+
+  .hdr{display:flex;align-items:center;gap:12px;padding:26px 26px 16px}
+  .hdr-t{display:flex;flex-direction:column;gap:3px;min-width:0}
+  .app{font-size:23px;font-weight:800;letter-spacing:.2px;line-height:1.15}
+  .sub{font-size:12.5px;color:var(--sub)}
+  .tag{
+    margin-left:auto;font-size:11.5px;font-weight:700;color:var(--brand);
+    background:#eef3fe;border:1px solid #dbe5fd;border-radius:999px;
+    padding:5px 11px;white-space:nowrap;
+  }
+
+  .hr{height:1px;background:var(--line);margin:0 26px}
+
+  .hero{padding:20px 26px 8px;text-align:center}
+  .call{
+    font-size:44px;font-weight:800;letter-spacing:1px;line-height:1.05;
+    outline:none;
+  }
+  .headline{
+    margin-top:8px;font-size:13.5px;font-weight:700;color:var(--gold);
+    letter-spacing:.3px;
+  }
+
+  .info{padding:14px 26px 4px}
+  .row{display:flex;align-items:baseline;gap:14px;padding:9px 0}
+  .row + .row{border-top:1px dashed #eef1f7}
+  .k{flex:0 0 62px;font-size:12.5px;color:var(--sub)}
+  .v{flex:1;text-align:right;font-size:14px;font-weight:600;outline:none}
+  .v.sm{font-size:12.5px;font-weight:600;color:var(--sub)}
+
+  .honors{display:flex;flex-wrap:wrap;gap:8px;padding:8px 26px 2px}
+  .chip{
+    font-size:12.5px;font-weight:700;border-radius:999px;padding:7px 14px;
+    line-height:1;border:1px solid var(--line);color:var(--sub);
+    background:#f7f9fc;white-space:nowrap;
+  }
+  .chip.gold{
+    color:var(--gold);background:var(--goldbg);border-color:#f0e0ac;
+  }
+
+  .about{padding:16px 26px 6px}
+  .about p{
+    margin:0;font-size:12.5px;line-height:1.85;color:var(--sub);
+  }
+
+  .foot{
+    display:flex;align-items:center;gap:10px;
+    margin-top:16px;padding:16px 26px 22px;
+    border-top:1px solid var(--line);
+  }
+  .url{font-size:13px;font-weight:700;color:var(--brand);letter-spacing:.2px}
+  .de{margin-left:auto;font-size:13px;font-weight:700;color:var(--ink);letter-spacing:.4px}
+
+  /* ---------- 操作条 ---------- */
+  .bar{
+    width:400px;max-width:100%;display:flex;align-items:center;gap:10px;
+    flex-wrap:wrap;
+  }
+  .bar button{
+    font:inherit;font-size:14px;font-weight:700;cursor:pointer;
+    border:0;border-radius:12px;padding:12px 20px;color:#fff;
+    background:linear-gradient(140deg,var(--brand),var(--brand2));
+    box-shadow:0 10px 22px -12px rgba(59,110,245,.9);
+  }
+  .bar button.ghost{
+    background:#fff;color:var(--ink);border:1px solid var(--line);
+    box-shadow:0 6px 16px -12px rgba(29,45,90,.5);
+  }
+  .bar button:active{transform:translateY(1px)}
+  .lang{margin-left:auto;display:flex;gap:6px}
+  .lang button{
+    padding:9px 12px;font-size:13px;background:#fff;color:var(--sub);
+    border:1px solid var(--line);box-shadow:none;
+  }
+  .lang button.on{color:var(--brand);border-color:#c9d8fb;background:#eef3fe}
+  .hint{margin:0;font-size:12px;color:#8a93a8;text-align:center}
+
+  .toast{
+    position:fixed;left:50%;bottom:26px;transform:translate(-50%,20px);
+    background:#1b2233;color:#fff;font-size:13.5px;font-weight:600;
+    padding:11px 18px;border-radius:12px;opacity:0;pointer-events:none;
+    transition:opacity .22s,transform .22s;
+  }
+  .toast.on{opacity:1;transform:translate(-50%,0)}
+  #stage{display:none}
+</style>
+</head>
+<body>
+
+  <div class="card" id="card">
+    <div class="hdr">
+      <div class="hdr-t">
+        <div class="app">APRSLocus</div>
+        <div class="sub i18n"
+             data-zh="业余无线电 · APRS 客户端"
+             data-tw="業餘無線電 · APRS 用戶端"
+             data-en="Amateur radio · APRS client">业余无线电 · APRS 客户端</div>
+      </div>
+      <div class="tag i18n"
+           data-zh="名片" data-tw="名片" data-en="Ham Card">名片</div>
+    </div>
+
+    <div class="hr"></div>
+
+    <div class="hero">
+      <div class="call" id="call" contenteditable="true" spellcheck="false">BG7LZQ</div>
+      <div class="headline i18n"
+           data-zh="赠我以琼琚 · Gifted with Jade"
+           data-tw="贈我以瓊琚 · Gifted with Jade"
+           data-en="Gifted with Jade · 赠我以琼琚">赠我以琼琚 · Gifted with Jade</div>
+    </div>
+
+    <div class="info">
+      <div class="row">
+        <span class="k i18n" data-zh="呼号" data-tw="呼號" data-en="Call sign">呼号</span>
+        <span class="v" id="call2" contenteditable="true" spellcheck="false">BG7LZQ</span>
+      </div>
+      <div class="row">
+        <span class="k i18n" data-zh="荣誉" data-tw="榮譽" data-en="Honor">荣誉</span>
+        <span class="v i18n"
+              data-zh="赠我以琼琚" data-tw="贈我以瓊琚" data-en="Gifted with Jade">赠我以琼琚</span>
+      </div>
+      <div class="row">
+        <span class="k i18n" data-zh="组别" data-tw="組別" data-en="Group">组别</span>
+        <span class="v i18n"
+              data-zh="赞助支持" data-tw="贊助支持" data-en="Sponsorship support">赞助支持</span>
+      </div>
+      <div class="row">
+        <span class="k i18n" data-zh="平台" data-tw="平台" data-en="Platforms">平台</span>
+        <span class="v sm">Android · Windows · iOS · macOS</span>
+      </div>
+    </div>
+
+    <div class="honors">
+      <span class="chip gold i18n"
+            data-zh="赠我以琼琚" data-tw="贈我以瓊琚" data-en="Gifted with Jade">赠我以琼琚</span>
+      <span class="chip i18n"
+            data-zh="开源 · 六语言" data-tw="開源 · 六語言" data-en="Open source · 6 langs">开源 · 六语言</span>
+    </div>
+
+    <div class="about">
+      <p id="desc" data-zh="APRSLocus 是一个跨平台、多语言的业余无线电 APRS 客户端：实时台站与轨迹、消息收发、离线地图，支持 Android、Windows、iOS 与 macOS。"
+         data-tw="APRSLocus 是一個跨平台、多語言的業餘無線電 APRS 用戶端：即時台站與軌跡、訊息收發、離線地圖，支援 Android、Windows、iOS 與 macOS。"
+         data-en="APRSLocus is a cross-platform, multilingual APRS client — live stations and tracks, messaging, and offline maps across Android, Windows, iOS and macOS.">APRSLocus 是一个跨平台、多语言的业余无线电 APRS 客户端：实时台站与轨迹、消息收发、离线地图，支持 Android、Windows、iOS 与 macOS。</p>
+    </div>
+
+    <div class="foot">
+      <span class="url" id="url">aprslocus.theez.top</span>
+      <span class="de" id="de">73 de BG7LZQ</span>
+    </div>
+  </div>
+
+  <div class="bar">
+    <button id="save">保存图片</button>
+    <button id="copy" class="ghost">复制图片</button>
+    <div class="lang">
+      <button data-lang="zh" class="on">中</button>
+      <button data-lang="zh-TW">繁</button>
+      <button data-lang="en">EN</button>
+    </div>
+  </div>
+  <p class="hint">点击呼号或内容即可编辑 · 保存后可直接分享</p>
+
+  <div class="toast" id="toast"></div>
+
+<script>
+"use strict";
+
+/* ======================================================================
+   把名片渲染成 PNG。做法：直接读取页面上每个元素的几何与样式，
+   在 canvas 上按 3 倍像素重画一遍。好处是——保存出来的图和你看到的
+   完全一致，不用维护两套排版。中文用同样的字体栈，不会变豆腐块。
+   ====================================================================== */
+var S = 3;                       // 输出倍率，3 倍足够高清
+var BRAND = "#3b6ef5";
+var BRAND2 = "#0ea5b7";
+
+function roundRect(c, x, y, w, h, r){
+  r = Math.min(r, w / 2, h / 2);
+  c.beginPath();
+  c.moveTo(x + r, y);
+  c.arcTo(x + w, y,     x + w, y + h, r);
+  c.arcTo(x + w, y + h, x,     y + h, r);
+  c.arcTo(x,     y + h, x,     y,     r);
+  c.arcTo(x,     y,     x + w, y,     r);
+  c.closePath();
+}
+
+function rectOf(el, base){
+  var r = el.getBoundingClientRect();
+  return { x: r.left - base.left, y: r.top - base.top, w: r.width, h: r.height };
+}
+
+function fontOf(el){
+  var s = getComputedStyle(el);
+  var w = parseInt(s.fontWeight, 10);
+  if (isNaN(w)) w = 400;
+  // canvas 的 font 只认 400/700（normal/bold）；写成 600/750 之类会让整条
+  // font 判为非法并静默退回 10px —— 导出图会突然「全部变小」。
+  w = (w >= 600) ? 700 : 400;
+  return s.fontStyle + " " + w + " " + s.fontSize + " " + s.fontFamily;
+}
+
+function txt(el){ return el ? el.textContent.trim() : ""; }
+
+function fillTextEl(c, el, o, base){
+  if (!el) return;
+  var r = rectOf(el, base);
+  var s = getComputedStyle(el);
+  c.font = fontOf(el);
+  c.fillStyle = o.color || s.color;
+  c.textAlign = o.align || "left";
+  c.textBaseline = o.baseline || "middle";
+  var x;
+  if (o.align === "center") x = r.x + r.w / 2;
+  else if (o.align === "right") x = r.x + r.w;
+  else x = r.x;
+  c.fillText(txt(el), x, r.y + r.h / 2 + (o.dy || 0));
+}
+
+function wrapLines(c, text, maxW){
+  var out = [], cur = "";
+  // 按空白 + 逐字（中日韩 / 中文标点）切分：中文没有词间空格，
+  // 必须允许在任意汉字间断行。
+  var tokens = text.split(/(\s+|[\u4e00-\u9fff\u3000-\u303f，。；：、！？（）])/);
+  for (var i = 0; i < tokens.length; i++){
+    var t = tokens[i];
+    if (t === "") continue;
+    var test = cur + t;
+    if (c.measureText(test).width > maxW && cur !== ""){
+      out.push(cur.replace(/\s+$/, ""));
+      cur = /^\s+$/.test(t) ? "" : t;
+    } else {
+      cur = test;
+    }
+  }
+  if (cur.trim() !== "") out.push(cur.replace(/\s+$/, ""));
+  return out;
+}
+
+function render(){
+  var card = document.getElementById("card");
+  var base = card.getBoundingClientRect();
+  var W = base.width, H = base.height;
+
+  var cv = document.createElement("canvas");
+  cv.width = Math.round(W * S);
+  cv.height = Math.round(H * S);
+  var c = cv.getContext("2d");
+  c.scale(S, S);
+
+  // 卡片底 + 顶条
+  roundRect(c, 0, 0, W, H, 22);
+  c.fillStyle = "#ffffff";
+  c.fill();
+  c.save();
+  roundRect(c, 0, 0, W, H, 22);
+  c.clip();
+  var g = c.createLinearGradient(0, 0, W, 0);
+  g.addColorStop(0, BRAND);
+  g.addColorStop(1, BRAND2);
+  c.fillStyle = g;
+  c.fillRect(0, 0, W, 6);
+  c.restore();
+
+  card.querySelectorAll(".hr").forEach(function(el){
+    var r = rectOf(el, base);
+    c.fillStyle = getComputedStyle(el).backgroundColor;
+    c.fillRect(r.x, r.y, r.w, Math.max(1, r.h));
+  });
+
+  fillTextEl(c, card.querySelector(".app"), {}, base);
+  fillTextEl(c, card.querySelector(".sub"), {}, base);
+
+  // 右侧「名片」胶囊
+  var tag = card.querySelector(".tag");
+  if (tag){
+    var tr = rectOf(tag, base);
+    var ts = getComputedStyle(tag);
+    roundRect(c, tr.x, tr.y, tr.w, tr.h, tr.h / 2);
+    c.fillStyle = ts.backgroundColor;
+    c.fill();
+    c.lineWidth = 1;
+    c.strokeStyle = ts.borderTopColor;
+    c.stroke();
+    c.font = fontOf(tag);
+    c.fillStyle = ts.color;
+    c.textAlign = "center";
+    c.textBaseline = "middle";
+    c.fillText(txt(tag), tr.x + tr.w / 2, tr.y + tr.h / 2 + 1);
+  }
+
+  fillTextEl(c, card.querySelector(".call"), { align: "center", dy: 1 }, base);
+  fillTextEl(c, card.querySelector(".headline"), { align: "center" }, base);
+
+  card.querySelectorAll(".row").forEach(function(row){
+    fillTextEl(c, row.querySelector(".k"), {}, base);
+    fillTextEl(c, row.querySelector(".v"), { align: "right" }, base);
+  });
+
+  card.querySelectorAll(".chip").forEach(function(chip){
+    var r = rectOf(chip, base);
+    var s = getComputedStyle(chip);
+    roundRect(c, r.x, r.y, r.w, r.h, r.h / 2);
+    c.fillStyle = s.backgroundColor;
+    c.fill();
+    c.lineWidth = 1;
+    c.strokeStyle = s.borderTopColor;
+    c.stroke();
+    c.font = fontOf(chip);
+    c.fillStyle = s.color;
+    c.textAlign = "center";
+    c.textBaseline = "middle";
+    c.fillText(txt(chip), r.x + r.w / 2, r.y + r.h / 2 + 1);
+  });
+
+  // 正文：按元素宽度自己折行（canvas 不会自动换行）
+  var desc = document.getElementById("desc");
+  if (desc){
+    var dr = rectOf(desc, base);
+    var ds = getComputedStyle(desc);
+    c.font = fontOf(desc);
+    c.fillStyle = ds.color;
+    c.textAlign = "left";
+    c.textBaseline = "top";
+    var lh = parseFloat(ds.lineHeight) || (parseFloat(ds.fontSize) * 1.85);
+    var lines = wrapLines(c, txt(desc), dr.w);
+    lines.forEach(function(line, i){
+      c.fillText(line, dr.x, dr.y + i * lh + (lh - parseFloat(ds.fontSize)) / 2);
+    });
+  }
+
+  // 页脚分割线
+  var foot = card.querySelector(".foot");
+  if (foot){
+    var fs = getComputedStyle(foot);
+    var fr = rectOf(foot, base);
+    c.fillStyle = fs.borderTopColor;
+    c.fillRect(fr.x, fr.y, fr.w, 1);
+  }
+
+  fillTextEl(c, document.getElementById("url"), {}, base);
+  fillTextEl(c, document.getElementById("de"), { align: "right" }, base);
+
+  return cv;
+}
+
+/* ---------- 交互 ---------- */
+var toastEl = document.getElementById("toast");
+var toastT = null;
+function toast(msg){
+  toastEl.textContent = msg;
+  toastEl.classList.add("on");
+  clearTimeout(toastT);
+  toastT = setTimeout(function(){ toastEl.classList.remove("on"); }, 1800);
+}
+
+document.getElementById("save").addEventListener("click", function(){
+  var cv = render();
+  var a = document.createElement("a");
+  var call = (document.getElementById("call").textContent || "APRSLocus").trim();
+  a.download = "APRSLocus-card-" + call + ".png";
+  a.href = cv.toDataURL("image/png");
+  a.click();
+  toast("已保存 PNG");
+});
+
+document.getElementById("copy").addEventListener("click", function(){
+  var cv = render();
+  if (cv.toBlob && navigator.clipboard && window.ClipboardItem){
+    cv.toBlob(function(blob){
+      navigator.clipboard.write([new ClipboardItem({ "image/png": blob })])
+        .then(function(){ toast("已复制到剪贴板"); })
+        .catch(function(){ toast("复制失败，请用「保存图片」"); });
+    }, "image/png");
+  } else {
+    toast("此浏览器不支持复制，请用「保存图片」");
+  }
+});
+
+/* 编辑呼号时，页脚署名与文件名自动跟随 */
+var callEl = document.getElementById("call");
+var call2 = document.getElementById("call2");
+var de = document.getElementById("de");
+callEl.addEventListener("input", function(){
+  var v = callEl.textContent.trim();
+  call2.textContent = v;
+  de.textContent = "73 de " + v;
+});
+
+/* 语言切换：只换带 data-* 的静态文案，用户编辑过的内容不动 */
+document.querySelectorAll(".lang button").forEach(function(btn){
+  btn.addEventListener("click", function(){
+    var lang = btn.getAttribute("data-lang");
+    document.querySelectorAll(".lang button").forEach(function(b){
+      b.classList.toggle("on", b === btn);
+    });
+    document.querySelectorAll("[data-zh]").forEach(function(el){
+      var key = lang === "zh-TW" ? "tw" : (lang === "en" ? "en" : "zh");
+      var v = el.getAttribute("data-" + key);
+      if (v != null) el.textContent = v;
+    });
+  });
+});
+</script>
+</body>
+</html>
