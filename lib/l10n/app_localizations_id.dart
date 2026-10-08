@@ -13,7 +13,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get about => 'Tentang';
 
   @override
-  String get aboutSubtitle => 'Klien APRS lokal · pelacakan & peta';
+  String get aboutSubtitle => 'Klien APRS · pelacakan & peta';
 
   @override
   String get aboutTitle => 'Tentang';

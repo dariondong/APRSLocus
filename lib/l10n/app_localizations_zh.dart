@@ -13,7 +13,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get about => '关于';
 
   @override
-  String get aboutSubtitle => '本机 APRS 客户端 · 定位与地图';
+  String get aboutSubtitle => 'APRS 客户端 · 定位与地图';
 
   @override
   String get aboutTitle => '关于';
@@ -7750,7 +7750,7 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   String get about => '關於';
 
   @override
-  String get aboutSubtitle => '本機 APRS 用戶端 · 定位與地圖';
+  String get aboutSubtitle => 'APRS 用戶端 · 定位與地圖';
 
   @override
   String get aboutTitle => '關於';

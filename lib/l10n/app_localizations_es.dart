@@ -13,7 +13,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get about => 'Acerca de';
 
   @override
-  String get aboutSubtitle => 'Cliente APRS local · seguimiento y mapa';
+  String get aboutSubtitle => 'Cliente APRS · seguimiento y mapa';
 
   @override
   String get aboutTitle => 'Acerca de';
