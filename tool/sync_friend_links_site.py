@@ -65,6 +65,20 @@ def esc(v):
             .replace('>', '&gt;').replace('"', '&quot;'))
 
 
+def logo_src(logo, lang):
+    """友链 logo 的 src。
+
+    logo 可能是外站 URL，也可能是仓库内资产（本项目给没有图标的站点**自制**
+    了一张，放在 docs/assets/）。后者在根页与子目录页引用的相对路径不同：
+    根页 `assets/x.png`，子页 `../assets/x.png` —— 与站内其它资产写法一致。
+    """
+    if not logo:
+        return ''
+    if logo.startswith(('http://', 'https://', '//', 'data:')):
+        return logo
+    return ('../' + logo) if lang != 'zh' else logo
+
+
 def render(links, lang):
     title, note = HEAD[lang]
     out = [OPEN,
@@ -78,7 +92,7 @@ def render(links, lang):
         name = pick(lk.get('name'), lang)
         desc = pick(lk.get('desc'), lang)
         url = lk.get('url') or ''
-        logo = lk.get('logo') or ''
+        logo = logo_src(lk.get('logo') or '', lang)
         img = ('<img class="link-card-logo" src="%s" alt="%s" loading="lazy" '
                'referrerpolicy="no-referrer">' % (esc(logo), esc(name))
                ) if logo else ''

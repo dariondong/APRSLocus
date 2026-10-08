@@ -36,12 +36,12 @@
         "en": "OpenRF Portal"
       },
       "desc": {
-        "zh": "OpenRF 门户是一个业余无线电社区平台，提供 DMR ID 注册审核、APRS 实时地图、设备绑定配网及社区动态分享。",
-        "zh-TW": "OpenRF 入口網站是一個業餘無線電社群平台，提供 DMR ID 註冊審核、APRS 即時地圖、裝置綁定配網及社群動態分享。",
-        "en": "OpenRF Portal is an amateur radio community platform offering DMR ID registration review, live APRS maps, device binding & network setup, and community updates."
+        "zh": "业余无线电社区平台",
+        "zh-TW": "業餘無線電社群平台",
+        "en": "Amateur radio community platform"
       },
       "url": "https://openrf.radiowo.com",
-      "logo": ""
+      "logo": "assets/openrf.png"
     }
   ]
 }
