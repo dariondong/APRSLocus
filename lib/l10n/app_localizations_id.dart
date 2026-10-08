@@ -8056,4 +8056,7 @@ Dengan menekan "Setuju dan sambung", Anda menyatakan telah membaca, memahami, da
     return 'Menyertakan $n hari riwayat lintasan';
   }
 
+  @override
+  String get sendPositionBeacon => 'Pancarkan beacon posisi';
+
 }

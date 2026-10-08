@@ -376,12 +376,26 @@ class _MessagesPageState extends State<MessagesPage> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          // 页面标题。（原来这里还有「瀑布流 / 会话」切换器；瀑布流已按需求移除，
-                          // 只剩会话模式，切换器随之删掉 —— 一个只有一边的开关比没有更让人困惑。）
-                          Text(S.of(context).messages,
-                              style: T.h1,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis),
+                          // 页面标题 + 右侧「发射位置信标」。（原来这里还有「瀑布流 / 会话」
+                          // 切换器；瀑布流已按需求移除，切换器随之删掉 —— 一个只有一边的
+                          // 开关比没有更让人困惑。）
+                          //
+                          // 标题用 Expanded 吃掉剩余宽度（与 _listHead 同理）：长标题（英文）
+                          // 否则会把右侧按钮顶出容器；窄面板（2.0 横屏把本页装进 ≤560 的
+                          // 左栏）下按钮降级成纯图标，文案走 Tooltip。
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Text(S.of(context).messages,
+                                    style: T.h1,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis),
+                              ),
+                              const SizedBox(width: 10),
+                              _sendBeaconButton(context, st,
+                                  compact: _compactPane),
+                            ],
+                          ),
                           const SizedBox(height: 14),
                           Expanded(
                             child: narrow
@@ -993,6 +1007,76 @@ class _MessagesPageState extends State<MessagesPage> {
             borderRadius: BorderRadius.circular(8),
           ),
           child: Icon(icon, size: 15, color: fg),
+        ),
+      ),
+    );
+  }
+
+  /// 标题右侧「发射位置信标」：手动发一次位置信标（不改自动上报开关）。
+  ///
+  /// 与地图页的「立即上报」同源（[AppState.sendBeacon] → force），但按用户
+  /// 说法用「发射」措辞。窄面板（[compact]，2.0 横屏把消息页装进 ≤560 左栏）
+  /// 下标题已占满宽度，按钮降级成纯图标 + Tooltip，避免把标题压没。
+  Widget _sendBeaconButton(BuildContext context, AppState st,
+      {required bool compact}) {
+    final label = S.of(context).sendPositionBeacon;
+    // ⚠ 与地图页关键区别：不能 `Navigator.pop` —— 消息页不是弹层路由，pop 会把
+    // 整个页面/外壳弹掉，人还在消息页看着，点了却跳出应用。这里只用 SnackBar
+    // 反馈，不 pop。
+    void send() {
+      st.sendBeacon();
+      // 上报闸（myPositionReportable）会挡住「还没本轮定位」的点；如实反馈，
+      // 别弹一条假的「已发送」。
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(st.myPositionReportable
+              ? S.of(context).positionBeaconDetail(
+                  st.myGrid, st.beaconAttachedDetail)
+              : S.of(context).beaconWaitingFix),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    }
+
+    final fg = C.green;
+    final bg = C.greenBg;
+    if (compact) {
+      return Tooltip(
+        message: label,
+        child: GestureDetector(
+          onTap: send,
+          child: Container(
+            height: 34,
+            width: 40,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: bg,
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Icon(Icons.send_rounded, size: 17, color: fg),
+          ),
+        ),
+      );
+    }
+    return GestureDetector(
+      onTap: send,
+      child: Container(
+        height: 34,
+        padding: const EdgeInsets.symmetric(horizontal: 14),
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: bg,
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(Icons.send_rounded, size: 16, color: fg),
+            const SizedBox(width: 6),
+            Text(label,
+                maxLines: 1,
+                style: ts(12.5, c: fg, w: FontWeight.w600)),
+          ],
         ),
       ),
     );

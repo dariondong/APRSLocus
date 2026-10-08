@@ -1,5 +1,71 @@
 # 更新日志
 
+## [2.0.40] - 2026-10-08
+
+### 新增：消息页标题右侧「发射位置信标」按钮
+
+**需求**
+
+- 用户要求：在消息页的消息大标题右侧，添加一个「发射位置信标」的按钮。
+
+**改动**
+
+- 消息页标题行改为「标题 + 右侧按钮」：`lib/messages_page.dart` 把原来的标题
+  `Text` 换成 `Row`，标题用 `Expanded` 吃掉剩余宽度，右侧放「发射位置信标」按钮。
+  点击调用 `AppState.sendBeacon()`（与地图页「立即上报」同一动作），手动发射一次
+  位置信标，不改动自动上报开关。
+- **不在按钮里 `Navigator.pop`**：消息页不是弹层路由（地图页那个上报按钮在弹层内），
+  照搬 map_page 的 `Navigator.pop` 会把整个页面/外壳弹掉。改用 `SnackBar` 反馈，
+  与地图页同样按 `myPositionReportable` 区分「已发射（含网格与附带项）」与
+  「等待定位」。
+- **窄容器降级**：2.0 横屏把消息页装进 ≤560 的左侧面板时，标题已占满宽度，按钮
+  降级成纯图标 + `Tooltip`（`_compactPane` 判据），避免标题被压没。
+- l10n：六语言新增 `sendPositionBeacon`
+  （发射位置信标 / 發射位置信標 / Transmit position beacon /
+  位置ビーコンを送信 / Transmitir baliza de posición / Pancarkan beacon posisi）。
+
+**测试**
+
+- 纯 UI 改动，无新增逻辑分支；静态检查（`tool/check_*.py`、`check_l10n_sync.py`）
+  全部通过，`flutter analyze` 由 CI 复核。
+
+---
+
+## [2.0.40] - 2026-10-08 (English)
+
+### New: "Transmit position beacon" button beside the Messages title
+
+**Request**
+
+- The user asked for a "Transmit position beacon" button to the right of the
+  Messages page's large title.
+
+**Changes**
+
+- The Messages title row is now "title + button": `lib/messages_page.dart`
+  replaces the plain title `Text` with a `Row` where the title is `Expanded`
+  and the button sits on the right. Tapping it calls `AppState.sendBeacon()`
+  (the same action as the map page's "Beacon now"), firing one position beacon
+  without touching the automatic-report toggle.
+- **No `Navigator.pop` in the button**: the Messages page is not a sheet route
+  (the map button lives inside one), so copying map_page's `Navigator.pop`
+  would pop the whole page/shell. It reports via `SnackBar` instead, branching
+  on `myPositionReportable` just like the map page, between "beacon transmitted
+  (grid + attachments)" and "waiting for a fix".
+- **Narrow-container fallback**: when 2.0 landscape puts the Messages page in a
+  ≤560 left panel the title already fills the width, so the button degrades to
+  an icon + `Tooltip` (via the `_compactPane` check) rather than crushing the
+  title.
+- l10n: a new `sendPositionBeacon` key across all six locales.
+
+**Tests**
+
+- UI-only change with no new logic branches; static checks
+  (`tool/check_*.py`, `check_l10n_sync.py`) all pass and `flutter analyze`
+  is re-verified in CI.
+
+---
+
 ## [2.0.39] - 2026-10-08
 
 ### 新增：备份包含历史轨迹 / 关于页文案去掉「本机」

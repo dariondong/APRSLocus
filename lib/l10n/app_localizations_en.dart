@@ -8046,4 +8046,7 @@ By tapping "Agree and connect" you confirm that you have read, understood, and a
     return 'Includes $n days of track history';
   }
 
+  @override
+  String get sendPositionBeacon => 'Transmit position beacon';
+
 }

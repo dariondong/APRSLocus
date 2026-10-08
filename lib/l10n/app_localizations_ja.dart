@@ -7835,4 +7835,7 @@ class AppLocalizationsJa extends AppLocalizations {
     return '$n 日分の走行履歴を含む';
   }
 
+  @override
+  String get sendPositionBeacon => '位置ビーコンを送信';
+
 }

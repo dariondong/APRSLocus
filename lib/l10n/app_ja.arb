@@ -2804,5 +2804,6 @@
   "backupTracks": "{n} 日分の走行履歴を含む",
   "@backupTracks": {
     "placeholders": {"n": {"type": "int"}}
-  }
+  },
+  "sendPositionBeacon": "位置ビーコンを送信"
 }

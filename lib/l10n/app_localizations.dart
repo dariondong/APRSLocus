@@ -13806,6 +13806,12 @@ abstract class AppLocalizations {
   /// **'包含 {n} 天的历史轨迹'**
   String backupTracks(int n);
 
+  /// No description provided for @sendPositionBeacon.
+  ///
+  /// In zh, this message translates to:
+  /// **'发射位置信标'**
+  String get sendPositionBeacon;
+
 }
 
 class _AppLocalizationsDelegate

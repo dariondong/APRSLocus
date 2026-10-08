@@ -2804,5 +2804,6 @@
   "backupTracks": "Incluye {n} días de historial de rutas",
   "@backupTracks": {
     "placeholders": {"n": {"type": "int"}}
-  }
+  },
+  "sendPositionBeacon": "Transmitir baliza de posición"
 }

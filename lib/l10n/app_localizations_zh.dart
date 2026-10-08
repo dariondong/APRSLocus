@@ -7745,6 +7745,9 @@ class AppLocalizationsZh extends AppLocalizations {
     return '包含 $n 天的历史轨迹';
   }
 
+  @override
+  String get sendPositionBeacon => '发射位置信标';
+
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
@@ -15498,5 +15501,8 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   String backupTracks(int n) {
     return '包含 $n 天的歷史軌跡';
   }
+
+  @override
+  String get sendPositionBeacon => '發射位置信標';
 
 }

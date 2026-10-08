@@ -204,6 +204,26 @@ CARDS = [
 # 只列「重点版本」：中间几十个纯修 bug 的版本归纳进文字说明，完整记录指向 Releases。
 CL = [
     {
+        'ver': 'v2.0.40', 'date': '2026-10-08',
+        'items': [
+            ('new',
+             T('**消息页「发射位置信标」按钮**：消息页大标题右侧新增一键按钮，'
+               '随手手动发射一次位置信标（与地图页「立即上报」同一动作），'
+               '不改动自动上报开关；位置还没就绪时如实提示「等待定位」，'
+               '窄面板下自动缩为图标。',
+               '**訊息頁「發射位置信標」按鈕**：訊息頁大標題右側新增一鍵按鈕，'
+               '隨手手動發射一次位置信標（與地圖頁「立即上報」同一動作），'
+               '不改動自動上報開關；位置還沒就緒時如實提示「等待定位」，'
+               '窄面板下自動縮為圖示。',
+               '**"Transmit position beacon" button on Messages**: a one-tap button '
+               'sits to the right of the Messages page title, firing a single position '
+               'beacon on demand (the same action as the map page\'s "Beacon now") '
+               'without touching the automatic-report toggle; when no fix is ready it '
+               'says "waiting for a fix" honestly, and collapses to an icon in narrow '
+               'panels.')),
+        ],
+    },
+    {
         'ver': 'v2.0.39', 'date': '2026-10-08',
         'items': [
             ('new',

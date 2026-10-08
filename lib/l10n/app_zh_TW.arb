@@ -3308,5 +3308,6 @@
   "backupTracks": "包含 {n} 天的歷史軌跡",
   "@backupTracks": {
     "placeholders": {"n": {"type": "int"}}
-  }
+  },
+  "sendPositionBeacon": "發射位置信標"
 }

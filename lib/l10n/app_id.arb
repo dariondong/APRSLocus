@@ -2804,5 +2804,6 @@
   "backupTracks": "Menyertakan {n} hari riwayat lintasan",
   "@backupTracks": {
     "placeholders": {"n": {"type": "int"}}
-  }
+  },
+  "sendPositionBeacon": "Pancarkan beacon posisi"
 }

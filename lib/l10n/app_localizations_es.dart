@@ -8096,4 +8096,7 @@ Al pulsar "Aceptar y conectar" confirmas que has leído, entendido y aceptado lo
     return 'Incluye $n días de historial de rutas';
   }
 
+  @override
+  String get sendPositionBeacon => 'Transmitir baliza de posición';
+
 }

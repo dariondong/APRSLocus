@@ -2720,5 +2720,6 @@
   "backupTracks": "Includes {n} days of track history",
   "@backupTracks": {
     "placeholders": {"n": {"type": "int"}}
-  }
+  },
+  "sendPositionBeacon": "Transmit position beacon"
 }
