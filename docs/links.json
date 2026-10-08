@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-07",
+  "updated": "2026-10-08",
   "links": [
     {
       "name": {
@@ -28,6 +28,20 @@
       },
       "url": "https://aprs.tv",
       "logo": "https://aprs.tv/pwa-icons/apple-touch-icon.png"
+    },
+    {
+      "name": {
+        "zh": "OpenRF 门户",
+        "zh-TW": "OpenRF 入口網站",
+        "en": "OpenRF Portal"
+      },
+      "desc": {
+        "zh": "OpenRF 门户是一个业余无线电社区平台，提供 DMR ID 注册审核、APRS 实时地图、设备绑定配网及社区动态分享。",
+        "zh-TW": "OpenRF 入口網站是一個業餘無線電社群平台，提供 DMR ID 註冊審核、APRS 即時地圖、裝置綁定配網及社群動態分享。",
+        "en": "OpenRF Portal is an amateur radio community platform offering DMR ID registration review, live APRS maps, device binding & network setup, and community updates."
+      },
+      "url": "https://openrf.radiowo.com",
+      "logo": ""
     }
   ]
 }
