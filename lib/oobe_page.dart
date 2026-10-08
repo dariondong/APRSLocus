@@ -122,13 +122,7 @@ class _OobePageState extends State<OobePage> {
         break;
     }
     if (_step >= 6) {
-      // 步骤 6（服务器）：强调 passcode 重要性，默认值弹确认
-      final pc = _pass.text.trim().isEmpty ? '-1' : _pass.text.trim();
-      if (pc == '-1') {
-        _confirmDefaultPasscode();
-      } else {
-        _finish();
-      }
+      _finish();
       return;
     }
     // 先更新 _step 再动画到显式目标页：动画中重复点击也不会再触发逻辑
@@ -164,61 +158,6 @@ class _OobePageState extends State<OobePage> {
     final target = _step - 1;
     setState(() => _step = target);
     _goTo(target);
-  }
-
-  /// 默认 Passcode（-1）确认提示：强调未验证无法正常收发消息
-  void _confirmDefaultPasscode() {
-    showDialog(
-      context: context,
-      builder: (ctx) => MaterialSurface(
-        radius: 16,
-        child: AlertDialog(
-          backgroundColor: C.sheetFill,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-          title: Row(
-            children: [
-              Icon(Icons.warning_amber_rounded, color: C.orange, size: 22),
-              SizedBox(width: 8),
-              Expanded(
-                child: Text(
-                  S.of(context).oobePasscodeMissing,
-                  style: ts(16, w: FontWeight.w700),
-                ),
-              ),
-            ],
-          ),
-          content: Text(
-            S.of(context).oobePasscodeMissingDesc,
-            style: ts(13, c: C.slate, h: 1.6),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(ctx);
-                _finish();
-              },
-              child: Text(
-                S.of(context).continueAnyway,
-                style: ts(13, c: C.orange, w: FontWeight.w600),
-              ),
-            ),
-            FilledButton(
-              style: FilledButton.styleFrom(
-                backgroundColor: C.blue,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
-              onPressed: () => Navigator.pop(ctx),
-              child: Text(
-                S.of(context).fillPasscode,
-                style: ts(13, c: Colors.white, w: FontWeight.w700),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
   }
 
   Future<void> _finish() async {

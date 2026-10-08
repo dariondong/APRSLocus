@@ -8059,4 +8059,85 @@ Dengan menekan "Setuju dan sambung", Anda menyatakan telah membaca, memahami, da
   @override
   String get sendPositionBeacon => 'Pancarkan beacon posisi';
 
+  @override
+  String get strategyMap => "Peta taktis";
+
+  @override
+  String get strategyMapHint => "Bagikan titik, rute, dan titik kumpul dengan grup lewat pesan APRS";
+
+  @override
+  String get strategyPickGroup => "Pilih grup";
+
+  @override
+  String get strategyNeedGroup => "Gabung atau pilih grup dulu";
+
+  @override
+  String get strategyNoGroup => "Gabung ke grup untuk memakai peta taktis";
+
+  @override
+  String get strategyAddPoint => "Titik";
+
+  @override
+  String get strategyAddLine => "Garis";
+
+  @override
+  String get strategyAddCircle => "Lingkaran";
+
+  @override
+  String get strategyAddRally => "Titik kumpul";
+
+  @override
+  String get strategyNavigate => "Navigasi";
+
+  @override
+  String get strategyEditInfo => "Edit info";
+
+  @override
+  String get strategyDeleteItem => "Hapus";
+
+  @override
+  String get strategyClearAll => "Kosongkan layer";
+
+  @override
+  String get strategyClearConfirm => "Kosongkan semua titik, rute, dan titik kumpul grup ini? Ini disinkronkan ke semua anggota.";
+
+  @override
+  String get strategyLabel => "Nama";
+
+  @override
+  String get strategyLabelHint => "Beri nama titik ini (opsional)";
+
+  @override
+  String get strategyRadius => "Radius (m)";
+
+  @override
+  String get strategyRadiusHint => "Radius dalam meter, mis. 800";
+
+  @override
+  String get strategySend => "Bagikan";
+
+  @override
+  String get strategyShared => "Dibagikan ke grup";
+
+  @override
+  String get strategyEmpty => "Layer masih kosong —— pakai alat di bawah untuk menaruh titik atau titik kumpul";
+
+  @override
+  String get strategySnapshot => "Sinkron";
+
+  @override
+  String get strategyLineHint => "Ketuk titik di peta (minimal 2), ketuk Selesai untuk mengakhiri";
+
+  @override
+  String get strategyNeedTwoPoints => "Garis butuh minimal dua titik";
+
+  @override
+  String strategyItemOf(String call) => "Dibagikan oleh $call";
+
+  @override
+  String get strategyPan => "Geser";
+
+  @override
+  String get strategySendFailed => "Tampil lokal, tapi gagal kirim (cek koneksi)";
+
 }

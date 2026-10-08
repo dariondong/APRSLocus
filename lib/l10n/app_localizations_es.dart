@@ -8099,4 +8099,85 @@ Al pulsar "Aceptar y conectar" confirmas que has leído, entendido y aceptado lo
   @override
   String get sendPositionBeacon => 'Transmitir baliza de posición';
 
+  @override
+  String get strategyMap => "Mapa táctico";
+
+  @override
+  String get strategyMapHint => "Comparte puntos, rutas y puntos de reunión con tu grupo mediante mensajes APRS";
+
+  @override
+  String get strategyPickGroup => "Elegir grupo";
+
+  @override
+  String get strategyNeedGroup => "Únete o elige un grupo primero";
+
+  @override
+  String get strategyNoGroup => "Únete a un grupo para usar el mapa táctico";
+
+  @override
+  String get strategyAddPoint => "Punto";
+
+  @override
+  String get strategyAddLine => "Línea";
+
+  @override
+  String get strategyAddCircle => "Círculo";
+
+  @override
+  String get strategyAddRally => "Punto de reunión";
+
+  @override
+  String get strategyNavigate => "Navegar";
+
+  @override
+  String get strategyEditInfo => "Editar datos";
+
+  @override
+  String get strategyDeleteItem => "Eliminar";
+
+  @override
+  String get strategyClearAll => "Vaciar capa";
+
+  @override
+  String get strategyClearConfirm => "¿Vaciar todos los puntos, rutas y puntos de reunión compartidos del grupo? Se sincroniza con todo el equipo.";
+
+  @override
+  String get strategyLabel => "Nombre";
+
+  @override
+  String get strategyLabelHint => "Pon un nombre a este punto (opcional)";
+
+  @override
+  String get strategyRadius => "Radio (m)";
+
+  @override
+  String get strategyRadiusHint => "Radio en metros, p. ej. 800";
+
+  @override
+  String get strategySend => "Compartir";
+
+  @override
+  String get strategyShared => "Compartido al grupo";
+
+  @override
+  String get strategyEmpty => "La capa está vacía: usa las herramientas de abajo para poner un punto o un punto de reunión";
+
+  @override
+  String get strategySnapshot => "Sincronizar";
+
+  @override
+  String get strategyLineHint => "Toca puntos en el mapa (mínimo 2), pulsa Listo para terminar";
+
+  @override
+  String get strategyNeedTwoPoints => "Una línea necesita al menos dos puntos";
+
+  @override
+  String strategyItemOf(String call) => "Compartido por $call";
+
+  @override
+  String get strategyPan => "Mover";
+
+  @override
+  String get strategySendFailed => "Mostrado localmente, pero no enviado (revisa la conexión)";
+
 }

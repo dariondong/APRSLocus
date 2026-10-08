@@ -8049,4 +8049,85 @@ By tapping "Agree and connect" you confirm that you have read, understood, and a
   @override
   String get sendPositionBeacon => 'Transmit position beacon';
 
+  @override
+  String get strategyMap => "Strategy map";
+
+  @override
+  String get strategyMapHint => "Share points, routes and meeting points with your group over APRS messages";
+
+  @override
+  String get strategyPickGroup => "Pick group";
+
+  @override
+  String get strategyNeedGroup => "Join or pick a group first";
+
+  @override
+  String get strategyNoGroup => "Join a group to use the strategy map";
+
+  @override
+  String get strategyAddPoint => "Point";
+
+  @override
+  String get strategyAddLine => "Line";
+
+  @override
+  String get strategyAddCircle => "Circle";
+
+  @override
+  String get strategyAddRally => "Meeting point";
+
+  @override
+  String get strategyNavigate => "Navigate";
+
+  @override
+  String get strategyEditInfo => "Edit info";
+
+  @override
+  String get strategyDeleteItem => "Delete";
+
+  @override
+  String get strategyClearAll => "Clear layer";
+
+  @override
+  String get strategyClearConfirm => "Clear all shared points, routes and meeting points in this group? This syncs to every teammate.";
+
+  @override
+  String get strategyLabel => "Name";
+
+  @override
+  String get strategyLabelHint => "Name this point (optional)";
+
+  @override
+  String get strategyRadius => "Radius (m)";
+
+  @override
+  String get strategyRadiusHint => "Radius in metres, e.g. 800";
+
+  @override
+  String get strategySend => "Share";
+
+  @override
+  String get strategyShared => "Shared to group";
+
+  @override
+  String get strategyEmpty => "Layer is empty — use the tools below to drop a point or meeting point";
+
+  @override
+  String get strategySnapshot => "Sync";
+
+  @override
+  String get strategyLineHint => "Tap points on the map (at least 2), tap Done to finish";
+
+  @override
+  String get strategyNeedTwoPoints => "A line needs at least two points";
+
+  @override
+  String strategyItemOf(String call) => "Shared by $call";
+
+  @override
+  String get strategyPan => "Pan";
+
+  @override
+  String get strategySendFailed => "Shown locally, but not sent (check connection)";
+
 }

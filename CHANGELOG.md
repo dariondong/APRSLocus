@@ -1,5 +1,99 @@
 # 更新日志
 
+## [2.0.41] - 2026-10-03
+
+### 新增：群内「策略地图」+ 台站长按快捷消息；移除 OOBE Passcode 提示
+
+**需求**
+
+- 移除 OOBE（首次启动引导）里的「获取 Passcode」提示。
+- 地图上长按 beacon / 台站，弹出快捷消息面板。
+- 设计并实现**策略地图**：与队友 / 群组共享**标点、线、圈、集合点**，
+  复用现有群组，数据经 APRS 消息传输。
+- 画出的点支持**跳转导航**，并可编辑附带信息；UI 协调、实用。
+- 发版。
+
+**改动**
+
+- **OOBE**（`lib/oobe_page.dart`）：去掉 Passcode 获取提示。
+- **长按快捷消息**（`lib/map_page.dart`）：台站 / 信标标记加入长按入口，
+  新增 `_showQuickMessage(Station s)`，复用现有发送与 l10n 链路；
+  顺带修掉 `FocusNode` 的 dispose 风险（改 `autofocus`）。
+- **策略地图**：
+  - `lib/strategy_map.dart`（新增）：`StrategyKind` / `StrategyItem` 模型与
+    `StrategyProto` 编解码。帧前缀 `$M`（如 `$M1 P YW3 39.1,116.1 救援`），
+    与群协议零冲突；任何输入都保证帧 ≤ 67 字符，超长的线**自动分片**
+    （`L <ID> <i>/<n> …`，收齐才落图）。
+  - `lib/strategy_map_page.dart`（新增）：策略地图页 —— 地图 + 元素图层 +
+    底部工具条（标点 / 划线 / 圈 / 集合点 / 平移）。单击放点或选中元素、
+    双击元素跳转导航；选中后可「导航 / 编辑信息 / 删除」；「清空图层」同步全群。
+  - `lib/state.dart`：策略元素的持久化（`strategyItems`）、收信分发
+    （`$M` 帧**不进聊天列表**）、发送 / 更新 / 删除 / 快照 API；
+    元素 owner 统一取**去 SSID 的基呼号**。
+  - `lib/map_page.dart`：右侧工具列新增「策略地图」入口（无群提示先建群，
+    多群弹选择）。
+  - `lib/backup.dart`：`strategyItems` 归入群聊备份分组，换机不丢图层。
+  - l10n：六语言补齐策略地图文案；并修正划线提示为「点『完成』结束」。
+- **测试**：`test/strategy_map_test.dart`（编解码往返、67 上限、分片、
+  畸形帧拒绝、ID 生成）。
+- 设计文档：`STRATEGY-MAP.md`（含设计稿与实现现状的差异说明）。
+
+**测试**
+
+- `tool/check_*.py`、`check_l10n_sync.py` 全部通过；`flutter analyze/test`
+  由 CI 复核。
+
+---
+
+## [2.0.41] - 2026-10-03 (English)
+
+### New: in-group "Strategy Map" + long-press quick message; remove OOBE passcode hint
+
+**Request**
+
+- Remove the "get Passcode" hint from OOBE (first-run guide).
+- Long-press a beacon/station on the map to open a quick-message sheet.
+- Design and ship a **Strategy Map**: share **points, lines, circles and rally
+  points** with teammates/groups, reusing existing groups, transported over
+  APRS messages.
+- Elements support **jump-to-navigation** and editing attached info; UI must be
+  coherent and practical.
+- Cut a release.
+
+**Changes**
+
+- **OOBE** (`lib/oobe_page.dart`): removed the passcode hint.
+- **Quick message** (`lib/map_page.dart`): station/beacon markers gain a
+  long-press action via `_showQuickMessage(Station s)`, reusing the existing
+  send and l10n path; also fixed a `FocusNode` dispose hazard (use `autofocus`).
+- **Strategy Map**:
+  - `lib/strategy_map.dart` (new): `StrategyKind` / `StrategyItem` model and
+    `StrategyProto` codec. Frame prefix `$M` (e.g. `$M1 P YW3 39.1,116.1 救援`),
+    no clash with the group protocol; every frame is guaranteed ≤ 67 chars and
+    long lines are **auto-chunked** (`L <ID> <i>/<n> …`, assembled once complete).
+  - `lib/strategy_map_page.dart` (new): the strategy map page — map + element
+    layer + bottom toolbar (point / line / circle / rally / pan). Tap to place
+    or select, double-tap an element to jump to navigation; a selected element
+    supports "Navigate / Edit info / Delete"; "Clear layer" syncs to the group.
+  - `lib/state.dart`: persistence (`strategyItems`), inbound dispatch (`$M`
+    frames **never enter the chat list**), send/update/delete/snapshot APIs;
+    element owner is normalized to the **SSID-stripped base callsign**.
+  - `lib/map_page.dart`: "Strategy Map" entry on the right toolbar (prompts to
+    create a group when none, shows a picker when several).
+  - `lib/backup.dart`: `strategyItems` added to the chats backup group.
+  - l10n: strategy map strings added across six languages; line hint corrected
+    to "tap Done to finish".
+- **Tests**: `test/strategy_map_test.dart` (codec round-trip, 67-char cap,
+  chunking, malformed-frame rejection, ID generation).
+- Design doc: `STRATEGY-MAP.md` (with a design-vs-implementation section).
+
+**Testing**
+
+- All `tool/check_*.py` and `check_l10n_sync.py` pass; `flutter analyze/test`
+  is verified by CI.
+
+---
+
 ## [2.0.40] - 2026-10-08
 
 ### 新增：消息页标题右侧「发射位置信标」按钮

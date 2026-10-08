@@ -33,6 +33,7 @@ import 'box.dart';
 import 'pkwdwpl.dart';
 import 'diag.dart';
 import 'group_chat.dart';
+import 'strategy_map.dart';
 import 'igate.dart';
 import 'tnc.dart';
 import 'translate.dart';
@@ -114,7 +115,7 @@ class SmartBeaconTier {
 
 class AppState extends ChangeNotifier {
   /// 应用版本（用于信标备注、APRSlocus 识别）
-  static const appVersion = '2.0.40';
+  static const appVersion = '2.0.41';
   // 我的电台
   String myCall = 'BV2AAA';
   int mySsid = 0; // 0 = 无后缀, 1-15 = -1 到 -15
@@ -3473,6 +3474,16 @@ class AppState extends ChangeNotifier {
   final List<Packet> packets = [];
   final List<AprsMsg> messages;
   final List<ChatGroup> chatGroups = [];
+
+  /// 策略地图元素：`<群呼号>|<元素ID>` → 元素（自己的 + 群里收到的）。
+  /// 跨群同名 ID 靠 `groupId|id` 区分，见 [StrategyItem.key]。
+  final Map<String, StrategyItem> strategyItems = {};
+
+  /// 划线分片暂存：`<群>|<ID>` → 已收到的片（收齐才拼成一条线落图）。
+  final Map<String, Map<int, List<(double, double)>>> _lineParts = {};
+
+  /// 编号种子：每群每条新元素自增，生成短而不撞的 ID。
+  final Map<String, int> _strategySeq = {};
   bool _stationsDirty = false; // 台站列表有变更，待节流保存
   final List<LogEntry> logs = [];
   int unreadMessages = 0; // 未读消息数（侧边栏/底部导航角标）
@@ -3797,6 +3808,18 @@ class AppState extends ChangeNotifier {
           );
         } catch (_) {}
       }
+      // 加载策略地图元素
+      final stratJson = p.getString('strategyItems');
+      if (stratJson != null && stratJson.isNotEmpty) {
+        try {
+          final list = jsonDecode(stratJson) as List;
+          strategyItems.clear();
+          for (final j in list) {
+            final it = StrategyItem.fromJson(j as Map<String, dynamic>);
+            strategyItems[it.key] = it;
+          }
+        } catch (_) {}
+      }
       // 加载会话已读时间点
       final readJson = p.getString('readAt');
       if (readJson != null && readJson.isNotEmpty) {
@@ -3984,6 +4007,11 @@ class AppState extends ChangeNotifier {
       chatGroups.map((g) => g.toJson()).toList(),
     );
     await p.setString('chatGroups', groupsJson);
+    // 保存策略地图元素
+    final stratJson = jsonEncode(
+      strategyItems.values.map((e) => e.toJson()).toList(),
+    );
+    await p.setString('strategyItems', stratJson);
     // 主题（含用户自建的全部主题与当前激活项）
     await ThemeController.instance.saveTo(p);
   }
@@ -6508,6 +6536,25 @@ class AppState extends ChangeNotifier {
       _notify();
       return null;
     }
+    // ─── 策略地图帧（群内共享的标点/线/圈/集合点）───
+    // 与群协议一样只解析一次、命中的帧**不进聊天列表**（否则几十个元素会
+    // 把聊天记录冲掉）。策略帧前缀 `$M`，与 GroupProto 的命令字不冲突。
+    final strat = StrategyProto.parse(text);
+    if (strat != null) {
+      // 与群协议同源去重：同一帧可能经 APRS-IS 与射频/ iGate 重复送达。
+      final skey = 'S|${src.toUpperCase()}|${text.toUpperCase()}';
+      final snow = DateTime.now();
+      final sSeen = _seenProtoMsgs[skey];
+      if (sSeen != null && snow.difference(sSeen).inSeconds < 120) return null;
+      _seenProtoMsgs[skey] = snow;
+      if (_seenProtoMsgs.length > 200) {
+        _seenProtoMsgs.remove(_seenProtoMsgs.keys.first);
+      }
+      if (isGroupMsg && groupId != null) {
+        _ingestStrategy(src, groupId, strat);
+      }
+      return null;
+    }
     // ─── 协议消息处理（唯一入口：lib/group_chat.dart 已解析一次）───
     final proto = GroupProto.parse(text);
     if (proto != null) {
@@ -7899,6 +7946,266 @@ class AppState extends ChangeNotifier {
       final p = await SharedPreferences.getInstance();
       final json = jsonEncode(chatGroups.map((g) => g.toJson()).toList());
       p.setString('chatGroups', json);
+    } catch (_) {}
+  }
+
+  // ─── 策略地图（群内共享的标点/线/圈/集合点，走 APRS msg）───
+
+  /// 某群的策略元素（按最后修改时间排序，新元素在后，画图时后画的盖住先画的）。
+  List<StrategyItem> strategyOf(String groupCall) => strategyItems.values
+      .where((e) => e.groupCall == groupCall.toUpperCase())
+      .toList()
+    ..sort((a, b) => a.updatedAt.compareTo(b.updatedAt));
+
+  /// 群呼号 → 群记录
+  ChatGroup? _groupByCall(String groupCall) => chatGroups
+      .where((g) => g.groupCall.toUpperCase() == groupCall.toUpperCase())
+      .firstOrNull;
+
+  /// 去掉 SSID 的基呼号。元素 owner 一律用它 —— 收信头里的 `src` 带 `-7`，
+  /// 而本地 [myCall] 不带，不归一化就会把「自己发的」当成别人发的。
+  static String _baseCall(String call) =>
+      call.toUpperCase().replaceAll(RegExp(r'-\w+$'), '');
+
+  /// 生成一个群内不撞的短 ID
+  String _nextStrategyId(String groupCall) {
+    final gc = groupCall.toUpperCase();
+    var seq = (_strategySeq[gc] ?? 0) + 1;
+    // 与图上已有元素（含别人放的）去重，避免 ID 碰撞覆盖别人的元素
+    while (strategyItems.containsKey('$gc|${StrategyProto.makeId(myCall, seq)}')) {
+      seq++;
+    }
+    _strategySeq[gc] = seq;
+    return StrategyProto.makeId(myCall, seq);
+  }
+
+  /// 广播一条策略帧到群呼号（no-ack，避免每个成员都回 ack 造成噪声）。
+  /// 与 [sendGroupMessage] 一致：射频模式禁用群发（信道是广播、群呼号无人应答）。
+  bool _sendStrategyFrame(String groupCall, String frame) {
+    if (frame.isEmpty || groupCall.isEmpty) return false;
+    if (usingRf) {
+      _log(LogLevel.warn, '策略地图', '射频（TNC/音频）模式暂不支持策略地图广播，已中止');
+      _notify();
+      return false;
+    }
+    if (frame.length > StrategyProto.maxFrameLen) {
+      _log(LogLevel.warn, '策略地图', '单帧超长（${frame.length}），已中止');
+      return false;
+    }
+    final raw = AprsFmt.messageNoAck(
+      myFullCall,
+      groupCall,
+      frame,
+      AprsFmt.randId(),
+      path: txPath,
+    );
+    _trySend(raw);
+    _log(LogLevel.info, '策略地图', '发送到 $groupCall：$frame');
+    _pushPacket(
+      Packet(raw, myFullCall, 'APRS', 'message', DateTime.now(),
+          info: '策略地图 → $groupCall：$frame'),
+    );
+    return true;
+  }
+
+  /// 新增/更新一个策略元素：本地即刻落图，再广播出去。返回是否成功编码发送。
+  ///
+  /// [id] 为空表示新建；非空表示编辑既有元素（owner 仍是原作者，[updatedAt] 刷新）。
+  bool putStrategy(
+    String groupCall,
+    StrategyKind kind, {
+    required double lat,
+    required double lng,
+    String id = '',
+    int radiusM = 0,
+    List<(double, double)> path = const [],
+    String label = '',
+  }) {
+    final gc = groupCall.toUpperCase();
+    if (_groupByCall(gc) == null) return false;
+    final eid = id.isEmpty ? _nextStrategyId(gc) : id;
+    final item = StrategyItem(
+      id: eid,
+      kind: kind,
+      owner: _baseCall(myCall),
+      groupCall: gc,
+      updatedAt: DateTime.now().millisecondsSinceEpoch,
+      lat: lat,
+      lng: lng,
+      radiusM: radiusM,
+      path: path,
+      label: label,
+    );
+    strategyItems[item.key] = item;
+    unawaited(_saveStrategyNow());
+    final frames = StrategyProto.encode(item);
+    if (frames.isEmpty) {
+      _log(LogLevel.warn, '策略地图', '元素过长，未发送（$eid）');
+      _notify();
+      return false;
+    }
+    var ok = true;
+    for (final f in frames) {
+      ok = _sendStrategyFrame(gc, f) && ok;
+    }
+    _notify();
+    return ok;
+  }
+
+  /// 删除一个策略元素并广播 `D`。
+  void deleteStrategy(String groupCall, String id) {
+    final gc = groupCall.toUpperCase();
+    final key = '$gc|$id';
+    if (!strategyItems.containsKey(key)) return;
+    strategyItems.remove(key);
+    unawaited(_saveStrategyNow());
+    _sendStrategyFrame(gc, '\$M${StrategyProto.version} D $id');
+    _notify();
+  }
+
+  /// 请求群里每位成员重播自己的元素（`S`），用于新入群时补齐已有图层。
+  void requestStrategySnapshot(String groupCall) {
+    _sendStrategyFrame(
+      groupCall.toUpperCase(),
+      '\$M${StrategyProto.version} S',
+    );
+  }
+
+  /// 清空本群全部策略元素并广播 `X`。
+  void clearStrategy(String groupCall) {
+    final gc = groupCall.toUpperCase();
+    strategyItems.removeWhere((k, v) => v.groupCall == gc);
+    _lineParts.removeWhere((k, _) => k.startsWith('$gc|'));
+    unawaited(_saveStrategyNow());
+    _sendStrategyFrame(gc, '\$M${StrategyProto.version} X');
+    _notify();
+  }
+
+  /// 收到本人元素的快照请求 → 重播自己在该群的元素（让新成员看到图层）。
+  void _replySnapshot(String groupCall) {
+    final gc = groupCall.toUpperCase();
+    for (final it in strategyOf(gc)) {
+      if (it.owner != _baseCall(myCall)) continue;
+      for (final f in StrategyProto.encode(it)) {
+        _sendStrategyFrame(gc, f);
+      }
+    }
+  }
+
+  /// 处理一条收到的策略帧（[frame] 已由 [StrategyProto.parse] 解析）。
+  ///
+  /// 信任模型：只接受**本机已知群**的帧（由 [_parseIncomingMessage] 给出 groupId）；
+  /// 对他人元素只在“后写胜”时覆盖，且不允许把 owner 改成别人。
+  void _ingestStrategy(String src, String groupId, StrategyFrame frame) {
+    final g = chatGroups.where((g) => g.id == groupId).firstOrNull;
+    if (g == null) return;
+    final gc = g.groupCall.toUpperCase();
+    final key = '$gc|${frame.id}';
+    final now = DateTime.now().millisecondsSinceEpoch;
+
+    switch (frame.op) {
+      case 'X':
+        strategyItems.removeWhere((k, v) => v.groupCall == gc);
+        _lineParts.removeWhere((k, _) => k.startsWith('$gc|'));
+        _log(LogLevel.info, '策略地图', '$gc 图层被 ${src.toUpperCase()} 清空');
+        unawaited(_saveStrategyNow());
+        _notify();
+        return;
+      case 'S':
+        // 有人（可能是新成员）要快照 → 我重播自己的元素
+        _replySnapshot(gc);
+        _log(LogLevel.info, '策略地图', '${src.toUpperCase()} 请求快照，已重播本群元素');
+        return;
+      case 'D':
+        if (strategyItems.remove(key) != null) {
+          _lineParts.remove(key);
+          unawaited(_saveStrategyNow());
+          _notify();
+        }
+        return;
+      case 'P':
+      case 'R':
+      case 'C':
+        final kind = frame.kind!;
+        final radius = kind == StrategyKind.circle ? frame.radiusM : 0;
+        _upsertStrategy(StrategyItem(
+          id: frame.id,
+          kind: kind,
+          owner: _baseCall(src),
+          groupCall: gc,
+          updatedAt: now,
+          lat: frame.lat,
+          lng: frame.lng,
+          radiusM: radius,
+          label: frame.label,
+        ));
+        return;
+      case 'L':
+        _ingestLine(src, gc, frame, now);
+        return;
+    }
+  }
+
+  /// 划线分片聚合：收齐 [StrategyFrame.partTotal] 片后才拼成一条线落图。
+  void _ingestLine(String src, String gc, StrategyFrame frame, int now) {
+    final key = '$gc|${frame.id}';
+    if (frame.partTotal <= 1) {
+      _upsertStrategy(StrategyItem(
+        id: frame.id,
+        kind: StrategyKind.line,
+        owner: _baseCall(src),
+        groupCall: gc,
+        updatedAt: now,
+        lat: frame.path.first.$1,
+        lng: frame.path.first.$2,
+        path: frame.path,
+        label: frame.label,
+      ));
+      return;
+    }
+    final parts = _lineParts.putIfAbsent(key, () => {});
+    parts[frame.partIndex] = frame.path;
+    if (parts.length < frame.partTotal) return; // 还没收齐
+    final merged = <(double, double)>[];
+    for (var i = 1; i <= frame.partTotal; i++) {
+      final seg = parts[i];
+      if (seg == null) return; // 缺片，继续等
+      merged.addAll(seg);
+    }
+    _lineParts.remove(key);
+    _upsertStrategy(StrategyItem(
+      id: frame.id,
+      kind: StrategyKind.line,
+      owner: _baseCall(src),
+      groupCall: gc,
+      updatedAt: now,
+      lat: merged.first.$1,
+      lng: merged.first.$2,
+      path: merged,
+    ));
+  }
+
+  /// 落图 + 冲突消解（同一 ID 后写胜；「后写」以本地到达顺序为准）。
+  void _upsertStrategy(StrategyItem it) {
+    strategyItems[it.key] = it;
+    if (strategyItems.length > 500) {
+      // 防膨胀：丢掉最早更新的元素（避免无限增长）
+      final oldest = strategyItems.values
+          .reduce((a, b) => a.updatedAt <= b.updatedAt ? a : b);
+      strategyItems.remove(oldest.key);
+    }
+    unawaited(_saveStrategyNow());
+    _notify();
+  }
+
+  /// 策略元素落盘（可 await，供备份导出前强制刷新）
+  Future<void> _saveStrategyNow() async {
+    try {
+      final p = await SharedPreferences.getInstance();
+      final json = jsonEncode(
+        strategyItems.values.map((e) => e.toJson()).toList(),
+      );
+      p.setString('strategyItems', json);
     } catch (_) {}
   }
 

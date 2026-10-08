@@ -7748,6 +7748,87 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String get sendPositionBeacon => '发射位置信标';
 
+  @override
+  String get strategyMap => "策略地图";
+
+  @override
+  String get strategyMapHint => "与同群队友共享标点、路线与集合点（经 APRS 消息）";
+
+  @override
+  String get strategyPickGroup => "选择群组";
+
+  @override
+  String get strategyNeedGroup => "请先加入或选择一个群组";
+
+  @override
+  String get strategyNoGroup => "先加入一个群组才能使用策略地图";
+
+  @override
+  String get strategyAddPoint => "标点";
+
+  @override
+  String get strategyAddLine => "划线";
+
+  @override
+  String get strategyAddCircle => "画圈";
+
+  @override
+  String get strategyAddRally => "集合点";
+
+  @override
+  String get strategyNavigate => "导航";
+
+  @override
+  String get strategyEditInfo => "编辑信息";
+
+  @override
+  String get strategyDeleteItem => "删除";
+
+  @override
+  String get strategyClearAll => "清空图层";
+
+  @override
+  String get strategyClearConfirm => "清空本群共享的全部标点、路线与集合点？此操作会同步给所有队友。";
+
+  @override
+  String get strategyLabel => "名称";
+
+  @override
+  String get strategyLabelHint => "为这个点起个名（可选）";
+
+  @override
+  String get strategyRadius => "半径（米）";
+
+  @override
+  String get strategyRadiusHint => "半径（米），例如 800";
+
+  @override
+  String get strategySend => "共享";
+
+  @override
+  String get strategyShared => "已共享到群";
+
+  @override
+  String get strategyEmpty => "图层还是空的 —— 用下方工具放一个标点或集合点";
+
+  @override
+  String get strategySnapshot => "同步";
+
+  @override
+  String get strategyLineHint => "依次点击地图放点（至少 2 个），点「完成」结束";
+
+  @override
+  String get strategyNeedTwoPoints => "划线至少需要两个点";
+
+  @override
+  String strategyItemOf(String call) => "由 $call 共享";
+
+  @override
+  String get strategyPan => "平移";
+
+  @override
+  String get strategySendFailed => "已显示，但未发送成功（请检查连接）";
+
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
@@ -15504,5 +15585,86 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get sendPositionBeacon => '發射位置信標';
+
+  @override
+  String get strategyMap => "策略地圖";
+
+  @override
+  String get strategyMapHint => "與同群隊友分享標點、路線與集合點（經 APRS 訊息）";
+
+  @override
+  String get strategyPickGroup => "選擇群組";
+
+  @override
+  String get strategyNeedGroup => "請先加入或選擇一個群組";
+
+  @override
+  String get strategyNoGroup => "先加入一個群組才能使用策略地圖";
+
+  @override
+  String get strategyAddPoint => "標點";
+
+  @override
+  String get strategyAddLine => "劃線";
+
+  @override
+  String get strategyAddCircle => "畫圈";
+
+  @override
+  String get strategyAddRally => "集合點";
+
+  @override
+  String get strategyNavigate => "導航";
+
+  @override
+  String get strategyEditInfo => "編輯資訊";
+
+  @override
+  String get strategyDeleteItem => "刪除";
+
+  @override
+  String get strategyClearAll => "清空圖層";
+
+  @override
+  String get strategyClearConfirm => "清空本群分享的全部標點、路線與集合點？此操作會同步給所有隊友。";
+
+  @override
+  String get strategyLabel => "名稱";
+
+  @override
+  String get strategyLabelHint => "為這個點起個名（可選）";
+
+  @override
+  String get strategyRadius => "半徑（公尺）";
+
+  @override
+  String get strategyRadiusHint => "半徑（公尺），例如 800";
+
+  @override
+  String get strategySend => "分享";
+
+  @override
+  String get strategyShared => "已分享至群組";
+
+  @override
+  String get strategyEmpty => "圖層還是空的 —— 用下方工具放一個標點或集合點";
+
+  @override
+  String get strategySnapshot => "同步";
+
+  @override
+  String get strategyLineHint => "依次點擊地圖放點（至少 2 個），點「完成」結束";
+
+  @override
+  String get strategyNeedTwoPoints => "劃線至少需要兩個點";
+
+  @override
+  String strategyItemOf(String call) => "由 $call 分享";
+
+  @override
+  String get strategyPan => "平移";
+
+  @override
+  String get strategySendFailed => "已顯示，但未傳送成功（請檢查連線）";
 
 }

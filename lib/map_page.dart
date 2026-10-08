@@ -13,6 +13,7 @@ import 'station_detail.dart';
 import 'tile_map.dart';
 import 'vector_map.dart';
 import 'immersive_page.dart';
+import 'strategy_map_page.dart';
 import 'track_groups_sheet.dart';
 import 'coord.dart';
 import 'material.dart';
@@ -925,6 +926,9 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
           onTapDown: (_) => setState(() => _selected = s),
           onDoubleTap: () => _openDetail(s),
           onTap: () => _animateToStation(s),
+          // 长按信标：呼出快速消息面板（就近发一条短信，不必先进消息页）。
+          // 命中区本来就是这颗标记自身的 56×56 方框，不会抢地图的长按手势。
+          onLongPress: () => _showQuickMessage(s),
           // **translucent**：标记与它身后的地图都收到这个指针，由手势竞技场裁决。
           // 用 opaque 会把地图的手势挡掉 —— 手指正好落在台站上时就没法缩放/拖动了。
           behavior: HitTestBehavior.translucent,
@@ -1394,6 +1398,147 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
     );
   }
 
+  /// 长按信标呼出的「快速消息」面板。
+  ///
+  /// 目标是从地图上直接给某个台站就近发一条短信，不用先进消息页再找会话。
+  /// - 输入框自动聚焦并带上收件人提示；
+  /// - 只有一个「发送」按钮，发送即调用 [AppState.sendMessage]（与消息页同一条路径，
+  ///   长度校验、翻译、待发队列等行为完全一致），不在此重复实现发送逻辑；
+  /// - 空白内容不允许发送，避免误触发出空报文。
+  void _showQuickMessage(Station s) {
+    final st = widget.state;
+    final ctrl = TextEditingController();
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) => Padding(
+        padding: EdgeInsets.only(bottom: MediaQuery.of(ctx).viewInsets.bottom),
+        child: MaterialSurface(
+          radius: 24,
+          topOnly: true,
+          child: Container(
+            decoration: BoxDecoration(
+              color: C.sheetFill,
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(24),
+              ),
+            ),
+            padding: const EdgeInsets.all(20),
+            child: SafeArea(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Container(
+                        width: 42,
+                        height: 42,
+                        decoration: BoxDecoration(
+                          color: s.color.withValues(alpha: 0.15),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Center(
+                          child: AprsSymbolImage(
+                            s.symbol,
+                            s.symbolTable,
+                            size: 24,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              S.of(ctx).sendMessageTo(s.call),
+                              style: ts(14, w: FontWeight.w800),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            const SizedBox(height: 2),
+                            Text(
+                              s.call,
+                              style: ts(11, c: C.slate),
+                            ),
+                          ],
+                        ),
+                      ),
+                      IconButton(
+                        onPressed: () => Navigator.pop(ctx),
+                        icon: const Icon(Icons.close_rounded, size: 20),
+                        color: C.slate,
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  TextField(
+                    controller: ctrl,
+                    autofocus: true,
+                    textInputAction: TextInputAction.send,
+                    maxLines: 3,
+                    minLines: 1,
+                    decoration: InputDecoration(
+                      hintText: S.of(ctx).sendToCallHint(s.call),
+                      filled: true,
+                      fillColor: C.surfaceFill,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide.none,
+                      ),
+                    ),
+                    onSubmitted: (v) {
+                      final text = v.trim();
+                      if (text.isEmpty) return;
+                      st.sendMessage(s.call, text);
+                      Navigator.pop(ctx);
+                    },
+                  ),
+                  const SizedBox(height: 12),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: TextButton(
+                          onPressed: () => Navigator.pop(ctx),
+                          child: Text(
+                            S.of(ctx).cancel,
+                            style: ts(13, c: C.slate, w: FontWeight.w600),
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: FilledButton(
+                          style: FilledButton.styleFrom(
+                            backgroundColor: C.blue,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                          onPressed: () {
+                            final text = ctrl.text.trim();
+                            if (text.isEmpty) return;
+                            st.sendMessage(s.call, text);
+                            Navigator.pop(ctx);
+                          },
+                          child: Text(
+                            S.of(ctx).send,
+                            style: ts(13, c: Colors.white, w: FontWeight.w700),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   // ─── 覆盖控件 ───
   /// 心率胶囊（主屏幕左上，最上面那一个）。
   ///
@@ -1662,6 +1807,14 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
         ),
         const SizedBox(height: 6),
         _toolBtn(
+          icon: Icons.flag_rounded,
+          onTap: _openStrategyMap,
+          bg: C.green.withValues(alpha: 0.14),
+          fg: C.green,
+          border: C.green.withValues(alpha: 0.4),
+        ),
+        const SizedBox(height: 6),
+        _toolBtn(
           icon: Icons.map_rounded,
           // ⚠ 必须带 ()：写成 `() => _showMapTypeMenu` 只是**返回这个函数本身**，
           // 从不调用它 —— 点下去等于什么都不做（用户报的「底图选择面板弹不出来」）。
@@ -1830,6 +1983,74 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
       ),
     );
     overlay.insert(entry);
+  }
+
+  /// 打开策略地图（先确定用哪个群）。
+  ///
+  /// 策略地图是**群维度**的功能：没有群就没法共享。有多个群时让用户选一个，
+  /// 只有一个群就直接进去，省一步点击。
+  void _openStrategyMap() {
+    final st = widget.state;
+    if (st.chatGroups.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(S.of(context).strategyNeedGroup),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+      return;
+    }
+    void open(ChatGroup g) => Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => StrategyMapPage(
+          state: st,
+          groupCall: g.groupCall,
+          groupName: g.name,
+        ),
+      ),
+    );
+    if (st.chatGroups.length == 1) {
+      open(st.chatGroups.first);
+      return;
+    }
+    showModalBottomSheet<void>(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) => MaterialSurface(
+        radius: 24,
+        topOnly: true,
+        child: Container(
+          decoration: BoxDecoration(
+            color: C.sheetFill,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+          ),
+          padding: const EdgeInsets.fromLTRB(16, 14, 16, 22),
+          child: SafeArea(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(S.of(ctx).strategyPickGroup,
+                    style: ts(16, w: FontWeight.w800)),
+                const SizedBox(height: 10),
+                for (final g in st.chatGroups)
+                  ListTile(
+                    contentPadding: EdgeInsets.zero,
+                    leading: const Icon(Icons.groups_rounded),
+                    title: Text(g.name, style: ts(14, w: FontWeight.w700)),
+                    subtitle: Text(g.groupCall, style: ts(11, c: C.slate)),
+                    onTap: () {
+                      Navigator.pop(ctx);
+                      open(g);
+                    },
+                  ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
   }
 
   /// 地图类型切换菜单

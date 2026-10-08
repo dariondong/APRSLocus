@@ -7838,4 +7838,85 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String get sendPositionBeacon => '位置ビーコンを送信';
 
+  @override
+  String get strategyMap => "戦略マップ";
+
+  @override
+  String get strategyMapHint => "同じグループの仲間とポイント・ルート・集合場所を APRS メッセージで共有";
+
+  @override
+  String get strategyPickGroup => "グループを選択";
+
+  @override
+  String get strategyNeedGroup => "先にグループに参加または選択してください";
+
+  @override
+  String get strategyNoGroup => "戦略マップを使うにはグループに参加してください";
+
+  @override
+  String get strategyAddPoint => "ポイント";
+
+  @override
+  String get strategyAddLine => "ライン";
+
+  @override
+  String get strategyAddCircle => "円";
+
+  @override
+  String get strategyAddRally => "集合場所";
+
+  @override
+  String get strategyNavigate => "ナビ";
+
+  @override
+  String get strategyEditInfo => "情報を編集";
+
+  @override
+  String get strategyDeleteItem => "削除";
+
+  @override
+  String get strategyClearAll => "レイヤーを消去";
+
+  @override
+  String get strategyClearConfirm => "このグループの共有ポイント・ルート・集合場所をすべて消去しますか？全員に同期されます。";
+
+  @override
+  String get strategyLabel => "名前";
+
+  @override
+  String get strategyLabelHint => "このポイントの名前（任意）";
+
+  @override
+  String get strategyRadius => "半径（m）";
+
+  @override
+  String get strategyRadiusHint => "半径（m）、例：800";
+
+  @override
+  String get strategySend => "共有";
+
+  @override
+  String get strategyShared => "グループに共有しました";
+
+  @override
+  String get strategyEmpty => "レイヤーは空です —— 下のツールでポイントや集合場所を置いてください";
+
+  @override
+  String get strategySnapshot => "同期";
+
+  @override
+  String get strategyLineHint => "地図をタップして点を置く（2 点以上）、「完了」で終了";
+
+  @override
+  String get strategyNeedTwoPoints => "ラインには 2 点以上必要です";
+
+  @override
+  String strategyItemOf(String call) => "$call が共有";
+
+  @override
+  String get strategyPan => "移動";
+
+  @override
+  String get strategySendFailed => "ローカルには表示、送信は未完了（接続を確認）";
+
 }

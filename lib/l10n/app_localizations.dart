@@ -13812,6 +13812,168 @@ abstract class AppLocalizations {
   /// **'发射位置信标'**
   String get sendPositionBeacon;
 
+  /// No description provided for @strategyMap.
+  ///
+  /// In zh, this message translates to:
+  /// **'策略地图'**
+  String get strategyMap;
+
+  /// No description provided for @strategyMapHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'与同群队友共享标点、路线与集合点（经 APRS 消息）'**
+  String get strategyMapHint;
+
+  /// No description provided for @strategyPickGroup.
+  ///
+  /// In zh, this message translates to:
+  /// **'选择群组'**
+  String get strategyPickGroup;
+
+  /// No description provided for @strategyNeedGroup.
+  ///
+  /// In zh, this message translates to:
+  /// **'请先加入或选择一个群组'**
+  String get strategyNeedGroup;
+
+  /// No description provided for @strategyNoGroup.
+  ///
+  /// In zh, this message translates to:
+  /// **'先加入一个群组才能使用策略地图'**
+  String get strategyNoGroup;
+
+  /// No description provided for @strategyAddPoint.
+  ///
+  /// In zh, this message translates to:
+  /// **'标点'**
+  String get strategyAddPoint;
+
+  /// No description provided for @strategyAddLine.
+  ///
+  /// In zh, this message translates to:
+  /// **'划线'**
+  String get strategyAddLine;
+
+  /// No description provided for @strategyAddCircle.
+  ///
+  /// In zh, this message translates to:
+  /// **'画圈'**
+  String get strategyAddCircle;
+
+  /// No description provided for @strategyAddRally.
+  ///
+  /// In zh, this message translates to:
+  /// **'集合点'**
+  String get strategyAddRally;
+
+  /// No description provided for @strategyNavigate.
+  ///
+  /// In zh, this message translates to:
+  /// **'导航'**
+  String get strategyNavigate;
+
+  /// No description provided for @strategyEditInfo.
+  ///
+  /// In zh, this message translates to:
+  /// **'编辑信息'**
+  String get strategyEditInfo;
+
+  /// No description provided for @strategyDeleteItem.
+  ///
+  /// In zh, this message translates to:
+  /// **'删除'**
+  String get strategyDeleteItem;
+
+  /// No description provided for @strategyClearAll.
+  ///
+  /// In zh, this message translates to:
+  /// **'清空图层'**
+  String get strategyClearAll;
+
+  /// No description provided for @strategyClearConfirm.
+  ///
+  /// In zh, this message translates to:
+  /// **'清空本群共享的全部标点、路线与集合点？此操作会同步给所有队友。'**
+  String get strategyClearConfirm;
+
+  /// No description provided for @strategyLabel.
+  ///
+  /// In zh, this message translates to:
+  /// **'名称'**
+  String get strategyLabel;
+
+  /// No description provided for @strategyLabelHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'为这个点起个名（可选）'**
+  String get strategyLabelHint;
+
+  /// No description provided for @strategyRadius.
+  ///
+  /// In zh, this message translates to:
+  /// **'半径（米）'**
+  String get strategyRadius;
+
+  /// No description provided for @strategyRadiusHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'半径（米），例如 800'**
+  String get strategyRadiusHint;
+
+  /// No description provided for @strategySend.
+  ///
+  /// In zh, this message translates to:
+  /// **'共享'**
+  String get strategySend;
+
+  /// No description provided for @strategyShared.
+  ///
+  /// In zh, this message translates to:
+  /// **'已共享到群'**
+  String get strategyShared;
+
+  /// No description provided for @strategyEmpty.
+  ///
+  /// In zh, this message translates to:
+  /// **'图层还是空的 —— 用下方工具放一个标点或集合点'**
+  String get strategyEmpty;
+
+  /// No description provided for @strategySnapshot.
+  ///
+  /// In zh, this message translates to:
+  /// **'同步'**
+  String get strategySnapshot;
+
+  /// No description provided for @strategyLineHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'依次点击地图放点（至少 2 个），双击结束'**
+  String get strategyLineHint;
+
+  /// No description provided for @strategyNeedTwoPoints.
+  ///
+  /// In zh, this message translates to:
+  /// **'划线至少需要两个点'**
+  String get strategyNeedTwoPoints;
+
+  /// No description provided for @strategyItemOf.
+  ///
+  /// In zh, this message translates to:
+  /// **'由 {call} 共享'**
+  String strategyItemOf(String call);
+
+  /// No description provided for @strategyPan.
+  ///
+  /// In zh, this message translates to:
+  /// **'平移'**
+  String get strategyPan;
+
+  /// No description provided for @strategySendFailed.
+  ///
+  /// In zh, this message translates to:
+  /// **'已显示，但未发送成功（请检查连接）'**
+  String get strategySendFailed;
+
 }
 
 class _AppLocalizationsDelegate

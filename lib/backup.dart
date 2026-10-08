@@ -159,8 +159,8 @@ const List<BackupGroupSpec> kBackupGroups = [
   BackupGroupSpec(BackupCategory.stations, ['stations']),
   // 消息记录：单聊消息 + 两套已读时间点
   BackupGroupSpec(BackupCategory.messages, ['messages', 'readAt', 'groupReadAt']),
-  // 群聊：群组、成员状态
-  BackupGroupSpec(BackupCategory.chats, ['chatGroups']),
+  // 群聊：群组、成员状态、群内共享的策略地图元素（标点/线/圈/集合点）
+  BackupGroupSpec(BackupCategory.chats, ['chatGroups', 'strategyItems']),
   // 翻译设置：接口/密钥/语言；缓存（translateCacheJson）是可直接再生成的，
   // 不放进备份（导入旧缓存反而会把新翻译顶掉）
   BackupGroupSpec(
