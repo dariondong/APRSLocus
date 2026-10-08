@@ -430,6 +430,7 @@ Android 端使用前台服务持续定位以保持 APRS 在线，可在"定位 /
 | **GitCode 仓库** | https://gitcode.com/DarionDong/APRSLocus |
 | **作者网站** | https://theez.top |
 | **QQ 交流群** | https://qm.qq.com/q/8pL6vc5YA0 |
+| **Discord 社群** | https://discord.gg/CqUKYJUfU |
 
 ---
 
