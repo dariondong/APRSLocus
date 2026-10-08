@@ -276,6 +276,12 @@ jobs:
       - name: Test steps persistence
         run: flutter test test/steps_persist_test.dart
 
+      # 备份/恢复（含 v2.0.39 的历史轨迹拼入）：导出/导入错了不会编译失败、
+      # analyze 也全绿，只会在用户换机那天才发现「少了东西」。轨迹载荷尤其
+      # 不能落进偏好白名单，否则一份伪造 JSON 就能改任意偏好。
+      - name: Test backup & restore
+        run: flutter test test/backup_test.dart
+
       - name: Analyze (tolerate known vector_map false positive)
         shell: bash
         run: |

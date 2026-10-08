@@ -1,6 +1,6 @@
 {
-  "version": 59,
-  "updated": "2026-10-07",
+  "version": 60,
+  "updated": "2026-10-08",
   "developers": [
     {
       "call": "BG7LZQ",
@@ -1720,6 +1720,54 @@
         "sower"
       ],
       "primary": "sower"
+    },
+    {
+      "call": "BD4TYW",
+      "who": {
+        "zh": "BD4TYW",
+        "zh-TW": "BD4TYW",
+        "en": "BD4TYW"
+      },
+      "role": {
+        "zh": "赞助支持",
+        "zh-TW": "贊助支持",
+        "en": "Sponsorship support"
+      },
+      "brief": {
+        "zh": "以琼琚相赠，为这束电波添一分续航。",
+        "zh-TW": "以瓊琚相贈，為這束電波添一分續航。",
+        "en": "Gifted with jade, adding a little more range to this signal."
+      },
+      "contrib": {
+        "zh": "馈赠支持 APRSlocus 的持续开发与运营，让这盏信标灯一直亮着。",
+        "zh-TW": "饋贈支持 APRSlocus 的持續開發與營運，讓這盞信標燈一直亮著。",
+        "en": "Gifted support for the ongoing development and operation of APRSlocus, keeping this beacon burning."
+      },
+      "quote": {
+        "zh": "投我琼琚，报以长波。",
+        "zh-TW": "投我瓊琚，報以長波。",
+        "en": "You gave jade; I answer with the long wave."
+      },
+      "tags": {
+        "zh": [
+          "馈赠支持",
+          "赞助"
+        ],
+        "zh-TW": [
+          "饋贈支持",
+          "贊助"
+        ],
+        "en": [
+          "Gift support",
+          "Sponsorship"
+        ]
+      },
+      "c": "#0EA5B7",
+      "grp": "support",
+      "honors": [
+        "jadeGift"
+      ],
+      "primary": "jadeGift"
     }
   ],
   "groups": [
