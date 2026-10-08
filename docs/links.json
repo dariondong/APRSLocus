@@ -31,6 +31,20 @@
     },
     {
       "name": {
+        "zh": "黑龙江省无线电运动协会",
+        "zh-TW": "黑龍江省無線電運動協會",
+        "en": "Heilongjiang Amateur Radio Association"
+      },
+      "desc": {
+        "zh": "黑龙江省无线电运动协会官方网站",
+        "zh-TW": "黑龍江省無線電運動協會官方網站",
+        "en": "Official website of the Heilongjiang Amateur Radio Association"
+      },
+      "url": "https://by2aa.org.cn",
+      "logo": "https://by2aa.org.cn/assets/images/logo.png"
+    },
+    {
+      "name": {
         "zh": "OpenRF 门户",
         "zh-TW": "OpenRF 入口網站",
         "en": "OpenRF Portal"
