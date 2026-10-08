@@ -2142,7 +2142,7 @@
     "placeholders": {"path": {"type": "String"}}
   },
   "backupCatSettings": "Pengaturan",
-  "backupCatSettingsDesc": "Stasiun, beacon, peta, filter, sumber, server",
+  "backupCatSettingsDesc": "Stasiun, beacon, peta, filter, sumber, server, riwayat lintasan",
   "backupCatStations": "Stasiun & kontak",
   "backupCatStationsDesc": "Favorit, kontak manual, dan catatannya",
   "backupCatMessages": "Pesan",
@@ -2800,5 +2800,9 @@
   "reportRfEnabledToast": "Beacon RF aktif — lapor otomatis dimulai",
   "reportEnabledToast": "Lapor otomatis diaktifkan",
   "reportDisabledToast": "Lapor otomatis dimatikan — hanya sekali",
-  "autoReportEntryHint": "Sakelar ini bisa diubah kapan saja di layar utama: ketuk tombol \"AUTO / SEKALI\" di peta (kiri-bawah / bilah bawah) untuk beralih, dan \"Lapor sekarang\" di sampingnya untuk kirim segera."
+  "autoReportEntryHint": "Sakelar ini bisa diubah kapan saja di layar utama: ketuk tombol \"AUTO / SEKALI\" di peta (kiri-bawah / bilah bawah) untuk beralih, dan \"Lapor sekarang\" di sampingnya untuk kirim segera.",
+  "backupTracks": "Menyertakan {n} hari riwayat lintasan",
+  "@backupTracks": {
+    "placeholders": {"n": {"type": "int"}}
+  }
 }

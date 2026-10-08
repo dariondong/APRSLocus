@@ -65,7 +65,7 @@ void main() {
       );
       final d = jsonDecode(json) as Map<String, dynamic>;
       expect(d['kind'], kBackupKind);
-      expect(d['schema'], 1);
+      expect(d['schema'], kBackupSchema);
       expect(d['appVersion'], '1.6.123');
       expect(d['exportedAt'], '2026-09-18T05:00:00.000Z');
       final groups = d['groups'] as Map<String, dynamic>;
@@ -280,6 +280,85 @@ void main() {
         (jsonDecode(again) as Map)['groups'],
         (jsonDecode(json) as Map)['groups'],
       );
+    });
+  });
+
+  group('历史轨迹拼入备份', () {
+    final day = <String, Object?>{
+      'day': '2026-09-18',
+      'points': [
+        {'lat': 25.0, 'lng': 121.5, 'time': '2026-09-18T05:00:00.000Z'},
+      ],
+    };
+
+    test('勾了设置才带轨迹；轨迹挂进 settings 组且不进白名单', () {
+      final json = buildBackupJson(
+        snapshot: const {'myCall': 'BV2AAA'},
+        categories: {BackupCategory.settings},
+        appVersion: '1.6.123',
+        platform: 'android',
+        trackDays: {'2026-09-18': day},
+      );
+      final groups = (jsonDecode(json) as Map)['groups'] as Map;
+      expect((groups['settings'] as Map)[kTrackPayloadKey], isA<Map>());
+
+      // 没勾设置（只勾消息）→ 即便传了轨迹也不带
+      final json2 = buildBackupJson(
+        snapshot: const {'messages': '[]'},
+        categories: {BackupCategory.messages},
+        appVersion: '1.6.123',
+        platform: 'android',
+        trackDays: {'2026-09-18': day},
+      );
+      final g2 = (jsonDecode(json2) as Map)['groups'] as Map;
+      expect(g2.containsKey('settings'), isFalse);
+    });
+
+    test('只有轨迹、没有偏好键时仍算一个设置分组', () {
+      final json = buildBackupJson(
+        snapshot: const {},
+        categories: {BackupCategory.settings},
+        appVersion: '1.6.123',
+        platform: 'android',
+        trackDays: {'2026-09-18': day},
+      );
+      final groups = (jsonDecode(json) as Map)['groups'] as Map;
+      expect(groups.keys, ['settings']);
+    });
+
+    test('解析：轨迹被单独取出，不进偏好白名单', () {
+      final d = parseBackupJson(jsonEncode({
+        'kind': kBackupKind,
+        'schema': 2,
+        'groups': {
+          'settings': {
+            'myCall': {'s': 'BV2AAA'},
+            kTrackPayloadKey: {'2026-09-18': day},
+          },
+        },
+      }));
+      expect(d.trackDays.length, 1);
+      expect(d.trackDays.containsKey('2026-09-18'), isTrue);
+      // 载荷不能落进偏好组
+      expect(d.groups[BackupCategory.settings]!.containsKey(kTrackPayloadKey),
+          isFalse);
+      // 显示条目数把轨迹算进去
+      expect(d.countOf(BackupCategory.settings), 1);
+      expect(d.displayCountOf(BackupCategory.settings), 2);
+    });
+
+    test('解析：只有轨迹的 settings 组仍保留并带上轨迹', () {
+      final d = parseBackupJson(jsonEncode({
+        'kind': kBackupKind,
+        'schema': 2,
+        'groups': {
+          'settings': {
+            kTrackPayloadKey: {'2026-09-18': day},
+          },
+        },
+      }));
+      expect(d.categories, [BackupCategory.settings]);
+      expect(d.trackDays.length, 1);
     });
   });
 

@@ -32,3 +32,9 @@ Future<String?> saveBackupFile(
   String mimeType = 'application/json',
 }) async =>
     null;
+
+/// Web 上历史轨迹本身不落盘（无 dart:io），备份自然也无轨迹可带。
+Future<Map<String, Object?>> loadTrackDays() async => const {};
+
+/// Web 上无处可写轨迹文件，导入时忽略轨迹载荷（偏好键仍照常应用）。
+Future<int> applyTrackDays(Map<String, Object?> raw) async => 0;

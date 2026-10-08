@@ -1,5 +1,72 @@
 # 更新日志
 
+## [2.0.39] - 2026-10-08
+
+### 新增：备份包含历史轨迹 / 关于页文案去掉「本机」
+
+**需求**
+
+- 用户要求：导出备份时要**包含历史轨迹**，否则换机后历史轨迹全丢。
+- 用户要求：关于页副标题不要「本机」，直接写「APRS 客户端」。
+
+**改动**
+
+- **备份包含历史轨迹**：历史轨迹原本只按天落在文件里
+  （`tracklog/YYYY-MM-DD.json`），不进「只认偏好键」的备份。现在把轨迹
+  **拼入「设置配置」分组** —— 勾了设置，导出的 JSON 里就多一份 `__tracks`
+  载荷（按天**原样搬运**，不做解码再编码，避免丢字段），导入时按**天**合并
+  写回（备份里没有的天保持本地不动），并在导入预览与完成提示里如实报告天数。
+  - 备份 schema 升到 **2**：v2 能读 v1（只增不减），遇到更高 schema 仍拒绝。
+  - `__tracks` 是不带类型标签的非偏好载荷，**不会**落进偏好白名单；
+    导入时按 `YYYY-MM-DD` 形状校验并做点数裁剪。
+  - Web 端不落盘轨迹，该载荷为空：导出照常、导入忽略。
+- **关于页副标题**去掉「本机 / 本機 / Local / lokal」限定词，六语言统一为
+  「APRS 客户端 · 定位与地图」（en: `APRS client · tracking & map`）。
+
+**测试**
+
+- `test/backup_test.dart` 增补：轨迹只在勾选设置时携带、只带轨迹的
+  `settings` 组仍成立、解析时轨迹被单独取出而不进白名单、显示条目数含轨迹。
+
+---
+
+## [2.0.39] - 2026-10-08 (English)
+
+### Backup now includes track history / About subtitle wording
+
+**Requests**
+
+- The user asked that **exported backups include track history**, otherwise the
+  history is lost when moving to a new device.
+- The About subtitle should drop "Local" and read "APRS client".
+
+**Changes**
+
+- **Backup includes track history.** Track history was stored only as per-day
+  files (`tracklog/YYYY-MM-DD.json`) and never entered the prefs-only backup.
+  It is now **folded into the "Settings" group**: with Settings selected, the
+  exported JSON carries an extra `__tracks` payload (moved **verbatim**, day by
+  day, with no decode-then-encode that could drop fields). On import the days are
+  **merged** back (days absent from the backup are left untouched), and the import
+  preview / done dialog reports the day count.
+  - Backup schema bumped to **2**: v2 reads v1 (additive only); a higher schema
+    is still rejected.
+  - `__tracks` is an untyped, non-preference payload and **never** reaches the
+    preference whitelist; on import it is validated by `YYYY-MM-DD` shape and the
+    per-day point cap.
+  - On Web there is no on-disk track log, so the payload is empty: export works
+    as usual, import ignores it.
+- **About subtitle** drops the "Local / 本机 / 本機 / lokal" qualifier in all six
+  locales, now "APRS client · tracking & map" (zh: APRS 客户端 · 定位与地图).
+
+**Tests**
+
+- Extended `test/backup_test.dart`: tracks are carried only when Settings is
+  selected, a tracks-only `settings` group still counts, parsing lifts tracks out
+  of the preference whitelist, and the displayed count includes track days.
+
+---
+
 ## [2.0.38] - 2026-10-07
 
 ### 新增：天地图图层（矢量 / 影像 / 地形）

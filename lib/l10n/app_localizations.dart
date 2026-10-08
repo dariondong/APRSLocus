@@ -13800,6 +13800,12 @@ abstract class AppLocalizations {
   /// **'将清除呼号、服务器、信标与界面等**全部设置**，以及台站、消息、日志、轨迹等**全部数据**，然后重新运行首次引导。此操作**不可恢复**。确定继续吗？'**
   String get factoryResetConfirm;
 
+  /// No description provided for @backupTracks.
+  ///
+  /// In zh, this message translates to:
+  /// **'包含 {n} 天的历史轨迹'**
+  String backupTracks(int n);
+
 }
 
 class _AppLocalizationsDelegate

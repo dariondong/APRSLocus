@@ -41,6 +41,9 @@ class _BackupPageState extends State<BackupPage> {
   /// 备份里是否带上主题引用的图片本体（默认带：备份的用途就是「换机搬走」）
   bool _withThemeImages = true;
 
+  /// 本机当前有多少天历史轨迹（设置分组把它算进去，也用于导出提示）
+  int _trackDayCount = 0;
+
   /// 本机各分组的条目数（用于告诉用户「这组有多少东西」）
   Map<BackupCategory, int> _counts = const {};
 
@@ -65,8 +68,16 @@ class _BackupPageState extends State<BackupPage> {
         snapshotFromPrefs(p),
         kBackupGroups.map((g) => g.id).toSet(),
       );
+      // 历史轨迹不走偏好键，单独数。失败当作 0：只是数字不准，不该让整页计数失败。
+      var days = 0;
+      try {
+        days = (await backup_io.loadTrackDays()).length;
+      } catch (_) {}
       if (!mounted) return;
-      setState(() => _counts = counts);
+      setState(() {
+        _counts = counts;
+        _trackDayCount = days;
+      });
     } catch (_) {}
   }
 
@@ -115,11 +126,20 @@ class _BackupPageState extends State<BackupPage> {
           if (images.isNotEmpty) snap[ThemeController.kPrefsKey] = attachImages(raw, images);
         }
       }
+      // 历史轨迹拼在「设置配置」组里一起走（见 backup.dart kTrackPayloadKey）。
+      // 轨迹文件可能不小，但它就是本机数据的一部分，故选了设置就带上。
+      var trackDays = const <String, Object?>{};
+      if (_expCats.contains(BackupCategory.settings)) {
+        try {
+          trackDays = await backup_io.loadTrackDays();
+        } catch (_) {}
+      }
       json = buildBackupJson(
         snapshot: snap,
         categories: _expCats.toSet(),
         appVersion: AppState.appVersion,
         platform: defaultTargetPlatform.name,
+        trackDays: trackDays,
       );
       if (!toFile) {
         await Clipboard.setData(ClipboardData(text: json));
@@ -273,9 +293,17 @@ class _BackupPageState extends State<BackupPage> {
 
     setState(() => _busy = true);
     BackupApplyResult? res;
+    var days = 0;
     try {
       res = await applyBackup(data, cats);
-      if (res.applied > 0) await st.reloadFromPrefs();
+      // 轨迹拼在设置分组里：本次勾了设置、且备份确实带了轨迹才写回。
+      // 以「天」为单位合并（见 TrackLogStore.importRawDays），不动本地其它天。
+      if (cats.contains(BackupCategory.settings) && data.trackDays.isNotEmpty) {
+        try {
+          days = await backup_io.applyTrackDays(data.trackDays);
+        } catch (_) {}
+      }
+      if (res.applied > 0 || days > 0) await st.reloadFromPrefs();
     } catch (_) {}
     if (!mounted) return;
     setState(() => _busy = false);
@@ -289,14 +317,15 @@ class _BackupPageState extends State<BackupPage> {
       _data = null;
       _impCats.clear();
     });
-    await _showImportedDialog(s, res);
+    await _showImportedDialog(s, res, days);
   }
 
-  Future<void> _showImportedDialog(S s, BackupApplyResult res) async {
+  Future<void> _showImportedDialog(S s, BackupApplyResult res, int days) async {
     final act = await showDialog<String>(
       context: context,
       builder: (ctx) {
         final parts = <String>[s.backupImported(res.applied)];
+        if (days > 0) parts.add(s.backupTracks(days));
         if (res.skipped > 0) parts.add(s.backupSkipped(res.skipped));
         parts.add(s.backupRestartHint);
         return AlertDialog(
@@ -471,7 +500,11 @@ class _BackupPageState extends State<BackupPage> {
                   s: s,
                   title: _catName(s, spec.id),
                   desc: _catDesc(s, spec.id),
-                  count: _counts[spec.id] ?? 0,
+                  // 设置分组把「历史轨迹」的天数一并计入，与实际导出内容一致
+                  count: (_counts[spec.id] ?? 0) +
+                      (spec.id == BackupCategory.settings
+                          ? _trackDayCount
+                          : 0),
                   value: _expCats.contains(spec.id),
                   color: C.green,
                   onChanged: (v) => setState(() {
@@ -481,6 +514,15 @@ class _BackupPageState extends State<BackupPage> {
                       _expCats.remove(spec.id);
                     }
                   }),
+                ),
+              // 勾了设置又真有轨迹时，明说「这份备份会带上 N 天轨迹」——
+              // 轨迹是文件数据，用户看不到它在偏好列表里，不讲清楚会以为没备
+              if (_expCats.contains(BackupCategory.settings) &&
+                  _trackDayCount > 0)
+                _tip(
+                  s.backupTracks(_trackDayCount),
+                  C.green,
+                  Icons.route_rounded,
                 ),
               if (_lastPath != null)
                 _tip(
@@ -595,6 +637,14 @@ class _BackupPageState extends State<BackupPage> {
                 style: ts(10, c: C.orange, h: 1.4),
               ),
             ],
+            // 备份里带了几天轨迹：导入前就告诉用户，免得以为只有偏好
+            if (data.trackDays.isNotEmpty) ...[
+              const SizedBox(height: 2),
+              Text(
+                s.backupTracks(data.trackDays.length),
+                style: ts(10, c: C.orange, h: 1.4),
+              ),
+            ],
           ],
         ),
       ),
@@ -603,7 +653,7 @@ class _BackupPageState extends State<BackupPage> {
           s: s,
           title: _catName(s, cat),
           desc: _catDesc(s, cat),
-          count: data.countOf(cat),
+          count: data.displayCountOf(cat),
           value: _impCats.contains(cat),
           color: C.orange,
           onChanged: (v) => setState(() {

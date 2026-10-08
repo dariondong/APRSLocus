@@ -609,7 +609,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get backupCatSettingsDesc =>
-      'Station, beacon, map, filters, sources, server';
+      'Station, beacon, map, filters, sources, server, track history';
 
   @override
   String get backupCatStations => 'Stations & contacts';
@@ -8040,5 +8040,10 @@ By tapping "Agree and connect" you confirm that you have read, understood, and a
 
   @override
   String get factoryResetConfirm => "This clears **all settings** (callsign, server, beacon, UI) and **all data** (stations, messages, logs, tracks), then runs the first-run wizard again. This **cannot be undone**. Continue?";
+
+  @override
+  String backupTracks(int n) {
+    return 'Includes $n days of track history';
+  }
 
 }

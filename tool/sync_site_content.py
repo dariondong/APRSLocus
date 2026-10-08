@@ -204,6 +204,35 @@ CARDS = [
 # 只列「重点版本」：中间几十个纯修 bug 的版本归纳进文字说明，完整记录指向 Releases。
 CL = [
     {
+        'ver': 'v2.0.39', 'date': '2026-10-08',
+        'items': [
+            ('new',
+             T('**备份包含历史轨迹**：导出备份时，「设置配置」分组会一并带上**历史轨迹**'
+               '（按天原样搬运），换机导入后轨迹照常保留、可继续翻账。备份格式升到 **v2**，'
+               '旧备份（v1）仍可导入；轨迹在导入时**按天合并**，本机较新的一天不会被旧'
+               '备份顶掉。轨迹是不带类型标签的独立载荷，不参与偏好白名单校验。',
+               '**備份包含歷史軌跡**：匯出備份時，「設定」分組會一併帶上**歷史軌跡**'
+               '（按天原樣搬運），換機匯入後軌跡照常保留、可繼續翻帳。備份格式升到 **v2**，'
+               '舊備份（v1）仍可匯入；軌跡在匯入時**按天合併**，本機較新的一天不會被舊'
+               '備份蓋掉。軌跡是不帶型別標籤的獨立酬載，不參與偏好白名單檢查。',
+               '**Backups include track history**: exporting a backup now folds **track '
+               'history** into the "Settings" group (moved verbatim, day by day), so the '
+               'history survives a device move and can still be reviewed. The backup schema '
+               'goes to **v2** while old v1 backups still import; on import, days are '
+               '**merged**, so a newer local day is not overwritten by an older backup. '
+               'Tracks travel as a separate, untyped payload outside the preference '
+               'whitelist.')),
+            ('up',
+             T('**关于页文案**：副标题去掉「本机」限定词，六语言统一为'
+               '「APRS 客户端 · 定位与地图」，不再让人误以为只在本机运行。',
+               '**關於頁文案**：副標題去掉「本機」限定詞，六語言統一為'
+               '「APRS 用戶端 · 定位與地圖」，不再讓人誤以為只在本機執行。',
+               '**About wording**: the subtitle drops the "Local" qualifier in all six '
+               'locales, now "APRS client · tracking & map", so it no longer implies the '
+               'app only runs locally.')),
+        ],
+    },
+    {
         'ver': 'v2.0.38', 'date': '2026-10-07',
         'items': [
             ('new',

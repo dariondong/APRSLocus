@@ -2142,7 +2142,7 @@
     "placeholders": {"path": {"type": "String"}}
   },
   "backupCatSettings": "設定",
-  "backupCatSettingsDesc": "局、ビーコン、地図、フィルター、接続先、サーバー",
+  "backupCatSettingsDesc": "局、ビーコン、地図、フィルター、接続先、サーバー、走行履歴",
   "backupCatStations": "局とコンタクト",
   "backupCatStationsDesc": "お気に入り・手動追加した局とメモ",
   "backupCatMessages": "メッセージ履歴",
@@ -2800,5 +2800,9 @@
   "reportRfEnabledToast": "RF ビーコンを有効化し、自動送信を開始しました",
   "reportEnabledToast": "自動送信を開始しました",
   "reportDisabledToast": "自動送信を停止しました（単発のみ）",
-  "autoReportEntryHint": "このスイッチはメイン画面でいつでも変更できます：地図左下/下部の「自動 / 単発」ボタンをタップで切替、隣の「今すぐ送信」で即時送信します。"
+  "autoReportEntryHint": "このスイッチはメイン画面でいつでも変更できます：地図左下/下部の「自動 / 単発」ボタンをタップで切替、隣の「今すぐ送信」で即時送信します。",
+  "backupTracks": "{n} 日分の走行履歴を含む",
+  "@backupTracks": {
+    "placeholders": {"n": {"type": "int"}}
+  }
 }

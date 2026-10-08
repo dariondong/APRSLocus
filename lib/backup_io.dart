@@ -6,6 +6,8 @@ import 'package:flutter/foundation.dart'
 import 'package:flutter/services.dart' show MethodChannel, PlatformException;
 import 'package:path_provider/path_provider.dart';
 
+import 'track_log.dart';
+
 /// 备份文件读写的平台实现（io 变体：Android / Windows / Linux / macOS）。
 ///
 /// 为什么不引第三方 file_picker：那要新增依赖与各平台插件配置，而本项目
@@ -184,3 +186,13 @@ Future<String?> saveBackupFile(
     return null;
   }
 }
+
+/// 读取本机全部历史轨迹（原始按天 JSON：`day → DayTrack.toJson()`），
+/// 供导出时拼入备份。存储未就绪（初始化失败）时返回空表，导出照常进行。
+Future<Map<String, Object?>> loadTrackDays() =>
+    TrackLogStore.instance.exportRawDays();
+
+/// 把备份里携带的历史轨迹写回本机，返回写入（或替换）的天数。
+/// 以「天」为单位合并：备份里没有的天保持本地不动。
+Future<int> applyTrackDays(Map<String, Object?> raw) =>
+    TrackLogStore.instance.importRawDays(raw);

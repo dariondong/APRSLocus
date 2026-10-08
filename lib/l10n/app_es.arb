@@ -2142,7 +2142,7 @@
     "placeholders": {"path": {"type": "String"}}
   },
   "backupCatSettings": "Ajustes",
-  "backupCatSettingsDesc": "Estación, baliza, mapa, filtros, fuentes, servidor",
+  "backupCatSettingsDesc": "Estación, baliza, mapa, filtros, fuentes, servidor, historial de rutas",
   "backupCatStations": "Estaciones y contactos",
   "backupCatStationsDesc": "Favoritos, contactos manuales y sus notas",
   "backupCatMessages": "Mensajes",
@@ -2800,5 +2800,9 @@
   "reportRfEnabledToast": "Baliza RF activada: reporte automático iniciado",
   "reportEnabledToast": "Reporte automático activado",
   "reportDisabledToast": "Reporte automático desactivado: solo única",
-  "autoReportEntryHint": "Puedes cambiarlo en cualquier momento desde la pantalla principal: toca el botón «AUTO / ÚNICA» del mapa (abajo-izquierda / barra inferior) para alternar, y «Reportar ahora» para enviar ya."
+  "autoReportEntryHint": "Puedes cambiarlo en cualquier momento desde la pantalla principal: toca el botón «AUTO / ÚNICA» del mapa (abajo-izquierda / barra inferior) para alternar, y «Reportar ahora» para enviar ya.",
+  "backupTracks": "Incluye {n} días de historial de rutas",
+  "@backupTracks": {
+    "placeholders": {"n": {"type": "int"}}
+  }
 }

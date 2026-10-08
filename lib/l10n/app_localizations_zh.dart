@@ -587,7 +587,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get backupCatSettings => '设置配置';
 
   @override
-  String get backupCatSettingsDesc => '电台、信标、地图、筛选、数据来源、服务器';
+  String get backupCatSettingsDesc => '电台、信标、地图、筛选、数据来源、服务器、历史轨迹';
 
   @override
   String get backupCatStations => '台站与联系人';
@@ -7740,6 +7740,11 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String get factoryResetConfirm => "将清除呼号、服务器、信标与界面等**全部设置**，以及台站、消息、日志、轨迹等**全部数据**，然后重新运行首次引导。此操作**不可恢复**。确定继续吗？";
 
+  @override
+  String backupTracks(int n) {
+    return '包含 $n 天的历史轨迹';
+  }
+
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
@@ -8324,7 +8329,7 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   String get backupCatSettings => '設定';
 
   @override
-  String get backupCatSettingsDesc => '電台、信標、地圖、篩選、資料來源、伺服器';
+  String get backupCatSettingsDesc => '電台、信標、地圖、篩選、資料來源、伺服器、歷史軌跡';
 
   @override
   String get backupCatStations => '臺站與聯絡人';
@@ -15488,5 +15493,10 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get factoryResetConfirm => "將清除呼號、伺服器、信標與介面等**全部設定**，以及台站、訊息、日誌、軌跡等**全部資料**，然後重新執行首次引導。此操作**不可恢復**。確定繼續嗎？";
+
+  @override
+  String backupTracks(int n) {
+    return '包含 $n 天的歷史軌跡';
+  }
 
 }

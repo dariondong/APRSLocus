@@ -617,7 +617,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get backupCatSettingsDesc =>
-      'Estación, baliza, mapa, filtros, fuentes, servidor';
+      'Estación, baliza, mapa, filtros, fuentes, servidor, historial de rutas';
 
   @override
   String get backupCatStations => 'Estaciones y contactos';
@@ -8090,5 +8090,10 @@ Al pulsar "Aceptar y conectar" confirmas que has leído, entendido y aceptado lo
 
   @override
   String get factoryResetConfirm => "Se borrarán **todos los ajustes** (indicativo, servidor, baliza, interfaz) y **todos los datos** (estaciones, mensajes, registros, trazas), y se reiniciará el asistente inicial. **No se puede deshacer**. ¿Continuar?";
+
+  @override
+  String backupTracks(int n) {
+    return 'Incluye $n días de historial de rutas';
+  }
 
 }

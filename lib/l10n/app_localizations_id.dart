@@ -611,7 +611,7 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get backupCatSettingsDesc =>
-      'Stasiun, beacon, peta, filter, sumber, server';
+      'Stasiun, beacon, peta, filter, sumber, server, riwayat lintasan';
 
   @override
   String get backupCatStations => 'Stasiun & kontak';
@@ -8050,5 +8050,10 @@ Dengan menekan "Setuju dan sambung", Anda menyatakan telah membaca, memahami, da
 
   @override
   String get factoryResetConfirm => "Menghapus **semua pengaturan** (call sign, server, beacon, antarmuka) dan **semua data** (stasiun, pesan, log, jejak), lalu menjalankan panduan awal lagi. **Tidak dapat dibatalkan**. Lanjutkan?";
+
+  @override
+  String backupTracks(int n) {
+    return 'Menyertakan $n hari riwayat lintasan';
+  }
 
 }

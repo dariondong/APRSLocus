@@ -588,7 +588,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get backupCatSettings => '設定';
 
   @override
-  String get backupCatSettingsDesc => '局、ビーコン、地図、フィルター、接続先、サーバー';
+  String get backupCatSettingsDesc => '局、ビーコン、地図、フィルター、接続先、サーバー、走行履歴';
 
   @override
   String get backupCatStations => '局とコンタクト';
@@ -7829,5 +7829,10 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get factoryResetConfirm => "コールサイン・サーバー・ビーコン・表示などの**全設定**、および局・メッセージ・ログ・軌跡などの**全データ**を消去し、初回ガイドを再実行します。**元に戻せません**。続行しますか？";
+
+  @override
+  String backupTracks(int n) {
+    return '$n 日分の走行履歴を含む';
+  }
 
 }

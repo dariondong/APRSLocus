@@ -22,13 +22,30 @@ import 'translate.dart';
 ///    SharedPreferences 的 `getDouble` 读到 int 值会抛类型错误。故每个值写成
 ///    `{"s": …} / {"b": …} / {"i": …} / {"d": …} / {"l": […]}`，
 ///    导入时按标签调用对应的 setter —— 即使文件被手工改过类型也不会把应用写坏。
+///
+/// 另有一类**不走偏好键**的载荷：历史轨迹是按天落在文件里的
+/// （见 lib/track_log.dart），且**拼入**「设置配置」分组随备份一起走
+/// ——见 [kTrackPayloadKey]。它是整份 JSON 原样搬运，不参与上面的类型标签。
 
 /// 备份文件的身份标识。导入时先认这个字段，避免把任意 JSON 当备份解析。
 const String kBackupKind = 'aprslocus-backup';
 
 /// 备份格式版本。只增不减；导入时遇到**更高**的 schema 会拒绝而不是猜。
 /// v1：分组 + 带类型标签的值。
-const int kBackupSchema = 1;
+/// v2：设置分组内可携带历史轨迹（[kTrackPayloadKey]）。v2 仍能读 v1。
+const int kBackupSchema = 2;
+
+/// 设置分组内携带历史轨迹的载荷键。
+///
+/// 之所以**拼入**设置分组、而不单开一个「轨迹」分组：轨迹就是「跟着设置一起
+/// 搬走」的本机数据，单开一组会让导出页多出一个大多数人不会去动的勾选框。
+///
+/// 值形如 `{ "2026-10-07": {…DayTrack.toJson…}, … }`，直接来自
+/// TrackLogStore 的按天 JSON，原样搬运（不做类型标签）。
+///
+/// 取名 `__tracks`：带下划线前缀，保证与任何真实偏好键不可能撞名 —— 否则
+/// 万一撞上，`parseBackupJson` 会把它当成未知值丢掉，或更糟地写进偏好。
+const String kTrackPayloadKey = '__tracks';
 
 /// 备份内容分组。新增分组时同时补 [kBackupGroups] 与 l10n 文案。
 enum BackupCategory { settings, stations, messages, chats, translate, honors, theme }
@@ -196,6 +213,9 @@ class BackupData {
   /// 分组 → （键 → 已解码的值）。只含白名单内的键。
   final Map<BackupCategory, Map<String, Object?>> groups;
 
+  /// 设置分组里携带的历史轨迹：`day → DayTrack.toJson()`。为空表示这份备份没带。
+  final Map<String, Object?> trackDays;
+
   /// 解析时被跳过的键数（白名单外/值类型不可识别）——用于向用户如实汇报
   final int skippedKeys;
 
@@ -205,6 +225,7 @@ class BackupData {
     required this.exportedAt,
     required this.platform,
     required this.groups,
+    this.trackDays = const {},
     this.skippedKeys = 0,
   });
 
@@ -220,6 +241,11 @@ class BackupData {
   }
 
   int countOf(BackupCategory id) => groups[id]?.length ?? 0;
+
+  /// 分组在 UI 上显示的条目数：设置分组把「带轨迹」也算作一项，
+  /// 否则用户会看到「设置配置 3」却不知道里面还夹着几天的轨迹。
+  int displayCountOf(BackupCategory id) =>
+      countOf(id) + (id == BackupCategory.settings ? trackDays.length : 0);
 }
 
 /// 解析失败的原因（由 UI 翻译成用户的提示语）
@@ -240,12 +266,16 @@ class BackupException implements Exception {
 /// 把一份偏好快照编码成备份 JSON 文本。
 ///
 /// [snapshot] 来自 [snapshotFromPrefs]；[categories] 是要包含的分组。
+/// [trackDays] 是「按天历史轨迹」的原始 JSON（`day → DayTrack.toJson()`），
+/// 只在勾选了设置分组时拼入。读盘与写盘都在 `TrackLogStore`，
+/// 这里保持纯逻辑、不碰 dart:io。
 String buildBackupJson({
   required Map<String, Object?> snapshot,
   required Set<BackupCategory> categories,
   required String appVersion,
   required String platform,
   DateTime? now,
+  Map<String, Object?> trackDays = const {},
 }) {
   final groups = <String, Map<String, Object?>>{};
   for (final spec in kBackupGroups) {
@@ -266,6 +296,14 @@ String buildBackupJson({
     });
     if (encoded.isEmpty) continue;
     groups[spec.id.name] = encoded;
+  }
+  // 历史轨迹拼入「设置配置」组。放在分组循环之后，是因为它有可能是该组**唯一**
+  // 的内容（例如用户只调过定位、偏好键为空快照）—— 那种情况下循环里的
+  // `encoded.isEmpty` 会跳过整组，这里再补挂就正好。
+  if (categories.contains(BackupCategory.settings) && trackDays.isNotEmpty) {
+    groups
+        .putIfAbsent(BackupCategory.settings.name, () => <String, Object?>{})
+        [kTrackPayloadKey] = trackDays;
   }
   final out = <String, Object?>{
     'kind': kBackupKind,
@@ -397,6 +435,7 @@ BackupData parseBackupJson(String text) {
 
   final byName = {for (final g in kBackupGroups) g.id.name: g.id};
   final groups = <BackupCategory, Map<String, Object?>>{};
+  final trackDays = <String, Object?>{};
   var skipped = 0;
   for (final entry in rawGroups.entries) {
     final id = byName['${entry.key}'];
@@ -413,6 +452,17 @@ BackupData parseBackupJson(String text) {
     final values = <String, Object?>{};
     for (final kv in m.entries) {
       final key = '${kv.key}';
+      // 历史轨迹是设置分组里的**非偏好载荷**：单独取出，绝不能落进下面的
+      // 白名单过滤（它本来就不在白名单里，硬套会被当未知键丢掉）。
+      if (id == BackupCategory.settings && key == kTrackPayloadKey) {
+        final td = kv.value;
+        if (td is Map) {
+          td.forEach((k, v) {
+            if (v is Map) trackDays['$k'] = v;
+          });
+        }
+        continue;
+      }
       final val = decodeBackupValue(kv.value);
       if (val == null || !backupKeyAllowed(id, key)) {
         skipped++;
@@ -421,6 +471,12 @@ BackupData parseBackupJson(String text) {
       values[key] = val;
     }
     if (values.isNotEmpty) groups[id] = values;
+  }
+  // 轨迹的存在意味着这份备份里有个设置分组（哪怕组里**只有**轨迹、没有偏好键，
+  // 例如只调过定位的机器）。补回这个组，否则 trackDays 会因为「设置组不存在」
+  // 而在下面被清掉，导入页也看不到它。
+  if (trackDays.isNotEmpty) {
+    groups.putIfAbsent(BackupCategory.settings, () => <String, Object?>{});
   }
   if (groups.isEmpty) {
     throw const BackupException(BackupErrorCode.empty);
@@ -433,6 +489,7 @@ BackupData parseBackupJson(String text) {
     exportedAt: at is String ? DateTime.tryParse(at) : null,
     platform: '${raw['platform'] ?? ''}',
     groups: groups,
+    trackDays: trackDays,
     skippedKeys: skipped,
   );
 }

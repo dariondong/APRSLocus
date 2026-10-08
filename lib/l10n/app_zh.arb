@@ -2657,7 +2657,7 @@
     "placeholders": {"path": {"type": "String"}}
   },
   "backupCatSettings": "设置配置",
-  "backupCatSettingsDesc": "电台、信标、地图、筛选、数据来源、服务器",
+  "backupCatSettingsDesc": "电台、信标、地图、筛选、数据来源、服务器、历史轨迹",
   "backupCatStations": "台站与联系人",
   "backupCatStationsDesc": "收藏、手动添加的联系人及其备注",
   "backupCatMessages": "消息记录",
@@ -3315,5 +3315,9 @@
   "reportRfEnabledToast": "已开启射频信标并开始自动上报",
   "reportEnabledToast": "已开启自动上报",
   "reportDisabledToast": "已停止自动上报，改为仅单次上报",
-  "autoReportEntryHint": "开关随时可在主界面改：地图左下/底部的「自动 / 单次」按钮点一下即切换，旁边「立即上报」立即发一次。"
+  "autoReportEntryHint": "开关随时可在主界面改：地图左下/底部的「自动 / 单次」按钮点一下即切换，旁边「立即上报」立即发一次。",
+  "backupTracks": "包含 {n} 天的历史轨迹",
+  "@backupTracks": {
+    "placeholders": {"n": {"type": "int"}}
+  }
 }
