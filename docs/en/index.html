@@ -576,6 +576,16 @@
 <!-- site-sync:changelog -->
     <div class="cl-version reveal">
       <div class="cl-head">
+        <span class="cl-tag">v2.0.51</span>
+        <span class="cl-date">2026-10-10</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot new"></span><b>New Qingling update channel</b>: fetching updates straight from GitHub often fails in mainland China. A fourth <b>optional</b> channel points at a <b>self-hosted mirror</b> (it pulls the release, then serves a GitHub-format API; the client never talks to GitHub). Channel bases are centralized in <code>updateChannelBases</code>, shared by the update page and the launch prompt. The Qingling channel uses <b>HTTPS with a pinned self-signed certificate</b> (pinning only that one host; other channels keep the default trust chain): encrypted and tamper-proof, with no domain, filing or purchased cert needed. GitHub stays the default.</div>
+        <div class="cl-item"><span class="cl-dot fix"></span><b>Fixed test-pipeline artifacts</b>: the Windows test build shipped only the Flutter launcher (~123 KB, missing <code>flutter_windows.dll</code> and <code>data/</code>, so it did nothing when opened) -> now a single-file installer with <code>if-no-files-found: error</code>; the iOS test artifact dropped its fork suffix -> the suffix is kept. Also: v2.0.50 was already released, so this feature bumps the version to <b>2.0.51</b>.</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
         <span class="cl-tag">v2.0.50</span>
         <span class="cl-date">2026-10-09</span>
       </div>

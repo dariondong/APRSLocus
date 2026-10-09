@@ -581,6 +581,16 @@
 <!-- site-sync:changelog -->
     <div class="cl-version reveal">
       <div class="cl-head">
+        <span class="cl-tag">v2.0.51</span>
+        <span class="cl-date">2026-10-10</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot new"></span><b>新增 Qingling（清零）更新通道</b>：國內直連 GitHub 取更新包常失敗，現多一條可選通道，指向<b>自建鏡像</b>（先取回發行版、再以 GitHub 同格式介面提供，客戶端不直連 GitHub）。通道地址集中在 <code>updateChannelBases</code>，更新頁與啟動提示共用一份，避免漏改。清零通道走 <b>HTTPS + 內建自簽憑證釘扎</b>（只釘交付伺服器那一個主機，其餘通道仍走預設信任鏈），傳輸加密、中間人無法篡改，且無需網域 / 備案 / 買憑證。預設仍是 GitHub。</div>
+        <div class="cl-item"><span class="cl-dot fix"></span><b>修復測試流水線產物</b>：Windows 測試版此前只打 Flutter 啟動器（約 123 KB，缺 <code>flutter_windows.dll</code> 與 <code>data/</code>，雙擊無反應）→ 改為單檔安裝器並加 <code>if-no-files-found: error</code>；iOS 測試版產物名會丟掉fork 標識 → 保留版本後綴。另：v2.0.50 已發布，本次帶新功能，版本遞增到 <b>2.0.51</b>。</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
         <span class="cl-tag">v2.0.50</span>
         <span class="cl-date">2026-10-09</span>
       </div>

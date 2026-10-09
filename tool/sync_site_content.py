@@ -204,6 +204,50 @@ CARDS = [
 # 只列「重点版本」：中间几十个纯修 bug 的版本归纳进文字说明，完整记录指向 Releases。
 CL = [
     {
+        'ver': 'v2.0.51', 'date': '2026-10-10',
+        'items': [
+            ('new',
+             T('**新增 Qingling（清零）更新通道**：国内直连 GitHub 取更新包常失败，'
+               '现多一条可选渠道，指向**自建镜像**（先取回发行版、再以 GitHub 同格式'
+               '接口提供，客户端不直连 GitHub）。通道地址集中在 `updateChannelBases`，'
+               '更新页与启动提示共用一份，避免漏改。清零通道走 **HTTPS + 内置自签'
+               '证书钉扎**（只钉交付服务器那一个主机，其余渠道仍走默认信任链），'
+               '传输加密、中间人无法篡改，且无需域名 / 备案 / 买证书。默认仍是 GitHub。',
+               '**新增 Qingling（清零）更新通道**：國內直連 GitHub 取更新包常失敗，'
+               '現多一條可選通道，指向**自建鏡像**（先取回發行版、再以 GitHub 同格式'
+               '介面提供，客戶端不直連 GitHub）。通道地址集中在 `updateChannelBases`，'
+               '更新頁與啟動提示共用一份，避免漏改。清零通道走 **HTTPS + 內建自簽'
+               '憑證釘扎**（只釘交付伺服器那一個主機，其餘通道仍走預設信任鏈），'
+               '傳輸加密、中間人無法篡改，且無需網域 / 備案 / 買憑證。預設仍是 GitHub。',
+               '**New Qingling update channel**: fetching updates straight from GitHub '
+               'often fails in mainland China. A fourth **optional** channel points at a '
+               '**self-hosted mirror** (it pulls the release, then serves a GitHub-format '
+               'API; the client never talks to GitHub). Channel bases are centralized in '
+               '`updateChannelBases`, shared by the update page and the launch prompt. The '
+               'Qingling channel uses **HTTPS with a pinned self-signed certificate** '
+               '(pinning only that one host; other channels keep the default trust chain): '
+               'encrypted and tamper-proof, with no domain, filing or purchased cert needed. '
+               'GitHub stays the default.')),
+            ('fix',
+             T('**修复测试流水线产物**：Windows 测试版此前只打 Flutter 启动器'
+               '（约 123 KB，缺 `flutter_windows.dll` 与 `data/`，双击无反应）→ 改为'
+               '单文件安装器并加 `if-no-files-found: error`；iOS 测试版产物名会丢掉'
+               'fork 标识 → 保留版本后缀。另：v2.0.50 已发布，本次带新功能，版本'
+               '递增到 **2.0.51**。',
+               '**修復測試流水線產物**：Windows 測試版此前只打 Flutter 啟動器'
+               '（約 123 KB，缺 `flutter_windows.dll` 與 `data/`，雙擊無反應）→ 改為'
+               '單檔安裝器並加 `if-no-files-found: error`；iOS 測試版產物名會丟掉'
+               'fork 標識 → 保留版本後綴。另：v2.0.50 已發布，本次帶新功能，版本'
+               '遞增到 **2.0.51**。',
+               '**Fixed test-pipeline artifacts**: the Windows test build shipped only '
+               'the Flutter launcher (~123 KB, missing `flutter_windows.dll` and `data/`, '
+               'so it did nothing when opened) -> now a single-file installer with '
+               '`if-no-files-found: error`; the iOS test artifact dropped its fork suffix '
+               '-> the suffix is kept. Also: v2.0.50 was already released, so this feature '
+               'bumps the version to **2.0.51**.')),
+        ],
+    },
+    {
         'ver': 'v2.0.50', 'date': '2026-10-09',
         'items': [
             ('fix',

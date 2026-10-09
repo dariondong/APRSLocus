@@ -1,5 +1,100 @@
 # 更新日志
 
+## [2.0.51] - 2026-10-10
+
+### 新增：Qingling（清零）更新通道（可选，默认仍为 GitHub）
+
+**背景**
+
+国内直连 GitHub 取更新包常失败。新增第四条更新渠道 **Qingling**，指向自建
+镜像服务：由镜像服务器先取回发行版，再以与 GitHub **同格式**的接口提供，
+客户端**不直连 GitHub**。
+
+**改动**
+
+- 渠道地址集中到 `AppState.updateChannelBases` / `updateBaseFor()`：原先
+  「更新页」与「启动提示」各写一份相同的三元表达式，新增渠道时漏改一处不会
+  编译失败，只会表现成「更新页能查到、启动提示查不到」——现在共用一份；
+- 切换 UI 增加 Qingling 选项，图标与加载文案按渠道映射；
+- 清零通道走 **HTTPS 并内置自签证书（证书钉扎）**，且**只对交付服务器那一个
+  主机钉扎**（`SecurityContext(withTrustedRoots: false)`）：其余渠道仍是默认
+  信任链，否则 GitHub / GitCode 会全部握手失败。这样传输加密、中间人无法篡改，
+  同时不需要域名 / 备案 / 购买证书；证书有效期 10 年（换证书须同步发新版）；
+- 新增 l10n 键 `updateChannelQinglingHint`（6 语言）。
+
+### 修复：CI 测试流水线产物
+
+- **Windows**：测试版原先只打 Flutter 启动器（约 123 KB，缺
+  `flutter_windows.dll` 与 `data/`，下载后双击无反应）→ 改为与正式发版一致的
+  Inno Setup 单文件安装器，并加 `if-no-files-found: error` 防止静默空产物；
+- **iOS**：测试版产物名会丢掉 fork 标识 → 保留版本后缀，避免与上游正式版
+  文件名完全相同、无法区分。
+
+### 关于版本号
+
+v2.0.50（本提交的基线）**已经发布**，而这次带了新功能。按
+[`AGENT.md`](AGENT.md) 第一节「同一版本号不得改内容」与第三节「版本号由维护者
+在发版时递增」，此处将版本提到 **2.0.51**（贡献者原提交沿用 2.0.50、未递增，
+发版前补齐）。
+
+**测试**
+
+- `tool/check_*.py` 全部通过；`flutter analyze` / `flutter test` 由 CI 复核。
+
+---
+
+## [2.0.51] - 2026-10-10 (English)
+
+### Added: Qingling update channel (optional; GitHub remains the default)
+
+**Why**
+
+Fetching updates straight from GitHub often fails from mainland China. A fourth
+channel, **Qingling**, points at a self-hosted mirror that first pulls the
+release and then serves it through a **GitHub-format** API, so the client
+**never talks to GitHub directly**.
+
+**Changes**
+
+- Channel bases are now centralized in `AppState.updateChannelBases` /
+  `updateBaseFor()`: the update page and the launch prompt used to each carry
+  their own copy of the same ternary, and a missed edit would not fail to
+  compile -- it would only show up as "found on the update page, not on the
+  launch prompt". Both now share one source;
+- The switcher UI gains a Qingling option, with per-channel icons and loading
+  copy;
+- The Qingling channel uses **HTTPS with a bundled self-signed certificate
+  (pin)** and pins **only that one host** (`SecurityContext(withTrustedRoots:
+  false)`); every other channel keeps the default trust chain, otherwise GitHub
+  and GitCode would fail every handshake. Traffic is encrypted and
+  tamper-proof, with no domain, filing or purchased certificate needed; the
+  certificate is valid for 10 years (rotating it requires an app release);
+- New l10n key `updateChannelQinglingHint` (6 languages).
+
+### Fixed: CI test-pipeline artifacts
+
+- **Windows**: the test build shipped only the Flutter launcher (~123 KB,
+  missing `flutter_windows.dll` and `data/`, so it did nothing when opened) ->
+  now a single Inno Setup installer matching the release pipeline, plus
+  `if-no-files-found: error` so a silent empty artifact cannot pass;
+- **iOS**: the test artifact name dropped the fork suffix -> the suffix is kept
+  so it no longer collides with an upstream stable filename.
+
+### On the version number
+
+v2.0.50 (this commit's base) is **already released**, and this change adds a
+feature. Per `AGENT.md` section 1 ("the same version number must not carry
+different content") and section 3 ("the maintainer bumps the version at release
+time"), the version is raised to **2.0.51** (the contributor kept it at 2.0.50
+without bumping, which this fills in before release).
+
+**Testing**
+
+- `tool/check_*.py` all pass; `flutter analyze` / `flutter test` are re-verified
+  by CI.
+
+---
+
 ## [2.0.50] - 2026-10-09
 
 ### 修复：音频参数改了不保存（失焦即丢）
