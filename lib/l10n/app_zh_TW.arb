@@ -3370,5 +3370,16 @@
   "locationSendTo": "傳送給 {call}",
   "@locationSendTo": {"placeholders": {"call": {"type": "String"}}},
   "chatMore": "更多",
-  "stationTapToView": "點擊查看台站"
+  "stationTapToView": "點擊查看台站",
+  "locationPickStations": "選擇台站",
+  "locationSearchHint": "搜尋呼號 / 別名",
+  "locationNoStation": "沒有符合的台站",
+  "locationPrevPage": "上一頁",
+  "locationNextPage": "下一頁",
+  "shareStation": "分享台站",
+  "shareStationPick": "傳送到哪個會話？",
+  "shareStationSent": "已分享 {call}",
+  "locationPageInfo": "第 {n} / {m} 頁",
+  "@locationPageInfo": {"placeholders": {"n": {"type": "String"}, "m": {"type": "String"}}},
+  "@shareStationSent": {"placeholders": {"call": {"type": "String"}}}
 }

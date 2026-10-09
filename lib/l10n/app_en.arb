@@ -2782,5 +2782,16 @@
   "locationSendTo": "Send to {call}",
   "@locationSendTo": {"placeholders": {"call": {"type": "String"}}},
   "chatMore": "More",
-  "stationTapToView": "Tap to view station"
+  "stationTapToView": "Tap to view station",
+  "locationPickStations": "Pick a station",
+  "locationSearchHint": "Search callsign / alias",
+  "locationNoStation": "No matching station",
+  "locationPrevPage": "Prev",
+  "locationNextPage": "Next",
+  "shareStation": "Share station",
+  "shareStationPick": "Send to which chat?",
+  "shareStationSent": "Shared {call}",
+  "locationPageInfo": "Page {n} / {m}",
+  "@locationPageInfo": {"placeholders": {"n": {"type": "String"}, "m": {"type": "String"}}},
+  "@shareStationSent": {"placeholders": {"call": {"type": "String"}}}
 }

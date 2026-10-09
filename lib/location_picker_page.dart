@@ -10,16 +10,16 @@ import 'theme.dart';
 import 'tile_map.dart';
 import 'widgets.dart';
 
-/// ─── 分享位置：选点 / 选台站（私聊）───
+/// ─── 分享位置：自由选点 / 选台站（私聊）───
 ///
-/// 从私聊会话的输入栏「发送位置点」进入。需求有两层：
-///   1. **选一个坐标点**发给对方 —— 拖地图、点任意位置取坐标（不只是发自己）；
-///   2. **分享其他台站** —— 从台站列表挑一个，点它**先呼出台站面板**看详情，
-///      确认无误后再发。
+/// 从私聊会话的输入栏「+ → 发送位置点」进入。两条路径分开、互不干扰：
+///   1. **自由选点** —— 在地图上点 / 拖任意位置取坐标（默认行为，永远可用）；
+///   2. **选择台站** —— 从底部「选择台站」进入**可搜索、可分页**的台站列表，
+///      挑一个台站把它**的位置**作为待发点（可选呼号会随帧标成台站卡片）。
 ///
-/// 返回给调用方（[MessagesPage]）的是一对 `(纬度, 经度)`；发送动作由调用方
-/// 走既有的 [AppState.sendLocation]（带 ack 的单播），本页不发报文 —— 它只是
-/// 一个「取坐标」的浮层，不碰协议，职责单一、也好测。
+/// 返回给调用方（[MessagesPage]）的是一对 `(纬度, 经度)` 与可选的分享呼号；
+/// 发送动作由调用方走既有的 [AppState.sendLocation]（带 ack 的单播），本页
+/// 不发报文 —— 它只是一个「取坐标」的浮层，不碰协议，职责单一。
 class LocationPickerPage extends StatefulWidget {
   final AppState state;
 
@@ -41,14 +41,12 @@ class _LocationPickerPageState extends State<LocationPickerPage> {
   Offset _pan = Offset.zero;
   Size _size = Size.zero;
 
-  /// 当前选中的坐标（未选时为 null，按钮置灰）。
+  /// 当前选中的坐标（未选时为 null，发送按钮置灰）。
   (double, double)? _picked;
 
-  /// 选中的坐标若来自「分享某个台站」，这里记下它的呼号（自由选点为 null）。
+  /// 选中的坐标若来自「选择台站」，记下该台站呼号（自由选点为 null）。
   /// 返回给调用方后决定气泡样式（台站卡片 vs 普通位置点）。
   String? _pickedStation;
-
-  bool _selMode = false;
 
   MapType get _mapType {
     var t = mapTypeByName(widget.state.mapType);
@@ -110,11 +108,11 @@ class _LocationPickerPageState extends State<LocationPickerPage> {
 
   // ─── 交互 ───
 
+  /// 地图点击 = **自由选点**（永远有效，且会清掉「分享台站」标记）。
   void _onMapTap(Offset local) {
-    final ll = _screenToLatLng(local);
     setState(() {
-      _picked = ll;
-      _pickedStation = null; // 自由选点：不再是「分享台站」
+      _picked = _screenToLatLng(local);
+      _pickedStation = null;
     });
   }
 
@@ -128,10 +126,10 @@ class _LocationPickerPageState extends State<LocationPickerPage> {
       _picked = (st.myLat!, st.myLng!);
       _pickedStation = null;
       _pan = _panFor(st.myLat!, st.myLng!, _zoom);
-      _selMode = false;
     });
   }
 
+  /// 从「选择台站」列表选中：用该台站坐标 + 呼号（渲染成台站卡片）。
   void _pickStation(Station s) {
     setState(() {
       _picked = (s.lat, s.lng);
@@ -140,14 +138,14 @@ class _LocationPickerPageState extends State<LocationPickerPage> {
     });
   }
 
-  /// 打开台站详细面板（与主地图 / 策略地图同一入口）。
-  void _openStation(Station s) {
-    showModalBottomSheet<void>(
+  Future<void> _openStationPicker() async {
+    final s = await showModalBottomSheet<Station>(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (_) => StationDetail(state: widget.state, station: s),
+      builder: (_) => StationPickerSheet(state: widget.state),
     );
+    if (s != null && mounted) _pickStation(s);
   }
 
   void _confirm() {
@@ -176,8 +174,7 @@ class _LocationPickerPageState extends State<LocationPickerPage> {
               children: [
                 _mapLayer(_size),
                 _topBar(),
-                if (_selMode) _stationPanel(c.maxHeight),
-                if (!_selMode) _hintBar(),
+                if (_picked == null) _hintBar(),
                 _bottomBar(),
               ],
             );
@@ -272,12 +269,6 @@ class _LocationPickerPageState extends State<LocationPickerPage> {
               ),
             ),
           ),
-          const SizedBox(width: 10),
-          _roundBtn(
-            Icons.people_alt_rounded,
-            () => setState(() => _selMode = !_selMode),
-            color: _selMode ? C.cyan : Colors.white,
-          ),
         ],
       ),
     );
@@ -299,114 +290,25 @@ class _LocationPickerPageState extends State<LocationPickerPage> {
     );
   }
 
+  /// 未选点时的操作提示（浮在地图上，不挡手势）。
   Widget _hintBar() {
     return Positioned(
-      left: 12,
-      right: 12,
-      bottom: 78 + MediaQuery.of(context).padding.bottom,
+      bottom: 168 + MediaQuery.of(context).padding.bottom,
+      left: 0,
+      right: 0,
       child: IgnorePointer(
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-          decoration: BoxDecoration(
-            color: C.black.withValues(alpha: 0.6),
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: Text(
-            _picked == null
-                ? S.of(context).locationPickHint
-                : (_pickedStation ?? '${_picked!.$1.toStringAsFixed(5)}, '
-                    '${_picked!.$2.toStringAsFixed(5)}'),
-            style: ts(11, c: Colors.white, w: FontWeight.w600),
-            textAlign: TextAlign.center,
-          ),
-        ),
-      ),
-    );
-  }
-
-  /// 右侧台站面板：点一行 = 选中该台站的位置；行尾「详情」按钮 = 呼出台站面板。
-  /// 这样「分享它的位置」与「看它的资料」两个动作不会互相顶掉。
-  Widget _stationPanel(double maxH) {
-    final st = widget.state;
-    final list = st.stations.toList()
-      ..sort((a, b) => b.lastHeard.compareTo(a.lastHeard));
-    return Positioned(
-      right: 12,
-      top: 8 + MediaQuery.of(context).padding.top + 48,
-      bottom: 78 + MediaQuery.of(context).padding.bottom,
-      width: 236,
-      child: MaterialSurface(
-        radius: 16,
-        child: Container(
-          decoration: BoxDecoration(
-            color: C.sheetFill,
-            borderRadius: BorderRadius.circular(16),
-            boxShadow: elev3(),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(14, 12, 8, 6),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        S.of(context).locationPickTitle,
-                        style: ts(12, c: C.slate, w: FontWeight.w700),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                    GestureDetector(
-                      onTap: () => setState(() => _selMode = false),
-                      child: Icon(Icons.close_rounded, size: 16, color: C.grey),
-                    ),
-                  ],
-                ),
-              ),
-              // 「我的位置」置顶：最常见的分享目标。
-              ListTile(
-                dense: true,
-                leading: Icon(Icons.my_location_rounded, size: 18, color: C.cyan),
-                title: Text(S.of(context).locationMyPos,
-                    style: ts(12, w: FontWeight.w600)),
-                onTap: _useMyPosition,
-              ),
-              Divider(height: 1, color: C.border),
-              Expanded(
-                child: list.isEmpty
-                    ? Center(
-                        child: Text(S.of(context).noConversations,
-                            style: ts(11, c: C.grey)))
-                    : ListView.builder(
-                        itemCount: list.length,
-                        itemBuilder: (_, i) {
-                          final s = list[i];
-                          return ListTile(
-                            dense: true,
-                            title: Text(s.call,
-                                style: ts(12, w: FontWeight.w600),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis),
-                            subtitle: Text(
-                              '${s.lat.toStringAsFixed(4)}, '
-                              '${s.lng.toStringAsFixed(4)}',
-                              style: mono(9, c: C.grey),
-                            ),
-                            // 行尾「分享」：把该台站的坐标选为要发送的点（回中心）。
-                            trailing: GestureDetector(
-                              onTap: () => _pickStation(s),
-                              child: Icon(Icons.share_location_rounded,
-                                  size: 18, color: C.blue),
-                            ),
-                            // 点整行 = 呼出该台站的详细面板（用户要求：点一下能看到对方资料）。
-                            onTap: () => _openStation(s),
-                          );
-                        },
-                      ),
-              ),
-            ],
+        child: Center(
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+            decoration: BoxDecoration(
+              color: C.black.withValues(alpha: 0.6),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Text(
+              S.of(context).locationPickHint,
+              style: ts(11, c: Colors.white, w: FontWeight.w600),
+              textAlign: TextAlign.center,
+            ),
           ),
         ),
       ),
@@ -415,6 +317,7 @@ class _LocationPickerPageState extends State<LocationPickerPage> {
 
   Widget _bottomBar() {
     final has = _picked != null;
+    final s = S.of(context);
     return Positioned(
       left: 12,
       right: 12,
@@ -422,68 +325,356 @@ class _LocationPickerPageState extends State<LocationPickerPage> {
       child: MaterialSurface(
         radius: 18,
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+          padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(
             color: C.sheetFill,
             borderRadius: BorderRadius.circular(18),
             boxShadow: elev3(),
           ),
-          child: Row(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
-              Expanded(
-                child: GestureDetector(
-                  onTap: _useMyPosition,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(vertical: 12),
-                    decoration: BoxDecoration(
-                      color: C.bgSoft,
-                      borderRadius: BorderRadius.circular(14),
-                      border: Border.all(color: C.border),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(Icons.my_location_rounded, size: 16, color: C.cyan),
-                        const SizedBox(width: 6),
-                        Text(S.of(context).locationMyPos,
-                            style: ts(12, c: C.slate, w: FontWeight.w700)),
-                      ],
+              Row(
+                children: [
+                  Expanded(
+                    child: _pillBtn(
+                      icon: Icons.my_location_rounded,
+                      label: s.locationMyPos,
+                      color: C.cyan,
+                      onTap: _useMyPosition,
                     ),
                   ),
-                ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: _pillBtn(
+                      icon: Icons.format_list_bulleted_rounded,
+                      label: s.locationPickStations,
+                      color: C.slate,
+                      onTap: _openStationPicker,
+                    ),
+                  ),
+                ],
               ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: GestureDetector(
-                  onTap: has ? _confirm : null,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(vertical: 12),
-                    decoration: BoxDecoration(
-                      color: has ? C.blue : C.grey,
-                      borderRadius: BorderRadius.circular(14),
-                      boxShadow: has ? elev2() : null,
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Icon(Icons.send_rounded,
-                            size: 16, color: Colors.white),
-                        const SizedBox(width: 6),
-                        Flexible(
-                          child: Text(
-                            S.of(context).locationSendTo(widget.call),
-                            style: ts(12, c: Colors.white, w: FontWeight.w700),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
+              const SizedBox(height: 8),
+              GestureDetector(
+                onTap: has ? _confirm : null,
+                child: Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(vertical: 13),
+                  decoration: BoxDecoration(
+                    color: has ? C.blue : C.grey,
+                    borderRadius: BorderRadius.circular(14),
+                    boxShadow: has ? elev2() : null,
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(Icons.send_rounded,
+                          size: 16, color: Colors.white),
+                      const SizedBox(width: 6),
+                      Flexible(
+                        child: Text(
+                          s.locationSendTo(widget.call),
+                          style: ts(13, c: Colors.white, w: FontWeight.w700),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _pillBtn({
+    required IconData icon,
+    required String label,
+    required Color color,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 12),
+        decoration: BoxDecoration(
+          color: C.bgSoft,
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(color: C.border),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon, size: 16, color: color),
+            const SizedBox(width: 6),
+            Flexible(
+              child: Text(
+                label,
+                style: ts(12, c: C.slate, w: FontWeight.w700),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// ─── 台站选择面板（可搜索 / 可分页）───
+///
+/// 台站动辄成百上千，一屏列不全，所以做成**独立整屏面板**：顶部搜索框、中间
+/// 分页列表（每页 [pageSize] 条）、底部页码 + 上/下页按钮（带文字，不做成
+/// 藏在角落的小箭头）。点一行即选中该台站（[Navigator.pop] 回传）；行尾
+/// 「详情」按钮可先看资料而不关闭本面板。
+class StationPickerSheet extends StatefulWidget {
+  final AppState state;
+  static const int pageSize = 20;
+
+  const StationPickerSheet({super.key, required this.state});
+
+  @override
+  State<StationPickerSheet> createState() => _StationPickerSheetState();
+}
+
+class _StationPickerSheetState extends State<StationPickerSheet> {
+  final _search = TextEditingController();
+  String _q = '';
+  int _page = 0;
+
+  @override
+  void dispose() {
+    _search.dispose();
+    super.dispose();
+  }
+
+  List<Station> get _filtered {
+    final st = widget.state;
+    final myLat = st.myLat;
+    final myLng = st.myLng;
+    final q = _q.trim().toUpperCase();
+    final list = st.stations.where((s) {
+      if (q.isEmpty) return true;
+      return s.call.toUpperCase().contains(q) ||
+          s.alias.toUpperCase().contains(q);
+    }).toList();
+    if (q.isNotEmpty) {
+      // 搜索命中：按呼号排序最直观
+      list.sort((a, b) => a.call.compareTo(b.call));
+    } else if (myLat != null && myLng != null) {
+      // 有定位：近 → 远
+      list.sort((a, b) => haversine(myLat, myLng, a.lat, a.lng)
+          .compareTo(haversine(myLat, myLng, b.lat, b.lng)));
+    } else {
+      list.sort((a, b) => b.lastHeard.compareTo(a.lastHeard));
+    }
+    return list;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final s = S.of(context);
+    final list = _filtered;
+    final pages =
+        (list.length + StationPickerSheet.pageSize - 1) ~/ StationPickerSheet.pageSize;
+    if (pages > 0 && _page >= pages) _page = pages - 1;
+    if (_page < 0) _page = 0;
+    final start = _page * StationPickerSheet.pageSize;
+    final end =
+        (start + StationPickerSheet.pageSize).clamp(0, list.length).toInt();
+    final pageItems = list.sublist(start, end);
+
+    return FractionallySizedBox(
+      heightFactor: 0.9,
+      child: MaterialSurface(
+        radius: 24,
+        topOnly: true,
+        child: Container(
+          decoration: BoxDecoration(
+            color: C.sheetFill,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+          ),
+          child: SafeArea(
+            top: false,
+            child: Column(
+              children: [
+                const SizedBox(height: 10),
+                Container(
+                  width: 40,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: C.greyLight,
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 12, 8, 4),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          s.locationPickStations,
+                          style: ts(15, w: FontWeight.w800),
+                        ),
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.close_rounded, color: C.grey),
+                        onPressed: () => Navigator.pop(context),
+                      ),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+                  child: TextField(
+                    controller: _search,
+                    onChanged: (v) => setState(() {
+                      _q = v;
+                      _page = 0;
+                    }),
+                    style: ts(13),
+                    decoration: InputDecoration(
+                      hintText: s.locationSearchHint,
+                      hintStyle: ts(13, c: C.grey),
+                      prefixIcon:
+                          Icon(Icons.search_rounded, size: 18, color: C.grey),
+                      suffixIcon: _q.isEmpty
+                          ? null
+                          : GestureDetector(
+                              onTap: () => setState(() {
+                                _search.clear();
+                                _q = '';
+                                _page = 0;
+                              }),
+                              child: Icon(Icons.cancel_rounded,
+                                  size: 18, color: C.grey),
+                            ),
+                      filled: true,
+                      fillColor: C.bgSoft,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide.none,
+                      ),
+                      contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 10),
+                    ),
+                  ),
+                ),
+                Divider(height: 1, color: C.border),
+                Expanded(
+                  child: pageItems.isEmpty
+                      ? Center(
+                          child: Text(s.locationNoStation,
+                              style: ts(12, c: C.grey)))
+                      : ListView.builder(
+                          itemCount: pageItems.length,
+                          itemBuilder: (_, i) {
+                            final st = pageItems[i];
+                            return ListTile(
+                              dense: true,
+                              leading: Icon(Icons.radio_rounded,
+                                  size: 18, color: C.blue),
+                              title: Text(
+                                st.alias.isEmpty
+                                    ? st.call
+                                    : '${st.call}  ·  ${st.alias}',
+                                style: ts(13, w: FontWeight.w600),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              subtitle: Text(
+                                '${st.lat.toStringAsFixed(4)}, '
+                                '${st.lng.toStringAsFixed(4)}'
+                                '${st.grid.isEmpty ? '' : '  ${st.grid}'}',
+                                style: mono(9, c: C.grey),
+                              ),
+                              // 点整行 = 选中该台站坐标（回传给选点页）。
+                              onTap: () => Navigator.pop(context, st),
+                              // 行尾「详情」= 先看台站资料（不关闭选择面板）。
+                              trailing: GestureDetector(
+                                onTap: () => showModalBottomSheet<void>(
+                                  context: context,
+                                  isScrollControlled: true,
+                                  backgroundColor: Colors.transparent,
+                                  builder: (_) => StationDetail(
+                                      state: widget.state, station: st),
+                                ),
+                                child: Icon(Icons.info_outline_rounded,
+                                    size: 18, color: C.grey),
+                              ),
+                            );
+                          },
+                        ),
+                ),
+                if (pages > 1)
+                  Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    decoration: BoxDecoration(
+                      border: Border(top: BorderSide(color: C.border)),
+                    ),
+                    child: Row(
+                      children: [
+                        _pageBtn(
+                          icon: Icons.chevron_left_rounded,
+                          label: s.locationPrevPage,
+                          enabled: _page > 0,
+                          onTap: () => setState(() => _page--),
+                        ),
+                        Expanded(
+                          child: Center(
+                            child: Text(
+                              s.locationPageInfo('${_page + 1}', '$pages'),
+                              style: ts(12, c: C.slate, w: FontWeight.w700),
+                            ),
+                          ),
+                        ),
+                        _pageBtn(
+                          icon: Icons.chevron_right_rounded,
+                          label: s.locationNextPage,
+                          enabled: _page < pages - 1,
+                          onTap: () => setState(() => _page++),
+                        ),
+                      ],
+                    ),
+                  ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _pageBtn({
+    required IconData icon,
+    required String label,
+    required bool enabled,
+    required VoidCallback onTap,
+  }) {
+    final col = enabled ? C.blue : C.greyLight;
+    return GestureDetector(
+      onTap: enabled ? onTap : null,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        decoration: BoxDecoration(
+          color: enabled ? C.bgSoft : Colors.transparent,
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(
+              color: enabled ? C.border : C.border.withValues(alpha: 0.4)),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icon, size: 16, color: col),
+            const SizedBox(width: 2),
+            Text(label, style: ts(11, c: col, w: FontWeight.w600)),
+          ],
         ),
       ),
     );

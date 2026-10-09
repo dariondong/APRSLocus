@@ -8082,4 +8082,31 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String get stationTapToView => "タップして局を見る";
 
+  @override
+  String get locationPickStations => "局を選ぶ";
+
+  @override
+  String get locationSearchHint => "コールサイン / 別名で検索";
+
+  @override
+  String get locationNoStation => "一致する局がありません";
+
+  @override
+  String get locationPrevPage => "前へ";
+
+  @override
+  String get locationNextPage => "次へ";
+
+  @override
+  String get shareStation => "局を共有";
+
+  @override
+  String get shareStationPick => "どの会話に送りますか？";
+
+  @override
+  String shareStationSent(String call) => "$call を共有しました";
+
+  @override
+  String locationPageInfo(String n, String m) => "$n / $m ページ";
+
 }

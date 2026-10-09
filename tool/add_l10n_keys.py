@@ -651,6 +651,48 @@ KEYS = {
         'タップして局を見る', 'Toca para ver la estación',
         'Ketuk untuk lihat stasiun',
     ),
+    # 选点浮层：选择台站（可搜索、可分页）。
+    'locationPickStations': (
+        '选择台站', '選擇台站', 'Pick a station',
+        '局を選ぶ', 'Elegir estación', 'Pilih stasiun',
+    ),
+    'locationSearchHint': (
+        '搜索呼号 / 别名', '搜尋呼號 / 別名', 'Search callsign / alias',
+        'コールサイン / 別名で検索', 'Buscar indicativo / alias',
+        'Cari panggilan / alias',
+    ),
+    'locationNoStation': (
+        '没有匹配的台站', '沒有符合的台站', 'No matching station',
+        '一致する局がありません', 'Ninguna estación coincide',
+        'Tidak ada stasiun yang cocok',
+    ),
+    'locationPrevPage': (
+        '上一页', '上一頁', 'Prev',
+        '前へ', 'Ant.', 'Sebelumnya',
+    ),
+    'locationNextPage': (
+        '下一页', '下一頁', 'Next',
+        '次へ', 'Sig.', 'Berikutnya',
+    ),
+    # 台站详情「更多」里的分享项。
+    'shareStation': (
+        '分享台站', '分享台站', 'Share station',
+        '局を共有', 'Compartir estación', 'Bagikan stasiun',
+    ),
+    'shareStationPick': (
+        '发送到哪个会话？', '傳送到哪個會話？', 'Send to which chat?',
+        'どの会話に送りますか？', '¿A qué chat enviar?',
+        'Kirim ke obrolan mana?',
+    ),
+    'shareStationSent': (
+        '已分享 {call}', '已分享 {call}', 'Shared {call}',
+        '{call} を共有しました', '{call} compartida', '{call} dibagikan',
+    ),
+    # 分页页码：第 {n} / {m} 页。
+    'locationPageInfo': (
+        '第 {n} / {m} 页', '第 {n} / {m} 頁', 'Page {n} / {m}',
+        '{n} / {m} ページ', 'Página {n} / {m}', 'Halaman {n} / {m}',
+    ),
 }
 
 # ── 占位符声明（可空）──
@@ -674,6 +716,9 @@ META = {
         '{"placeholders": {"call": {"type": "String"}, "kind": {"type": "String"}}}',
     'strategyAckPending': '{"placeholders": {"n": {"type": "int"}}}',
     'locationSendTo': '{"placeholders": {"call": {"type": "String"}}}',
+    'locationPageInfo':
+        '{"placeholders": {"n": {"type": "String"}, "m": {"type": "String"}}}',
+    'shareStationSent': '{"placeholders": {"call": {"type": "String"}}}',
 }
 
 

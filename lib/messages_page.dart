@@ -2434,18 +2434,23 @@ class _MessagesPageState extends State<MessagesPage> {
 
   /// 解析文本中的 URL 与**台站呼号**，返回可点击的 RichText。
   ///
-  /// 呼号做成链接的判据（缺一不可，宁可漏也不肯把普通词染蓝）：
-  ///   * 形如业余呼号（[AppState.isValidCallsign]：字母前缀 + 数字 + 后缀 + 可选 -SSID）；
-  ///   * **确实在台站列表里**（收得到信标）—— 否则 CQ / TEST 这类也会被当成台站；
-  ///   * 左右不能紧挨其它字母/数字/连字符（避免切进 `BG7LZQ-9` 或单词中间）。
+  /// 呼号做成链接的判据：
+  ///   * 形如业余呼号（[AppState.isValidCallsign]：字母/数字前缀 + 后缀 + 可选 -SSID）；
+  ///   * 左右不能紧挨其它字母/数字/连字符（避免切进单词或 `BG7LZQ-9` 中间）；
+  ///   * **已经在台站列表里**（收得到信标）→ 实线下划线；仅是**格式合法**但暂时
+  ///     没收到的 → 虚线下划线，点了照样打开台站面板（面板会显示「未收到报文」）。
+  ///     这样「文本里明明写着呼号、却点不动」的情况不再出现。
   /// 点击行为与网址一致：跳去打开该台站的详细面板。
   Widget _urlRichText(String text, TextStyle baseStyle) {
     final urlRe = RegExp(
       r'(https?://[^\s<>"{}|\\^`\[\]]+|www\.[^\s<>"{}|\\^`\[\]]+)',
       caseSensitive: false,
     );
-    // 不放 lookbehind/lookahead（部分运行时不支持），边界改成手动判。
-    final callRe = RegExp(r'[A-Za-z]{1,2}[0-9][A-Za-z]{1,4}(?:-[0-9]{1,2})?');
+    // 与 [AppState._callRe] 同一形态：`前缀(字母/数字) + 后缀字母 (+ -SSID)`，
+    // 放开到「1~2 位字母/数字」以覆盖 9M2XYZ、2E0ABC 这类数字开头的呼号。
+    final callRe = RegExp(
+      r'(?:\d[A-Za-z]{1,2}|[A-Za-z]{1,2}\d{1,2})[A-Za-z]{1,3}(?:-\d{1,2})?',
+    );
     final alnumRe = RegExp(r'[A-Za-z0-9-]');
 
     final hits = <(int start, int end, String text, bool isUrl)>[];
@@ -2461,19 +2466,25 @@ class _MessagesPageState extends State<MessagesPage> {
       return !bad(s - 1) && !bad(e);
     }
 
+    // 已知台站集合（大写）——只用来区分实线/虚线下划线，不再作为「是否可点」的闸门。
+    final known = widget.state.stations
+        .map((s) => s.call.toUpperCase())
+        .toSet();
+
     for (final m in callRe.allMatches(text)) {
       if (!boundaryOk(m.start, m.end)) continue;
       final up = m.group(0)!.toUpperCase();
       if (!AppState.isValidCallsign(up)) continue;
-      // 必须在台站列表里：纯格式匹配会把普通单词也误判成呼号
-      if (!widget.state.stations.any((s) => s.call.toUpperCase() == up)) {
-        continue;
-      }
       // 与 URL 重叠的跳过（URL 优先）
       if (hits.any((h) => h.$4 && m.start < h.$2 && m.end > h.$1)) {
         continue;
       }
       hits.add((m.start, m.end, m.group(0)!, false));
+    }
+    // 标记哪些是已知台站：借用第 4 位语义（URL=false 时另用一张集合记录）
+    final knownSpans = <int>{};
+    for (final h in hits) {
+      if (!h.$4 && known.contains(h.$3.toUpperCase())) knownSpans.add(h.$1);
     }
     hits.sort((a, b) => a.$1.compareTo(b.$1));
 
@@ -2504,12 +2515,17 @@ class _MessagesPageState extends State<MessagesPage> {
         );
       } else {
         final call = h.$3.toUpperCase();
+        final isKnown = knownSpans.contains(h.$1);
         spans.add(
           TextSpan(
             text: h.$3,
             style: TextStyle(
               color: C.green,
               decoration: TextDecoration.underline,
+              // 已知台站实线、未收到报文虚线，一眼能分辨。
+              decorationStyle: isKnown
+                  ? TextDecorationStyle.solid
+                  : TextDecorationStyle.dotted,
               decorationColor: C.green,
             ),
             recognizer: TapGestureRecognizer()

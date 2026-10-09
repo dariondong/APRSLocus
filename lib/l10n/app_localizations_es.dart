@@ -8379,4 +8379,31 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get stationTapToView => "Toca para ver la estación";
 
+  @override
+  String get locationPickStations => "Elegir estación";
+
+  @override
+  String get locationSearchHint => "Buscar indicativo / alias";
+
+  @override
+  String get locationNoStation => "Ninguna estación coincide";
+
+  @override
+  String get locationPrevPage => "Ant.";
+
+  @override
+  String get locationNextPage => "Sig.";
+
+  @override
+  String get shareStation => "Compartir estación";
+
+  @override
+  String get shareStationPick => "¿A qué chat enviar?";
+
+  @override
+  String shareStationSent(String call) => "$call compartida";
+
+  @override
+  String locationPageInfo(String n, String m) => "Página $n / $m";
+
 }

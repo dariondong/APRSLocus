@@ -204,6 +204,41 @@ CARDS = [
 # 只列「重点版本」：中间几十个纯修 bug 的版本归纳进文字说明，完整记录指向 Releases。
 CL = [
     {
+        'ver': 'v2.0.45', 'date': '2026-10-09',
+        'items': [
+            ('new',
+             T('**选台站，能搜能翻页**：私聊「+ → 发送位置点」里新增「选择台站」，'
+               '**按呼号 / 别名搜索**、**分页浏览**（每页 20 条、上/下页带文字按钮），'
+               '有定位时按**近 → 远**排序；行尾可先看台站详情。'
+               '台站详情「更多」里也能**把这个台站分享到其它会话**。',
+               '**選台站，能搜能翻頁**：私聊「+ → 傳送位置點」裡新增「選擇台站」，'
+               '**按呼號 / 別名搜尋**、**分頁瀏覽**（每頁 20 筆、上/下頁帶文字按鈕），'
+               '有定位時按**近 → 遠**排序；行尾可先看台站詳情。'
+               '台站詳情「更多」裡也能**把這個台站分享到其它會話**。',
+               '**Pick a station — search & paging**: the private-chat "+ → send '
+               'location" menu now offers "Pick a station" with **search by callsign / '
+               'alias** and **paged browsing** (20 rows per page, labelled prev/next '
+               'buttons), sorted **near → far** when a position is known; each row can '
+               'open station details first. A station\'s "More" menu can also **share '
+               'that station to other chats**.')),
+            ('up',
+             T('**位置点自由选、样式统一**：分享位置点在地图上**任取坐标**（或「我的'
+               '位置」）；点按后**套用台站面板**，可直接**呼出导航**。'
+               '对话里的**呼号识别修正**：只要形如呼号即可点击，已在台站列表用实线、'
+               '暂未收到的用虚线，点开都能看台站面板。',
+               '**位置點自由選、樣式統一**：分享位置點在地圖上**任取座標**（或「我的'
+               '位置」）；點按後**套用台站面板**，可直接**呼出導航**。'
+               '對話裡的**呼號識別修正**：只要形如呼號即可點擊，已在台站列表用實線、'
+               '暫未收到的用虛線，點開都能看台站面板。',
+               '**Free-picked locations, unified panel**: pick any point on the map (or '
+               '"My position") to share a location; tapping it **reuses the station '
+               'panel**, putting **navigation** one tap away. **Callsign recognition '
+               'fixed** in messages: any callsign-looking word is clickable — solid '
+               'underline for known stations, dotted for not-yet-heard ones, all opening '
+               'the station panel.')),
+        ],
+    },
+    {
         'ver': 'v2.0.44', 'date': '2026-10-09',
         'items': [
             ('new',

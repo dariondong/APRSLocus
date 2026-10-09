@@ -2866,5 +2866,16 @@
   "locationSendTo": "Enviar a {call}",
   "@locationSendTo": {"placeholders": {"call": {"type": "String"}}},
   "chatMore": "Más",
-  "stationTapToView": "Toca para ver la estación"
+  "stationTapToView": "Toca para ver la estación",
+  "locationPickStations": "Elegir estación",
+  "locationSearchHint": "Buscar indicativo / alias",
+  "locationNoStation": "Ninguna estación coincide",
+  "locationPrevPage": "Ant.",
+  "locationNextPage": "Sig.",
+  "shareStation": "Compartir estación",
+  "shareStationPick": "¿A qué chat enviar?",
+  "shareStationSent": "{call} compartida",
+  "locationPageInfo": "Página {n} / {m}",
+  "@locationPageInfo": {"placeholders": {"n": {"type": "String"}, "m": {"type": "String"}}},
+  "@shareStationSent": {"placeholders": {"call": {"type": "String"}}}
 }

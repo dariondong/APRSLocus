@@ -14468,6 +14468,60 @@ abstract class AppLocalizations {
   /// **'点击查看台站'**
   String get stationTapToView;
 
+  /// No description provided for @locationPickStations.
+  ///
+  /// In zh, this message translates to:
+  /// **'选择台站'**
+  String get locationPickStations;
+
+  /// No description provided for @locationSearchHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'搜索呼号 / 别名'**
+  String get locationSearchHint;
+
+  /// No description provided for @locationNoStation.
+  ///
+  /// In zh, this message translates to:
+  /// **'没有匹配的台站'**
+  String get locationNoStation;
+
+  /// No description provided for @locationPrevPage.
+  ///
+  /// In zh, this message translates to:
+  /// **'上一页'**
+  String get locationPrevPage;
+
+  /// No description provided for @locationNextPage.
+  ///
+  /// In zh, this message translates to:
+  /// **'下一页'**
+  String get locationNextPage;
+
+  /// No description provided for @shareStation.
+  ///
+  /// In zh, this message translates to:
+  /// **'分享台站'**
+  String get shareStation;
+
+  /// No description provided for @shareStationPick.
+  ///
+  /// In zh, this message translates to:
+  /// **'发送到哪个会话？'**
+  String get shareStationPick;
+
+  /// No description provided for @shareStationSent.
+  ///
+  /// In zh, this message translates to:
+  /// **'已分享 {call}'**
+  String shareStationSent(String call);
+
+  /// No description provided for @locationPageInfo.
+  ///
+  /// In zh, this message translates to:
+  /// **'第 {n} / {m} 页'**
+  String locationPageInfo(String n, String m);
+
 }
 
 class _AppLocalizationsDelegate

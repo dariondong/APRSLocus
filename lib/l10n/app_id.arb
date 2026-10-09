@@ -2866,5 +2866,16 @@
   "locationSendTo": "Kirim ke {call}",
   "@locationSendTo": {"placeholders": {"call": {"type": "String"}}},
   "chatMore": "Lainnya",
-  "stationTapToView": "Ketuk untuk lihat stasiun"
+  "stationTapToView": "Ketuk untuk lihat stasiun",
+  "locationPickStations": "Pilih stasiun",
+  "locationSearchHint": "Cari panggilan / alias",
+  "locationNoStation": "Tidak ada stasiun yang cocok",
+  "locationPrevPage": "Sebelumnya",
+  "locationNextPage": "Berikutnya",
+  "shareStation": "Bagikan stasiun",
+  "shareStationPick": "Kirim ke obrolan mana?",
+  "shareStationSent": "{call} dibagikan",
+  "locationPageInfo": "Halaman {n} / {m}",
+  "@locationPageInfo": {"placeholders": {"n": {"type": "String"}, "m": {"type": "String"}}},
+  "@shareStationSent": {"placeholders": {"call": {"type": "String"}}}
 }

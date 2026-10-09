@@ -1,5 +1,84 @@
 # 更新日志
 
+## [2.0.45] - 2026-10-09
+
+### 改进：位置点自由选 / 台站可搜索选择 / 呼号识别修正
+
+**需求**
+
+- 分享的**位置点要能自由选点**（地图上任意一点），并且**套用台站面板样式**，
+  方便直接**呼出导航**等操作。
+- 「+」菜单里要能**选择 / 分享台站**；台站很多，必须能**搜索**、能**翻页**。
+- 台站详情的「**更多**」里要能**把该台站分享到其它会话**。
+- 对话里的**呼号识别不到位**，明明写着呼号却**点不动**。
+
+**改动**
+
+- **选点浮层**（`lib/location_picker_page.dart`）改为两条互不干扰的路径：
+  **自由选点**（在地图上点 / 拖任取坐标，默认行为）与**选择台站**。
+  「选择台站」进入**可搜索、可分页**的独立面板：每页 20 条，底部有
+  「上一页 / 第 n / m 页 / 下一页」**带文字的按钮**（不再把翻页藏成角落里的小箭头），
+  有定位时按**近 → 远**排序，行尾可先看台站详情。
+- **分享的位置点套用台站面板**：位置点 / 台站卡片气泡点按后，如果是台站则
+  复用 [StationDetail]（可直接**导航**、看轨迹等），自由选点仍跳主地图聚焦。
+- **台站详情「更多」新增「分享台站」**：选一个会话，把该台站的**坐标 + 呼号**
+  作为一条位置消息发给对方（走与私聊「发送位置点」同一套 `Q` 协议）。
+- **呼号识别修正**（`lib/messages_page.dart`）：形如业余呼号、左右边界正确的词
+  即可点击（**不再要求先收到过该台站的信标**）；已在台站列表的用**实线**下划线，
+  暂未收到的用**虚线**下划线，点开都会显示台站面板（未收到的显示「未收到报文」）。
+- l10n：六语言新增 `locationPickStations` / `locationSearchHint` /
+  `locationNoStation` / `locationPrevPage` / `locationNextPage` /
+  `locationPageInfo` / `shareStation` / `shareStationPick` / `shareStationSent`。
+
+**测试**
+
+- `tool/check_*.py`（23 项）与 `check_l10n_sync.py` 全部通过；`flutter analyze`
+  / `flutter test` 由 CI 复核。
+
+---
+
+## [2.0.45] - 2026-10-09 (English)
+
+### Improved: free-pick a location / searchable station picker / callsign fixes
+
+**Request**
+
+- A shared **location point must be free-picked** (any point on the map) and should
+  **reuse the station panel style**, so **navigation** is one tap away.
+- The "+" menu must support **choosing / sharing a station**; with many stations it
+  needs **search** and **paging**.
+- A station's "**More**" menu must let you **share that station to other chats**.
+- **Callsign recognition** in messages was incomplete — a callsign in the text was
+  **not tappable**.
+
+**Changes**
+
+- **Picker overlay** (`lib/location_picker_page.dart`) now has two independent
+  paths: **free pick** (tap/drag any point on the map, the default) and
+  **pick a station**. "Pick a station" opens a **searchable, paged** panel:
+  20 rows per page, with a bottom bar of **labelled "Prev / Page n / m / Next"
+  buttons** (no more tiny arrows hidden in a corner), sorted **near → far** when a
+  position is known, and a per-row shortcut to view station details first.
+- **Shared location reuses the station panel**: tapping a station card or a
+  location bubble reuses [StationDetail] (so **navigation**, tracks, etc. are one
+  tap away); a free-picked point still jumps to the main map.
+- **Station "More" → "Share station"**: pick a conversation and the station's
+  **coordinates + callsign** are sent as a location message (same `Q` protocol as
+  the private "send location").
+- **Callsign fix** (`lib/messages_page.dart`): any word that looks like an amateur
+  callsign with correct boundaries is now clickable (**no longer requires a
+  beacon to have been heard first**); known stations get a **solid** underline,
+  not-yet-heard ones a **dotted** underline, and both open the station panel
+  (unheard ones show "no packet received").
+- l10n: nine new keys across six languages.
+
+**Testing**
+
+- `tool/check_*.py` (23 checks) and `check_l10n_sync.py` all pass; `flutter analyze`
+  / `flutter test` are re-verified by CI.
+
+---
+
 ## [2.0.44] - 2026-10-09
 
 ### 新增：私聊发送位置点 / 分享台站 / 消息内呼号可点击

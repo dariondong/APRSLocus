@@ -7986,6 +7986,33 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String get stationTapToView => "点击查看台站";
 
+  @override
+  String get locationPickStations => "选择台站";
+
+  @override
+  String get locationSearchHint => "搜索呼号 / 别名";
+
+  @override
+  String get locationNoStation => "没有匹配的台站";
+
+  @override
+  String get locationPrevPage => "上一页";
+
+  @override
+  String get locationNextPage => "下一页";
+
+  @override
+  String get shareStation => "分享台站";
+
+  @override
+  String get shareStationPick => "发送到哪个会话？";
+
+  @override
+  String shareStationSent(String call) => "已分享 $call";
+
+  @override
+  String locationPageInfo(String n, String m) => "第 $n / $m 页";
+
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
@@ -15968,5 +15995,32 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get stationTapToView => "點擊查看台站";
+
+  @override
+  String get locationPickStations => "選擇台站";
+
+  @override
+  String get locationSearchHint => "搜尋呼號 / 別名";
+
+  @override
+  String get locationNoStation => "沒有符合的台站";
+
+  @override
+  String get locationPrevPage => "上一頁";
+
+  @override
+  String get locationNextPage => "下一頁";
+
+  @override
+  String get shareStation => "分享台站";
+
+  @override
+  String get shareStationPick => "傳送到哪個會話？";
+
+  @override
+  String shareStationSent(String call) => "已分享 $call";
+
+  @override
+  String locationPageInfo(String n, String m) => "第 $n / $m 頁";
 
 }

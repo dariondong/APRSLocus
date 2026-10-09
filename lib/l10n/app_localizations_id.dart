@@ -8337,4 +8337,31 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get stationTapToView => "Ketuk untuk lihat stasiun";
 
+  @override
+  String get locationPickStations => "Pilih stasiun";
+
+  @override
+  String get locationSearchHint => "Cari panggilan / alias";
+
+  @override
+  String get locationNoStation => "Tidak ada stasiun yang cocok";
+
+  @override
+  String get locationPrevPage => "Sebelumnya";
+
+  @override
+  String get locationNextPage => "Berikutnya";
+
+  @override
+  String get shareStation => "Bagikan stasiun";
+
+  @override
+  String get shareStationPick => "Kirim ke obrolan mana?";
+
+  @override
+  String shareStationSent(String call) => "$call dibagikan";
+
+  @override
+  String locationPageInfo(String n, String m) => "Halaman $n / $m";
+
 }

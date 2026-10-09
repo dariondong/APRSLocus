@@ -321,6 +321,23 @@ class _StationDetailState extends State<StationDetail> {
                                   ),
                                 ),
                                 PopupMenuItem(
+                                  value: 'share',
+                                  child: Row(
+                                    children: [
+                                      Icon(
+                                        Icons.share_location_rounded,
+                                        size: 18,
+                                        color: C.cyan,
+                                      ),
+                                      SizedBox(width: 10),
+                                      Text(
+                                        S.of(ctx).shareStation,
+                                        style: ts(13),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                PopupMenuItem(
                                   value: 'delete',
                                   child: Row(
                                     children: [
@@ -1379,8 +1396,99 @@ class _StationDetailState extends State<StationDetail> {
   }
 
   /// 台站操作菜单：收藏 / 复制呼号 / 删除台站
+  /// 「更多 → 分享台站」：选一个会话，把该台站的**坐标 + 呼号**作为一条位置
+  /// 消息发过去（走既有的 [AppState.sendLocation]，与私聊里的「发送位置点」同一
+  /// 套协议 —— APRS 位置点报文 + 呼号，接收端渲染成台站卡片）。
+  Future<void> _shareStation(Station s) async {
+    final st = widget.state;
+    final loc = S.of(context);
+    final partners = AppState.partnersOf(
+        st.messages, st.chatGroups, st.stations)
+      ..remove(s.call);
+    if (!st.connected) {
+      _toast(loc.chatNeedConnect);
+      return;
+    }
+    final target = await showModalBottomSheet<String>(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) => MaterialSurface(
+        radius: 18,
+        topOnly: true,
+        child: Container(
+          decoration: BoxDecoration(
+            color: C.sheetFill,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(18)),
+          ),
+          child: SafeArea(
+            top: false,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const SizedBox(height: 8),
+                Container(
+                  width: 36,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: C.border,
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          loc.shareStationPick,
+                          style: ts(14, w: FontWeight.w800),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                if (partners.isEmpty)
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 8, 16, 20),
+                    child: Text(loc.noConversations, style: ts(12, c: C.grey)),
+                  )
+                else
+                  Flexible(
+                    child: ListView(
+                      shrinkWrap: true,
+                      children: [
+                        for (final p in partners)
+                          ListTile(
+                            dense: true,
+                            leading: Icon(Icons.person_rounded,
+                                size: 18, color: C.blue),
+                            title: Text(p, style: ts(13, w: FontWeight.w600)),
+                            onTap: () => Navigator.pop(ctx, p),
+                          ),
+                        const SizedBox(height: 6),
+                      ],
+                    ),
+                  ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+    if (target == null || !mounted) return;
+    if (st.sendLocation(target, s.lat, s.lng, asStation: s.call)) {
+      _toast(loc.shareStationSent(s.call));
+    } else {
+      _toast(loc.needFixToSendLocation);
+    }
+  }
+
   Future<void> _onStationAction(String action, Station s) async {
     final st = widget.state;
+    if (action == 'share') {
+      await _shareStation(s);
+      return;
+    }
     if (action == 'fav') {
       st.toggleFavorite(s.call);
       if (!mounted) return;

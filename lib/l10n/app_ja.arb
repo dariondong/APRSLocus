@@ -2866,5 +2866,16 @@
   "locationSendTo": "{call} に送信",
   "@locationSendTo": {"placeholders": {"call": {"type": "String"}}},
   "chatMore": "その他",
-  "stationTapToView": "タップして局を見る"
+  "stationTapToView": "タップして局を見る",
+  "locationPickStations": "局を選ぶ",
+  "locationSearchHint": "コールサイン / 別名で検索",
+  "locationNoStation": "一致する局がありません",
+  "locationPrevPage": "前へ",
+  "locationNextPage": "次へ",
+  "shareStation": "局を共有",
+  "shareStationPick": "どの会話に送りますか？",
+  "shareStationSent": "{call} を共有しました",
+  "locationPageInfo": "{n} / {m} ページ",
+  "@locationPageInfo": {"placeholders": {"n": {"type": "String"}, "m": {"type": "String"}}},
+  "@shareStationSent": {"placeholders": {"call": {"type": "String"}}}
 }

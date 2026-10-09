@@ -3381,5 +3381,16 @@
   "locationSendTo": "发送给 {call}",
   "@locationSendTo": {"placeholders": {"call": {"type": "String"}}},
   "chatMore": "更多",
-  "stationTapToView": "点击查看台站"
+  "stationTapToView": "点击查看台站",
+  "locationPickStations": "选择台站",
+  "locationSearchHint": "搜索呼号 / 别名",
+  "locationNoStation": "没有匹配的台站",
+  "locationPrevPage": "上一页",
+  "locationNextPage": "下一页",
+  "shareStation": "分享台站",
+  "shareStationPick": "发送到哪个会话？",
+  "shareStationSent": "已分享 {call}",
+  "locationPageInfo": "第 {n} / {m} 页",
+  "@locationPageInfo": {"placeholders": {"n": {"type": "String"}, "m": {"type": "String"}}},
+  "@shareStationSent": {"placeholders": {"call": {"type": "String"}}}
 }
