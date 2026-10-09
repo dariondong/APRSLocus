@@ -575,6 +575,28 @@
 <!-- site-sync:changelog -->
     <div class="cl-version reveal">
       <div class="cl-head">
+        <span class="cl-tag">v2.0.42</span>
+        <span class="cl-date">2026-10-09</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot new"></span><b>策略地圖升級</b>：地圖上新增<b>隊友位置 + 方位角小角標</b>（按去 SSID 的基呼號匹配群成員台站，靜止/無航向就不畫），<b>線 / 圈可選顏色</b>（全網一致六色調色盤），畫點等<b>策略訊息在群聊留可點擊提示</b>，點一下直接跳進對應群的策略地圖。</div>
+        <div class="cl-item"><span class="cl-dot up"></span><b>射頻也能用群聊與策略地圖</b>：<code>groupChatAllowed</code> 放開為始終可用，射頻（TNC / 音訊）下策略幀改用帶 ack 格式，借隊友的標準自動 ack 判斷送達；90 秒未確認視為「不確認」（隊友可能關了自動 ack），可在策略地圖頁手動重發。</div>
+        <div class="cl-item"><span class="cl-dot fix"></span><b>修復策略點「跳轉導航」</b>：策略點不在台站表裡，補畫一枚焦點標記，跳轉改為瞬時落位（不再走過渡動畫），不會再停在「飛了一半」的中間態。</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
+        <span class="cl-tag">v2.0.41</span>
+        <span class="cl-date">2026-10-03</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot new"></span><b>群內「策略地圖」</b>：與隊友 / 群組共享<b>標點、線、圈、集合點</b>，複用現有群組、資料經 APRS 訊息傳輸（幀前綴 <code>$M</code>，過長的線自動分片，任何幀都 ≤ 67 字元）；元素支援<b>跳轉導航</b>與編輯附帶資訊，可「清空圖層」同步全群。</div>
+        <div class="cl-item"><span class="cl-dot new"></span><b>地圖長按快捷訊息</b>：長按 beacon / 台站彈出快捷訊息面板，複用現有傳送鏈路。</div>
+        <div class="cl-item"><span class="cl-dot up"></span><b>移除 OOBE Passcode 提示</b>：首次啟動引導裡不再出現「取得 Passcode」提示。</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
         <span class="cl-tag">v2.0.40</span>
         <span class="cl-date">2026-10-08</span>
       </div>

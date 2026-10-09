@@ -204,6 +204,81 @@ CARDS = [
 # 只列「重点版本」：中间几十个纯修 bug 的版本归纳进文字说明，完整记录指向 Releases。
 CL = [
     {
+        'ver': 'v2.0.42', 'date': '2026-10-09',
+        'items': [
+            ('new',
+             T('**策略地图升级**：地图上新增**队友位置 + 方位角小角标**（按去 SSID 的'
+               '基呼号匹配群成员台站，静止/无航向就不画），**线 / 圈可选颜色**（全网'
+               '一致六色调色板），画点等**策略消息在群聊留可点击提示**，点一下直接跳进'
+               '对应群的策略地图。',
+               '**策略地圖升級**：地圖上新增**隊友位置 + 方位角小角標**（按去 SSID 的'
+               '基呼號匹配群成員台站，靜止/無航向就不畫），**線 / 圈可選顏色**（全網'
+               '一致六色調色盤），畫點等**策略訊息在群聊留可點擊提示**，點一下直接跳進'
+               '對應群的策略地圖。',
+               '**Strategy map upgrades**: the map now shows **teammate positions with a '
+               'bearing badge** (matched to group members by SSID-stripped base callsign; no '
+               'badge when stationary or without a heading), **lines/circles get selectable '
+               'colors** (a network-wide six-color palette), and a strategy element leaves a '
+               '**clickable notice in group chat** that jumps straight into that group\'s '
+               'strategy map.')),
+            ('up',
+             T('**射频也能用群聊与策略地图**：`groupChatAllowed` 放开为始终可用，'
+               '射频（TNC / 音频）下策略帧改用带 ack 格式，借队友的标准自动 ack 判断'
+               '送达；90 秒未确认视为「不确认」（队友可能关了自动 ack），可在策略地图页'
+               '手动重发。',
+               '**射頻也能用群聊與策略地圖**：`groupChatAllowed` 放開為始終可用，'
+               '射頻（TNC / 音訊）下策略幀改用帶 ack 格式，借隊友的標準自動 ack 判斷'
+               '送達；90 秒未確認視為「不確認」（隊友可能關了自動 ack），可在策略地圖頁'
+               '手動重發。',
+               '**Group chat and the strategy map now work on RF**: `groupChatAllowed` is '
+               'always on; on RF (TNC / audio) strategy frames are sent ack-requesting and '
+               'delivery is judged by teammates\' standard auto-ack; unacked after 90s is '
+               'treated as "unconfirmed" (a peer may have auto-ack off) and can be resent '
+               'manually from the strategy map page.')),
+            ('fix',
+             T('**修复策略点「跳转导航」**：策略点不在台站表里，补画一枚焦点标记，'
+               '跳转改为瞬时落位（不再走过渡动画），不会再停在「飞了一半」的中间态。',
+               '**修復策略點「跳轉導航」**：策略點不在台站表裡，補畫一枚焦點標記，'
+               '跳轉改為瞬時落位（不再走過渡動畫），不會再停在「飛了一半」的中間態。',
+               '**Fixed strategy-point "jump to navigation"**: a strategy point is not in '
+               'the station list, so a focus marker is now painted; the jump snaps '
+               'instantly instead of animating and stalling mid-flight.')),
+        ],
+    },
+    {
+        'ver': 'v2.0.41', 'date': '2026-10-03',
+        'items': [
+            ('new',
+             T('**群内「策略地图」**：与队友 / 群组共享**标点、线、圈、集合点**，'
+               '复用现有群组、数据经 APRS 消息传输（帧前缀 `$M`，超长的线自动分片，'
+               '任何帧都 ≤ 67 字符）；元素支持**跳转导航**与编辑附带信息，可「清空'
+               '图层」同步全群。',
+               '**群內「策略地圖」**：與隊友 / 群組共享**標點、線、圈、集合點**，'
+               '複用現有群組、資料經 APRS 訊息傳輸（幀前綴 `$M`，過長的線自動分片，'
+               '任何幀都 ≤ 67 字元）；元素支援**跳轉導航**與編輯附帶資訊，可「清空'
+               '圖層」同步全群。',
+               '**In-group "Strategy Map"**: share **points, lines, circles and rally '
+               'points** with teammates/groups, reusing existing groups and transported '
+               'over APRS messages (frame prefix `$M`, long lines auto-chunked, every '
+               'frame ≤ 67 chars); elements support **jump-to-navigation** and editing '
+               'attached info, and "clear layer" syncs to the whole group.')),
+            ('new',
+             T('**地图长按快捷消息**：长按 beacon / 台站弹出快捷消息面板，'
+               '复用现有发送链路。',
+               '**地圖長按快捷訊息**：長按 beacon / 台站彈出快捷訊息面板，'
+               '複用現有傳送鏈路。',
+               '**Long-press quick message**: long-pressing a beacon/station opens a '
+               'quick-message sheet, reusing the existing send path.')),
+            ('up',
+             T('**移除 OOBE Passcode 提示**：首次启动引导里不再出现「获取 Passcode」'
+               '提示。',
+               '**移除 OOBE Passcode 提示**：首次啟動引導裡不再出現「取得 Passcode」'
+               '提示。',
+               '**Removed the OOBE passcode hint**: the first-run guide no longer shows '
+               'a "get Passcode" hint.')),
+        ],
+    },
+    {
         'ver': 'v2.0.40', 'date': '2026-10-08',
         'items': [
             ('new',

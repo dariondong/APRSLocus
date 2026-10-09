@@ -569,6 +569,28 @@
 <!-- site-sync:changelog -->
     <div class="cl-version reveal">
       <div class="cl-head">
+        <span class="cl-tag">v2.0.42</span>
+        <span class="cl-date">2026-10-09</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot new"></span><b>Strategy map upgrades</b>: the map now shows <b>teammate positions with a bearing badge</b> (matched to group members by SSID-stripped base callsign; no badge when stationary or without a heading), <b>lines/circles get selectable colors</b> (a network-wide six-color palette), and a strategy element leaves a <b>clickable notice in group chat</b> that jumps straight into that group's strategy map.</div>
+        <div class="cl-item"><span class="cl-dot up"></span><b>Group chat and the strategy map now work on RF</b>: <code>groupChatAllowed</code> is always on; on RF (TNC / audio) strategy frames are sent ack-requesting and delivery is judged by teammates' standard auto-ack; unacked after 90s is treated as "unconfirmed" (a peer may have auto-ack off) and can be resent manually from the strategy map page.</div>
+        <div class="cl-item"><span class="cl-dot fix"></span><b>Fixed strategy-point "jump to navigation"</b>: a strategy point is not in the station list, so a focus marker is now painted; the jump snaps instantly instead of animating and stalling mid-flight.</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
+        <span class="cl-tag">v2.0.41</span>
+        <span class="cl-date">2026-10-03</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot new"></span><b>In-group "Strategy Map"</b>: share <b>points, lines, circles and rally points</b> with teammates/groups, reusing existing groups and transported over APRS messages (frame prefix <code>$M</code>, long lines auto-chunked, every frame ≤ 67 chars); elements support <b>jump-to-navigation</b> and editing attached info, and "clear layer" syncs to the whole group.</div>
+        <div class="cl-item"><span class="cl-dot new"></span><b>Long-press quick message</b>: long-pressing a beacon/station opens a quick-message sheet, reusing the existing send path.</div>
+        <div class="cl-item"><span class="cl-dot up"></span><b>Removed the OOBE passcode hint</b>: the first-run guide no longer shows a "get Passcode" hint.</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
         <span class="cl-tag">v2.0.40</span>
         <span class="cl-date">2026-10-08</span>
       </div>

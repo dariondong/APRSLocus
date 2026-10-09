@@ -644,6 +644,28 @@ html{overflow-x:hidden}
 <!-- site-sync:changelog -->
     <div class="cl-version reveal">
       <div class="cl-head">
+        <span class="cl-tag">v2.0.42</span>
+        <span class="cl-date">2026-10-09</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot new"></span><b>策略地图升级</b>：地图上新增<b>队友位置 + 方位角小角标</b>（按去 SSID 的基呼号匹配群成员台站，静止/无航向就不画），<b>线 / 圈可选颜色</b>（全网一致六色调色板），画点等<b>策略消息在群聊留可点击提示</b>，点一下直接跳进对应群的策略地图。</div>
+        <div class="cl-item"><span class="cl-dot up"></span><b>射频也能用群聊与策略地图</b>：<code>groupChatAllowed</code> 放开为始终可用，射频（TNC / 音频）下策略帧改用带 ack 格式，借队友的标准自动 ack 判断送达；90 秒未确认视为「不确认」（队友可能关了自动 ack），可在策略地图页手动重发。</div>
+        <div class="cl-item"><span class="cl-dot fix"></span><b>修复策略点「跳转导航」</b>：策略点不在台站表里，补画一枚焦点标记，跳转改为瞬时落位（不再走过渡动画），不会再停在「飞了一半」的中间态。</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
+        <span class="cl-tag">v2.0.41</span>
+        <span class="cl-date">2026-10-03</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot new"></span><b>群内「策略地图」</b>：与队友 / 群组共享<b>标点、线、圈、集合点</b>，复用现有群组、数据经 APRS 消息传输（帧前缀 <code>$M</code>，超长的线自动分片，任何帧都 ≤ 67 字符）；元素支持<b>跳转导航</b>与编辑附带信息，可「清空图层」同步全群。</div>
+        <div class="cl-item"><span class="cl-dot new"></span><b>地图长按快捷消息</b>：长按 beacon / 台站弹出快捷消息面板，复用现有发送链路。</div>
+        <div class="cl-item"><span class="cl-dot up"></span><b>移除 OOBE Passcode 提示</b>：首次启动引导里不再出现「获取 Passcode」提示。</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
         <span class="cl-tag">v2.0.40</span>
         <span class="cl-date">2026-10-08</span>
       </div>
