@@ -204,6 +204,22 @@ CARDS = [
 # 只列「重点版本」：中间几十个纯修 bug 的版本归纳进文字说明，完整记录指向 Releases。
 CL = [
     {
+        'ver': 'v2.0.48', 'date': '2026-10-09',
+        'items': [
+            ('fix',
+             T('**修复设置页箭头没贴右**：标题用了「松份额」`Flexible`，文字短时会'
+               '留剩余空间、箭头左飘；改成紧份额 `Expanded` 后箭头恒定贴右，'
+               '说明列起点也随之对齐。',
+               '**修復設定頁箭頭沒貼右**：標題用了「鬆份額」`Flexible`，文字短時'
+               '會留剩餘空間、箭頭左飄；改成緊份額 `Expanded` 後箭頭恆定貼右，'
+               '說明欄起點也隨之對齊。',
+               '**Fixed the settings chevrons not pinned right**: the title used a '
+               'loose `Flexible`, so short text left free space and the chevron '
+               'drifted left; switching to a tight `Expanded` pins it to the right '
+               'and aligns the description column too.')),
+        ],
+    },
+    {
         'ver': 'v2.0.47', 'date': '2026-10-09',
         'items': [
             ('fix',

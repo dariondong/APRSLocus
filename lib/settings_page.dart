@@ -451,7 +451,7 @@ class _SettingsPageState extends State<SettingsPage> {
               ),
             ),
             SizedBox(width: 10),
-            Flexible(
+            Expanded(
               flex: 2,
               child: Text(
                 S.of(context).noticeTitle,

@@ -751,7 +751,10 @@ class SettingsEntryTile extends StatelessWidget {
           children: [
             iconBox,
             const SizedBox(width: 10),
-            Flexible(
+            // 标题用**紧**份额（Expanded 而非 Flexible）：松份额在文字较短时
+            // 会留出一截剩余空间，箭头就不再贴右（标题越短越靠左飘）。
+            // 紧份额把剩余宽度吃干净，箭头恒定贴右，且说明列起点固定 → 对齐。
+            Expanded(
               flex: 2,
               child: Text(
                 title,

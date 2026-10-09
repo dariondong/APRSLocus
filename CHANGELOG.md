@@ -1,5 +1,62 @@
 # 更新日志
 
+## [2.0.48] - 2026-10-09
+
+### 修复：设置页箭头没贴右
+
+**现象**
+
+设置页各项右侧的箭头没有对齐到右边缘 —— 标题越短，箭头越往左飘；
+说明文字（如「用户反馈」的说明）也跟着没顶到箭头前。
+
+**原因**
+
+`SettingsEntryTile`（以及旧的 `_noticeEntry` / 分类卡 `_catCard`）里，标题用的是
+**松份额** `Flexible`：松份额只在需要时占用宽度，文字较短时**会留下剩余空间**，
+箭头于是不再贴右。这与「标题:说明 = 2:3」的份额设计无关 —— 是松 / 紧份额的问题。
+
+**改动**（`lib/settings_widgets.dart`、`lib/settings_page.dart`）
+
+- `SettingsEntryTile` 与 `_noticeEntry` 的标题改为**紧份额** `Expanded`
+  （说明列本就是 `Expanded`）。两列都把剩余宽度吃干净 → 箭头**恒定贴右**，
+  且说明列起点固定，纵向看成一列。
+- 分类卡 `_catCard` 说明本就 `Expanded`，箭头贴右，无需改动。
+
+**测试**
+
+- `tool/check_*.py` 全部通过；`flutter analyze` / `flutter test` 由 CI 复核。
+
+---
+
+## [2.0.48] - 2026-10-09 (English)
+
+### Fixed: settings chevrons not pinned to the right
+
+**Symptom**
+
+The chevron on each settings row was not aligned to the right edge — the shorter
+the title, the further left the chevron drifted.
+
+**Cause**
+
+In `SettingsEntryTile` (and the old `_noticeEntry` / category card), the title
+used a **loose** `Flexible`: a loose fit only takes the width it needs and leaves
+free space when the text is short, so the chevron no longer sat at the right edge.
+It was a loose-vs-tight fit issue, not the 2:3 share.
+
+**Changes** (`lib/settings_widgets.dart`, `lib/settings_page.dart`)
+
+- The title in `SettingsEntryTile` and `_noticeEntry` is now a **tight** `Expanded`
+  (the description column already was). Both columns consume all remaining width,
+  so the chevron is **pinned to the right** and the description column starts at a
+  fixed x. The category card already used `Expanded`.
+
+**Testing**
+
+- `tool/check_*.py` all pass; `flutter analyze` / `flutter test` are re-verified by CI.
+
+---
+
 ## [2.0.47] - 2026-10-09
 
 ### 改进：点空白收起键盘 / 设置页整理对齐 / 反馈入口
