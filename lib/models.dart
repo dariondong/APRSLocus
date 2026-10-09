@@ -348,9 +348,25 @@ class AprsMsg {
   /// 只存译文则用户看不懂自己的聊天记录；只存原文则无法核对到底发出了什么。
   final String? sentAs;
 
-  /// 系统消息子类型（可点击/可路由用）。目前只有 `strategy`：
-  /// 「XX 共享了一个标点」这类提示，点一下能跳进策略地图。空串=普通系统消息。
+  /// 系统消息子类型（可点击/可路由用）。目前有：
+  ///   * `strategy`：「XX 共享了一个标点」这类提示，点一下能跳进策略地图；
+  ///   * `location`：私聊里发/收的**位置点**消息，气泡可点，跳去主地图；
+  /// 空串=普通系统消息。
   final String? type;
+
+  /// 位置点消息的坐标（仅 [type] == `location` 时有值）。
+  ///
+  /// 为什么不塞进 [text] 再解析：`text` 是**给用户看的内容**，而位置点的
+  /// 空中帧（`$M1 Q …`）是协议文本，直接显示等于把用户当调试器。两个字段各司
+  /// 其职：`text` 存可读描述（如「位置点」），坐标存这里供气泡跳地图用。
+  final double? lat;
+  final double? lng;
+
+  /// 分享的**台站呼号**（仅当这条位置点是「分享某个台站」、而非自由选点时非空）。
+  ///
+  /// 有值时气泡按「台站卡片」渲染、点按打开该台站面板；为空时按普通位置点渲染、
+  /// 点按跳主地图。呼号随帧的标签字段一起走（见 `StrategyProto.encodeLocation`）。
+  final String? stationCall;
 
   /// 是否译发过
   bool get translated => sentAs != null && sentAs!.isNotEmpty && sentAs != text;
@@ -367,6 +383,9 @@ class AprsMsg {
     this.system = false,
     this.sentAs,
     this.type,
+    this.lat,
+    this.lng,
+    this.stationCall,
   });
 
   Map<String, dynamic> toJson() => {
@@ -381,6 +400,9 @@ class AprsMsg {
     if (system) 'system': system,
     if (sentAs != null) 'sentAs': sentAs,
     if (type != null) 'type': type,
+    if (lat != null) 'lat': lat,
+    if (lng != null) 'lng': lng,
+    if (stationCall != null) 'stationCall': stationCall,
   };
 
   factory AprsMsg.fromJson(Map<String, dynamic> j) => AprsMsg(
@@ -395,6 +417,9 @@ class AprsMsg {
     system: j['system'] as bool? ?? false,
     sentAs: j['sentAs'] as String?,
     type: j['type'] as String?,
+    lat: (j['lat'] as num?)?.toDouble(),
+    lng: (j['lng'] as num?)?.toDouble(),
+    stationCall: j['stationCall'] as String?,
   );
 }
 

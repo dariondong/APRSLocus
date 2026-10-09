@@ -14408,6 +14408,66 @@ abstract class AppLocalizations {
   /// **'{call} 清空了共享图层'**
   String strategyClearedMsg(String call);
 
+  /// No description provided for @sendLocation.
+  ///
+  /// In zh, this message translates to:
+  /// **'发送位置点'**
+  String get sendLocation;
+
+  /// No description provided for @needFixToSendLocation.
+  ///
+  /// In zh, this message translates to:
+  /// **'还没有定位，暂时无法发送位置点'**
+  String get needFixToSendLocation;
+
+  /// No description provided for @msgLocation.
+  ///
+  /// In zh, this message translates to:
+  /// **'位置点'**
+  String get msgLocation;
+
+  /// No description provided for @locationTapToView.
+  ///
+  /// In zh, this message translates to:
+  /// **'点击在地图查看'**
+  String get locationTapToView;
+
+  /// No description provided for @locationPickTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'选点发送位置点'**
+  String get locationPickTitle;
+
+  /// No description provided for @locationPickHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'在地图上点击要发送的坐标'**
+  String get locationPickHint;
+
+  /// No description provided for @locationMyPos.
+  ///
+  /// In zh, this message translates to:
+  /// **'我的位置'**
+  String get locationMyPos;
+
+  /// No description provided for @locationSendTo.
+  ///
+  /// In zh, this message translates to:
+  /// **'发送给 {call}'**
+  String locationSendTo(String call);
+
+  /// No description provided for @chatMore.
+  ///
+  /// In zh, this message translates to:
+  /// **'更多'**
+  String get chatMore;
+
+  /// No description provided for @stationTapToView.
+  ///
+  /// In zh, this message translates to:
+  /// **'点击查看台站'**
+  String get stationTapToView;
+
 }
 
 class _AppLocalizationsDelegate

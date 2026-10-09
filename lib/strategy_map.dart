@@ -15,7 +15,7 @@
 /// * 前缀 `$M` 表明是策略帧，`GroupProto` 不会误认（它以 `INVITE`/`【JOIN】`
 ///   等开头）；`$` 也**不是** APRS 消息体内的保留字符。
 /// * `<OP>`：`P` 标点 / `L` 划线 / `C` 圈 / `R` 集合点 / `D` 删除 / `X` 清空 /
-///   `S` 请求全量快照。
+///   `S` 请求全量快照 / `Q` 位置点（**仅私聊**，见 [StrategyProto.encodeLocation]）。
 /// * `<ID>`：元素 ID，由创建者保证全网一致，便于后续更新/删除引用它。
 /// * 划线较长时自动分片：`L <ID> <i>/<n> <点串>`，接收端收齐才落图。
 ///
@@ -192,7 +192,7 @@ class StrategyProto {
   /// 每片约 2 个点，40 片 ≈ 80 点，够画常规路线，又不至于一发几十条消息。
   static const int maxParts = 40;
 
-  static const List<String> ops = ['P', 'L', 'C', 'R', 'D', 'X', 'S'];
+  static const List<String> ops = ['P', 'L', 'C', 'R', 'D', 'X', 'S', 'Q'];
 
   /// 线/圈可选颜色（全网固定，帧里只传下标）。
   ///
@@ -272,6 +272,43 @@ class StrategyProto {
     StrategyKind.circle => 'C',
     StrategyKind.rally => 'R',
   };
+
+  /// 位置点帧标签的长度上限。比 [maxLabelLen] 宽：要容纳 `S:<CALL>-<SSID>`
+  /// 这样的台站标记（如 `S:BG7LZQ-9`）。
+  static const int maxStationLabelLen = 12;
+
+  /// 编码一个**私聊位置点**帧：`$M1 Q <ID> <lat>,<lng> [标签]`。
+  ///
+  /// 与 [encode] 分开：位置点**不进群图层**，只作为私聊消息投递给单个台站，
+  /// 因此没有 groupCall；ID 只是给接收端做去重/标记，无需全网唯一。
+  /// 标签放不下就丢掉（有坐标就有意义，标签是锦上添花）。
+  static String encodeLocation(
+    String id,
+    double lat,
+    double lng, {
+    String label = '',
+  }) {
+    final head = '\$M$version Q ${id.toUpperCase()} '
+        '${_fmtCoord(lat)},${_fmtCoord(lng)}';
+    final clean = _normLocLabel(label);
+    final withLabel = clean.isEmpty ? head : '$head $clean';
+    return withLabel.length <= maxFrameLen ? withLabel : head;
+  }
+
+  /// 位置点帧的坐标是否合法（接收端用；越界/NaN 一律丢弃）。
+  static bool validLocation(StrategyFrame f) =>
+      _inRange(f.lat, f.lng);
+
+  /// 位置点标签的规范化：与策略标签 [_normLabel] 不同，这里**必须保留 `:` 与 `-`**
+  /// ——`S:<CALL>` 是「分享的是台站」的标记，被过滤掉接收端就只能当自由选点。
+  static String _normLocLabel(String s) {
+    var t = s.replaceAll(RegExp(r'[^A-Za-z0-9:\- ]'), ' ').trim();
+    t = t.replaceAll(RegExp(r'\s+'), ' ');
+    if (t.length > maxStationLabelLen) {
+      t = t.substring(0, maxStationLabelLen);
+    }
+    return t;
+  }
 
   static String _normLabel(String s) {
     var t = s.replaceAll(RegExp(r'[\r\n:]'), ' ').trim();
@@ -362,6 +399,17 @@ class StrategyProto {
     switch (op) {
       case 'D':
         return StrategyFrame(op: op, id: id);
+      case 'Q':
+        if (payload.isEmpty) return null;
+        final ll = _parseLatLng(payload[0]);
+        if (ll == null || !_inRange(ll.$1, ll.$2)) return null;
+        return StrategyFrame(
+          op: op,
+          id: id,
+          lat: ll.$1,
+          lng: ll.$2,
+          label: _joinLabel(payload, 1),
+        );
       case 'P':
       case 'R':
         if (payload.isEmpty) return null;

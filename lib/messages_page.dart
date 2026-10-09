@@ -18,6 +18,8 @@ import 'widgets.dart';
 import 'group_chat.dart';
 import 'msg_limit.dart';
 import 'msg_len_counter.dart';
+import 'location_picker_page.dart';
+import 'material.dart';
 import 'station_detail.dart';
 import 'tracker_page.dart';
 
@@ -210,9 +212,10 @@ class _MessagesPageState extends State<MessagesPage> {
 
   /// 按呼号打开站台面板（找不到时用临时对象）
   void _openStation(AppState st, String call) {
+    final up = call.toUpperCase();
     Station? found;
     for (final x in st.stations) {
-      if (x.call == call) {
+      if (x.call.toUpperCase() == up) {
         found = x;
         break;
       }
@@ -220,7 +223,7 @@ class _MessagesPageState extends State<MessagesPage> {
     final station =
         found ??
         Station(
-          call: call,
+          call: up,
           symbol: '/',
           lat: st.myLat ?? 0,
           lng: st.myLng ?? 0,
@@ -526,18 +529,20 @@ class _MessagesPageState extends State<MessagesPage> {
 
   // ─── 输入栏（瀑布流 / 会话共用） ───
   /// 「译发」按钮：把当前输入译成对方的语言
-  Widget _outTranslateButton(AppState st) {
-    final pref = _pref;
-    final enabled = st.msgLenLimit >= 0; // 始终可点，上下文不足时给出提示
+  /// 输入栏「+」：浮出翻译 / 位置点（微信式收纳）。主操作区只留输入框与发送键。
+  Widget _moreButton(AppState st, {required bool canLocate}) {
+    final translateReady = TransDirection.canTranslateOutgoing(_pref);
     return GestureDetector(
-      onTap: !enabled || _outBusy ? null : () => _translateInput(st),
+      onTap: () => _showMoreSheet(st, canLocate: canLocate),
       child: Tooltip(
-        message: S.of(context).translateInput,
+        message: S.of(context).chatMore,
         child: Container(
           width: 44,
           height: 44,
           decoration: BoxDecoration(
-            color: _outPreview != null ? C.cyanBg : C.bgSoft,
+            color: (_outPreview != null || translateReady)
+                ? C.cyanBg
+                : C.bgSoft,
             borderRadius: BorderRadius.circular(16),
             border: Border.all(
               color: _outPreview != null
@@ -545,27 +550,108 @@ class _MessagesPageState extends State<MessagesPage> {
                   : C.border,
             ),
           ),
-          child: _outBusy
-              ? const Center(
-                  child: SizedBox(
-                    width: 16,
-                    height: 16,
-                    child: CircularProgressIndicator(strokeWidth: 2),
-                  ),
-                )
-              : Icon(
-                  Icons.translate_rounded,
-                  size: 18,
-                  color: _outPreview != null
-                      ? C.cyan
-                      : (TransDirection.canTranslateOutgoing(pref)
-                          ? C.slate
-                          : C.greyLight),
-                ),
+          child: Icon(
+            Icons.add_rounded,
+            size: 22,
+            color: translateReady ? C.slate : C.greyLight,
+          ),
         ),
       ),
     );
   }
+
+  /// 「+」浮出菜单：选位置点 / 译发当前输入。
+  void _showMoreSheet(AppState st, {required bool canLocate}) {
+    final s = S.of(context);
+    showModalBottomSheet<void>(
+      context: context,
+      backgroundColor: Colors.transparent,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(18)),
+      ),
+      builder: (ctx) => MaterialSurface(
+        radius: 18,
+        topOnly: true,
+        child: Container(
+          decoration: BoxDecoration(
+            color: C.sheetFill,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(18)),
+          ),
+          child: SafeArea(
+            top: false,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const SizedBox(height: 8),
+                Container(
+                  width: 36,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: C.border,
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+                const SizedBox(height: 6),
+                ListTile(
+                  leading: Icon(Icons.place_rounded,
+                      color: canLocate ? C.blue : C.grey),
+                  title: Text(s.sendLocation, style: ts(13, w: FontWeight.w600)),
+                  enabled: canLocate,
+                  onTap: canLocate
+                      ? () {
+                          Navigator.pop(ctx);
+                          _pickLocationAndSend(st);
+                        }
+                      : null,
+                ),
+                ListTile(
+                  leading: Icon(Icons.translate_rounded, color: C.cyan),
+                  title:
+                      Text(s.translateInput, style: ts(13, w: FontWeight.w600)),
+                  enabled: !_outBusy,
+                  onTap: () {
+                    Navigator.pop(ctx);
+                    _translateInput(st);
+                  },
+                ),
+                const SizedBox(height: 6),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  /// 打开选点浮层（[LocationPickerPage]）→ 取回坐标 → 走 [AppState.sendLocation]。
+  Future<void> _pickLocationAndSend(AppState st) async {
+    if (_selected.isEmpty) return;
+    if (!st.connected) {
+      _snack(S.of(context).chatNeedConnect, C.red);
+      return;
+    }
+    final r = await Navigator.of(context).push<((double, double), String?)>(
+      MaterialPageRoute(
+        builder: (_) => LocationPickerPage(state: st, call: _selected),
+      ),
+    );
+    if (r == null || !mounted) return;
+    final (ll, station) = r;
+    if (!st.sendLocation(_selected, ll.$1, ll.$2, asStation: station)) {
+      _snack(S.of(context).needFixToSendLocation, C.red);
+      return;
+    }
+    Future.delayed(const Duration(milliseconds: 80), () {
+      if (_scrollChat.hasClients) {
+        _scrollChat.animateTo(
+          0,
+          duration: const Duration(milliseconds: 200),
+          curve: Curves.easeOut,
+        );
+      }
+    });
+  }
+
 
   /// 翻译当前输入（不发送）。结果进了预览，用户可确认后再按发送。
   Future<void> _translateInput(AppState st) async {
@@ -681,6 +767,9 @@ class _MessagesPageState extends State<MessagesPage> {
     final group = inGroupChat
         ? st.chatGroups.where((g) => g.id == _selectedGroupId).firstOrNull
         : null;
+    // 浮出「+」菜单：把翻译（仅单聊）/ 位置点（仅单聊）收进加号，输入栏只剩
+    // 输入框与发送键 —— 与微信一致，主操作区干净。群聊暂不支持位置点。
+    final canLocate = !inGroupChat && _selected.isNotEmpty;
     // TNC（射频）模式：单条消息上限 67 字符（APRS101）。
     // 直接写进输入提示，比「打完发送才发现被拦」友好。
     final limit = st.msgLenLimit;
@@ -788,8 +877,7 @@ class _MessagesPageState extends State<MessagesPage> {
                 ),
               ),
               const SizedBox(width: 8),
-              // 译发按钮：把当前输入译成对方语言（RFC：对方语言未知时提示去设置）
-              _outTranslateButton(st),
+              _moreButton(st, canLocate: canLocate),
               const SizedBox(width: 8),
               GestureDetector(
                 onTap: _send,
@@ -1402,6 +1490,22 @@ class _MessagesPageState extends State<MessagesPage> {
     );
   }
 
+  /// 会话列表的最后一条预览。位置点消息给出可读文案（而不是空/坐标），
+  /// 分享台站则显示台站卡片前缀，一眼能分辨这条是什么。
+  String _convPreview(AprsMsg? m) {
+    if (m == null) return '';
+    if (m.type == 'location' && m.lat != null && m.lng != null) {
+      final s = S.of(context);
+      final call = m.stationCall;
+      if (call != null && call.isNotEmpty) {
+        return '${s.stationTapToView} · $call';
+      }
+      return '${s.msgLocation} · ${m.lat!.toStringAsFixed(3)}, '
+          '${m.lng!.toStringAsFixed(3)}';
+    }
+    return m.text;
+  }
+
   Widget _chatListItem(AppState st, String p) {
     final msgs = _chatWith(st, p);
     final last = msgs.isNotEmpty ? msgs.first : null;
@@ -1473,7 +1577,7 @@ class _MessagesPageState extends State<MessagesPage> {
                   ),
                   SizedBox(height: 2),
                   Text(
-                    last?.text ?? '',
+                    _convPreview(last),
                     style: ts(11, c: C.grey),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -2041,8 +2145,121 @@ class _MessagesPageState extends State<MessagesPage> {
           );
   }
 
+  /// 位置点气泡：显示坐标 + 提示，点一下把主地图聚焦到该点。
+  /// 若是「分享台站」（[AprsMsg.stationCall] 非空），改用台站卡片样式，点按打开
+  /// 该台站的详细面板 —— 与文本里呼号链接的行为一致。
+  ///
+  /// 复用 [AppState.focusOnMap]（「在地图查看」的同一机制），坐标包装成临时
+  /// Station —— 与策略地图「在地图查看」一致，不新增跳转通道。
+  Widget _locationBubble(AprsMsg m) {
+    final mine = m.sent;
+    final s = S.of(context);
+    final call = m.stationCall;
+    final isStation = call != null && call.isNotEmpty;
+    final tint = isStation ? C.green : C.blue;
+    return Align(
+      alignment: mine ? Alignment.centerRight : Alignment.centerLeft,
+      child: GestureDetector(
+        onTap: () {
+          if (isStation) {
+            _openStation(widget.state, call!);
+          } else {
+            widget.state.focusOnMap(
+              Station(
+                call: s.msgLocation,
+                symbol: '>',
+                lat: m.lat!,
+                lng: m.lng!,
+                lastHeard: DateTime.now(),
+                status: St.moving,
+              ),
+            );
+          }
+        },
+        child: Container(
+          margin: const EdgeInsets.symmetric(vertical: 4),
+          constraints: const BoxConstraints(maxWidth: 240),
+          decoration: BoxDecoration(
+            color: mine ? C.blueBg : C.bgSoft,
+            borderRadius: BorderRadius.only(
+              topLeft: const Radius.circular(16),
+              topRight: const Radius.circular(16),
+              bottomLeft: Radius.circular(mine ? 14 : 4),
+              bottomRight: Radius.circular(mine ? 4 : 14),
+            ),
+            border: Border.all(color: tint.withValues(alpha: 0.35)),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 44,
+                height: 52,
+                decoration: BoxDecoration(
+                  color: tint.withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.only(
+                    topLeft: const Radius.circular(15),
+                    bottomLeft: Radius.circular(mine ? 13 : 3),
+                  ),
+                ),
+                child: Icon(
+                  isStation
+                      ? Icons.radio_rounded
+                      : Icons.location_on_rounded,
+                  size: 22,
+                  color: tint,
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(10, 8, 12, 8),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(isStation ? call! : s.msgLocation,
+                        style: ts(12, w: FontWeight.w700)),
+                    const SizedBox(height: 2),
+                    Text(
+                      '${m.lat!.toStringAsFixed(5)}, ${m.lng!.toStringAsFixed(5)}',
+                      style: mono(10, c: C.slate),
+                    ),
+                    const SizedBox(height: 2),
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          isStation
+                              ? Icons.badge_outlined
+                              : Icons.map_rounded,
+                          size: 11,
+                          color: tint,
+                        ),
+                        const SizedBox(width: 3),
+                        Text(
+                          isStation
+                              ? s.stationTapToView
+                              : s.locationTapToView,
+                          style: ts(9, c: tint, w: FontWeight.w600),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   Widget _bubble(AprsMsg m, {String? groupSender, VoidCallback? onSenderTap}) {
     final mine = m.sent;
+    // 位置点消息：可点气泡（跳主地图聚焦该坐标）。它不是系统消息，所以要在
+    // 系统消息分支之前单独处理 —— 否则会走普通文字气泡，用户只看到一个「位置点」。
+    if (m.type == 'location' && m.lat != null && m.lng != null) {
+      return _locationBubble(m);
+    }
     // 系统消息：居中灰色小字
     if (m.system) {
       // 策略提示特殊：带 type=strategy，可点击跳进对应群的策略地图。
@@ -2215,36 +2432,93 @@ class _MessagesPageState extends State<MessagesPage> {
     return _memberColors[h.abs() % _memberColors.length];
   }
 
-  /// 解析文本中的 URL，返回可点击的 RichText
+  /// 解析文本中的 URL 与**台站呼号**，返回可点击的 RichText。
+  ///
+  /// 呼号做成链接的判据（缺一不可，宁可漏也不肯把普通词染蓝）：
+  ///   * 形如业余呼号（[AppState.isValidCallsign]：字母前缀 + 数字 + 后缀 + 可选 -SSID）；
+  ///   * **确实在台站列表里**（收得到信标）—— 否则 CQ / TEST 这类也会被当成台站；
+  ///   * 左右不能紧挨其它字母/数字/连字符（避免切进 `BG7LZQ-9` 或单词中间）。
+  /// 点击行为与网址一致：跳去打开该台站的详细面板。
   Widget _urlRichText(String text, TextStyle baseStyle) {
     final urlRe = RegExp(
       r'(https?://[^\s<>"{}|\\^`\[\]]+|www\.[^\s<>"{}|\\^`\[\]]+)',
       caseSensitive: false,
     );
+    // 不放 lookbehind/lookahead（部分运行时不支持），边界改成手动判。
+    final callRe = RegExp(r'[A-Za-z]{1,2}[0-9][A-Za-z]{1,4}(?:-[0-9]{1,2})?');
+    final alnumRe = RegExp(r'[A-Za-z0-9-]');
+
+    final hits = <(int start, int end, String text, bool isUrl)>[];
+    for (final m in urlRe.allMatches(text)) {
+      hits.add((m.start, m.end, m.group(0)!, true));
+    }
+    bool boundaryOk(int s, int e) {
+      bool bad(int i) {
+        if (i < 0 || i >= text.length) return false;
+        return alnumRe.hasMatch(text[i]);
+      }
+
+      return !bad(s - 1) && !bad(e);
+    }
+
+    for (final m in callRe.allMatches(text)) {
+      if (!boundaryOk(m.start, m.end)) continue;
+      final up = m.group(0)!.toUpperCase();
+      if (!AppState.isValidCallsign(up)) continue;
+      // 必须在台站列表里：纯格式匹配会把普通单词也误判成呼号
+      if (!widget.state.stations.any((s) => s.call.toUpperCase() == up)) {
+        continue;
+      }
+      // 与 URL 重叠的跳过（URL 优先）
+      if (hits.any((h) =>
+          h.isUrl && m.start < h.end && m.end > h.start)) {
+        continue;
+      }
+      hits.add((m.start, m.end, m.group(0)!, false));
+    }
+    hits.sort((a, b) => a.$1.compareTo(b.$1));
+
     final spans = <TextSpan>[];
     int lastEnd = 0;
-    for (final match in urlRe.allMatches(text)) {
-      if (match.start > lastEnd) {
-        spans.add(TextSpan(text: text.substring(lastEnd, match.start)));
+    for (final h in hits) {
+      if (h.$1 < lastEnd) continue; // 与已处理区间重叠
+      if (h.$1 > lastEnd) {
+        spans.add(TextSpan(text: text.substring(lastEnd, h.$1)));
       }
-      final url = match.group(0)!;
-      final fullUrl = url.startsWith('http') ? url : 'https://$url';
-      spans.add(
-        TextSpan(
-          text: url,
-          style: TextStyle(
-            color: C.blue,
-            decoration: TextDecoration.underline,
-            decorationColor: C.blue,
-          ),
-          recognizer: TapGestureRecognizer()
-            ..onTap = () => launchUrl(
-              Uri.parse(fullUrl),
-              mode: LaunchMode.externalApplication,
+      if (h.$4) {
+        final url = h.$3;
+        final fullUrl = url.startsWith('http') ? url : 'https://$url';
+        spans.add(
+          TextSpan(
+            text: url,
+            style: TextStyle(
+              color: C.blue,
+              decoration: TextDecoration.underline,
+              decorationColor: C.blue,
             ),
-        ),
-      );
-      lastEnd = match.end;
+            recognizer: TapGestureRecognizer()
+              ..onTap = () => launchUrl(
+                Uri.parse(fullUrl),
+                mode: LaunchMode.externalApplication,
+              ),
+          ),
+        );
+      } else {
+        final call = h.$3.toUpperCase();
+        spans.add(
+          TextSpan(
+            text: h.$3,
+            style: TextStyle(
+              color: C.green,
+              decoration: TextDecoration.underline,
+              decorationColor: C.green,
+            ),
+            recognizer: TapGestureRecognizer()
+              ..onTap = () => _openStation(widget.state, call),
+          ),
+        );
+      }
+      lastEnd = h.$2;
     }
     if (lastEnd < text.length) {
       spans.add(TextSpan(text: text.substring(lastEnd)));

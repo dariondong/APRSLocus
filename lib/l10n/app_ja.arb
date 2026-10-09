@@ -2855,5 +2855,16 @@
   "strategyClearedMsg": "{call} が共有レイヤーを消去しました",
   "@strategyUpdatedItem": {"placeholders": {"call": {"type": "String"}, "kind": {"type": "String"}}},
   "@strategyDeletedItem": {"placeholders": {"call": {"type": "String"}, "kind": {"type": "String"}}},
-  "@strategyClearedMsg": {"placeholders": {"call": {"type": "String"}}}
+  "@strategyClearedMsg": {"placeholders": {"call": {"type": "String"}}},
+  "sendLocation": "位置を送信",
+  "needFixToSendLocation": "測位がまだないため位置を送信できません",
+  "msgLocation": "位置",
+  "locationTapToView": "タップして地図で表示",
+  "locationPickTitle": "送る位置を地図で選択",
+  "locationPickHint": "地図をタップして座標を選択",
+  "locationMyPos": "現在地",
+  "locationSendTo": "{call} に送信",
+  "@locationSendTo": {"placeholders": {"call": {"type": "String"}}},
+  "chatMore": "その他",
+  "stationTapToView": "タップして局を見る"
 }

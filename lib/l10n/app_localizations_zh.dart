@@ -7956,6 +7956,36 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String strategyClearedMsg(String call) => "$call 清空了共享图层";
 
+  @override
+  String get sendLocation => "发送位置点";
+
+  @override
+  String get needFixToSendLocation => "还没有定位，暂时无法发送位置点";
+
+  @override
+  String get msgLocation => "位置点";
+
+  @override
+  String get locationTapToView => "点击在地图查看";
+
+  @override
+  String get locationPickTitle => "选点发送位置点";
+
+  @override
+  String get locationPickHint => "在地图上点击要发送的坐标";
+
+  @override
+  String get locationMyPos => "我的位置";
+
+  @override
+  String locationSendTo(String call) => "发送给 $call";
+
+  @override
+  String get chatMore => "更多";
+
+  @override
+  String get stationTapToView => "点击查看台站";
+
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
@@ -15908,5 +15938,35 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String strategyClearedMsg(String call) => "$call 清空了共享圖層";
+
+  @override
+  String get sendLocation => "傳送位置點";
+
+  @override
+  String get needFixToSendLocation => "還沒有定位，暫時無法傳送位置點";
+
+  @override
+  String get msgLocation => "位置點";
+
+  @override
+  String get locationTapToView => "點擊在地圖查看";
+
+  @override
+  String get locationPickTitle => "選點傳送位置點";
+
+  @override
+  String get locationPickHint => "在地圖上點擊要傳送的座標";
+
+  @override
+  String get locationMyPos => "我的位置";
+
+  @override
+  String locationSendTo(String call) => "傳送給 $call";
+
+  @override
+  String get chatMore => "更多";
+
+  @override
+  String get stationTapToView => "點擊查看台站";
 
 }

@@ -8052,4 +8052,34 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String strategyClearedMsg(String call) => "$call が共有レイヤーを消去しました";
 
+  @override
+  String get sendLocation => "位置を送信";
+
+  @override
+  String get needFixToSendLocation => "測位がまだないため位置を送信できません";
+
+  @override
+  String get msgLocation => "位置";
+
+  @override
+  String get locationTapToView => "タップして地図で表示";
+
+  @override
+  String get locationPickTitle => "送る位置を地図で選択";
+
+  @override
+  String get locationPickHint => "地図をタップして座標を選択";
+
+  @override
+  String get locationMyPos => "現在地";
+
+  @override
+  String locationSendTo(String call) => "$call に送信";
+
+  @override
+  String get chatMore => "その他";
+
+  @override
+  String get stationTapToView => "タップして局を見る";
+
 }

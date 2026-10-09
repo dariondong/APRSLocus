@@ -601,6 +601,56 @@ KEYS = {
         '{call} vació la capa compartida',
         '{call} mengosongkan lapisan bersama',
     ),
+    # ── 私聊位置点（用户要求：「在私聊会话中可以发送一个位置点」）──
+    'sendLocation': (
+        '发送位置点', '傳送位置點', 'Send location',
+        '位置を送信', 'Enviar ubicación', 'Kirim lokasi',
+    ),
+    # 位置点无法发送时的兜底提示（未连接来源 / 没有定位）。
+    'needFixToSendLocation': (
+        '还没有定位，暂时无法发送位置点',
+        '還沒有定位，暫時無法傳送位置點',
+        'No fix yet — cannot send a location',
+        '測位がまだないため位置を送信できません',
+        'Aún sin posición: no se puede enviar la ubicación',
+        'Belum ada posisi — tidak bisa mengirim lokasi',
+    ),
+    'msgLocation': (
+        '位置点', '位置點', 'Location', '位置', 'Ubicación', 'Lokasi',
+    ),
+    'locationTapToView': (
+        '点击在地图查看', '點擊在地圖查看', 'Tap to view on map',
+        'タップして地図で表示', 'Toca para ver en el mapa',
+        'Ketuk untuk lihat di peta',
+    ),
+    # 选点浮层：在私聊里挑一个坐标点发给对方（而不是只能发自己的位置）。
+    'locationPickTitle': (
+        '选点发送位置点', '選點傳送位置點', 'Pick a point to send',
+        '送る位置を地図で選択', 'Elige un punto para enviar',
+        'Pilih titik untuk dikirim',
+    ),
+    'locationPickHint': (
+        '在地图上点击要发送的坐标', '在地圖上點擊要傳送的座標',
+        'Tap the map to choose the coordinate', '地図をタップして座標を選択',
+        'Toca el mapa para elegir la coordenada', 'Ketuk peta untuk memilih koordinat',
+    ),
+    'locationMyPos': (
+        '我的位置', '我的位置', 'My position', '現在地', 'Mi posición', 'Posisi saya',
+    ),
+    'locationSendTo': (
+        '发送给 {call}', '傳送給 {call}', 'Send to {call}',
+        '{call} に送信', 'Enviar a {call}', 'Kirim ke {call}',
+    ),
+    # 输入栏左侧「+」浮出菜单的标题（微信式：把翻译/位置/台站收进加号）。
+    'chatMore': (
+        '更多', '更多', 'More', 'その他', 'Más', 'Lainnya',
+    ),
+    # 台站卡片气泡/呼号链接的提示文案。
+    'stationTapToView': (
+        '点击查看台站', '點擊查看台站', 'Tap to view station',
+        'タップして局を見る', 'Toca para ver la estación',
+        'Ketuk untuk lihat stasiun',
+    ),
 }
 
 # ── 占位符声明（可空）──
@@ -623,6 +673,7 @@ META = {
     'strategySharedItem':
         '{"placeholders": {"call": {"type": "String"}, "kind": {"type": "String"}}}',
     'strategyAckPending': '{"placeholders": {"n": {"type": "int"}}}',
+    'locationSendTo': '{"placeholders": {"call": {"type": "String"}}}',
 }
 
 

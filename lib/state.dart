@@ -115,7 +115,7 @@ class SmartBeaconTier {
 
 class AppState extends ChangeNotifier {
   /// 应用版本（用于信标备注、APRSlocus 识别）
-  static const appVersion = '2.0.43';
+  static const appVersion = '2.0.44';
   // 我的电台
   String myCall = 'BV2AAA';
   int mySsid = 0; // 0 = 无后缀, 1-15 = -1 到 -15
@@ -6591,8 +6591,13 @@ class AppState extends ChangeNotifier {
         _seenProtoMsgs.remove(_seenProtoMsgs.keys.first);
       }
       if (isGroupMsg && groupId != null) {
-        _ingestStrategy(src, groupId, strat);
+        // 群内：位置点（`Q`）是**一对一私聊**专用。若误发进群，忽略即可 ——
+        // 不能当策略元素落图，否则「私聊发的位置点」会污染全群的策略图层。
+        if (strat.op != 'Q') _ingestStrategy(src, groupId, strat);
+        return null;
       }
+      // 私聊里收到位置点：插一条可点气泡（**不进**策略图层，见 sendLocation）。
+      if (strat.op == 'Q') _ingestPrivateLocation(src, strat);
       return null;
     }
     // ─── 协议消息处理（唯一入口：lib/group_chat.dart 已解析一次）───
@@ -7754,6 +7759,106 @@ class AppState extends ChangeNotifier {
       ),
     );
     _notify();
+  }
+
+  // ─── 私聊位置点 ───
+
+  /// 私聊发送一个位置点：`$M1 Q <ID> <lat>,<lng>`（见 [StrategyProto.encodeLocation]）。
+  ///
+  /// **走与普通私信同一套投递路径**（带 ack 的单播、射频限长、无连接时只本地
+  /// 入库），因此对方收到时就是一条普通 APRS 消息；本端把它存成一条
+  /// `type='location'` 的**可点气泡**，坐标落在 [AprsMsg.lat]/[AprsMsg.lng]，
+  /// 点一下跳主地图。它**不是**策略图层元素 —— 不会 `_ingestStrategy`，也就
+  /// 不会进入/污染对应群的策略图层。
+  ///
+  /// 返回是否成功发出（坐标非法/无连接时返回 false，由调用方提示）。
+  ///
+  /// [asStation] 非空表示这是「分享某个台站」而非自由选点：该呼号会随帧的标签
+  /// 字段一起发出去，接收端据此把气泡渲染成台站卡片（点按开台站面板）；同时
+  /// 本端气泡文案就用该呼号，比干巴巴的「位置点」清楚。
+  bool sendLocation(String to, double lat, double lng, {String? asStation}) {
+    final target = to.trim().toUpperCase();
+    if (target.isEmpty) return false;
+    if (!StrategyProto.validLocation(
+        StrategyFrame(op: 'Q', lat: lat, lng: lng))) {
+      _log(LogLevel.warn, '消息', '位置点坐标非法（$lat,$lng），已中止');
+      return false;
+    }
+    final station = (asStation ?? '').trim().toUpperCase();
+    final label = station.isEmpty ? '' : 'S:$station';
+    final frame = StrategyProto.encodeLocation(
+      StrategyProto.makeId(myCall, 0),
+      lat,
+      lng,
+      label: label,
+    );
+    final id = AprsFmt.randId();
+    // 私聊是点对点：用带 ack 的单播（与 [sendMessage] 一致），射频下靠对方
+    // 标准自动 ack 确认送达 —— 位置点丢了对双方都没意义，值得要回执。
+    final raw = AprsFmt.message(myFullCall, target, frame, id, path: txPath);
+    messages.insert(
+      0,
+      AprsMsg(
+        myFullCall,
+        target,
+        station.isEmpty ? l10n.msgLocation : station,
+        DateTime.now(),
+        sent: true,
+        id: id,
+        type: 'location',
+        lat: lat,
+        lng: lng,
+        stationCall: station.isEmpty ? null : station,
+      ),
+    );
+    if (messages.length > 500) messages.removeLast();
+    _saveMessages();
+    packetsTx++;
+    AchievementCenter.instance.bump('sendMsg');
+    if (connected) {
+      _sendRaw(raw);
+      _lastTx = DateTime.now();
+    }
+    _log(LogLevel.info, '消息', '发送位置点给 $target：${frame}');
+    _pushPacket(
+      Packet(raw, myFullCall, 'APRS', 'message', DateTime.now(),
+          info: '发给 $target 位置点：${frame}'),
+    );
+    _notify();
+    return true;
+  }
+
+  /// 收到私聊位置点（[src] 发来，[frame] 已解析）：插一条可点气泡。
+  void _ingestPrivateLocation(String src, StrategyFrame frame) {
+    // 标签形如 `S:<CALL>` 表示这是「分享台站」，其余一律当自由选点。
+    final st = _stationFromLabel(frame.label);
+    messages.insert(
+      0,
+      AprsMsg(
+        src,
+        myFullCall,
+        st ?? l10n.msgLocation,
+        DateTime.now(),
+        type: 'location',
+        lat: frame.lat,
+        lng: frame.lng,
+        stationCall: st,
+      ),
+    );
+    if (messages.length > 500) messages.removeLast();
+    _recalcUnread();
+    _saveMessages();
+    AchievementCenter.instance.bump('receiveMsg');
+    onNewMessage?.call(src, l10n.msgLocation, null);
+    _notify();
+  }
+
+  /// 从位置点帧的标签里取台站呼号（`S:<CALL>`），没有/格式不对则返回 null。
+  static String? _stationFromLabel(String label) {
+    final t = label.trim().toUpperCase();
+    if (!t.startsWith('S:')) return null;
+    final call = t.substring(2).trim();
+    return AppState.isValidCallsign(call) ? call : null;
   }
 
   /// 群发：向群呼号广播消息（所有监听该群呼号的人都能收到）。

@@ -2771,5 +2771,16 @@
   "strategyClearedMsg": "{call} cleared the shared layer",
   "@strategyUpdatedItem": {"placeholders": {"call": {"type": "String"}, "kind": {"type": "String"}}},
   "@strategyDeletedItem": {"placeholders": {"call": {"type": "String"}, "kind": {"type": "String"}}},
-  "@strategyClearedMsg": {"placeholders": {"call": {"type": "String"}}}
+  "@strategyClearedMsg": {"placeholders": {"call": {"type": "String"}}},
+  "sendLocation": "Send location",
+  "needFixToSendLocation": "No fix yet — cannot send a location",
+  "msgLocation": "Location",
+  "locationTapToView": "Tap to view on map",
+  "locationPickTitle": "Pick a point to send",
+  "locationPickHint": "Tap the map to choose the coordinate",
+  "locationMyPos": "My position",
+  "locationSendTo": "Send to {call}",
+  "@locationSendTo": {"placeholders": {"call": {"type": "String"}}},
+  "chatMore": "More",
+  "stationTapToView": "Tap to view station"
 }

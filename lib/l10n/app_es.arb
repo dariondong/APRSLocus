@@ -2855,5 +2855,16 @@
   "strategyClearedMsg": "{call} vació la capa compartida",
   "@strategyUpdatedItem": {"placeholders": {"call": {"type": "String"}, "kind": {"type": "String"}}},
   "@strategyDeletedItem": {"placeholders": {"call": {"type": "String"}, "kind": {"type": "String"}}},
-  "@strategyClearedMsg": {"placeholders": {"call": {"type": "String"}}}
+  "@strategyClearedMsg": {"placeholders": {"call": {"type": "String"}}},
+  "sendLocation": "Enviar ubicación",
+  "needFixToSendLocation": "Aún sin posición: no se puede enviar la ubicación",
+  "msgLocation": "Ubicación",
+  "locationTapToView": "Toca para ver en el mapa",
+  "locationPickTitle": "Elige un punto para enviar",
+  "locationPickHint": "Toca el mapa para elegir la coordenada",
+  "locationMyPos": "Mi posición",
+  "locationSendTo": "Enviar a {call}",
+  "@locationSendTo": {"placeholders": {"call": {"type": "String"}}},
+  "chatMore": "Más",
+  "stationTapToView": "Toca para ver la estación"
 }

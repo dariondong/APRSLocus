@@ -1,5 +1,96 @@
 # 更新日志
 
+## [2.0.44] - 2026-10-09
+
+### 新增：私聊发送位置点 / 分享台站 / 消息内呼号可点击
+
+**需求**
+
+- 在一对一（私聊）会话中，能够向对方**发送一个位置点**。
+- 支持**分享其他台站**；点击台站即可**呼出对方的台站面板**。
+- 对话消息中**自动识别台站呼号**，像超链接一样可点击，打开台站详情。
+- 输入栏聚合为左侧一个「**+**」（微信风格），主操作区只保留输入框与发送键。
+
+**改动**
+
+- **私聊位置点（协议）**（`lib/strategy_map.dart`）：新增策略操作码 `Q`
+  （`$M1 Q <ID> <lat>,<lng> [标签]`），仅用于**一对一**投递；标签采用保留
+  `:` 与 `-` 的专用规范化，支持 `S:<呼号>` 台站标记。位置点**不进入策略图层**，
+  不会污染群共享图层。
+- **发送 / 接收**（`lib/state.dart`）：新增 `AppState.sendLocation()`，与普通
+  私信共用同一投递路径（带 ack 单播、射频限长、离线仅本地入库）；收到私聊 `Q`
+  帧入 `type='location'` 消息，`S:<呼号>` 标签按台站卡片呈现。
+- **选点浮层**（`lib/location_picker_page.dart`，新增）：私聊「+」进入后拖动 /
+  点按地图任取坐标；右侧台站列表点整行**呼出台站面板**、点行尾图标把该台站
+  坐标设为待发；底部为「我的位置 / 发送给 XX」。
+- **台站卡片消息**（`lib/messages_page.dart`）：位置点消息渲染为专用气泡 ——
+  自由选点为蓝色「位置点」（点按跳主地图聚焦），分享台站为青色台站卡片
+  （点按打开台站详情）。新增消息字段 `stationCall` 并随本地存储持久化。
+- **呼号超链接**（`lib/messages_page.dart`）：文本气泡中形如业余呼号、且**确实
+  在台站列表内**的词自动变为可点击链接（绿色下划线），点击打开台站详情；与网址
+  识别共存，URL 优先，且不切进单词或带 SSID 呼号的中间。
+- **输入栏「+」**（`lib/messages_page.dart`）：输入栏原「译发」按钮收进「+」
+  浮出菜单（微信风格），与「位置点」并列。
+- l10n：六语言新增 `sendLocation` / `needFixToSendLocation` / `msgLocation` /
+  `locationTapToView` / `locationPickTitle` / `locationPickHint` /
+  `locationMyPos` / `locationSendTo` / `chatMore` / `stationTapToView`。
+
+**测试**
+
+- `tool/check_*.py`（23 项）与 `check_l10n_sync.py` 全部通过；`flutter analyze`
+  / `flutter test` 由 CI 复核。
+
+---
+
+## [2.0.44] - 2026-10-09 (English)
+
+### New: send a location in a private chat / share a station / clickable callsigns in messages
+
+**Request**
+
+- In a one-to-one (private) conversation, be able to **send a location point**.
+- Support **sharing another station**; tapping a station opens **its station panel**.
+- **Recognize station callsigns** in chat messages and make them clickable like
+  hyperlinks, opening station details.
+- Collapse the compose bar into a **single "+"** (WeChat style), leaving only the
+  text field and send button in the main action area.
+
+**Changes**
+
+- **Private location (protocol)** (`lib/strategy_map.dart`): new strategy op `Q`
+  (`$M1 Q <ID> <lat>,<lng> [label]`), used for **one-to-one** delivery only; a
+  dedicated label normalization keeps `:` and `-` so `S:<CALL>` can mark a shared
+  station. Location points **never enter the strategy layer**, so they cannot
+  pollute the group's shared layer.
+- **Send / receive** (`lib/state.dart`): new `AppState.sendLocation()`, sharing
+  the private-message delivery path (acked unicast, RF length limit, local-only
+  when offline); an inbound private `Q` frame is stored as a `type='location'`
+  message, and an `S:<CALL>` label renders as a station card.
+- **Picker overlay** (`lib/location_picker_page.dart`, new): drag/tap any point on
+  the map to choose coordinates; tap a row in the station list to **open the
+  station panel**, or its trailing icon to use that station's coordinates; the
+  footer offers "My position / Send to XX".
+- **Station card message** (`lib/messages_page.dart`): location messages render
+  with a dedicated bubble — a free pick is a blue "Location" (tap to focus it on
+  the main map), a shared station is a teal station card (tap to open station
+  details). New message field `stationCall`, persisted with local storage.
+- **Callsign hyperlinks** (`lib/messages_page.dart`): a token that looks like an
+  amateur callsign **and is actually present in the station list** becomes a
+  clickable link (green underline) opening station details; it coexists with URL
+  detection, URLs win, and it never cuts into a word or the middle of an SSID.
+- **Compose "+"** (`lib/messages_page.dart`): the "translate" button moves into a
+  "+" pop-up menu (WeChat style), side by side with "Location".
+- l10n: six languages add `sendLocation` / `needFixToSendLocation` / `msgLocation`
+  / `locationTapToView` / `locationPickTitle` / `locationPickHint` /
+  `locationMyPos` / `locationSendTo` / `chatMore` / `stationTapToView`.
+
+**Tests**
+
+- All `tool/check_*.py` (23) and `check_l10n_sync.py` pass; `flutter analyze` /
+  `flutter test` are verified by CI.
+
+---
+
 ## [2.0.43] - 2026-10-09
 
 ### 新增：策略地图外部导航 / 自身位置 / 点队友看详情；群聊提示策略变动

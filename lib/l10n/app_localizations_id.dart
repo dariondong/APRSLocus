@@ -8307,4 +8307,34 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String strategyClearedMsg(String call) => "$call mengosongkan lapisan bersama";
 
+  @override
+  String get sendLocation => "Kirim lokasi";
+
+  @override
+  String get needFixToSendLocation => "Belum ada posisi — tidak bisa mengirim lokasi";
+
+  @override
+  String get msgLocation => "Lokasi";
+
+  @override
+  String get locationTapToView => "Ketuk untuk lihat di peta";
+
+  @override
+  String get locationPickTitle => "Pilih titik untuk dikirim";
+
+  @override
+  String get locationPickHint => "Ketuk peta untuk memilih koordinat";
+
+  @override
+  String get locationMyPos => "Posisi saya";
+
+  @override
+  String locationSendTo(String call) => "Kirim ke $call";
+
+  @override
+  String get chatMore => "Lainnya";
+
+  @override
+  String get stationTapToView => "Ketuk untuk lihat stasiun";
+
 }

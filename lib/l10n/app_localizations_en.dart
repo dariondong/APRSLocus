@@ -8294,4 +8294,34 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String strategyClearedMsg(String call) => "$call cleared the shared layer";
 
+  @override
+  String get sendLocation => "Send location";
+
+  @override
+  String get needFixToSendLocation => "No fix yet — cannot send a location";
+
+  @override
+  String get msgLocation => "Location";
+
+  @override
+  String get locationTapToView => "Tap to view on map";
+
+  @override
+  String get locationPickTitle => "Pick a point to send";
+
+  @override
+  String get locationPickHint => "Tap the map to choose the coordinate";
+
+  @override
+  String get locationMyPos => "My position";
+
+  @override
+  String locationSendTo(String call) => "Send to $call";
+
+  @override
+  String get chatMore => "More";
+
+  @override
+  String get stationTapToView => "Tap to view station";
+
 }

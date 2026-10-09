@@ -2855,5 +2855,16 @@
   "strategyClearedMsg": "{call} mengosongkan lapisan bersama",
   "@strategyUpdatedItem": {"placeholders": {"call": {"type": "String"}, "kind": {"type": "String"}}},
   "@strategyDeletedItem": {"placeholders": {"call": {"type": "String"}, "kind": {"type": "String"}}},
-  "@strategyClearedMsg": {"placeholders": {"call": {"type": "String"}}}
+  "@strategyClearedMsg": {"placeholders": {"call": {"type": "String"}}},
+  "sendLocation": "Kirim lokasi",
+  "needFixToSendLocation": "Belum ada posisi — tidak bisa mengirim lokasi",
+  "msgLocation": "Lokasi",
+  "locationTapToView": "Ketuk untuk lihat di peta",
+  "locationPickTitle": "Pilih titik untuk dikirim",
+  "locationPickHint": "Ketuk peta untuk memilih koordinat",
+  "locationMyPos": "Posisi saya",
+  "locationSendTo": "Kirim ke {call}",
+  "@locationSendTo": {"placeholders": {"call": {"type": "String"}}},
+  "chatMore": "Lainnya",
+  "stationTapToView": "Ketuk untuk lihat stasiun"
 }

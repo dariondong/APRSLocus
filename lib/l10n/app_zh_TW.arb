@@ -3359,5 +3359,16 @@
   "strategyClearedMsg": "{call} 清空了共享圖層",
   "@strategyUpdatedItem": {"placeholders": {"call": {"type": "String"}, "kind": {"type": "String"}}},
   "@strategyDeletedItem": {"placeholders": {"call": {"type": "String"}, "kind": {"type": "String"}}},
-  "@strategyClearedMsg": {"placeholders": {"call": {"type": "String"}}}
+  "@strategyClearedMsg": {"placeholders": {"call": {"type": "String"}}},
+  "sendLocation": "傳送位置點",
+  "needFixToSendLocation": "還沒有定位，暫時無法傳送位置點",
+  "msgLocation": "位置點",
+  "locationTapToView": "點擊在地圖查看",
+  "locationPickTitle": "選點傳送位置點",
+  "locationPickHint": "在地圖上點擊要傳送的座標",
+  "locationMyPos": "我的位置",
+  "locationSendTo": "傳送給 {call}",
+  "@locationSendTo": {"placeholders": {"call": {"type": "String"}}},
+  "chatMore": "更多",
+  "stationTapToView": "點擊查看台站"
 }

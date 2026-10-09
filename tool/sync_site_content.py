@@ -204,6 +204,33 @@ CARDS = [
 # 只列「重点版本」：中间几十个纯修 bug 的版本归纳进文字说明，完整记录指向 Releases。
 CL = [
     {
+        'ver': 'v2.0.44', 'date': '2026-10-09',
+        'items': [
+            ('new',
+             T('**私聊也能发位置**：一对一会话里点输入栏「+」即可**在私聊发送位置点**'
+               '——拖动地图任取坐标，或直接「我的位置」；还能**分享某个台站**。'
+               '对方收到后是一条专用卡片消息。',
+               '**私聊也能傳位置**：一對一會話裡點輸入欄「+」即可**在私聊傳送位置點**'
+               '——拖動地圖任取座標，或直接「我的位置」；還能**分享某個台站**。'
+               '對方收到後是一條專用卡片訊息。',
+               '**Send a location in a private chat**: in a one-to-one conversation tap the '
+               'compose "+" to **send a location** — drag the map to pick any point, or use '
+               '"My position"; you can also **share a station**. The peer receives it as a '
+               'dedicated card message.')),
+            ('up',
+             T('**消息里的呼号可点击**：对话中识别到的台站呼号像超链接一样，点一下即'
+               '打开台站详情；分享台站的位置卡片点按同样是打开台站面板（自由选点则跳'
+               '主地图）。输入栏也收敛成微信式的一个「+」。',
+               '**訊息裡的呼號可點擊**：對話中識別到的台站呼號像超連結一樣，點一下即'
+               '開啟台站詳情；分享台站的位置卡片點按同樣是開啟台站面板（自由選點則跳'
+               '主地圖）。輸入欄也收斂成微信式的一個「+」。',
+               '**Clickable callsigns in messages**: a station callsign recognized in a '
+               'conversation behaves like a hyperlink and opens station details; the shared '
+               'station card does the same, while a free-picked location jumps to the main '
+               'map. The compose bar is collapsed into a single WeChat-style "+".')),
+        ],
+    },
+    {
         'ver': 'v2.0.43', 'date': '2026-10-09',
         'items': [
             ('new',
