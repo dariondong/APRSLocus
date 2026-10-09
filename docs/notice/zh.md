@@ -1,4 +1,4 @@
-# 🚀 致敬中国航天 70 周年 · 凌霄戍卫
+# 🚀 致敬中国航天 70 周年 · 星河追梦
 
 从 **东方红一号** 到 **天宫**，
 七十载仰望，几代人追梦。
@@ -18,11 +18,11 @@
 
 **跟我们一样。**
 
-🎵 [▶《凌霄戍卫》BGM 混剪 · BV1mFaf6FEXo](https://www.bilibili.com/video/BV1mFaf6FEXo)
+🎵 [▶《星河追梦》· BV18NF9zUEq3](https://www.bilibili.com/video/BV18NF9zUEq3)
 
-@video https://player.bilibili.com/player.html?isOutside=true&aid=117360837069510&bvid=BV1mFaf6FEXo&cid=42347596712&p=1
+@video https://player.bilibili.com/player.html?isOutside=true&aid=116047298434484&bvid=BV18NF9zUEq3&cid=35969762505&p=1
 
-> 视频来自 Bilibili @方块君Delta · 素材来源 @新华网 @三角洲行动
+> 视频来自 Bilibili @YSming_
 
 ---
 

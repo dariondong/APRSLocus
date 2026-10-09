@@ -1,4 +1,4 @@
-# 🚀 Honoring 70 Years of China's Space Program · Guardians of the Sky
+# 🚀 Honoring 70 Years of China's Space Program · Chasing the Stars
 
 From **Dongfanghong-1** to **Tiangong**,
 seventy years of looking up, generations in pursuit of the dream.
@@ -19,11 +19,11 @@ Different bands, the same dream.
 
 **Just like us.**
 
-🎵 [▶ "Guardians of the Sky" BGM mix · BV1mFaf6FEXo](https://www.bilibili.com/video/BV1mFaf6FEXo)
+🎵 [▶ "Chasing the Stars" · BV18NF9zUEq3](https://www.bilibili.com/video/BV18NF9zUEq3)
 
-@video https://player.bilibili.com/player.html?isOutside=true&aid=117360837069510&bvid=BV1mFaf6FEXo&cid=42347596712&p=1
+@video https://player.bilibili.com/player.html?isOutside=true&aid=116047298434484&bvid=BV18NF9zUEq3&cid=35969762505&p=1
 
-> Video from Bilibili @方块君Delta · footage: @新华网 @三角洲行动
+> Video from Bilibili @YSming_
 
 ---
 

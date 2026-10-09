@@ -58,19 +58,19 @@ PAGES = [
 HEAD = {
     'zh': {
         'kicker': '🚀 致敬中国航天 70 周年',
-        'title': '凌霄戍卫 · 同一片星空，同一种追梦',
+        'title': '星河追梦 · 同一片星空，同一种追梦',
         'en': '70 years of China\'s space program',
         'sub': '七十年，从追星到问天。谨以此歌致敬每一位追梦人——也致敬守望电波、把信号送上天的你。',
     },
     'zh_TW': {
         'kicker': '🚀 致敬中國航天 70 週年',
-        'title': '凌霄戍衛 · 同一片星空，同一種追夢',
+        'title': '星河追夢 · 同一片星空，同一種追夢',
         'en': '70 years of China\'s space program',
         'sub': '七十年，從追星到問天。謹以此歌致敬每一位追夢人——也致敬守望電波、把信號送上天的你。',
     },
     'en': {
         'kicker': '🚀 Honoring 70 years of China\'s space program',
-        'title': 'Guardians of the Sky · one sky, one dream',
+        'title': 'Chasing the Stars · one sky, one dream',
         'en': 'v2.0 · a song for the dream-chasers',
         'sub': 'Seventy years, from chasing stars to asking the heavens. With this song we honor every dream-chaser — and you, who keeps watch on the airwaves and sends a signal into the sky.',
     },
