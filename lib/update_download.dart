@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 
+import 'pinned_http.dart';
 import 'state.dart';
 
 /// ─── 更新包下载器（进程内后台下载，issue #22-5）───
@@ -96,7 +97,9 @@ class UpdateDownloader extends ChangeNotifier {
       // 不会让下一次「已下载」扫描把一个半截的 APK 当成可用安装包。
       final part = File('${file.path}.part');
 
-      final client = HttpClient()
+      // 下载地址若指向自建服务器（自签证书），需要钉扎 context；
+      // 指向 GitHub 等公共站点时 pinnedContextFor 返回 null，即默认行为。
+      final client = HttpClient(context: pinnedContextFor(url))
         ..connectionTimeout = const Duration(seconds: 30);
       _client = client;
       final req = await client

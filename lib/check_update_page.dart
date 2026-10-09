@@ -9,6 +9,7 @@ import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 
 import 'device_abi.dart';
+import 'pinned_http.dart';
 import 'theme.dart';
 import 'update_download.dart';
 import 'update_packages.dart';
@@ -450,10 +451,13 @@ class _CheckUpdatePageState extends State<CheckUpdatePage>
       _errorMsg = '';
     });
     try {
-      final client = HttpClient()
+      final url = '$_apiBase/$_repoOwner/$_repoName/releases';
+      // 清零通道指向自建服务器（自签证书），必须用钉扎 context；
+      // 其余通道返回 null，走默认行为（见 lib/pinned_http.dart 的说明）。
+      final client = HttpClient(context: pinnedContextFor(url))
         ..connectionTimeout = const Duration(seconds: 15);
       final req = await client
-          .getUrl(Uri.parse('$_apiBase/$_repoOwner/$_repoName/releases'))
+          .getUrl(Uri.parse(url))
           .timeout(const Duration(seconds: 20));
       req.headers.set(HttpHeaders.acceptHeader, 'application/json');
       req.headers.set(

@@ -3052,15 +3052,16 @@ class AppState extends ChangeNotifier {
   /// Qingling 的地址指向自建镜像的 **兼容接口**（`/v1/repos/...`）——
   /// 该接口刻意输出 GitHub 同格式的数组，所以调用方无需区分渠道分支。
   ///
-  /// ⚠ Qingling 用 **http** 而非 https：镜像服务器当前只配了自签证书，
-  ///   而 Dart 的 `HttpClient` 默认拒绝无效证书（会抛 HandshakeException），
-  ///   用 https 反而**完全用不了**。http 能正常工作，但传输不加密 ——
-  ///   更新包可被中间人篡改。**上线前应换成域名 + 真证书并改回 https**
-  ///   （服务端已支持：`/v1/repos` 在 80 与 443 上都提供）。
+  /// ⚠ Qingling 用 **https**，而服务器用的是**自签证书** —— 因此请求该主机时必须
+  ///   走 `lib/pinned_http.dart` 提供的钉扎 context（只信任内置的那张证书），
+  ///   否则 Dart 的 `HttpClient` 会抛 CERTIFICATE_VERIFY_FAILED。
+  ///   三处发请求的地方（更新页 / 启动提示 / 下载器）都已改为
+  ///   `HttpClient(context: pinnedContextFor(url))`；漏改任何一处都会在该路径上失败。
+  ///   证书有效期 10 年；换证书必须同步发新版 App。
   static const Map<String, String> updateChannelBases = {
     'github': 'https://api.github.com/repos',
     'gitcode': 'https://api.gitcode.com/api/v5/repos',
-    'qingling': 'http://47.104.251.69/v1/repos',
+    'qingling': 'https://47.104.251.69/v1/repos',
   };
 
   /// 取某渠道的 API 根地址；未知渠道回退 GitHub，避免旧配置写坏后无法检查更新。
