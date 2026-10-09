@@ -1558,6 +1558,7 @@
   "vectorMapLoadFailed": "Error al cargar el mapa vectorial\n{error}",
   "loadingVectorMap": "Cargando mapa vectorial…",
   "updateChannel": "Canal de actualización",
+  "updateChannelQinglingHint": "Canal espejo propio (清零)",
   "serverReturned": "El servidor devolvió {code}",
   "invalidResponseData": "Formato de respuesta no válido",
   "noVersionsFound": "No se encontraron versiones",

@@ -166,10 +166,12 @@ class _CheckUpdatePageState extends State<CheckUpdatePage>
   /// 纯装饰，只为「更高级」的观感，不参与任何逻辑。
   late final AnimationController _sheen;
 
-  /// 当前更新渠道对应的 API 地址
-  String get _apiBase => widget.state.updateChannel == 'github'
-      ? 'https://api.github.com/repos'
-      : 'https://api.gitcode.com/api/v5/repos';
+  /// 当前更新渠道对应的 API 地址。
+  ///
+  /// 已集中到 `AppState.updateBaseFor` —— 这里与 update_prompt.dart 原本各写
+  /// 一份相同的三元表达式，新增渠道时极易只改一处（两处不一致的表现是
+  /// 「更新页能查到新版、启动提示查不到」这种很难复现的问题）。
+  String get _apiBase => AppState.updateBaseFor(widget.state.updateChannel);
 
   bool _checking = false;
   bool _hasError = false;
@@ -324,7 +326,7 @@ class _CheckUpdatePageState extends State<CheckUpdatePage>
     return tmp;
   }
 
-  /// 切换更新渠道（GitCode / GitHub）
+  /// 切换更新渠道（GitHub / GitCode / Qingling）
   void _switchChannel() {
     showModalBottomSheet(
       context: context,
@@ -348,6 +350,17 @@ class _CheckUpdatePageState extends State<CheckUpdatePage>
                 ),
                 const SizedBox(height: 14),
                 _channelOption(
+                  'GitHub',
+                  'api.github.com',
+                  widget.state.updateChannel == 'github',
+                  () {
+                    widget.state.setUpdateChannel('github');
+                    Navigator.pop(context);
+                    _check();
+                  },
+                ),
+                const SizedBox(height: 8),
+                _channelOption(
                   'GitCode',
                   'api.gitcode.com',
                   widget.state.updateChannel == 'gitcode',
@@ -358,12 +371,14 @@ class _CheckUpdatePageState extends State<CheckUpdatePage>
                   },
                 ),
                 const SizedBox(height: 8),
+                // Qingling（清零）：自建镜像通道。国内直连 GitHub 常失败，
+                // 本通道由镜像服务器代取发行版，客户端只访问镜像地址。
                 _channelOption(
-                  'GitHub',
-                  'api.github.com',
-                  widget.state.updateChannel == 'github',
+                  'Qingling',
+                  S.of(context).updateChannelQinglingHint,
+                  widget.state.updateChannel == 'qingling',
                   () {
-                    widget.state.setUpdateChannel('github');
+                    widget.state.setUpdateChannel('qingling');
                     Navigator.pop(context);
                     _check();
                   },
@@ -747,14 +762,15 @@ class _CheckUpdatePageState extends State<CheckUpdatePage>
               ),
             ),
             IconButton(
-              tooltip: widget.state.updateChannel == 'github'
-                  ? 'GitHub'
-                  : 'GitCode',
+              tooltip: AppState.updateChannelLabels[widget.state.updateChannel] ??
+                  widget.state.updateChannel,
               onPressed: _switchChannel,
               icon: Icon(
-                widget.state.updateChannel == 'github'
-                    ? Icons.public_rounded
-                    : Icons.cloud_rounded,
+                switch (widget.state.updateChannel) {
+                  'github' => Icons.public_rounded,
+                  'gitcode' => Icons.cloud_rounded,
+                  _ => Icons.dns_rounded, // Qingling 等自建镜像：用服务器图标
+                },
                 color: C.blue,
               ),
             ),
@@ -1101,11 +1117,14 @@ class _CheckUpdatePageState extends State<CheckUpdatePage>
               ),
               SizedBox(height: 4),
               // 文案必须跟着**当前渠道**（issue #20：默认已改成 GitHub，
-     // 而这里一直写死「GitCode」，用户看到的就是「描述一直是 gitcode」）。
+              // 而这里一直写死「GitCode」，用户看到的就是「描述一直是 gitcode」）。
+              // 新增渠道时必须一并处理，否则又会退回「写死某一个渠道」的老问题。
               Text(
-                widget.state.updateChannel == 'github'
-                    ? S.of(context).connectingGitHub
-                    : S.of(context).connectingGitCode,
+                switch (widget.state.updateChannel) {
+                  'github' => S.of(context).connectingGitHub,
+                  'gitcode' => S.of(context).connectingGitCode,
+                  _ => S.of(context).updateChannelQinglingHint,
+                },
                 style: TextStyle(fontSize: 11, color: C.greyLight),
               ),
             ],

@@ -1559,6 +1559,7 @@
   "vectorMapLoadFailed": "ベクター地図の読み込みに失敗しました\n{error}",
   "loadingVectorMap": "ベクター地図を読み込み中…",
   "updateChannel": "更新チャネル",
+  "updateChannelQinglingHint": "自前ミラーチャネル（清零）",
   "serverReturned": "サーバーの応答：{code}",
   "invalidResponseData": "応答データの形式が不正です",
   "noVersionsFound": "バージョンが見つかりません",

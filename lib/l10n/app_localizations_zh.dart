@@ -4779,6 +4779,11 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String get updateChannel => '更新渠道';
 
+
+
+  @override
+
+  String get updateChannelQinglingHint => '自建镜像通道（清零）';
   @override
   String serverReturned(int code) {
     return '服务器返回 $code';
@@ -12828,6 +12833,11 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   @override
   String get updateChannel => '更新管道';
 
+
+
+  @override
+
+  String get updateChannelQinglingHint => '自建鏡像通道（清零）';
   @override
   String serverReturned(int code) {
     return '伺服器回傳 $code';

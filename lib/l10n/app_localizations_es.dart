@@ -4998,6 +4998,11 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get updateChannel => 'Canal de actualización';
 
+
+
+  @override
+
+  String get updateChannelQinglingHint => 'Canal espejo propio (清零)';
   @override
   String serverReturned(int code) {
     return 'El servidor devolvió $code';

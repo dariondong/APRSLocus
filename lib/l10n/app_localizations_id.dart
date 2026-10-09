@@ -4969,6 +4969,11 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get updateChannel => 'Saluran pembaruan';
 
+
+
+  @override
+
+  String get updateChannelQinglingHint => 'Kanal cermin mandiri (清零)';
   @override
   String serverReturned(int code) {
     return 'Server mengembalikan $code';

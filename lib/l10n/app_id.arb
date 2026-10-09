@@ -1559,6 +1559,7 @@
   "vectorMapLoadFailed": "Peta vektor gagal dimuat\n{error}",
   "loadingVectorMap": "Memuat peta vektor…",
   "updateChannel": "Saluran pembaruan",
+  "updateChannelQinglingHint": "Kanal cermin mandiri (清零)",
   "serverReturned": "Server mengembalikan {code}",
   "invalidResponseData": "Format respons tidak valid",
   "noVersionsFound": "Tidak ada rilis ditemukan",

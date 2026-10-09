@@ -1823,6 +1823,7 @@
   "vectorMapLoadFailed": "向量地圖載入失敗\n{error}",
   "loadingVectorMap": "載入向量地圖…",
   "updateChannel": "更新管道",
+  "updateChannelQinglingHint": "自建鏡像通道（清零）",
   "serverReturned": "伺服器回傳 {code}",
   "invalidResponseData": "回傳資料格式錯誤",
   "noVersionsFound": "找不到任何版本",
