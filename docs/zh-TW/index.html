@@ -581,6 +581,15 @@
 <!-- site-sync:changelog -->
     <div class="cl-version reveal">
       <div class="cl-head">
+        <span class="cl-tag">v2.0.50</span>
+        <span class="cl-date">2026-10-09</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot fix"></span><b>修復音訊參數改了不儲存</b>：在音訊設定裡改取樣率 / 波特率 / 音調 /TX 前導延時 / <b>輸出幅度</b>，改完不按 Enter、直接點別處會<b>悄悄丟掉</b>——沒按 Enter 的輸入框只掛了 <code>onEditingComplete</code>，而它只在 Enter 時觸發、<b>失焦不觸發</b>。現在<b>失焦即落定</b>，Enter 仍可立即確認；輸出幅度只重建調變器、<b>不中斷接收</b>。IC-705 的電台參數與 TNC 串列線速同款問題一併修好。</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
         <span class="cl-tag">v2.0.49</span>
         <span class="cl-date">2026-10-09</span>
       </div>

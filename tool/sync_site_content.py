@@ -204,6 +204,32 @@ CARDS = [
 # 只列「重点版本」：中间几十个纯修 bug 的版本归纳进文字说明，完整记录指向 Releases。
 CL = [
     {
+        'ver': 'v2.0.50', 'date': '2026-10-09',
+        'items': [
+            ('fix',
+             T('**修复音频参数改了不保存**：在音频设置里改采样率 / 波特率 / 音调 /'
+               'TX 前导延时 / **输出幅度**，改完不按回车、直接点别处会**悄悄丢掉**'
+               '——没按回车的输入框只挂了 `onEditingComplete`，而它只在回车时触发、'
+               '**失焦不触发**。现在**失焦即落定**，回车仍可立即确认；输出幅度只重建'
+               '调制器、**不中断接收**。IC-705 的电台参数与 TNC 串口线速同款问题'
+               '一并修好。',
+               '**修復音訊參數改了不儲存**：在音訊設定裡改取樣率 / 波特率 / 音調 /'
+               'TX 前導延時 / **輸出幅度**，改完不按 Enter、直接點別處會**悄悄丟掉**'
+               '——沒按 Enter 的輸入框只掛了 `onEditingComplete`，而它只在 Enter 時'
+               '觸發、**失焦不觸發**。現在**失焦即落定**，Enter 仍可立即確認；輸出'
+               '幅度只重建調變器、**不中斷接收**。IC-705 的電台參數與 TNC 串列線速'
+               '同款問題一併修好。',
+               '**Fixed audio settings not saving**: changing the sample rate / baud / '
+               'tones / TX delay / **output amplitude** and then tapping elsewhere '
+               '(without pressing Enter) **silently lost the change** — those fields '
+               'only wired `onEditingComplete`, which fires on Enter but **not on '
+               'focus loss**. They now **settle on blur**; Enter still confirms '
+               'immediately, and the output-amplitude commit rebuilds only the '
+               'modulator without interrupting receive. The same fix lands for the '
+               'IC-705 radio fields and the TNC serial baud.')),
+        ],
+    },
+    {
         'ver': 'v2.0.49', 'date': '2026-10-09',
         'items': [
             ('fix',

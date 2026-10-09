@@ -47,6 +47,10 @@ class _TncDevicePageState extends State<TncDevicePage> {
   /// 蓝牙 SPP 没有波特率概念，所以绑的是蓝牙设备时这一项会被忽略。
   late final TextEditingController _baud;
 
+  /// 串口线速框的焦点：`onEditingComplete` 只在回车时触发，失焦不触发 ——
+  /// 改完随手点别处会什么都没存（issue #22-1 同款）。
+  late final FocusNode _baudFocus;
+
   bool _scanning = false;
   bool _supported = true;
   bool _busy = false;
@@ -72,6 +76,10 @@ class _TncDevicePageState extends State<TncDevicePage> {
     _initString = TextEditingController(text: c.initString);
     _initDelay = TextEditingController(text: '${c.initDelayMs}');
     _baud = TextEditingController(text: '${c.serialBaud}');
+    _baudFocus = FocusNode()
+      ..addListener(() {
+        if (!_baudFocus.hasFocus) unawaited(_collect());
+      });
     unawaited(_probe());
   }
 
@@ -84,6 +92,7 @@ class _TncDevicePageState extends State<TncDevicePage> {
     ]) {
       c.dispose();
     }
+    _baudFocus.dispose();
     super.dispose();
   }
 
@@ -562,6 +571,7 @@ class _TncDevicePageState extends State<TncDevicePage> {
         // 串口线速：只对 USB-OTG / 桌面串口有意义（蓝牙 SPP 无此概念）
         SettingsInput(s.tncSerialBaud, _baud,
             tip: s.tncSerialBaudTip,
+            focusNode: _baudFocus,
             onEditingComplete: () => unawaited(_collect())),
         // 发射串口（issue #14）：默认与接收同一个。Windows 的 COM 口是独占
         // 设备，而不少用户是一个口收、另一个口发 —— 只在桌面串口场景显示。

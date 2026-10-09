@@ -1,5 +1,77 @@
 # 更新日志
 
+## [2.0.50] - 2026-10-09
+
+### 修复：音频参数改了不保存（失焦即丢）
+
+**现象**
+
+在「音频设置」里改采样率 / 波特率 / 音调 / TX 前导延时 / **输出幅度**，
+改完若**直接点别处**（没按键盘的回车），返回再看，值又回到了旧的 ——
+像是「改了根本没保存」。IC-705 页的电台 IP / 端口 / 用户名 / 密码 /
+CI-V 地址 / TX 前导延时也是同样的问题。
+
+**原因**
+
+这一批输入框只挂了 `onEditingComplete`，而 Flutter 的 `onEditingComplete`
+**只在按键盘「完成/回车」时触发，失焦不触发** —— 偏偏「填完随手点一下别处」
+才是最常见的操作。这是本仓库在心率告警（issue #22-1）里已经修过的同一类
+缺陷，当时只修了心率那一处；音频设置页、IC-705 页、TNC 页的串口线速都还
+带着它，这次一并收拾干净。
+
+**改动**（`lib/audio_page.dart`、`lib/ic705_device_page.dart`、`lib/tnc_device_page.dart`）
+
+- 音频设置页的参数框全部改挂 **FocusNode 失焦提交**：整组输入框都不再持有
+  焦点时才落定一次（组内互相切换焦点不算，避免打断输入），回车仍可立即确认；
+- 输出幅度是纯发射参数，落定时**只重建调制器、不重启链路**，不打断正在
+  进行的接收；
+- IC-705 页的 6 个输入框、TNC 页的「串口线速」同样补上失焦提交；
+- 新增「只有值真的变了才 `applyParams()`」的判断，免得看一眼没改也把好好的
+  接收链路断开重连。
+
+**测试**
+
+- `tool/check_*.py` 全部通过；`flutter analyze` / `flutter test` 由 CI 复核。
+
+---
+
+## [2.0.50] - 2026-10-09 (English)
+
+### Fixed: audio settings not saved (lost on blur)
+
+**Symptom**
+
+In Audio settings, after changing the sample rate / baud / tones / TX delay /
+**output amplitude**, if you **tapped elsewhere** (instead of pressing Enter)
+the old value was still there when you came back — as if the change was never
+saved. The IC-705 page (radio IP / port / user / password / CI-V address /
+TX delay) had the same problem.
+
+**Cause**
+
+These fields only wired `onEditingComplete`, which Flutter fires **only on the
+keyboard's done/enter key, not on focus loss** — yet "fill it in, then tap
+somewhere else" is the most common interaction. The repo already fixed this same
+defect class for the heart-rate alarms (issue #22-1), but only there; the audio,
+IC-705 and TNC serial-baud fields still carried it. This release cleans them up.
+
+**Changes** (`lib/audio_page.dart`, `lib/ic705_device_page.dart`, `lib/tnc_device_page.dart`)
+
+- Audio-settings fields now commit via a **FocusNode blur** handler: they settle
+  once the whole group loses focus (moving focus within the group does not commit,
+  so typing is not interrupted); Enter still confirms immediately;
+- Output amplitude is TX-only, so its commit **rebuilds only the modulator
+  without restarting the link**, keeping receive uninterrupted;
+- The six IC-705 fields and the TNC serial-baud field got the same blur commit;
+- Added a "only apply when a value actually changed" check so merely viewing a
+  field no longer tears down a healthy receive link.
+
+**Testing**
+
+- `tool/check_*.py` all pass; `flutter analyze` / `flutter test` are re-verified by CI.
+
+---
+
 ## [2.0.49] - 2026-10-09
 
 ### 修复：声卡（音频）能收不能发 —— 找不到「输出幅度」这个旋钮

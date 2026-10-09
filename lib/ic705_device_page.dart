@@ -35,6 +35,14 @@ class _Ic705DevicePageState extends State<Ic705DevicePage> {
   late final TextEditingController _civAddr;
   late final TextEditingController _txDelay;
 
+  /// 失焦提交用的焦点节点（`onEditingComplete` 只在回车时触发，见 [_onBlur]）。
+  late final FocusNode _hostFocus;
+  late final FocusNode _portFocus;
+  late final FocusNode _userFocus;
+  late final FocusNode _passFocus;
+  late final FocusNode _civFocus;
+  late final FocusNode _delayFocus;
+
   late WlanRadioModel _selectedModel;
   bool _busy = false;
   bool _logOpen = false;
@@ -55,6 +63,30 @@ class _Ic705DevicePageState extends State<Ic705DevicePage> {
       text: '0x${c.icomLan.radioCivAddress.toRadixString(16).toUpperCase()}',
     );
     _txDelay = TextEditingController(text: '${c.afsk.txDelayMs}');
+    _hostFocus = FocusNode();
+    _portFocus = FocusNode();
+    _userFocus = FocusNode();
+    _passFocus = FocusNode();
+    _civFocus = FocusNode();
+    _delayFocus = FocusNode();
+    // 失焦即落定：`onEditingComplete` 只在按键盘「完成/回车」时触发，
+    // **失焦不触发** —— 只挂它的话「填完随手点别处」等于什么都没存
+    // （issue #22-1 心率阈值同款，本页此前全部输入框都是这个毛病）。
+    for (final f in _focuses) {
+      f.addListener(_onBlur);
+    }
+  }
+
+  /// 本页全部输入框的焦点：失焦落定与 dispose 都靠它遍历。
+  List<FocusNode> get _focuses => [
+        _hostFocus, _portFocus, _userFocus,
+        _passFocus, _civFocus, _delayFocus,
+      ];
+
+  /// 整组都不再持有焦点时落定一次（组内转移焦点不提交，避免打断输入）。
+  void _onBlur() {
+    if (_focuses.any((f) => f.hasFocus)) return;
+    unawaited(_saveConfig());
   }
 
   @override
@@ -65,6 +97,9 @@ class _Ic705DevicePageState extends State<Ic705DevicePage> {
     _pass.dispose();
     _civAddr.dispose();
     _txDelay.dispose();
+    for (final f in _focuses) {
+      f.dispose();
+    }
     super.dispose();
   }
 
@@ -90,6 +125,7 @@ class _Ic705DevicePageState extends State<Ic705DevicePage> {
 
   Future<void> _saveConfig({bool? enabled}) async {
     final c = audio.config;
+    final oldDelay = c.afsk.txDelayMs;
     final civ = _parseInt(_civAddr, _selectedModel.defaultCivAddress).clamp(0x01, 0xFF);
     final delay = _parseInt(_txDelay, 200).clamp(0, 2000);
 
@@ -118,6 +154,9 @@ class _Ic705DevicePageState extends State<Ic705DevicePage> {
     }
 
     await audio.save();
+    // TX Delay 是纯发射参数：真的改了才重建调制器（失焦提交会在没改时也触发，
+    // 不该无谓重建；采样率/音调等影响收发的另在音频设置页处理）。
+    if (delay != oldDelay) audio.applyTxParams();
     if (mounted) setState(() {});
   }
 
@@ -371,24 +410,28 @@ class _Ic705DevicePageState extends State<Ic705DevicePage> {
           s.icomLanHost,
           _host,
           hint: '电台 IP 地址',
+          focusNode: _hostFocus,
           onEditingComplete: () => unawaited(_saveConfig()),
         ),
         SettingsInput(
           s.icomLanPort,
           _port,
           hint: '${_selectedModel.defaultPort}',
+          focusNode: _portFocus,
           onEditingComplete: () => unawaited(_saveConfig()),
         ),
         SettingsInput(
           s.icomLanUsername,
           _user,
           hint: '电台 Network User 名',
+          focusNode: _userFocus,
           onEditingComplete: () => unawaited(_saveConfig()),
         ),
         SettingsInput(
           s.icomLanPassword,
           _pass,
           hint: '电台 Network User 密码',
+          focusNode: _passFocus,
           onEditingComplete: () => unawaited(_saveConfig()),
         ),
         SettingsHint('提示：用户名和密码必须与电台内部 Network User Setting 完全一致。'),
@@ -422,12 +465,14 @@ class _Ic705DevicePageState extends State<Ic705DevicePage> {
           '发射前导延迟 (TX Delay, ms)',
           _txDelay,
           hint: '200',
+          focusNode: _delayFocus,
           onEditingComplete: () => unawaited(_saveConfig()),
         ),
         SettingsInput(
           '电台 CI-V 地址 (十六进制)',
           _civAddr,
           hint: _selectedModel.defaultCivHex,
+          focusNode: _civFocus,
           onEditingComplete: () => unawaited(_saveConfig()),
         ),
         SettingsRow2('控制器地址', '0xE0 (默认)'),
