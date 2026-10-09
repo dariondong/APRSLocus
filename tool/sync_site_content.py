@@ -204,6 +204,33 @@ CARDS = [
 # 只列「重点版本」：中间几十个纯修 bug 的版本归纳进文字说明，完整记录指向 Releases。
 CL = [
     {
+        'ver': 'v2.0.43', 'date': '2026-10-09',
+        'items': [
+            ('new',
+             T('**策略地图更顺手**：点队友/自己标点直接打开**台站详细面板**；'
+               '「导航」交给手机地图应用（高德 → 系统地图 → 浏览器 OSM）；地图上新增'
+               '**「我」的位置**（蓝点 + 呼号 + 方位角）与「定位到我」一键回位。',
+               '**策略地圖更順手**：點隊友/自己標點直接開啟**台站詳細面板**；'
+               '「導航」交給手機地圖 App（高德 → 系統地圖 → 瀏覽器 OSM）；地圖上新增'
+               '**「我」的位置**（藍點 + 呼號 + 方位角）與「定位到我」一鍵回位。',
+               '**Strategy map, easier to use**: tapping a teammate/self marker opens the '
+               '**station detail panel**; "navigate" hands off to the phone\'s map app '
+               '(AMap → system maps → browser OSM); the map now draws **your own '
+               'position** (blue dot + callsign + bearing) with a one-tap "locate me".')),
+            ('up',
+             T('**策略变动在群聊留痕**：新增 / 改动 / 删除 / 清空图层都会在群聊留一条'
+               '提示，队友点一下即跳进策略地图；**群聊发送不再弹确认**，直接发'
+               '（未连接服务器会先拦下提示）。',
+               '**策略變動在群聊留痕**：新增 / 改動 / 刪除 / 清空圖層都會在群聊留一條'
+               '提示，隊友點一下即跳進策略地圖；**群聊傳送不再彈確認**，直接傳'
+               '（未連接伺服器會先攔下提示）。',
+               '**Strategy changes leave a trail**: add / edit / delete / clear all leave a '
+               'notice in group chat, and a tap jumps into the strategy map; **group send '
+               'no longer asks for confirmation** and just sends (with a pre-check when the '
+               'server is offline).')),
+        ],
+    },
+    {
         'ver': 'v2.0.42', 'date': '2026-10-09',
         'items': [
             ('new',

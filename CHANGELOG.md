@@ -1,5 +1,91 @@
 # 更新日志
 
+## [2.0.43] - 2026-10-09
+
+### 新增：策略地图外部导航 / 自身位置 / 点队友看详情；群聊提示策略变动
+
+**需求**
+
+- 策略地图上**点队友标点**要能打开**台站详细面板**。
+- **划线 / 改动的策略元素**也要在群聊留提示；**删除**同样要提示。
+- **群聊发送**不再弹「确定 / 取消」确认，直接发。
+- 策略点「导航」交给手机地图应用（与台站详情一致）；地图上能看见**自己**。
+
+**改动**
+
+- **点队友 / 自己 → 台站详情**（`lib/strategy_map_page.dart`）：平移模式下先做
+  队友与自己的命中测试（26px 容差），命中即呼出 `StationDetail` 底部面板，
+  与主地图点台站同一入口；点「我」用 `myStation`。
+- **群聊提示补全**（`lib/state.dart`）：新增 / 改动策略元素在群聊留提示
+  （动词区分「共享 / 更新」，内容没变不刷）；**删除**单个元素（本地 + 收到
+  队友 `D`）与**清空图层**（本地 + 收到队友 `X`）均在群聊留提示；空图层收到
+  `X` 不重复提示。快照重播（`S`）用内容比对挡掉，不刷屏。
+- **策略地图外部导航**（`lib/strategy_map_page.dart`）：策略点「导航」改为与
+  台站详情同一套做法（高德 → 系统地图 → 浏览器 OSM 逐级回退）；原 App 内聚焦
+  保留为「在地图查看」。
+- **自身位置标记**（`lib/strategy_map_page.dart`）：地图上新增「我」的蓝点 +
+  「我·呼号」+ 方位角角标，右侧「定位到我」一键回位；未定位时提示条直说，
+  不再让人以为坏了。
+- **发送前连接自检**（`lib/messages_page.dart` / `lib/tracker_page.dart`）：
+  群聊发送、长按快捷面板发送前，未连接服务器则拦下并明确提示。
+- **群聊发送去掉确认**（`lib/messages_page.dart` / `lib/tracker_page.dart`）：
+  不再弹「确定 / 取消」，直接发；连接自检与超长确认保留。
+- l10n：六语言新增 `chatNeedConnect` / `strategyUpdatedItem` /
+  `strategyDeletedItem` / `strategyClearedMsg`。
+
+**测试**
+
+- `tool/check_*.py` 与 `check_l10n_sync.py` 全部通过；`flutter analyze` /
+  `flutter test` 由 CI 复核。
+
+---
+
+## [2.0.43] - 2026-10-09 (English)
+
+### New: strategy map external navigation / self location / tap teammate for details; chat notices for strategy changes
+
+**Request**
+
+- Tapping a **teammate marker** on the strategy map opens the **station detail panel**.
+- **Line edits / changes** to strategy elements must leave a **group-chat notice**;
+  **deletions** must too.
+- **Group send** no longer asks for a confirm/cancel — it just sends.
+- Strategy-point "navigate" hands off to the phone's map app (like station detail);
+  the map shows **yourself**.
+
+**Changes**
+
+- **Tap teammate/self → station detail** (`lib/strategy_map_page.dart`): in pan mode
+  teammate and self hit-testing runs first (26px tolerance); a hit opens the
+  `StationDetail` bottom sheet — the same entry point as tapping a station on the
+  main map. Tapping "me" uses `myStation`.
+- **Notice completeness** (`lib/state.dart`): new/edited strategy elements leave a
+  group-chat notice (verb differs for shared/updated; no notice when content is
+  unchanged); **deleting** a single element (locally and on a peer's `D`) and
+  **clearing** the layer (locally and on a peer's `X`) both leave a notice; an
+  empty layer receiving `X` no longer double-notifies. Snapshot replays (`S`) are
+  filtered by content comparison so they don't spam.
+- **External navigation** (`lib/strategy_map_page.dart`): strategy-point
+  "navigate" now uses the same ladder as station detail (AMap → system maps →
+  browser OSM); the in-app focus is kept as "view on map".
+- **Self-location marker** (`lib/strategy_map_page.dart`): a blue "me" dot +
+  "me·call" + bearing badge, with a "locate me" button on the right; when there is
+  no fix the hint bar says so instead of silently drawing nothing.
+- **Pre-send connection check** (`lib/messages_page.dart` / `lib/tracker_page.dart`):
+  group send and the long-press quick panel stop and warn when the server is not
+  connected.
+- **Group send confirm removed** (`lib/messages_page.dart` / `lib/tracker_page.dart`):
+  no more confirm/cancel dialog; the connection check and over-length confirm stay.
+- l10n: `chatNeedConnect` / `strategyUpdatedItem` / `strategyDeletedItem` /
+  `strategyClearedMsg` added across six languages.
+
+**Testing**
+
+- All `tool/check_*.py` and `check_l10n_sync.py` pass; `flutter analyze` /
+  `flutter test` are verified by CI.
+
+---
+
 ## [2.0.42] - 2026-10-09
 
 ### 新增：策略地图支持队友方位 / 可选颜色 / 群聊跳转，并适配射频
