@@ -8295,4 +8295,16 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get groupRfNotice =>
       'Mode RF: obrolan grup dan frame strategi dikirim siaran — rekan yang memantau kanal sama akan menerimanya. Frame strategi perlu konfirmasi rekan; kirim ulang jika hilang.';
+  @override
+  String get chatNeedConnect => "Belum terhubung ke server — tidak bisa mengirim. Hubungkan sumber data dulu.";
+
+  @override
+  String strategyUpdatedItem(String call, String kind) => "$call memperbarui $kind";
+
+  @override
+  String strategyDeletedItem(String call, String kind) => "$call menghapus $kind";
+
+  @override
+  String strategyClearedMsg(String call) => "$call mengosongkan lapisan bersama";
+
 }

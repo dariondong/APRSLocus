@@ -3363,5 +3363,12 @@
   "strategyAckOk": "队友已确认收到",
   "strategyRetryNone": "没有未确认的帧",
   "@strategyAckPending": {"placeholders": {"n": {"type": "int"}}},
-  "groupRfNotice": "射频模式：群聊与策略帧都按广播发送，队友守听同一频段即可收到。策略帧需队友回执确认，丢包时在策略地图页点重发。"
+  "groupRfNotice": "射频模式：群聊与策略帧都按广播发送，队友守听同一频段即可收到。策略帧需队友回执确认，丢包时在策略地图页点重发。",
+  "chatNeedConnect": "未连接服务器，无法发送；请先连接数据来源。",
+  "strategyUpdatedItem": "{call} 更新了{kind}",
+  "strategyDeletedItem": "{call} 删除了{kind}",
+  "strategyClearedMsg": "{call} 清空了共享图层",
+  "@strategyUpdatedItem": {"placeholders": {"call": {"type": "String"}, "kind": {"type": "String"}}},
+  "@strategyDeletedItem": {"placeholders": {"call": {"type": "String"}, "kind": {"type": "String"}}},
+  "@strategyClearedMsg": {"placeholders": {"call": {"type": "String"}}}
 }

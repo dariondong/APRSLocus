@@ -1,11 +1,13 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'coord.dart';
 import 'map_math.dart';
 import 'material.dart';
 import 'models.dart';
+import 'station_detail.dart';
 import 'strategy_map.dart';
 import 'state.dart';
 import 'theme.dart';
@@ -20,9 +22,13 @@ import 'widgets.dart';
 ///
 /// 交互分工（尽量贴近主地图的手感）：
 /// * 单击地图：当前工具下放一个点 / 圈 / 集合点；划线工具下每击追加一个点。
-/// * 单击已有元素：选中它，弹出操作（导航 / 编辑信息 / 删除）。
+/// * 单击已有元素：选中它，弹出操作（导航 / 在地图查看 / 编辑信息 / 删除）。
+/// * 单击队友/自己标记：呼出台站详细面板（与主地图一致）。
 /// * 双击元素：直接导航（落到主地图并聚焦）。
 /// * 长按地图：切换回平移（配合单指拖动）。
+///
+/// 地图上同时画出**队友**（青点 + 呼号 + 方位角角标）与**我自己**
+/// （蓝点 + 我·呼号 + 方位角角标），右侧「定位到我」一键回到自己位置。
 class StrategyMapPage extends StatefulWidget {
   final AppState state;
   final String groupCall;
@@ -85,6 +91,27 @@ class _StrategyMapPageState extends State<StrategyMapPage>
       _teammates = list;
     }
     return _teammates;
+  }
+
+  /// 我自己的位置（纬度、经度、航向），同样缓存以避免每帧重绘。
+  /// 无定位时为 null —— 不画「我」，也不假装我在北京基准点。
+  (double, double, double?)? _self;
+  String _selfKey = '';
+
+  (double, double, double?)? _selfNow() {
+    final st = widget.state;
+    if (!st.myHasFix || st.myLat == null || st.myLng == null) {
+      _selfKey = '';
+      _self = null;
+      return _self;
+    }
+    final key = '${st.myLat!.toStringAsFixed(5)}|'
+        '${st.myLng!.toStringAsFixed(5)}|${st.myCourse?.round()}';
+    if (key != _selfKey) {
+      _selfKey = key;
+      _self = (st.myLat!, st.myLng!, st.myCourse);
+    }
+    return _self;
   }
 
   // 视图动画（导航时平滑居中）
@@ -185,7 +212,8 @@ class _StrategyMapPageState extends State<StrategyMapPage>
     _anim.forward(from: 0);
   }
 
-  /// 导航到主地图并聚焦（把该点包装成 Station 复用现有“台站列表 → 地图定位”）。
+  /// 「在地图查看」：跳回主地图并聚焦该点（把该点包装成 Station，复用现有
+  /// “台站列表 → 地图定位”）。真正的「导航」交给 [_navigateExternal]。
   void _openInTrackMap(StrategyItem it) {
     widget.state.focusOnMap(
       Station(
@@ -200,13 +228,80 @@ class _StrategyMapPageState extends State<StrategyMapPage>
     Navigator.pop(context);
   }
 
+  /// 外部导航：与台站详情面板的「导航」完全同一套做法（高德 → 系统地图 →
+  /// 浏览器 OSM 逐级回退），策略点也能直接交给手机上的地图应用。
+  ///
+  /// 为什么不复用 StationDetail 的那份实现：它是页面私有方法（`_openNavigation`），
+  /// 跨文件取不到；这里按同一套 URI 顺序重写一份，两处行为保持一致即可。
+  Future<void> _navigateExternal(StrategyItem it) async {
+    // 高德用 GCJ-02，APRS 是 WGS-84，需转换（与 station_detail 同）
+    final (gLat, gLng) = Gcj.wgsToGcj(it.lat, it.lng);
+    final name = Uri.encodeComponent(
+      it.label.isEmpty ? _kindName(context, it.kind) : it.label,
+    );
+
+    // 尝试启动一个 URI，成功返回 true（部分 ROM 忽略包可见性，失败再试一次）
+    Future<bool> tryLaunch(Uri uri,
+        {LaunchMode mode = LaunchMode.externalApplication}) async {
+      try {
+        if (await canLaunchUrl(uri)) {
+          await launchUrl(uri, mode: mode);
+          return true;
+        }
+        await launchUrl(uri, mode: mode);
+        return true;
+      } catch (_) {
+        return false;
+      }
+    }
+
+    // 1. 高德导航
+    if (await tryLaunch(Uri.parse(
+      'androidamap://navi?sourceApplication=aprslocus'
+      '&lat=${gLat.toStringAsFixed(6)}'
+      '&lon=${gLng.toStringAsFixed(6)}'
+      '&poiname=$name&style=2&dev=0',
+    ))) {
+      return;
+    }
+    // 1b. 高德路线规划（amapuri 变体）
+    if (await tryLaunch(Uri.parse(
+      'amapuri://route/plan/?dname=$name'
+      '&dlat=${gLat.toStringAsFixed(6)}'
+      '&dlon=${gLng.toStringAsFixed(6)}&dev=0&t=0',
+    ))) {
+      return;
+    }
+    // 2. 系统地图
+    if (await tryLaunch(Uri.parse(
+      'geo:${it.lat},${it.lng}?q=${it.lat},${it.lng}($name)',
+    ))) {
+      return;
+    }
+    // 3. 兜底：浏览器 OpenStreetMap
+    if (await tryLaunch(Uri.parse(
+      'https://www.openstreetmap.org/?mlat=${it.lat}&mlon=${it.lng}'
+      '#map=16/${it.lat}/${it.lng}',
+    ))) {
+      return;
+    }
+    if (mounted) _toast(S.of(context).navigationUnavailable);
+  }
+
   // ─── 交互 ───
 
   void _onMapTap(Offset local) {
     final (lat, lng) = _screenToLatLng(local);
     switch (_tool) {
       case _Tool.pan:
-        // 先看有没有点中元素（容差 22px）
+        // 先看有没有点中队友/自己（与元素同容差）：呼出台站详细面板，
+        // 与主地图上点台站一致 —— 策略地图上看队友不该只能干看。
+        final who = _hitTeammate(local);
+        if (who != null) {
+          _openStation(who);
+          return;
+        }
+        // 再看有没有点中元素（容差 22px）
         final hit = _hitTest(local);
         setState(() => _selected = hit);
         if (hit != null) {
@@ -246,6 +341,43 @@ class _StrategyMapPageState extends State<StrategyMapPage>
       }
     }
     return best;
+  }
+
+  /// 命中队友或我自己：返回对应的台站。容差与元素一致（26px）。
+  ///
+  /// 我自己用 [AppState.myStation]（当前实时位置），队友用策略地图已在画的
+  /// 那份缓存 —— 保证点中的就是屏幕上看到的那个点。
+  Station? _hitTeammate(Offset local) {
+    // 自己优先：与「我」画在最上层一致
+    final me = _selfNow();
+    if (me != null) {
+      if ((_toScreen(me.$1, me.$2) - local).distance <= 26) {
+        return widget.state.myStation;
+      }
+    }
+    Station? best;
+    var bestD = 26.0;
+    for (final s in _teammatesNow()) {
+      final d = (_toScreen(s.lat, s.lng) - local).distance;
+      if (d < bestD) {
+        bestD = d;
+        best = s;
+      }
+    }
+    return best;
+  }
+
+  /// 呼出台站详细面板（与主地图/台站列表同一入口 [StationDetail]）。
+  void _openStation(Station s) {
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => StationDetail(
+        state: widget.state,
+        station: s,
+      ),
+    );
   }
 
   void _addPoint(double lat, double lng, StrategyKind kind) {
@@ -495,6 +627,7 @@ class _StrategyMapPageState extends State<StrategyMapPage>
                   ],
                 ),
                 const SizedBox(height: 14),
+                // 「导航」与台站详情面板一致：直接交给手机地图应用（高德/系统地图）。
                 Row(
                   children: [
                     Expanded(
@@ -505,12 +638,30 @@ class _StrategyMapPageState extends State<StrategyMapPage>
                         C.blue,
                         () {
                           Navigator.pop(ctx);
+                          _navigateExternal(it);
+                        },
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    // 「在地图查看」：不离开 App，跳主地图并聚焦该点。
+                    Expanded(
+                      child: _actionBtn(
+                        ctx,
+                        Icons.map_rounded,
+                        S.of(ctx).openInMap,
+                        C.green,
+                        () {
+                          Navigator.pop(ctx);
                           _openInTrackMap(it);
                         },
                       ),
                     ),
-                    if (mine) ...[
-                      const SizedBox(width: 10),
+                  ],
+                ),
+                if (mine) ...[
+                  const SizedBox(height: 10),
+                  Row(
+                    children: [
                       Expanded(
                         child: _actionBtn(
                           ctx,
@@ -538,8 +689,8 @@ class _StrategyMapPageState extends State<StrategyMapPage>
                         ),
                       ),
                     ],
-                  ],
-                ),
+                  ),
+                ],
               ],
             ),
           ),
@@ -736,6 +887,7 @@ class _StrategyMapPageState extends State<StrategyMapPage>
               children: [
                 _mapLayer(size),
                 _topBar(),
+                _locateBtn(),
                 _hintBar(),
                 _toolbar(),
               ],
@@ -786,6 +938,9 @@ class _StrategyMapPageState extends State<StrategyMapPage>
                 draft: _draft,
                 selected: _selected,
                 teammates: _teammatesNow(),
+                self: _selfNow(),
+                selfCall: widget.state.myCall,
+                selfLabel: S.of(context).meLabel,
                 toScreen: _toScreen,
                 pixelsPerDegree: _pixelsPerDegree(),
                 colors: _StrategyColors(
@@ -902,6 +1057,41 @@ class _StrategyMapPageState extends State<StrategyMapPage>
     );
   }
 
+  /// 右侧「定位到我」：把地图平滑移回自己当前位置；未定位则直说。
+  Widget _locateBtn() {
+    final hasFix = _selfNow() != null;
+    return Positioned(
+      right: 12,
+      top: 8 + MediaQuery.of(context).padding.top + 48,
+      child: GestureDetector(
+        onTap: _locateMe,
+        child: Container(
+          width: 44,
+          height: 44,
+          decoration: BoxDecoration(
+            color: C.black.withValues(alpha: 0.72),
+            shape: BoxShape.circle,
+            border: Border.all(color: Colors.white.withValues(alpha: 0.16)),
+          ),
+          child: Icon(
+            Icons.my_location_rounded,
+            size: 22,
+            color: hasFix ? C.cyan : Colors.white70,
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _locateMe() {
+    final st = widget.state;
+    if (!st.myHasFix || st.myLat == null || st.myLng == null) {
+      _toast(S.of(context).noFixYet);
+      return;
+    }
+    _navigateTo(st.myLat!, st.myLng!);
+  }
+
   Widget _hintBar() {
     String hint;
     switch (_tool) {
@@ -928,6 +1118,10 @@ class _StrategyMapPageState extends State<StrategyMapPage>
     final pending = widget.state.strategyAckPending(_gc);
     if (pending > 0) {
       hint = '${S.of(context).strategyAckPending(pending)}\n$hint';
+    }
+    // 还没定位时补一句：否则地图上看不到「我」的蓝点，用户会以为坏了。
+    if (!widget.state.myHasFix) {
+      hint = '$hint\n${S.of(context).noFixYet}';
     }
     return Positioned(
       left: 12,
@@ -1056,6 +1250,15 @@ class _StrategyPainter extends CustomPainter {
   /// 群成员里报得到位置的台站（队友）。位置来自普通 APRS 信标，与策略协议无关。
   final List<Station> teammates;
 
+  /// 我自己的位置（纬度、经度、航向）。与 [teammates] 分开画，样式也区分开。
+  final (double, double, double?)? self;
+
+  /// 我的呼号，用于标注（[self] 非空时才有意义）。
+  final String selfCall;
+
+  /// 「我」标签（本地化的「我」字）。
+  final String selfLabel;
+
   _StrategyPainter({
     required this.items,
     required this.draft,
@@ -1064,6 +1267,9 @@ class _StrategyPainter extends CustomPainter {
     required this.pixelsPerDegree,
     required this.colors,
     this.teammates = const [],
+    this.self,
+    this.selfCall = '',
+    this.selfLabel = '我',
   });
 
   @override
@@ -1076,6 +1282,26 @@ class _StrategyPainter extends CustomPainter {
       _paintItem(canvas, it, it.key == selected?.key);
     }
     _paintDraft(canvas);
+    // 「我」画在最上层：它是自己的位置，理应始终可见、不被任何元素盖住。
+    _paintSelf(canvas);
+  }
+
+  /// 我自己的位置：与队友同为圆点，但用蓝色 + 蓝色脉冲环 + 我的呼号区分。
+  /// 有航向时同样画方位角角标 —— 与队友、主地图保持一致的观感。
+  void _paintSelf(Canvas canvas) {
+    final me = self;
+    if (me == null) return;
+    final c = toScreen(me.$1, me.$2);
+    final course = me.$3;
+    // 外圈脉冲环（静态，比主地图的动画更省；策略页刷新频繁）
+    canvas.drawCircle(
+        c, 15, Paint()..color = C.blue.withValues(alpha: 0.2));
+    canvas.drawCircle(c, 10, Paint()..color = Colors.white);
+    canvas.drawCircle(c, 7.5, Paint()..color = C.blue);
+    if (course != null) {
+      _bearingBadge(canvas, c, course);
+    }
+    _chip(canvas, '$selfLabel · $selfCall', c + const Offset(0, 12));
   }
 
   /// 队友标记：圆点 + 呼号 + **方位角小角标**。
@@ -1282,5 +1508,6 @@ class _StrategyPainter extends CustomPainter {
       old.draft != draft ||
       old.selected != selected ||
       old.teammates != teammates ||
+      old.self != self ||
       old.pixelsPerDegree != pixelsPerDegree;
 }

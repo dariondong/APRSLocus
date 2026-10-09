@@ -890,6 +890,17 @@ class _TrackerPageState extends State<TrackerPage>
   ) async {
     final text = ctrl.text.trim();
     if (text.isEmpty) return;
+    // 发送前的连接自检（用户要求）：未连接服务器则报文发不出去，直接拦下。
+    if (!widget.state.connected) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(S.of(context).chatNeedConnect),
+          backgroundColor: C.red,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+      return;
+    }
     if (isGroup) {
       if (!await _confirmGroupSend(widget.group.groupCall)) return;
       if (!mounted) return;

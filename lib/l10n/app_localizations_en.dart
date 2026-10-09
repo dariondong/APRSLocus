@@ -8282,4 +8282,16 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get groupRfNotice =>
       'RF mode: group chat and strategy frames are broadcast — teammates who listen on the same channel receive them. Strategy frames rely on teammate acks; resend from the strategy map if packets drop.';
+  @override
+  String get chatNeedConnect => "Not connected — cannot send. Connect a data source first.";
+
+  @override
+  String strategyUpdatedItem(String call, String kind) => "$call updated a $kind";
+
+  @override
+  String strategyDeletedItem(String call, String kind) => "$call deleted a $kind";
+
+  @override
+  String strategyClearedMsg(String call) => "$call cleared the shared layer";
+
 }

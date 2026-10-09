@@ -8012,16 +8012,29 @@ class AppState extends ChangeNotifier {
     StrategyKind.rally => l10n.strategyAddRally,
   };
 
-  /// 在群聊里插一条「谁共享了什么」的可点击提示（[type]=strategy）。
+  /// 在群聊里插一条「谁共享/更新/删除了什么」的可点击提示（[type]=strategy）。
   /// 策略帧本身不进聊天列表，但**留一条提示** —— 否则用户看不出图层变过。
   ///
+  /// [action]：`add`（新建）/ `update`（改动，含划线）/ `delete`（删除）/ `clear`（清空）。
   /// 文案在**本机**按本机语言生成（不是从空中收来的），所以各端显示各自的语言。
-  void _strategyNotice(String groupId, String owner, StrategyKind kind) {
-    _addGroupSystemMsg(
-      groupId,
-      l10n.strategySharedItem(owner, _strategyKindLabel(kind)),
-      type: 'strategy',
-    );
+  void _strategyNotice(
+    String groupId,
+    String owner,
+    StrategyKind? kind, {
+    String action = 'add',
+  }) {
+    final String text;
+    if (action == 'clear') {
+      text = l10n.strategyClearedMsg(owner);
+    } else {
+      final k = _strategyKindLabel(kind ?? StrategyKind.point);
+      text = switch (action) {
+        'delete' => l10n.strategyDeletedItem(owner, k),
+        'update' => l10n.strategyUpdatedItem(owner, k),
+        _ => l10n.strategySharedItem(owner, k),
+      };
+    }
+    _addGroupSystemMsg(groupId, text, type: 'strategy');
   }
 
   /// 群成员里「有可用 APRS 坐标」的台站 —— 策略地图上的队友位置。
@@ -8166,23 +8179,30 @@ class AppState extends ChangeNotifier {
     for (final f in frames) {
       ok = _sendStrategyFrame(gc, f) && ok;
     }
-    // 新建（非编辑）才留群聊提示，避免「改个名字」也刷一条
-    if (id.isEmpty) {
-      final g = _groupByCall(gc);
-      if (g != null) _strategyNotice(g.id, _baseCall(myCall), kind);
+    // 新建/改动都留群聊提示（用户要求：划线/改动也要提示），区别只在动词。
+    // 打开编辑框又原样确认（内容没变）不刷提示，避免无意义的“更新了”。
+    final g = _groupByCall(gc);
+    if (g != null && (id.isEmpty || !_sameStrategyContent(prev, item))) {
+      _strategyNotice(g.id, _baseCall(myCall), kind,
+          action: id.isEmpty ? 'add' : 'update');
     }
     _notify();
     return ok;
   }
 
-  /// 删除一个策略元素并广播 `D`。
+  /// 删除一个策略元素并广播 `D`。同时在群聊留提示（本地删除 + 队友删除都提示）。
   void deleteStrategy(String groupCall, String id) {
     final gc = groupCall.toUpperCase();
     final key = '$gc|$id';
-    if (!strategyItems.containsKey(key)) return;
+    final it = strategyItems[key];
+    if (it == null) return;
     strategyItems.remove(key);
     unawaited(_saveStrategyNow());
     _sendStrategyFrame(gc, '\$M${StrategyProto.version} D $id');
+    final g = _groupByCall(gc);
+    if (g != null) {
+      _strategyNotice(g.id, _baseCall(myCall), it.kind, action: 'delete');
+    }
     _notify();
   }
 
@@ -8194,13 +8214,17 @@ class AppState extends ChangeNotifier {
     );
   }
 
-  /// 清空本群全部策略元素并广播 `X`。
+  /// 清空本群全部策略元素并广播 `X`。同时在群聊留一条提示。
   void clearStrategy(String groupCall) {
     final gc = groupCall.toUpperCase();
     strategyItems.removeWhere((k, v) => v.groupCall == gc);
     _lineParts.removeWhere((k, _) => k.startsWith('$gc|'));
     unawaited(_saveStrategyNow());
     _sendStrategyFrame(gc, '\$M${StrategyProto.version} X');
+    final g = _groupByCall(gc);
+    if (g != null) {
+      _strategyNotice(g.id, _baseCall(myCall), null, action: 'clear');
+    }
     _notify();
   }
 
@@ -8258,10 +8282,14 @@ class AppState extends ChangeNotifier {
 
     switch (frame.op) {
       case 'X':
-        strategyItems.removeWhere((k, v) => v.groupCall == gc);
-        _lineParts.removeWhere((k, _) => k.startsWith('$gc|'));
-        _log(LogLevel.info, '策略地图', '$gc 图层被 ${src.toUpperCase()} 清空');
-        unawaited(_saveStrategyNow());
+        if (strategyItems.any((k, v) => v.groupCall == gc)) {
+          strategyItems.removeWhere((k, v) => v.groupCall == gc);
+          _lineParts.removeWhere((k, _) => k.startsWith('$gc|'));
+          _log(LogLevel.info, '策略地图', '$gc 图层被 ${src.toUpperCase()} 清空');
+          unawaited(_saveStrategyNow());
+          // 群聊留提示：否则队友只会看到图层「凭空消失」
+          _strategyNotice(g.id, _baseCall(src), null, action: 'clear');
+        }
         _notify();
         return;
       case 'S':
@@ -8270,9 +8298,13 @@ class AppState extends ChangeNotifier {
         _log(LogLevel.info, '策略地图', '${src.toUpperCase()} 请求快照，已重播本群元素');
         return;
       case 'D':
-        if (strategyItems.remove(key) != null) {
+        final removed = strategyItems.remove(key);
+        if (removed != null) {
           _lineParts.remove(key);
           unawaited(_saveStrategyNow());
+          // 群聊留提示：谁删了什么（否则只是图层里少一个元素，看不出原因）
+          _strategyNotice(g.id, _baseCall(src), removed.kind,
+              action: 'delete');
           _notify();
         }
         return;
@@ -8349,11 +8381,13 @@ class AppState extends ChangeNotifier {
 
   /// 落图 + 冲突消解（同一 ID 后写胜；「后写」以本地到达顺序为准）。
   ///
-  /// [notifyChat] 只对**收到**的元素为真：新元素在群里留一条可点击提示。
-  /// 判据用「本地此前没有这个 key」而不是「owner 是不是我」—— 重播（`S` 快照）
-  /// 会把自己早先的元素再发一遍，那时 key 已存在，不会重复提示。
+  /// [notifyChat] 只对**收到**的元素为真：新元素或**内容确有变化**时在群里留
+  /// 一条可点击提示。判据不看 owner —— 快照重播（`S`）会把自己早先的元素再发
+  /// 一遍，用内容比对（[_sameStrategyContent]）挡掉这种重播，既不漏「改动」，
+  /// 也不因为每次同步就刷一屏提示。
   void _upsertStrategy(StrategyItem it, {bool notifyChat = false}) {
-    final isNew = !strategyItems.containsKey(it.key);
+    final prev = strategyItems[it.key];
+    final isNew = prev == null;
     strategyItems[it.key] = it;
     if (strategyItems.length > 500) {
       // 防膨胀：丢掉最早更新的元素（避免无限增长）
@@ -8362,11 +8396,35 @@ class AppState extends ChangeNotifier {
       strategyItems.remove(oldest.key);
     }
     unawaited(_saveStrategyNow());
-    if (notifyChat && isNew) {
+    if (notifyChat && (isNew || !_sameStrategyContent(prev, it))) {
       final g = _groupByCall(it.groupCall);
-      if (g != null) _strategyNotice(g.id, it.owner, it.kind);
+      if (g != null) {
+        _strategyNotice(g.id, it.owner, it.kind,
+            action: isNew ? 'add' : 'update');
+      }
     }
     _notify();
+  }
+
+  /// 两个策略元素的**可见内容**是否一致（用于判断收到的是否为真的「改动」）。
+  /// 不比 owner / updatedAt：同一 ID 的重播只有这些字段会漂。
+  bool _sameStrategyContent(StrategyItem? a, StrategyItem b) {
+    if (a == null) return false;
+    if (a.kind != b.kind ||
+        a.lat != b.lat ||
+        a.lng != b.lng ||
+        a.radiusM != b.radiusM ||
+        a.label != b.label ||
+        a.colorIndex != b.colorIndex ||
+        a.path.length != b.path.length) {
+      return false;
+    }
+    for (var i = 0; i < a.path.length; i++) {
+      if (a.path[i].$1 != b.path[i].$1 || a.path[i].$2 != b.path[i].$2) {
+        return false;
+      }
+    }
+    return true;
   }
 
   /// 策略元素落盘（可 await，供备份导出前强制刷新）

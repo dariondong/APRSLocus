@@ -567,6 +567,40 @@ KEYS = {
             'memantau kanal sama akan menerimanya. Frame strategi perlu konfirmasi '
             'rekan; kirim ulang jika hilang.',
     ),
+    # ── 群聊 / 策略发送前的连接自检（用户要求：未连接时检查服务器）──
+    'chatNeedConnect': (
+        '未连接服务器，无法发送；请先连接数据来源。',
+        '未連接伺服器，無法傳送；請先連接資料來源。',
+        'Not connected — cannot send. Connect a data source first.',
+        'サーバーに未接続のため送信できません。まずデータソースに接続してください。',
+        'Sin conexión al servidor: no se puede enviar. Conecta primero una fuente de datos.',
+        'Belum terhubung ke server — tidak bisa mengirim. Hubungkan sumber data dulu.',
+    ),
+    # ── 策略元素变动在群聊留提示（用户要求：划线/改/删也要提示）──
+    'strategyUpdatedItem': (
+        '{call} 更新了{kind}',
+        '{call} 更新了{kind}',
+        '{call} updated a {kind}',
+        '{call} が{kind}を更新しました',
+        '{call} actualizó un {kind}',
+        '{call} memperbarui {kind}',
+    ),
+    'strategyDeletedItem': (
+        '{call} 删除了{kind}',
+        '{call} 刪除了{kind}',
+        '{call} deleted a {kind}',
+        '{call} が{kind}を削除しました',
+        '{call} eliminó un {kind}',
+        '{call} menghapus {kind}',
+    ),
+    'strategyClearedMsg': (
+        '{call} 清空了共享图层',
+        '{call} 清空了共享圖層',
+        '{call} cleared the shared layer',
+        '{call} が共有レイヤーを消去しました',
+        '{call} vació la capa compartida',
+        '{call} mengosongkan lapisan bersama',
+    ),
 }
 
 # ── 占位符声明（可空）──
@@ -581,6 +615,11 @@ META = {
     'connAudioStatusSent': '{"placeholders": {"call": {"type": "String"}}}',
     'nDays': '{"placeholders": {"n": {"type": "String"}}}',
     'strategyTeammateOf': '{"placeholders": {"call": {"type": "String"}}}',
+    'strategyUpdatedItem':
+        '{"placeholders": {"call": {"type": "String"}, "kind": {"type": "String"}}}',
+    'strategyDeletedItem':
+        '{"placeholders": {"call": {"type": "String"}, "kind": {"type": "String"}}}',
+    'strategyClearedMsg': '{"placeholders": {"call": {"type": "String"}}}',
     'strategySharedItem':
         '{"placeholders": {"call": {"type": "String"}, "kind": {"type": "String"}}}',
     'strategyAckPending': '{"placeholders": {"n": {"type": "int"}}}',

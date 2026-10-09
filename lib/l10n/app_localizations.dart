@@ -14384,6 +14384,30 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'射频模式：群聊与策略帧都按广播发送，队友守听同一频段即可收到。策略帧需队友回执确认，丢包时在策略地图页点重发。'**
   String get groupRfNotice;
+  /// No description provided for @chatNeedConnect.
+  ///
+  /// In zh, this message translates to:
+  /// **'未连接服务器，无法发送；请先连接数据来源。'**
+  String get chatNeedConnect;
+
+  /// No description provided for @strategyUpdatedItem.
+  ///
+  /// In zh, this message translates to:
+  /// **'{call} 更新了{kind}'**
+  String strategyUpdatedItem(String call, String kind);
+
+  /// No description provided for @strategyDeletedItem.
+  ///
+  /// In zh, this message translates to:
+  /// **'{call} 删除了{kind}'**
+  String strategyDeletedItem(String call, String kind);
+
+  /// No description provided for @strategyClearedMsg.
+  ///
+  /// In zh, this message translates to:
+  /// **'{call} 清空了共享图层'**
+  String strategyClearedMsg(String call);
+
 }
 
 class _AppLocalizationsDelegate

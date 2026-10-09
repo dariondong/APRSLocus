@@ -7944,6 +7944,18 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String get groupRfNotice =>
       '射频模式：群聊与策略帧都按广播发送，队友守听同一频段即可收到。策略帧需队友回执确认，丢包时在策略地图页点重发。';
+  @override
+  String get chatNeedConnect => "未连接服务器，无法发送；请先连接数据来源。";
+
+  @override
+  String strategyUpdatedItem(String call, String kind) => "$call 更新了$kind";
+
+  @override
+  String strategyDeletedItem(String call, String kind) => "$call 删除了$kind";
+
+  @override
+  String strategyClearedMsg(String call) => "$call 清空了共享图层";
+
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
@@ -15885,4 +15897,16 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   @override
   String get groupRfNotice =>
       '射頻模式：群聊與策略幀都按廣播發送，隊友守聽同一頻段即可收到。策略幀需隊友回執確認，丟包時在策略地圖頁點重發。';
+  @override
+  String get chatNeedConnect => "未連接伺服器，無法傳送；請先連接資料來源。";
+
+  @override
+  String strategyUpdatedItem(String call, String kind) => "$call 更新了$kind";
+
+  @override
+  String strategyDeletedItem(String call, String kind) => "$call 刪除了$kind";
+
+  @override
+  String strategyClearedMsg(String call) => "$call 清空了共享圖層";
+
 }

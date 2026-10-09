@@ -3352,5 +3352,12 @@
   "strategyAckOk": "隊友已確認收到",
   "strategyRetryNone": "沒有未確認的幀",
   "@strategyAckPending": {"placeholders": {"n": {"type": "int"}}},
-  "groupRfNotice": "射頻模式：群聊與策略幀都按廣播發送，隊友守聽同一頻段即可收到。策略幀需隊友回執確認，丟包時在策略地圖頁點重發。"
+  "groupRfNotice": "射頻模式：群聊與策略幀都按廣播發送，隊友守聽同一頻段即可收到。策略幀需隊友回執確認，丟包時在策略地圖頁點重發。",
+  "chatNeedConnect": "未連接伺服器，無法傳送；請先連接資料來源。",
+  "strategyUpdatedItem": "{call} 更新了{kind}",
+  "strategyDeletedItem": "{call} 刪除了{kind}",
+  "strategyClearedMsg": "{call} 清空了共享圖層",
+  "@strategyUpdatedItem": {"placeholders": {"call": {"type": "String"}, "kind": {"type": "String"}}},
+  "@strategyDeletedItem": {"placeholders": {"call": {"type": "String"}, "kind": {"type": "String"}}},
+  "@strategyClearedMsg": {"placeholders": {"call": {"type": "String"}}}
 }

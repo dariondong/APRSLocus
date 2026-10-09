@@ -2848,5 +2848,12 @@
   "strategyAckOk": "Un compañero confirmó la recepción",
   "strategyRetryNone": "Nada sin confirmar",
   "@strategyAckPending": {"placeholders": {"n": {"type": "int"}}},
-  "groupRfNotice": "Modo RF: el chat de grupo y las tramas de estrategia se emiten por difusión; los compañeros que escuchan el mismo canal las reciben. Las tramas requieren acuse de recibo; reenvíalas si se pierden."
+  "groupRfNotice": "Modo RF: el chat de grupo y las tramas de estrategia se emiten por difusión; los compañeros que escuchan el mismo canal las reciben. Las tramas requieren acuse de recibo; reenvíalas si se pierden.",
+  "chatNeedConnect": "Sin conexión al servidor: no se puede enviar. Conecta primero una fuente de datos.",
+  "strategyUpdatedItem": "{call} actualizó un {kind}",
+  "strategyDeletedItem": "{call} eliminó un {kind}",
+  "strategyClearedMsg": "{call} vació la capa compartida",
+  "@strategyUpdatedItem": {"placeholders": {"call": {"type": "String"}, "kind": {"type": "String"}}},
+  "@strategyDeletedItem": {"placeholders": {"call": {"type": "String"}, "kind": {"type": "String"}}},
+  "@strategyClearedMsg": {"placeholders": {"call": {"type": "String"}}}
 }

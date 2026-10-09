@@ -8337,4 +8337,16 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get groupRfNotice =>
       'Modo RF: el chat de grupo y las tramas de estrategia se emiten por difusión; los compañeros que escuchan el mismo canal las reciben. Las tramas requieren acuse de recibo; reenvíalas si se pierden.';
+  @override
+  String get chatNeedConnect => "Sin conexión al servidor: no se puede enviar. Conecta primero una fuente de datos.";
+
+  @override
+  String strategyUpdatedItem(String call, String kind) => "$call actualizó un $kind";
+
+  @override
+  String strategyDeletedItem(String call, String kind) => "$call eliminó un $kind";
+
+  @override
+  String strategyClearedMsg(String call) => "$call vació la capa compartida";
+
 }

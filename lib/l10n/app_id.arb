@@ -2848,5 +2848,12 @@
   "strategyAckOk": "Rekan mengonfirmasi penerimaan",
   "strategyRetryNone": "Tidak ada yang belum dikonfirmasi",
   "@strategyAckPending": {"placeholders": {"n": {"type": "int"}}},
-  "groupRfNotice": "Mode RF: obrolan grup dan frame strategi dikirim siaran — rekan yang memantau kanal sama akan menerimanya. Frame strategi perlu konfirmasi rekan; kirim ulang jika hilang."
+  "groupRfNotice": "Mode RF: obrolan grup dan frame strategi dikirim siaran — rekan yang memantau kanal sama akan menerimanya. Frame strategi perlu konfirmasi rekan; kirim ulang jika hilang.",
+  "chatNeedConnect": "Belum terhubung ke server — tidak bisa mengirim. Hubungkan sumber data dulu.",
+  "strategyUpdatedItem": "{call} memperbarui {kind}",
+  "strategyDeletedItem": "{call} menghapus {kind}",
+  "strategyClearedMsg": "{call} mengosongkan lapisan bersama",
+  "@strategyUpdatedItem": {"placeholders": {"call": {"type": "String"}, "kind": {"type": "String"}}},
+  "@strategyDeletedItem": {"placeholders": {"call": {"type": "String"}, "kind": {"type": "String"}}},
+  "@strategyClearedMsg": {"placeholders": {"call": {"type": "String"}}}
 }

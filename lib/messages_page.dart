@@ -4449,6 +4449,12 @@ class _MessagesPageState extends State<MessagesPage> {
   Future<void> _send() async {
     if (_input.text.isEmpty) return;
     final st = widget.state;
+    // 发送前的连接自检（用户要求）：未连接服务器（发射来源不可用）时，
+    // 发送只会本地记一笔、报文并不上天。直接拦下并直说，别让用户以为发出去了。
+    if (!st.connected) {
+      _snack(S.of(context).chatNeedConnect, C.red);
+      return;
+    }
     // 群聊发送
     if (_selectedGroupId != null) {
       final group = widget.state.chatGroups

@@ -8040,4 +8040,16 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String get groupRfNotice =>
       'RF モード：グループチャットと戦略フレームはブロードキャスト送信され、同じチャンネルを守聴する仲間に届きます。戦略フレームは仲間の ACK で確認し、欠落時は戦略マップで再送します。';
+  @override
+  String get chatNeedConnect => "サーバーに未接続のため送信できません。まずデータソースに接続してください。";
+
+  @override
+  String strategyUpdatedItem(String call, String kind) => "$call が$kindを更新しました";
+
+  @override
+  String strategyDeletedItem(String call, String kind) => "$call が$kindを削除しました";
+
+  @override
+  String strategyClearedMsg(String call) => "$call が共有レイヤーを消去しました";
+
 }

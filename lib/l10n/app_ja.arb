@@ -2848,5 +2848,12 @@
   "strategyAckOk": "仲間が受信を確認しました",
   "strategyRetryNone": "未確認のフレームはありません",
   "@strategyAckPending": {"placeholders": {"n": {"type": "int"}}},
-  "groupRfNotice": "RF モード：グループチャットと戦略フレームはブロードキャスト送信され、同じチャンネルを守聴する仲間に届きます。戦略フレームは仲間の ACK で確認し、欠落時は戦略マップで再送します。"
+  "groupRfNotice": "RF モード：グループチャットと戦略フレームはブロードキャスト送信され、同じチャンネルを守聴する仲間に届きます。戦略フレームは仲間の ACK で確認し、欠落時は戦略マップで再送します。",
+  "chatNeedConnect": "サーバーに未接続のため送信できません。まずデータソースに接続してください。",
+  "strategyUpdatedItem": "{call} が{kind}を更新しました",
+  "strategyDeletedItem": "{call} が{kind}を削除しました",
+  "strategyClearedMsg": "{call} が共有レイヤーを消去しました",
+  "@strategyUpdatedItem": {"placeholders": {"call": {"type": "String"}, "kind": {"type": "String"}}},
+  "@strategyDeletedItem": {"placeholders": {"call": {"type": "String"}, "kind": {"type": "String"}}},
+  "@strategyClearedMsg": {"placeholders": {"call": {"type": "String"}}}
 }

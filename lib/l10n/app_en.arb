@@ -2764,5 +2764,12 @@
   "strategyAckOk": "A teammate confirmed delivery",
   "strategyRetryNone": "Nothing unconfirmed",
   "@strategyAckPending": {"placeholders": {"n": {"type": "int"}}},
-  "groupRfNotice": "RF mode: group chat and strategy frames are broadcast — teammates who listen on the same channel receive them. Strategy frames rely on teammate acks; resend from the strategy map if packets drop."
+  "groupRfNotice": "RF mode: group chat and strategy frames are broadcast — teammates who listen on the same channel receive them. Strategy frames rely on teammate acks; resend from the strategy map if packets drop.",
+  "chatNeedConnect": "Not connected — cannot send. Connect a data source first.",
+  "strategyUpdatedItem": "{call} updated a {kind}",
+  "strategyDeletedItem": "{call} deleted a {kind}",
+  "strategyClearedMsg": "{call} cleared the shared layer",
+  "@strategyUpdatedItem": {"placeholders": {"call": {"type": "String"}, "kind": {"type": "String"}}},
+  "@strategyDeletedItem": {"placeholders": {"call": {"type": "String"}, "kind": {"type": "String"}}},
+  "@strategyClearedMsg": {"placeholders": {"call": {"type": "String"}}}
 }
