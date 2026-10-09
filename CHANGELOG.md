@@ -1,5 +1,64 @@
 # 更新日志
 
+## [2.0.46] - 2026-10-09
+
+### 改进：位置点小面板 / 输入键随输入切换 / 译发移到外面
+
+**需求**
+
+- **自由选点**点按后，先弹一个小面板，让用户选「**在地图上查看**」或「**导航**」。
+- 消息输入框默认显示「**＋**」，**输入框激活（聚焦）时**变成「**发送**」符号。
+- **翻译按钮**不要收在「＋」里面，**提到外面**，方便一键按到。
+
+**改动**
+
+- **位置点小面板**（`lib/messages_page.dart`）：自由选点气泡点按后弹出底部面板，
+  显示坐标与两个动作：**在地图上查看**（复用 [AppState.focusOnMap]）与
+  **导航**（`geo:` → 浏览器 OSM 兜底）。分享台站仍是直接打开台站面板。
+- **输入栏主操作键**：默认是「**＋**」（打开位置点菜单）；输入框**聚焦**或有
+  文字时变为蓝色「**发送**」键。发送后输入清空且保持焦点，继续输入。
+- **「译发」前置**：从「＋」浮出菜单移到输入栏右侧**常驻**（单聊可见，
+  群聊不显示）；「＋」菜单只保留「发送位置点」。
+
+**测试**
+
+- `tool/check_*.py`（23 项）与 `check_l10n_sync.py` 全部通过；`flutter analyze`
+  / `flutter test` 由 CI 复核。
+
+---
+
+## [2.0.46] - 2026-10-09 (English)
+
+### Improved: location action sheet / input key follows the field / translate moved out
+
+**Request**
+
+- Tapping a **free-picked** point should first open a small sheet to choose
+  "**view on map**" or "**navigate**".
+- The compose box should show "**+**" by default and switch to a "**send**" icon
+  when the field is **active (focused)**.
+- The **translate button** should not live inside "+" — surface it for one-tap use.
+
+**Changes**
+
+- **Location action sheet** (`lib/messages_page.dart`): a free-picked location
+  bubble now opens a bottom sheet showing the coordinates and two actions —
+  **view on map** (`AppState.focusOnMap`) and **navigate** (`geo:` → browser OSM
+  fallback). Shared stations still open the station panel directly.
+- **Compose main key**: shows "**+**" (opens the location menu) by default and
+  becomes a blue "**send**" key when the field is **focused** or has text. After
+  sending, the field clears and keeps focus.
+- **"Translate" promoted**: moved out of the "+" sheet to a **permanent button**
+  beside the field (private chats only); the "+" sheet now only holds "send
+  location".
+
+**Testing**
+
+- `tool/check_*.py` (23 checks) and `check_l10n_sync.py` all pass; `flutter analyze`
+  / `flutter test` are re-verified by CI.
+
+---
+
 ## [2.0.45] - 2026-10-09
 
 ### 改进：位置点自由选 / 台站可搜索选择 / 呼号识别修正

@@ -204,6 +204,25 @@ CARDS = [
 # 只列「重点版本」：中间几十个纯修 bug 的版本归纳进文字说明，完整记录指向 Releases。
 CL = [
     {
+        'ver': 'v2.0.46', 'date': '2026-10-09',
+        'items': [
+            ('up',
+             T('**输入框更顺手**：主操作键平时是「＋」（发位置点），**一点进输入框就'
+               '变成「发送」**；「**译发**」也从「＋」里**挪到外面常驻**，一键可用。'
+               '分享出去的位置点点一下会弹**小面板**，可直接选**在地图查看**或'
+               '**导航**。',
+               '**輸入框更順手**：主操作鍵平時是「＋」（傳位置點），**一點進輸入框就'
+               '變成「傳送」**；「**譯發**」也從「＋」裡**挪到外面常駐**，一鍵可用。'
+               '分享出去的位置點點一下會彈**小面板**，可直接選**在地圖檢視**或'
+               '**導航**。',
+               '**A handier compose bar**: the main key is "+" (send a location) by '
+               'default and **turns into "send" as soon as you tap into the field**; '
+               '**"translate" moved out** of the "+" sheet to a **permanent button**. '
+               'Tapping a shared location opens a **small sheet** to **view it on the '
+               'map** or **navigate** to it.')),
+        ],
+    },
+    {
         'ver': 'v2.0.45', 'date': '2026-10-09',
         'items': [
             ('new',

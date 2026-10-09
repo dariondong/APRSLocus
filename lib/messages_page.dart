@@ -6,6 +6,7 @@ import 'package:flutter/gestures.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'theme.dart';
+import 'coord.dart';
 import 'guide.dart';
 import 'models.dart';
 import 'back_router.dart';
@@ -117,6 +118,8 @@ class _MessagesPageState extends State<MessagesPage> {
   final Set<String> _groupRecipients = {}; // 临时群发目标（创建群聊用）
   final _input = TextEditingController();
   final _inputFocus = FocusNode();
+  // 输入框是否有内容：决定主操作键显示「+」（空）还是「发送」（有字）。
+  bool _composing = false;
   final _scroll = ScrollController();
   final _scrollGroup = ScrollController();
   final _scrollChat = ScrollController();
@@ -158,11 +161,22 @@ class _MessagesPageState extends State<MessagesPage> {
   @override
   void initState() {
     super.initState();
+    // 主操作键形态：聚焦（键盘弹起）或有内容 → 「发送」，否则「＋」。
+    _inputFocus.addListener(_onFocusChange);
+    _composing = _input.text.isNotEmpty;
+  }
+
+  /// 输入框聚焦/失焦时切换主操作键（＋ ↔ 发送）。
+  void _onFocusChange() {
+    if (!mounted) return;
+    final want = _inputFocus.hasFocus || _input.text.isNotEmpty;
+    if (want != _composing) setState(() => _composing = want);
   }
 
   @override
   void dispose() {
     _input.dispose();
+    _inputFocus.removeListener(_onFocusChange);
     _inputFocus.dispose();
     _scroll.dispose();
     _scrollGroup.dispose();
@@ -528,10 +542,39 @@ class _MessagesPageState extends State<MessagesPage> {
   }
 
   // ─── 输入栏（瀑布流 / 会话共用） ───
-  /// 「译发」按钮：把当前输入译成对方的语言
-  /// 输入栏「+」：浮出翻译 / 位置点（微信式收纳）。主操作区只留输入框与发送键。
+  /// 主操作键左侧的「译发」按钮：把当前输入译成对方语言。
+  ///
+  /// 从「+」浮出菜单里**提出来常驻**（用户要求）：译发是高频动作，藏在菜单里
+  /// 每次都要两步。仅单聊提供（群聊对方语言不唯一，不做发送前翻译）。
+  Widget _translateBtnSmall(AppState st) {
+    final ready = TransDirection.canTranslateOutgoing(_pref);
+    final active = _outPreview != null;
+    return GestureDetector(
+      onTap: _outBusy ? null : () => _translateInput(st),
+      child: Tooltip(
+        message: S.of(context).translateInput,
+        child: Container(
+          width: 44,
+          height: 44,
+          decoration: BoxDecoration(
+            color: active ? C.cyanBg : C.bgSoft,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(
+              color: active ? C.cyan.withValues(alpha: 0.5) : C.border,
+            ),
+          ),
+          child: Icon(
+            Icons.translate_rounded,
+            size: 20,
+            color: ready ? C.cyan : C.greyLight,
+          ),
+        ),
+      ),
+    );
+  }
+
+  /// 主操作键「＋」：打开浮出菜单（发送位置点等）。仅在未输入时显示。
   Widget _moreButton(AppState st, {required bool canLocate}) {
-    final translateReady = TransDirection.canTranslateOutgoing(_pref);
     return GestureDetector(
       onTap: () => _showMoreSheet(st, canLocate: canLocate),
       child: Tooltip(
@@ -540,27 +583,38 @@ class _MessagesPageState extends State<MessagesPage> {
           width: 44,
           height: 44,
           decoration: BoxDecoration(
-            color: (_outPreview != null || translateReady)
-                ? C.cyanBg
-                : C.bgSoft,
+            color: C.bgSoft,
             borderRadius: BorderRadius.circular(16),
-            border: Border.all(
-              color: _outPreview != null
-                  ? C.cyan.withValues(alpha: 0.5)
-                  : C.border,
-            ),
+            border: Border.all(color: C.border),
           ),
-          child: Icon(
-            Icons.add_rounded,
-            size: 22,
-            color: translateReady ? C.slate : C.greyLight,
-          ),
+          child: Icon(Icons.add_rounded, size: 22, color: C.slate),
         ),
       ),
     );
   }
 
-  /// 「+」浮出菜单：选位置点 / 译发当前输入。
+  /// 主操作键「发送」：输入框聚焦/有内容时替换掉「＋」。
+  Widget _sendButton() {
+    return GestureDetector(
+      onTap: _send,
+      child: Container(
+        width: 44,
+        height: 44,
+        decoration: BoxDecoration(
+          color: C.blue,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: elev2(),
+        ),
+        child: const Icon(
+          Icons.send_rounded,
+          color: Colors.white,
+          size: 18,
+        ),
+      ),
+    );
+  }
+
+  /// 「+」浮出菜单：发送位置点（译发已提到输入栏外，不在这里）。
   void _showMoreSheet(AppState st, {required bool canLocate}) {
     final s = S.of(context);
     showModalBottomSheet<void>(
@@ -604,16 +658,6 @@ class _MessagesPageState extends State<MessagesPage> {
                         }
                       : null,
                 ),
-                ListTile(
-                  leading: Icon(Icons.translate_rounded, color: C.cyan),
-                  title:
-                      Text(s.translateInput, style: ts(13, w: FontWeight.w600)),
-                  enabled: !_outBusy,
-                  onTap: () {
-                    Navigator.pop(ctx);
-                    _translateInput(st);
-                  },
-                ),
                 const SizedBox(height: 6),
               ],
             ),
@@ -621,6 +665,157 @@ class _MessagesPageState extends State<MessagesPage> {
         ),
       ),
     );
+  }
+
+  /// 自由选点的小面板（用户要求）：位置点气泡点按后不直接跳，而是让用户选
+  /// 「在地图上查看」或「导航」。两者都复用既有机制（[AppState.focusOnMap] /
+  /// 系统地图 URI），不新增跳转通道。
+  void _showPointSheet(double lat, double lng, String label) {
+    final s = S.of(context);
+    showModalBottomSheet<void>(
+      context: context,
+      backgroundColor: Colors.transparent,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(18)),
+      ),
+      builder: (ctx) => MaterialSurface(
+        radius: 18,
+        topOnly: true,
+        child: Container(
+          decoration: BoxDecoration(
+            color: C.sheetFill,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(18)),
+          ),
+          child: SafeArea(
+            top: false,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const SizedBox(height: 8),
+                Container(
+                  width: 36,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: C.border,
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Row(
+                  children: [
+                    Icon(Icons.location_on_rounded, size: 16, color: C.blue),
+                    const SizedBox(width: 6),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(label.isEmpty ? s.msgLocation : label,
+                              style: ts(13, w: FontWeight.w700)),
+                          Text(
+                            '${lat.toStringAsFixed(5)}, ${lng.toStringAsFixed(5)}',
+                            style: mono(10, c: C.slate),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                Row(
+                  children: [
+                    Expanded(
+                      child: _pointAction(
+                        Icons.map_rounded,
+                        s.openInMap,
+                        C.blue,
+                        () {
+                          Navigator.pop(ctx);
+                          widget.state.focusOnMap(
+                            Station(
+                              call: label.isEmpty ? s.msgLocation : label,
+                              symbol: '>',
+                              lat: lat,
+                              lng: lng,
+                              lastHeard: DateTime.now(),
+                              status: St.moving,
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: _pointAction(
+                        Icons.navigation_rounded,
+                        s.navigate,
+                        C.green,
+                        () {
+                          Navigator.pop(ctx);
+                          _navigateToPoint(lat, lng, label);
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _pointAction(
+      IconData icon, String label, Color color, VoidCallback onTap) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 12),
+        decoration: BoxDecoration(
+          color: color.withValues(alpha: 0.10),
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(color: color.withValues(alpha: 0.35)),
+        ),
+        child: Column(
+          children: [
+            Icon(icon, size: 20, color: color),
+            const SizedBox(height: 6),
+            Text(label, style: ts(12, c: color, w: FontWeight.w700)),
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// 用系统地图导航到某个坐标（WGS-84，geo: 直接吃）。
+  /// 依次尝试 geo:，失败退回浏览器 OSM，与台站面板的兜底一致。
+  Future<void> _navigateToPoint(double lat, double lng, String label) async {
+    Future<bool> tryLaunch(Uri uri) async {
+      try {
+        if (await canLaunchUrl(uri)) {
+          await launchUrl(uri, mode: LaunchMode.externalApplication);
+          return true;
+        }
+        await launchUrl(uri, mode: LaunchMode.externalApplication);
+        return true;
+      } catch (_) {
+        return false;
+      }
+    }
+
+    final name = Uri.encodeComponent(label.isEmpty ? 'APRS' : label);
+    if (await tryLaunch(
+      Uri.parse('geo:$lat,$lng?q=$lat,$lng($name)'),
+    )) {
+      return;
+    }
+    if (await tryLaunch(
+      Uri.parse('https://www.openstreetmap.org/?mlat=$lat&mlon=$lng#map=16/$lat/$lng'),
+    )) {
+      return;
+    }
+    _snack(S.of(context).navigationUnavailable, C.red);
   }
 
   /// 打开选点浮层（[LocationPickerPage]）→ 取回坐标 → 走 [AppState.sendLocation]。
@@ -867,35 +1062,28 @@ class _MessagesPageState extends State<MessagesPage> {
                     ),
                   ),
                   onSubmitted: (_) => _send(),
+                  onTap: _onFocusChange,
                   // 输入一旦改动，之前基于旧文本的译文就失效 —— 否则会出现
-                  // 「改了字却发出去旧译文」（射频上不可撤销）
+                  // 「改了字却发出去旧译文」（射频上不可撤销）。
+                  // 同时切换主操作键：有内容=发送、清空=＋。
                   onChanged: (v) {
                     if (_outPreview != null && v.trim() != _outPreviewSrc) {
                       _clearOutPreview();
                     }
+                    _onFocusChange();
                   },
                 ),
               ),
               const SizedBox(width: 8),
-              _moreButton(st, canLocate: canLocate),
-              const SizedBox(width: 8),
-              GestureDetector(
-                onTap: _send,
-                child: Container(
-                  width: 44,
-                  height: 44,
-                  decoration: BoxDecoration(
-                    color: C.blue,
-                    borderRadius: BorderRadius.circular(16),
-                    boxShadow: elev2(),
-                  ),
-                  child: const Icon(
-                    Icons.send_rounded,
-                    color: Colors.white,
-                    size: 18,
-                  ),
-                ),
-              ),
+              // 译发常驻在外（用户要求）：单聊才有；群聊对方语言不唯一，不出。
+              if (!inGroupChat) ...[
+                _translateBtnSmall(st),
+                const SizedBox(width: 8),
+              ],
+              // 主操作键：未聚焦且无内容 = 「＋」（位置点）；否则 = 「发送」。
+              _composing
+                  ? _sendButton()
+                  : _moreButton(st, canLocate: canLocate),
             ],
           ),
         ),
@@ -2164,16 +2352,7 @@ class _MessagesPageState extends State<MessagesPage> {
           if (isStation) {
             _openStation(widget.state, call!);
           } else {
-            widget.state.focusOnMap(
-              Station(
-                call: s.msgLocation,
-                symbol: '>',
-                lat: m.lat!,
-                lng: m.lng!,
-                lastHeard: DateTime.now(),
-                status: St.moving,
-              ),
-            );
+            _showPointSheet(m.lat!, m.lng!, m.text);
           }
         },
         child: Container(
