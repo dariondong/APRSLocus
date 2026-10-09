@@ -32,6 +32,7 @@ class _HomePageState extends State<HomePage> {
   String _search = '';
   int _lastFocusSeq = 0;
   int _lastPickSeq = 0;
+  int _lastStrategyJumpSeq = 0;
   final _searchCtrl = TextEditingController();
   Timer? _searchDebounce; // 搜索防抖：台站多时避免每敲一个字符重建地图/列表
 
@@ -172,6 +173,16 @@ class _HomePageState extends State<HomePage> {
     }
     if (widget.state.pickSeq != _lastPickSeq) {
       _lastPickSeq = widget.state.pickSeq;
+      if (_tab != 0) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) setState(() => _tab = 0);
+        });
+      }
+    }
+    // 「群聊消息 → 打开策略地图」：与上面两条一样，先切回地图页签，
+    // 由常驻的 MapPage 负责 push（见 AppState.openStrategyMap）。
+    if (widget.state.strategyJumpSeq != _lastStrategyJumpSeq) {
+      _lastStrategyJumpSeq = widget.state.strategyJumpSeq;
       if (_tab != 0) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           if (mounted) setState(() => _tab = 0);

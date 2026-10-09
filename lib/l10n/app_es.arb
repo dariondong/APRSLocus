@@ -2833,5 +2833,20 @@
   "strategyItemOf": "Compartido por {call}",
   "@strategyItemOf": {"placeholders": {"call": {"type": "String"}}},
   "strategyPan": "Mover",
-  "strategySendFailed": "Mostrado localmente, pero no enviado (revisa la conexión)"
+  "strategySendFailed": "Mostrado localmente, pero no enviado (revisa la conexión)",
+  "strategyTeammates": "Posición de compañeros",
+  "strategyTeammateOf": "Posición de {call}",
+  "strategyColor": "Color",
+  "strategyColorDefault": "Predeterminado",
+  "strategySeeInMap": "Toca para ver en el mapa estratégico",
+  "strategySharedItem": "{call} compartió un {kind}",
+  "@strategyTeammateOf": {"placeholders": {"call": {"type": "String"}}},
+  "@strategySharedItem": {"placeholders": {"call": {"type": "String"}, "kind": {"type": "String"}}},
+  "strategyRetry": "Reenviar sin confirmar",
+  "strategyRetryAll": "Reenviar todo",
+  "strategyAckPending": "{n} trama(s) sin confirmar: reenvía si se perdieron por RF",
+  "strategyAckOk": "Un compañero confirmó la recepción",
+  "strategyRetryNone": "Nada sin confirmar",
+  "@strategyAckPending": {"placeholders": {"n": {"type": "int"}}},
+  "groupRfNotice": "Modo RF: el chat de grupo y las tramas de estrategia se emiten por difusión; los compañeros que escuchan el mismo canal las reciben. Las tramas requieren acuse de recibo; reenvíalas si se pierden."
 }

@@ -144,6 +144,11 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
   bool _didInitView = false;
   String? _lastFocusedCall;
   int _lastFocusSeq = -1;
+
+  /// 「从群聊消息跳进策略地图」上一次处理过的序号（见 [AppState.openStrategyMap]）。
+  /// 初值必须是 0（= [AppState.strategyJumpSeq] 的初值），否则首帧会把
+  /// 「序号没变」误判成新请求，一启动就弹出群选择。
+  int _lastStrategyJumpSeq = 0;
   int _lastPickSeq = -1;
   bool _pickMode = false;
 
@@ -428,6 +433,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
       builder: (context, _) {
         // 处理视图初始化 + 焦点跳转（一次性，避免互相覆盖）
         _handleViewFocus();
+        _handleStrategyJump();
         // 进入地图选点模式 —— 用 postFrameCallback 避免 build 中 setState
         if (widget.state.pickSeq != _lastPickSeq) {
           _lastPickSeq = widget.state.pickSeq;
@@ -700,6 +706,12 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                       ),
                     ),
                   ),
+                // 焦点标记：从策略地图「导航」过来的目标点。
+                // 策略点不在 stations 里（是远端构造的合成台站），台站标记里
+                // 找不到它 —— 缺了这枚标记，用户落图后看不到「刚才要导的那个点」，
+                // 就会觉得「跳转导航用不了」。只在有焦点时画，改动焦点即更新。
+                // 与台站标记同口径：矢量图（插件）走原生渲染、坐标口径不同，只画瓦片图。
+                if (!_usePluginMap) _focusMarker(size),
                 // ── 地图小浮层的「共享底」：一簇浮层只让引擎采一次底 ──
                 //
                 // 这一簇（图例 / 工具列 8 颗按钮 / 上报横杠 / 底部坐标条）全是
@@ -809,7 +821,8 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
   }
 
   /// 视图初始化/焦点跳转，一次性执行，保证互不覆盖
-  void _handleViewFocus() {
+  /// 返回本次是否触发了「焦点跳转」（见 [AppState.focusOnMap]）。
+  bool _handleViewFocus() {
     final focus = widget.state.mapFocus;
     if (focus != null && widget.state.mapFocusSeq != _lastFocusSeq) {
       _lastFocusSeq = widget.state.mapFocusSeq;
@@ -818,9 +831,16 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (!mounted) return;
         setState(() => _selected = focus);
-        _animateTo(14.0, _panFor(focus.lat, focus.lng, 14.0));
+        // 直接落位，不走过渡动画。从策略地图点「导航」跳过来时，这一帧之后
+        // 地图很可能被覆盖/冻结，动画会在中途被打断，停在「飞了一半」的
+        // 中间态 —— 用户看到的就是「点了没反应/飘到半路」。瞬时落位才可靠。
+        _cancelAnim();
+        setState(() {
+          _zoom = 14.0;
+          _pan = _panFor(focus.lat, focus.lng, 14.0);
+        });
       });
-      return;
+      return true;
     }
     if (!_didInitView) {
       _didInitView = true;
@@ -834,6 +854,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
         });
       }
     }
+    return false;
   }
 
   // ─── 标记 ───
@@ -1127,6 +1148,83 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                 ],
               );
             },
+          ),
+        ),
+      ),
+    );
+  }
+
+  /// 焦点标记：`AppState.focusOnMap` 指定的目标点（来自策略地图「导航」等）。
+  ///
+  /// 目标点往往**不在台站表里**（策略元素是远端合成出来的），台站标记画不到它，
+  /// 所以要单独画一枚。它随 `mapFocusSeq` 变化重建；[frozen] 冻结时仍会重绘
+  /// 一次（frozen 只节流台站标记，焦点标记是独立 Stack 项，不受标记缓存影响）。
+  Widget _focusMarker(Size size) {
+    final f = widget.state.mapFocus;
+    if (f == null || widget.state.mapFocusSeq == 0) {
+      return const SizedBox.shrink();
+    }
+    // 目标若是**真实台站**（台站列表现有项），台站标记已经会画它，
+    // 再叠一枚焦点标记只会糊成一团。只有「台站表里没有的点」（策略元素）
+    // 才需要这枚补画。用 _visible 而非 all stations：被筛选隐藏的台站
+    // 也该补上，否则用户看不到导航目标。
+    if (_visible.any((s) => s.call == f.call)) {
+      return const SizedBox.shrink();
+    }
+    final pos = _toScreen(f.lat, f.lng, size);
+    return Positioned(
+      left: pos.dx - 20,
+      top: pos.dy - 20,
+      child: IgnorePointer(
+        child: SizedBox(
+          width: 40,
+          height: 40,
+          child: Stack(
+            alignment: Alignment.center,
+            clipBehavior: Clip.none,
+            children: [
+              // 外圈脉冲底（静态，不接动画，避免与地图脉冲混淆）
+              Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: C.orange.withValues(alpha: 0.22),
+                ),
+              ),
+              // 主体：橙色圆 + 白边
+              Container(
+                width: 22,
+                height: 22,
+                decoration: BoxDecoration(
+                  color: C.orange,
+                  shape: BoxShape.circle,
+                  border: Border.all(color: Colors.white, width: 3),
+                  boxShadow: elev2(),
+                ),
+                child: const Icon(Icons.place_rounded,
+                    size: 12, color: Colors.white),
+              ),
+              // 标签（策略元素名/ID），压在点上方
+              Positioned(
+                top: -18,
+                child: Container(
+                  constraints: const BoxConstraints(maxWidth: 140),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                  decoration: BoxDecoration(
+                    color: C.black.withValues(alpha: 0.78),
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                  child: Text(
+                    f.call,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: ts(9, c: Colors.white, w: FontWeight.w700),
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       ),
@@ -2048,6 +2146,64 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
               ],
             ),
           ),
+        ),
+      ),
+    );
+  }
+
+  /// 处理「群聊消息 → 打开策略地图」请求。
+  ///
+  /// 消息页只能改状态（见 [AppState.openStrategyMap]），真正的外壳切页签由
+  /// HomeShell2/HomePage 做；这里在地图页驻留时补上 push。
+  ///
+  /// push 放在**本帧末尾**（addPostFrameCallback 不改 schedule）执行，而不是等
+  /// 下一帧：从策略地图点「导航」时先 `Navigator.pop` 再 `focusOnMap`，同一帧里
+  /// 既设了焦点又设了跳转请求。处理视图焦点的回调也排在帧末 —— 两者在同一批
+  /// 回调里按注册顺序跑完，焦点先落位、再 push，不会再出现「push 把焦点覆盖成
+  /// 空」的竞态。必须帧末的另一个原因：请求可能由本帧 build/通知改出来，
+  /// 此刻直接 push 会在 build 期间改导航栈。
+  void _handleStrategyJump() {
+    final seq = widget.state.strategyJumpSeq;
+    if (seq == _lastStrategyJumpSeq) return;
+    _lastStrategyJumpSeq = seq;
+    final gc = widget.state.strategyJumpGroupCall;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) _openStrategyMapGroup(gc);
+    });
+  }
+
+  /// 打开指定群的策略地图（呼号匹配不上时退回默认入口）。
+  void _openStrategyMapGroup(String groupCall) {
+    final st = widget.state;
+    if (st.chatGroups.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(S.of(context).strategyNeedGroup),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+      return;
+    }
+    ChatGroup? g;
+    final gc = groupCall.toUpperCase();
+    for (final x in st.chatGroups) {
+      if (x.groupCall.toUpperCase() == gc) {
+        g = x;
+        break;
+      }
+    }
+    if (g == null) {
+      _openStrategyMap();
+      return;
+    }
+    final grp = g;
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => StrategyMapPage(
+          state: st,
+          groupCall: grp.groupCall,
+          groupName: grp.name,
         ),
       ),
     );

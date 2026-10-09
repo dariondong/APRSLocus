@@ -3337,5 +3337,20 @@
   "strategyItemOf": "由 {call} 分享",
   "@strategyItemOf": {"placeholders": {"call": {"type": "String"}}},
   "strategyPan": "平移",
-  "strategySendFailed": "已顯示，但未傳送成功（請檢查連線）"
+  "strategySendFailed": "已顯示，但未傳送成功（請檢查連線）",
+  "strategyTeammates": "隊友位置",
+  "strategyTeammateOf": "{call} 的位置",
+  "strategyColor": "顏色",
+  "strategyColorDefault": "預設",
+  "strategySeeInMap": "點擊查看策略地圖",
+  "strategySharedItem": "{call} 共享了一個{kind}",
+  "@strategyTeammateOf": {"placeholders": {"call": {"type": "String"}}},
+  "@strategySharedItem": {"placeholders": {"call": {"type": "String"}, "kind": {"type": "String"}}},
+  "strategyRetry": "重發未確認",
+  "strategyRetryAll": "重發全部",
+  "strategyAckPending": "{n} 幀未被確認（射頻丟包時點重發）",
+  "strategyAckOk": "隊友已確認收到",
+  "strategyRetryNone": "沒有未確認的幀",
+  "@strategyAckPending": {"placeholders": {"n": {"type": "int"}}},
+  "groupRfNotice": "射頻模式：群聊與策略幀都按廣播發送，隊友守聽同一頻段即可收到。策略幀需隊友回執確認，丟包時在策略地圖頁點重發。"
 }

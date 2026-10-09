@@ -2045,6 +2045,40 @@ class _MessagesPageState extends State<MessagesPage> {
     final mine = m.sent;
     // 系统消息：居中灰色小字
     if (m.system) {
+      // 策略提示特殊：带 type=strategy，可点击跳进对应群的策略地图。
+      // 其余系统消息仍是不可点的纯文本。
+      if (m.type == 'strategy') {
+        return Center(
+          child: GestureDetector(
+            onTap: () => widget.state.openStrategyMap(m.to),
+            child: Container(
+              margin: const EdgeInsets.symmetric(vertical: 6),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              decoration: BoxDecoration(
+                color: C.blue.withValues(alpha: 0.10),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: C.blue.withValues(alpha: 0.35)),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.map_rounded, size: 13, color: C.blue),
+                  const SizedBox(width: 5),
+                  Text(
+                    localizedSystemMessage(context, m.text),
+                    style: ts(10, c: C.blue, w: FontWeight.w600),
+                  ),
+                  const SizedBox(width: 5),
+                  Text(
+                    '· ${S.of(context).strategySeeInMap}',
+                    style: ts(9, c: C.blue.withValues(alpha: 0.75)),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      }
       return Center(
         child: Container(
           margin: const EdgeInsets.symmetric(vertical: 6),
@@ -3071,6 +3105,38 @@ class _MessagesPageState extends State<MessagesPage> {
                         ],
                       ),
                     ),
+                    if (st.usingRf) ...[
+                      SizedBox(height: 8),
+                      Container(
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: C.blueBg,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Icon(
+                              Icons.cell_tower_rounded,
+                              size: 15,
+                              color: C.blue,
+                            ),
+                            SizedBox(width: 8),
+                            Expanded(
+                              child: Text(
+                                S.of(context).groupRfNotice,
+                                style: ts(
+                                  11,
+                                  c: C.blue,
+                                  w: FontWeight.w500,
+                                  h: 1.4,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                     Spacer(),
                   ],
                   // ─── 第2步：选择成员 ───

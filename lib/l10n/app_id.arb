@@ -2833,5 +2833,20 @@
   "strategyItemOf": "Dibagikan oleh {call}",
   "@strategyItemOf": {"placeholders": {"call": {"type": "String"}}},
   "strategyPan": "Geser",
-  "strategySendFailed": "Tampil lokal, tapi gagal kirim (cek koneksi)"
+  "strategySendFailed": "Tampil lokal, tapi gagal kirim (cek koneksi)",
+  "strategyTeammates": "Posisi rekan",
+  "strategyTeammateOf": "Posisi {call}",
+  "strategyColor": "Warna",
+  "strategyColorDefault": "Bawaan",
+  "strategySeeInMap": "Ketuk untuk lihat di peta strategi",
+  "strategySharedItem": "{call} membagikan {kind}",
+  "@strategyTeammateOf": {"placeholders": {"call": {"type": "String"}}},
+  "@strategySharedItem": {"placeholders": {"call": {"type": "String"}, "kind": {"type": "String"}}},
+  "strategyRetry": "Kirim ulang belum dikonfirmasi",
+  "strategyRetryAll": "Kirim ulang semua",
+  "strategyAckPending": "{n} frame belum dikonfirmasi — kirim ulang jika hilang di RF",
+  "strategyAckOk": "Rekan mengonfirmasi penerimaan",
+  "strategyRetryNone": "Tidak ada yang belum dikonfirmasi",
+  "@strategyAckPending": {"placeholders": {"n": {"type": "int"}}},
+  "groupRfNotice": "Mode RF: obrolan grup dan frame strategi dikirim siaran — rekan yang memantau kanal sama akan menerimanya. Frame strategi perlu konfirmasi rekan; kirim ulang jika hilang."
 }

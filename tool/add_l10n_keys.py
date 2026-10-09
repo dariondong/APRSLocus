@@ -492,6 +492,81 @@ KEYS = {
         '(stasiun, pesan, log, jejak), lalu menjalankan panduan awal lagi. **Tidak dapat '
         'dibatalkan**. Lanjutkan?',
     ),
+    # ── 策略地图：队友位置、颜色、群聊提示（本轮新增）──
+    'strategyTeammates': (
+        '队友位置', '隊友位置', 'Teammate positions',
+        '仲間の位置', 'Posición de compañeros', 'Posisi rekan',
+    ),
+    'strategyTeammateOf': (
+        '{call} 的位置', '{call} 的位置', 'Position of {call}',
+        '{call} の位置', 'Posición de {call}', 'Posisi {call}',
+    ),
+    'strategyColor': (
+        '颜色', '顏色', 'Color',
+        '色', 'Color', 'Warna',
+    ),
+    'strategyColorDefault': (
+        '默认', '預設', 'Default',
+        '既定', 'Predeterminado', 'Bawaan',
+    ),
+    'strategySeeInMap': (
+        '点击查看策略地图', '點擊查看策略地圖', 'Tap to view on strategy map',
+        'タップして戦略マップを表示', 'Toca para ver en el mapa estratégico',
+        'Ketuk untuk lihat di peta strategi',
+    ),
+    'strategySharedItem': (
+        '{call} 共享了一个{kind}', '{call} 共享了一個{kind}', '{call} shared a {kind}',
+        '{call} が{kind}を共有しました', '{call} compartió un {kind}',
+        '{call} membagikan {kind}',
+    ),
+    # 射频下的策略地图：丢包 / 重发 / 送达确认
+    'strategyRetry': (
+        '重发未确认', '重發未確認', 'Resend unconfirmed',
+        '未確認を再送', 'Reenviar sin confirmar', 'Kirim ulang belum dikonfirmasi',
+    ),
+    'strategyRetryAll': (
+        '重发全部', '重發全部', 'Resend all',
+        'すべて再送', 'Reenviar todo', 'Kirim ulang semua',
+    ),
+    'strategyAckPending': (
+        '{n} 帧未被确认（射频丢包时点重发）',
+        '{n} 幀未被確認（射頻丟包時點重發）',
+        '{n} frame(s) unconfirmed — resend if RF dropped them',
+        '{n} 件が未確認（RF で欠落したら再送）',
+        '{n} trama(s) sin confirmar: reenvía si se perdieron por RF',
+        '{n} frame belum dikonfirmasi — kirim ulang jika hilang di RF',
+    ),
+    'strategyAckOk': (
+        '队友已确认收到', '隊友已確認收到', 'A teammate confirmed delivery',
+        '仲間が受信を確認しました', 'Un compañero confirmó la recepción',
+        'Rekan mengonfirmasi penerimaan',
+    ),
+    'strategyRetryNone': (
+        '没有未确认的帧', '沒有未確認的幀', 'Nothing unconfirmed',
+        '未確認のフレームはありません', 'Nada sin confirmar', 'Tidak ada yang belum dikonfirmasi',
+    ),
+    'strategyColor': (
+        '颜色', '顏色', 'Color', '色', 'Color', 'Warna',
+    ),
+    # 射频模式下的群聊/策略说明（建群弹窗提示）
+    'groupRfNotice': (
+        '射频模式：群聊与策略帧都按广播发送，队友守听同一频段即可收到。'
+            '策略帧需队友回执确认，丢包时在策略地图页点重发。',
+        '射頻模式：群聊與策略幀都按廣播發送，隊友守聽同一頻段即可收到。'
+            '策略幀需隊友回執確認，丟包時在策略地圖頁點重發。',
+        'RF mode: group chat and strategy frames are broadcast — teammates who '
+            'listen on the same channel receive them. Strategy frames rely on '
+            'teammate acks; resend from the strategy map if packets drop.',
+        'RF モード：グループチャットと戦略フレームはブロードキャスト送信され、'
+            '同じチャンネルを守聴する仲間に届きます。戦略フレームは仲間の ACK で'
+            '確認し、欠落時は戦略マップで再送します。',
+        'Modo RF: el chat de grupo y las tramas de estrategia se emiten por '
+            'difusión; los compañeros que escuchan el mismo canal las reciben. '
+            'Las tramas requieren acuse de recibo; reenvíalas si se pierden.',
+        'Mode RF: obrolan grup dan frame strategi dikirim siaran — rekan yang '
+            'memantau kanal sama akan menerimanya. Frame strategi perlu konfirmasi '
+            'rekan; kirim ulang jika hilang.',
+    ),
 }
 
 # ── 占位符声明（可空）──
@@ -505,6 +580,10 @@ META = {
     'connTncStatusSent': '{"placeholders": {"arg": {"type": "String"}}}',
     'connAudioStatusSent': '{"placeholders": {"call": {"type": "String"}}}',
     'nDays': '{"placeholders": {"n": {"type": "String"}}}',
+    'strategyTeammateOf': '{"placeholders": {"call": {"type": "String"}}}',
+    'strategySharedItem':
+        '{"placeholders": {"call": {"type": "String"}, "kind": {"type": "String"}}}',
+    'strategyAckPending': '{"placeholders": {"n": {"type": "int"}}}',
 }
 
 

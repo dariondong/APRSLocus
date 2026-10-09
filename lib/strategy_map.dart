@@ -27,6 +27,8 @@
 /// 分别处理两种长度。
 library;
 
+import 'dart:ui' show Color;
+
 /// 策略元素类型
 enum StrategyKind { point, line, circle, rally }
 
@@ -58,6 +60,12 @@ class StrategyItem {
   /// 显示名（≤ [StrategyProto.maxLabelLen] 字符，可为空）
   final String label;
 
+  /// 颜色索引（[StrategyProto.palette] 下标），仅线/圈用；-1 表示用默认色。
+  ///
+  /// 只传索引不传 RGB：每帧只剩 2 个字符预算，而调色板全网一致 ——
+  /// 传索引既能表达「我选的这个颜色」，又不会把帧撑爆。
+  final int colorIndex;
+
   const StrategyItem({
     required this.id,
     required this.kind,
@@ -69,6 +77,7 @@ class StrategyItem {
     this.radiusM = 0,
     this.path = const [],
     this.label = '',
+    this.colorIndex = -1,
   });
 
   /// 归属键：跨群同名 ID 不冲突
@@ -86,6 +95,7 @@ class StrategyItem {
     if (path.isNotEmpty)
       'path': path.map((p) => [p.$1, p.$2]).toList(),
     if (label.isNotEmpty) 'label': label,
+    if (colorIndex >= 0) 'colorIndex': colorIndex,
   };
 
   factory StrategyItem.fromJson(Map<String, dynamic> j) {
@@ -108,8 +118,15 @@ class StrategyItem {
           )
           .toList(),
       label: j['label'] as String? ?? '',
+      colorIndex: (j['colorIndex'] as num?)?.toInt() ?? -1,
     );
   }
+
+  /// 实际颜色（线/圈）。
+  ///
+  /// 放在模型层而不是 UI 层：编码/解码与绘制必须用**同一张**调色板，
+  /// 否则「我选红色、对面看到蓝色」—— 分开写两张必然漂。
+  Color get color => StrategyProto.colorAt(colorIndex);
 }
 
 /// 解析后的一帧（结构化，调用方不再碰字符串）。
@@ -127,6 +144,9 @@ class StrategyFrame {
   final List<(double, double)> path;
   final String label;
 
+  /// 颜色索引（仅 L/C 用）；-1 表示未指定
+  final int colorIndex;
+
   /// 分片序号（从 1 起）与总数；非分片为 1/1
   final int partIndex, partTotal;
 
@@ -138,6 +158,7 @@ class StrategyFrame {
     this.radiusM = 0,
     this.path = const [],
     this.label = '',
+    this.colorIndex = -1,
     this.partIndex = 1,
     this.partTotal = 1,
   });
@@ -172,6 +193,26 @@ class StrategyProto {
   static const int maxParts = 40;
 
   static const List<String> ops = ['P', 'L', 'C', 'R', 'D', 'X', 'S'];
+
+  /// 线/圈可选颜色（全网固定，帧里只传下标）。
+  ///
+  /// 六个高对比色，压在卫星/路网底图上都能分辨；顺序即协议（改顺序等于改协议，
+  /// 会让老客户端颜色错位）—— 新色只能往末尾加，不能插入/重排。
+  static const List<Color> palette = [
+    Color(0xFFE53935), // 0 红（默认）
+    Color(0xFF1E88E5), // 1 蓝
+    Color(0xFF43A047), // 2 绿
+    Color(0xFFFB8C00), // 3 橙
+    Color(0xFF8E24AA), // 4 紫
+    Color(0xFF00ACC1), // 5 青
+  ];
+
+  /// 颜色下标 → 颜色；越界/未指定回落到调色板首色（红）。
+  static Color colorAt(int index) =>
+      index >= 0 && index < palette.length ? palette[index] : palette.first;
+
+  static int _normColorIndex(int index) =>
+      index >= 0 && index < palette.length ? index : -1;
 
   /// 元素 ID 生成：`<呼号后2~3位><序号>`，总长 ≤6，全网一致、够短。
   ///
@@ -210,15 +251,18 @@ class StrategyProto {
         final b = '$head $p';
         return b.length <= maxFrameLen ? [b] : const [];
       case StrategyKind.circle:
+        final ci = _normColorIndex(it.colorIndex);
+        // 颜色只占 2 字符（`,<idx>`），与半径同段，解析时不增加 token 数
         final core =
-            '${_fmtCoord(it.lat)},${_fmtCoord(it.lng)},${it.radiusM}';
+            '${_fmtCoord(it.lat)},${_fmtCoord(it.lng)},${it.radiusM}'
+            '${ci >= 0 ? ',$ci' : ''}';
         final label = _normLabel(it.label);
         final a = label.isEmpty ? '$head $core' : '$head $core $label';
         if (a.length <= maxFrameLen) return [a];
         final b = '$head $core';
         return b.length <= maxFrameLen ? [b] : const [];
       case StrategyKind.line:
-        return _encodeLine(head, it.path);
+        return _encodeLine(head, it.path, _normColorIndex(it.colorIndex));
     }
   }
 
@@ -241,11 +285,18 @@ class StrategyProto {
   ///
   /// 先按「一片也放不下额外一个点」的最小粒度切，再给每片补上 `<i>/<n>` 前缀
   /// 重新校验长度 —— 前缀长度固定（约 6 字符），所以补完不会溢出。
-  static List<String> _encodeLine(String head, List<(double, double)> path) {
+  static List<String> _encodeLine(
+    String head,
+    List<(double, double)> path,
+    int colorIndex,
+  ) {
     if (path.isEmpty) return const [];
+    // 颜色段只写一次：跟在 ID 之后（`$M1 L <ID> <ci> …`），比每片都写更省；
+    // 单点线与多片线共用这一步，两种形态的颜色必须一致。
+    final h = colorIndex >= 0 ? '$head $colorIndex' : head;
     // 单点线退化为点
     if (path.length == 1) {
-      final f = '$head ${_fmtCoord(path[0].$1)},${_fmtCoord(path[0].$2)}';
+      final f = '$h ${_fmtCoord(path[0].$1)},${_fmtCoord(path[0].$2)}';
       return f.length <= maxFrameLen ? [f] : const [];
     }
     final coords = path
@@ -253,11 +304,11 @@ class StrategyProto {
         .toList();
 
     // 先试单帧：能一帧发完就别分片（省时隙）
-    final one = '$head ${coords.join(';')}';
+    final one = '$h ${coords.join(';')}';
     if (one.length <= maxFrameLen) return [one];
 
     // 预算：head + ' ' + 'i/n' + ' ' + 点串。分片前缀最长按 2 位算 → 8 字符。
-    final budget = maxFrameLen - head.length - 1 - 8;
+    final budget = maxFrameLen - h.length - 1 - 8;
     final chunks = <List<String>>[];
     var cur = <String>[];
     var curLen = 0;
@@ -278,7 +329,7 @@ class StrategyProto {
     final out = <String>[];
     for (var i = 0; i < chunks.length; i++) {
       final frame =
-          '$head ${i + 1}/${chunks.length} ${chunks[i].join(';')}';
+          '$h ${i + 1}/${chunks.length} ${chunks[i].join(';')}';
       if (frame.length > maxFrameLen) return const []; // 兜底：宁可不发也不发坏的
       out.add(frame);
     }
@@ -331,6 +382,8 @@ class StrategyProto {
         final lng = double.tryParse(segs[1]);
         final r = int.tryParse(segs[2]);
         if (lat == null || lng == null || r == null) return null;
+        // 第 4 段是可选颜色下标（`lat,lng,r[,ci]`），老客户端不带
+        final ci = segs.length >= 4 ? (int.tryParse(segs[3]) ?? -1) : -1;
         if (!_inRange(lat, lng) || r <= 0 || r > maxRadiusM) return null;
         return StrategyFrame(
           op: op,
@@ -339,20 +392,30 @@ class StrategyProto {
           lng: lng,
           radiusM: r,
           label: _joinLabel(payload, 1),
+          colorIndex: _normColorIndex(ci),
         );
       case 'L':
         if (payload.isEmpty) return null;
-        var idx = 1, total = 1, ptsToken = payload[0];
+        var rest = payload;
+        // 可选颜色 token：ID 之后紧跟一个**纯数字**（点串必含 `.`/`,`，
+        // `<i>/<n>` 必含 `/`，所以纯数字只能是我们写的颜色下标）
+        var ci = -1;
+        if (RegExp(r'^\d$').hasMatch(rest[0])) {
+          ci = int.tryParse(rest[0]) ?? -1;
+          rest = rest.skip(1).toList();
+          if (rest.isEmpty) return null;
+        }
+        var idx = 1, total = 1, ptsToken = rest[0];
         // 分片写法：`<i>/<n>` 作为独立 token
-        final slash = payload[0].split('/');
+        final slash = rest[0].split('/');
         if (slash.length == 2) {
           final i = int.tryParse(slash[0]);
           final n = int.tryParse(slash[1]);
           if (i != null && n != null && i >= 1 && n >= 1 && i <= n) {
             idx = i;
             total = n;
-            if (payload.length < 2) return null;
-            ptsToken = payload[1];
+            if (rest.length < 2) return null;
+            ptsToken = rest[1];
           }
         }
         if (total > maxParts) return null;
@@ -367,6 +430,7 @@ class StrategyProto {
           op: op,
           id: id,
           path: pts,
+          colorIndex: _normColorIndex(ci),
           partIndex: idx,
           partTotal: total,
         );

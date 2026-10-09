@@ -116,6 +116,78 @@ void main() {
     });
   });
 
+  group('颜色：线/圈可选色往返一致', () {
+    StrategyItem _mk(StrategyKind k, {int ci = -1, List<(double, double)>? p}) =>
+        StrategyItem(
+          id: 'YW9',
+          kind: k,
+          owner: 'BD4TYW',
+          groupCall: 'G',
+          updatedAt: 1,
+          lat: 39.12345,
+          lng: 116.12345,
+          radiusM: k == StrategyKind.circle ? 800 : 0,
+          path: p ?? const [],
+          colorIndex: ci,
+        );
+
+    test('圈的颜色编进坐标段且能被解析回来', () {
+      final frames = StrategyProto.encode(_mk(StrategyKind.circle, ci: 3));
+      expect(frames.length, 1);
+      final f = StrategyProto.parse(frames.first)!;
+      expect(f.colorIndex, 3);
+      expect(f.radiusM, 800);
+    });
+
+    test('线的颜色编在 ID 之后且不与片号/点串混淆', () {
+      final frames = StrategyProto.encode(_mk(
+        StrategyKind.line,
+        ci: 2,
+        p: const [(39.11, 116.11), (39.12, 116.12)],
+      ));
+      expect(frames.length, 1);
+      final f = StrategyProto.parse(frames.first)!;
+      expect(f.colorIndex, 2);
+      expect(f.path.length, 2);
+    });
+
+    test('未指定颜色时不写颜色段，解析回 -1（大小写不敏感）', () {
+      final frames = StrategyProto.encode(_mk(StrategyKind.circle));
+      expect(frames.first.contains(',-1'), isFalse);
+      expect(StrategyProto.parse(frames.first)!.colorIndex, -1);
+      expect(StrategyProto.parse('\$M1 L YW8 39.11,116.11;39.12,116.12')!.colorIndex, -1);
+    });
+
+    test('越界颜色下标回落到 -1 而非报错', () {
+      final f = StrategyProto.parse('\$M1 C YW1 39.0,116.0,800,99')!;
+      expect(f.colorIndex, -1);
+      final l = StrategyProto.parse('\$M1 L YW8 9 39.11,116.11;39.12,116.12')!;
+      expect(l.colorIndex, -1);
+    });
+
+    test('调色板越界回落首色，不抛异常', () {
+      expect(StrategyProto.colorAt(-1), StrategyProto.palette.first);
+      expect(StrategyProto.colorAt(99), StrategyProto.palette.first);
+      expect(StrategyProto.colorAt(1), StrategyProto.palette[1]);
+    });
+
+    test('带颜色后仍不超 67 字符上限', () {
+      final frames = StrategyProto.encode(_mk(
+        StrategyKind.line,
+        ci: 5,
+        p: [for (var i = 0; i < 40; i++) (39.0 + i / 1000, 116.0 + i / 1000)],
+      ));
+      expect(frames, isNotEmpty);
+      for (final f in frames) {
+        expect(f.length <= StrategyProto.maxFrameLen, isTrue);
+      }
+      // 分片线收齐后每一片都应带同一颜色
+      for (final f in frames) {
+        expect(StrategyProto.parse(f)!.colorIndex, 5);
+      }
+    });
+  });
+
   group('解析：畸形帧一律拒绝', () {
     test('不是策略帧', () {
       expect(StrategyProto.parse('INVITE BG7LZQ-G1 群'), isNull);

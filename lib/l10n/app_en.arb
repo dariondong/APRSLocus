@@ -2749,5 +2749,20 @@
   "strategyItemOf": "Shared by {call}",
   "@strategyItemOf": {"placeholders": {"call": {"type": "String"}}},
   "strategyPan": "Pan",
-  "strategySendFailed": "Shown locally, but not sent (check connection)"
+  "strategySendFailed": "Shown locally, but not sent (check connection)",
+  "strategyTeammates": "Teammate positions",
+  "strategyTeammateOf": "Position of {call}",
+  "strategyColor": "Color",
+  "strategyColorDefault": "Default",
+  "strategySeeInMap": "Tap to view on strategy map",
+  "strategySharedItem": "{call} shared a {kind}",
+  "@strategyTeammateOf": {"placeholders": {"call": {"type": "String"}}},
+  "@strategySharedItem": {"placeholders": {"call": {"type": "String"}, "kind": {"type": "String"}}},
+  "strategyRetry": "Resend unconfirmed",
+  "strategyRetryAll": "Resend all",
+  "strategyAckPending": "{n} frame(s) unconfirmed — resend if RF dropped them",
+  "strategyAckOk": "A teammate confirmed delivery",
+  "strategyRetryNone": "Nothing unconfirmed",
+  "@strategyAckPending": {"placeholders": {"n": {"type": "int"}}},
+  "groupRfNotice": "RF mode: group chat and strategy frames are broadcast — teammates who listen on the same channel receive them. Strategy frames rely on teammate acks; resend from the strategy map if packets drop."
 }

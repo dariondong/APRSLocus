@@ -348,6 +348,10 @@ class AprsMsg {
   /// 只存译文则用户看不懂自己的聊天记录；只存原文则无法核对到底发出了什么。
   final String? sentAs;
 
+  /// 系统消息子类型（可点击/可路由用）。目前只有 `strategy`：
+  /// 「XX 共享了一个标点」这类提示，点一下能跳进策略地图。空串=普通系统消息。
+  final String? type;
+
   /// 是否译发过
   bool get translated => sentAs != null && sentAs!.isNotEmpty && sentAs != text;
 
@@ -362,6 +366,7 @@ class AprsMsg {
     this.groupId,
     this.system = false,
     this.sentAs,
+    this.type,
   });
 
   Map<String, dynamic> toJson() => {
@@ -375,6 +380,7 @@ class AprsMsg {
     if (groupId != null) 'groupId': groupId,
     if (system) 'system': system,
     if (sentAs != null) 'sentAs': sentAs,
+    if (type != null) 'type': type,
   };
 
   factory AprsMsg.fromJson(Map<String, dynamic> j) => AprsMsg(
@@ -388,6 +394,7 @@ class AprsMsg {
     groupId: j['groupId'] as String?,
     system: j['system'] as bool? ?? false,
     sentAs: j['sentAs'] as String?,
+    type: j['type'] as String?,
   );
 }
 

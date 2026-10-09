@@ -2833,5 +2833,20 @@
   "strategyItemOf": "{call} が共有",
   "@strategyItemOf": {"placeholders": {"call": {"type": "String"}}},
   "strategyPan": "移動",
-  "strategySendFailed": "ローカルには表示、送信は未完了（接続を確認）"
+  "strategySendFailed": "ローカルには表示、送信は未完了（接続を確認）",
+  "strategyTeammates": "仲間の位置",
+  "strategyTeammateOf": "{call} の位置",
+  "strategyColor": "色",
+  "strategyColorDefault": "既定",
+  "strategySeeInMap": "タップして戦略マップを表示",
+  "strategySharedItem": "{call} が{kind}を共有しました",
+  "@strategyTeammateOf": {"placeholders": {"call": {"type": "String"}}},
+  "@strategySharedItem": {"placeholders": {"call": {"type": "String"}, "kind": {"type": "String"}}},
+  "strategyRetry": "未確認を再送",
+  "strategyRetryAll": "すべて再送",
+  "strategyAckPending": "{n} 件が未確認（RF で欠落したら再送）",
+  "strategyAckOk": "仲間が受信を確認しました",
+  "strategyRetryNone": "未確認のフレームはありません",
+  "@strategyAckPending": {"placeholders": {"n": {"type": "int"}}},
+  "groupRfNotice": "RF モード：グループチャットと戦略フレームはブロードキャスト送信され、同じチャンネルを守聴する仲間に届きます。戦略フレームは仲間の ACK で確認し、欠落時は戦略マップで再送します。"
 }

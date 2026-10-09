@@ -3348,5 +3348,20 @@
   "strategyItemOf": "由 {call} 共享",
   "@strategyItemOf": {"placeholders": {"call": {"type": "String"}}},
   "strategyPan": "平移",
-  "strategySendFailed": "已显示，但未发送成功（请检查连接）"
+  "strategySendFailed": "已显示，但未发送成功（请检查连接）",
+  "strategyTeammates": "队友位置",
+  "strategyTeammateOf": "{call} 的位置",
+  "strategyColor": "颜色",
+  "strategyColorDefault": "默认",
+  "strategySeeInMap": "点击查看策略地图",
+  "strategySharedItem": "{call} 共享了一个{kind}",
+  "@strategyTeammateOf": {"placeholders": {"call": {"type": "String"}}},
+  "@strategySharedItem": {"placeholders": {"call": {"type": "String"}, "kind": {"type": "String"}}},
+  "strategyRetry": "重发未确认",
+  "strategyRetryAll": "重发全部",
+  "strategyAckPending": "{n} 帧未被确认（射频丢包时点重发）",
+  "strategyAckOk": "队友已确认收到",
+  "strategyRetryNone": "没有未确认的帧",
+  "@strategyAckPending": {"placeholders": {"n": {"type": "int"}}},
+  "groupRfNotice": "射频模式：群聊与策略帧都按广播发送，队友守听同一频段即可收到。策略帧需队友回执确认，丢包时在策略地图页点重发。"
 }

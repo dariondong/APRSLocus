@@ -115,7 +115,7 @@ class SmartBeaconTier {
 
 class AppState extends ChangeNotifier {
   /// 应用版本（用于信标备注、APRSlocus 识别）
-  static const appVersion = '2.0.41';
+  static const appVersion = '2.0.42';
   // 我的电台
   String myCall = 'BV2AAA';
   int mySsid = 0; // 0 = 无后缀, 1-15 = -1 到 -15
@@ -2330,7 +2330,8 @@ class AppState extends ChangeNotifier {
   /// 是否为「射频频段」来源（TNC / 音频）。
   ///
   /// 二者在协议与合规上完全同类：都经电台上空、都用 APALOC 目的呼号、
-  /// 都受 67 字符消息上限、都禁用群聊广播、自动发射都要显式开关。
+  /// 都受 67 字符消息上限、自动发射都要显式开关。
+  /// （射频下群聊现也开放 —— 见 [groupChatAllowed]；发射路径走 [_rfPath]。）
   /// 因此射频相关判断统一用本 getter，避免只改 TNC 漏改音频
   /// （那会导致音频模式下群聊被放行、限长失效这类静默错误）。
   bool get usingRf => usingTnc || usingAudio;
@@ -3482,8 +3483,33 @@ class AppState extends ChangeNotifier {
   /// 划线分片暂存：`<群>|<ID>` → 已收到的片（收齐才拼成一条线落图）。
   final Map<String, Map<int, List<(double, double)>>> _lineParts = {};
 
+  /// 划线分片的颜色（`<群>|<ID>` → 颜色下标）：收齐拼装时要用首片带来的颜色，
+  /// 而分片暂存只记了坐标 —— 不单独存就会「线收齐了但颜色丢了」。
+  final Map<String, int> _linePartsColor = {};
+
   /// 编号种子：每群每条新元素自增，生成短而不撞的 ID。
   final Map<String, int> _strategySeq = {};
+
+  /// 等回执的已发策略帧：**帧的 APRS 消息 ID** → (发出时间, 帧文本, 群呼号)。
+  ///
+  /// 射频下策略帧用带 ack 的格式发出（`{id`），队友的标准自动 ack 会回到这里 ——
+  /// 于是「有没有人收到」不必自己造协议：匹配上就说明至少一个队友收到了。
+  /// APRS-IS 下用 no-ack（`{id_`），一般不会有人回，映射仅作为兜底记录。
+  final Map<String, (DateTime, String, String)> _strategyAckWait = {};
+
+  /// 本群还有几帧发出去没被任何队友确认（射频下即「可能丢了」的帧数）。
+  ///
+  /// 只统计 [_ackWindow] 内的帧：队友可能关着自动 ack，旧帧永远等不到回执 ——
+  /// 不设窗口的话提示会一直挂着，反而变成噪声。
+  int strategyAckPending(String groupCall) {
+    _pruneStrategyAckWait();
+    final gc = groupCall.toUpperCase();
+    return _strategyAckWait.values.where((v) => v.$3 == gc).length;
+  }
+
+  /// 等待队友回执的时间窗。超过即视为「不确认」（不一定丢，也可能对方关了 ack）。
+  static const Duration _ackWindow = Duration(seconds: 90);
+
   bool _stationsDirty = false; // 台站列表有变更，待节流保存
   final List<LogEntry> logs = [];
   int unreadMessages = 0; // 未读消息数（侧边栏/底部导航角标）
@@ -5367,8 +5393,16 @@ class AppState extends ChangeNotifier {
   /// 而 APRS-IS 那边是按 512 字节整行算，两者的限制不是一回事。
   int get rfMaxFrame => usingTnc ? tnc.config.maxFrame : audio.config.maxFrame;
 
-  /// 群聊是否可用。射频模式下禁用（见 [sendGroupMessage] 的说明）
-  bool get groupChatAllowed => !usingRf;
+  /// 群聊是否可用。
+  ///
+  /// 曾经射频下禁用：理由是群呼号不是真实台站、无人应答。但射频群里
+  /// **队友都在守听这个群呼号**，他们确实收得到 —— 「无人应答」混淆了
+  /// 「不能确认送达」与「不能通联」。策略地图也是群维度功能，禁用群聊
+  /// 等于把射频用户挡在门外。现在射频下同样开放：
+  /// * 群聊/策略帧用 no-ack 广播（避免多人同时回 ack 的噪声）；
+  /// * 射频下策略帧改用带 ack 的格式发送，靠**标准自动 ack** 判断送达
+  ///   （见 [_sendStrategyFrame]），丢包时可在策略地图页手动重发。
+  bool get groupChatAllowed => true;
 
   /// 当前是否处于「有实际发射能力」的状态（用于 UI 提示）
   bool get rfActive => usingRf && connected;
@@ -6532,6 +6566,12 @@ class AppState extends ChangeNotifier {
       for (final m in messages) {
         if (m.sent && m.id == ackedId) m.acked = true;
       }
+      // 策略帧的 ack：确认至少有一个队友收到（射频下这才是「送达」凭据），
+      // 顺带把这条帧从待确认表里摘掉并记日志，便于排查射频丢包。
+      final sf = _strategyAckWait.remove(ackedId);
+      if (sf != null) {
+        _log(LogLevel.info, '策略地图', '$src 已确认收到：${sf.$2}');
+      }
       _saveMessages();
       _notify();
       return null;
@@ -6605,8 +6645,11 @@ class AppState extends ChangeNotifier {
   }
 
   // ─── 群聊协议消息处理 ───
-  /// 向群聊插入一条系统消息（不发送网络包，仅本地展示）
-  void _addGroupSystemMsg(String groupId, String text) {
+  /// 向群聊插入一条系统消息（不发送网络包，仅本地展示）。
+  ///
+  /// [type] 是子类型（当前只有 `strategy`）：带子类型的提示在气泡里可点击，
+  /// 用来跳转到对应界面（如策略地图）。
+  void _addGroupSystemMsg(String groupId, String text, {String? type}) {
     final g = chatGroups.where((g) => g.id == groupId).firstOrNull;
     if (g == null) return;
     messages.insert(
@@ -6618,6 +6661,7 @@ class AppState extends ChangeNotifier {
         DateTime.now(),
         groupId: groupId,
         system: true,
+        type: type,
       ),
     );
     if (messages.length > 500) messages.removeLast();
@@ -7712,18 +7756,13 @@ class AppState extends ChangeNotifier {
     _notify();
   }
 
-  /// 群发：向群呼号广播消息（所有监听该群呼号的人都能收到）
-  /// 使用 no-ack 格式 `{id_`，避免每个成员自动回 ack 造成噪声
+  /// 群发：向群呼号广播消息（所有监听该群呼号的人都能收到）。
+  ///
+  /// 使用 no-ack 格式 `{id_`：群呼号不是真实台站，若每个成员都自动回 ack，
+  /// 共享信道上会瞬间挤满回执噪声 —— 射频下尤其致命。需要送达确认的场景
+  /// （如策略地图帧）改用带 ack 的单播发送，见 [_sendStrategyFrame]。
   int sendGroupMessage(String groupCall, String text, {String? groupId}) {
     if (text.trim().isEmpty || groupCall.isEmpty) return 0;
-    // TNC（射频）模式禁用群发：
-    //   ① 群聊靠 no-ack 广播 + 批量邀请，在共享信道上一次邀请就占大量时隙；
-    //   ② 群呼号不是真实台站，射频上无人能回答，实际是单向噪声。
-    if (usingRf) {
-      _log(LogLevel.warn, '群发', '射频（TNC/音频）模式不支持群聊广播，已中止发送');
-      _notify();
-      return 0;
-    }
     final id = AprsFmt.randId();
     final raw =
         AprsFmt.messageNoAck(myFullCall, groupCall, text.trim(), id, path: txPath);
@@ -7795,7 +7834,10 @@ class AppState extends ChangeNotifier {
     return g;
   }
 
-  /// 生成群呼号：{呼号}-G{序号}（不超过9字符）
+  /// 生成群呼号：`{呼号}-G{序号}`（不超过 9 字符）。
+  ///
+  /// 射频下同样用带序号的 `-G` 呼号：APRS 呼号 9 字符上限由末尾截断兜底，
+  /// 不带序号反而会让同群主的多个群复用同一呼号。
   String _generateGroupCall(String ownerCall) {
     final base = ownerCall.replaceAll(RegExp(r'-\w+$'), ''); // 去掉 SSID
     // 找到此群主最大的序号
@@ -7957,6 +7999,58 @@ class AppState extends ChangeNotifier {
       .toList()
     ..sort((a, b) => a.updatedAt.compareTo(b.updatedAt));
 
+  /// 全部策略元素（跨群），用于「从群聊消息跳进策略地图」这类没有群上下文的地方。
+  List<StrategyItem> get allStrategy =>
+      strategyItems.values.toList()
+        ..sort((a, b) => a.updatedAt.compareTo(b.updatedAt));
+
+  /// 策略元素的类型名（跟随界面语言）。
+  String _strategyKindLabel(StrategyKind k) => switch (k) {
+    StrategyKind.point => l10n.strategyAddPoint,
+    StrategyKind.line => l10n.strategyAddLine,
+    StrategyKind.circle => l10n.strategyAddCircle,
+    StrategyKind.rally => l10n.strategyAddRally,
+  };
+
+  /// 在群聊里插一条「谁共享了什么」的可点击提示（[type]=strategy）。
+  /// 策略帧本身不进聊天列表，但**留一条提示** —— 否则用户看不出图层变过。
+  ///
+  /// 文案在**本机**按本机语言生成（不是从空中收来的），所以各端显示各自的语言。
+  void _strategyNotice(String groupId, String owner, StrategyKind kind) {
+    _addGroupSystemMsg(
+      groupId,
+      l10n.strategySharedItem(owner, _strategyKindLabel(kind)),
+      type: 'strategy',
+    );
+  }
+
+  /// 群成员里「有可用 APRS 坐标」的台站 —— 策略地图上的队友位置。
+  ///
+  /// 位置**不是**策略协议的一部分：它就是普通 APRS 信标（`Station`），
+  /// 所以队友不需要做任何额外操作，只要在报位置就会出现在这里。方位角取
+  /// [Station.course]（信标里的航向字节；静止/无航向时为 null，UI 不画角标）。
+  ///
+  /// 匹配用**去 SSID 的基础呼号**：群成员表里存的是 `BG7LZQ-9` 或 `BG7LZQ`，
+  /// 而台站表里是设备实际报的呼号，两边 SSID 常常对不上。
+  List<Station> strategyTeammates(ChatGroup g) {
+    final out = <Station>[];
+    final seen = <String>{};
+    final me = _baseCall(myCall);
+    for (final member in {...g.allMemberCalls, ...g.activeMembers}) {
+      final mb = _baseCall(member);
+      // 自己不用画成「队友」，我的位置地图上本来就有
+      if (mb == me) continue;
+      for (final s in stations) {
+        if (s.baseCall.toUpperCase() != mb) continue;
+        // (0,0) 是「无定位」哨兵值，画在几内亚湾外海 —— 不能当队友位置
+        if (s.lat == 0 && s.lng == 0) continue;
+        if (!seen.add(s.call)) continue;
+        out.add(s);
+      }
+    }
+    return out;
+  }
+
   /// 群呼号 → 群记录
   ChatGroup? _groupByCall(String groupCall) => chatGroups
       .where((g) => g.groupCall.toUpperCase() == groupCall.toUpperCase())
@@ -7979,33 +8073,53 @@ class AppState extends ChangeNotifier {
     return StrategyProto.makeId(myCall, seq);
   }
 
-  /// 广播一条策略帧到群呼号（no-ack，避免每个成员都回 ack 造成噪声）。
-  /// 与 [sendGroupMessage] 一致：射频模式禁用群发（信道是广播、群呼号无人应答）。
+  /// 广播一条策略帧到群呼号。APRS-IS 与射频都走这条。
+  ///
+  /// 帧长两种媒介都按 APRS101 的 **67 字符消息文本上限**（[StrategyProto] 编码
+  /// 时已保证，超长的线自动分片）—— 这是消息体自身的限制，与 AX.25 帧上限无关。
+  ///
+  /// 两种媒介的送达语义不同，用不同手段补「可靠性」：
+  /// * **APRS-IS**：点对点 TCP 转发，缺包不是常态 → no-ack 广播即可
+  ///   （每个成员都回 ack 反而制造噪声，这也是 [sendGroupMessage] 的取舍）。
+  /// * **射频**：共享信道、突发丢失、半双工冲突 → 单发不保险。群呼号不是真实
+  ///   台站、无人应答，所以**收件人的标准自动 ack**（见 `_autoAckEnabled`）
+  ///   才是「有人收到」的唯一凭据：射频下改用带 ack 的格式发送，发方据回执
+  ///   判断送达；无人回执时用 [retryStrategy] 手动重发。
+  ///
+  /// 返回是否成功编码发送。
   bool _sendStrategyFrame(String groupCall, String frame) {
     if (frame.isEmpty || groupCall.isEmpty) return false;
-    if (usingRf) {
-      _log(LogLevel.warn, '策略地图', '射频（TNC/音频）模式暂不支持策略地图广播，已中止');
-      _notify();
-      return false;
-    }
+    final gc = groupCall.toUpperCase();
     if (frame.length > StrategyProto.maxFrameLen) {
       _log(LogLevel.warn, '策略地图', '单帧超长（${frame.length}），已中止');
       return false;
     }
-    final raw = AprsFmt.messageNoAck(
-      myFullCall,
-      groupCall,
-      frame,
-      AprsFmt.randId(),
-      path: txPath,
-    );
+    final id = AprsFmt.randId();
+    // 射频：带 ack 发（队友的自动 ack 是唯一的送达凭据）；
+    // APRS-IS：no-ack（`{id_`）广播，避免群呼号被每个成员回 ack 造成噪声。
+    final raw = usingRf
+        ? AprsFmt.message(myFullCall, gc, frame, id, path: txPath)
+        : AprsFmt.messageNoAck(myFullCall, gc, frame, id, path: txPath);
     _trySend(raw);
-    _log(LogLevel.info, '策略地图', '发送到 $groupCall：$frame');
+    // 只有射频才记「待确认」：APRS-IS 用的是 no-ack，本来就不会有回执，
+    // 记进去只会让 UI 永远显示「未确认」。射频下队友的标准自动 ack 会带
+    // 这个 id 回来（见收到分支）。
+    if (usingRf) {
+      _strategyAckWait[id] = (DateTime.now(), frame, gc);
+      _pruneStrategyAckWait();
+    }
+    _log(LogLevel.info, '策略地图',
+        '发送到 $groupCall（${usingRf ? '射频' : 'APRS-IS'}）：$frame');
     _pushPacket(
       Packet(raw, myFullCall, 'APRS', 'message', DateTime.now(),
           info: '策略地图 → $groupCall：$frame'),
     );
     return true;
+  }
+
+  void _pruneStrategyAckWait() {
+    final cut = DateTime.now().subtract(_ackWindow);
+    _strategyAckWait.removeWhere((_, v) => v.$1.isBefore(cut));
   }
 
   /// 新增/更新一个策略元素：本地即刻落图，再广播出去。返回是否成功编码发送。
@@ -8020,10 +8134,13 @@ class AppState extends ChangeNotifier {
     int radiusM = 0,
     List<(double, double)> path = const [],
     String label = '',
+    int colorIndex = -1,
   }) {
     final gc = groupCall.toUpperCase();
     if (_groupByCall(gc) == null) return false;
     final eid = id.isEmpty ? _nextStrategyId(gc) : id;
+    // 编辑时若调用方没给颜色（-1），保留原元素的颜色，避免「改个名字就掉色」
+    final prev = strategyItems['$gc|$eid'];
     final item = StrategyItem(
       id: eid,
       kind: kind,
@@ -8035,6 +8152,7 @@ class AppState extends ChangeNotifier {
       radiusM: radiusM,
       path: path,
       label: label,
+      colorIndex: colorIndex >= 0 ? colorIndex : (prev?.colorIndex ?? -1),
     );
     strategyItems[item.key] = item;
     unawaited(_saveStrategyNow());
@@ -8047,6 +8165,11 @@ class AppState extends ChangeNotifier {
     var ok = true;
     for (final f in frames) {
       ok = _sendStrategyFrame(gc, f) && ok;
+    }
+    // 新建（非编辑）才留群聊提示，避免「改个名字」也刷一条
+    if (id.isEmpty) {
+      final g = _groupByCall(gc);
+      if (g != null) _strategyNotice(g.id, _baseCall(myCall), kind);
     }
     _notify();
     return ok;
@@ -8079,6 +8202,36 @@ class AppState extends ChangeNotifier {
     unawaited(_saveStrategyNow());
     _sendStrategyFrame(gc, '\$M${StrategyProto.version} X');
     _notify();
+  }
+
+  /// 重发本群尚未被队友确认的帧（射频丢包时用）或全部帧（[all] 为真）。
+  ///
+  /// 射频下丢包是**静默**的：没人回 ack 时，发方无从分辨「大家都收到了只是
+  /// 没回」还是「这一帧压根没人收到」。所以这里不自动重传（自动重传会在
+  /// 弱覆盖下形成风暴），而是给用户一个明确的手动动作。
+  /// 重发沿用原帧与元素 ID，接收端按 ID 幂等覆盖，不会重复落图。
+  /// 返回重发的帧数。
+  int retryStrategy(String groupCall, {bool all = false}) {
+    final gc = groupCall.toUpperCase();
+    if (_groupByCall(gc) == null) return 0;
+    final frames = <String>[];
+    if (all) {
+      for (final it in strategyOf(gc)) {
+        frames.addAll(StrategyProto.encode(it));
+      }
+      frames.add('\$M${StrategyProto.version} S');
+    } else {
+      for (final v in _strategyAckWait.values) {
+        if (v.$3 == gc) frames.add(v.$2);
+      }
+    }
+    var n = 0;
+    for (final f in frames) {
+      if (_sendStrategyFrame(gc, f)) n++;
+    }
+    _log(LogLevel.info, '策略地图', '重发 $n 帧到 $gc');
+    _notify();
+    return n;
   }
 
   /// 收到本人元素的快照请求 → 重播自己在该群的元素（让新成员看到图层）。
@@ -8128,17 +8281,21 @@ class AppState extends ChangeNotifier {
       case 'C':
         final kind = frame.kind!;
         final radius = kind == StrategyKind.circle ? frame.radiusM : 0;
-        _upsertStrategy(StrategyItem(
-          id: frame.id,
-          kind: kind,
-          owner: _baseCall(src),
-          groupCall: gc,
-          updatedAt: now,
-          lat: frame.lat,
-          lng: frame.lng,
-          radiusM: radius,
-          label: frame.label,
-        ));
+        _upsertStrategy(
+          StrategyItem(
+            id: frame.id,
+            kind: kind,
+            owner: _baseCall(src),
+            groupCall: gc,
+            updatedAt: now,
+            lat: frame.lat,
+            lng: frame.lng,
+            radiusM: radius,
+            label: frame.label,
+            colorIndex: frame.colorIndex,
+          ),
+          notifyChat: true,
+        );
         return;
       case 'L':
         _ingestLine(src, gc, frame, now);
@@ -8160,11 +8317,14 @@ class AppState extends ChangeNotifier {
         lng: frame.path.first.$2,
         path: frame.path,
         label: frame.label,
-      ));
+        colorIndex: frame.colorIndex,
+      ), notifyChat: true);
       return;
     }
     final parts = _lineParts.putIfAbsent(key, () => {});
     parts[frame.partIndex] = frame.path;
+    // 颜色每片都带且应一致；用先到的那片记录（缺色 -1 不覆盖已记的颜色）
+    if (frame.colorIndex >= 0) _linePartsColor[key] = frame.colorIndex;
     if (parts.length < frame.partTotal) return; // 还没收齐
     final merged = <(double, double)>[];
     for (var i = 1; i <= frame.partTotal; i++) {
@@ -8173,6 +8333,7 @@ class AppState extends ChangeNotifier {
       merged.addAll(seg);
     }
     _lineParts.remove(key);
+    final ci = _linePartsColor.remove(key) ?? -1;
     _upsertStrategy(StrategyItem(
       id: frame.id,
       kind: StrategyKind.line,
@@ -8182,11 +8343,17 @@ class AppState extends ChangeNotifier {
       lat: merged.first.$1,
       lng: merged.first.$2,
       path: merged,
-    ));
+      colorIndex: ci,
+    ), notifyChat: true);
   }
 
   /// 落图 + 冲突消解（同一 ID 后写胜；「后写」以本地到达顺序为准）。
-  void _upsertStrategy(StrategyItem it) {
+  ///
+  /// [notifyChat] 只对**收到**的元素为真：新元素在群里留一条可点击提示。
+  /// 判据用「本地此前没有这个 key」而不是「owner 是不是我」—— 重播（`S` 快照）
+  /// 会把自己早先的元素再发一遍，那时 key 已存在，不会重复提示。
+  void _upsertStrategy(StrategyItem it, {bool notifyChat = false}) {
+    final isNew = !strategyItems.containsKey(it.key);
     strategyItems[it.key] = it;
     if (strategyItems.length > 500) {
       // 防膨胀：丢掉最早更新的元素（避免无限增长）
@@ -8195,6 +8362,10 @@ class AppState extends ChangeNotifier {
       strategyItems.remove(oldest.key);
     }
     unawaited(_saveStrategyNow());
+    if (notifyChat && isNew) {
+      final g = _groupByCall(it.groupCall);
+      if (g != null) _strategyNotice(g.id, it.owner, it.kind);
+    }
     _notify();
   }
 
@@ -8423,6 +8594,26 @@ class AppState extends ChangeNotifier {
   void focusOnMap(Station s) {
     mapFocus = s;
     mapFocusSeq++;
+    _notify();
+  }
+
+  /// 「打开策略地图」请求：从群聊消息点进来时，外壳据此**切到地图页签**，
+  /// 地图页再据此打开对应群的策略地图。
+  ///
+  /// 为什么要走序号 + 状态、而不是直接 `Navigator.push`：
+  /// 请求来自消息页（可能是窄屏左侧面板里的页面），而策略地图是**全屏页**；
+  /// 由外壳统一切页签、由地图页（永远挂在 IndexedStack 里）来 push，
+  /// 才不会在面板被裁切的上下文里推一个半截页面 —— 与 [focusOnMap] 同一套
+  /// 「页面 → 外壳 → 地图」的请求机制。
+  int strategyJumpSeq = 0;
+
+  /// 本次请求要打开的群呼号（空=让策略地图用默认群/弹群选择）。
+  String strategyJumpGroupCall = '';
+
+  /// 发起「打开策略地图」请求。[groupCall] 为空时按当前群/第一个群打开。
+  void openStrategyMap([String groupCall = '']) {
+    strategyJumpGroupCall = groupCall.toUpperCase();
+    strategyJumpSeq++;
     _notify();
   }
 

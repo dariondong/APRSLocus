@@ -71,9 +71,10 @@ class _HomeShell2State extends State<HomeShell2>
   /// 上一次通知时的「外壳所显示的值」快照（见 [_onState]）
   String _stateKey = '';
 
-  /// 「在地图查看 / 在地图选点」上一次处理过的序号（见 [_onState]）。
+  /// 「在地图查看 / 在地图选点 / 打开策略地图」上一次处理过的序号（见 [_onState]）。
   int _lastFocusSeq = 0;
   int _lastPickSeq = 0;
+  int _lastStrategyJumpSeq = 0;
 
   /// 「展开内容面板」上一次处理过的序号（见 [AppState.requestSheetExpand]）。
   int _lastExpandSeq = 0;
@@ -333,9 +334,12 @@ class _HomeShell2State extends State<HomeShell2>
     // 我重写 2.0 外壳时整段漏掉了 —— 结果是台站页点「在地图查看」之后，
     // 地图在背后悄悄飞到了那个台站，用户却还停在台站面板上，看着就像
     // 「点了没反应」。
-    if (st.mapFocusSeq != _lastFocusSeq || st.pickSeq != _lastPickSeq) {
+    if (st.mapFocusSeq != _lastFocusSeq ||
+        st.pickSeq != _lastPickSeq ||
+        st.strategyJumpSeq != _lastStrategyJumpSeq) {
       _lastFocusSeq = st.mapFocusSeq;
       _lastPickSeq = st.pickSeq;
+      _lastStrategyJumpSeq = st.strategyJumpSeq;
       // 放到帧后：这两条可能由本帧的 build/通知里改出来，
       // 直接 setState 会在 build 期间标记重建。
       WidgetsBinding.instance.addPostFrameCallback((_) {

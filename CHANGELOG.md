@@ -1,5 +1,104 @@
 # 更新日志
 
+## [2.0.42] - 2026-10-09
+
+### 新增：策略地图支持队友方位 / 可选颜色 / 群聊跳转，并适配射频
+
+**需求**
+
+- 地图上显示**队友位置 + 方位角小角标**。
+- **线 / 圈可选择颜色**。
+- 画点等**策略消息在群聊留提示**，队友可点击跳转策略地图。
+- **射频**（TNC / 音频）下也能用群聊与策略地图。
+- 修复策略点「跳转导航」不可用。
+
+**改动**
+
+- **队友位置 + 方位角**（`lib/state.dart` / `lib/strategy_map_page.dart`）：
+  `strategyTeammates` 按**去 SSID 的基呼号**把群成员匹配到台站，地图上画
+  青点 + 呼号 + 沿航向的方位角小三角（静止 / 无航向则不画角标）；队友位置
+  来自普通 APRS 信标，不需额外协议。
+- **线 / 圈可选颜色**（`lib/strategy_map.dart` / `lib/strategy_map_page.dart`）：
+  新增全网一致的六色调色板（顺序即协议，只可往后追加）；帧里只传**下标**
+  （`StrategyProto.colorIndex`，-1 为默认色）。取色放在模型层，编码与绘制
+  同源，避免「我选红、对面见蓝」；分片线只在首段带一次颜色。
+- **策略消息进群聊**（`lib/state.dart` / `lib/messages_page.dart`）：新增可点击
+  系统消息（`type='strategy'`），点一下经 `openStrategyMap` 跳进对应群的策略
+  地图；收发新元素都留提示（快照重播 / 编辑不重复提示）。跳转沿用
+  「页面 → 外壳 → 地图」的序号请求机制，避免在半截面板里 push 全屏页。
+- **射频适配**（`lib/state.dart`）：`groupChatAllowed` 放开为**始终可用**
+  （射频队友都在守听群呼号）；`sendGroupMessage` 去掉射频拦截。策略帧射频下
+  改用带 ack 格式，借**队友标准自动 ack** 判断送达（APRS-IS 仍走 no-ack 广播），
+  90s 未确认视为「不确认」（队友可能关了自动 ack），可在策略地图页手动重发
+  （`retryStrategy` / `strategyAckPending`）。消息页建群面板在射频下补一条说明。
+- **跳转导航修复**（`lib/map_page.dart`）：策略点不在台站表里，补画一枚焦点
+  标记 `_focusMarker`；跳转改为**瞬时落位**（不走过渡动画），避免页面被覆盖 /
+  冻结后停在「飞了一半」的中间态。
+- l10n：六语言补齐新增文案（`strategyTeammates` / `strategyColor` /
+  `strategySharedItem` / `strategyAck*` / `groupRfNotice` 等）。
+- **测试**：`test/strategy_map_test.dart` 新增「线 / 圈颜色往返一致」用例。
+
+**测试**
+
+- `tool/check_*.py`、`check_l10n_sync.py` 全部通过；`flutter analyze`
+  除已知的 `vector_map.dart` 误报外无新增错误；`flutter test` 由 CI 复核。
+
+---
+
+## [2.0.42] - 2026-10-09 (English)
+
+### New: strategy map teammates/bearing, selectable colors, chat jump; RF support
+
+**Request**
+
+- Show **teammate positions with a bearing badge** on the map.
+- **Selectable colors** for lines/circles.
+- Strategy messages (points etc.) leave a **clickable notice in group chat**
+  that jumps to the strategy map.
+- **RF** (TNC / audio) supports group chat and the strategy map too.
+- Fix the broken "jump to navigation" on strategy points.
+
+**Changes**
+
+- **Teammates + bearing** (`lib/state.dart` / `lib/strategy_map_page.dart`):
+  `strategyTeammates` matches group members to stations by **SSID-stripped base
+  callsign**; the map paints a cyan dot + callsign + a small triangle along the
+  heading (no badge when stationary/unknown). Positions come from ordinary APRS
+  beacons — no extra protocol needed.
+- **Selectable line/circle colors** (`lib/strategy_map.dart` /
+  `lib/strategy_map_page.dart`): a network-wide six-color palette (order is the
+  protocol; append-only); frames carry only the **index**
+  (`StrategyProto.colorIndex`, -1 = default). Color resolution lives in the
+  model so encode and paint can't drift; chunked lines carry the color once.
+- **Strategy notices in group chat** (`lib/state.dart` /
+  `lib/messages_page.dart`): a clickable system message (`type='strategy'`) that
+  jumps into the group's strategy map via `openStrategyMap`; both sent and
+  received new elements leave a notice (snapshot replay / edits don't duplicate).
+  The jump reuses the "page → shell → map" sequence-request mechanism so a
+  full-screen page is never pushed from a clipped panel.
+- **RF adaptation** (`lib/state.dart`): `groupChatAllowed` is now **always on**
+  (RF teammates do listen on the group callsign) and `sendGroupMessage` drops the
+  RF guard. Strategy frames on RF use ack-requesting format and rely on
+  receivers' **standard auto-ack** for delivery (APRS-IS still broadcasts with
+  no-ack); unacked after 90s counts as "unconfirmed" (the peer may have auto-ack
+  off) and can be manually resent (`retryStrategy` / `strategyAckPending`). The
+  new-group sheet adds an RF note.
+- **Navigation fix** (`lib/map_page.dart`): strategy points aren't in the
+  station list, so a focus marker `_focusMarker` is painted; the jump now snaps
+  instantly (no animation) instead of stalling mid-flight when the page is
+  covered/frozen.
+- l10n: added strings across six languages (`strategyTeammates` /
+  `strategyColor` / `strategySharedItem` / `strategyAck*` / `groupRfNotice` …).
+- **Tests**: `test/strategy_map_test.dart` gains a line/circle color round-trip.
+
+**Testing**
+
+- All `tool/check_*.py` and `check_l10n_sync.py` pass; `flutter analyze` shows
+  no new errors besides the known `vector_map.dart` false positive; `flutter
+  test` is verified by CI.
+
+---
+
 ## [2.0.41] - 2026-10-03
 
 ### 新增：群内「策略地图」+ 台站长按快捷消息；移除 OOBE Passcode 提示
@@ -11,6 +110,9 @@
 - 设计并实现**策略地图**：与队友 / 群组共享**标点、线、圈、集合点**，
   复用现有群组，数据经 APRS 消息传输。
 - 画出的点支持**跳转导航**，并可编辑附带信息；UI 协调、实用。
+- 地图上显示**队友位置 + 方位角小角标**；线 / 圈可**选择颜色**；
+  策略消息在**群聊**留可点击提示，点一下跳进策略地图。
+- **射频**（TNC / 音频）下同样能用群聊与策略地图。
 - 发版。
 
 **改动**
@@ -33,9 +135,25 @@
   - `lib/map_page.dart`：右侧工具列新增「策略地图」入口（无群提示先建群，
     多群弹选择）。
   - `lib/backup.dart`：`strategyItems` 归入群聊备份分组，换机不丢图层。
+  - **队友位置 + 方位角**（`lib/state.dart` / `lib/strategy_map_page.dart`）：
+    新增 `strategyTeammates`，按**去 SSID 的基呼号**把群成员匹配到台站；
+    地图上画青点 + 呼号 + 沿航向的方位角小三角（无航向就不画角标）。
+  - **线 / 圈可选颜色**（`lib/strategy_map.dart` / `lib/strategy_map_page.dart`）：
+    新增全网一致的六色调色板，帧里只传**下标**（`StrategyProto.palette` /
+    `colorIndex`）；模型层取色与绘制同源，避免「我选红、对面见蓝」。
+  - **策略消息进群聊**（`lib/state.dart` / `lib/messages_page.dart`）：新增
+    可点击系统消息（`type='strategy'`），点一下经 `openStrategyMap` 跳进对应群
+    的策略地图；收发新元素都会留提示（重播快照不重复提示）。
+  - **射频适配**（`lib/state.dart`）：`groupChatAllowed` 放开为始终可用；
+    策略帧射频下改用带 ack 格式，借**队友标准自动 ack** 判断送达，超过 90s
+    未确认可在策略地图页手动重发（`retryStrategy` / `strategyAckPending`）；
+    APRS-IS 仍走 no-ack 广播。
+  - **跳转导航修复**（`lib/map_page.dart`）：策略点不在台站表里，补画一枚
+    焦点标记 `_focusMarker`；跳转改为**瞬时落位**（不做动画），避免被覆盖 /
+    冻结后停在半路。
   - l10n：六语言补齐策略地图文案；并修正划线提示为「点『完成』结束」。
 - **测试**：`test/strategy_map_test.dart`（编解码往返、67 上限、分片、
-  畸形帧拒绝、ID 生成）。
+  畸形帧拒绝、ID 生成、线 / 圈颜色往返一致）。
 - 设计文档：`STRATEGY-MAP.md`（含设计稿与实现现状的差异说明）。
 
 **测试**
@@ -58,6 +176,10 @@
   APRS messages.
 - Elements support **jump-to-navigation** and editing attached info; UI must be
   coherent and practical.
+- Show **teammate positions with a bearing badge** on the map; lines/circles
+  get **selectable colors**; strategy messages leave a **clickable notice in
+  group chat** that jumps into the strategy map.
+- **RF** (TNC / audio) supports group chat and the strategy map too.
 - Cut a release.
 
 **Changes**
@@ -81,10 +203,31 @@
   - `lib/map_page.dart`: "Strategy Map" entry on the right toolbar (prompts to
     create a group when none, shows a picker when several).
   - `lib/backup.dart`: `strategyItems` added to the chats backup group.
+  - **Teammates + bearing** (`lib/state.dart` / `lib/strategy_map_page.dart`):
+    `strategyTeammates` matches group members to stations by **SSID-stripped
+    base callsign**; the map paints a cyan dot + callsign + a small triangle
+    along the heading (no badge when heading is unknown).
+  - **Selectable line/circle colors** (`lib/strategy_map.dart` /
+    `lib/strategy_map_page.dart`): a network-wide six-color palette, with only
+    the **index** sent in frames (`StrategyProto.palette` / `colorIndex`); the
+    model resolves the color so encode and paint can't drift.
+  - **Strategy notices in group chat** (`lib/state.dart` /
+    `lib/messages_page.dart`): a clickable system message (`type='strategy'`)
+    that jumps into the group's strategy map via `openStrategyMap`; both sent
+    and received new elements leave a notice (snapshot replays don't duplicate).
+  - **RF adaptation** (`lib/state.dart`): `groupChatAllowed` is now always on;
+    strategy frames on RF use ack-requesting format and rely on receivers'
+    **standard auto-ack** for delivery, with a manual resend
+    (`retryStrategy` / `strategyAckPending`) after 90s; APRS-IS still broadcasts
+    with no-ack.
+  - **Navigation fix** (`lib/map_page.dart`): strategy points aren't in the
+    station list, so a focus marker `_focusMarker` is painted; the jump now
+    snaps instantly (no animation) instead of stalling mid-flight.
   - l10n: strategy map strings added across six languages; line hint corrected
     to "tap Done to finish".
 - **Tests**: `test/strategy_map_test.dart` (codec round-trip, 67-char cap,
-  chunking, malformed-frame rejection, ID generation).
+  chunking, malformed-frame rejection, ID generation, line/circle color
+  round-trip).
 - Design doc: `STRATEGY-MAP.md` (with a design-vs-implementation section).
 
 **Testing**
