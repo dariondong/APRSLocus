@@ -57,22 +57,22 @@ PAGES = [
 # 而卡片标题要的是「TOUCH SKY」+ 右侧小字，推不出来（也不该推）。
 HEAD = {
     'zh': {
-        'kicker': '📦 2.0.11 已发布 · 安装包小了约 2/3',
-        'title': '安卓安装包从 81.6 MB 降到约 30 MB',
-        'en': 'v2.0.11 · split per CPU architecture',
-        'sub': '以前一个包装了三套 CPU 的机器码，手机只用得上其中一套。现在按架构分成三个约 30 MB 的包，应用内「检查更新」照旧下 64 位那个，升级方式没变。',
+        'kicker': '🚀 致敬中国航天 70 周年',
+        'title': '凌霄戍卫 · 同一片星空，同一种追梦',
+        'en': '70 years of China\'s space program',
+        'sub': '七十年，从追星到问天。谨以此歌致敬每一位追梦人——也致敬守望电波、把信号送上天的你。',
     },
     'zh_TW': {
-        'kicker': '📦 2.0.11 已發布 · 安裝包小了約 2/3',
-        'title': '安卓安裝包從 81.6 MB 降到約 30 MB',
-        'en': 'v2.0.11 · split per CPU architecture',
-        'sub': '以前一個包裝了三套 CPU 的機器碼，手機只用得上其中一套。現在按架構分成三個約 30 MB 的包，應用程式內「檢查更新」照舊下 64 位元那個，升級方式沒變。',
+        'kicker': '🚀 致敬中國航天 70 週年',
+        'title': '凌霄戍衛 · 同一片星空，同一種追夢',
+        'en': '70 years of China\'s space program',
+        'sub': '七十年，從追星到問天。謹以此歌致敬每一位追夢人——也致敬守望電波、把信號送上天的你。',
     },
     'en': {
-        'kicker': '📦 v2.0.11 released · about 2/3 smaller',
-        'title': 'Android package: 81.6 MB → about 30 MB',
-        'en': 'v2.0.11 · split per CPU architecture',
-        'sub': 'One file used to carry the machine code for three CPUs while your phone only ever used one. There are now three ~30 MB packages, one per architecture, and the in-app "Check for updates" still fetches the 64-bit one — upgrading works exactly as before.',
+        'kicker': '🚀 Honoring 70 years of China\'s space program',
+        'title': 'Guardians of the Sky · one sky, one dream',
+        'en': 'v2.0 · a song for the dream-chasers',
+        'sub': 'Seventy years, from chasing stars to asking the heavens. With this song we honor every dream-chaser — and you, who keeps watch on the airwaves and sends a signal into the sky.',
     },
 }
 

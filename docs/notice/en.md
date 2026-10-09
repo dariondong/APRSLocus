@@ -1,31 +1,40 @@
-# Statement - please read
+# 🚀 Honoring 70 Years of China's Space Program · Guardians of the Sky
 
+From **Dongfanghong-1** to **Tiangong**,
+seventy years of looking up, generations in pursuit of the dream.
+This time, we lit our own coordinates in the sky too.
 
-【Important: this software provides no server address and no Internet service】
-
-This software is a local APRS client tool only. It does not provide, operate, or recommend any APRS server address, nor does it provide any Internet service such as APRS-IS, iGate, data upload, data relay, or data storage.
-
-1. No server is connected by default
-On first launch and under default settings, the software connects to no APRS-IS, iGate, or other network server. All server addresses, ports, and connection actions are entered and decided by the user alone.
-
-2. Your responsibility when you configure a server
-If you configure and connect to a third-party server yourself, you must confirm that the server and your use of it comply with the law, and you bear all responsibility arising from cross-border data transfer, personal-data processing, radio regulation, and the third party's terms of service. The developer has no affiliation, agency, or cooperation with any third-party server.
-
-3. Data storage and public exposure
-Beacon history, message logs, and contacts are stored on your device only. APRS data may travel in the clear over radio and public networks and may be publicly archived by third parties. Do not send state secrets, trade secrets, personal data, or sensitive location information.
-
-4. Lawful use
-Use only a callsign you lawfully hold, and comply with the applicable radio regulations and data-protection laws. It is forbidden to use this software for unlawful tracking, harassment, interference with networks, or any illegal activity. Minors should use it with a guardian's consent and guidance.
-
-5. Disclaimer
-This software is provided "as is", as an auxiliary tool for amateur radio operators, and is not suitable for critical tasks such as the safety of life or property. The development team is not liable for any direct or indirect loss caused by servers you configure, data you upload, or your use of this software.
-
-Please do not ask for, post, or discuss any specific server address. This software is for discussion of its use only and provides no server resources or Internet service.
-
-Thank you for your understanding and cooperation.
 ---
 
-**Nothing is required from you**: continued use means you accept the revised agreement. If you do not agree, please stop using this software.
+The starry river is vast; the chase never ends.
+
+With this song we honor every dream-chaser in China's space program —
+and you in front of the screen:
+the ham who sets up the rig, listens on the air, lights the beacon,
+and sends a signal up into the sky.
+
+They look up at the stars; we stand watch on the airwaves.
+They question the universe; we call into the sky.
+Different bands, the same dream.
+
+**Just like us.**
+
+🎵 [▶ "Guardians of the Sky" BGM mix · BV1mFaf6FEXo](https://www.bilibili.com/video/BV1mFaf6FEXo)
+
+@video https://player.bilibili.com/player.html?isOutside=true&aid=117360837069510&bvid=BV1mFaf6FEXo&cid=42347596712&p=1
+
+> Video from Bilibili @方块君Delta · footage: @新华网 @三角洲行动
+
+---
+
+## 📡 About APRSLocus
+
+APRSLocus is a **local APRS client**: map, beacons, messaging and translation,
+life guard … drawing the coordinates of amateur radio on the same star map.
+
+Seventy years, from chasing stars to asking the heavens;
+may everyone who looks up receive an answer.
 
 **The APRSLocus team**
-1 October 2026
+October 2026
+---

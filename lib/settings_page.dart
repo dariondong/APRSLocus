@@ -12,6 +12,7 @@ import 'guide.dart';
 import 'tnc_page.dart';
 import 'state.dart';
 import 'widgets.dart';
+import 'settings_widgets.dart';
 import 'about_page.dart';
 import 'check_update_page.dart';
 import 'exit_app.dart';
