@@ -693,10 +693,119 @@ KEYS = {
         '第 {n} / {m} 页', '第 {n} / {m} 頁', 'Page {n} / {m}',
         '{n} / {m} ページ', 'Página {n} / {m}', 'Halaman {n} / {m}',
     ),
+    # 数据包页：标注每条报文是从哪条链路来 / 从哪条链路发出去的。
+    #
+    # 背景：页面此前不区分来源，同一台站既可能从 APRS-IS 来、也可能从射频
+    # （TNC / 声卡）来，排查「射频通不通 / 网关有没有转」时看不出关键线索。
+    'packetSource': (
+        '来源', '來源', 'Source', 'ソース', 'Origen', 'Sumber',
+    ),
+    'packetSrcLocal': (
+        '本机', '本機', 'Local', 'ローカル', 'Local', 'Lokal',
+    ),
+    'packetSrcAprsIs': (
+        'APRS-IS', 'APRS-IS', 'APRS-IS', 'APRS-IS', 'APRS-IS', 'APRS-IS',
+    ),
+    'packetSrcTnc': (
+        'TNC', 'TNC', 'TNC', 'TNC', 'TNC', 'TNC',
+    ),
+    'packetSrcAudio': (
+        '声卡', '音效卡', 'Soundcard', 'サウンドカード', 'Tarjeta de sonido',
+        'Kartu suara',
+    ),
+    'packetSrcPkwdwpl': (
+        'Kenwood', 'Kenwood', 'Kenwood', 'Kenwood', 'Kenwood', 'Kenwood',
+    ),
+    # 音频（声卡 TNC）发射：输出幅度。此前它只是个只读默认值（0.6），
+    # 界面上改不了，而「削顶 / 电平偏低」两条告警都写着「请调输出幅度」。
+    'audioTxAmplitude': (
+        '输出幅度（0.05~1.0）', '輸出幅度（0.05~1.0）',
+        'Output amplitude (0.05–1.0)', '出力振幅（0.05~1.0）',
+        'Amplitud de salida (0.05–1.0)', 'Amplitudo keluaran (0.05–1.0)',
+    ),
+    'audioTxAmplitudeTip': (
+        '发射波形的相对幅度。削顶（≥99%）会产生谐波、直接毁掉 FSK 频谱；'
+        '过低则对端信噪比不够。默认 0.6 留约 4dB 余量；接电台时先试 0.5~0.7，'
+        '再看「发射体检」的峰值。',
+        '發射波形的相對幅度。削頂（≥99%）會產生諧波、直接毀掉 FSK 頻譜；'
+        '過低則對端信噪比不夠。預設 0.6 留約 4dB 餘量；接電台時先試 0.5~0.7，'
+        '再看「發射體檢」的峰值。',
+        'Relative amplitude of the TX waveform. Clipping (≥99%) creates harmonics '
+        'and destroys the FSK spectrum, while too low a level starves the far end '
+        'of SNR. The 0.6 default leaves ~4 dB headroom; start at 0.5–0.7 into a '
+        'radio and watch the peak in TX diagnostics.',
+        '送信波形の相対振幅。クリップ（≥99%）は高調波を生み FSK スペクトルを'
+        '壊し、低すぎると相手のSNRが足りません。既定 0.6 は約 4dB の余裕。'
+        '無線機へは 0.5~0.7 から試し、送信診断のピークを確認してください。',
+        'Amplitud relativa de la onda TX. El recorte (≥99%) genera armónicos y '
+        'destruye el espectro FSK; un nivel muy bajo deja al receptor sin SNR. '
+        'El valor 0.6 deja ~4 dB de margen; empieza en 0.5–0.7 hacia un equipo y '
+        'observa el pico en el diagnóstico de TX.',
+        'Amplitudo relatif gelombang TX. Clipping (≥99%) menimbulkan harmonisa dan '
+        'merusak spektrum FSK; terlalu rendah membuat SNR lawan kurang. Nilai 0.6 '
+        'menyisakan ~4 dB margin; coba 0.5–0.7 ke radio lalu lihat puncak di '
+        'diagnostik TX.',
+    ),
+    # 音频链路已连上、但当前发射来源是别的链路 —— 这是「发了却没从此链路
+    # 出去」的头号原因（三条射频/网络链路并列时，发射来源只有一个）。
+    'audioTxSourceRow': (
+        '发射来源', '發射來源', 'TX source', '送信ソース', 'Fuente TX',
+        'Sumber TX',
+    ),
+    'audioTxSourceYes': (
+        '是本链路', '是本鏈路', 'This link', 'このリンク', 'Este enlace',
+        'Tautan ini',
+    ),
+    'audioTxNotSourceWarn': (
+        '音频链路已连上，但当前发射来源不是它 —— 消息与信标会从「{src}」发出。'
+        '需要从音频发射时，去「设置 → 设备」把音频选为发射来源。',
+        '音訊鏈路已連上，但目前發射來源不是它 —— 訊息與信標會從「{src}」發出。'
+        '需要從音訊發射時，去「設定 → 裝置」把音訊選為發射來源。',
+        'The audio link is up, but it is not the current TX source — messages and '
+        'beacons go out over "{src}". To transmit via audio, pick it as the TX '
+        'source in Settings → Devices.',
+        '音声リンクは接続済みですが、現在の送信ソースはこれではありません — '
+        'メッセージとビーコンは「{src}」から送信されます。音声で送信するには'
+        '「設定 → デバイス」で音声を送信ソースに選んでください。',
+        'El enlace de audio está activo, pero no es la fuente TX actual: los '
+        'mensajes y balizas salen por "{src}". Para transmitir por audio, '
+        'selecciónalo como fuente TX en Ajustes → Dispositivos.',
+        'Tautan audio aktif, tetapi bukan sumber TX saat ini — pesan dan beacon '
+        'keluar lewat "{src}". Untuk memancar via audio, pilih audio sebagai '
+        'sumber TX di Setelan → Perangkat.',
+    ),
+    # 音频发射最常被忽略的一环：软件只会「往声卡播一段音频」，它**不会**
+    # 去按电台的 PTT。电台不发，是因为没人把它切到发射状态。
+    'audioTxPttHint': (
+        '音频链路不会去按电台的 PTT —— 它只是播放一段 AFSK 音频。要让电台真的'
+        '发射，必须由电台自己键控：把电台设为 VOX 声控发射，或用支持声控/数据口'
+        'PTT 的接线。若电台一直不发射，先查这一条。',
+        '音訊鏈路不會去按電台的 PTT —— 它只是播放一段 AFSK 音訊。要讓電台真的'
+        '發射，必須由電台自己鍵控：把電台設為 VOX 聲控發射，或用支援聲控/資料埠'
+        'PTT 的接線。若電台一直不發射，先查這一條。',
+        'The audio link never keys the radio\'s PTT — it only plays AFSK audio. '
+        'For the radio to actually transmit, the radio itself must be keyed: set it '
+        'to VOX (voice-operated), or use a cable that keys PTT from the audio/data '
+        'port. If the radio never transmits, check this first.',
+        '音声リンクは無線機の PTT を押しません — AFSK 音声を再生するだけです。'
+        '実際に送信させるには無線機側でキーイングが必要です：VOX（音声起動）に'
+        '設定するか、音声/データ端子からの PTT に対応したケーブルを使ってください。'
+        '無線機が送信しない場合はまずここを確認してください。',
+        'El enlace de audio nunca acciona el PTT del equipo: solo reproduce audio '
+        'AFSK. Para que el equipo transmita de verdad, debe ser el propio equipo '
+        'quien se active: configúralo en VOX, o usa un cable que accione el PTT '
+        'desde el puerto de audio/datos. Si el equipo no transmite, revisa esto '
+        'primero.',
+        'Tautan audio tidak pernah menekan PTT radio — hanya memutar audio AFSK. '
+        'Agar radio benar-benar memancar, radio sendiri harus ter-key: setel ke VOX '
+        '(voice-operated), atau pakai kabel yang men-key PTT dari port audio/data. '
+        'Jika radio tidak memancar, periksa ini dulu.',
+    ),
 }
 
 # ── 占位符声明（可空）──
 META = {
+    'audioTxNotSourceWarn': '{"placeholders": {"src": {"type": "String"}}}',
     'prunePreview': '{"placeholders": {"n": {"type": "String"}}}',
     'pruneConfirm': '{"placeholders": {"n": {"type": "String"}, "m": {"type": "String"}}}',
     'pruneDone': '{"placeholders": {"n": {"type": "String"}}}',

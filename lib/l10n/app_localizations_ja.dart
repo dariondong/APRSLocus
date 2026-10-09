@@ -8111,4 +8111,40 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String locationPageInfo(String n, String m) => "$n / $m ページ";
 
+  @override
+  String get packetSource => "ソース";
+
+  @override
+  String get packetSrcLocal => "ローカル";
+
+  @override
+  String get packetSrcAprsIs => "APRS-IS";
+
+  @override
+  String get packetSrcTnc => "TNC";
+
+  @override
+  String get packetSrcAudio => "サウンドカード";
+
+  @override
+  String get packetSrcPkwdwpl => "Kenwood";
+
+  @override
+  String get audioTxAmplitude => "出力振幅（0.05~1.0）";
+
+  @override
+  String get audioTxAmplitudeTip => "送信波形の相対振幅。クリップ（≥99%）は高調波を生み FSK スペクトルを壊し、低すぎると相手のSNRが足りません。既定 0.6 は約 4dB の余裕。無線機へは 0.5~0.7 から試し、送信診断のピークを確認してください。";
+
+  @override
+  String get audioTxSourceRow => "送信ソース";
+
+  @override
+  String get audioTxSourceYes => "このリンク";
+
+  @override
+  String audioTxNotSourceWarn(String src) => "音声リンクは接続済みですが、現在の送信ソースはこれではありません — メッセージとビーコンは「$src」から送信されます。音声で送信するには「設定 → デバイス」で音声を送信ソースに選んでください。";
+
+  @override
+  String get audioTxPttHint => "音声リンクは無線機の PTT を押しません — AFSK 音声を再生するだけです。実際に送信させるには無線機側でキーイングが必要です：VOX（音声起動）に設定するか、音声/データ端子からの PTT に対応したケーブルを使ってください。無線機が送信しない場合はまずここを確認してください。";
+
 }

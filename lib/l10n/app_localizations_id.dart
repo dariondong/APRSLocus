@@ -8366,4 +8366,40 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String locationPageInfo(String n, String m) => "Halaman $n / $m";
 
+  @override
+  String get packetSource => "Sumber";
+
+  @override
+  String get packetSrcLocal => "Lokal";
+
+  @override
+  String get packetSrcAprsIs => "APRS-IS";
+
+  @override
+  String get packetSrcTnc => "TNC";
+
+  @override
+  String get packetSrcAudio => "Kartu suara";
+
+  @override
+  String get packetSrcPkwdwpl => "Kenwood";
+
+  @override
+  String get audioTxAmplitude => "Amplitudo keluaran (0.05–1.0)";
+
+  @override
+  String get audioTxAmplitudeTip => "Amplitudo relatif gelombang TX. Clipping (≥99%) menimbulkan harmonisa dan merusak spektrum FSK; terlalu rendah membuat SNR lawan kurang. Nilai 0.6 menyisakan ~4 dB margin; coba 0.5–0.7 ke radio lalu lihat puncak di diagnostik TX.";
+
+  @override
+  String get audioTxSourceRow => "Sumber TX";
+
+  @override
+  String get audioTxSourceYes => "Tautan ini";
+
+  @override
+  String audioTxNotSourceWarn(String src) => "Tautan audio aktif, tetapi bukan sumber TX saat ini — pesan dan beacon keluar lewat \"$src\". Untuk memancar via audio, pilih audio sebagai sumber TX di Setelan → Perangkat.";
+
+  @override
+  String get audioTxPttHint => "Tautan audio tidak pernah menekan PTT radio — hanya memutar audio AFSK. Agar radio benar-benar memancar, radio sendiri harus ter-key: setel ke VOX (voice-operated), atau pakai kabel yang men-key PTT dari port audio/data. Jika radio tidak memancar, periksa ini dulu.";
+
 }

@@ -204,6 +204,46 @@ CARDS = [
 # 只列「重点版本」：中间几十个纯修 bug 的版本归纳进文字说明，完整记录指向 Releases。
 CL = [
     {
+        'ver': 'v2.0.49', 'date': '2026-10-09',
+        'items': [
+            ('fix',
+             T('**修复声卡能收不能发**：接电台时对方解不出，是因为'
+               '`输出幅度`这个决定是否削顶的增益**在界面上根本改不了**，'
+               '而两条告警都写着「请调输出幅度」。发射卡现新增'
+               '**「输出幅度」输入框**，改完立即生效（只重建调制器，'
+               '不打断正在进行的接收）。同时**标明当前发射来源**'
+               '（音频连上 ≠ 从音频发），并提示**软件不会按电台 PTT**'
+               '（需 VOX 或数据口键控）。',
+               '**修復音效卡能收不能發**：接電台時對方解不出，是因為'
+               '`輸出幅度`這個決定是否削頂的增益**在介面上根本改不了**，'
+               '而兩條告警都寫著「請調輸出幅度」。發射卡現新增'
+               '**「輸出幅度」輸入框**，改完立即生效（只重建調變器，'
+               '不打断正在進行的接收）。同時**標明目前發射來源**'
+               '（音訊連上 ≠ 從音訊發），並提示**軟體不會按電台 PTT**'
+               '（需 VOX 或資料埠鍵控）。',
+               '**Fixed sound-card RX-but-no-TX**: the far end could not '
+               'decode because `output amplitude` — the gain that decides '
+               'clipping — was **not editable in the UI**, while both warnings '
+               'said to adjust it. The TX card now has an **output-amplitude '
+               'field** that takes effect immediately (rebuilding only the '
+               'modulator, without interrupting receive). It also **shows the '
+               'current TX source** (connected ≠ transmitting) and notes that '
+               'the **app never keys the radio PTT** (use VOX or a data-port '
+               'cable).')),
+            ('up',
+             T('**数据包页标明来源**：每条报文都带**来源徽标**'
+               '（APRS-IS / TNC / 声卡 / PKWDWPL / 本地），排查'
+               '「射频通不通、网关有没有转」时一眼看清这条从哪来。',
+               '**資料包頁標明來源**：每條報文都帶**來源徽標**'
+               '（APRS-IS / TNC / 音效卡 / PKWDWPL / 本地），排查'
+               '「射頻通不通、閘道有沒有轉」時一眼看清這條從哪來。',
+               '**Packet source labels**: every frame now carries a **source '
+               'badge** (APRS-IS / TNC / sound card / PKWDWPL / local), so '
+               'checking "is RF working / did the gateway relay it?" tells you '
+               'at a glance where a frame came from.')),
+        ],
+    },
+    {
         'ver': 'v2.0.48', 'date': '2026-10-09',
         'items': [
             ('fix',

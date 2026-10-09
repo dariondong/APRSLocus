@@ -8408,4 +8408,40 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String locationPageInfo(String n, String m) => "Página $n / $m";
 
+  @override
+  String get packetSource => "Origen";
+
+  @override
+  String get packetSrcLocal => "Local";
+
+  @override
+  String get packetSrcAprsIs => "APRS-IS";
+
+  @override
+  String get packetSrcTnc => "TNC";
+
+  @override
+  String get packetSrcAudio => "Tarjeta de sonido";
+
+  @override
+  String get packetSrcPkwdwpl => "Kenwood";
+
+  @override
+  String get audioTxAmplitude => "Amplitud de salida (0.05–1.0)";
+
+  @override
+  String get audioTxAmplitudeTip => "Amplitud relativa de la onda TX. El recorte (≥99%) genera armónicos y destruye el espectro FSK; un nivel muy bajo deja al receptor sin SNR. El valor 0.6 deja ~4 dB de margen; empieza en 0.5–0.7 hacia un equipo y observa el pico en el diagnóstico de TX.";
+
+  @override
+  String get audioTxSourceRow => "Fuente TX";
+
+  @override
+  String get audioTxSourceYes => "Este enlace";
+
+  @override
+  String audioTxNotSourceWarn(String src) => "El enlace de audio está activo, pero no es la fuente TX actual: los mensajes y balizas salen por \"$src\". Para transmitir por audio, selecciónalo como fuente TX en Ajustes → Dispositivos.";
+
+  @override
+  String get audioTxPttHint => "El enlace de audio nunca acciona el PTT del equipo: solo reproduce audio AFSK. Para que el equipo transmita de verdad, debe ser el propio equipo quien se active: configúralo en VOX, o usa un cable que accione el PTT desde el puerto de audio/datos. Si el equipo no transmite, revisa esto primero.";
+
 }

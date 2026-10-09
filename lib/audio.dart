@@ -436,6 +436,16 @@ class AudioLink {
     onStateChanged?.call();
   }
 
+  /// 只重建**调制器**（不动解调器）。
+  ///
+  /// 输出幅度这类纯发射参数改完应当立刻生效，但重建解调器会把当前接收的
+  /// DPLL 锁定丢掉 —— 改一次发射电平不该打断正在进行的接收。采样率/音调
+  /// 等同时影响收发的参数仍走 [applyParams]（会重启链路）。
+  void applyTxParams() {
+    _mod = AfskModulator(config.afsk);
+    onStateChanged?.call();
+  }
+
   // ─── 收 ───
 
   void _onPcm(Uint8List bytes) {

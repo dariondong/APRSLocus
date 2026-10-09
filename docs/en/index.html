@@ -576,6 +576,16 @@
 <!-- site-sync:changelog -->
     <div class="cl-version reveal">
       <div class="cl-head">
+        <span class="cl-tag">v2.0.49</span>
+        <span class="cl-date">2026-10-09</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot fix"></span><b>Fixed sound-card RX-but-no-TX</b>: the far end could not decode because <code>output amplitude</code> — the gain that decides clipping — was <b>not editable in the UI</b>, while both warnings said to adjust it. The TX card now has an <b>output-amplitude field</b> that takes effect immediately (rebuilding only the modulator, without interrupting receive). It also <b>shows the current TX source</b> (connected ≠ transmitting) and notes that the <b>app never keys the radio PTT</b> (use VOX or a data-port cable).</div>
+        <div class="cl-item"><span class="cl-dot up"></span><b>Packet source labels</b>: every frame now carries a <b>source badge</b> (APRS-IS / TNC / sound card / PKWDWPL / local), so checking "is RF working / did the gateway relay it?" tells you at a glance where a frame came from.</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
         <span class="cl-tag">v2.0.48</span>
         <span class="cl-date">2026-10-09</span>
       </div>

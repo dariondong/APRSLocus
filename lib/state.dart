@@ -115,7 +115,7 @@ class SmartBeaconTier {
 
 class AppState extends ChangeNotifier {
   /// 应用版本（用于信标备注、APRSlocus 识别）
-  static const appVersion = '2.0.48';
+  static const appVersion = '2.0.49';
   // 我的电台
   String myCall = 'BV2AAA';
   int mySsid = 0; // 0 = 无后缀, 1-15 = -1 到 -15
@@ -3473,6 +3473,13 @@ class AppState extends ChangeNotifier {
   // 数据
   final List<Station> stations;
   final List<Packet> packets = [];
+
+  /// 正在把报文喂进 [_onAprsLine] 的那条链路的来源 id（见 `src*` 常量）。
+  ///
+  /// `_onAprsLine` 被抽象成「链接收 → 解析」的共用出口，收包处因此拿不到
+  /// 来源；而数据包页要标注每一条的来源。用一个「当前来源」在入口处设一下、
+  /// 在图里的 [_pushPacket] 读取即可 —— 解析全程同步，不会串包。
+  String _rxSource = 'local';
   final List<AprsMsg> messages;
   final List<ChatGroup> chatGroups = [];
 
@@ -4096,7 +4103,7 @@ class AppState extends ChangeNotifier {
       if (_disposed) return;
       toggleConnect();
     };
-    aprs.onLine = (l) => _onAprsLine(l, rf: false);
+    aprs.onLine = (l) => _onAprsLine(l, rf: false, source: srcAprsIs);
     aprs.onDisconnected = () {
       if (_disposed) return;
       _setLinkUp(srcAprsIs, false);
@@ -4462,7 +4469,7 @@ class AppState extends ChangeNotifier {
   /// 解析路径。这样台站上图、消息收发、过滤、成就等逻辑无需为 TNC 再写一套，
   /// 也不会出现两个来源行为不一致的分叉。
   void _wireTnc() {
-    tnc.onLine = (l) => _onAprsLine(l, rf: true);
+    tnc.onLine = (l) => _onAprsLine(l, rf: true, source: srcTnc);
     tnc.onClosed = () {
       if (_disposed) return;
       _setLinkUp(srcTnc, false);
@@ -4736,7 +4743,7 @@ class AppState extends ChangeNotifier {
   /// 关键点同 TNC：音频解出的报文直接交给 [_onAprsLine]，三个数据来源
   /// 共用同一条解析路径，因此不会出现「音频模式下台站不上图」这类分叉。
   void _wireAudio() {
-    audio.onLine = (l) => _onAprsLine(l, rf: true);
+    audio.onLine = (l) => _onAprsLine(l, rf: true, source: srcAudio);
     audio.onClosed = () {
       if (_disposed) return;
       _setLinkUp(srcAudio, false);
@@ -4847,6 +4854,7 @@ class AppState extends ChangeNotifier {
       'PKWDWPL',
       'position',
       DateTime.now(),
+      source: srcPkwdwpl,
       info: '${fix.latitude.toStringAsFixed(4)}, '
           '${fix.longitude.toStringAsFixed(4)}'
           '${fix.courseDegrees == null ? '' : ' · ${fix.courseDegrees!.toStringAsFixed(0)}°'}'
@@ -5295,6 +5303,7 @@ class AppState extends ChangeNotifier {
       'APRS',
       'status',
       DateTime.now(),
+      source: dataSource,
       info: '链路测试',
     ));
     _notify();
@@ -5341,6 +5350,7 @@ class AppState extends ChangeNotifier {
       'APRS',
       'status',
       DateTime.now(),
+      source: dataSource,
       info: text,
     ));
     _sendRaw(raw);
@@ -5941,6 +5951,7 @@ class AppState extends ChangeNotifier {
         'APRS',
         'position',
         DateTime.now(),
+        source: dataSource,
         info: '${lat.toStringAsFixed(5)}, ${lng.toStringAsFixed(5)} · 手动上报',
       ),
     );
@@ -6216,7 +6227,8 @@ class AppState extends ChangeNotifier {
     await _connect();
   }
 
-  void _onAprsLine(String line, {required bool rf}) {
+  void _onAprsLine(String line, {required bool rf, String source = 'local'}) {
+    _rxSource = source;
     // 网关转递必须在**解析之前**做：无论这条报文能否解析成台站/消息，
     // 只要它该被转递就得转递（很多报文类型本应用并不解析，但网关该转发）。
     if (rf) {
@@ -6349,6 +6361,7 @@ class AppState extends ChangeNotifier {
                 'APRS',
                 'message',
                 DateTime.now(),
+                source: dataSource,
                 info: '自动 ack → $src ($ackId)',
               ),
             );
@@ -6392,6 +6405,8 @@ class AppState extends ChangeNotifier {
           'APRS',
           type,
           DateTime.now(),
+          // 标出这条是从哪条链路收到的（APRS-IS / TNC / 声卡）
+          source: _rxSource,
           info: info.length > 80 ? info.substring(0, 80) : info,
         ),
       );
@@ -7755,6 +7770,7 @@ class AppState extends ChangeNotifier {
         'APRS',
         'message',
         DateTime.now(),
+        source: dataSource,
         info: '发给 $to：$text',
       ),
     );
@@ -7822,7 +7838,7 @@ class AppState extends ChangeNotifier {
     _log(LogLevel.info, '消息', '发送位置点给 $target：${frame}');
     _pushPacket(
       Packet(raw, myFullCall, 'APRS', 'message', DateTime.now(),
-          info: '发给 $target 位置点：${frame}'),
+          source: dataSource, info: '发给 $target 位置点：${frame}'),
     );
     _notify();
     return true;
@@ -7898,6 +7914,7 @@ class AppState extends ChangeNotifier {
         'APRS',
         'message',
         DateTime.now(),
+        source: dataSource,
         info: '群发到 $groupCall：$text',
       ),
     );
@@ -8230,7 +8247,7 @@ class AppState extends ChangeNotifier {
         '发送到 $groupCall（${usingRf ? '射频' : 'APRS-IS'}）：$frame');
     _pushPacket(
       Packet(raw, myFullCall, 'APRS', 'message', DateTime.now(),
-          info: '策略地图 → $groupCall：$frame'),
+          source: dataSource, info: '策略地图 → $groupCall：$frame'),
     );
     return true;
   }
@@ -8631,6 +8648,7 @@ class AppState extends ChangeNotifier {
             'APRS',
             'unknown',
             DateTime.now(),
+            source: 'local',
             info: raw.trim(),
           ),
         );
@@ -8680,7 +8698,8 @@ class AppState extends ChangeNotifier {
       // 会显示成两种样子（转发路径那段只有接收路径有：注入没有「路径」概念）
       if (hdr.relay.isNotEmpty) info = '$info  ·  [转递 ${hdr.relay}]';
       _pushPacket(
-        Packet(raw.trim(), src, 'APRS', type, DateTime.now(), info: info),
+        Packet(raw.trim(), src, 'APRS', type, DateTime.now(),
+            source: 'local', info: info),
       );
       _notify();
       return '已加入数据包（$src · $type）';

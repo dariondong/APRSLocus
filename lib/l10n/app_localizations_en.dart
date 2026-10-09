@@ -8353,4 +8353,40 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String locationPageInfo(String n, String m) => "Page $n / $m";
 
+  @override
+  String get packetSource => "Source";
+
+  @override
+  String get packetSrcLocal => "Local";
+
+  @override
+  String get packetSrcAprsIs => "APRS-IS";
+
+  @override
+  String get packetSrcTnc => "TNC";
+
+  @override
+  String get packetSrcAudio => "Soundcard";
+
+  @override
+  String get packetSrcPkwdwpl => "Kenwood";
+
+  @override
+  String get audioTxAmplitude => "Output amplitude (0.05–1.0)";
+
+  @override
+  String get audioTxAmplitudeTip => "Relative amplitude of the TX waveform. Clipping (≥99%) creates harmonics and destroys the FSK spectrum, while too low a level starves the far end of SNR. The 0.6 default leaves ~4 dB headroom; start at 0.5–0.7 into a radio and watch the peak in TX diagnostics.";
+
+  @override
+  String get audioTxSourceRow => "TX source";
+
+  @override
+  String get audioTxSourceYes => "This link";
+
+  @override
+  String audioTxNotSourceWarn(String src) => "The audio link is up, but it is not the current TX source — messages and beacons go out over \"$src\". To transmit via audio, pick it as the TX source in Settings → Devices.";
+
+  @override
+  String get audioTxPttHint => "The audio link never keys the radio's PTT — it only plays AFSK audio. For the radio to actually transmit, the radio itself must be keyed: set it to VOX (voice-operated), or use a cable that keys PTT from the audio/data port. If the radio never transmits, check this first.";
+
 }

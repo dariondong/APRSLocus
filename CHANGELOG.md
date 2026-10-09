@@ -1,5 +1,154 @@
 # 更新日志
 
+## [2.0.49] - 2026-10-09
+
+### 修复：声卡（音频）能收不能发 —— 找不到「输出幅度」这个旋钮
+
+**现象**
+
+用声卡 AFSK 接电台时**只能收、发出去对方解不出**（或电台根本不发射），
+而界面看起来一切正常。
+
+**排查（先排除协议层）**
+
+用仓库里那份**独立的 Python 参考实现**（非本应用代码）交叉验证：
+
+- 采样率无关：8000 / 22050 / 44100 / 48000 Hz 全部 2/2 帧解出；
+- 频偏鲁棒：±50 / ±100 / ±200 / ±300 Hz 全部 2/2 帧解出。
+
+即**波形与 AX.25 协议本身没有问题**，缺陷在「音频怎么送出去」这一段。
+顺着发送链路查，找到两个真实缺陷加一个接线前提：
+
+**缺陷 1：`output amplitude` 在界面上根本改不了**
+
+`AfskParams.amplitude`（默认 0.6）是决定**是否削顶**的增益，但音频设置页
+**没有任何输入框**能改它 —— 而两条告警（`audioTxLevelClip` /
+`audioTxLevelLow`）都写着「请调**输出幅度**」。用户被明确告知去调一个
+**不存在的旋钮**：削顶（谐波毁掉 FSK 频谱）或电平偏低（对端信噪比不够）
+时，现象正是「自检全过、对端解不出」，却无从下手。
+
+**改动**：发射卡新增「输出幅度（0.05~1.0）」输入框，改完立刻重建**调制器**
+（新增 `AudioLink.applyTxParams()`，只重建调制器、不重启链路，不打断正在
+进行的接收）。
+
+**缺陷 2：音频已连上、但不是发射来源**
+
+三条链路（APRS-IS / TNC / 音频）可**同时接收**，但**发射来源只有一个**；
+音频页此前没有任何地方体现「我这条是不是发射来源」，于是「连上了、在收包、
+一按发射没反应」时页面看着全是正常，实际消息全从别的链路走了。
+
+**改动**：采集卡新增「发射来源」一行；音频已连但非发射来源时，用橙色告警
+写明「当前会从「{来源}」发出，去设置 → 设备改成音频」。
+
+**前提 3：软件不会按电台的 PTT**
+
+音频链路只是「往声卡播一段 AFSK 音频」，**没有任何 CAT/串口 PTT 实现**。
+电台没配 **VOX 声控发射**、接线又不从数据口键控 PTT 时，电台**根本不会发射**。
+已在发射卡加显式提示。
+
+### 新增：数据包页标明来源
+
+`Packet` 增加 `source` 字段（`aprsis` / `tnc` / `audio` / `pkwdwpl` /
+`local`），数据包页的列表与原始视图都给每条报文加**来源徽标**。
+此前同一台站既可能来自 APRS-IS 也可能来自射频，排查「射频通不通 / 网关有
+没有转」时看不出这条到底从哪进来 —— 少了最关键的一条线索。
+
+### 荣誉：BG2HCB「清零」授予「播种」（sower）
+
+`docs/members.json` v61 往 `honors` 追加 `sower`（按惯例保留原主展示
+`kaishan`）；`lib/early_member.dart` 的离线兜底名单同步（`_primariesCache`
+无需改）。
+
+**测试**
+
+- 本地仅跑 `tool/check_*.py`，全部通过（含 l10n 同步 2417 键 × 6 语言、
+  官网 `check_site.py`、内嵌 JS）；
+- `flutter analyze` / `flutter test` / 双端构建由 CI 复核。
+
+> ⚠️ 说明：缺陷 1 / 2 由代码路径与静态检查推出，未在真实声卡硬件上复现
+> （开发环境无音频设备）。
+
+---
+
+## [2.0.49] - 2026-10-09 (English)
+
+### Fixed: sound-card (audio) RX works but TX is not decoded — the missing "output amplitude" knob
+
+**Symptom**
+
+With a sound-card AFSK link to a radio, you could **receive but not
+transmit** (the far end could not decode, or the radio never keyed at all),
+while the UI looked perfectly fine.
+
+**Investigation (ruling out the protocol layer first)**
+
+Cross-checked with the repo's **independent Python reference implementation**
+(not this app's code):
+
+- Sample-rate independent: 8000 / 22050 / 44100 / 48000 Hz all decode 2/2 frames;
+- Offset-tolerant: ±50 / ±100 / ±200 / ±300 Hz all decode 2/2 frames.
+
+So the **waveform and AX.25 protocol are sound**; the defect is in how the audio
+reaches the far end. Following the TX path turned up two real defects plus one
+wiring precondition:
+
+**Defect 1: `output amplitude` was not editable in the UI**
+
+`AfskParams.amplitude` (default 0.6) is the gain that decides clipping, yet the
+audio settings page had **no input** for it — while both warnings
+(`audioTxLevelClip` / `audioTxLevelLow`) tell you to adjust the **output
+amplitude**. Users were told to turn a knob that **did not exist**: whether the
+waveform clipped (harmonics destroying the FSK spectrum) or sat too low (not
+enough SNR at the far end), the symptom was exactly "self-test passes, peer can't
+decode", with no way to fix it.
+
+**Change**: the TX card gains an "Output amplitude (0.05–1.0)" field that takes
+effect immediately by rebuilding only the **modulator** (new
+`AudioLink.applyTxParams()` — no link restart, so an in-progress receive is not
+interrupted).
+
+**Defect 2: audio connected, but not the TX source**
+
+The three links (APRS-IS / TNC / audio) can **receive simultaneously**, but there
+is only **one TX source**; the audio page never showed whether it was the TX
+source, so "connected, receiving, but transmit does nothing" looked all-green
+while messages actually went out over another link.
+
+**Change**: the capture card gains a "TX source" row; when audio is up but is
+not the TX source, an orange warning states that traffic will go out over
+"{source}" and points to Settings → Devices.
+
+**Precondition 3: the app never keys the radio's PTT**
+
+The audio link only **plays AFSK audio** — there is **no CAT/serial PTT** at all.
+Unless the radio is set to **VOX**, or the cable keys PTT from the data port, the
+radio never transmits. An explicit hint was added to the TX card.
+
+### Added: packet source labels on the packets page
+
+`Packet` gained a `source` field (`aprsis` / `tnc` / `audio` / `pkwdwpl` /
+`local`), and the packets page now badges every frame (both list and raw views).
+Previously the same station could arrive via APRS-IS or via RF, and you could not
+tell which when checking "is RF working / did the gateway relay it?" — the single
+most valuable clue was missing.
+
+### Honor: "Sower" (播种) granted to BG2HCB "清零"
+
+`docs/members.json` v61 appends `sower` to `honors` (keeping the existing primary
+`kaishan`, per convention); the offline fallback list in `lib/early_member.dart`
+is synced (`_primariesCache` needs no change).
+
+**Testing**
+
+- Locally only `tool/check_*.py` were run and all pass (including l10n sync with
+  2417 keys × 6 locales, the site `check_site.py`, and embedded JS);
+- `flutter analyze` / `flutter test` and both platform builds are re-verified by CI.
+
+> ⚠️ Note: defects 1 / 2 were derived from the code path and static checks, not
+> reproduced on real sound-card hardware (the dev environment has no audio device).
+
+---
+
 ## [2.0.48] - 2026-10-09
 
 ### 修复：设置页箭头没贴右

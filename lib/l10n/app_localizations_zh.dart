@@ -8015,6 +8015,42 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String locationPageInfo(String n, String m) => "第 $n / $m 页";
 
+  @override
+  String get packetSource => "来源";
+
+  @override
+  String get packetSrcLocal => "本机";
+
+  @override
+  String get packetSrcAprsIs => "APRS-IS";
+
+  @override
+  String get packetSrcTnc => "TNC";
+
+  @override
+  String get packetSrcAudio => "声卡";
+
+  @override
+  String get packetSrcPkwdwpl => "Kenwood";
+
+  @override
+  String get audioTxAmplitude => "输出幅度（0.05~1.0）";
+
+  @override
+  String get audioTxAmplitudeTip => "发射波形的相对幅度。削顶（≥99%）会产生谐波、直接毁掉 FSK 频谱；过低则对端信噪比不够。默认 0.6 留约 4dB 余量；接电台时先试 0.5~0.7，再看「发射体检」的峰值。";
+
+  @override
+  String get audioTxSourceRow => "发射来源";
+
+  @override
+  String get audioTxSourceYes => "是本链路";
+
+  @override
+  String audioTxNotSourceWarn(String src) => "音频链路已连上，但当前发射来源不是它 —— 消息与信标会从「$src」发出。需要从音频发射时，去「设置 → 设备」把音频选为发射来源。";
+
+  @override
+  String get audioTxPttHint => "音频链路不会去按电台的 PTT —— 它只是播放一段 AFSK 音频。要让电台真的发射，必须由电台自己键控：把电台设为 VOX 声控发射，或用支持声控/数据口PTT 的接线。若电台一直不发射，先查这一条。";
+
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
@@ -16026,5 +16062,41 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String locationPageInfo(String n, String m) => "第 $n / $m 頁";
+
+  @override
+  String get packetSource => "來源";
+
+  @override
+  String get packetSrcLocal => "本機";
+
+  @override
+  String get packetSrcAprsIs => "APRS-IS";
+
+  @override
+  String get packetSrcTnc => "TNC";
+
+  @override
+  String get packetSrcAudio => "音效卡";
+
+  @override
+  String get packetSrcPkwdwpl => "Kenwood";
+
+  @override
+  String get audioTxAmplitude => "輸出幅度（0.05~1.0）";
+
+  @override
+  String get audioTxAmplitudeTip => "發射波形的相對幅度。削頂（≥99%）會產生諧波、直接毀掉 FSK 頻譜；過低則對端信噪比不夠。預設 0.6 留約 4dB 餘量；接電台時先試 0.5~0.7，再看「發射體檢」的峰值。";
+
+  @override
+  String get audioTxSourceRow => "發射來源";
+
+  @override
+  String get audioTxSourceYes => "是本鏈路";
+
+  @override
+  String audioTxNotSourceWarn(String src) => "音訊鏈路已連上，但目前發射來源不是它 —— 訊息與信標會從「$src」發出。需要從音訊發射時，去「設定 → 裝置」把音訊選為發射來源。";
+
+  @override
+  String get audioTxPttHint => "音訊鏈路不會去按電台的 PTT —— 它只是播放一段 AFSK 音訊。要讓電台真的發射，必須由電台自己鍵控：把電台設為 VOX 聲控發射，或用支援聲控/資料埠PTT 的接線。若電台一直不發射，先查這一條。";
 
 }

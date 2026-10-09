@@ -71,6 +71,39 @@ class _PacketsPageState extends State<PacketsPage> {
     }
   }
 
+  /// 来源 id → 短标签（数据包页把「从哪条链路上来」标在每一条上）。
+  String _sn(BuildContext context, String s) {
+    final l = S.of(context);
+    switch (s) {
+      case AppState.srcAprsIs:
+        return l.packetSrcAprsIs;
+      case AppState.srcTnc:
+        return l.packetSrcTnc;
+      case AppState.srcAudio:
+        return l.packetSrcAudio;
+      case AppState.srcPkwdwpl:
+        return l.packetSrcPkwdwpl;
+      default:
+        return l.packetSrcLocal;
+    }
+  }
+
+  /// 来源 id → 标签颜色（与数据来源页的配色一致，便于一眼分辨）。
+  Color _sc(String s) {
+    switch (s) {
+      case AppState.srcAprsIs:
+        return C.blue;
+      case AppState.srcTnc:
+        return C.green;
+      case AppState.srcAudio:
+        return C.orange;
+      case AppState.srcPkwdwpl:
+        return C.purple;
+      default:
+        return C.slate;
+    }
+  }
+
   @override
   void dispose() {
     _tx.dispose();
@@ -437,6 +470,41 @@ class _PacketsPageState extends State<PacketsPage> {
                             style: ts(9, c: tc, w: FontWeight.w700, ls: 0.5),
                           ),
                         ),
+                        SizedBox(width: 6),
+                        // 来源徽标：一眼看出这条报文是从 APRS-IS 还是射频
+                        // （TNC / 声卡）来的 —— 排查链路问题时最关键的一条信息。
+                        Tooltip(
+                          message: S.of(context).packetSource,
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 6,
+                              vertical: 3,
+                            ),
+                            decoration: BoxDecoration(
+                              color: _sc(p.source).withValues(alpha: 0.1),
+                              borderRadius: BorderRadius.circular(6),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Container(
+                                  width: 5,
+                                  height: 5,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: _sc(p.source),
+                                  ),
+                                ),
+                                SizedBox(width: 4),
+                                Text(
+                                  _sn(context, p.source),
+                                  style: ts(9,
+                                      c: _sc(p.source), w: FontWeight.w700),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
                         SizedBox(width: 8),
                         Flexible(
                           child: Text(
@@ -509,6 +577,12 @@ class _PacketsPageState extends State<PacketsPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(_fts(p.time), style: mono(10, c: C.greyLight)),
+                SizedBox(width: 8),
+                // 原始模式下也标来源：排查时常常只看这一屏。
+                Text(
+                  _sn(context, p.source),
+                  style: mono(10, c: _sc(p.source)),
+                ),
                 SizedBox(width: 10),
                 Expanded(
                   child: Text(

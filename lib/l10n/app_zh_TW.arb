@@ -3383,5 +3383,18 @@
   "shareStationSent": "已分享 {call}",
   "locationPageInfo": "第 {n} / {m} 頁",
   "@locationPageInfo": {"placeholders": {"n": {"type": "String"}, "m": {"type": "String"}}},
-  "@shareStationSent": {"placeholders": {"call": {"type": "String"}}}
+  "@shareStationSent": {"placeholders": {"call": {"type": "String"}}},
+  "packetSource": "來源",
+  "packetSrcLocal": "本機",
+  "packetSrcAprsIs": "APRS-IS",
+  "packetSrcTnc": "TNC",
+  "packetSrcAudio": "音效卡",
+  "packetSrcPkwdwpl": "Kenwood",
+  "audioTxAmplitude": "輸出幅度（0.05~1.0）",
+  "audioTxAmplitudeTip": "發射波形的相對幅度。削頂（≥99%）會產生諧波、直接毀掉 FSK 頻譜；過低則對端信噪比不夠。預設 0.6 留約 4dB 餘量；接電台時先試 0.5~0.7，再看「發射體檢」的峰值。",
+  "audioTxSourceRow": "發射來源",
+  "audioTxSourceYes": "是本鏈路",
+  "audioTxNotSourceWarn": "音訊鏈路已連上，但目前發射來源不是它 —— 訊息與信標會從「{src}」發出。需要從音訊發射時，去「設定 → 裝置」把音訊選為發射來源。",
+  "@audioTxNotSourceWarn": {"placeholders": {"src": {"type": "String"}}},
+  "audioTxPttHint": "音訊鏈路不會去按電台的 PTT —— 它只是播放一段 AFSK 音訊。要讓電台真的發射，必須由電台自己鍵控：把電台設為 VOX 聲控發射，或用支援聲控/資料埠PTT 的接線。若電台一直不發射，先查這一條。"
 }

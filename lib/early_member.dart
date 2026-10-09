@@ -421,7 +421,7 @@ Future<void> resetHonorsAndRecheck() async {
 void _seedDefaults() {
   _honorsCache = {
     'BG7LZQ': ['kaishan', 'developer', 'earlyMember', 'sower', 'jadeGift'],
-    'BG2HCB': ['kaishan', 'developer', 'earlyMember'],
+    'BG2HCB': ['kaishan', 'developer', 'earlyMember', 'sower'],
     'BA4UAX': ['kaishan', 'developer', 'earlyMember'],
     'BD3QID': ['kaishan', 'developer', 'earlyMember'],
     'BA7KSM': ['developer'],

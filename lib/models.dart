@@ -515,7 +515,18 @@ class Packet {
   final String raw, src, dest, type;
   final DateTime time;
   final String? info;
-  Packet(this.raw, this.src, this.dest, this.type, this.time, {this.info});
+
+  /// 数据包来源（哪条链路收到 / 发出去的）。
+  ///
+  /// 取值与 [AppState] 的 `src*` 常量一致（`aprsis` / `tnc` / `audio` /
+  /// `pkwdwpl` / `box`），本机生成或手动注入的包用 `local`。
+  ///
+  /// 为什么要有：数据包页此前不区分来源，同一个台站既可能从 APRS-IS 来、
+  /// 也可能从射频（TNC / 声卡）来 —— 排查「射频通不通 / 网关有没有转」
+  /// 时，看不出这一条到底是从哪进来的，等于少了最关键的一条线索。
+  final String source;
+  Packet(this.raw, this.src, this.dest, this.type, this.time,
+      {this.info, this.source = 'local'});
 }
 
 enum LogLevel { debug, info, warn, error }

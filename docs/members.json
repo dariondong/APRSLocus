@@ -1,6 +1,6 @@
 {
-  "version": 60,
-  "updated": "2026-10-08",
+  "version": 61,
+  "updated": "2026-10-09",
   "developers": [
     {
       "call": "BG7LZQ",
@@ -103,7 +103,8 @@
       "honors": [
         "kaishan",
         "developer",
-        "earlyMember"
+        "earlyMember",
+        "sower"
       ],
       "primary": "kaishan"
     },

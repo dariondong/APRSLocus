@@ -38,6 +38,7 @@ class _AudioSettingsPageState extends State<AudioSettingsPage> {
   late final TextEditingController _mark;
   late final TextEditingController _space;
   late final TextEditingController _txDelay;
+  late final TextEditingController _amplitude;
   late final TextEditingController _path;
   late final TextEditingController _maxFrame;
   late final TextEditingController _csma;
@@ -92,6 +93,8 @@ class _AudioSettingsPageState extends State<AudioSettingsPage> {
     _mark = TextEditingController(text: '${c.afsk.markHz.round()}');
     _space = TextEditingController(text: '${c.afsk.spaceHz.round()}');
     _txDelay = TextEditingController(text: '${c.afsk.txDelayMs}');
+    _amplitude =
+        TextEditingController(text: c.afsk.amplitude.toStringAsFixed(2));
     _path = TextEditingController(text: c.path);
     _maxFrame = TextEditingController(text: '${c.maxFrame}');
     _csma = TextEditingController(text: '${c.csmaWaitMs}');
@@ -103,7 +106,7 @@ class _AudioSettingsPageState extends State<AudioSettingsPage> {
   @override
   void dispose() {
     for (final c in [
-      _sampleRate, _baud, _mark, _space, _txDelay,
+      _sampleRate, _baud, _mark, _space, _txDelay, _amplitude,
       _path, _maxFrame, _csma, _wavPath, _wavTnc2,
     ]) {
       c.dispose();
@@ -261,6 +264,20 @@ class _AudioSettingsPageState extends State<AudioSettingsPage> {
   int _intOf(TextEditingController c, int fallback) =>
       int.tryParse(c.text.trim()) ?? fallback;
 
+  /// 当前发射来源的本地化名称（音频页用来提示「不是我在发」）。
+  String _txSourceName(S s) {
+    switch (st.dataSource) {
+      case AppState.srcTnc:
+        return s.dataSourceTnc;
+      case AppState.srcAudio:
+        return s.dataSourceAudio;
+      case AppState.srcPkwdwpl:
+        return s.dataSourcePkwdwpl;
+      default:
+        return s.dataSourceAprsIs;
+    }
+  }
+
   double _doubleOf(TextEditingController c, double fallback) =>
       double.tryParse(c.text.trim()) ?? fallback;
 
@@ -275,12 +292,15 @@ class _AudioSettingsPageState extends State<AudioSettingsPage> {
       markHz: _doubleOf(_mark, c.afsk.markHz).clamp(300, 4000),
       spaceHz: _doubleOf(_space, c.afsk.spaceHz).clamp(300, 4000),
       txDelayMs: _intOf(_txDelay, c.afsk.txDelayMs).clamp(0, 2550),
+      amplitude:
+          _doubleOf(_amplitude, c.afsk.amplitude).clamp(0.05, 1.0),
     );
     c.path = _path.text.trim();
     c.maxFrame = _intOf(_maxFrame, c.maxFrame).clamp(16, 512);
     c.csmaWaitMs = _intOf(_csma, c.csmaWaitMs).clamp(0, 10000);
     _sampleRate.text = '${c.afsk.sampleRate}';
     _baud.text = '${c.afsk.baud.round()}';
+    _amplitude.text = c.afsk.amplitude.toStringAsFixed(2);
     await audio.save();
     if (restart || c.afsk.sampleRate != oldRate) {
       await audio.applyParams();
@@ -458,6 +478,17 @@ class _AudioSettingsPageState extends State<AudioSettingsPage> {
           audio.connected ? s.connected : s.disconnected,
           valueColor: audio.connected ? C.green : C.slate,
         ),
+        // 发射来源：链路连上 ≠ 从这条链路发。三条链路并列时发射来源只有一个，
+        // 而页面此前没有任何地方体现「我这条是不是发射来源」——
+        // 「能收、发出去没反应」最常见的根因就在这里。
+        SettingsRow2(
+          s.audioTxSourceRow,
+          st.usingAudio ? s.audioTxSourceYes : _txSourceName(s),
+          valueColor: st.usingAudio ? C.green : C.orange,
+        ),
+        if (audio.connected && !st.usingAudio)
+          SettingsHint(s.audioTxNotSourceWarn(_txSourceName(s)),
+              color: C.orange, icon: Icons.warning_amber_rounded),
         SettingsRow2(
           s.audioSynced,
           audio.synced ? s.audioSynced : s.audioUnlocked,
@@ -614,6 +645,16 @@ class _AudioSettingsPageState extends State<AudioSettingsPage> {
         SettingsInput(s.kissMaxFrame, _maxFrame,
             tip: s.kissMaxFrameTip,
             onChanged: (_) => unawaited(_collect())),
+        // 输出幅度：发射波形的相对幅度（0.05~1.0）。这是「发射对方解不出」
+        // 时最该动的一个旋钮 —— 高了削顶（产生谐波毁掉 FSK 频谱），低了
+        // 对端信噪比不够。此前只读默认值、界面上根本改不了，而削顶/偏低
+        // 两种告警都写着「请调输出幅度」，用户却无从下手。
+        SettingsInput(s.audioTxAmplitude, _amplitude,
+            tip: s.audioTxAmplitudeTip,
+            onEditingComplete: () async {
+              await _collect();
+              audio.applyTxParams();
+            }),
         // 发射体检：只在真的发过一次之后显示（没发过时显示 0% 没意义）
         if (audio.lastTxSeconds > 0) ...[
           SettingsRow2(
@@ -632,6 +673,9 @@ class _AudioSettingsPageState extends State<AudioSettingsPage> {
                 icon: Icons.warning_amber_rounded),
         ],
         SettingsHint(s.audioTxLevelTip, color: C.grey),
+        // 电台不发射时最该先查的一条：软件不会按 PTT。
+        SettingsHint(s.audioTxPttHint, color: C.orange,
+            icon: Icons.info_outline_rounded),
         SettingsSwitch(s.kissAutoAck, value: audio.config.autoAck,
             color: C.cyan, onChanged: (v) async {
           audio.config.autoAck = v;

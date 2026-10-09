@@ -14524,6 +14524,78 @@ abstract class AppLocalizations {
   /// **'第 {n} / {m} 页'**
   String locationPageInfo(String n, String m);
 
+  /// No description provided for @packetSource.
+  ///
+  /// In zh, this message translates to:
+  /// **'来源'**
+  String get packetSource;
+
+  /// No description provided for @packetSrcLocal.
+  ///
+  /// In zh, this message translates to:
+  /// **'本机'**
+  String get packetSrcLocal;
+
+  /// No description provided for @packetSrcAprsIs.
+  ///
+  /// In zh, this message translates to:
+  /// **'APRS-IS'**
+  String get packetSrcAprsIs;
+
+  /// No description provided for @packetSrcTnc.
+  ///
+  /// In zh, this message translates to:
+  /// **'TNC'**
+  String get packetSrcTnc;
+
+  /// No description provided for @packetSrcAudio.
+  ///
+  /// In zh, this message translates to:
+  /// **'声卡'**
+  String get packetSrcAudio;
+
+  /// No description provided for @packetSrcPkwdwpl.
+  ///
+  /// In zh, this message translates to:
+  /// **'Kenwood'**
+  String get packetSrcPkwdwpl;
+
+  /// No description provided for @audioTxAmplitude.
+  ///
+  /// In zh, this message translates to:
+  /// **'输出幅度（0.05~1.0）'**
+  String get audioTxAmplitude;
+
+  /// No description provided for @audioTxAmplitudeTip.
+  ///
+  /// In zh, this message translates to:
+  /// **'发射波形的相对幅度。削顶（≥99%）会产生谐波、直接毁掉 FSK 频谱；过低则对端信噪比不够。默认 0.6 留约 4dB 余量；接电台时先试 0.5~0.7，再看「发射体检」的峰值。'**
+  String get audioTxAmplitudeTip;
+
+  /// No description provided for @audioTxSourceRow.
+  ///
+  /// In zh, this message translates to:
+  /// **'发射来源'**
+  String get audioTxSourceRow;
+
+  /// No description provided for @audioTxSourceYes.
+  ///
+  /// In zh, this message translates to:
+  /// **'是本链路'**
+  String get audioTxSourceYes;
+
+  /// No description provided for @audioTxNotSourceWarn.
+  ///
+  /// In zh, this message translates to:
+  /// **'音频链路已连上，但当前发射来源不是它 —— 消息与信标会从「{src}」发出。需要从音频发射时，去「设置 → 设备」把音频选为发射来源。'**
+  String audioTxNotSourceWarn(String src);
+
+  /// No description provided for @audioTxPttHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'音频链路不会去按电台的 PTT —— 它只是播放一段 AFSK 音频。要让电台真的发射，必须由电台自己键控：把电台设为 VOX 声控发射，或用支持声控/数据口PTT 的接线。若电台一直不发射，先查这一条。'**
+  String get audioTxPttHint;
+
 }
 
 class _AppLocalizationsDelegate
