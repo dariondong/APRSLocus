@@ -2470,8 +2470,7 @@ class _MessagesPageState extends State<MessagesPage> {
         continue;
       }
       // 与 URL 重叠的跳过（URL 优先）
-      if (hits.any((h) =>
-          h.isUrl && m.start < h.end && m.end > h.start)) {
+      if (hits.any((h) => h.$4 && m.start < h.$2 && m.end > h.$1)) {
         continue;
       }
       hits.add((m.start, m.end, m.group(0)!, false));
