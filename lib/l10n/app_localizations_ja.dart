@@ -2657,6 +2657,8 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get feedback => 'フィードバック';
+  String get feedbackEntryDesc => 'リポジトリで Issue';
+  String get openLinkFailed => 'リンクを開けませんでした';
 
   @override
   String get officialWebsite => '公式サイト';

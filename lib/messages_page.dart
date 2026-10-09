@@ -317,7 +317,13 @@ class _MessagesPageState extends State<MessagesPage> {
         if (_selected.isEmpty && partners.isNotEmpty)
           _selected = partners.first;
 
-        return Column(
+        // 点聊天框以外任意处 → 收起键盘并取消输入框聚焦（用户反馈：点别处
+        // 取消不了聚焦）。用 opaque 让空白处也可命中；落在子控件（按钮、链接、
+        // 可点气泡）上的点击由子控件先消费，不会误触发。
+        return GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: () => _inputFocus.unfocus(),
+          child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             // 功能引导（首次进入显示；看过后不占位置）
@@ -443,7 +449,8 @@ class _MessagesPageState extends State<MessagesPage> {
               ),
             ),
           ],
-        );;
+          ),
+        );
       },
     );
   }

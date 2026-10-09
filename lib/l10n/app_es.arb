@@ -873,6 +873,8 @@
   "features": "Funciones",
   "openSource": "Agradecimientos de código abierto",
   "feedback": "Comentarios",
+  "feedbackEntryDesc": "Abrir un issue",
+  "openLinkFailed": "No se pudo abrir el enlace",
   "officialWebsite": "Sitio web oficial",
   "projectRepo": "Repositorio",
   "testMembers": "Colaboradores de prueba",

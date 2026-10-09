@@ -2742,6 +2742,8 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get feedback => 'Masukan pengguna';
+  String get feedbackEntryDesc => 'Buka issue repo';
+  String get openLinkFailed => 'Tidak bisa membuka tautan';
 
   @override
   String get officialWebsite => 'Situs resmi';

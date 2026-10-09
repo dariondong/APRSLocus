@@ -881,6 +881,8 @@
   "features": "功能特性",
   "openSource": "开源致谢",
   "feedback": "用户反馈",
+  "feedbackEntryDesc": "到仓库提 Issue",
+  "openLinkFailed": "打开链接失败",
   "officialWebsite": "官方网站",
   "projectRepo": "项目仓库",
   "testMembers": "测试成员",

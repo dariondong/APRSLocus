@@ -2758,6 +2758,8 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get feedback => 'Comentarios';
+  String get feedbackEntryDesc => 'Abrir un issue';
+  String get openLinkFailed => 'No se pudo abrir el enlace';
 
   @override
   String get officialWebsite => 'Sitio web oficial';

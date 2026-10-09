@@ -2741,6 +2741,8 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get feedback => 'Feedback';
+  String get feedbackEntryDesc => 'Open a repo issue';
+  String get openLinkFailed => 'Couldn't open the link';
 
   @override
   String get officialWebsite => 'Official website';

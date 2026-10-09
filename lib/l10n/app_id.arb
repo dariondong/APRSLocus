@@ -874,6 +874,8 @@
   "features": "Fitur",
   "openSource": "Ucapan terima kasih open source",
   "feedback": "Masukan pengguna",
+  "feedbackEntryDesc": "Buka issue repo",
+  "openLinkFailed": "Tidak bisa membuka tautan",
   "officialWebsite": "Situs resmi",
   "projectRepo": "Repositori",
   "testMembers": "Anggota penguji",

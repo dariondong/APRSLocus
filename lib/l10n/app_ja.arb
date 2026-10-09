@@ -874,6 +874,8 @@
   "features": "機能",
   "openSource": "オープンソース謝辞",
   "feedback": "フィードバック",
+  "feedbackEntryDesc": "リポジトリで Issue",
+  "openLinkFailed": "リンクを開けませんでした",
   "officialWebsite": "公式サイト",
   "projectRepo": "リポジトリ",
   "testMembers": "テストメンバー",

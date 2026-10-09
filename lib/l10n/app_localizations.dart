@@ -4970,6 +4970,8 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'用户反馈'**
   String get feedback;
+  String get feedbackEntryDesc;
+  String get openLinkFailed;
 
   /// No description provided for @officialWebsite.
   ///

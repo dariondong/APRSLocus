@@ -1,5 +1,76 @@
 # 更新日志
 
+## [2.0.47] - 2026-10-09
+
+### 改进：点空白收起键盘 / 设置页整理对齐 / 反馈入口
+
+**需求**
+
+- 点了输入框后**取消不了聚焦**；应当**点聊天框以外**就取消聚焦（收起键盘）。
+- 设置页有点乱，**图标等没对齐**，请整理。
+- 设置页**加一个反馈链接**，路由到仓库的 **ISSUE**。
+
+**改动**
+
+- **点空白取消聚焦**（`lib/messages_page.dart`）：消息页根节点套一层
+  `GestureDetector`（`HitTestBehavior.opaque`），点输入框以外任意处即
+  `_inputFocus.unfocus()`；落在按钮/链接/可点气泡上的点击仍由子控件先消费。
+  失焦同时把主操作键从「发送」切回「＋」。
+- **设置页对齐整理**（`lib/settings_page.dart`、`lib/settings_widgets.dart`）：
+  主页十个入口原先各写各的，图标底座 32/40、图标 17/20、箭头 18/20、
+  标题/说明排布两种（`Text+Expanded` 与 `Flexible(2)+Expanded(3)`）混用 ——
+  正是「没对齐」的来源。抽出统一的 `SettingsEntryTile`：**底座 32、图标 17、
+  箭头 18**，标题/说明按 **2:3** 固定份额，所有入口说明左端对齐；分类卡
+  `_catCard` 一并归一（40→32、20→17、圆角 12→8）；`SettingsNavRow` 图标底座
+  30→32、图标 16→17，子页入口同grid对齐。
+- **反馈入口**（`lib/settings_page.dart`）：设置页「关于」下方新增「**用户反馈**」
+  入口，点击用系统浏览器打开 `github.com/dariondong/APRSLocus/issues`；
+  新增 l10n 键 `feedbackEntryDesc` / `openLinkFailed`（六语言）。
+
+**测试**
+
+- `tool/check_*.py`（23 项）与 `check_l10n_sync.py` 全部通过；`flutter analyze`
+  / `flutter test` 由 CI 复核。
+
+---
+
+## [2.0.47] - 2026-10-09 (English)
+
+### Improved: tap-outside to dismiss keyboard / tidier, aligned settings / feedback entry
+
+**Request**
+
+- Tapping into the compose box left it stuck focused; tapping **anywhere outside**
+  it should clear focus (and dismiss the keyboard).
+- The settings page looked cluttered — **icons and rows were not aligned**.
+- Add a **feedback link** in settings that routes to the repo **issues**.
+
+**Changes**
+
+- **Tap-outside to unfocus** (`lib/messages_page.dart`): the page root now wraps
+  its content in a `GestureDetector` (`HitTestBehavior.opaque`) so a tap anywhere
+  outside the field calls `_inputFocus.unfocus()`; taps on buttons/links/tappable
+  bubbles are still consumed by the child first. Losing focus also returns the main
+  key from "send" back to "+".
+- **Settings alignment pass** (`lib/settings_page.dart`, `lib/settings_widgets.dart`):
+  the ~10 home entries each hand-rolled their row with icon tiles at 32/40, icons at
+  17/20, chevrons at 18/20, and two different title/description layouts
+  (`Text+Expanded` vs `Flexible(2)+Expanded(3)`) — the source of the "misaligned"
+  look. Extracted a shared `SettingsEntryTile`: **tile 32, icon 17, chevron 18**,
+  title/description at a fixed **2:3** share so every row's description starts at
+  the same x. The category card `_catCard` is normalized to the same metrics
+  (40→32, 20→17, radius 12→8), and `SettingsNavRow` icons go 30→32 / 16→17.
+- **Feedback entry** (`lib/settings_page.dart`): a "**Feedback**" entry below
+  "About" opens `github.com/dariondong/APRSLocus/issues` in the system browser;
+  new l10n keys `feedbackEntryDesc` / `openLinkFailed` (six languages).
+
+**Testing**
+
+- `tool/check_*.py` (23 checks) and `check_l10n_sync.py` all pass; `flutter analyze`
+  / `flutter test` are re-verified by CI.
+
+---
+
 ## [2.0.46] - 2026-10-09
 
 ### 改进：位置点小面板 / 输入键随输入切换 / 译发移到外面

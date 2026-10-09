@@ -881,6 +881,8 @@
   "features": "功能特性",
   "openSource": "開源致謝",
   "feedback": "使用者反饋",
+  "feedbackEntryDesc": "到倉庫提 Issue",
+  "openLinkFailed": "開啟連結失敗",
   "officialWebsite": "官方網站",
   "projectRepo": "專案倉庫",
   "testMembers": "測試成員",

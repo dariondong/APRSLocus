@@ -899,6 +899,8 @@
   "features": "Features",
   "openSource": "Open-source acknowledgements",
   "feedback": "Feedback",
+  "feedbackEntryDesc": "Open a repo issue",
+  "openLinkFailed": "Couldn't open the link",
   "officialWebsite": "Official website",
   "projectRepo": "Repository",
   "testMembers": "Test members",

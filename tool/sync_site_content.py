@@ -204,6 +204,25 @@ CARDS = [
 # 只列「重点版本」：中间几十个纯修 bug 的版本归纳进文字说明，完整记录指向 Releases。
 CL = [
     {
+        'ver': 'v2.0.47', 'date': '2026-10-09',
+        'items': [
+            ('fix',
+             T('**点空白收起键盘**：点聊天框以外任意处即取消输入聚焦；'
+               '**设置页整理对齐**（图标底座 / 图标 / 箭头尺寸统一，说明文字'
+               '左端对齐）；「关于」下方新增「**用户反馈**」入口，直达'
+               '**仓库 Issue**。',
+               '**點空白收起鍵盤**：點聊天框以外任意處即取消輸入聚焦；'
+               '**設定頁整理對齊**（圖示底座 / 圖示 / 箭頭尺寸統一，說明文字'
+               '左端對齊）；「關於」下方新增「**使用者回饋**」入口，直達'
+               '**倉庫 Issue**。',
+               '**Tap outside to dismiss the keyboard**: tapping anywhere outside '
+               'the compose box clears focus; the **settings page is aligned** '
+               '(unified icon-tile / icon / chevron sizes, descriptions start at '
+               'the same x); a new "**Feedback**" entry under "About" opens the '
+               '**repo issues**.')),
+        ],
+    },
+    {
         'ver': 'v2.0.46', 'date': '2026-10-09',
         'items': [
             ('up',

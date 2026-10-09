@@ -4,6 +4,7 @@ import 'widgets.dart';
 import 'state.dart';
 import 'material.dart';
 import 'guide.dart';
+import 'theme_store.dart';
 
 /// 设置子页面外壳：标题 + 返回 + 可滚动内容
 class SettingsPageShell extends StatelessWidget {
@@ -437,13 +438,13 @@ class SettingsNavRow extends StatelessWidget {
             border: Border(bottom: BorderSide(color: C.border, width: 0.4))),
         child: Row(children: [
           Container(
-            width: 30,
-            height: 30,
+            width: 32,
+            height: 32,
             decoration: BoxDecoration(
               color: color.withValues(alpha: 0.12),
               borderRadius: BorderRadius.circular(8),
             ),
-            child: Icon(icon, size: 16, color: color),
+            child: Icon(icon, size: 17, color: color),
           ),
           const SizedBox(width: 10),
           Expanded(
@@ -697,3 +698,87 @@ class SettingsSectionCard extends StatelessWidget {
     );
   }
 }
+
+/// 设置主页整卡入口行（图标 + 标题 + 可选说明 + 右箭头）。
+///
+/// 主页原先有十来个入口各自手写这一段：图标底座在 32/40 间、图标在 17/20 间、
+/// 箭头在 18/20 间各写各的；更乱的是标题与说明的排布 —— 有的用
+/// `Text(标题) + Expanded(说明)`，说明紧跟标题（标题长短不同 → 说明起始位置
+/// 参差不齐）；有的用 `Flexible(2) + Expanded(3)`（说明固定在 40% 处）。两种混用
+/// 就是用户看到的「没对齐」。统一到这里：**底座 32、图标 17、箭头 18**，
+/// 标题/说明按 **2:3** 固定份额，所有入口的说明左端对齐。
+class SettingsEntryTile extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final String? desc;
+  /// 图标底色渐变（主题可替换）。与主页其它入口一致的两色回退。
+  final List<Color> fallback;
+  /// 图标插槽 id。给了它图标可被主题替换。
+  final String? slot;
+  final VoidCallback onTap;
+
+  const SettingsEntryTile({
+    super.key,
+    required this.icon,
+    required this.title,
+    this.desc,
+    required this.fallback,
+    this.slot,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final iconBox = Container(
+      width: 32,
+      height: 32,
+      decoration: C.accentDeco(radius: 8, fallback: fallback),
+      child: slot == null
+          ? Icon(icon, color: Colors.white, size: 17)
+          : ThemeController.instance.buildSlotIcon(
+              slot!,
+              size: 17,
+              color: Colors.white,
+              fallbackIcon: icon,
+            ),
+    );
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.all(14),
+        decoration: cardDeco(),
+        child: Row(
+          children: [
+            iconBox,
+            const SizedBox(width: 10),
+            Flexible(
+              flex: 2,
+              child: Text(
+                title,
+                style: ts(13, w: FontWeight.w700),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+            const SizedBox(width: 6),
+            if (desc != null)
+              Expanded(
+                flex: 3,
+                child: Text(
+                  desc!,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(fontSize: 10, color: Color(0xFF98A2B8)),
+                ),
+              )
+            else
+              const Spacer(),
+            const SizedBox(width: 4),
+            Icon(Icons.chevron_right_rounded, color: C.grey, size: 18),
+          ],
+        ),
+      ),
+    );
+  }
+}
+

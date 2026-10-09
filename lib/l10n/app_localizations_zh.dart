@@ -2628,6 +2628,8 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get feedback => '用户反馈';
+  String get feedbackEntryDesc => '到仓库提 Issue';
+  String get openLinkFailed => '打开链接失败';
 
   @override
   String get officialWebsite => '官方网站';
@@ -10638,6 +10640,8 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get feedback => '使用者反饋';
+  String get feedbackEntryDesc => '到倉庫提 Issue';
+  String get openLinkFailed => '開啟連結失敗';
 
   @override
   String get officialWebsite => '官方網站';
