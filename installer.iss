@@ -19,7 +19,10 @@ DefaultGroupName={#MyAppName}
 DisableProgramGroupPage=yes
 UninstallDisplayIcon={app}\{#MyAppExeName}
 OutputDir=output
-OutputBaseFilename=APRSLocus_Setup_{#MyAppVersion}
+#ifndef MyOutBase
+#define MyOutBase "APRSLocus_Setup_" + MyAppVersion
+#endif
+OutputBaseFilename={#MyOutBase}
 Compression=lzma2
 SolidCompression=yes
 WizardStyle=modern
