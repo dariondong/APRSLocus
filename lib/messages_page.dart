@@ -4463,15 +4463,8 @@ class _MessagesPageState extends State<MessagesPage> {
       if (group != null) {
         final text = _input.text.trim();
         if (!await _confirmLength(st, group.groupCall, text)) return;
-        // 用户要求：群发前提示一次确认（一条广播发给全体成员，发出去不可撤回）。
         if (!mounted) return;
-        if (!await _confirmAction(
-          S.of(context).groupChat,
-          S.of(context).confirmSendToGroup(group.groupCall),
-        )) {
-          return;
-        }
-        if (!mounted) return;
+        // 用户要求：群聊发送不再弹「确定/取消」确认，直接发。
         widget.state.sendGroupMessage(group.groupCall, text, groupId: group.id);
       }
       _input.clear();

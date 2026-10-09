@@ -8282,7 +8282,7 @@ class AppState extends ChangeNotifier {
 
     switch (frame.op) {
       case 'X':
-        if (strategyItems.any((k, v) => v.groupCall == gc)) {
+        if (strategyItems.values.any((v) => v.groupCall == gc)) {
           strategyItems.removeWhere((k, v) => v.groupCall == gc);
           _lineParts.removeWhere((k, _) => k.startsWith('$gc|'));
           _log(LogLevel.info, '策略地图', '$gc 图层被 ${src.toUpperCase()} 清空');
