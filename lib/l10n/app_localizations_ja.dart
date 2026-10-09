@@ -4818,6 +4818,11 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String get updateChannel => '更新チャネル';
 
+
+
+  @override
+
+  String get updateChannelQinglingHint => '自前ミラーチャネル（清零）';
   @override
   String serverReturned(int code) {
     return 'サーバーの応答：$code';

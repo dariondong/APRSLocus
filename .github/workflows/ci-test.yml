@@ -326,11 +326,29 @@ jobs:
       - name: Build Windows (Release)
         run: flutter build windows --release --dart-define=QWEATHER_KEY=${{ secrets.QWEATHER_KEY }} --dart-define=QWEATHER_HOST=${{ secrets.QWEATHER_HOST || 'pf4ewvjfqj.re.qweatherapi.com' }} --dart-define=TIANDITU_KEY=${{ secrets.TIANDITU_KEY }}
 
-      - name: Upload Windows build
+      # 只上传 Release/*.exe 会得到一个**跑不起来**的产物：那只是 Flutter 的启动器
+      # （约 123 KB），缺少 flutter_windows.dll 与 data/ 目录，双击无反应。
+      # 正式发版用 Inno Setup 打成自足的单文件安装器，这里照搬同一套做法。
+      - name: Setup Inno Setup
+        shell: pwsh
+        run: |
+          choco install innosetup -y --no-progress
+          echo "ISCC=$(Get-Command ISCC.exe | Select-Object -ExpandProperty Source)" | Out-File $env:GITHUB_ENV -Append
+
+      - name: Build Installer
+        shell: pwsh
+        run: |
+          # Inno 的 AppVersion 用纯数字版本；文件名保留完整版本串以便区分 fork
+          $full = (Select-String -Path pubspec.yaml -Pattern '^version: (\S+)').Matches[0].Groups[1].Value.Split('+')[0]
+          $num  = ($full -split '-')[0]
+          & "$env:ISCC" "/DMyAppVersion=$num" "/DMyOutBase=APRSLocus_Setup_$full" installer.iss
+
+      - name: Upload Installer
         uses: actions/upload-artifact@v4
         with:
           name: APRSLocus-Windows
-          path: build/windows/x64/runner/Release/*.exe
+          path: output/*.exe
+          if-no-files-found: error
 
   build-android:
     name: Build Android APK
@@ -394,7 +412,9 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          ver=$(grep -E '^version:' pubspec.yaml | head -1 | sed -E 's/version: ([0-9.]+).*/\1/')
+          # 取完整版本串（含 fork 后缀）。原先的 sed 用 [0-9.]+ 会把
+          # 2.0.50-QINGLING 截成 2.0.50，导致测试版与上游正式版文件名相同。
+          ver=$(grep -E '^version:' pubspec.yaml | head -1 | awk '{print $2}' | cut -d+ -f1)
           ipa="build/ios/ipa/APRSLocus_${ver}_unsigned.ipa"
           python3 tool/make_ipa.py build/ios/iphoneos -o "$ipa"
           test -s "$ipa"

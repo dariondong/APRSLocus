@@ -1569,6 +1569,7 @@
   "vectorMapLoadFailed": "Vector map failed to load\n{error}",
   "loadingVectorMap": "Loading vector map…",
   "updateChannel": "Update channel",
+  "updateChannelQinglingHint": "Self-hosted mirror (清零)",
   "serverReturned": "Server returned {code}",
   "invalidResponseData": "Invalid response format",
   "noVersionsFound": "No releases found",

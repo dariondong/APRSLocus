@@ -4959,6 +4959,11 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get updateChannel => 'Update channel';
 
+
+
+  @override
+
+  String get updateChannelQinglingHint => 'Self-hosted mirror (清零)';
   @override
   String serverReturned(int code) {
     return 'Server returned $code';

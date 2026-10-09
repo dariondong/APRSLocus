@@ -8621,6 +8621,9 @@ abstract class AppLocalizations {
   /// **'更新渠道'**
   String get updateChannel;
 
+
+  /// Qingling 渠道说明（自建镜像）
+  String get updateChannelQinglingHint;
   /// No description provided for @serverReturned.
   ///
   /// In zh, this message translates to:

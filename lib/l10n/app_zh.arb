@@ -1826,6 +1826,7 @@
   "vectorMapLoadFailed": "矢量地图加载失败\n{error}",
   "loadingVectorMap": "加载矢量地图…",
   "updateChannel": "更新渠道",
+  "updateChannelQinglingHint": "自建镜像通道（清零）",
   "serverReturned": "服务器返回 {code}",
   "invalidResponseData": "返回数据格式错误",
   "noVersionsFound": "没有找到任何版本",

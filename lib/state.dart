@@ -3031,13 +3031,49 @@ class AppState extends ChangeNotifier {
     _notify();
   }
 
-  // 更新渠道：'gitcode' / 'github'
+  // 更新渠道：'github' / 'gitcode' / 'qingling'
   //
   // 默认 **GitHub**：GitCode 的 release API 在境外/部分网络下不稳定，而且
   // 镜像站可能滞后或缺少资产 —— 默认指向「官方发布的地方」更不容易出现
   // 「检查更新永远失败/永远没有新版」。想用镜像的用户仍可在更新页一键切换
   // （选择会写进 prefs，不会被这里的默认值覆盖）。
+  //
+  // **Qingling（清零）**：自建镜像通道。国内直连 GitHub 常常失败，
+  // Qingling 由我们自己的服务器先把发行版镜像下来，再以 GitHub 同格式的接口
+  // 提供给客户端 —— 客户端不直连 GitHub，可达性由镜像服务保证。
+  // 服务端实现见 APRSlocusLINK 项目的 docs/tech/UPSTREAM-MIRROR.md。
   String updateChannel = 'github';
+
+  /// 各更新渠道的 **API 根地址**。
+  ///
+  /// 两个渠道的响应格式不同（GitHub / GitCode 风格），但都按
+  /// `<base>/<owner>/<repo>/releases` 取，因此这里只登记 base。
+  ///
+  /// Qingling 的地址指向自建镜像的 **兼容接口**（`/v1/repos/...`）——
+  /// 该接口刻意输出 GitHub 同格式的数组，所以调用方无需区分渠道分支。
+  ///
+  /// ⚠ Qingling 用 **https**，而服务器用的是**自签证书** —— 因此请求该主机时必须
+  ///   走 `lib/pinned_http.dart` 提供的钉扎 context（只信任内置的那张证书），
+  ///   否则 Dart 的 `HttpClient` 会抛 CERTIFICATE_VERIFY_FAILED。
+  ///   三处发请求的地方（更新页 / 启动提示 / 下载器）都已改为
+  ///   `HttpClient(context: pinnedContextFor(url))`；漏改任何一处都会在该路径上失败。
+  ///   证书有效期 10 年；换证书必须同步发新版 App。
+  static const Map<String, String> updateChannelBases = {
+    'github': 'https://api.github.com/repos',
+    'gitcode': 'https://api.gitcode.com/api/v5/repos',
+    'qingling': 'https://47.104.251.69/v1/repos',
+  };
+
+  /// 取某渠道的 API 根地址；未知渠道回退 GitHub，避免旧配置写坏后无法检查更新。
+  static String updateBaseFor(String channel) =>
+      updateChannelBases[channel] ?? updateChannelBases['github']!;
+
+  /// 渠道显示名（用于提示与无障碍标签）。
+  static const Map<String, String> updateChannelLabels = {
+    'github': 'GitHub',
+    'gitcode': 'GitCode',
+    'qingling': 'Qingling（清零）',
+  };
 
   void setUpdateChannel(String c) {
     updateChannel = c;

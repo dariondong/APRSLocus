@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'check_update_page.dart';
+import 'pinned_http.dart';
 import 'state.dart';
 import 'theme.dart';
 import 'widgets.dart';
@@ -39,13 +40,17 @@ Future<void> maybePromptUpdate({
 }
 
 Future<String?> _fetchLatestTag(String channel) async {
-  final base = channel == 'github'
-      ? 'https://api.github.com/repos'
-      : 'https://api.gitcode.com/api/v5/repos';
-  final client = HttpClient()..connectionTimeout = const Duration(seconds: 10);
+  // 渠道 → API 根地址统一由 AppState 提供。
+  // 这里原本另写了一份与 check_update_page.dart 相同的三元表达式，
+  // 新增渠道时只改一处就会导致「更新页能查到、启动提示查不到」的诡异差异。
+  final base = AppState.updateBaseFor(channel);
+  final url = '$base/DarionDong/APRSLocus/releases';
+  // 与更新页同一套规则：目标是自建服务器才用钉扎证书，其余用默认行为。
+  final client = HttpClient(context: pinnedContextFor(url))
+    ..connectionTimeout = const Duration(seconds: 10);
   try {
     final req = await client
-        .getUrl(Uri.parse('$base/DarionDong/APRSLocus/releases'))
+        .getUrl(Uri.parse(url))
         .timeout(const Duration(seconds: 15));
     req.headers.set(HttpHeaders.acceptHeader, 'application/json');
     req.headers.set(
