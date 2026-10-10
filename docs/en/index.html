@@ -576,6 +576,16 @@
 <!-- site-sync:changelog -->
     <div class="cl-version reveal">
       <div class="cl-head">
+        <span class="cl-tag">v2.0.52</span>
+        <span class="cl-date">2026-10-10</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot new"></span><b>New Aliyun OSS update channel (optional)</b>: alongside GitHub / GitCode / Qingling, installers can now be served from Alibaba Cloud OSS over the <b>Aliyun CDN</b> (<code>aprslocus.oss-cn-guangzhou.aliyuncs.com</code>), which is fast in mainland China. It is <b>off by default</b> and must be picked on the update page.</div>
+        <div class="cl-item"><span class="cl-dot fix"></span><b>Cost notice</b>: traffic on this channel is <b>paid for by the dev team</b>, so a persistent banner asks users to use it <b>sparingly</b> 🙏. The release pipeline gained a <code>publish-oss</code> job that uploads the installers plus a GitHub-format releases index; credentials come only from GitHub Secrets and are <b>never committed</b>.</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
         <span class="cl-tag">v2.0.51</span>
         <span class="cl-date">2026-10-10</span>
       </div>

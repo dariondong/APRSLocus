@@ -801,6 +801,28 @@ KEYS = {
         '(voice-operated), atau pakai kabel yang men-key PTT dari port audio/data. '
         'Jika radio tidak memancar, periksa ini dulu.',
     ),
+    # ── 阿里云 OSS 更新渠道（发版流水线把安装包与 GitHub 同格式的 releases
+    # 索引一起传到公开读的 OSS bucket；见 build-release.yml 的 publish-oss job）──
+    #
+    # 该通道走阿里云 CDN，**流量由开发团队付费**，所以要提示用户「请少量使用」。
+    # 渠道说明放在选择器副标题（updateChannelAliyunHint），
+    # 加载中的状态行用 connectingAliyun。
+    'updateChannelAliyunHint': (
+        '⚠️ 由开发团队付费，请少量使用 🙏',
+        '⚠️ 由開發團隊付費，請少量使用 🙏',
+        '⚠️ Paid for by the dev team -- please use sparingly 🙏',
+        '⚠️ 開発チームが費用を負担しているため、控えめにご利用ください 🙏',
+        '⚠️ Lo paga el equipo de desarrollo: úsalo con moderación 🙏',
+        '⚠️ Dibayar oleh tim pengembang -- mohon gunakan seperlunya 🙏',
+    ),
+    'connectingAliyun': (
+        '正在通过阿里云 OSS 检查更新 ☁️',
+        '正在透過阿里雲 OSS 檢查更新 ☁️',
+        'Checking for updates via Aliyun OSS ☁️',
+        'Alibaba Cloud OSS で更新を確認中 ☁️',
+        'Buscando actualizaciones vía Aliyun OSS ☁️',
+        'Memeriksa pembaruan via Aliyun OSS ☁️',
+    ),
 }
 
 # ── 占位符声明（可空）──

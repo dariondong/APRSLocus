@@ -156,6 +156,13 @@ jobs:
       - name: Check release assets (split per ABI)
         run: python3 tool/check_release_assets.py
 
+      # 阿里云 OSS 更新渠道：客户端登记 / 选择器 / 费用提示 / 流水线上传 / 索引生成器
+      # 四处约定任何一处漏了都**不报错**，只表现成「更新页少了这个渠道」或
+      # 「选了却 403」。顺带钉死一条安全约定：访问密钥只能来自 GitHub Secrets，
+      # 明文一旦进仓库（公开仓库）就是泄露。
+      - name: Check Aliyun OSS update channel
+        run: python3 tool/check_oss_channel.py
+
       # iOS 打包：真跑一遍 tool/make_ipa.py（造一个忠实的最小 Runner.app），断言封出来的
       # .ipa 结构对（Payload 顶层 / Info.plist / 执行位 / 符号链接），并断言
       # build-release.yml 里 .ipa 真的挂进了 Release。

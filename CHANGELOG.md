@@ -1,5 +1,83 @@
 # 更新日志
 
+## [2.0.52] - 2026-10-10
+
+### 新增：阿里云 OSS 更新通道（可选）
+
+**背景**
+
+国内直连 GitHub 取更新包常失败。在原有 GitHub / GitCode / Qingling 之外，
+新增第四条更新渠道 **Aliyun OSS**：安装包放在阿里云对象存储（OSS），客户端从
+`aprslocus.oss-cn-guangzhou.aliyuncs.com` 走**阿里云 CDN** 取包，国内可达性好。
+该通道**默认不启用**，需在更新页手动切换。
+
+**费用提示**
+
+该通道的流量费由**开发团队**承担，所以切到该渠道时，更新页顶部会常驻一条
+提示，请用户**少量使用** 🙏。其它渠道不受影响。
+
+**改动**
+
+- 渠道登记：`AppState.updateChannelBases` / `updateChannelLabels` 增加
+  `aliyun`（`https://aprslocus.oss-cn-guangzhou.aliyuncs.com`）；
+- 更新页的渠道选择器、渠道图标、加载状态文案一并支持（`connectingAliyun`）；
+- 该渠道用公开 CA 证书，**无需证书钉扎**（区别于 Qingling 的自签证书）；
+- 发版流水线新增 `publish-oss` job：把 `.exe` / `.apk` / `.ipa` 与一份
+  **GitHub 同格式的 releases 索引**一起传到 OSS（索引由 `tool/oss_index.py`
+  生成，会合并线上旧索引以保留历史版本，否则旧版用户会找不到升级路径）；
+- 凭据只从 GitHub Secrets 读取（`OSS_ACCESS_KEY_ID` / `OSS_ACCESS_KEY_SECRET`），
+  **绝不写进仓库**；新增 `tool/check_oss_channel.py` 在 CI 里钉住接线，并守卫
+  「访问密钥明文不得进仓库」。
+
+**启用说明（维护者）**
+
+1. 仓库 Settings → Secrets and variables → Actions 添加上述两个 Secret；
+2. 把 OSS bucket 的读权限设为**公共读**（否则客户端与流水线自检都会 403）。
+未配置 Secret 时 `publish-oss` 会告警并跳过（该渠道为可选）；它失败**不影响**
+GitHub 的正式 Release。
+
+---
+
+## [2.0.52] - 2026-10-10 (English)
+
+### Added: Aliyun OSS update channel (optional)
+
+**Background**
+
+Fetching updates straight from GitHub often fails from mainland China. Alongside the
+existing GitHub / GitCode / Qingling channels, a fourth one -- **Aliyun OSS** -- serves
+the installers from Alibaba Cloud OSS through the **Aliyun CDN**
+(`aprslocus.oss-cn-guangzhou.aliyuncs.com`). It is **off by default** and must be picked
+manually on the update page.
+
+**Cost notice**
+
+Traffic on this channel is **paid for by the development team**, so a persistent banner
+on the update page asks users to use it **sparingly** 🙏. Other channels are unaffected.
+
+**Changes**
+
+- Registered the channel in `AppState.updateChannelBases` / `updateChannelLabels`
+  (`aliyun`);
+- The update page supports it in the channel picker, the channel icon and the loading
+  label (`connectingAliyun`);
+- It uses a public CA, so **no certificate pinning** is needed (unlike Qingling);
+- A new `publish-oss` job in the release workflow uploads the `.exe` / `.apk` / `.ipa`
+  plus a **GitHub-format releases index** to OSS (the index is built by
+  `tool/oss_index.py`, which merges the live index to keep older versions reachable);
+- Credentials come only from GitHub Secrets (`OSS_ACCESS_KEY_ID` /
+  `OSS_ACCESS_KEY_SECRET`) and are **never committed**; `tool/check_oss_channel.py`
+  pins the wiring in CI and guards against plaintext keys entering the repo.
+
+**Enabling it (maintainers)**
+
+1. Add the two Secrets under Settings -> Secrets and variables -> Actions;
+2. Make the OSS bucket public-read (otherwise clients and the pipeline self-check get 403).
+If the Secrets are absent, `publish-oss` warns and skips (the channel is optional) and
+never blocks the official GitHub Release.
+
+---
+
 ## [2.0.51] - 2026-10-10
 
 ### 新增：Qingling（清零）更新通道（可选，默认仍为 GitHub）

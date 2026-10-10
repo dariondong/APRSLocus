@@ -290,3 +290,100 @@ jobs:
             APRSLocus-Windows/*.exe
             APRSLocus-Android/*.apk
             APRSLocus-iOS/*.ipa
+
+  # ─────────────────────────────────────────────────────────────────────────
+  # 阿里云 OSS 更新渠道（**可选**）：把安装包 + 一份 GitHub 同格式的 releases
+  # 索引传到**公开读**的 OSS bucket，客户端即可从 oss-cn-guangzhou 走阿里云
+  # CDN 检查 / 下载更新（见 AppState.updateChannelBases['aliyun']、
+  # tool/oss_index.py、tool/check_oss_channel.py）。
+  #
+  # 凭据一律来自仓库 Secrets（**绝不写明文**，本仓库是公开的）：
+  #     OSS_ACCESS_KEY_ID / OSS_ACCESS_KEY_SECRET
+  # 未配置时**跳过并告警**（该渠道是可选项，不该让每次发版都变红）——与安卓
+  # keystore 的处理一致；一旦配置了却传失败，则**当场失败**。本 job 与官方
+  # Release 相互独立，它失败不影响 GitHub / Windows / Android / iOS 发版。
+  # 首次启用：① 加上述两个 secret；② 把 bucket 读权限设为公共读。
+  # ─────────────────────────────────────────────────────────────────────────
+  publish-oss:
+    name: Publish to Aliyun OSS
+    needs: [build-windows, build-android, build-ios]
+    if: startsWith(github.ref, 'refs/tags/')
+    runs-on: ubuntu-latest
+    env:
+      OSS_BUCKET: aprslocus
+      OSS_ENDPOINT: oss-cn-guangzhou.aliyuncs.com
+      OSS_INDEX_KEY: DarionDong/APRSLocus/releases
+      OSS_ACCESS_KEY_ID: ${{ secrets.OSS_ACCESS_KEY_ID }}
+      OSS_ACCESS_KEY_SECRET: ${{ secrets.OSS_ACCESS_KEY_SECRET }}
+    steps:
+      - name: Check OSS credentials
+        id: creds
+        run: |
+          if [ -z "${OSS_ACCESS_KEY_ID:-}" ] || [ -z "${OSS_ACCESS_KEY_SECRET:-}" ]; then
+            echo "::warning::未配置 OSS_ACCESS_KEY_ID / OSS_ACCESS_KEY_SECRET —— 跳过阿里云 OSS 渠道发布（该渠道为可选）。配置：仓库 Settings → Secrets and variables → Actions。"
+            echo "configured=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "configured=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Checkout
+        if: steps.creds.outputs.configured == 'true'
+        uses: actions/checkout@v4
+
+      - name: Download build artifacts
+        if: steps.creds.outputs.configured == 'true'
+        uses: actions/download-artifact@v4
+
+      - name: Install ossutil
+        if: steps.creds.outputs.configured == 'true'
+        run: |
+          set -euo pipefail
+          curl -fsSL "https://gosspublic.alicdn.com/ossutil/1.7.19/ossutil-v1.7.19-linux-amd64.zip" -o /tmp/ossutil.zip
+          python3 -c "import zipfile;zipfile.ZipFile('/tmp/ossutil.zip').extractall('/tmp/ossutil-bin')"
+          OSSUTIL=/tmp/ossutil-bin/ossutil-v1.7.19-linux-amd64/ossutil
+          chmod +x "$OSSUTIL"
+          echo "OSSUTIL=$OSSUTIL" >> "$GITHUB_ENV"
+
+      - name: Upload installers (public-read)
+        if: steps.creds.outputs.configured == 'true'
+        run: |
+          set -euo pipefail
+          ver="${GITHUB_REF#refs/tags/v}"
+          prefix="downloads/${ver}"
+          oss() { "$OSSUTIL" "$@" -e "$OSS_ENDPOINT" -i "$OSS_ACCESS_KEY_ID" -k "$OSS_ACCESS_KEY_SECRET"; }
+          shopt -s nullglob
+          files=(APRSLocus-Windows/*.exe APRSLocus-Android/*.apk APRSLocus-iOS/*.ipa)
+          test "${#files[@]}" -gt 0 || { echo "::error::没有可上传的安装包产物"; exit 1; }
+          for f in "${files[@]}"; do
+            oss cp "$f" "oss://${OSS_BUCKET}/${prefix}/$(basename "$f")" -f --acl public-read
+          done
+          ls -la "${files[@]}"
+
+      - name: Build & upload releases index
+        if: steps.creds.outputs.configured == 'true'
+        run: |
+          set -euo pipefail
+          ver="${GITHUB_REF#refs/tags/v}"
+          prefix="downloads/${ver}"
+          oss() { "$OSSUTIL" "$@" -e "$OSS_ENDPOINT" -i "$OSS_ACCESS_KEY_ID" -k "$OSS_ACCESS_KEY_SECRET"; }
+          # 线上旧索引（可能不存在 → 忽略），用于保留历史版本
+          oss cp "oss://${OSS_BUCKET}/${OSS_INDEX_KEY}" /tmp/existing.json -f || true
+          shopt -s nullglob
+          files=(APRSLocus-Windows/*.exe APRSLocus-Android/*.apk APRSLocus-iOS/*.ipa)
+          python3 tool/oss_index.py --ver "$ver" \
+            --url-base "https://${OSS_BUCKET}.${OSS_ENDPOINT}/${prefix}" \
+            --changelog CHANGELOG.md --existing /tmp/existing.json \
+            --out /tmp/releases.json "${files[@]}"
+          oss cp /tmp/releases.json "oss://${OSS_BUCKET}/${OSS_INDEX_KEY}" -f --acl public-read
+
+      - name: Verify (anonymous, same as the app)
+        if: steps.creds.outputs.configured == 'true'
+        run: |
+          set -euo pipefail
+          url="https://${OSS_BUCKET}.${OSS_ENDPOINT}/${OSS_INDEX_KEY}"
+          if ! body="$(curl -fsS "$url")"; then
+            echo "::error::匿名读取 $url 失败 —— bucket 未开公共读，或对象 ACL 不是 public-read。"
+            echo "::error::请把 bucket 读权限设为「公共读」，否则 App 走阿里云渠道会拿到 403。"
+            exit 1
+          fi
+          printf '%s' "$body" | python3 -c 'import json,sys;d=json.load(sys.stdin);assert isinstance(d,list) and d,"index empty";r=d[0];n=len(r.get("assets",[]));print("OK:",r["tag_name"],n,"assets")'

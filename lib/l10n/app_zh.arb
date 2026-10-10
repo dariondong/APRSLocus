@@ -3408,5 +3408,7 @@
   "audioTxSourceYes": "是本链路",
   "audioTxNotSourceWarn": "音频链路已连上，但当前发射来源不是它 —— 消息与信标会从「{src}」发出。需要从音频发射时，去「设置 → 设备」把音频选为发射来源。",
   "@audioTxNotSourceWarn": {"placeholders": {"src": {"type": "String"}}},
-  "audioTxPttHint": "音频链路不会去按电台的 PTT —— 它只是播放一段 AFSK 音频。要让电台真的发射，必须由电台自己键控：把电台设为 VOX 声控发射，或用支持声控/数据口PTT 的接线。若电台一直不发射，先查这一条。"
+  "audioTxPttHint": "音频链路不会去按电台的 PTT —— 它只是播放一段 AFSK 音频。要让电台真的发射，必须由电台自己键控：把电台设为 VOX 声控发射，或用支持声控/数据口PTT 的接线。若电台一直不发射，先查这一条。",
+  "updateChannelAliyunHint": "⚠️ 由开发团队付费，请少量使用 🙏",
+  "connectingAliyun": "正在通过阿里云 OSS 检查更新 ☁️"
 }

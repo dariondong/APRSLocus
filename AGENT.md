@@ -124,8 +124,28 @@ push tag v*  ──►  build-windows ┐
 2. 再打 tag → 触发 **Build Release**
 
 `ci-test.yml`（推 `main` / PR / 手动触发）4 个 job：
-`Analyze`（17 条 python 静态检查 + 2 条算法回归 `sim_*` + 3 个 `flutter test` + `flutter analyze`）、
+`Analyze`（18 条 python 静态检查 + 2 条算法回归 `sim_*` + 3 个 `flutter test` + `flutter analyze`）、
 `Build Windows`、`Build Android APK`、`Build iOS (IPA)`。
+
+### 阿里云 OSS 更新渠道（可选，默认不开）
+
+应用内「更新渠道」有第四个选项 **Aliyun OSS** —— 把安装包放到公开读的 OSS
+bucket，客户端从 `aprslocus.oss-cn-guangzhou.aliyuncs.com` 走阿里云 CDN 取包
+（国内可达性好，费用由开发团队承担，所以 App 里提示用户「请少量使用」）。
+
+- 发版流水线里的 **`publish-oss`** job 会把 `.exe`/`.apk`/`.ipa` 与一份
+  **GitHub 同格式的 releases 索引**一起传到 OSS（索引由 `tool/oss_index.py` 生成，
+  会合并线上旧索引以保留历史版本）。
+- **凭据只放 Secrets，绝不写明文**（本仓库是公开的）。首次启用需要两步：
+  1. 仓库 **Settings → Secrets and variables → Actions** 添加
+     `OSS_ACCESS_KEY_ID` / `OSS_ACCESS_KEY_SECRET`（阿里云 RAM 用户，只需该
+     bucket 的读写权限即可，不要用主账号 AK）；
+  2. 把 bucket 的读权限设为 **公共读**（或对象 `public-read`）—— 否则客户端
+     匿名 GET 会拿到 403，流水线末尾的匿名自检会当场报红。
+  未配置 Secret 时 `publish-oss` 会**明确失败并给出指引**（不静默跳过）；
+  它失败不影响 GitHub / Windows / Android / iOS 的正式发版。
+- 接线由 `tool/check_oss_channel.py` 在 CI 里钉住，它同时守卫「密钥明文
+  不得进仓库」（匹配 `LTAI…` 前缀的 AccessKey ID）。
 
 ---
 
@@ -172,7 +192,7 @@ push tag v*  ──►  build-windows ┐
 # 1) 静态检查：CI 跑的那 17 条 + 2 条算法回归
 for s in android_res_ids backup_keys beacon_track const_colors cross_imports \
          frame_cost hr_garmin ipa_packaging l10n_sync landscape_layout \
-         material_coverage notice pos_quality release_notes transition_backdrop \
+         material_coverage notice oss_channel pos_quality release_notes transition_backdrop \
          ui_wiring widget_members; do python3 tool/check_$s.py || echo "❌ $s"; done
 python3 tool/sim_selffix.py --check && python3 tool/sim_turn_dot.py --check
 

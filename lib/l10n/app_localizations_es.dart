@@ -8449,4 +8449,10 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get audioTxPttHint => "El enlace de audio nunca acciona el PTT del equipo: solo reproduce audio AFSK. Para que el equipo transmita de verdad, debe ser el propio equipo quien se active: configúralo en VOX, o usa un cable que accione el PTT desde el puerto de audio/datos. Si el equipo no transmite, revisa esto primero.";
 
+  @override
+  String get updateChannelAliyunHint => "⚠️ Lo paga el equipo de desarrollo: úsalo con moderación 🙏";
+
+  @override
+  String get connectingAliyun => "Buscando actualizaciones vía Aliyun OSS ☁️";
+
 }

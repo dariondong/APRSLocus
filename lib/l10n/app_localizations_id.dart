@@ -8407,4 +8407,10 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get audioTxPttHint => "Tautan audio tidak pernah menekan PTT radio — hanya memutar audio AFSK. Agar radio benar-benar memancar, radio sendiri harus ter-key: setel ke VOX (voice-operated), atau pakai kabel yang men-key PTT dari port audio/data. Jika radio tidak memancar, periksa ini dulu.";
 
+  @override
+  String get updateChannelAliyunHint => "⚠️ Dibayar oleh tim pengembang -- mohon gunakan seperlunya 🙏";
+
+  @override
+  String get connectingAliyun => "Memeriksa pembaruan via Aliyun OSS ☁️";
+
 }

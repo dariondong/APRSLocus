@@ -204,6 +204,38 @@ CARDS = [
 # 只列「重点版本」：中间几十个纯修 bug 的版本归纳进文字说明，完整记录指向 Releases。
 CL = [
     {
+        'ver': 'v2.0.52', 'date': '2026-10-10',
+        'items': [
+            ('new',
+             T('**新增阿里云 OSS 更新通道（可选）**：在 GitHub / GitCode / Qingling '
+               '之外再加一条，安装包放在阿里云对象存储、客户端走**阿里云 CDN**'
+               '（`aprslocus.oss-cn-guangzhou.aliyuncs.com`）取包，国内可达性好。'
+               '默认**不启用**，需在更新页手动切换。',
+               '**新增阿里雲 OSS 更新通道（可選）**：在 GitHub / GitCode / Qingling '
+               '之外再加一條，安裝包放在阿里雲物件儲存、客戶端走**阿里雲 CDN**'
+               '（`aprslocus.oss-cn-guangzhou.aliyuncs.com`）取包，國內可達性好。'
+               '預設**不啟用**，需在更新頁手動切換。',
+               '**New Aliyun OSS update channel (optional)**: alongside GitHub / GitCode / '
+               'Qingling, installers can now be served from Alibaba Cloud OSS over the '
+               '**Aliyun CDN** (`aprslocus.oss-cn-guangzhou.aliyuncs.com`), which is fast in '
+               'mainland China. It is **off by default** and must be picked on the update page.')),
+            ('fix',
+             T('**费用提示**：该通道流量费由**开发团队**承担，切到它时更新页顶部会常驻'
+               '一条提示，请**少量使用** 🙏。发版流水线新增 `publish-oss`，把安装包与'
+               '一份 GitHub 同格式的 releases 索引一并上传；凭据只从 GitHub Secrets '
+               '读取，**不写进仓库**。',
+               '**費用提示**：該通道流量費由**開發團隊**承擔，切到它時更新頁頂部會常駐'
+               '一條提示，請**少量使用** 🙏。發版流水線新增 `publish-oss`，把安裝包與'
+               '一份 GitHub 同格式的 releases 索引一併上傳；憑證只從 GitHub Secrets '
+               '讀取，**不寫進倉庫**。',
+               '**Cost notice**: traffic on this channel is **paid for by the dev team**, '
+               'so a persistent banner asks users to use it **sparingly** 🙏. The release '
+               'pipeline gained a `publish-oss` job that uploads the installers plus a '
+               'GitHub-format releases index; credentials come only from GitHub Secrets and '
+               'are **never committed**.')),
+        ],
+    },
+    {
         'ver': 'v2.0.51', 'date': '2026-10-10',
         'items': [
             ('new',

@@ -581,6 +581,16 @@
 <!-- site-sync:changelog -->
     <div class="cl-version reveal">
       <div class="cl-head">
+        <span class="cl-tag">v2.0.52</span>
+        <span class="cl-date">2026-10-10</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot new"></span><b>新增阿里雲 OSS 更新通道（可選）</b>：在 GitHub / GitCode / Qingling 之外再加一條，安裝包放在阿里雲物件儲存、客戶端走<b>阿里雲 CDN</b>（<code>aprslocus.oss-cn-guangzhou.aliyuncs.com</code>）取包，國內可達性好。預設<b>不啟用</b>，需在更新頁手動切換。</div>
+        <div class="cl-item"><span class="cl-dot fix"></span><b>費用提示</b>：該通道流量費由<b>開發團隊</b>承擔，切到它時更新頁頂部會常駐一條提示，請<b>少量使用</b> 🙏。發版流水線新增 <code>publish-oss</code>，把安裝包與一份 GitHub 同格式的 releases 索引一併上傳；憑證只從 GitHub Secrets 讀取，<b>不寫進倉庫</b>。</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
         <span class="cl-tag">v2.0.51</span>
         <span class="cl-date">2026-10-10</span>
       </div>

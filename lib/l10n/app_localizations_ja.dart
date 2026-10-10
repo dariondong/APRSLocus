@@ -8152,4 +8152,10 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String get audioTxPttHint => "音声リンクは無線機の PTT を押しません — AFSK 音声を再生するだけです。実際に送信させるには無線機側でキーイングが必要です：VOX（音声起動）に設定するか、音声/データ端子からの PTT に対応したケーブルを使ってください。無線機が送信しない場合はまずここを確認してください。";
 
+  @override
+  String get updateChannelAliyunHint => "⚠️ 開発チームが費用を負担しているため、控えめにご利用ください 🙏";
+
+  @override
+  String get connectingAliyun => "Alibaba Cloud OSS で更新を確認中 ☁️";
+
 }

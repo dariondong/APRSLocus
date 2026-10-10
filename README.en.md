@@ -10,7 +10,7 @@ A lightweight APRS client built for amateur radio enthusiasts — real-time posi
 
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](LICENSE)
 [![Platform](https://img.shields.io/badge/Platform-Android%20%7C%20Windows%20%7C%20iOS%20%7C%20Linux%20%7C%20macOS%20%7C%20Web-lightgrey.svg)]()
-[![Version](https://img.shields.io/badge/Version-2.0.51-green.svg)]()
+[![Version](https://img.shields.io/badge/Version-2.0.52-green.svg)]()
 [![Flutter](https://img.shields.io/badge/Flutter-3.x-blueviolet.svg)](https://flutter.dev)
 
 Author: [BG7LZQ (Darion)](https://theez.top) · Website: [aprslocus.theez.top](https://aprslocus.theez.top/) · Latest release: [GitHub Releases](https://github.com/dariondong/APRSLocus/releases)

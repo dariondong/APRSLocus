@@ -2809,5 +2809,7 @@
   "audioTxSourceYes": "This link",
   "audioTxNotSourceWarn": "The audio link is up, but it is not the current TX source — messages and beacons go out over \"{src}\". To transmit via audio, pick it as the TX source in Settings → Devices.",
   "@audioTxNotSourceWarn": {"placeholders": {"src": {"type": "String"}}},
-  "audioTxPttHint": "The audio link never keys the radio's PTT — it only plays AFSK audio. For the radio to actually transmit, the radio itself must be keyed: set it to VOX (voice-operated), or use a cable that keys PTT from the audio/data port. If the radio never transmits, check this first."
+  "audioTxPttHint": "The audio link never keys the radio's PTT — it only plays AFSK audio. For the radio to actually transmit, the radio itself must be keyed: set it to VOX (voice-operated), or use a cable that keys PTT from the audio/data port. If the radio never transmits, check this first.",
+  "updateChannelAliyunHint": "⚠️ Paid for by the dev team -- please use sparingly 🙏",
+  "connectingAliyun": "Checking for updates via Aliyun OSS ☁️"
 }

@@ -3397,5 +3397,7 @@
   "audioTxSourceYes": "是本鏈路",
   "audioTxNotSourceWarn": "音訊鏈路已連上，但目前發射來源不是它 —— 訊息與信標會從「{src}」發出。需要從音訊發射時，去「設定 → 裝置」把音訊選為發射來源。",
   "@audioTxNotSourceWarn": {"placeholders": {"src": {"type": "String"}}},
-  "audioTxPttHint": "音訊鏈路不會去按電台的 PTT —— 它只是播放一段 AFSK 音訊。要讓電台真的發射，必須由電台自己鍵控：把電台設為 VOX 聲控發射，或用支援聲控/資料埠PTT 的接線。若電台一直不發射，先查這一條。"
+  "audioTxPttHint": "音訊鏈路不會去按電台的 PTT —— 它只是播放一段 AFSK 音訊。要讓電台真的發射，必須由電台自己鍵控：把電台設為 VOX 聲控發射，或用支援聲控/資料埠PTT 的接線。若電台一直不發射，先查這一條。",
+  "updateChannelAliyunHint": "⚠️ 由開發團隊付費，請少量使用 🙏",
+  "connectingAliyun": "正在透過阿里雲 OSS 檢查更新 ☁️"
 }

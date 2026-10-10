@@ -327,7 +327,7 @@ class _CheckUpdatePageState extends State<CheckUpdatePage>
     return tmp;
   }
 
-  /// 切换更新渠道（GitHub / GitCode / Qingling）
+  /// 切换更新渠道（GitHub / GitCode / Qingling / Aliyun OSS）
   void _switchChannel() {
     showModalBottomSheet(
       context: context,
@@ -380,6 +380,20 @@ class _CheckUpdatePageState extends State<CheckUpdatePage>
                   widget.state.updateChannel == 'qingling',
                   () {
                     widget.state.setUpdateChannel('qingling');
+                    Navigator.pop(context);
+                    _check();
+                  },
+                ),
+                const SizedBox(height: 8),
+                // Aliyun OSS：官方 CDN 分发通道。发版流水线把安装包与
+                // GitHub 同格式的 releases 索引一起传到公开读的 OSS bucket，
+                // 客户端从 oss-cn-guangzhou 取（阿里云 CDN，国内可达性好）。
+                _channelOption(
+                  'Aliyun OSS',
+                  S.of(context).updateChannelAliyunHint,
+                  widget.state.updateChannel == 'aliyun',
+                  () {
+                    widget.state.setUpdateChannel('aliyun');
                     Navigator.pop(context);
                     _check();
                   },
@@ -773,6 +787,7 @@ class _CheckUpdatePageState extends State<CheckUpdatePage>
                 switch (widget.state.updateChannel) {
                   'github' => Icons.public_rounded,
                   'gitcode' => Icons.cloud_rounded,
+                  'aliyun' => Icons.cloud_done_rounded, // 阿里云 CDN
                   _ => Icons.dns_rounded, // Qingling 等自建镜像：用服务器图标
                 },
                 color: C.blue,
@@ -797,6 +812,12 @@ class _CheckUpdatePageState extends State<CheckUpdatePage>
           16 + MediaQuery.of(context).viewPadding.bottom,
         ),
         children: [
+          // 阿里云 OSS：**流量由开发团队付费**，进来就先说清楚、请用户省着点用。
+          // 只在这条渠道下显示（其它渠道不花这份钱，没必要打扰）。
+          if (widget.state.updateChannel == 'aliyun') ...[
+            _aliyunCostBanner(),
+            const SizedBox(height: 16),
+          ],
           // 签名已固定（1.5.2 起 release 统一 keystore），不再提示“签名变更需卸载重装”
           _versionCard(isWin),
           const SizedBox(height: 16),
@@ -808,6 +829,45 @@ class _CheckUpdatePageState extends State<CheckUpdatePage>
             const SizedBox(height: 16),
             _moreVersionsCard(isWin),
           ],
+        ],
+      ),
+    );
+  }
+
+  /// 阿里云 OSS 渠道的「费用」提示条。
+  ///
+  /// 该渠道的流量费由**开发团队**承担（见 `AppState.updateChannelBases` 的说明），
+  /// 所以在更新页顶部常驻这样一条，请用户省着用。文案走 l10n（6 语言）。
+  Widget _aliyunCostBanner() {
+    final amber = const Color(0xFFB26A00);
+    final amberBg = const Color(0xFFFFF4E0);
+    final amberBorder = const Color(0xFFFFD9A0);
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+      decoration: BoxDecoration(
+        color: amberBg,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: amberBorder),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(Icons.volunteer_activism_rounded, size: 20, color: amber),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Aliyun OSS',
+                    style: ts(13, w: FontWeight.w700, c: amber)),
+                const SizedBox(height: 2),
+                Text(
+                  S.of(context).updateChannelAliyunHint,
+                  style: ts(12, c: C.slate, h: 1.4),
+                ),
+              ],
+            ),
+          ),
         ],
       ),
     );
@@ -1127,6 +1187,7 @@ class _CheckUpdatePageState extends State<CheckUpdatePage>
                 switch (widget.state.updateChannel) {
                   'github' => S.of(context).connectingGitHub,
                   'gitcode' => S.of(context).connectingGitCode,
+                  'aliyun' => S.of(context).connectingAliyun,
                   _ => S.of(context).updateChannelQinglingHint,
                 },
                 style: TextStyle(fontSize: 11, color: C.greyLight),

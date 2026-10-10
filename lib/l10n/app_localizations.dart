@@ -14599,6 +14599,18 @@ abstract class AppLocalizations {
   /// **'音频链路不会去按电台的 PTT —— 它只是播放一段 AFSK 音频。要让电台真的发射，必须由电台自己键控：把电台设为 VOX 声控发射，或用支持声控/数据口PTT 的接线。若电台一直不发射，先查这一条。'**
   String get audioTxPttHint;
 
+  /// No description provided for @updateChannelAliyunHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'⚠️ 由开发团队付费，请少量使用 🙏'**
+  String get updateChannelAliyunHint;
+
+  /// No description provided for @connectingAliyun.
+  ///
+  /// In zh, this message translates to:
+  /// **'正在通过阿里云 OSS 检查更新 ☁️'**
+  String get connectingAliyun;
+
 }
 
 class _AppLocalizationsDelegate

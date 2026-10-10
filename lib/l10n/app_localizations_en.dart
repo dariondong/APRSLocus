@@ -8394,4 +8394,10 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get audioTxPttHint => "The audio link never keys the radio's PTT — it only plays AFSK audio. For the radio to actually transmit, the radio itself must be keyed: set it to VOX (voice-operated), or use a cable that keys PTT from the audio/data port. If the radio never transmits, check this first.";
 
+  @override
+  String get updateChannelAliyunHint => "⚠️ Paid for by the dev team -- please use sparingly 🙏";
+
+  @override
+  String get connectingAliyun => "Checking for updates via Aliyun OSS ☁️";
+
 }

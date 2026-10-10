@@ -115,7 +115,7 @@ class SmartBeaconTier {
 
 class AppState extends ChangeNotifier {
   /// 应用版本（用于信标备注、APRSlocus 识别）
-  static const appVersion = '2.0.51';
+  static const appVersion = '2.0.52';
   // 我的电台
   String myCall = 'BV2AAA';
   int mySsid = 0; // 0 = 无后缀, 1-15 = -1 到 -15
@@ -3031,7 +3031,7 @@ class AppState extends ChangeNotifier {
     _notify();
   }
 
-  // 更新渠道：'github' / 'gitcode' / 'qingling'
+  // 更新渠道：'github' / 'gitcode' / 'qingling' / 'aliyun'
   //
   // 默认 **GitHub**：GitCode 的 release API 在境外/部分网络下不稳定，而且
   // 镜像站可能滞后或缺少资产 —— 默认指向「官方发布的地方」更不容易出现
@@ -3042,6 +3042,12 @@ class AppState extends ChangeNotifier {
   // Qingling 由我们自己的服务器先把发行版镜像下来，再以 GitHub 同格式的接口
   // 提供给客户端 —— 客户端不直连 GitHub，可达性由镜像服务保证。
   // 服务端实现见 APRSlocusLINK 项目的 docs/tech/UPSTREAM-MIRROR.md。
+  //
+  // **Aliyun（阿里云 OSS）**：官方 CDN 分发通道。发版流水线把安装包与一份
+  // GitHub 同格式的 `releases` 索引**同时**上传到公开读的 OSS bucket，客户端
+  // 从 `aprslocus.oss-cn-guangzhou.aliyuncs.com` 取（阿里云 CDN，国内可达性
+  // 好、用公开 CA、无需证书钉扎）。⚠ bucket 必须**公共读**，否则客户端拿到 403；
+  // 发版流水线写入后会做一次匿名 GET 自检，不通过会告警（见 build-release.yml）。
   String updateChannel = 'github';
 
   /// 各更新渠道的 **API 根地址**。
@@ -3062,6 +3068,7 @@ class AppState extends ChangeNotifier {
     'github': 'https://api.github.com/repos',
     'gitcode': 'https://api.gitcode.com/api/v5/repos',
     'qingling': 'https://47.104.251.69/v1/repos',
+    'aliyun': 'https://aprslocus.oss-cn-guangzhou.aliyuncs.com',
   };
 
   /// 取某渠道的 API 根地址；未知渠道回退 GitHub，避免旧配置写坏后无法检查更新。
@@ -3073,6 +3080,7 @@ class AppState extends ChangeNotifier {
     'github': 'GitHub',
     'gitcode': 'GitCode',
     'qingling': 'Qingling（清零）',
+    'aliyun': 'Aliyun OSS',
   };
 
   void setUpdateChannel(String c) {

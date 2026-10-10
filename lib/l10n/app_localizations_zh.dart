@@ -8056,6 +8056,12 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String get audioTxPttHint => "音频链路不会去按电台的 PTT —— 它只是播放一段 AFSK 音频。要让电台真的发射，必须由电台自己键控：把电台设为 VOX 声控发射，或用支持声控/数据口PTT 的接线。若电台一直不发射，先查这一条。";
 
+  @override
+  String get updateChannelAliyunHint => "⚠️ 由开发团队付费，请少量使用 🙏";
+
+  @override
+  String get connectingAliyun => "正在通过阿里云 OSS 检查更新 ☁️";
+
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
@@ -16108,5 +16114,11 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get audioTxPttHint => "音訊鏈路不會去按電台的 PTT —— 它只是播放一段 AFSK 音訊。要讓電台真的發射，必須由電台自己鍵控：把電台設為 VOX 聲控發射，或用支援聲控/資料埠PTT 的接線。若電台一直不發射，先查這一條。";
+
+  @override
+  String get updateChannelAliyunHint => "⚠️ 由開發團隊付費，請少量使用 🙏";
+
+  @override
+  String get connectingAliyun => "正在透過阿里雲 OSS 檢查更新 ☁️";
 
 }

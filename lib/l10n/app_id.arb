@@ -2893,5 +2893,7 @@
   "audioTxSourceYes": "Tautan ini",
   "audioTxNotSourceWarn": "Tautan audio aktif, tetapi bukan sumber TX saat ini — pesan dan beacon keluar lewat \"{src}\". Untuk memancar via audio, pilih audio sebagai sumber TX di Setelan → Perangkat.",
   "@audioTxNotSourceWarn": {"placeholders": {"src": {"type": "String"}}},
-  "audioTxPttHint": "Tautan audio tidak pernah menekan PTT radio — hanya memutar audio AFSK. Agar radio benar-benar memancar, radio sendiri harus ter-key: setel ke VOX (voice-operated), atau pakai kabel yang men-key PTT dari port audio/data. Jika radio tidak memancar, periksa ini dulu."
+  "audioTxPttHint": "Tautan audio tidak pernah menekan PTT radio — hanya memutar audio AFSK. Agar radio benar-benar memancar, radio sendiri harus ter-key: setel ke VOX (voice-operated), atau pakai kabel yang men-key PTT dari port audio/data. Jika radio tidak memancar, periksa ini dulu.",
+  "updateChannelAliyunHint": "⚠️ Dibayar oleh tim pengembang -- mohon gunakan seperlunya 🙏",
+  "connectingAliyun": "Memeriksa pembaruan via Aliyun OSS ☁️"
 }
