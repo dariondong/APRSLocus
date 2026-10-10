@@ -129,31 +129,44 @@ push tag v*  ──►  build-windows ┐
 
 ### 阿里云 OSS 更新渠道（可选，默认不开）
 
-应用内「更新渠道」有第四个选项 **Aliyun OSS** —— 把安装包放到公开读的 OSS
-bucket，客户端从 `aprslocus.oss-cn-guangzhou.aliyuncs.com` 走阿里云 CDN 取包
-（国内可达性好，费用由开发团队承担，所以 App 里提示用户「请少量使用」）。
+应用内「更新渠道」有两个 OSS 选项 —— **Aliyun OSS**（广州）与
+**Aliyun OSS（香港）**。两者都是把安装包放到公开读的 OSS bucket、由客户端
+走阿里云 CDN 取包，**费用都由开发团队承担**（App 里都提示「请少量使用」）。
+区别只是区域：广州节点国内可达性好，香港节点在**跨境 / 境外网络**下更稳。
+
+| 渠道 id | bucket | 客户端读取地址 | 上传 endpoint |
+| --- | --- | --- | --- |
+| `aliyun` | `aprslocus` | `aprslocus.oss-cn-guangzhou.aliyuncs.com`（默认域名） | `oss-cn-guangzhou.aliyuncs.com` |
+| `aliyun_hk` | `aprslocushk` | `aprslocushk.oss.theez.top`（CNAME 自定义域） | `oss-cn-hongkong.aliyuncs.com` |
 
 - 发版流水线里的 **`publish-oss`** job 会把 `.exe`/`.apk`/`.ipa` 与一份
-  **GitHub 同格式的 releases 索引**一起传到 OSS（索引由 `tool/oss_index.py` 生成，
-  会合并线上旧索引以保留历史版本）。
+  **GitHub 同格式的 releases 索引**一起传到**两个** bucket（索引由
+  `tool/oss_index.py` 生成，会合并线上旧索引以保留历史版本）。**两个节点的
+  索引 url-base 不同**：广州用默认域名，香港必须用 CNAME 自定义域
+  `aprslocushk.oss.theez.top`（否则 App 走香港渠道会去下默认域名的对象，可能
+  400/慢）—— 这一点由 `tool/check_oss_channel.py` 钉住。
 - **凭据只放 Secrets，绝不写明文**（本仓库是公开的）。首次启用需要两步：
   1. 仓库 **Settings → Secrets and variables → Actions** 添加
-     `OSS_ACCESS_KEY_ID` / `OSS_ACCESS_KEY_SECRET`（阿里云 RAM 用户，只需该
-     bucket 的读写权限即可，不要用主账号 AK）；
-  2. 把 bucket 的读权限设为 **公共读**（或对象 `public-read`）—— 否则客户端
-     匿名 GET 会拿到 403，流水线末尾的匿名自检会当场报红。
+     `OSS_ACCESS_KEY_ID` / `OSS_ACCESS_KEY_SECRET`（阿里云 RAM 用户，需**两个
+     bucket 的读写权限**，不要用主账号 AK）。两个 bucket 共用同一套 AK；
+  2. 把**两个** bucket 的读权限都设为 **公共读**（或对象 `public-read`）——
+     否则客户端匿名 GET 会拿到 403，流水线末尾的匿名自检（两个节点分别做）
+     会当场报红。
   未配置 Secret 时 `publish-oss` 会**告警并跳过**（该渠道为可选，不该让每次发版
   都变红，与安卓 keystore 的处理一致）；配置了却传失败则会**当场失败**。
   它失败不影响 GitHub / Windows / Android / iOS 的正式发版。
-- 接线由 `tool/check_oss_channel.py` 在 CI 里钉住，它同时守卫「密钥明文
-  不得进仓库」（匹配 `LTAI…` 前缀的 AccessKey ID）。
+- 接线由 `tool/check_oss_channel.py` 在 CI 里钉住（**两个节点**都查：地址 ↔
+  流水线一致、香港 url-base 指自定义域、选择器/费用文案/加载态齐全），它同时
+  守卫「密钥明文不得进仓库」（匹配 `LTAI…` 前缀的 AccessKey ID）。
 - ⚠️ **`.apk`/`.ipa` 不能直接用 OSS 默认域名下载**：阿里云对 `*.aliyuncs.com`
   下的这两类扩展名一律返回 `400 ApkDownloadForbidden`（`.exe` 不受影响）。所以
   上传时给它们加 `.bin` 后缀、索引里的下载 url 指向 `xxx.apk.bin`，而资产名
   `name` 保持 `xxx.apk`（客户端靠 name 判 ABI / 显示，靠 url 下载，互不影响，
   **客户端无需改动**）。上传目标名与索引 url 都由 `tool/oss_index.py` 的
-  `delivery_name()` 给出（`--delivery-name`）；改这里务必两处同源。要彻底去掉
-  后缀只能给 bucket 挂 **CNAME 自定义域名**（需备案 + 证书）。
+  `delivery_name()` 给出（`--delivery-name`）；改这里务必两处同源。香港节点走
+  **CNAME 自定义域名**，本不受 `ApkDownloadForbidden` 限制，但为与广州保持
+  同一份索引形状，仍沿用 `.bin` 命名。要彻底去掉后缀只能给 bucket 挂 CNAME
+  自定义域名（需备案 + 证书）—— 香港节点已经这么做了。
 
 ---
 
