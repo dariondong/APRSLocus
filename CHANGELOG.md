@@ -1,5 +1,45 @@
 # 更新日志
 
+## [2.0.53] - 2026-10-10
+
+### 修复：阿里云 OSS 渠道下载 `.apk` / `.ipa` 返回 400
+
+**现象**：切到「阿里云 OSS」渠道，更新页能查到新版本，点「下载」却失败（HTTP 400）。
+
+**原因**：阿里云 OSS 对**默认域名**（`*.aliyuncs.com`）下的 `.apk` / `.ipa`
+下载一律返回 `400 ApkDownloadForbidden`（防盗版 / 防滥用策略）。`.exe` 不受影响；
+官方建议改用 CNAME 自定义域名，但那要备案 + 证书。
+
+**修复**：上传时给 `.apk` / `.ipa` 对象加一个**不被拦的后缀**（`.bin`），索引里的
+下载地址指向 `xxx.apk.bin`，而资产名 `name` 仍是 `xxx.apk`。因为客户端靠 `name`
+认架构、显示文件名（`lib/update_packages.dart`），靠 url 下载，两者互不影响 ——
+所以**客户端无需改动**。上传目标名与索引 url 由 `tool/oss_index.py` 的同一套规则
+给出（新增 `--delivery-name`）。发版流水线新增「真去下每一个资产」的自检：再遇到
+这类 400 会**当场失败**，而不是留给用户。
+
+---
+
+## [2.0.53] - 2026-10-10 (English)
+
+### Fixed: Aliyun OSS channel returned 400 when downloading `.apk` / `.ipa`
+
+**Symptom**: on the "Aliyun OSS" channel, the update page finds a new version but
+"Download" fails with HTTP 400.
+
+**Cause**: Aliyun OSS rejects public downloads of `.apk` / `.ipa` on the **default
+endpoint** (`*.aliyuncs.com`) with `400 ApkDownloadForbidden` (anti-piracy / anti-abuse).
+`.exe` is unaffected; the documented remedy is a CNAME custom domain, which needs ICP
+filing and a certificate.
+
+**Fix**: upload `.apk` / `.ipa` objects under a **non-blocked suffix** (`.bin`) and point
+the index's download URL at `xxx.apk.bin`, while the asset `name` stays `xxx.apk`. Since
+the client selects by `name` and downloads by URL (`lib/update_packages.dart`), it needs
+**no change**. The upload key and the index URL are produced by the same rule in
+`tool/oss_index.py` (new `--delivery-name`). The release pipeline now really downloads
+every asset in a self-check, so this class of 400 fails the build instead of reaching users.
+
+---
+
 ## [2.0.52] - 2026-10-10
 
 ### 新增：阿里云 OSS 更新通道（可选）

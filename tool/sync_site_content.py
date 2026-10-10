@@ -204,6 +204,25 @@ CARDS = [
 # 只列「重点版本」：中间几十个纯修 bug 的版本归纳进文字说明，完整记录指向 Releases。
 CL = [
     {
+        'ver': 'v2.0.53', 'date': '2026-10-10',
+        'items': [
+            ('fix',
+             T('**修复阿里云 OSS 渠道下载 400**：OSS 默认域名对 `.apk` / `.ipa` '
+               '下载一律返回 `ApkDownloadForbidden`（`.exe` 不受影响）。改为上传时'
+               '给这两类对象加 `.bin` 后缀、索引里的下载地址随之指向 `xxx.apk.bin`，'
+               '而资产名不变 —— 客户端无需改动。发版自检现在会真去下每个资产。',
+               '**修復阿里雲 OSS 通道下載 400**：OSS 預設網域對 `.apk` / `.ipa` '
+               '下載一律回傳 `ApkDownloadForbidden`（`.exe` 不受影響）。改為上傳時'
+               '給這兩類物件加 `.bin` 後綴、索引裡的下載位址隨之指向 `xxx.apk.bin`，'
+               '而資產名不變 —— 客戶端無需改動。發版自檢現在會真去下每個資產。',
+               '**Fixed Aliyun OSS download 400**: the OSS default endpoint rejects '
+               'public `.apk` / `.ipa` downloads with `ApkDownloadForbidden` (`.exe` is '
+               'fine). Uploads now add a `.bin` suffix to those objects and the index '
+               'download URLs point at `xxx.apk.bin`, while asset names stay unchanged -- '
+               'no client change needed. The release self-check now really downloads each asset.')),
+        ],
+    },
+    {
         'ver': 'v2.0.52', 'date': '2026-10-10',
         'items': [
             ('new',

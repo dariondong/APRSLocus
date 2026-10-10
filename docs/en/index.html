@@ -576,6 +576,15 @@
 <!-- site-sync:changelog -->
     <div class="cl-version reveal">
       <div class="cl-head">
+        <span class="cl-tag">v2.0.53</span>
+        <span class="cl-date">2026-10-10</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot fix"></span><b>Fixed Aliyun OSS download 400</b>: the OSS default endpoint rejects public <code>.apk</code> / <code>.ipa</code> downloads with <code>ApkDownloadForbidden</code> (<code>.exe</code> is fine). Uploads now add a <code>.bin</code> suffix to those objects and the index download URLs point at <code>xxx.apk.bin</code>, while asset names stay unchanged -- no client change needed. The release self-check now really downloads each asset.</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
         <span class="cl-tag">v2.0.52</span>
         <span class="cl-date">2026-10-10</span>
       </div>

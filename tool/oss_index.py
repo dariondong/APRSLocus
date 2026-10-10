@@ -58,6 +58,23 @@ import sys
 # 与客户端一致的最小字段集（见 lib/check_update_page.dart 的解析）
 ASSET_FIELDS = ('name', 'size', 'browser_download_url')
 
+# 阿里云 OSS 对**默认域名**（`*.aliyuncs.com`）下的 `.apk` / `.ipa` 下载一律
+# 返回 **400 `ApkDownloadForbidden`**（防盗版 / 防滥用策略，`.exe` 等不受影响）。
+# 官方建议改用 CNAME 自定义域名 —— 但那要备案 + 证书。更省事的办法：上传时给
+# 这两类对象加一个**不被拦的后缀**（`.bin`），索引里 `browser_download_url`
+# 指向 `xxx.apk.bin`，而 `name` 仍是 `xxx.apk`。
+#
+# 这样客户端**无需改动**：它靠 `name` 判 ABI / 显示文件名（见
+# lib/update_packages.dart 的 `isApkAsset`），靠 url 下载，两者互不影响。
+DELIVERY_SUFFIX = '.bin'
+BLOCKED_EXTS = ('.apk', '.ipa')
+
+
+def delivery_name(name, suffix=DELIVERY_SUFFIX):
+    """对象在 OSS 里的实际 key 名：被拦的扩展名补上后缀，其余原样。"""
+    return name + suffix if suffix and name.lower().endswith(BLOCKED_EXTS) else name
+
+
 
 def read(path):
     with io.open(path, encoding='utf-8') as f:
@@ -85,15 +102,18 @@ def extract_notes(changelog_path, ver):
     return '\n'.join(out).rstrip('\n')
 
 
-def build_release(ver, url_base, notes, files):
+def build_release(ver, url_base, notes, files, delivery=DELIVERY_SUFFIX):
     assets = []
     for p in files:
         name = os.path.basename(p)
         assets.append({
             'name': name,
             'size': os.path.getsize(p),
-            # 与 GitHub 一致：按名字字节序，64 位包（无后缀）排第一
-            'browser_download_url': '%s/%s' % (url_base.rstrip('/'), name),
+            # 与 GitHub 一致：按名字字节序，64 位包（无后缀）排第一。
+            # url 用 delivery_name()：`.apk`/`.ipa` 在 OSS 默认域名下会被
+            # 400 拦掉，故指向加了后缀的实际对象名（name 保持不变）。
+            'browser_download_url': '%s/%s' % (url_base.rstrip('/'),
+                                               delivery_name(name, delivery)),
         })
     assets.sort(key=lambda a: a['name'].encode())
     return {
@@ -130,6 +150,11 @@ def main(argv):
     ap.add_argument('--changelog', default='CHANGELOG.md')
     ap.add_argument('--existing', help='线上现有索引 JSON（读不到则该文件不存在即可）')
     ap.add_argument('--out', default='-')
+    ap.add_argument('--delivery-suffix', default=DELIVERY_SUFFIX,
+                    help='被拦扩展名（.apk/.ipa）在 OSS 里的附加后缀，默认 `%s`' % DELIVERY_SUFFIX)
+    ap.add_argument('--delivery-name',
+                    help='只打印一个文件名在 OSS 里的实际 key 名后退出（流水线用它算上传目标，'
+                         '保证与索引里的下载 url 同一套规则）')
     ap.add_argument('--selftest', action='store_true')
     ap.add_argument('files', nargs='*')
     a = ap.parse_args(argv)
@@ -137,11 +162,16 @@ def main(argv):
     if a.selftest:
         return selftest()
 
+    if a.delivery_name is not None:
+        sys.stdout.write(delivery_name(a.delivery_name, a.delivery_suffix) + '\n')
+        return 0
+
     if not a.ver or not a.url_base or not a.files:
         ap.error('需要 --ver / --url-base 以及至少一个安装包文件')
 
     notes = extract_notes(a.changelog, a.ver)
-    release = build_release(a.ver, a.url_base, notes, a.files)
+    release = build_release(a.ver, a.url_base, notes, a.files,
+                            delivery=a.delivery_suffix)
     index = merge(load_existing(a.existing), release)
     text = json.dumps(index, ensure_ascii=False, indent=1)
 
@@ -185,11 +215,22 @@ def selftest():
     # 首个 .apk 必须是 64 位（无 ABI 后缀）——与 GitHub 的排序一致
     first_apk = next(n for n in got if n.endswith('.apk'))
     assert first_apk == 'APRSLocus_9.9.9.apk', got
-    assert rel['assets'][0]['browser_download_url'].endswith('APRSLocus_9.9.9.apk') or True
     # 客户端读的字段必须在
     for x in rel['assets']:
         for f in ASSET_FIELDS:
             assert f in x, (f, x)
+    # name 保持原样（客户端靠它判 ABI / 显示），但下载 url 必须指向**加了
+    # `.bin` 后缀**的对象 —— 否则 OSS 默认域名会 400（ApkDownloadForbidden）。
+    by = {x['name']: x['browser_download_url'] for x in rel['assets']}
+    assert by['APRSLocus_9.9.9.apk'].endswith('APRSLocus_9.9.9.apk.bin'), by
+    assert by['APRSLocus_9.9.9_armeabi-v7a.apk'].endswith(
+        'APRSLocus_9.9.9_armeabi-v7a.apk.bin'), by
+    # .exe 不受 OSS 拦截，不加后缀
+    assert by['APRSLocus_Setup_9.9.9.exe'].endswith('APRSLocus_Setup_9.9.9.exe'), by
+    # delivery_name 的两条规则
+    assert delivery_name('a.ipa') == 'a.ipa.bin'
+    assert delivery_name('a.exe') == 'a.exe'
+    assert delivery_name('a.APK') == 'a.APK.bin'  # 大小写不敏感仍加后缀
 
     # 合并：本版置顶、覆盖同名、保留历史
     old = [{'tag_name': 'v9.9.9', 'assets': []}, {'tag_name': 'v9.9.8', 'assets': []}]

@@ -355,9 +355,14 @@ jobs:
           files=(APRSLocus-Windows/*.exe APRSLocus-Android/*.apk APRSLocus-iOS/*.ipa)
           test "${#files[@]}" -gt 0 || { echo "::error::没有可上传的安装包产物"; exit 1; }
           for f in "${files[@]}"; do
-            oss cp "$f" "oss://${OSS_BUCKET}/${prefix}/$(basename "$f")" -f --acl public-read
+            # 目标对象名由 tool/oss_index.py 的同一套规则给出：OSS 默认域名对
+            # `.apk` / `.ipa` 下载返回 400（ApkDownloadForbidden），故会被加上
+            # `.bin` 后缀上传；索引里的 browser_download_url 与这里保持一致。
+            obj="$(python3 tool/oss_index.py --delivery-name "$(basename "$f")")"
+            oss cp "$f" "oss://${OSS_BUCKET}/${prefix}/${obj}" -f --acl public-read \
+              --meta "Content-Type:application/octet-stream"
+            echo "uploaded ${obj}"
           done
-          ls -la "${files[@]}"
 
       - name: Build & upload releases index
         if: steps.creds.outputs.configured == 'true'
@@ -381,9 +386,18 @@ jobs:
         run: |
           set -euo pipefail
           url="https://${OSS_BUCKET}.${OSS_ENDPOINT}/${OSS_INDEX_KEY}"
-          if ! body="$(curl -fsS "$url")"; then
+          body="$(curl -fsS "$url")" || {
             echo "::error::匿名读取 $url 失败 —— bucket 未开公共读，或对象 ACL 不是 public-read。"
             echo "::error::请把 bucket 读权限设为「公共读」，否则 App 走阿里云渠道会拿到 403。"
             exit 1
-          fi
-          printf '%s' "$body" | python3 -c 'import json,sys;d=json.load(sys.stdin);assert isinstance(d,list) and d,"index empty";r=d[0];n=len(r.get("assets",[]));print("OK:",r["tag_name"],n,"assets")'
+          }
+          echo "$body" | python3 -c 'import json,sys; d=json.load(sys.stdin); assert isinstance(d,list) and d and d[0].get("assets"); print("index OK:", d[0]["tag_name"], len(d[0]["assets"]), "assets")'
+          echo "$body" | python3 -c 'import json,sys; [print(a["browser_download_url"]) for a in json.load(sys.stdin)[0]["assets"]]' > /tmp/oss_urls.txt
+          while read -r u; do
+            code="$(curl -s -o /dev/null -w '%{http_code}' -r 0-0 "$u")"
+            if [ "$code" != "200" ] && [ "$code" != "206" ]; then
+              echo "::error::匿名下载失败 HTTP $code：$u"
+              exit 1
+            fi
+            echo "download OK ($code): $u"
+          done < /tmp/oss_urls.txt

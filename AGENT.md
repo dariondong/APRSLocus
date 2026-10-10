@@ -142,10 +142,18 @@ bucket，客户端从 `aprslocus.oss-cn-guangzhou.aliyuncs.com` 走阿里云 CDN
      bucket 的读写权限即可，不要用主账号 AK）；
   2. 把 bucket 的读权限设为 **公共读**（或对象 `public-read`）—— 否则客户端
      匿名 GET 会拿到 403，流水线末尾的匿名自检会当场报红。
-  未配置 Secret 时 `publish-oss` 会**明确失败并给出指引**（不静默跳过）；
+  未配置 Secret 时 `publish-oss` 会**告警并跳过**（该渠道为可选，不该让每次发版
+  都变红，与安卓 keystore 的处理一致）；配置了却传失败则会**当场失败**。
   它失败不影响 GitHub / Windows / Android / iOS 的正式发版。
 - 接线由 `tool/check_oss_channel.py` 在 CI 里钉住，它同时守卫「密钥明文
   不得进仓库」（匹配 `LTAI…` 前缀的 AccessKey ID）。
+- ⚠️ **`.apk`/`.ipa` 不能直接用 OSS 默认域名下载**：阿里云对 `*.aliyuncs.com`
+  下的这两类扩展名一律返回 `400 ApkDownloadForbidden`（`.exe` 不受影响）。所以
+  上传时给它们加 `.bin` 后缀、索引里的下载 url 指向 `xxx.apk.bin`，而资产名
+  `name` 保持 `xxx.apk`（客户端靠 name 判 ABI / 显示，靠 url 下载，互不影响，
+  **客户端无需改动**）。上传目标名与索引 url 都由 `tool/oss_index.py` 的
+  `delivery_name()` 给出（`--delivery-name`）；改这里务必两处同源。要彻底去掉
+  后缀只能给 bucket 挂 **CNAME 自定义域名**（需备案 + 证书）。
 
 ---
 

@@ -106,6 +106,21 @@ def main() -> int:
         if '--acl public-read' not in job:
             errors.append('%s 的 publish-oss 没把对象设为 public-read —— '
                           '客户端（匿名）会拿到 403' % WORKFLOW)
+        # OSS 默认域名（*.aliyuncs.com）对 `.apk` / `.ipa` 下载返回 400
+        # （ApkDownloadForbidden）。索引 url 与上传目标都必须走
+        # tool/oss_index.py 的 delivery_name()（加 `.bin` 后缀）。这里钉住
+        # 「上传用了同一套规则」与「验证步真去下资产」。
+        if '--delivery-name' not in job:
+            errors.append('%s 的 publish-oss 上传安装包时没有用 '
+                          '`tool/oss_index.py --delivery-name` 算目标对象名 —— '
+                          'OSS 会对 `.apk`/`.ipa` 返回 400（ApkDownloadForbidden）' % WORKFLOW)
+        if 'Content-Type:application/octet-stream' not in job:
+            errors.append('%s 的 publish-oss 上传时没显式设 Content-Type='
+                          'application/octet-stream' % WORKFLOW)
+        if 'browser_download_url' not in job:
+            errors.append('%s 的 publish-oss 的自检没有真去下索引里的资产 —— '
+                          '`.apk`/`.ipa` 的 400 会被漏掉' % WORKFLOW)
+
         # 凭据必须来自 secrets
         for need in ('secrets.OSS_ACCESS_KEY_ID', 'secrets.OSS_ACCESS_KEY_SECRET'):
             if need not in job:

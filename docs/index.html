@@ -650,6 +650,15 @@ html{overflow-x:hidden}
 <!-- site-sync:changelog -->
     <div class="cl-version reveal">
       <div class="cl-head">
+        <span class="cl-tag">v2.0.53</span>
+        <span class="cl-date">2026-10-10</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot fix"></span><b>修复阿里云 OSS 渠道下载 400</b>：OSS 默认域名对 <code>.apk</code> / <code>.ipa</code> 下载一律返回 <code>ApkDownloadForbidden</code>（<code>.exe</code> 不受影响）。改为上传时给这两类对象加 <code>.bin</code> 后缀、索引里的下载地址随之指向 <code>xxx.apk.bin</code>，而资产名不变 —— 客户端无需改动。发版自检现在会真去下每个资产。</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
         <span class="cl-tag">v2.0.52</span>
         <span class="cl-date">2026-10-10</span>
       </div>

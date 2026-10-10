@@ -581,6 +581,15 @@
 <!-- site-sync:changelog -->
     <div class="cl-version reveal">
       <div class="cl-head">
+        <span class="cl-tag">v2.0.53</span>
+        <span class="cl-date">2026-10-10</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot fix"></span><b>修復阿里雲 OSS 通道下載 400</b>：OSS 預設網域對 <code>.apk</code> / <code>.ipa</code> 下載一律回傳 <code>ApkDownloadForbidden</code>（<code>.exe</code> 不受影響）。改為上傳時給這兩類物件加 <code>.bin</code> 後綴、索引裡的下載位址隨之指向 <code>xxx.apk.bin</code>，而資產名不變 —— 客戶端無需改動。發版自檢現在會真去下每個資產。</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
         <span class="cl-tag">v2.0.52</span>
         <span class="cl-date">2026-10-10</span>
       </div>
