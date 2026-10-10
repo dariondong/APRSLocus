@@ -623,7 +623,7 @@ class _CheckUpdatePageState extends State<CheckUpdatePage>
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        backgroundColor: Colors.white,
+        backgroundColor: C.white,
         title: Text(S.of(context).installApk),
         content: Text(
           S.of(context).androidInstallHelp(path),
@@ -652,7 +652,7 @@ class _CheckUpdatePageState extends State<CheckUpdatePage>
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        backgroundColor: Colors.white,
+        backgroundColor: C.white,
         title: Text(S.of(context).downloadComplete),
         content: Text(
           S.of(context).windowsInstallHelp(path),
@@ -722,7 +722,7 @@ class _CheckUpdatePageState extends State<CheckUpdatePage>
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        backgroundColor: Colors.white,
+        backgroundColor: C.white,
         title: Text(S.of(context).installPermissionTitle),
         content: Text(
           S.of(context).installPermissionDesc,
@@ -1829,7 +1829,7 @@ class _CheckUpdatePageState extends State<CheckUpdatePage>
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        backgroundColor: Colors.white,
+        backgroundColor: C.white,
         title: Text(title, style: ts(16, w: FontWeight.w700)),
         content: Text(message, style: ts(13, h: 1.5)),
         actions: [
@@ -2038,7 +2038,7 @@ class _CheckUpdatePageState extends State<CheckUpdatePage>
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        backgroundColor: Colors.white,
+        backgroundColor: C.white,
         title: Row(
           children: [
             Text(
@@ -2081,8 +2081,8 @@ class _CheckUpdatePageState extends State<CheckUpdatePage>
       builder: (_) => FractionallySizedBox(
         heightFactor: 0.82,
         child: Container(
-          decoration: const BoxDecoration(
-            color: Colors.white,
+          decoration: BoxDecoration(
+            color: C.white,
             borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
           ),
           child: Column(

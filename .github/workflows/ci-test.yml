@@ -163,6 +163,14 @@ jobs:
       - name: Check Aliyun OSS update channel
         run: python3 tool/check_oss_channel.py
 
+      # 暗色模式表面色：弹窗/底部面板/卡片不许用写死的 Colors.white。
+      # 深色模式是运行时换调色板（C.white 会变成深色），而 Colors.white 是编译期
+      # 常量 —— 一旦有人顺手写它，深色下那张弹窗就是一块刺眼白板在发亮，
+      # 浅色模式却完全正常。它能编译、能过 analyze、能过所有其它检查器，
+      # 只有切到深色模式肉眼才看得出来（用户报的「更新页等页面不兼容暗黑模式」）。
+      - name: Check dark-mode surface colors
+        run: python3 tool/check_dark_mode.py
+
       # iOS 打包：真跑一遍 tool/make_ipa.py（造一个忠实的最小 Runner.app），断言封出来的
       # .ipa 结构对（Payload 顶层 / Info.plist / 执行位 / 符号链接），并断言
       # build-release.yml 里 .ipa 真的挂进了 Release。

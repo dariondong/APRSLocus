@@ -114,7 +114,7 @@ class _HrAlarmWatcherState extends State<HrAlarmWatcher> {
       // 会让用户以为处理过了，而告警标志还挂着）。
       barrierDismissible: false,
       builder: (ctx) => AlertDialog(
-        backgroundColor: Colors.white,
+        backgroundColor: C.white,
         icon: Icon(
           isCrash
               ? (isFall ? Icons.personal_injury_rounded : Icons.car_crash_rounded)
@@ -202,7 +202,7 @@ class _HrAlarmWatcherState extends State<HrAlarmWatcher> {
     final ok = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        backgroundColor: Colors.white,
+        backgroundColor: C.white,
         title: Text(s.hrAlarmSendConfirmTitle, style: ts(15, w: FontWeight.w800)),
         content: Text(
           // 占位符在 arb 里声明为 String，所以这里显式插值 ——

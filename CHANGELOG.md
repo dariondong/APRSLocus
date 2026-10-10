@@ -1,5 +1,48 @@
 # 更新日志
 
+## [2.0.56] - 2026-10-10
+
+### 修复暗色模式：更新页与聊天 / 台站等页面的「白板」弹窗
+
+**问题**：切到暗色模式后，更新页的下载 / 安装确认弹窗、安装权限弹窗、
+「全部更新日志」底部面板，以及聊天的「新建会话 / 新建群组 / 群管理 / 邀请成员 /
+退出群组」等弹窗、荣誉墙与早期成员卡片，还是一块**刺眼的白板**。
+
+**根因**：这些表面用的是写死的 `Colors.white`（Flutter 编译期常量），而本应用的
+暗色模式是**运行时换调色板** —— 只有走 `C.white` 的地方才会跟着变深色。
+当初几处图省事写了 `Colors.white`，浅色模式下完全正常，所以一直没被发现。
+
+**修复**：把这些弹窗 / 底部面板 / 卡片的表面色统一改回 `C.white`，随主题走
+（即随深浅色模式自动切换）。同时新增一条静态检查（`tool/check_dark_mode.py`）钉住
+这条不变量，防止以后再顺手写回 `Colors.white` —— 这类问题本机跑 analyze 查不出来，
+只有切到深色模式肉眼才能发现。
+
+---
+
+## [2.0.56] - 2026-10-10 (English)
+
+### Dark-mode fix: "white slab" dialogs on the update page and chat / station pages
+
+**Problem**: after switching to dark mode, the update page's download / install
+confirmation dialog, the install-permission dialog, the "all changelogs" bottom
+sheet, plus chat dialogs (new conversation / new group / group management /
+invite members / leave group), the honor wall and early-member cards still showed
+as a **glaring white slab**.
+
+**Root cause**: these surfaces used a hard-coded `Colors.white` (a Flutter
+compile-time constant), while this app's dark mode works by **swapping the palette
+at runtime** -- only surfaces using `C.white` follow the theme. A few places took
+the shortcut of `Colors.white`; they look perfect in light mode, so the bug went
+unnoticed.
+
+**Fix**: these dialog / bottom-sheet / card surface colors now all use `C.white`,
+so they follow the theme (and thus switch automatically with light/dark mode). A
+new static check (`tool/check_dark_mode.py`) pins this invariant down so nobody
+writes `Colors.white` back by habit -- analyze cannot catch this locally; only
+switching to dark mode reveals it to the eye.
+
+---
+
 ## [2.0.55] - 2026-10-10
 
 ### 新增香港节点：阿里云 OSS（香港）更新通道

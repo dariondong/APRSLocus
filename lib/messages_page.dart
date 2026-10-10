@@ -2851,7 +2851,7 @@ class _MessagesPageState extends State<MessagesPage> {
                     .take(8)
                     .toList();
           return AlertDialog(
-            backgroundColor: Colors.white,
+            backgroundColor: C.white,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(16),
             ),
@@ -3096,7 +3096,7 @@ class _MessagesPageState extends State<MessagesPage> {
             return a.call.compareTo(b.call);
           });
           return AlertDialog(
-            backgroundColor: Colors.white,
+            backgroundColor: C.white,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(16),
             ),
@@ -3476,7 +3476,7 @@ class _MessagesPageState extends State<MessagesPage> {
             return a.call.compareTo(b.call);
           });
           return AlertDialog(
-            backgroundColor: Colors.white,
+            backgroundColor: C.white,
             title: Row(
               children: [
                 Icon(Icons.group_add_rounded, size: 18, color: C.orange),
@@ -3885,7 +3885,7 @@ class _MessagesPageState extends State<MessagesPage> {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: Colors.white,
+      backgroundColor: C.white,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
@@ -4184,7 +4184,7 @@ class _MessagesPageState extends State<MessagesPage> {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        backgroundColor: Colors.white,
+        backgroundColor: C.white,
         title: Text(
           S.of(context).deleteGroup,
           style: ts(16, w: FontWeight.w700),
@@ -4223,7 +4223,7 @@ class _MessagesPageState extends State<MessagesPage> {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: Colors.white,
+      backgroundColor: C.white,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
@@ -4402,7 +4402,7 @@ class _MessagesPageState extends State<MessagesPage> {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        backgroundColor: Colors.white,
+        backgroundColor: C.white,
         title: Text(
           S.of(context).leaveGroup,
           style: ts(16, w: FontWeight.w700),
@@ -4467,7 +4467,7 @@ class _MessagesPageState extends State<MessagesPage> {
             list = list.where((s) => s.call.toUpperCase().contains(q)).toList();
           list.sort((a, b) => a.call.compareTo(b.call));
           return AlertDialog(
-            backgroundColor: Colors.white,
+            backgroundColor: C.white,
             title: Text(
               S.of(context).inviteMembersTo(group.name),
               style: ts(16, w: FontWeight.w700),

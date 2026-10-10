@@ -345,8 +345,8 @@ Future<void> showMessageActions({
     context: context,
     backgroundColor: Colors.transparent,
     builder: (ctx) => Container(
-      decoration: const BoxDecoration(
-        color: Colors.white,
+      decoration: BoxDecoration(
+        color: C.white,
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
       padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
@@ -554,8 +554,8 @@ Future<void> showConvTranslateSheet({
       builder: (ctx, setSheet) {
         final s = S.of(ctx);
         return Container(
-          decoration: const BoxDecoration(
-            color: Colors.white,
+          decoration: BoxDecoration(
+            color: C.white,
             borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
           ),
           padding: const EdgeInsets.fromLTRB(16, 14, 16, 16),

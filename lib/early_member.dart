@@ -900,7 +900,7 @@ Widget _badgeTile(BuildContext context, String call, Honor h, bool owned) {
       margin: const EdgeInsets.only(bottom: 10),
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: C.white,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
             color: owned ? c.withValues(alpha: 0.35) : const Color(0xFFEBEEF5)),
@@ -960,7 +960,7 @@ Widget _achievementTile(
     margin: const EdgeInsets.only(bottom: 10),
     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
     decoration: BoxDecoration(
-      color: Colors.white,
+      color: C.white,
       borderRadius: BorderRadius.circular(16),
       border: Border.all(
           color: unlocked ? c.withValues(alpha: 0.35) : const Color(0xFFEBEEF5)),

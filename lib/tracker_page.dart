@@ -918,8 +918,8 @@ class _TrackerPageState extends State<TrackerPage>
                   .take(30)
                   .toList();
               return Container(
-                decoration: const BoxDecoration(
-                  color: Colors.white,
+                decoration: BoxDecoration(
+                  color: C.white,
                   borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
                 ),
                 padding: const EdgeInsets.fromLTRB(16, 10, 16, 12),

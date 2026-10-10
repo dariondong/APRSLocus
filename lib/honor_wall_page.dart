@@ -83,7 +83,7 @@ class HonorWallPage extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(18),
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: C.white,
                     borderRadius: BorderRadius.circular(24),
                     boxShadow: const [
                       BoxShadow(
@@ -98,7 +98,7 @@ class HonorWallPage extends StatelessWidget {
                       height: 56,
                       padding: const EdgeInsets.all(6),
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: C.white,
                         borderRadius: BorderRadius.circular(16),
                         border: Border.all(color: const Color(0xFFE4E8F1)),
                       ),
@@ -224,7 +224,7 @@ class HonorWallPage extends StatelessWidget {
         margin: const EdgeInsets.only(bottom: 10),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 13),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: C.white,
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
               color: owned ? c.withValues(alpha: 0.35) : const Color(0xFFEBEEF5)),
@@ -302,7 +302,7 @@ class HonorWallPage extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 10),
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: C.white,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
             color:
