@@ -212,7 +212,7 @@ push tag v*  ──►  build-windows ┐
 ```bash
 # 1) 静态检查：CI 跑的那 17 条 + 2 条算法回归
 for s in android_res_ids backup_keys beacon_track const_colors cross_imports \
-         frame_cost hr_garmin ipa_packaging l10n_sync landscape_layout \
+         dark_mode frame_cost hr_garmin ipa_packaging l10n_sync landscape_layout \
          material_coverage notice oss_channel pos_quality release_notes transition_backdrop \
          ui_wiring widget_members; do python3 tool/check_$s.py || echo "❌ $s"; done
 python3 tool/sim_selffix.py --check && python3 tool/sim_turn_dot.py --check
@@ -243,6 +243,14 @@ python3 tool/check_release_notes.py   # Release 正文能否抽全（中英双�
 - 生成器里英文文案的引号嵌套（`page's "X"`）会让 Python 报
   `unterminated string literal`。
 - 版本号只在**发版时**动，且只动 `tool/sync_version.py` 管的那几处。
+- **暗色模式是运行时换调色板，弹窗/面板/卡片的表面色必须走 `C.white`，不能写
+  写死 `Colors.white`**：`Colors.white` 是编译期常量，深色模式下那张弹窗就是一块
+  发亮白板，而浅色模式完全正常 —— 能编译、能过 analyze、能过其它全部检查器，
+  只有切深色肉眼可见。`tool/check_dark_mode.py` 会拦住这种写法（固定彩色横幅上的
+  白底按钮与 `Border.all`/`BoxShadow` 的白色描边不算表面，已在脚本里登记例外）。
+- 官网公告有真源：`docs/notice/{zh,zh_TW,en}.md` 是手写源，改完**必须**跑
+  `python3 tool/sync_notice_site.py` 把三语 `#announce` 区重新生成，否则
+  `check_notice.py` 会在 CI 报红（`docs/index.html 公告正文与 docs/notice/zh.md 不一致`）。
 
 ---
 
