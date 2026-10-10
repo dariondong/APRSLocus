@@ -1,4 +1,5 @@
 import 'dart:math' as math;
+import 'dart:ui' show ImageFilter;
 
 import 'package:flutter/material.dart';
 
@@ -1054,12 +1055,17 @@ class AprsSymbolImage extends StatelessWidget {
   final String symbolTable; // 符号表字符，默认主表 '/'
   final double size;
   final bool grayscale;
+
+  /// 可读性光晕：图案四周描一圈柔和深色，让图标压在明亮/花哨的卫星影像上
+  /// 也分辨得出。默认关（大多数场合底图够干净，不需要多这一层）。
+  final bool halo;
   const AprsSymbolImage(
     this.symbol,
     this.symbolTable, {
     super.key,
     this.size = 20,
     this.grayscale = false,
+    this.halo = false,
   });
 
   /// 灰度滤镜：保留透明度，只把彩色像素去饱和，用于离线台站弱化
@@ -1089,10 +1095,39 @@ class AprsSymbolImage extends StatelessWidget {
         errorBuilder: (_, __, ___) => fallback,
       );
     }
-    if (!grayscale) return child;
-    return ColorFiltered(
+    if (!grayscale) return _maybeHalo(child);
+    return _maybeHalo(ColorFiltered(
       colorFilter: const ColorFilter.matrix(_grayscale),
       child: child,
+    ));
+  }
+
+  /// 在图案四周画一圈深色柔光：把图案染成深色、糊一层、垫在原图背后。
+  ///
+  /// 只用一个 `ImageFilter.blur`（而不是铺 8 个方向的偏移副本）：模糊本身
+  /// 就会把剪影**向四周**扩散，原图盖住中心后剩下的就是一圈均匀的通边暗环，
+  /// 代价固定且与图案形状无关。`ImageFilter.dilate` 本该更合适，但它在
+  /// Impeller 上并不保证可用，宁可要这一层「软但一定画得出」的光晕。
+  Widget _maybeHalo(Widget child) {
+    if (!halo) return child;
+    // 光晕宽度随图标大小走：大图标要更宽才看得见
+    final double r = (size * 0.14).clamp(1.2, 3.5).toDouble();
+    return Stack(
+      alignment: Alignment.center,
+      clipBehavior: Clip.none,
+      children: [
+        ImageFiltered(
+          imageFilter: ImageFilter.blur(sigmaX: r, sigmaY: r),
+          child: ColorFiltered(
+            colorFilter: const ColorFilter.mode(
+              Color(0xE6101418),
+              BlendMode.srcIn,
+            ),
+            child: child,
+          ),
+        ),
+        child,
+      ],
     );
   }
 }

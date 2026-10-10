@@ -1,5 +1,44 @@
 # 更新日志
 
+## [2.0.54] - 2026-10-10
+
+### 地图交互与卫星底图可读性
+
+**改地图交互**：单击台站标记不再把地图动画平移到该台站并放大（fly-to），
+而是**选中标记、显示呼号标签 / 信息窗** —— 想连着看几个相邻台站时，地图
+不再跳来跳去。台站详情仍可**双击标记**或点信息窗进入；长按仍呼出快速消息面板。
+
+**提升卫星影像上的可读性**：卫星底图偏暗、纹理杂，普通彩绘符号和白底小标签
+容易「糊」进背景。现在：
+
+- **符号加可读性光晕**：给台站图标描一圈柔和深色边，压在明亮航拍纹理上也能分辨；
+- **呼号标签反色**：卫星图上，主地图与策略地图的呼号小标签一律改为「深底白字」，
+  街道图保持「白底 + 台站色字」不变。
+
+---
+
+## [2.0.54] - 2026-10-10 (English)
+
+### Map interaction & satellite-basemap readability
+
+**Reworked map interaction**: tapping a station marker no longer animates the map
+to fly to that station and zoom in -- it now **selects the marker and shows its
+label / info popup**, so the map stays put while you inspect several nearby
+stations in a row. Station details remain on **double-tap** (or the info popup);
+long-press still opens the quick-message panel.
+
+**Better readability on satellite imagery**: satellite basemaps are darker and
+busier, so plain colored symbols and white-on-light labels used to blur into the
+background. Now:
+
+- **Symbol halo**: station icons get a soft dark outline so they stay legible over
+  bright aerial textures;
+- **Inverted callsign chips**: on satellite basemaps, the callsign chips on both
+  the main map and the strategy map switch to **dark background with white text**;
+  street basemaps keep the white-on-station-color chips unchanged.
+
+---
+
 ## [2.0.53] - 2026-10-10
 
 ### 修复：阿里云 OSS 渠道下载 `.apk` / `.ipa` 返回 400

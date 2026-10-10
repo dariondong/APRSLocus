@@ -305,6 +305,19 @@ bool isGcjMapType(MapType t) =>
     t == MapType.tencent ||
     t == MapType.tencent_sat;
 
+/// 该图源是否为「影像 / 卫星」底图。
+///
+/// 这类底图整体偏暗、纹理杂，标记与文字的可读性策略与浅色街道图不同：
+/// 需要给符号加可读性光晕、把呼号标签反过来用「深底白字」
+/// （见 `AprsSymbolImage.halo` 与 `MapPage._callLabel`）。
+///
+/// 判据用命名特征而非逐个列举枚举：以后新增 `xxx_sat` 或影像图源
+/// （如天地图影像 `tianditu_img`）也能自动归入这一档，不必改这份清单。
+bool isSatelliteMapType(MapType t) {
+  final n = t.name;
+  return n.contains('_sat') || n.endsWith('_img');
+}
+
 /// 该图源是否为 BD-09（百度）。
 bool isBaiduMapType(MapType t) =>
     t == MapType.baidu || t == MapType.baidu_sat;

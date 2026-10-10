@@ -941,6 +941,7 @@ class _StrategyMapPageState extends State<StrategyMapPage>
                 self: _selfNow(),
                 selfCall: widget.state.myCall,
                 selfLabel: S.of(context).meLabel,
+                sat: isSatelliteMapType(_mapType),
                 toScreen: _toScreen,
                 pixelsPerDegree: _pixelsPerDegree(),
                 colors: _StrategyColors(
@@ -1259,6 +1260,10 @@ class _StrategyPainter extends CustomPainter {
   /// 「我」标签（本地化的「我」字）。
   final String selfLabel;
 
+  /// 底图是否为卫星/影像：呼号小标签改用「深底白字」，否则白底小字压在
+  /// 明亮航拍纹理上会被背景吃掉（与主地图同一套可读性策略）。
+  final bool sat;
+
   _StrategyPainter({
     required this.items,
     required this.draft,
@@ -1270,6 +1275,7 @@ class _StrategyPainter extends CustomPainter {
     this.self,
     this.selfCall = '',
     this.selfLabel = '我',
+    this.sat = false,
   });
 
   @override
@@ -1352,14 +1358,14 @@ class _StrategyPainter extends CustomPainter {
     _chip(canvas, '${courseDeg.round()}°', tip + dir * 10);
   }
 
-  /// 小圆角标签（白底黑字），用于呼号/方位角。
+  /// 小圆角标签（呼号/方位角）。默认白底黑字；卫星影像上改深底白字。
   void _chip(Canvas canvas, String text, Offset center) {
     final tp = TextPainter(
       text: TextSpan(
         text: text,
-        style: const TextStyle(
+        style: TextStyle(
           fontSize: 10,
-          color: Colors.black,
+          color: sat ? Colors.white : Colors.black,
           fontWeight: FontWeight.w700,
         ),
       ),
@@ -1373,7 +1379,13 @@ class _StrategyPainter extends CustomPainter {
       ),
       const Radius.circular(5),
     );
-    canvas.drawRRect(rect, Paint()..color = Colors.white.withValues(alpha: 0.85));
+    canvas.drawRRect(
+      rect,
+      Paint()
+        ..color = sat
+            ? const Color(0xD9101418)
+            : Colors.white.withValues(alpha: 0.85),
+    );
     tp.paint(canvas, center - Offset(tp.width / 2, tp.height / 2));
   }
 
@@ -1509,5 +1521,6 @@ class _StrategyPainter extends CustomPainter {
       old.selected != selected ||
       old.teammates != teammates ||
       old.self != self ||
-      old.pixelsPerDegree != pixelsPerDegree;
+      old.pixelsPerDegree != pixelsPerDegree ||
+      old.sat != sat;
 }

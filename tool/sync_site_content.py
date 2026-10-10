@@ -204,6 +204,27 @@ CARDS = [
 # 只列「重点版本」：中间几十个纯修 bug 的版本归纳进文字说明，完整记录指向 Releases。
 CL = [
     {
+        'ver': 'v2.0.54', 'date': '2026-10-10',
+        'items': [
+            ('up',
+             T('**改地图交互**：单击台站标记不再「飞过去」并放大，而是**选中并显示'
+               '呼号标签 / 信息窗**，想连着看几个相邻台站时地图不再跳；详情改为'
+               '**双击**（或点信息窗）进入。同时**提升卫星影像可读性**：台站符号加'
+               '一圈深色光晕，主地图与策略地图的呼号标签在卫星图上改为「深底白字」。',
+               '**改地圖互動**：單擊台站標記不再「飛過去」並放大，而是**選取並顯示'
+               '呼號標籤 / 資訊窗**，想連著看幾個相鄰台站時地圖不再跳；詳情改為'
+               '**雙擊**（或點資訊窗）進入。同時**提升衛星影像可讀性**：台站符號加'
+               '一圈深色光暈，主地圖與策略地圖的呼號標籤在衛星圖上改為「深底白字」。',
+               '**Map interaction rework**: tapping a station marker no longer flies to '
+               'it and zooms in -- it now **selects it and shows the callsign label / '
+               'info popup**, so the map stays put while inspecting nearby stations; '
+               'details move to **double-tap** (or the popup). Also **better readability '
+               'on satellite imagery**: symbols get a dark halo and callsign chips on '
+               'both the main and strategy maps switch to **dark background / white text** '
+               'on satellite basemaps.')),
+        ],
+    },
+    {
         'ver': 'v2.0.53', 'date': '2026-10-10',
         'items': [
             ('fix',

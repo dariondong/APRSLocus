@@ -104,6 +104,10 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
     orElse: () => MapType.gaode,
   );
 
+  /// 当前底图是否为卫星/影像：决定符号光晕与呼号标签的配色
+  /// （卫星影像底图偏暗、纹理杂，普通标记与白底标签都容易糊进去）。
+  bool get _isSat => isSatelliteMapType(_currentMapType);
+
   /// 是否使用矢量地图模式（flutter_map）：OpenFreeMap Liberty / Carto Positron
   bool get _isVector =>
       _currentMapType == MapType.vector ||
@@ -339,13 +343,6 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
     });
     _viewAnim = ctrl;
     ctrl.forward();
-  }
-
-  void _animateToStation(Station s, {double? zoom}) {
-    _animateTo(
-      zoom ?? math.max(_zoom, 14.0),
-      _panFor(s.lat, s.lng, zoom ?? math.max(_zoom, 14.0)),
-    );
   }
 
   void _setView(double zoom, Offset pan) {
@@ -875,7 +872,10 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
     final viewHash =
         (_zoom * 64).round() * 1000003 +
         _pan.dx.round() * 1009 +
-        _pan.dy.round();
+        _pan.dy.round() +
+        // 卫星与街道的标记外观不同（符号光晕/标签配色）→ 必须进缓存键，
+        // 否则切底图后标记要等下一次拖拽才更新。
+        (_isSat ? 1 : 0) * 2000003;
     final selHash = _selected?.call ?? '';
     // 冻结（面板开着/正在动）时：**数据**变化不再重建标记，但**视图**变化必须
     // 跟随 —— 否则用户在这个状态下拖地图，标记会僵在原地（那是明显的错位）。
@@ -946,7 +946,10 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
         child: GestureDetector(
           onTapDown: (_) => setState(() => _selected = s),
           onDoubleTap: () => _openDetail(s),
-          onTap: () => _animateToStation(s),
+          // 单击只「选中并显示标签 / 信息窗」，不再把地图飞过去 ——
+          // 之前单击会直接动画平移到该台站并放大到 z14，地图一跳，
+          // 想连看几个相邻台站就得反复拖回来。需要详情走双击（或信息窗）。
+          onTap: () => setState(() => _selected = s),
           // 长按信标：呼出快速消息面板（就近发一条短信，不必先进消息页）。
           // 命中区本来就是这颗标记自身的 56×56 方框，不会抢地图的长按手势。
           onLongPress: () => _showQuickMessage(s),
@@ -975,6 +978,9 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                         s.symbolTable,
                         size: sel ? 30 : 24,
                         grayscale: s.effectiveStatus == St.offline,
+                        // 卫星影像底图：给符号加一圈深色光晕，否则彩色/浅色
+                        // 符号压在明亮的航拍纹理上会「糊」进背景。
+                        halo: _isSat,
                       ),
                     ),
                   ),
@@ -1004,23 +1010,33 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
     }).toList();
   }
 
-  /// 台站常驻呼号小标签（白底圆角，显示在图标下方）
+  /// 台站常驻呼号小标签。
+  ///
+  /// 街道图用「白底 + 台站色字」；卫星影像用「深底 + 白字」——
+  /// 白底小字压在明亮航拍纹理上会被背景吃掉，深底反而更跳。
   Widget _callLabel(Station s) {
+    final sat = _isSat;
     return Center(
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
         constraints: const BoxConstraints(maxWidth: 120),
         decoration: BoxDecoration(
-          color: Colors.white.withValues(alpha: 0.92),
+          color: sat
+              ? const Color(0xD9101418)
+              : Colors.white.withValues(alpha: 0.92),
           borderRadius: BorderRadius.circular(6),
-          border: Border.all(color: s.color.withValues(alpha: 0.5)),
+          border: Border.all(
+            color: sat
+                ? Colors.white.withValues(alpha: 0.28)
+                : s.color.withValues(alpha: 0.5),
+          ),
         ),
         child: Text(
           s.call,
           textAlign: TextAlign.center,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
-          style: ts(9, c: s.color, w: FontWeight.w700, h: 1.0),
+          style: ts(9, c: sat ? Colors.white : s.color, w: FontWeight.w700, h: 1.0),
         ),
       ),
     );
