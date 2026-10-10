@@ -780,7 +780,7 @@ class _CheckUpdatePageState extends State<CheckUpdatePage>
       backgroundColor: C.pageFill,
       appBar: MaterialAppBar(
         AppBar(
-          backgroundColor: surfaceTint(Colors.white),
+          backgroundColor: C.surfaceFillStrong,
           elevation: 0,
           title: Text(S.of(context).checkUpdate),
           centerTitle: true,

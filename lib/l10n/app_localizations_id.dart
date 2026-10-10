@@ -1066,6 +1066,376 @@ class AppLocalizationsId extends AppLocalizations {
   String get codeContributionZhTw => 'UI Tionghoa Tradisional';
 
   @override
+  String get icomTitleSubtitle =>
+      'Radio Icom via LAN langsung (IC-705 / IC-9700 / IC-7610 / IC-905): audio PCM 12 kHz dan kontrol CI-V';
+
+  @override
+  String get icomLinkStatusTitle => 'Status tautan radio';
+
+  @override
+  String icomLinkConnected(String model) {
+    return 'Tautan LAN terjalin dengan $model';
+  }
+
+  @override
+  String get icomLinkHandshaking => 'Belum tersambung atau menjalin';
+
+  @override
+  String icomBindHint(String model) {
+    return 'Saat aktif, sumber audio APRS langsung terikat ke tautan LAN $model';
+  }
+
+  @override
+  String get icomLinkPhase => 'Fase tautan';
+
+  @override
+  String get icomRfStats => 'Statistik RF';
+
+  @override
+  String get icomAudioFmt => '12000 Hz (LPCM 16-bit mono)';
+
+  @override
+  String get icomProcessing => 'Memproses...';
+
+  @override
+  String get icomDisconnectRadio => 'Putuskan radio';
+
+  @override
+  String icomConnectRadio(String model) {
+    return 'Sambungkan $model sekarang';
+  }
+
+  @override
+  String get icomNetworkTitle => 'Setelan jaringan radio';
+
+  @override
+  String get icomNetworkSubtitle =>
+      'Pilih preset radio lalu atur IP dan kredensial Network User';
+
+  @override
+  String get icomModelPreset => 'Preset radio';
+
+  @override
+  String get icomIpHint => 'Alamat IP radio';
+
+  @override
+  String get icomUserHint => 'Nama Network User radio';
+
+  @override
+  String get icomPassHint => 'Kata sandi Network User radio';
+
+  @override
+  String get icomCredHint =>
+      'Catatan: nama pengguna dan kata sandi harus sama persis dengan Network User Setting di radio.';
+
+  @override
+  String get icomCivTitle => 'Kontrol CI-V & transmisi';
+
+  @override
+  String get icomCivSubtitle => 'Kontrol otomatis PTT, tunda TX, dan beacon';
+
+  @override
+  String get icomRfBeaconHint =>
+      'Izinkan radio memancarkan beacon otomatis via RF (half-duplex: dengar dibisukan saat memancar).';
+
+  @override
+  String get icomTxDelayLabel => 'Tunda preamble TX (TX Delay, ms)';
+
+  @override
+  String get icomCivAddrLabel => 'Alamat CI-V radio (hex)';
+
+  @override
+  String get icomControllerAddr => 'Alamat pengontrol';
+
+  @override
+  String get icomControllerAddrValue => '0xE0 (bawaan)';
+
+  @override
+  String get icomGuideTitle => 'Panduan setelan radio';
+
+  @override
+  String get icomGuideSubtitle =>
+      'Langkah persiapan yang diperlukan di radio Icom';
+
+  @override
+  String get icomGuide1Title => 'Koneksi jaringan';
+
+  @override
+  String get icomGuide1Body =>
+      'Di IC-705, pilih Connect to Network di MENU → SET → WLAN Set untuk bergabung ke Wi-Fi router, atau Access Point untuk membuat hotspot bagi ponsel; IC-9700 / IC-7610 / IC-905 dapat tersambung ke port LAN router atau lewat jembatan nirkabel.';
+
+  @override
+  String get icomGuide2Title => 'Tambah Network User';
+
+  @override
+  String get icomGuide2Body =>
+      'Masuk ke WLAN Set / Network Set → Network User Setting, tambah pengguna (dengan nama dan kata sandi) lalu izinkan koneksi.';
+
+  @override
+  String get icomGuide3Title => 'Pastikan alamat dan port CI-V';
+
+  @override
+  String get icomGuide3Body =>
+      'Masuk ke MENU → SET → Connectors → CI-V dan pastikan CI-V Address serta port kontrol.';
+
+  @override
+  String get icomGuide4Title => 'Atur mode dan frekuensi';
+
+  @override
+  String get icomGuide4Body => 'Setel mode radio pada band itu ke FM-D.';
+
+  @override
+  String get icomLogTitle => 'Log diagnostik komunikasi radio';
+
+  @override
+  String get icomLogSubtitle =>
+      'Lihat paket kontrol LAN Icom dan lalu lintas CI-V';
+
+  @override
+  String get icomLogEmpty => 'Belum ada log komunikasi';
+
+  @override
+  String get icomPhaseOpeningSockets => 'Membuka port…';
+
+  @override
+  String get icomPhaseDiscovering => 'Menemukan radio…';
+
+  @override
+  String get icomPhaseAuthenticating => 'Masuk ke radio…';
+
+  @override
+  String get icomPhaseNegotiating => 'Menjalin aliran audio…';
+
+  @override
+  String get icomPhaseOpeningStreams => 'Membuka aliran…';
+
+  @override
+  String get icomPhaseReady => 'Tersambung (menunggu audio)';
+
+  @override
+  String get icomPhaseReceiving => 'Tersambung (menerima)';
+
+  @override
+  String get icomPhaseReconnect => 'Tautan terputus — menyambung ulang…';
+
+  @override
+  String get icomPhaseFailed => 'Koneksi gagal';
+
+  @override
+  String get icomPhaseUnsupported =>
+      'Platform ini tidak mendukung tautan LAN IC-705';
+
+  @override
+  String icomSwitchTitle(String model) {
+    return 'Radio WLAN ($model)';
+  }
+
+  @override
+  String get icomLanAddr => 'Alamat radio';
+
+  @override
+  String icomCardActive(String model) {
+    return 'Mode LAN langsung $model sedang aktif.';
+  }
+
+  @override
+  String icomConnectingTo(String radio) {
+    return 'Menyambungkan ke $radio';
+  }
+
+  @override
+  String icomConnectTitle(String radio) {
+    return 'Sambungkan radio $radio';
+  }
+
+  @override
+  String icomConnectingSub(String radio, String tnc) {
+    return 'Menyambungkan ke $radio ($tnc)…';
+  }
+
+  @override
+  String icomDescHost(String host) {
+    return '$host · RX/TX radio via LAN langsung dan kontrol CI-V';
+  }
+
+  @override
+  String icomDescRadio(String radio) {
+    return 'Kirim/terima dan kontrol $radio via LAN langsung';
+  }
+
+  @override
+  String get modelIc705Desc =>
+      'Radio QRP portabel semua-mode (Wi-Fi AP / STA bawaan)';
+
+  @override
+  String get modelIc9700Desc =>
+      'Base semua-mode VHF/UHF/1.2GHz (Ethernet LAN / Wi-Fi)';
+
+  @override
+  String get modelIc7610Desc =>
+      'Base SDR penerima ganda HF/50MHz (Ethernet LAN)';
+
+  @override
+  String get modelIc905Desc =>
+      'Radio gelombang mikro semua-mode 144MHz–10GHz (Ethernet LAN)';
+
+  @override
+  String get modelCustomName => 'Kustom / lainnya';
+
+  @override
+  String get modelCustomDesc => 'Alamat dan port CI-V Icom kustom';
+
+  @override
+  String get assetWindowsPackage => 'Penginstal Windows';
+
+  @override
+  String get assetApkPackage => 'Paket APK';
+
+  @override
+  String get honorTagPerseverance => 'Kebugaran';
+
+  @override
+  String get agentMode => 'Mode agen';
+
+  @override
+  String get agentModeDesc =>
+      'Menampilkan kotak obrolan AI untuk mengubah setelan, mengirim pesan, dan mencari stasiun (bawa kunci API sendiri)';
+
+  @override
+  String get agentSettings => 'Setelan agen';
+
+  @override
+  String get agentSettingsDesc =>
+      'URL dasar / kunci / model API dan tindakan yang diizinkan untuk agen';
+
+  @override
+  String get agentEnabled => 'Aktifkan agen';
+
+  @override
+  String get agentBaseUrl => 'URL dasar API';
+
+  @override
+  String get agentApiKey => 'Kunci API';
+
+  @override
+  String get agentModel => 'Model';
+
+  @override
+  String get agentPreset => 'Preset';
+
+  @override
+  String get agentPresetCustom => 'Kustom';
+
+  @override
+  String get agentSystemPrompt => 'Prompt sistem (opsional)';
+
+  @override
+  String get agentAllowSend => 'Izinkan mengirim pesan';
+
+  @override
+  String get agentAllowSendDesc =>
+      'Izinkan agen mengirim pesan langsung, grup, dan beacon';
+
+  @override
+  String get agentAllowSettings => 'Izinkan mengubah setelan';
+
+  @override
+  String get agentAllowSettingsDesc =>
+      'Izinkan agen mengubah setelan (mati = hanya baca)';
+
+  @override
+  String get agentTest => 'Uji koneksi';
+
+  @override
+  String get agentTesting => 'Menguji…';
+
+  @override
+  String agentTestOk(String model) {
+    return 'Berhasil tersambung: $model';
+  }
+
+  @override
+  String get agentNeedConfig => 'Isi URL dasar, kunci, dan model API';
+
+  @override
+  String get agentChatTitle => 'Asisten agen';
+
+  @override
+  String get agentInputHint => 'Beri tahu agen apa yang harus dilakukan…';
+
+  @override
+  String get agentSend => 'Kirim';
+
+  @override
+  String get agentClear => 'Hapus obrolan';
+
+  @override
+  String get agentClearConfirm => 'Hapus percakapan ini?';
+
+  @override
+  String get agentWelcome =>
+      'Hai, saya asisten agen APRSLocus. Minta saya mengubah setelan, mengirim pesan, atau mencari stasiun. Atur kunci API di \"Setelan agen\" dulu.';
+
+  @override
+  String get agentThinking => 'Berpikir…';
+
+  @override
+  String agentError(String msg) {
+    return 'Kesalahan: $msg';
+  }
+
+  @override
+  String get agentConfirmTitle => 'Agen ingin menjalankan tindakan';
+
+  @override
+  String get agentConfirmRun => 'Izinkan';
+
+  @override
+  String get agentConfirmDeny => 'Tolak';
+
+  @override
+  String get agentDenied => 'Tindakan ditolak';
+
+  @override
+  String get agentExecuted => 'Selesai';
+
+  @override
+  String get agentToolResult => 'Hasil alat';
+
+  @override
+  String get agentStopped => 'Dihentikan';
+
+  @override
+  String get agentStop => 'Hentikan';
+
+  @override
+  String get agentOpenSettings => 'Setelan agen';
+
+  @override
+  String get agentNeedsEnable => 'Aktifkan \"Mode agen\" di fitur Lab dulu';
+
+  @override
+  String agentToolCalling(String name) {
+    return 'Menjalankan: $name';
+  }
+
+  @override
+  String get agentMinimize => 'Perkecil';
+
+  @override
+  String get agentApiKeyTip =>
+      'Kunci hanya disimpan di perangkat ini dan tidak pernah dikirim ke server APRSlocus.';
+
+  @override
+  String get agentPresetHint => 'Isi cepat URL dan model API';
+
+  @override
+  String get agentInterfaceSection => 'Konfigurasi API';
+
+  @override
+  String get agentPermissions => 'Izin';
+
+  @override
   String get codeContributionTranslation => 'Terjemahan';
 
   @override
@@ -2742,7 +3112,11 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get feedback => 'Masukan pengguna';
+
+  @override
   String get feedbackEntryDesc => 'Buka issue repo';
+
+  @override
   String get openLinkFailed => 'Tidak bisa membuka tautan';
 
   @override
@@ -4969,11 +5343,9 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get updateChannel => 'Saluran pembaruan';
 
-
-
   @override
-
   String get updateChannelQinglingHint => 'Kanal cermin mandiri (清零)';
+
   @override
   String serverReturned(int code) {
     return 'Server mengembalikan $code';
@@ -8302,115 +8674,140 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get groupRfNotice =>
       'Mode RF: obrolan grup dan frame strategi dikirim siaran — rekan yang memantau kanal sama akan menerimanya. Frame strategi perlu konfirmasi rekan; kirim ulang jika hilang.';
-  @override
-  String get chatNeedConnect => "Belum terhubung ke server — tidak bisa mengirim. Hubungkan sumber data dulu.";
 
   @override
-  String strategyUpdatedItem(String call, String kind) => "$call memperbarui $kind";
+  String get chatNeedConnect =>
+      'Belum terhubung ke server — tidak bisa mengirim. Hubungkan sumber data dulu.';
 
   @override
-  String strategyDeletedItem(String call, String kind) => "$call menghapus $kind";
+  String strategyUpdatedItem(String call, String kind) {
+    return '$call memperbarui $kind';
+  }
 
   @override
-  String strategyClearedMsg(String call) => "$call mengosongkan lapisan bersama";
+  String strategyDeletedItem(String call, String kind) {
+    return '$call menghapus $kind';
+  }
 
   @override
-  String get sendLocation => "Kirim lokasi";
+  String strategyClearedMsg(String call) {
+    return '$call mengosongkan lapisan bersama';
+  }
 
   @override
-  String get needFixToSendLocation => "Belum ada posisi — tidak bisa mengirim lokasi";
+  String get sendLocation => 'Kirim lokasi';
 
   @override
-  String get msgLocation => "Lokasi";
+  String get needFixToSendLocation =>
+      'Belum ada posisi — tidak bisa mengirim lokasi';
 
   @override
-  String get locationTapToView => "Ketuk untuk lihat di peta";
+  String get msgLocation => 'Lokasi';
 
   @override
-  String get locationPickTitle => "Pilih titik untuk dikirim";
+  String get locationTapToView => 'Ketuk untuk lihat di peta';
 
   @override
-  String get locationPickHint => "Ketuk peta untuk memilih koordinat";
+  String get locationPickTitle => 'Pilih titik untuk dikirim';
 
   @override
-  String get locationMyPos => "Posisi saya";
+  String get locationPickHint => 'Ketuk peta untuk memilih koordinat';
 
   @override
-  String locationSendTo(String call) => "Kirim ke $call";
+  String get locationMyPos => 'Posisi saya';
 
   @override
-  String get chatMore => "Lainnya";
+  String locationSendTo(String call) {
+    return 'Kirim ke $call';
+  }
 
   @override
-  String get stationTapToView => "Ketuk untuk lihat stasiun";
+  String get chatMore => 'Lainnya';
 
   @override
-  String get locationPickStations => "Pilih stasiun";
+  String get stationTapToView => 'Ketuk untuk lihat stasiun';
 
   @override
-  String get locationSearchHint => "Cari panggilan / alias";
+  String get locationPickStations => 'Pilih stasiun';
 
   @override
-  String get locationNoStation => "Tidak ada stasiun yang cocok";
+  String get locationSearchHint => 'Cari panggilan / alias';
 
   @override
-  String get locationPrevPage => "Sebelumnya";
+  String get locationNoStation => 'Tidak ada stasiun yang cocok';
 
   @override
-  String get locationNextPage => "Berikutnya";
+  String get locationPrevPage => 'Sebelumnya';
 
   @override
-  String get shareStation => "Bagikan stasiun";
+  String get locationNextPage => 'Berikutnya';
 
   @override
-  String get shareStationPick => "Kirim ke obrolan mana?";
+  String get shareStation => 'Bagikan stasiun';
 
   @override
-  String shareStationSent(String call) => "$call dibagikan";
+  String get shareStationPick => 'Kirim ke obrolan mana?';
 
   @override
-  String locationPageInfo(String n, String m) => "Halaman $n / $m";
+  String shareStationSent(String call) {
+    return '$call dibagikan';
+  }
 
   @override
-  String get packetSource => "Sumber";
+  String locationPageInfo(String n, String m) {
+    return 'Halaman $n / $m';
+  }
 
   @override
-  String get packetSrcLocal => "Lokal";
+  String get packetSource => 'Sumber';
 
   @override
-  String get packetSrcAprsIs => "APRS-IS";
+  String get packetSrcLocal => 'Lokal';
 
   @override
-  String get packetSrcTnc => "TNC";
+  String get packetSrcAprsIs => 'APRS-IS';
 
   @override
-  String get packetSrcAudio => "Kartu suara";
+  String get packetSrcTnc => 'TNC';
 
   @override
-  String get packetSrcPkwdwpl => "Kenwood";
+  String get packetSrcAudio => 'Kartu suara';
 
   @override
-  String get audioTxAmplitude => "Amplitudo keluaran (0.05–1.0)";
+  String get packetSrcPkwdwpl => 'Kenwood';
 
   @override
-  String get audioTxAmplitudeTip => "Amplitudo relatif gelombang TX. Clipping (≥99%) menimbulkan harmonisa dan merusak spektrum FSK; terlalu rendah membuat SNR lawan kurang. Nilai 0.6 menyisakan ~4 dB margin; coba 0.5–0.7 ke radio lalu lihat puncak di diagnostik TX.";
+  String get audioTxAmplitude => 'Amplitudo keluaran (0.05–1.0)';
 
   @override
-  String get audioTxSourceRow => "Sumber TX";
+  String get audioTxAmplitudeTip =>
+      'Amplitudo relatif gelombang TX. Clipping (≥99%) menimbulkan harmonisa dan merusak spektrum FSK; terlalu rendah membuat SNR lawan kurang. Nilai 0.6 menyisakan ~4 dB margin; coba 0.5–0.7 ke radio lalu lihat puncak di diagnostik TX.';
 
   @override
-  String get audioTxSourceYes => "Tautan ini";
+  String get audioTxSourceRow => 'Sumber TX';
 
   @override
-  String audioTxNotSourceWarn(String src) => "Tautan audio aktif, tetapi bukan sumber TX saat ini — pesan dan beacon keluar lewat \"$src\". Untuk memancar via audio, pilih audio sebagai sumber TX di Setelan → Perangkat.";
+  String get audioTxSourceYes => 'Tautan ini';
 
   @override
-  String get audioTxPttHint => "Tautan audio tidak pernah menekan PTT radio — hanya memutar audio AFSK. Agar radio benar-benar memancar, radio sendiri harus ter-key: setel ke VOX (voice-operated), atau pakai kabel yang men-key PTT dari port audio/data. Jika radio tidak memancar, periksa ini dulu.";
+  String audioTxNotSourceWarn(String src) {
+    return 'Tautan audio aktif, tetapi bukan sumber TX saat ini — pesan dan beacon keluar lewat \"$src\". Untuk memancar via audio, pilih audio sebagai sumber TX di Setelan → Perangkat.';
+  }
 
   @override
-  String get updateChannelAliyunHint => "⚠️ Dibayar oleh tim pengembang -- mohon gunakan seperlunya 🙏";
+  String get audioTxPttHint =>
+      'Tautan audio tidak pernah menekan PTT radio — hanya memutar audio AFSK. Agar radio benar-benar memancar, radio sendiri harus ter-key: setel ke VOX (voice-operated), atau pakai kabel yang men-key PTT dari port audio/data. Jika radio tidak memancar, periksa ini dulu.';
 
   @override
-  String get connectingAliyun => "Memeriksa pembaruan via Aliyun OSS ☁️";
+  String get updateChannelAliyunHint =>
+      '⚠️ Dibayar oleh tim pengembang -- mohon gunakan seperlunya 🙏';
 
+  @override
+  String get connectingAliyun => 'Memeriksa pembaruan via Aliyun OSS ☁️';
+
+  @override
+  String get icomAudioSampleRate => 'Laju sampel audio';
+
+  @override
+  String get icomAudioFmtValue => '12000 Hz (LPCM 16-bit mono)';
 }

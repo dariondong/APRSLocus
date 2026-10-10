@@ -79,6 +79,9 @@ class _HomeShell2State extends State<HomeShell2>
   /// 「展开内容面板」上一次处理过的序号（见 [AppState.requestSheetExpand]）。
   int _lastExpandSeq = 0;
 
+  /// 「切页签」上一次处理过的序号（见 [AppState.requestTab]，智能体调用）。
+  int _lastTabSeq = 0;
+
   /// 是否刚刚用「滚动」动过面板（决定滚动结束后要不要吸附）
   bool _movedByScroll = false;
 
@@ -353,6 +356,14 @@ class _HomeShell2State extends State<HomeShell2>
         if (!mounted || _tab == 0) return;
         final full = _fullRatioOf();
         if (_extent < full - 0.01) _snapTo(full);
+      });
+    }
+    // 智能体「切到某页签」请求（见 AppState.requestTab）。
+    if (st.tabJumpSeq != _lastTabSeq) {
+      _lastTabSeq = st.tabJumpSeq;
+      final target = st.tabJumpIndex.clamp(0, 4);
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) _select(target);
       });
     }
     final key = '${st.connected}|${st.connecting}|${st.online}|'

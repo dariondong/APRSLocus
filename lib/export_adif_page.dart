@@ -319,7 +319,7 @@ class _ExportAdifPageState extends State<ExportAdifPage> {
       backgroundColor: C.pageFill,
       appBar: MaterialAppBar(
         AppBar(
-          backgroundColor: surfaceTint(Colors.white),
+          backgroundColor: C.surfaceFillStrong,
           elevation: 0,
           centerTitle: true,
           title: Text(s.exportAdif),

@@ -1073,6 +1073,378 @@ class AppLocalizationsEs extends AppLocalizations {
   String get codeContributionZhTw => 'Interfaz en chino tradicional';
 
   @override
+  String get icomTitleSubtitle =>
+      'Radio Icom por LAN directa (IC-705 / IC-9700 / IC-7610 / IC-905): audio PCM de 12 kHz y control CI-V';
+
+  @override
+  String get icomLinkStatusTitle => 'Estado del enlace';
+
+  @override
+  String icomLinkConnected(String model) {
+    return 'Enlace LAN establecido con $model';
+  }
+
+  @override
+  String get icomLinkHandshaking => 'Sin conexión o negociando';
+
+  @override
+  String icomBindHint(String model) {
+    return 'Al activarlo, la fuente de audio APRS se enlaza a la conexión LAN del $model';
+  }
+
+  @override
+  String get icomLinkPhase => 'Fase del enlace';
+
+  @override
+  String get icomRfStats => 'Estadísticas RF';
+
+  @override
+  String get icomAudioFmt => '12000 Hz (LPCM 16 bits mono)';
+
+  @override
+  String get icomProcessing => 'Procesando...';
+
+  @override
+  String get icomDisconnectRadio => 'Desconectar radio';
+
+  @override
+  String icomConnectRadio(String model) {
+    return 'Conectar $model ahora';
+  }
+
+  @override
+  String get icomNetworkTitle => 'Parámetros de red';
+
+  @override
+  String get icomNetworkSubtitle =>
+      'Elige un preset de radio y configura la IP y las credenciales Network User';
+
+  @override
+  String get icomModelPreset => 'Preset de radio';
+
+  @override
+  String get icomIpHint => 'Dirección IP del radio';
+
+  @override
+  String get icomUserHint => 'Nombre de Network User del radio';
+
+  @override
+  String get icomPassHint => 'Contraseña de Network User del radio';
+
+  @override
+  String get icomCredHint =>
+      'Nota: el usuario y la contraseña deben coincidir exactamente con el Network User Setting del radio.';
+
+  @override
+  String get icomCivTitle => 'Control CI-V y transmisión';
+
+  @override
+  String get icomCivSubtitle =>
+      'Control automático de PTT, retardo de TX y baliza';
+
+  @override
+  String get icomRfBeaconHint =>
+      'Permite que el radio balice automáticamente por RF (semidúplex: se silencia la escucha al transmitir).';
+
+  @override
+  String get icomTxDelayLabel => 'Retardo de preámbulo TX (TX Delay, ms)';
+
+  @override
+  String get icomCivAddrLabel => 'Dirección CI-V del radio (hex)';
+
+  @override
+  String get icomControllerAddr => 'Dirección del controlador';
+
+  @override
+  String get icomControllerAddrValue => '0xE0 (predeterminado)';
+
+  @override
+  String get icomGuideTitle => 'Guía de configuración del radio';
+
+  @override
+  String get icomGuideSubtitle => 'Pasos necesarios en el radio Icom';
+
+  @override
+  String get icomGuide1Title => 'Conexión de red';
+
+  @override
+  String get icomGuide1Body =>
+      'En el IC-705, elige Connect to Network en MENU → SET → WLAN Set para unirte a la Wi-Fi del router, o Access Point para crear un punto de acceso para el teléfono; los IC-9700 / IC-7610 / IC-905 pueden conectarse a un puerto LAN del router o entrar por un puente inalámbrico.';
+
+  @override
+  String get icomGuide2Title => 'Añadir un Network User';
+
+  @override
+  String get icomGuide2Body =>
+      'Entra en WLAN Set / Network Set → Network User Setting, añade un usuario (con usuario y contraseña) y permite la conexión.';
+
+  @override
+  String get icomGuide3Title => 'Confirma la dirección y el puerto CI-V';
+
+  @override
+  String get icomGuide3Body =>
+      'Entra en MENU → SET → Connectors → CI-V y confirma la CI-V Address y el puerto de control.';
+
+  @override
+  String get icomGuide4Title => 'Configura modo y frecuencia';
+
+  @override
+  String get icomGuide4Body => 'Ajusta el modo del radio en esa banda a FM-D.';
+
+  @override
+  String get icomLogTitle => 'Registro de diagnóstico';
+
+  @override
+  String get icomLogSubtitle =>
+      'Consulta los paquetes de control LAN de Icom y el tráfico CI-V';
+
+  @override
+  String get icomLogEmpty => 'Todavía no hay registro';
+
+  @override
+  String get icomPhaseOpeningSockets => 'Abriendo puertos…';
+
+  @override
+  String get icomPhaseDiscovering => 'Buscando el radio…';
+
+  @override
+  String get icomPhaseAuthenticating => 'Iniciando sesión en el radio…';
+
+  @override
+  String get icomPhaseNegotiating => 'Negociando el flujo de audio…';
+
+  @override
+  String get icomPhaseOpeningStreams => 'Abriendo flujos…';
+
+  @override
+  String get icomPhaseReady => 'Conectado (esperando audio)';
+
+  @override
+  String get icomPhaseReceiving => 'Conectado (recibiendo)';
+
+  @override
+  String get icomPhaseReconnect => 'Enlace perdido: reconectando…';
+
+  @override
+  String get icomPhaseFailed => 'Conexión fallida';
+
+  @override
+  String get icomPhaseUnsupported =>
+      'Esta plataforma no admite la conexión LAN del IC-705';
+
+  @override
+  String icomSwitchTitle(String model) {
+    return 'Radio WLAN ($model)';
+  }
+
+  @override
+  String get icomLanAddr => 'Dirección del radio';
+
+  @override
+  String icomCardActive(String model) {
+    return 'El enlace LAN directo con $model está activo ahora.';
+  }
+
+  @override
+  String icomConnectingTo(String radio) {
+    return 'Conectando con $radio';
+  }
+
+  @override
+  String icomConnectTitle(String radio) {
+    return 'Conectar radio $radio';
+  }
+
+  @override
+  String icomConnectingSub(String radio, String tnc) {
+    return 'Conectando con $radio ($tnc)…';
+  }
+
+  @override
+  String icomDescHost(String host) {
+    return '$host · RX/TX por LAN directa y control CI-V';
+  }
+
+  @override
+  String icomDescRadio(String radio) {
+    return 'Envía/recibe y controla el $radio por LAN directa';
+  }
+
+  @override
+  String get modelIc705Desc =>
+      'Radio QRP portátil multimodo (Wi-Fi AP / STA integrado)';
+
+  @override
+  String get modelIc9700Desc =>
+      'Base multimodo VHF/UHF/1.2 GHz (Ethernet LAN / Wi-Fi)';
+
+  @override
+  String get modelIc7610Desc =>
+      'Base SDR de doble receptor HF/50 MHz (Ethernet LAN)';
+
+  @override
+  String get modelIc905Desc =>
+      'Radio de microondas multimodo 144 MHz–10 GHz (Ethernet LAN)';
+
+  @override
+  String get modelCustomName => 'Personalizado / otro';
+
+  @override
+  String get modelCustomDesc => 'Dirección y puerto CI-V personalizados';
+
+  @override
+  String get assetWindowsPackage => 'Instalador de Windows';
+
+  @override
+  String get assetApkPackage => 'Paquete APK';
+
+  @override
+  String get honorTagPerseverance => 'Bienestar';
+
+  @override
+  String get agentMode => 'Modo agente';
+
+  @override
+  String get agentModeDesc =>
+      'Muestra un chat de IA que puede cambiar ajustes, enviar mensajes y buscar estaciones (con tu propia clave de API)';
+
+  @override
+  String get agentSettings => 'Ajustes del agente';
+
+  @override
+  String get agentSettingsDesc =>
+      'URL base / clave / modelo de la API y qué acciones puede realizar el agente';
+
+  @override
+  String get agentEnabled => 'Activar agente';
+
+  @override
+  String get agentBaseUrl => 'URL base de la API';
+
+  @override
+  String get agentApiKey => 'Clave de API';
+
+  @override
+  String get agentModel => 'Modelo';
+
+  @override
+  String get agentPreset => 'Preajuste';
+
+  @override
+  String get agentPresetCustom => 'Personalizado';
+
+  @override
+  String get agentSystemPrompt => 'Prompt del sistema (opcional)';
+
+  @override
+  String get agentAllowSend => 'Permitir enviar mensajes';
+
+  @override
+  String get agentAllowSendDesc =>
+      'Permite al agente enviar mensajes directos, de grupo y balizas';
+
+  @override
+  String get agentAllowSettings => 'Permitir cambiar ajustes';
+
+  @override
+  String get agentAllowSettingsDesc =>
+      'Permite al agente cambiar ajustes (desactivado = solo lectura)';
+
+  @override
+  String get agentTest => 'Probar conexión';
+
+  @override
+  String get agentTesting => 'Probando…';
+
+  @override
+  String agentTestOk(String model) {
+    return 'Conexión correcta: $model';
+  }
+
+  @override
+  String get agentNeedConfig =>
+      'Rellena la URL base, la clave y el modelo de la API';
+
+  @override
+  String get agentChatTitle => 'Asistente de IA';
+
+  @override
+  String get agentInputHint => 'Dile al agente qué hacer…';
+
+  @override
+  String get agentSend => 'Enviar';
+
+  @override
+  String get agentClear => 'Borrar chat';
+
+  @override
+  String get agentClearConfirm => '¿Borrar esta conversación?';
+
+  @override
+  String get agentWelcome =>
+      'Hola, soy el asistente de IA de APRSLocus. Pídeme cambiar ajustes, enviar mensajes o buscar estaciones. Configura tu clave de API en «Ajustes del agente».';
+
+  @override
+  String get agentThinking => 'Pensando…';
+
+  @override
+  String agentError(String msg) {
+    return 'Error: $msg';
+  }
+
+  @override
+  String get agentConfirmTitle => 'El agente quiere ejecutar una acción';
+
+  @override
+  String get agentConfirmRun => 'Permitir';
+
+  @override
+  String get agentConfirmDeny => 'Denegar';
+
+  @override
+  String get agentDenied => 'Acción denegada';
+
+  @override
+  String get agentExecuted => 'Hecho';
+
+  @override
+  String get agentToolResult => 'Resultado';
+
+  @override
+  String get agentStopped => 'Detenido';
+
+  @override
+  String get agentStop => 'Detener';
+
+  @override
+  String get agentOpenSettings => 'Ajustes del agente';
+
+  @override
+  String get agentNeedsEnable =>
+      'Activa «Modo agente» en Funciones de laboratorio primero';
+
+  @override
+  String agentToolCalling(String name) {
+    return 'Ejecutando: $name';
+  }
+
+  @override
+  String get agentMinimize => 'Minimizar';
+
+  @override
+  String get agentApiKeyTip =>
+      'La clave se guarda solo en este dispositivo y nunca se envía a los servidores de APRSlocus.';
+
+  @override
+  String get agentPresetHint => 'Rellena rápidamente la URL y el modelo';
+
+  @override
+  String get agentInterfaceSection => 'Configuración de la API';
+
+  @override
+  String get agentPermissions => 'Permisos';
+
+  @override
   String get codeContributionTranslation => 'Traducción';
 
   @override
@@ -2758,7 +3130,11 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get feedback => 'Comentarios';
+
+  @override
   String get feedbackEntryDesc => 'Abrir un issue';
+
+  @override
   String get openLinkFailed => 'No se pudo abrir el enlace';
 
   @override
@@ -4998,11 +5374,9 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get updateChannel => 'Canal de actualización';
 
-
-
   @override
-
   String get updateChannelQinglingHint => 'Canal espejo propio (清零)';
+
   @override
   String serverReturned(int code) {
     return 'El servidor devolvió $code';
@@ -8344,115 +8718,140 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get groupRfNotice =>
       'Modo RF: el chat de grupo y las tramas de estrategia se emiten por difusión; los compañeros que escuchan el mismo canal las reciben. Las tramas requieren acuse de recibo; reenvíalas si se pierden.';
-  @override
-  String get chatNeedConnect => "Sin conexión al servidor: no se puede enviar. Conecta primero una fuente de datos.";
 
   @override
-  String strategyUpdatedItem(String call, String kind) => "$call actualizó un $kind";
+  String get chatNeedConnect =>
+      'Sin conexión al servidor: no se puede enviar. Conecta primero una fuente de datos.';
 
   @override
-  String strategyDeletedItem(String call, String kind) => "$call eliminó un $kind";
+  String strategyUpdatedItem(String call, String kind) {
+    return '$call actualizó un $kind';
+  }
 
   @override
-  String strategyClearedMsg(String call) => "$call vació la capa compartida";
+  String strategyDeletedItem(String call, String kind) {
+    return '$call eliminó un $kind';
+  }
 
   @override
-  String get sendLocation => "Enviar ubicación";
+  String strategyClearedMsg(String call) {
+    return '$call vació la capa compartida';
+  }
 
   @override
-  String get needFixToSendLocation => "Aún sin posición: no se puede enviar la ubicación";
+  String get sendLocation => 'Enviar ubicación';
 
   @override
-  String get msgLocation => "Ubicación";
+  String get needFixToSendLocation =>
+      'Aún sin posición: no se puede enviar la ubicación';
 
   @override
-  String get locationTapToView => "Toca para ver en el mapa";
+  String get msgLocation => 'Ubicación';
 
   @override
-  String get locationPickTitle => "Elige un punto para enviar";
+  String get locationTapToView => 'Toca para ver en el mapa';
 
   @override
-  String get locationPickHint => "Toca el mapa para elegir la coordenada";
+  String get locationPickTitle => 'Elige un punto para enviar';
 
   @override
-  String get locationMyPos => "Mi posición";
+  String get locationPickHint => 'Toca el mapa para elegir la coordenada';
 
   @override
-  String locationSendTo(String call) => "Enviar a $call";
+  String get locationMyPos => 'Mi posición';
 
   @override
-  String get chatMore => "Más";
+  String locationSendTo(String call) {
+    return 'Enviar a $call';
+  }
 
   @override
-  String get stationTapToView => "Toca para ver la estación";
+  String get chatMore => 'Más';
 
   @override
-  String get locationPickStations => "Elegir estación";
+  String get stationTapToView => 'Toca para ver la estación';
 
   @override
-  String get locationSearchHint => "Buscar indicativo / alias";
+  String get locationPickStations => 'Elegir estación';
 
   @override
-  String get locationNoStation => "Ninguna estación coincide";
+  String get locationSearchHint => 'Buscar indicativo / alias';
 
   @override
-  String get locationPrevPage => "Ant.";
+  String get locationNoStation => 'Ninguna estación coincide';
 
   @override
-  String get locationNextPage => "Sig.";
+  String get locationPrevPage => 'Ant.';
 
   @override
-  String get shareStation => "Compartir estación";
+  String get locationNextPage => 'Sig.';
 
   @override
-  String get shareStationPick => "¿A qué chat enviar?";
+  String get shareStation => 'Compartir estación';
 
   @override
-  String shareStationSent(String call) => "$call compartida";
+  String get shareStationPick => '¿A qué chat enviar?';
 
   @override
-  String locationPageInfo(String n, String m) => "Página $n / $m";
+  String shareStationSent(String call) {
+    return '$call compartida';
+  }
 
   @override
-  String get packetSource => "Origen";
+  String locationPageInfo(String n, String m) {
+    return 'Página $n / $m';
+  }
 
   @override
-  String get packetSrcLocal => "Local";
+  String get packetSource => 'Origen';
 
   @override
-  String get packetSrcAprsIs => "APRS-IS";
+  String get packetSrcLocal => 'Local';
 
   @override
-  String get packetSrcTnc => "TNC";
+  String get packetSrcAprsIs => 'APRS-IS';
 
   @override
-  String get packetSrcAudio => "Tarjeta de sonido";
+  String get packetSrcTnc => 'TNC';
 
   @override
-  String get packetSrcPkwdwpl => "Kenwood";
+  String get packetSrcAudio => 'Tarjeta de sonido';
 
   @override
-  String get audioTxAmplitude => "Amplitud de salida (0.05–1.0)";
+  String get packetSrcPkwdwpl => 'Kenwood';
 
   @override
-  String get audioTxAmplitudeTip => "Amplitud relativa de la onda TX. El recorte (≥99%) genera armónicos y destruye el espectro FSK; un nivel muy bajo deja al receptor sin SNR. El valor 0.6 deja ~4 dB de margen; empieza en 0.5–0.7 hacia un equipo y observa el pico en el diagnóstico de TX.";
+  String get audioTxAmplitude => 'Amplitud de salida (0.05–1.0)';
 
   @override
-  String get audioTxSourceRow => "Fuente TX";
+  String get audioTxAmplitudeTip =>
+      'Amplitud relativa de la onda TX. El recorte (≥99%) genera armónicos y destruye el espectro FSK; un nivel muy bajo deja al receptor sin SNR. El valor 0.6 deja ~4 dB de margen; empieza en 0.5–0.7 hacia un equipo y observa el pico en el diagnóstico de TX.';
 
   @override
-  String get audioTxSourceYes => "Este enlace";
+  String get audioTxSourceRow => 'Fuente TX';
 
   @override
-  String audioTxNotSourceWarn(String src) => "El enlace de audio está activo, pero no es la fuente TX actual: los mensajes y balizas salen por \"$src\". Para transmitir por audio, selecciónalo como fuente TX en Ajustes → Dispositivos.";
+  String get audioTxSourceYes => 'Este enlace';
 
   @override
-  String get audioTxPttHint => "El enlace de audio nunca acciona el PTT del equipo: solo reproduce audio AFSK. Para que el equipo transmita de verdad, debe ser el propio equipo quien se active: configúralo en VOX, o usa un cable que accione el PTT desde el puerto de audio/datos. Si el equipo no transmite, revisa esto primero.";
+  String audioTxNotSourceWarn(String src) {
+    return 'El enlace de audio está activo, pero no es la fuente TX actual: los mensajes y balizas salen por \"$src\". Para transmitir por audio, selecciónalo como fuente TX en Ajustes → Dispositivos.';
+  }
 
   @override
-  String get updateChannelAliyunHint => "⚠️ Lo paga el equipo de desarrollo: úsalo con moderación 🙏";
+  String get audioTxPttHint =>
+      'El enlace de audio nunca acciona el PTT del equipo: solo reproduce audio AFSK. Para que el equipo transmita de verdad, debe ser el propio equipo quien se active: configúralo en VOX, o usa un cable que accione el PTT desde el puerto de audio/datos. Si el equipo no transmite, revisa esto primero.';
 
   @override
-  String get connectingAliyun => "Buscando actualizaciones vía Aliyun OSS ☁️";
+  String get updateChannelAliyunHint =>
+      '⚠️ Lo paga el equipo de desarrollo: úsalo con moderación 🙏';
 
+  @override
+  String get connectingAliyun => 'Buscando actualizaciones vía Aliyun OSS ☁️';
+
+  @override
+  String get icomAudioSampleRate => 'Frecuencia de muestreo de audio';
+
+  @override
+  String get icomAudioFmtValue => '12000 Hz (LPCM 16 bits mono)';
 }

@@ -804,15 +804,15 @@ class _HonorWallSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     final base = _base(call);
     return Container(
-      decoration: const BoxDecoration(
-        color: Color(0xFFF7F9FC),
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      decoration: BoxDecoration(
+        color: C.bgSoft,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
       ),
       padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Center(
           child: Container(width: 40, height: 4, decoration: BoxDecoration(
-              color: const Color(0xFFD5DBE8),
+              color: C.borderStrong,
               borderRadius: BorderRadius.circular(2))),
         ),
         const SizedBox(height: 14),
@@ -827,10 +827,10 @@ class _HonorWallSheet extends StatelessWidget {
                   height: 1.1)),
           const SizedBox(width: 12),
           Text(AppLocalizations.of(context).badgeWall,
-              style: const TextStyle(
+              style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w700,
-                  color: Color(0xFF98A2B8))),
+                  color: C.grey)),
         ]),
         const SizedBox(height: 4),
         ValueListenableBuilder<int>(
@@ -842,8 +842,8 @@ class _HonorWallSheet extends StatelessWidget {
               Text(
                   AppLocalizations.of(context)
                       .honoredBadges('$ownedCount', '${wall.length}'),
-                  style: const TextStyle(
-                      fontSize: 12, color: Color(0xFF98A2B8))),
+                  style: TextStyle(
+                      fontSize: 12, color: C.grey)),
               const SizedBox(height: 12),
               SizedBox(
                 height: MediaQuery.of(context).size.height * 0.62,
@@ -859,17 +859,17 @@ class _HonorWallSheet extends StatelessWidget {
                           _badgeTile(context, call, w.honor, w.owned),
                         const SizedBox(height: 8),
                         Row(children: [
-                          const Icon(Icons.emoji_events_outlined,
-                              size: 15, color: Color(0xFF9AA3B7)),
+                          Icon(Icons.emoji_events_outlined,
+                              size: 15, color: C.grey),
                           const SizedBox(width: 6),
                           Text(AppLocalizations.of(context).achievementWall,
-                              style: const TextStyle(
+                              style: TextStyle(
                                   fontSize: 13,
                                   fontWeight: FontWeight.w800,
-                                  color: Color(0xFF6A7590))),
+                                  color: C.slate)),
                           SizedBox(width: 8),
                           Expanded(
-                              child: Divider(color: Color(0xFFE4E8F1), height: 1)),
+                              child: Divider(color: C.border, height: 1)),
                         ]),
                         const SizedBox(height: 10),
                         for (final a in AchievementCenter.all)
@@ -892,8 +892,8 @@ class _HonorWallSheet extends StatelessWidget {
 ///
 /// 顶层函数没有 `context`，必须显式传入（否则 analyze 报 undefined_identifier）
 Widget _badgeTile(BuildContext context, String call, Honor h, bool owned) {
-  final c = owned ? h.color : const Color(0xFFC2CAD8);
-  final col = owned ? h.color : const Color(0xFFAEB7C7);
+  final c = owned ? h.color : C.greyLight;
+  final col = owned ? h.color : C.grey;
   return GestureDetector(
     onTap: owned ? () => openMemberCard(call) : null,
     child: Container(
@@ -903,14 +903,14 @@ Widget _badgeTile(BuildContext context, String call, Honor h, bool owned) {
         color: C.white,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-            color: owned ? c.withValues(alpha: 0.35) : const Color(0xFFEBEEF5)),
+            color: owned ? c.withValues(alpha: 0.35) : C.border),
       ),
       child: Row(children: [
         Container(
           width: 46,
           height: 46,
           decoration: BoxDecoration(
-            color: owned ? c.withValues(alpha: 0.13) : const Color(0xFFF0F2F7),
+            color: owned ? c.withValues(alpha: 0.13) : C.greyBg,
             borderRadius: BorderRadius.circular(16),
           ),
           child: Icon(owned ? h.icon : Icons.lock_rounded, color: col, size: 23),
@@ -924,7 +924,7 @@ Widget _badgeTile(BuildContext context, String call, Honor h, bool owned) {
                 style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w800,
-                    color: owned ? const Color(0xFF1B253C) : const Color(0xFF98A2B8))),
+                    color: owned ? C.ink : C.grey)),
             const SizedBox(height: 3),
             Text(
                 owned
@@ -935,15 +935,15 @@ Widget _badgeTile(BuildContext context, String call, Honor h, bool owned) {
                 style: TextStyle(
                     fontSize: 12,
                     height: 1.35,
-                    color: owned ? const Color(0xFF68748F) : const Color(0xFFB4BCCB))),
+                    color: owned ? C.slate : C.greyLight)),
           ]),
         ),
         const SizedBox(width: 10),
         if (owned)
-          const Icon(Icons.open_in_new_rounded,
-              size: 16, color: Color(0xFFAAB4C6))
+          Icon(Icons.open_in_new_rounded,
+              size: 16, color: C.grey)
         else
-          const Icon(Icons.circle_outlined, color: Color(0xFFD5DAE5), size: 18),
+          Icon(Icons.circle_outlined, color: C.borderStrong, size: 18),
       ]),
     ),
   );
@@ -954,8 +954,8 @@ Widget _badgeTile(BuildContext context, String call, Honor h, bool owned) {
 Widget _achievementTile(
     BuildContext context, Achievement a, bool unlocked) {
   final lang = honorLangOf(context);
-  final Color c = unlocked ? a.color : const Color(0xFFC2CAD8);
-  final Color col = unlocked ? a.color : const Color(0xFFAEB7C7);
+  final Color c = unlocked ? a.color : C.greyLight;
+  final Color col = unlocked ? a.color : C.grey;
   return Container(
     margin: const EdgeInsets.only(bottom: 10),
     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -963,14 +963,14 @@ Widget _achievementTile(
       color: C.white,
       borderRadius: BorderRadius.circular(16),
       border: Border.all(
-          color: unlocked ? c.withValues(alpha: 0.35) : const Color(0xFFEBEEF5)),
+          color: unlocked ? c.withValues(alpha: 0.35) : C.border),
     ),
     child: Row(children: [
       Container(
         width: 46,
         height: 46,
         decoration: BoxDecoration(
-          color: unlocked ? c.withValues(alpha: 0.13) : const Color(0xFFF0F2F7),
+          color: unlocked ? c.withValues(alpha: 0.13) : C.greyBg,
           borderRadius: BorderRadius.circular(16),
         ),
         child: Icon(unlocked ? a.icon : Icons.lock_rounded, color: col, size: 23),
@@ -984,7 +984,7 @@ Widget _achievementTile(
               style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w800,
-                  color: unlocked ? const Color(0xFF1B253C) : const Color(0xFF98A2B8))),
+                  color: unlocked ? C.ink : C.grey)),
           const SizedBox(height: 3),
           Text(a.descOf(lang),
               maxLines: 2,
@@ -992,14 +992,14 @@ Widget _achievementTile(
               style: TextStyle(
                   fontSize: 12,
                   height: 1.35,
-                  color: unlocked ? const Color(0xFF68748F) : const Color(0xFFB4BCCB))),
+                  color: unlocked ? C.slate : C.greyLight)),
         ]),
       ),
       const SizedBox(width: 10),
       if (unlocked)
-        const Icon(Icons.check_circle_rounded, size: 18, color: Color(0xFF7FC98A))
+        Icon(Icons.check_circle_rounded, size: 18, color: C.green)
       else
-        const Icon(Icons.circle_outlined, color: Color(0xFFD5DAE5), size: 18),
+        Icon(Icons.circle_outlined, color: C.borderStrong, size: 18),
     ]),
   );
 }

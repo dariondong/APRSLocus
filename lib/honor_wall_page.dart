@@ -33,15 +33,15 @@ class HonorWallPage extends StatelessWidget {
     final base =
         call.contains('-') ? call.substring(0, call.indexOf('-')) : call;
     return Scaffold(
-      backgroundColor: const Color(0xFFF4F6FB),
+      backgroundColor: C.bg,
       appBar: MaterialAppBar(
         AppBar(
-          backgroundColor: surfaceTint(const Color(0xFFF4F6FB)),
+          backgroundColor: C.surfaceFillStrong,
           elevation: 0,
           leading: IconButton(
-            icon: const Icon(
+            icon: Icon(
               Icons.arrow_back_rounded,
-              color: Color(0xFF1B253C),
+              color: C.ink,
             ),
             onPressed: () => Navigator.of(context).pop(),
           ),
@@ -60,10 +60,10 @@ class HonorWallPage extends StatelessWidget {
               const SizedBox(width: 8),
               Text(
                 '· ${S.of(context).honorWall}',
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.w600,
-                  color: Color(0xFF98A2B8),
+                  color: C.slate,
                 ),
               ),
             ],
@@ -100,7 +100,7 @@ class HonorWallPage extends StatelessWidget {
                       decoration: BoxDecoration(
                         color: C.white,
                         borderRadius: BorderRadius.circular(16),
-                        border: Border.all(color: const Color(0xFFE4E8F1)),
+                        border: Border.all(color: C.border),
                       ),
                       child: Center(child: _userAvatar()),
                     ),
@@ -124,9 +124,9 @@ class HonorWallPage extends StatelessWidget {
                                       '${S.of(context).achievementsProgress('${AchievementCenter.instance.unlockedCount}', '${AchievementCenter.all.length}')}'
                                     : S.of(context).honoredBadges(
                                         '$ownedCount', '${wall.length}'),
-                                style: const TextStyle(
+                                style: TextStyle(
                                     fontSize: 12,
-                                    color: Color(0xFF98A2B8))),
+                                    color: C.grey)),
                           ]),
                     ),
                   ]),
@@ -134,17 +134,17 @@ class HonorWallPage extends StatelessWidget {
                 const SizedBox(height: 22),
                 // 账号荣誉区
                 Row(children: [
-                  const Icon(Icons.workspace_premium_rounded,
-                      size: 16, color: Color(0xFFB08A34)),
+                  Icon(Icons.workspace_premium_rounded,
+                      size: 16, color: C.yellow),
                   const SizedBox(width: 6),
                   Text(S.of(context).accountHonors,
-                      style: const TextStyle(
+                      style: TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.w800,
-                          color: Color(0xFF4B5873))),
+                          color: C.slate)),
                   const SizedBox(width: 8),
-                  const Expanded(
-                      child: Divider(color: Color(0xFFE4E8F1), height: 1)),
+                  Expanded(
+                      child: Divider(color: C.border, height: 1)),
                 ]),
                 const SizedBox(height: 12),
                 for (final w in wall)
@@ -153,17 +153,17 @@ class HonorWallPage extends StatelessWidget {
                   const SizedBox(height: 18),
                   // 成就区（仅查看自己时显示）
                   Row(children: [
-                    const Icon(Icons.emoji_events_outlined,
-                        size: 16, color: Color(0xFFE67E22)),
+                    Icon(Icons.emoji_events_outlined,
+                        size: 16, color: C.orange),
                     const SizedBox(width: 6),
                     Text(S.of(context).achievementsSection,
-                        style: const TextStyle(
+                        style: TextStyle(
                             fontSize: 13,
                             fontWeight: FontWeight.w800,
-                            color: Color(0xFF4B5873))),
+                            color: C.slate)),
                     SizedBox(width: 8),
                     Expanded(
-                        child: Divider(color: Color(0xFFE4E8F1), height: 1)),
+                        child: Divider(color: C.border, height: 1)),
                   ]),
                   const SizedBox(height: 12),
                   ValueListenableBuilder<int>(
@@ -193,17 +193,17 @@ class HonorWallPage extends StatelessWidget {
       if (asset != null) {
         img = Image.asset(asset,
             width: 40, height: 40, fit: BoxFit.contain,
-            errorBuilder: (_, __, ___) => const Icon(Icons.place_rounded,
-                size: 24, color: Color(0xFF14203A)));
+            errorBuilder: (_, __, ___) => Icon(Icons.place_rounded,
+                size: 24, color: C.ink));
       }
     } catch (_) {}
     if (img == null) {
       final base = call.contains('-') ? call.substring(0, call.indexOf('-')) : call;
       return Text(base[0],
-          style: const TextStyle(
+          style: TextStyle(
               fontSize: 26,
               fontWeight: FontWeight.w900,
-              color: Color(0xFF14203A),
+              color: C.ink,
               fontFamily: 'monospace',
               fontFamilyFallback: kCjkFallback));
     }
@@ -215,8 +215,8 @@ class HonorWallPage extends StatelessWidget {
   Widget _honorTile(
       BuildContext context, String call, Honor h, bool owned) {
     final lang = honorLangOf(context);
-    final c = owned ? h.color : const Color(0xFFC2CAD8);
-    final col = owned ? h.color : const Color(0xFFAEB7C7);
+    final c = owned ? h.color : C.greyLight;
+    final col = owned ? h.color : C.grey;
     return GestureDetector(
       // 点已点亮徽章 → 打开官网徽章专属页 badge.html?honor=xxx
       onTap: owned ? () => openBadgePage(h.key) : null,
@@ -227,14 +227,14 @@ class HonorWallPage extends StatelessWidget {
           color: C.white,
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
-              color: owned ? c.withValues(alpha: 0.35) : const Color(0xFFEBEEF5)),
+              color: owned ? c.withValues(alpha: 0.35) : C.border),
         ),
         child: Row(children: [
           Container(
             width: 46,
             height: 46,
             decoration: BoxDecoration(
-              color: owned ? c.withValues(alpha: 0.13) : const Color(0xFFF0F2F7),
+              color: owned ? c.withValues(alpha: 0.13) : C.greyBg,
               borderRadius: BorderRadius.circular(16),
             ),
             child:
@@ -249,9 +249,7 @@ class HonorWallPage extends StatelessWidget {
                   style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w800,
-                      color: owned
-                          ? const Color(0xFF1B253C)
-                          : const Color(0xFF98A2B8))),
+                      color: owned ? C.ink : C.grey)),
               const SizedBox(height: 3),
               Text(owned ? h.descOf(lang) : S.of(context).notLit,
                   maxLines: 2,
@@ -259,9 +257,7 @@ class HonorWallPage extends StatelessWidget {
                   style: TextStyle(
                       fontSize: 12,
                       height: 1.35,
-                      color: owned
-                          ? const Color(0xFF68748F)
-                          : const Color(0xFFB4BCCB))),
+                      color: owned ? C.slate : C.greyLight)),
               // 获得条件（怎么拿到这枚徽章）—— 未点亮时是最有用的信息，
               // 已点亮时也一并展示（与官网 badge.html 口径一致）。
               // 无 criteria 时整行隐藏，不显示空白占位。
@@ -271,13 +267,13 @@ class HonorWallPage extends StatelessWidget {
                   S.of(context).honorCriteriaLine(h.criteriaOf(lang)),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 11,
                     height: 1.35,
                     // 单一颜色兼顾两种状态：
                     // 已点亮时比 desc 淡（层级更低）；
                     // 未点亮时比「未点亮」深（它是可执行的信息，该更显眼）。
-                    color: Color(0xFF8B95A9),
+                    color: C.grey,
                   ),
                 ),
               ],
@@ -285,10 +281,10 @@ class HonorWallPage extends StatelessWidget {
           ),
           const SizedBox(width: 10),
           if (owned)
-            const Icon(Icons.open_in_new_rounded,
-                size: 16, color: Color(0xFFAAB4C6))
+            Icon(Icons.open_in_new_rounded,
+                size: 16, color: C.grey)
           else
-            const Icon(Icons.circle_outlined, color: Color(0xFFD5DAE5), size: 18),
+            Icon(Icons.circle_outlined, color: C.borderStrong, size: 18),
         ]),
       ),
     );
@@ -296,8 +292,8 @@ class HonorWallPage extends StatelessWidget {
 
   Widget _achTile(BuildContext context, Achievement a, bool unlocked) {
     final lang = honorLangOf(context);
-    final Color c = unlocked ? a.color : const Color(0xFFC2CAD8);
-    final Color col = unlocked ? a.color : const Color(0xFFAEB7C7);
+    final Color c = unlocked ? a.color : C.greyLight;
+    final Color col = unlocked ? a.color : C.grey;
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -305,17 +301,14 @@ class HonorWallPage extends StatelessWidget {
         color: C.white,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-            color:
-                unlocked ? c.withValues(alpha: 0.35) : const Color(0xFFEBEEF5)),
+            color: unlocked ? c.withValues(alpha: 0.35) : C.border),
       ),
       child: Row(children: [
         Container(
           width: 46,
           height: 46,
           decoration: BoxDecoration(
-            color: unlocked
-                ? c.withValues(alpha: 0.13)
-                : const Color(0xFFF0F2F7),
+            color: unlocked ? c.withValues(alpha: 0.13) : C.greyBg,
             borderRadius: BorderRadius.circular(16),
           ),
           child:
@@ -330,9 +323,7 @@ class HonorWallPage extends StatelessWidget {
                 style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w800,
-                    color: unlocked
-                        ? const Color(0xFF1B253C)
-                        : const Color(0xFF98A2B8))),
+                    color: unlocked ? C.ink : C.grey)),
             const SizedBox(height: 3),
             Text(a.descOf(lang),
                 maxLines: 2,
@@ -340,17 +331,15 @@ class HonorWallPage extends StatelessWidget {
                 style: TextStyle(
                     fontSize: 12,
                     height: 1.35,
-                    color: unlocked
-                        ? const Color(0xFF68748F)
-                        : const Color(0xFFB4BCCB))),
+                    color: unlocked ? C.slate : C.greyLight)),
           ]),
         ),
         const SizedBox(width: 10),
         if (unlocked)
-          const Icon(Icons.check_circle_rounded,
-              size: 18, color: Color(0xFF7FC98A))
+          Icon(Icons.check_circle_rounded,
+              size: 18, color: C.green)
         else
-          const Icon(Icons.circle_outlined, color: Color(0xFFD5DAE5), size: 18),
+          Icon(Icons.circle_outlined, color: C.borderStrong, size: 18),
       ]),
     );
   }

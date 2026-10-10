@@ -33,6 +33,7 @@ class _HomePageState extends State<HomePage> {
   int _lastFocusSeq = 0;
   int _lastPickSeq = 0;
   int _lastStrategyJumpSeq = 0;
+  int _lastTabSeq = 0;
   final _searchCtrl = TextEditingController();
   Timer? _searchDebounce; // 搜索防抖：台站多时避免每敲一个字符重建地图/列表
 
@@ -186,6 +187,16 @@ class _HomePageState extends State<HomePage> {
       if (_tab != 0) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           if (mounted) setState(() => _tab = 0);
+        });
+      }
+    }
+    // 智能体「切到某页签」请求（见 AppState.requestTab）。
+    if (widget.state.tabJumpSeq != _lastTabSeq) {
+      _lastTabSeq = widget.state.tabJumpSeq;
+      final target = widget.state.tabJumpIndex.clamp(0, 4);
+      if (_tab != target) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) setState(() => _tab = target);
         });
       }
     }

@@ -1057,6 +1057,364 @@ class AppLocalizationsJa extends AppLocalizations {
   String get codeContributionZhTw => '繁体字中国語 UI';
 
   @override
+  String get icomTitleSubtitle =>
+      'Icom 無線機へ LAN 直結（IC-705 / IC-9700 / IC-7610 / IC-905）。12 kHz PCM 音声と CI-V 制御';
+
+  @override
+  String get icomLinkStatusTitle => '無線機リンク状態';
+
+  @override
+  String icomLinkConnected(String model) {
+    return '$model と LAN 直結しました';
+  }
+
+  @override
+  String get icomLinkHandshaking => '未接続、またはハンドシェイク中';
+
+  @override
+  String icomBindHint(String model) {
+    return 'オンにすると、APRS 音声の送受信元は $model の LAN 直結に束ねられます';
+  }
+
+  @override
+  String get icomLinkPhase => 'リンク段階';
+
+  @override
+  String get icomRfStats => 'RF 送受信統計';
+
+  @override
+  String get icomAudioFmt => '12000 Hz（LPCM 16bit モノラル）';
+
+  @override
+  String get icomProcessing => '処理中...';
+
+  @override
+  String get icomDisconnectRadio => '無線機を切断';
+
+  @override
+  String icomConnectRadio(String model) {
+    return '今すぐ $model に接続';
+  }
+
+  @override
+  String get icomNetworkTitle => '無線機ネットワーク設定';
+
+  @override
+  String get icomNetworkSubtitle => '無線機プリセットを選び、IP と Network User の資格情報を設定します';
+
+  @override
+  String get icomModelPreset => '無線機プリセット';
+
+  @override
+  String get icomIpHint => '無線機の IP アドレス';
+
+  @override
+  String get icomUserHint => '無線機の Network User 名';
+
+  @override
+  String get icomPassHint => '無線機の Network User パスワード';
+
+  @override
+  String get icomCredHint =>
+      'ヒント：ユーザー名とパスワードは無線機本体の Network User Setting と完全に一致させてください。';
+
+  @override
+  String get icomCivTitle => 'CI-V 制御と送信設定';
+
+  @override
+  String get icomCivSubtitle => 'PTT 自動制御・プリアンブル遅延・ビーコン設定';
+
+  @override
+  String get icomRfBeaconHint =>
+      '無線機の RF で自動的にビーコン送信することを許可します（半二重。送信中は受信をミュート）。';
+
+  @override
+  String get icomTxDelayLabel => '送信プリアンブル遅延 (TX Delay, ms)';
+
+  @override
+  String get icomCivAddrLabel => '無線機の CI-V アドレス（16 進）';
+
+  @override
+  String get icomControllerAddr => 'コントローラアドレス';
+
+  @override
+  String get icomControllerAddrValue => '0xE0（既定）';
+
+  @override
+  String get icomGuideTitle => '無線機の設定ガイド';
+
+  @override
+  String get icomGuideSubtitle => 'Icom 無線機側で必要な準備手順';
+
+  @override
+  String get icomGuide1Title => 'ネットワーク接続';
+
+  @override
+  String get icomGuide1Body =>
+      'IC-705 は MENU → SET → WLAN Set で Connect to Network を選んでルーターの Wi-Fi に接続するか、Access Point でスマホ直結用のホットスポットを立てます。IC-9700 / IC-7610 / IC-905 はルーターの LAN ポートに接続するか、無線ブリッジで LAN に参加させます。';
+
+  @override
+  String get icomGuide2Title => 'ネットワークユーザーを追加';
+
+  @override
+  String get icomGuide2Body =>
+      'WLAN Set / Network Set → Network User Setting でユーザーを追加し（ユーザー名とパスワードを設定）、接続を許可します。';
+
+  @override
+  String get icomGuide3Title => 'CI-V アドレスとポートを確認';
+
+  @override
+  String get icomGuide3Body =>
+      'MENU → SET → Connectors → CI-V で CI-V Address と制御ポートを確認します。';
+
+  @override
+  String get icomGuide4Title => 'モードと周波数を設定';
+
+  @override
+  String get icomGuide4Body => '該当バンドのモードを FM-D に設定します。';
+
+  @override
+  String get icomLogTitle => '無線機通信の診断ログ';
+
+  @override
+  String get icomLogSubtitle => 'Icom LAN 制御パケットと CI-V 通信の記録を表示';
+
+  @override
+  String get icomLogEmpty => '通信ログはまだありません';
+
+  @override
+  String get icomPhaseOpeningSockets => 'ポートを開いています…';
+
+  @override
+  String get icomPhaseDiscovering => '無線機を検出しています…';
+
+  @override
+  String get icomPhaseAuthenticating => '無線機にログインしています…';
+
+  @override
+  String get icomPhaseNegotiating => '音声ストリームをネゴシエーション中…';
+
+  @override
+  String get icomPhaseOpeningStreams => 'ストリームを開いています…';
+
+  @override
+  String get icomPhaseReady => '接続済み（音声待ち）';
+
+  @override
+  String get icomPhaseReceiving => '接続済み（受信中）';
+
+  @override
+  String get icomPhaseReconnect => '接続が切れました。再接続中…';
+
+  @override
+  String get icomPhaseFailed => '接続に失敗しました';
+
+  @override
+  String get icomPhaseUnsupported => 'このプラットフォームは IC-705 の LAN 直結に対応していません';
+
+  @override
+  String icomSwitchTitle(String model) {
+    return 'WLAN 無線機（$model）';
+  }
+
+  @override
+  String get icomLanAddr => '無線機アドレス';
+
+  @override
+  String icomCardActive(String model) {
+    return '現在 $model の LAN 直結モードが有効です。';
+  }
+
+  @override
+  String icomConnectingTo(String radio) {
+    return '$radio に接続中';
+  }
+
+  @override
+  String icomConnectTitle(String radio) {
+    return '$radio 無線機に接続';
+  }
+
+  @override
+  String icomConnectingSub(String radio, String tnc) {
+    return '$radio（$tnc）に接続中…';
+  }
+
+  @override
+  String icomDescHost(String host) {
+    return '$host · LAN 直結で無線機を送受信・CI-V 制御';
+  }
+
+  @override
+  String icomDescRadio(String radio) {
+    return 'LAN 直結で $radio 無線機の送受信と制御';
+  }
+
+  @override
+  String get modelIc705Desc => 'ポータブル全モード QRP 無線機（Wi-Fi AP / STA 内蔵）';
+
+  @override
+  String get modelIc9700Desc => 'VHF/UHF/1.2GHz 全モード基地局（Ethernet LAN / Wi-Fi）';
+
+  @override
+  String get modelIc7610Desc => 'HF/50MHz デュアル受信 SDR 基地局（Ethernet LAN）';
+
+  @override
+  String get modelIc905Desc => '144MHz〜10GHz 全モードマイクロ波無線機（Ethernet LAN）';
+
+  @override
+  String get modelCustomName => 'カスタム / その他 (Custom)';
+
+  @override
+  String get modelCustomDesc => 'Icom 無線機の CI-V アドレスとポートをカスタム設定';
+
+  @override
+  String get assetWindowsPackage => 'Windows インストーラー';
+
+  @override
+  String get assetApkPackage => 'APK パッケージ';
+
+  @override
+  String get honorTagPerseverance => '養生';
+
+  @override
+  String get agentMode => 'エージェントモード';
+
+  @override
+  String get agentModeDesc =>
+      'AI チャットボックスを表示します。設定変更・メッセージ送信・局検索を会話で行えます（API キーはご自身で用意）';
+
+  @override
+  String get agentSettings => 'エージェント設定';
+
+  @override
+  String get agentSettingsDesc => 'API のベース URL / キー / モデルと、エージェントに許可する操作';
+
+  @override
+  String get agentEnabled => 'エージェントを有効化';
+
+  @override
+  String get agentBaseUrl => 'API ベース URL';
+
+  @override
+  String get agentApiKey => 'API キー';
+
+  @override
+  String get agentModel => 'モデル';
+
+  @override
+  String get agentPreset => 'プリセット';
+
+  @override
+  String get agentPresetCustom => 'カスタム';
+
+  @override
+  String get agentSystemPrompt => 'システムプロンプト（任意）';
+
+  @override
+  String get agentAllowSend => 'メッセージ送信を許可';
+
+  @override
+  String get agentAllowSendDesc => 'エージェントに DM・グループメッセージ・ビーコンの送信を許可';
+
+  @override
+  String get agentAllowSettings => '設定変更を許可';
+
+  @override
+  String get agentAllowSettingsDesc => 'エージェントにアプリ設定の変更を許可（オフ＝閲覧のみ）';
+
+  @override
+  String get agentTest => '接続テスト';
+
+  @override
+  String get agentTesting => 'テスト中…';
+
+  @override
+  String agentTestOk(String model) {
+    return '接続に成功しました：$model';
+  }
+
+  @override
+  String get agentNeedConfig => 'API ベース URL・キー・モデルを入力してください';
+
+  @override
+  String get agentChatTitle => 'エージェントアシスタント';
+
+  @override
+  String get agentInputHint => 'エージェントに依頼を入力…';
+
+  @override
+  String get agentSend => '送信';
+
+  @override
+  String get agentClear => '会話を消去';
+
+  @override
+  String get agentClearConfirm => 'この会話を消去しますか？';
+
+  @override
+  String get agentWelcome =>
+      'こんにちは。APRSLocus のエージェントアシスタントです。設定変更・メッセージ送信・局検索を依頼できます。まず「エージェント設定」で API キーを設定してください。';
+
+  @override
+  String get agentThinking => '考えています…';
+
+  @override
+  String agentError(String msg) {
+    return 'エラー：$msg';
+  }
+
+  @override
+  String get agentConfirmTitle => 'エージェントが操作を要求しています';
+
+  @override
+  String get agentConfirmRun => '許可';
+
+  @override
+  String get agentConfirmDeny => '拒否';
+
+  @override
+  String get agentDenied => '操作を拒否しました';
+
+  @override
+  String get agentExecuted => '実行しました';
+
+  @override
+  String get agentToolResult => 'ツール結果';
+
+  @override
+  String get agentStopped => '停止しました';
+
+  @override
+  String get agentStop => '停止';
+
+  @override
+  String get agentOpenSettings => 'エージェント設定';
+
+  @override
+  String get agentNeedsEnable => 'まず実験機能で「エージェントモード」を有効にしてください';
+
+  @override
+  String agentToolCalling(String name) {
+    return '実行中：$name';
+  }
+
+  @override
+  String get agentMinimize => '最小化';
+
+  @override
+  String get agentApiKeyTip => 'キーは本端末にのみ保存され、APRSlocus のサーバーには送信されません。';
+
+  @override
+  String get agentPresetHint => 'API URL とモデルをすばやく入力';
+
+  @override
+  String get agentInterfaceSection => 'API 設定';
+
+  @override
+  String get agentPermissions => '権限';
+
+  @override
   String get codeContributionTranslation => '翻訳';
 
   @override
@@ -2657,7 +3015,11 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get feedback => 'フィードバック';
+
+  @override
   String get feedbackEntryDesc => 'リポジトリで Issue';
+
+  @override
   String get openLinkFailed => 'リンクを開けませんでした';
 
   @override
@@ -4818,11 +5180,9 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String get updateChannel => '更新チャネル';
 
-
-
   @override
-
   String get updateChannelQinglingHint => '自前ミラーチャネル（清零）';
+
   @override
   String serverReturned(int code) {
     return 'サーバーの応答：$code';
@@ -8047,115 +8407,137 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String get groupRfNotice =>
       'RF モード：グループチャットと戦略フレームはブロードキャスト送信され、同じチャンネルを守聴する仲間に届きます。戦略フレームは仲間の ACK で確認し、欠落時は戦略マップで再送します。';
-  @override
-  String get chatNeedConnect => "サーバーに未接続のため送信できません。まずデータソースに接続してください。";
 
   @override
-  String strategyUpdatedItem(String call, String kind) => "$call が$kindを更新しました";
+  String get chatNeedConnect => 'サーバーに未接続のため送信できません。まずデータソースに接続してください。';
 
   @override
-  String strategyDeletedItem(String call, String kind) => "$call が$kindを削除しました";
+  String strategyUpdatedItem(String call, String kind) {
+    return '$call が$kindを更新しました';
+  }
 
   @override
-  String strategyClearedMsg(String call) => "$call が共有レイヤーを消去しました";
+  String strategyDeletedItem(String call, String kind) {
+    return '$call が$kindを削除しました';
+  }
 
   @override
-  String get sendLocation => "位置を送信";
+  String strategyClearedMsg(String call) {
+    return '$call が共有レイヤーを消去しました';
+  }
 
   @override
-  String get needFixToSendLocation => "測位がまだないため位置を送信できません";
+  String get sendLocation => '位置を送信';
 
   @override
-  String get msgLocation => "位置";
+  String get needFixToSendLocation => '測位がまだないため位置を送信できません';
 
   @override
-  String get locationTapToView => "タップして地図で表示";
+  String get msgLocation => '位置';
 
   @override
-  String get locationPickTitle => "送る位置を地図で選択";
+  String get locationTapToView => 'タップして地図で表示';
 
   @override
-  String get locationPickHint => "地図をタップして座標を選択";
+  String get locationPickTitle => '送る位置を地図で選択';
 
   @override
-  String get locationMyPos => "現在地";
+  String get locationPickHint => '地図をタップして座標を選択';
 
   @override
-  String locationSendTo(String call) => "$call に送信";
+  String get locationMyPos => '現在地';
 
   @override
-  String get chatMore => "その他";
+  String locationSendTo(String call) {
+    return '$call に送信';
+  }
 
   @override
-  String get stationTapToView => "タップして局を見る";
+  String get chatMore => 'その他';
 
   @override
-  String get locationPickStations => "局を選ぶ";
+  String get stationTapToView => 'タップして局を見る';
 
   @override
-  String get locationSearchHint => "コールサイン / 別名で検索";
+  String get locationPickStations => '局を選ぶ';
 
   @override
-  String get locationNoStation => "一致する局がありません";
+  String get locationSearchHint => 'コールサイン / 別名で検索';
 
   @override
-  String get locationPrevPage => "前へ";
+  String get locationNoStation => '一致する局がありません';
 
   @override
-  String get locationNextPage => "次へ";
+  String get locationPrevPage => '前へ';
 
   @override
-  String get shareStation => "局を共有";
+  String get locationNextPage => '次へ';
 
   @override
-  String get shareStationPick => "どの会話に送りますか？";
+  String get shareStation => '局を共有';
 
   @override
-  String shareStationSent(String call) => "$call を共有しました";
+  String get shareStationPick => 'どの会話に送りますか？';
 
   @override
-  String locationPageInfo(String n, String m) => "$n / $m ページ";
+  String shareStationSent(String call) {
+    return '$call を共有しました';
+  }
 
   @override
-  String get packetSource => "ソース";
+  String locationPageInfo(String n, String m) {
+    return '$n / $m ページ';
+  }
 
   @override
-  String get packetSrcLocal => "ローカル";
+  String get packetSource => 'ソース';
 
   @override
-  String get packetSrcAprsIs => "APRS-IS";
+  String get packetSrcLocal => 'ローカル';
 
   @override
-  String get packetSrcTnc => "TNC";
+  String get packetSrcAprsIs => 'APRS-IS';
 
   @override
-  String get packetSrcAudio => "サウンドカード";
+  String get packetSrcTnc => 'TNC';
 
   @override
-  String get packetSrcPkwdwpl => "Kenwood";
+  String get packetSrcAudio => 'サウンドカード';
 
   @override
-  String get audioTxAmplitude => "出力振幅（0.05~1.0）";
+  String get packetSrcPkwdwpl => 'Kenwood';
 
   @override
-  String get audioTxAmplitudeTip => "送信波形の相対振幅。クリップ（≥99%）は高調波を生み FSK スペクトルを壊し、低すぎると相手のSNRが足りません。既定 0.6 は約 4dB の余裕。無線機へは 0.5~0.7 から試し、送信診断のピークを確認してください。";
+  String get audioTxAmplitude => '出力振幅（0.05~1.0）';
 
   @override
-  String get audioTxSourceRow => "送信ソース";
+  String get audioTxAmplitudeTip =>
+      '送信波形の相対振幅。クリップ（≥99%）は高調波を生み FSK スペクトルを壊し、低すぎると相手のSNRが足りません。既定 0.6 は約 4dB の余裕。無線機へは 0.5~0.7 から試し、送信診断のピークを確認してください。';
 
   @override
-  String get audioTxSourceYes => "このリンク";
+  String get audioTxSourceRow => '送信ソース';
 
   @override
-  String audioTxNotSourceWarn(String src) => "音声リンクは接続済みですが、現在の送信ソースはこれではありません — メッセージとビーコンは「$src」から送信されます。音声で送信するには「設定 → デバイス」で音声を送信ソースに選んでください。";
+  String get audioTxSourceYes => 'このリンク';
 
   @override
-  String get audioTxPttHint => "音声リンクは無線機の PTT を押しません — AFSK 音声を再生するだけです。実際に送信させるには無線機側でキーイングが必要です：VOX（音声起動）に設定するか、音声/データ端子からの PTT に対応したケーブルを使ってください。無線機が送信しない場合はまずここを確認してください。";
+  String audioTxNotSourceWarn(String src) {
+    return '音声リンクは接続済みですが、現在の送信ソースはこれではありません — メッセージとビーコンは「$src」から送信されます。音声で送信するには「設定 → デバイス」で音声を送信ソースに選んでください。';
+  }
 
   @override
-  String get updateChannelAliyunHint => "⚠️ 開発チームが費用を負担しているため、控えめにご利用ください 🙏";
+  String get audioTxPttHint =>
+      '音声リンクは無線機の PTT を押しません — AFSK 音声を再生するだけです。実際に送信させるには無線機側でキーイングが必要です：VOX（音声起動）に設定するか、音声/データ端子からの PTT に対応したケーブルを使ってください。無線機が送信しない場合はまずここを確認してください。';
 
   @override
-  String get connectingAliyun => "Alibaba Cloud OSS で更新を確認中 ☁️";
+  String get updateChannelAliyunHint => '⚠️ 開発チームが費用を負担しているため、控えめにご利用ください 🙏';
 
+  @override
+  String get connectingAliyun => 'Alibaba Cloud OSS で更新を確認中 ☁️';
+
+  @override
+  String get icomAudioSampleRate => 'オーディオサンプルレート';
+
+  @override
+  String get icomAudioFmtValue => '12000 Hz (LPCM 16-bit モノラル)';
 }

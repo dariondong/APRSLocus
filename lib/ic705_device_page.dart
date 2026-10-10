@@ -222,19 +222,21 @@ class _Ic705DevicePageState extends State<Ic705DevicePage> {
     final isIcomMode = c.source == AudioSource.icomLan;
     final link = audio.icomLanLink;
     final isConnected = audio.connected && isIcomMode;
-    final phase = link?.phaseLabel ?? (isConnected ? s.connected : s.disconnected);
+    // 保留原始（中文）阶段串：判颜色要用它（`_phaseColor` 按中文关键字匹配），
+    // 展示文案才走本地化。link 为空时退回从连接态推。
+    final rawPhase = link?.phaseLabel;
 
     return ListenableBuilder(
       listenable: st,
       builder: (context, _) => SettingsPageShell(
         title: s.icomLanTitle,
-        subtitle: '局域网直连 Icom 电台（IC-705 / IC-9700 / IC-7610 / IC-905），收发 12 kHz PCM 音频与 CI-V 控制',
+        subtitle: s.icomTitleSubtitle,
         icon: Icons.wifi_tethering_rounded,
         color: C.cyan,
         body: Column(
           children: [
             // ① 状态与主开关卡片
-            _buildStatusCard(s, isIcomMode, isConnected, phase),
+            _buildStatusCard(s, isIcomMode, isConnected, rawPhase),
             const SizedBox(height: 16),
 
             // ② 电台网络参数与型号选择
@@ -259,12 +261,21 @@ class _Ic705DevicePageState extends State<Ic705DevicePage> {
   }
 
   /// ① 状态与主开关卡片
-  Widget _buildStatusCard(S s, bool isIcomMode, bool isConnected, String phase) {
-    final statusColor = _phaseColor(phase);
+  ///
+  /// [rawPhase] 是 net 层的原始阶段串（可能为 null，表示链路对象还没建）。
+  Widget _buildStatusCard(
+      S s, bool isIcomMode, bool isConnected, String? rawPhase) {
+    // 颜色判据用原始中文（`_phaseColor` 按中文关键字匹配），展示文案走本地化。
+    final statusColor = _phaseColor(rawPhase ?? (isConnected ? '接收' : ''));
+    final phaseText = rawPhase == null
+        ? (isConnected ? s.connected : s.disconnected)
+        : icomPhaseLabel(s, rawPhase);
+    final modelName = icomModelName(s, _selectedModel);
 
     return SettingsSectionCard(
-      title: '电台链路状态',
-      subtitle: isConnected ? '已与 ${_selectedModel.displayName} 建立局域网直连' : '未连接或正在握手',
+      title: s.icomLinkStatusTitle,
+      subtitle:
+          isConnected ? s.icomLinkConnected(modelName) : s.icomLinkHandshaking,
       icon: Icons.sensors_rounded,
       color: C.cyan,
       children: [
@@ -274,7 +285,7 @@ class _Ic705DevicePageState extends State<Ic705DevicePage> {
           color: C.cyan,
           onChanged: (v) => unawaited(_saveConfig(enabled: v)),
         ),
-        SettingsHint('开启后，APRS 音频收发数据源将直接绑定至 ${_selectedModel.displayName} 局域网直连'),
+        SettingsHint(s.icomBindHint(modelName)),
         Divider(height: 1, color: C.border),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
@@ -290,12 +301,12 @@ class _Ic705DevicePageState extends State<Ic705DevicePage> {
               ),
               const SizedBox(width: 8),
               Text(
-                '链路阶段',
+                s.icomLinkPhase,
                 style: ts(13, c: C.grey),
               ),
               const Spacer(),
               Text(
-                phase,
+                phaseText,
                 style: ts(13, w: FontWeight.w600, c: statusColor),
               ),
             ],
@@ -303,13 +314,13 @@ class _Ic705DevicePageState extends State<Ic705DevicePage> {
         ),
         if (isConnected) ...[
           SettingsRow2(
-            '射频收发统计',
+            s.icomRfStats,
             s.tncStats('${audio.rxFrames}', '${audio.txFrames}'),
             valueColor: C.green,
           ),
           SettingsRow2(
-            '音频采样率',
-            '12000 Hz (LPCM 16-bit 单声道)',
+            s.icomAudioSampleRate,
+            s.icomAudioFmtValue,
           ),
         ],
         Padding(
@@ -325,8 +336,8 @@ class _Ic705DevicePageState extends State<Ic705DevicePage> {
               ),
               label: Text(
                 _busy
-                    ? '处理中...'
-                    : (isConnected ? '断开电台连接' : '立即连接 ${_selectedModel.displayName}'),
+                    ? s.icomProcessing
+                    : (isConnected ? s.icomDisconnectRadio : s.icomConnectRadio(modelName)),
                 style: ts(13, w: FontWeight.w600),
               ),
               style: ElevatedButton.styleFrom(
@@ -346,9 +357,10 @@ class _Ic705DevicePageState extends State<Ic705DevicePage> {
 
   /// ② 电台网络参数与型号选择
   Widget _buildNetworkCard(S s, bool isIcomMode) {
+    final modelName = icomModelName(s, _selectedModel);
     return SettingsSectionCard(
-      title: '电台网络参数',
-      subtitle: '选择电台型号预置并配置 IP 与 Network User 凭据',
+      title: s.icomNetworkTitle,
+      subtitle: s.icomNetworkSubtitle,
       icon: Icons.wifi_rounded,
       color: C.blue,
       children: [
@@ -361,9 +373,9 @@ class _Ic705DevicePageState extends State<Ic705DevicePage> {
                 children: [
                   Icon(Icons.radio_rounded, size: 16, color: C.blue),
                   const SizedBox(width: 6),
-                  Text('电台型号预置', style: ts(13, w: FontWeight.w600)),
+                  Text(s.icomModelPreset, style: ts(13, w: FontWeight.w600)),
                   const Spacer(),
-                  Text(_selectedModel.displayName, style: ts(12, c: C.blue, w: FontWeight.bold)),
+                  Text(modelName, style: ts(12, c: C.blue, w: FontWeight.bold)),
                 ],
               ),
               const SizedBox(height: 10),
@@ -373,7 +385,7 @@ class _Ic705DevicePageState extends State<Ic705DevicePage> {
                 children: WlanRadioModel.values.map((m) {
                   final selected = m == _selectedModel;
                   return ChoiceChip(
-                    label: Text(m.id),
+                    label: Text(icomModelTab(s, m)),
                     selected: selected,
                     selectedColor: C.blue.withValues(alpha: 0.18),
                     backgroundColor: C.greyBg,
@@ -399,7 +411,7 @@ class _Ic705DevicePageState extends State<Ic705DevicePage> {
               ),
               const SizedBox(height: 6),
               Text(
-                _selectedModel.description,
+                icomModelDesc(s, _selectedModel),
                 style: ts(11, c: C.grey),
               ),
             ],
@@ -409,7 +421,7 @@ class _Ic705DevicePageState extends State<Ic705DevicePage> {
         SettingsInput(
           s.icomLanHost,
           _host,
-          hint: '电台 IP 地址',
+          hint: s.icomIpHint,
           focusNode: _hostFocus,
           onEditingComplete: () => unawaited(_saveConfig()),
         ),
@@ -423,18 +435,18 @@ class _Ic705DevicePageState extends State<Ic705DevicePage> {
         SettingsInput(
           s.icomLanUsername,
           _user,
-          hint: '电台 Network User 名',
+          hint: s.icomUserHint,
           focusNode: _userFocus,
           onEditingComplete: () => unawaited(_saveConfig()),
         ),
         SettingsInput(
           s.icomLanPassword,
           _pass,
-          hint: '电台 Network User 密码',
+          hint: s.icomPassHint,
           focusNode: _passFocus,
           onEditingComplete: () => unawaited(_saveConfig()),
         ),
-        SettingsHint('提示：用户名和密码必须与电台内部 Network User Setting 完全一致。'),
+        SettingsHint(s.icomCredHint),
       ],
     );
   }
@@ -444,8 +456,8 @@ class _Ic705DevicePageState extends State<Ic705DevicePage> {
     final c = audio.config;
 
     return SettingsSectionCard(
-      title: 'CI-V 控制与发射设置',
-      subtitle: 'PTT 自动控制、前导延时与信标参数',
+      title: s.icomCivTitle,
+      subtitle: s.icomCivSubtitle,
       icon: Icons.tune_rounded,
       color: C.indigo,
       children: [
@@ -459,23 +471,23 @@ class _Ic705DevicePageState extends State<Ic705DevicePage> {
             if (mounted) setState(() {});
           },
         ),
-        SettingsHint('是否允许通过电台射频自动周期发射信标（半双工，发射时自动静默监听）。'),
+        SettingsHint(s.icomRfBeaconHint),
         Divider(height: 1, color: C.border),
         SettingsInput(
-          '发射前导延迟 (TX Delay, ms)',
+          s.icomTxDelayLabel,
           _txDelay,
           hint: '200',
           focusNode: _delayFocus,
           onEditingComplete: () => unawaited(_saveConfig()),
         ),
         SettingsInput(
-          '电台 CI-V 地址 (十六进制)',
+          s.icomCivAddrLabel,
           _civAddr,
           hint: _selectedModel.defaultCivHex,
           focusNode: _civFocus,
           onEditingComplete: () => unawaited(_saveConfig()),
         ),
-        SettingsRow2('控制器地址', '0xE0 (默认)'),
+        SettingsRow2(s.icomControllerAddr, s.icomControllerAddrValue),
       ],
     );
   }
@@ -483,8 +495,8 @@ class _Ic705DevicePageState extends State<Ic705DevicePage> {
   /// ④ 电台端配网指引
   Widget _buildGuideCard(S s) {
     return SettingsSectionCard(
-      title: '电台设置指引',
-      subtitle: '在 Icom 电台上的必要准备步骤',
+      title: s.icomGuideTitle,
+      subtitle: s.icomGuideSubtitle,
       icon: Icons.menu_book_rounded,
       color: C.green,
       children: [
@@ -493,30 +505,13 @@ class _Ic705DevicePageState extends State<Ic705DevicePage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _guideStep(
-                '1',
-                '网络连接',
-                'IC-705 可在 MENU → SET → WLAN Set 中选择 Connect to Network 连接路由器 Wi-Fi，或选择 Access Point 开启热点供手机直连；'
-                'IC-9700 / IC-7610 / IC-905 可直接连接路由器 LAN 口，或通过无线网桥接入局域网。',
-              ),
+              _guideStep('1', s.icomGuide1Title, s.icomGuide1Body),
               const SizedBox(height: 10),
-              _guideStep(
-                '2',
-                '添加网络用户',
-                '进入 WLAN Set / Network Set → Network User Setting，添加一个用户（设置好用户名与密码），并开启允许连接。',
-              ),
+              _guideStep('2', s.icomGuide2Title, s.icomGuide2Body),
               const SizedBox(height: 10),
-              _guideStep(
-                '3',
-                '确认 CI-V 地址与端口',
-                '进入 MENU → SET → Connectors → CI-V，确认 CI-V Address 与控制端口。',
-              ),
+              _guideStep('3', s.icomGuide3Title, s.icomGuide3Body),
               const SizedBox(height: 10),
-              _guideStep(
-                '4',
-                '设置模式与频率',
-                '将电台对应频段模式设为 FM-D。',
-              ),
+              _guideStep('4', s.icomGuide4Title, s.icomGuide4Body),
             ],
           ),
         ),
@@ -561,8 +556,8 @@ class _Ic705DevicePageState extends State<Ic705DevicePage> {
     final logs = audio.logs;
 
     return SettingsFold(
-      title: '电台通信诊断日志',
-      subtitle: '查看 Icom 局域网控制包与 CI-V 通信记录',
+      title: s.icomLogTitle,
+      subtitle: s.icomLogSubtitle,
       icon: Icons.receipt_long_rounded,
       color: C.slate,
       open: _logOpen,
@@ -575,7 +570,7 @@ class _Ic705DevicePageState extends State<Ic705DevicePage> {
           color: Colors.black.withValues(alpha: 0.04),
           child: logs.isEmpty
               ? Center(
-                  child: Text('暂无通信日志', style: ts(12, c: C.grey)),
+                  child: Text(s.icomLogEmpty, style: ts(12, c: C.grey)),
                 )
               : ListView.builder(
                   itemCount: logs.length,

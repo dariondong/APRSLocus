@@ -297,6 +297,17 @@ jobs:
       - name: Test backup & restore
         run: flutter test test/backup_test.dart
 
+      # 智能体工具层：模型与 AppState 之间唯一的写入通道。权限闸门、参数越界
+      # 校验、字符串数字兼容、`_val` 的 null 归一 —— 这几条错了都不会编译失败、
+      # analyze 也全绿，只会让智能体「悄悄改错设置」或「拿 NULL 去搜台站」。
+      - name: Test agent tools
+        run: flutter test test/agent_tools_test.dart
+
+      # WLAN 电台文案本地化：phaseLabel / 型号描述在 net 层写死中文，界面必须
+      # 翻回 l10n 键。翻错了切到非中文界面才暴露，锁在测试里。
+      - name: Test Icom WLAN localization
+        run: flutter test test/icom_l10n_test.dart
+
       - name: Analyze (tolerate known vector_map false positive)
         shell: bash
         run: |

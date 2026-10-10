@@ -76,9 +76,21 @@
   "maxSpeedTiers": "最多 5 個速度檔",
   "iconDefaultMySymbol": "圖示 · 預設(我的符號)",
   "iconNamed": "圖示 · {name}",
-  "@iconNamed": {"placeholders": {"name": {"type": "String"}}},
+  "@iconNamed": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "everyNSeconds": "每 {sec} 秒",
-  "@everyNSeconds": {"placeholders": {"sec": {"type": "String"}}},
+  "@everyNSeconds": {
+    "placeholders": {
+      "sec": {
+        "type": "String"
+      }
+    }
+  },
   "tierIdleTitle": "編輯 · 靜止/低速檔",
   "tierSpeedTitle": "編輯 · 速度檔",
   "minSpeedKmh": "最低速度 (km/h)",
@@ -98,11 +110,29 @@
   "weatherWidget": "天氣元件",
   "groupChatLabel": "群組聊天",
   "nItems": "{n} 個",
-  "@nItems": {"placeholders": {"n": {"type": "String"}}},
+  "@nItems": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
   "nMessages": "{n} 條",
-  "@nMessages": {"placeholders": {"n": {"type": "String"}}},
+  "@nMessages": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
   "confirmDeleteMessages": "確定要刪除全部 {n} 條聊天記錄嗎？此操作不可恢復。",
-  "@confirmDeleteMessages": {"placeholders": {"n": {"type": "String"}}},
+  "@confirmDeleteMessages": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
   "weatherSimFollowLive": "跟隨即時",
   "wxClear": "晴",
   "wxCloudy": "多雲",
@@ -120,7 +150,13 @@
   "restartWizardButton": "重新執行",
   "pasteAprsPacketHint": "貼上原始 APRS 封包，如：\\nBV2XYZ>APRS,TCPIP*:!3904.25N/11624.44E>測試台",
   "beaconsSentCount": "{n} 次",
-  "@beaconsSentCount": {"placeholders": {"n": {"type": "String"}}},
+  "@beaconsSentCount": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
   "myBadgesAndAchievements": "我的徽章與成就",
   "quitApp": "結束應用程式",
   "quitAppDesc": "結束後 APRSlocus 將停止定位上報與背景接收，並結束行程。",
@@ -149,7 +185,13 @@
   "symCatEmergency": "應急救援",
   "symSmallAircraft": "小型飛機",
   "myPositionSet": "已設定我的位置，網格 {grid}",
-  "@myPositionSet": {"placeholders": {"grid": {"type": "String"}}},
+  "@myPositionSet": {
+    "placeholders": {
+      "grid": {
+        "type": "String"
+      }
+    }
+  },
   "tierIdleShort": "靜止/低速",
   "symHouse": "房屋",
   "symPerson": "人",
@@ -349,6 +391,208 @@
   "codeContributions": "程式碼貢獻",
   "codeContributionI18n": "國際化 / 英文介面",
   "codeContributionZhTw": "繁體中文介面",
+  "@icomLinkConnected": {
+    "placeholders": {
+      "model": {
+        "type": "String"
+      }
+    }
+  },
+  "@icomBindHint": {
+    "placeholders": {
+      "model": {
+        "type": "String"
+      }
+    }
+  },
+  "@icomConnectRadio": {
+    "placeholders": {
+      "model": {
+        "type": "String"
+      }
+    }
+  },
+  "@icomSwitchTitle": {
+    "placeholders": {
+      "model": {
+        "type": "String"
+      }
+    }
+  },
+  "@icomCardActive": {
+    "placeholders": {
+      "model": {
+        "type": "String"
+      }
+    }
+  },
+  "@icomConnectingTo": {
+    "placeholders": {
+      "radio": {
+        "type": "String"
+      }
+    }
+  },
+  "@icomConnectTitle": {
+    "placeholders": {
+      "radio": {
+        "type": "String"
+      }
+    }
+  },
+  "@icomConnectingSub": {
+    "placeholders": {
+      "radio": {
+        "type": "String"
+      },
+      "tnc": {
+        "type": "String"
+      }
+    }
+  },
+  "@icomDescHost": {
+    "placeholders": {
+      "host": {
+        "type": "String"
+      }
+    }
+  },
+  "@icomDescRadio": {
+    "placeholders": {
+      "radio": {
+        "type": "String"
+      }
+    }
+  },
+  "icomTitleSubtitle": "區域網路直連 Icom 電台（IC-705 / IC-9700 / IC-7610 / IC-905），收發 12 kHz PCM 音訊與 CI-V 控制",
+  "icomLinkStatusTitle": "電台鏈路狀態",
+  "icomLinkConnected": "已與 {model} 建立區域網路直連",
+  "icomLinkHandshaking": "未連線或正在握手",
+  "icomBindHint": "開啟後，APRS 音訊收發資料來源將直接綁定至 {model} 區域網路直連",
+  "icomLinkPhase": "鏈路階段",
+  "icomRfStats": "射頻收發統計",
+  "icomAudioFmt": "12000 Hz (LPCM 16-bit 單聲道)",
+  "icomProcessing": "處理中...",
+  "icomDisconnectRadio": "斷開電台連線",
+  "icomConnectRadio": "立即連線 {model}",
+  "icomNetworkTitle": "電台網路參數",
+  "icomNetworkSubtitle": "選擇電台型號預設並設定 IP 與 Network User 憑證",
+  "icomModelPreset": "電台型號預設",
+  "icomIpHint": "電台 IP 位址",
+  "icomUserHint": "電台 Network User 名",
+  "icomPassHint": "電台 Network User 密碼",
+  "icomCredHint": "提示：使用者名稱和密碼必須與電台內部 Network User Setting 完全一致。",
+  "icomCivTitle": "CI-V 控制與發射設定",
+  "icomCivSubtitle": "PTT 自動控制、前導延遲與信標參數",
+  "icomRfBeaconHint": "是否允許透過電台射頻自動週期發射信標（半雙工，發射時自動靜默監聽）。",
+  "icomTxDelayLabel": "發射前導延遲 (TX Delay, ms)",
+  "icomCivAddrLabel": "電台 CI-V 位址 (十六進位)",
+  "icomControllerAddr": "控制器位址",
+  "icomControllerAddrValue": "0xE0 (預設)",
+  "icomGuideTitle": "電台設定指引",
+  "icomGuideSubtitle": "在 Icom 電台上的必要準備步驟",
+  "icomGuide1Title": "網路連線",
+  "icomGuide1Body": "IC-705 可在 MENU → SET → WLAN Set 中選擇 Connect to Network 連接路由器 Wi-Fi，或選擇 Access Point 開啟熱點供手機直連；IC-9700 / IC-7610 / IC-905 可直接連接路由器 LAN 埠，或透過無線網橋接入區域網路。",
+  "icomGuide2Title": "新增網路使用者",
+  "icomGuide2Body": "進入 WLAN Set / Network Set → Network User Setting，新增一個使用者（設定好使用者名稱與密碼），並開啟允許連線。",
+  "icomGuide3Title": "確認 CI-V 位址與連接埠",
+  "icomGuide3Body": "進入 MENU → SET → Connectors → CI-V，確認 CI-V Address 與控制連接埠。",
+  "icomGuide4Title": "設定模式與頻率",
+  "icomGuide4Body": "將電台對應頻段模式設為 FM-D。",
+  "icomLogTitle": "電台通訊診斷日誌",
+  "icomLogSubtitle": "檢視 Icom 區域網路控制封包與 CI-V 通訊記錄",
+  "icomLogEmpty": "尚無通訊日誌",
+  "icomPhaseOpeningSockets": "正在開啟連接埠…",
+  "icomPhaseDiscovering": "正在尋找電台…",
+  "icomPhaseAuthenticating": "正在登入電台…",
+  "icomPhaseNegotiating": "正在協商音訊串流…",
+  "icomPhaseOpeningStreams": "正在開啟資料串流…",
+  "icomPhaseReady": "已連線（等待音訊）",
+  "icomPhaseReceiving": "已連線（接收中）",
+  "icomPhaseReconnect": "連線中斷，正在重連…",
+  "icomPhaseFailed": "連線失敗",
+  "icomPhaseUnsupported": "目前平台不支援 IC-705 區域網路直連",
+  "icomSwitchTitle": "WLAN 電台（{model}）",
+  "icomLanAddr": "電台位址",
+  "icomCardActive": "目前啟用 {model} 區域網路直連模式。",
+  "icomConnectingTo": "正在連線 {radio}",
+  "icomConnectTitle": "連線 {radio} 電台",
+  "icomConnectingSub": "正在連線 {radio}（{tnc}）…",
+  "icomDescHost": "{host} · 區域網路直連電台收發與 CI-V 控制",
+  "icomDescRadio": "透過區域網路直連 {radio} 電台收發報文與控制",
+  "modelIc705Desc": "可攜全模式 QRP 電台（內建 Wi-Fi AP / STA）",
+  "modelIc9700Desc": "VHF/UHF/1.2GHz 全模式基站（乙太網路 LAN / Wi-Fi）",
+  "modelIc7610Desc": "HF/50MHz 雙接收 SDR 基站（乙太網路 LAN）",
+  "modelIc905Desc": "144MHz~10GHz 全模式微波電台（乙太網路 LAN）",
+  "modelCustomName": "自訂 / 其他 (Custom)",
+  "modelCustomDesc": "自訂 Icom 電台 CI-V 位址與連接埠",
+  "assetWindowsPackage": "Windows 安裝包",
+  "assetApkPackage": "APK 安裝包",
+  "honorTagPerseverance": "養生",
+  "@agentTestOk": {
+    "placeholders": {
+      "model": {
+        "type": "String"
+      }
+    }
+  },
+  "@agentError": {
+    "placeholders": {
+      "msg": {
+        "type": "String"
+      }
+    }
+  },
+  "@agentToolCalling": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "agentMode": "智慧代理模式",
+  "agentModeDesc": "開啟後螢幕上出現一個 AI 聊天框，可對話讓它幫你改設定、發訊息、查台站（需自行設定介面 Key）",
+  "agentSettings": "智慧代理設定",
+  "agentSettingsDesc": "介面網址 / Key / 模型，以及允許智慧代理執行哪些操作",
+  "agentEnabled": "啟用智慧代理",
+  "agentBaseUrl": "介面網址 (Base URL)",
+  "agentApiKey": "介面 Key (API Key)",
+  "agentModel": "模型",
+  "agentPreset": "預設",
+  "agentPresetCustom": "自訂",
+  "agentSystemPrompt": "系統提示詞（選填）",
+  "agentAllowSend": "允許傳送訊息",
+  "agentAllowSendDesc": "允許智慧代理代為傳送私訊、群訊息與信標",
+  "agentAllowSettings": "允許修改設定",
+  "agentAllowSettingsDesc": "允許智慧代理修改應用設定（關閉後僅可檢視）",
+  "agentTest": "測試連線",
+  "agentTesting": "正在測試…",
+  "agentTestOk": "連線成功：{model}",
+  "agentNeedConfig": "請先填寫介面網址、Key 和模型",
+  "agentChatTitle": "智慧代理助手",
+  "agentInputHint": "告訴智慧代理你想做什麼…",
+  "agentSend": "傳送",
+  "agentClear": "清除對話",
+  "agentClearConfirm": "確定清除目前對話？",
+  "agentWelcome": "你好，我是 APRSLocus 的智慧代理助手。你可以讓我幫你改設定、傳送訊息、查看台站。請先在「智慧代理設定」裡設定介面 Key。",
+  "agentThinking": "思考中…",
+  "agentError": "發生錯誤：{msg}",
+  "agentConfirmTitle": "智慧代理請求執行操作",
+  "agentConfirmRun": "允許",
+  "agentConfirmDeny": "拒絕",
+  "agentDenied": "已拒絕該操作",
+  "agentExecuted": "已執行",
+  "agentToolResult": "工具結果",
+  "agentStopped": "已停止",
+  "agentStop": "停止",
+  "agentOpenSettings": "智慧代理設定",
+  "agentNeedsEnable": "請先在實驗功能中開啟「智慧代理模式」",
+  "agentToolCalling": "正在執行：{name}",
+  "agentMinimize": "收合",
+  "agentApiKeyTip": "Key 只保存在本機，不會上傳到任何 APRSlocus 伺服器。",
+  "agentPresetHint": "快速填入介面與模型",
+  "agentInterfaceSection": "介面設定",
+  "agentPermissions": "權限",
   "codeContributionTranslation": "翻譯",
   "dataSourceTxHint": "可以同時勾選多條鏈路一起收報文，但**發射只有一條**（右側圓點為發射來源）——同一個呼號從兩條鏈路發出去會造成重複報文。",
   "dataSourceTxBadge": "發射",
@@ -381,13 +625,58 @@
   "grpNameTooLong": "群名最長 {max} 個字元（過長會讓邀請報文超出 APRS 訊息上限）",
   "grpInviteSent": "已向 {n} 位成員發出邀請",
   "grpSelfPending": "等待群主確認",
-  "@grpSysJoined": {"placeholders": {"call": {"type": "String"}}},
-  "@grpSysLeft": {"placeholders": {"call": {"type": "String"}}},
-  "@grpSysJoinReq": {"placeholders": {"call": {"type": "String"}}},
-  "@grpSysDeclined": {"placeholders": {"call": {"type": "String"}}},
-  "@grpInviteBody": {"placeholders": {"from": {"type": "String"}, "name": {"type": "String"}}},
-  "@grpNameTooLong": {"placeholders": {"max": {"type": "int"}}},
-  "@grpInviteSent": {"placeholders": {"n": {"type": "int"}}},
+  "@grpSysJoined": {
+    "placeholders": {
+      "call": {
+        "type": "String"
+      }
+    }
+  },
+  "@grpSysLeft": {
+    "placeholders": {
+      "call": {
+        "type": "String"
+      }
+    }
+  },
+  "@grpSysJoinReq": {
+    "placeholders": {
+      "call": {
+        "type": "String"
+      }
+    }
+  },
+  "@grpSysDeclined": {
+    "placeholders": {
+      "call": {
+        "type": "String"
+      }
+    }
+  },
+  "@grpInviteBody": {
+    "placeholders": {
+      "from": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "@grpNameTooLong": {
+    "placeholders": {
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "@grpInviteSent": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
   "deviceOverviewTitle": "裝置",
   "deviceOverviewSubtitle": "資料來源、鏈路狀態與自檢",
   "deviceCurrentLink": "目前鏈路",
@@ -416,18 +705,60 @@
   "tncTxTestOk": "已寫入 TNC（累計 {n} 幀）。若電台仍不發射，問題在 TNC 側：試初始化字串或檢查 TxDelay。",
   "tncTxTestFail": "未寫入：{err}",
   "tncNeedConnected": "請先連接 TNC",
-  "@tncInitSent": {"placeholders": {"n": {"type": "int"}}},
-  "@tncTxTestOk": {"placeholders": {"n": {"type": "String"}}},
-  "@tncTxTestFail": {"placeholders": {"err": {"type": "String"}}},
+  "@tncInitSent": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "@tncTxTestOk": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "@tncTxTestFail": {
+    "placeholders": {
+      "err": {
+        "type": "String"
+      }
+    }
+  },
   "msgLenCounter": "{chars}/67 字元 · 整包 {bytes}/512 位元組",
   "msgOverSpecAsk": "這則訊息 {chars} 個字元，超過 APRS 規範的 67 字元上限。多數用戶端仍能讀出，但部分用戶端/閘道會截斷或拒收，對方可能解析不出來。仍要傳送嗎？",
   "msgOverServerLimit": "整包 {bytes} 位元組，超過 APRS-IS 單行上限 512 位元組，伺服器可能直接丟棄整包（連標頭都送不到）。請縮短約 {over} 位元組。",
   "msgSendAnyway": "仍要傳送",
   "msgSpecLimitHint": "APRS 規範建議單則訊息不超過 67 字元：過長文字在部分用戶端上會顯示不全或解析失敗。",
   "msgBlockedTooLong": "已阻止傳送：整包超出 APRS-IS 上限",
-  "@msgLenCounter": {"placeholders": {"chars": {"type": "int"}, "bytes": {"type": "int"}}},
-  "@msgOverSpecAsk": {"placeholders": {"chars": {"type": "int"}}},
-  "@msgOverServerLimit": {"placeholders": {"bytes": {"type": "int"}, "over": {"type": "int"}}},
+  "@msgLenCounter": {
+    "placeholders": {
+      "chars": {
+        "type": "int"
+      },
+      "bytes": {
+        "type": "int"
+      }
+    }
+  },
+  "@msgOverSpecAsk": {
+    "placeholders": {
+      "chars": {
+        "type": "int"
+      }
+    }
+  },
+  "@msgOverServerLimit": {
+    "placeholders": {
+      "bytes": {
+        "type": "int"
+      },
+      "over": {
+        "type": "int"
+      }
+    }
+  },
   "beaconRfBeaconOff": "射頻信標未開啟",
   "beaconRfEnableHint": "射頻來源的自動發射需要明確開啟「射頻信標」。在此之前不會自動發射位置（倒數也不會走動）。",
   "beaconRfEnableAction": "開啟射頻信標",
@@ -490,22 +821,124 @@
   "audioRestart": "重啟音訊鏈路",
   "audioTxDisabled": "「允許發射」已關閉，僅接收",
   "audioLoopbackHint": "自檢會真的做一次調變→解調；Android 發射時會暫停麥克風擷取（半雙工）",
-  "@diagPassed": {"placeholders": {"n": {"type": "int"}}},
-  "@diagFailed": {"placeholders": {"n": {"type": "int"}}},
-  "@diagAx25Mismatch": {"placeholders": {"got": {"type": "String"}}},
-  "@diagTncLoopbackOk": {"placeholders": {"len": {"type": "int"}}},
-  "@diagAfskLoopbackOk": {"placeholders": {"samples": {"type": "int"}, "rate": {"type": "int"}}},
-  "@diagAfskLoopbackFail": {"placeholders": {"n": {"type": "int"}}},
-  "@diagPlatformOk": {"placeholders": {"name": {"type": "String"}}},
-  "@diagCaptureOk": {"placeholders": {"bytes": {"type": "int"}, "rate": {"type": "int"}}},
-  "@diagCaptureFailed": {"placeholders": {"err": {"type": "String"}}},
-  "@diagSpeakerFail": {"placeholders": {"err": {"type": "String"}}},
-  "@diagFileIoOk": {"placeholders": {"rate": {"type": "int"}}},
-  "@diagFileWriteFail": {"placeholders": {"err": {"type": "String"}}},
-  "@testTxFail": {"placeholders": {"err": {"type": "String"}}},
-  "@audioStatRx": {"placeholders": {"n": {"type": "int"}}},
-  "@audioStatTx": {"placeholders": {"n": {"type": "int"}}},
-  "@audioStatDrop": {"placeholders": {"n": {"type": "int"}}},
+  "@diagPassed": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "@diagFailed": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "@diagAx25Mismatch": {
+    "placeholders": {
+      "got": {
+        "type": "String"
+      }
+    }
+  },
+  "@diagTncLoopbackOk": {
+    "placeholders": {
+      "len": {
+        "type": "int"
+      }
+    }
+  },
+  "@diagAfskLoopbackOk": {
+    "placeholders": {
+      "samples": {
+        "type": "int"
+      },
+      "rate": {
+        "type": "int"
+      }
+    }
+  },
+  "@diagAfskLoopbackFail": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "@diagPlatformOk": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "@diagCaptureOk": {
+    "placeholders": {
+      "bytes": {
+        "type": "int"
+      },
+      "rate": {
+        "type": "int"
+      }
+    }
+  },
+  "@diagCaptureFailed": {
+    "placeholders": {
+      "err": {
+        "type": "String"
+      }
+    }
+  },
+  "@diagSpeakerFail": {
+    "placeholders": {
+      "err": {
+        "type": "String"
+      }
+    }
+  },
+  "@diagFileIoOk": {
+    "placeholders": {
+      "rate": {
+        "type": "int"
+      }
+    }
+  },
+  "@diagFileWriteFail": {
+    "placeholders": {
+      "err": {
+        "type": "String"
+      }
+    }
+  },
+  "@testTxFail": {
+    "placeholders": {
+      "err": {
+        "type": "String"
+      }
+    }
+  },
+  "@audioStatRx": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "@audioStatTx": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "@audioStatDrop": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
   "notifAudioConnected": "音訊鏈路線上",
   "notifAudioDisconnected": "音訊鏈路已中斷",
   "connConnectingAudio": "正在開啟音訊（{name}）…",
@@ -559,16 +992,79 @@
   "audioWavFound": "解出 {n} 條報文",
   "audioWavWritten": "已寫入 {path}",
   "audioWavFailed": "檔案讀寫失敗：{err}",
-  "@connConnectingAudio": {"placeholders": {"name": {"type": "String"}}},
-  "@connAudioConnected": {"placeholders": {"rate": {"type": "String"}}},
-  "@connRetryAudio": {"placeholders": {"seconds": {"type": "int"}}},
-  "@connRetryAudioDetail": {"placeholders": {"detail": {"type": "String"}, "seconds": {"type": "int"}}},
-  "@connAudioLinkLost": {"placeholders": {"seconds": {"type": "int"}}},
-  "@connAudioPositionSent": {"placeholders": {"call": {"type": "String"}}},
-  "@audioBadFrames": {"placeholders": {"n": {"type": "int"}}},
-  "@audioWavFound": {"placeholders": {"n": {"type": "int"}}},
-  "@audioWavWritten": {"placeholders": {"path": {"type": "String"}}},
-  "@audioWavFailed": {"placeholders": {"err": {"type": "String"}}},
+  "@connConnectingAudio": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "@connAudioConnected": {
+    "placeholders": {
+      "rate": {
+        "type": "String"
+      }
+    }
+  },
+  "@connRetryAudio": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "@connRetryAudioDetail": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      },
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "@connAudioLinkLost": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "@connAudioPositionSent": {
+    "placeholders": {
+      "call": {
+        "type": "String"
+      }
+    }
+  },
+  "@audioBadFrames": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "@audioWavFound": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "@audioWavWritten": {
+    "placeholders": {
+      "path": {
+        "type": "String"
+      }
+    }
+  },
+  "@audioWavFailed": {
+    "placeholders": {
+      "err": {
+        "type": "String"
+      }
+    }
+  },
   "connTncConnected": "TNC 已連線 · {arg}",
   "connTncPositionSent": "TNC 已連線 · 位置已傳送 ({arg})",
   "connRetryTnc": "TNC 連線失敗 · {n}s 後重試…",
@@ -679,23 +1175,143 @@
   "translateNotNeeded": "該內容無需翻譯（數字 / 符號 / 呼號）",
   "translateBubbleCount": "已翻譯 {n} 條",
   "translatePrivacyNote": "翻譯會把訊息文字傳送到你選擇的第三方介面，請自行評估隱私",
-  "@connTncConnected": {"placeholders": {"arg": {"type": "String"}}},
-  "@connTncPositionSent": {"placeholders": {"arg": {"type": "String"}}},
-  "@connRetryTnc": {"placeholders": {"n": {"type": "int"}}},
-  "@connRetryTncDetail": {"placeholders": {"e": {"type": "String"}, "n": {"type": "int"}}},
-  "@connTncLinkLost": {"placeholders": {"n": {"type": "int"}}},
-  "@translateCustomBodyTip": {"placeholders": {"text": {"type": "String"}, "from": {"type": "String"}, "to": {"type": "String"}}},
-  "@translateFreeFailed": {"placeholders": {"e": {"type": "String"}}},
-  "@translateAutoAllFailed": {"placeholders": {"e": {"type": "String"}}},
-  "@translateOutPreview": {"placeholders": {"text": {"type": "String"}}},
-  "@translateOutPreviewHint": {"placeholders": {"lang": {"type": "String"}}},
-  "@translateSentAs": {"placeholders": {"text": {"type": "String"}}},
-  "@translateTooLongAfter": {"placeholders": {"n": {"type": "int"}}},
-  "@translateTestOk": {"placeholders": {"text": {"type": "String"}}},
-  "@translateFailed": {"placeholders": {"e": {"type": "String"}}},
-  "@translateBubbleCount": {"placeholders": {"n": {"type": "int"}}},
-  "@dateDividerFull": {"placeholders": {"y": {"type": "int"}, "m": {"type": "int"}, "d": {"type": "int"}, "w": {"type": "String"}}},
-  "@dateWeekday": {"placeholders": {"d": {"type": "String"}}},
+  "@connTncConnected": {
+    "placeholders": {
+      "arg": {
+        "type": "String"
+      }
+    }
+  },
+  "@connTncPositionSent": {
+    "placeholders": {
+      "arg": {
+        "type": "String"
+      }
+    }
+  },
+  "@connRetryTnc": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "@connRetryTncDetail": {
+    "placeholders": {
+      "e": {
+        "type": "String"
+      },
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "@connTncLinkLost": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "@translateCustomBodyTip": {
+    "placeholders": {
+      "text": {
+        "type": "String"
+      },
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      }
+    }
+  },
+  "@translateFreeFailed": {
+    "placeholders": {
+      "e": {
+        "type": "String"
+      }
+    }
+  },
+  "@translateAutoAllFailed": {
+    "placeholders": {
+      "e": {
+        "type": "String"
+      }
+    }
+  },
+  "@translateOutPreview": {
+    "placeholders": {
+      "text": {
+        "type": "String"
+      }
+    }
+  },
+  "@translateOutPreviewHint": {
+    "placeholders": {
+      "lang": {
+        "type": "String"
+      }
+    }
+  },
+  "@translateSentAs": {
+    "placeholders": {
+      "text": {
+        "type": "String"
+      }
+    }
+  },
+  "@translateTooLongAfter": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "@translateTestOk": {
+    "placeholders": {
+      "text": {
+        "type": "String"
+      }
+    }
+  },
+  "@translateFailed": {
+    "placeholders": {
+      "e": {
+        "type": "String"
+      }
+    }
+  },
+  "@translateBubbleCount": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "@dateDividerFull": {
+    "placeholders": {
+      "y": {
+        "type": "int"
+      },
+      "m": {
+        "type": "int"
+      },
+      "d": {
+        "type": "int"
+      },
+      "w": {
+        "type": "String"
+      }
+    }
+  },
+  "@dateWeekday": {
+    "placeholders": {
+      "d": {
+        "type": "String"
+      }
+    }
+  },
   "notifTncConnected": "TNC 已連線",
   "notifTncDisconnected": "TNC 未連線",
   "dataSourceTitle": "資料來源",
@@ -791,7 +1407,13 @@
   "deviceInUseByTnc": "已被 TNC 使用，不能重複綁定",
   "deviceInUseByPkwdwpl": "已被 PKWDWPL 使用，不能重複綁定",
   "rxOnlyBanner": "{arg} 已連線 · 僅接收（目前發射來源未連線）",
-  "@rxOnlyBanner": {"placeholders": {"arg": {"type": "String"}}},
+  "@rxOnlyBanner": {
+    "placeholders": {
+      "arg": {
+        "type": "String"
+      }
+    }
+  },
   "pkwdwplTip": "在電台選單裡把 PC / GPS 埠的輸出格式設為 \"$PKWDWPL\"（一般 4800 8N1）；這條鏈路唯讀，不會發射任何報文",
   "pkwdwplStrictChecksum": "嚴格校驗和（不符即丟棄）",
   "pkwdwplStrictChecksumTip": "預設關閉：驗證不符時只標註並記日誌，不丟句子 —— 本機線纜上的不符多半是韌體格式與手冊有出入，整條丟棄會讓介面「什麼都不顯示」，反而更難排查",
@@ -802,9 +1424,27 @@
   "pkwdwplStatMismatch": "校驗和不符",
   "pkwdwplStatIgnored": "其它 NMEA 語句（已忽略）",
   "pkwdwplLogEmpty": "暫無 PKWDWPL 日誌",
-  "@connConnectingPkwdwpl": {"placeholders": {"arg": {"type": "String"}}},
-  "@connPkwdwplConnected": {"placeholders": {"arg": {"type": "String"}}},
-  "@pkwdwplStats": {"placeholders": {"rx": {"type": "String"}}},
+  "@connConnectingPkwdwpl": {
+    "placeholders": {
+      "arg": {
+        "type": "String"
+      }
+    }
+  },
+  "@connPkwdwplConnected": {
+    "placeholders": {
+      "arg": {
+        "type": "String"
+      }
+    }
+  },
+  "@pkwdwplStats": {
+    "placeholders": {
+      "rx": {
+        "type": "String"
+      }
+    }
+  },
   "tncBindTitle": "藍牙 TNC",
   "tncBindSubtitle": "綁定並連接電台端的 TNC",
   "tncBoundDevice": "已綁定裝置",
@@ -861,9 +1501,30 @@
   "tncGroupDisabled": "射頻模式不支援群聊廣播",
   "tncMsgLimitHint": "單條限 {n} 字元（APRS 訊息規範）",
   "tncMsgTooLong": "超出射頻模式單條訊息長度上限",
-  "@tncStats": {"placeholders": {"rx": {"type": "String"}, "tx": {"type": "String"}}},
-  "@connectingToTnc": {"placeholders": {"name": {"type": "String"}}},
-  "@tncMsgLimitHint": {"placeholders": {"n": {"type": "String"}}},
+  "@tncStats": {
+    "placeholders": {
+      "rx": {
+        "type": "String"
+      },
+      "tx": {
+        "type": "String"
+      }
+    }
+  },
+  "@connectingToTnc": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "@tncMsgLimitHint": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
   "licenseSection": "許可證宣告",
   "licenseName": "GNU GPL v3",
   "licenseStatement": "本軟體依據 GNU GPL v3 開源許可證釋出。你可以在遵守許可證條款的前提下執行、研究、修改和再分發本軟體；修改和再分發時須遵守 GPL v3 的相應義務。本軟體不附帶任何擔保。",
@@ -2551,26 +3212,68 @@
   "honorCriteriaLine": "獲得條件：{c}",
   "badgeFallback": "徽章",
   "honoredBadges": "已點亮 {n}/{m} 徽章",
-  "@honoredBadges": {"placeholders": {"n": {"type": "String"}, "m": {"type": "String"}}},
+  "@honoredBadges": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      },
+      "m": {
+        "type": "String"
+      }
+    }
+  },
   "achievementsProgress": "{n}/{m} 成就",
-  "@achievementsProgress": {"placeholders": {"n": {"type": "String"}, "m": {"type": "String"}}},
+  "@achievementsProgress": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      },
+      "m": {
+        "type": "String"
+      }
+    }
+  },
   "beaconNotConnected": "未連線",
   "beaconWaitingFix": "等待定位",
   "beaconNeedConfirm": "待確認上報",
   "reportStartNow": "開始上報",
   "beaconSoon": "即將",
   "beaconNextIn": "距下次上報 {s}",
-  "@beaconNextIn": {"placeholders": {"s": {"type": "String"}}},
+  "@beaconNextIn": {
+    "placeholders": {
+      "s": {
+        "type": "String"
+      }
+    }
+  },
   "beaconImminent": "即將上報…",
   "notifConnected": "已連線",
   "notifConnecting": "連線中",
   "notifDisconnected": "未連線",
   "notifOnline": "{n} 在線",
-  "@notifOnline": {"placeholders": {"n": {"type": "String"}}},
+  "@notifOnline": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
   "notifRx": "收 {n}",
-  "@notifRx": {"placeholders": {"n": {"type": "String"}}},
+  "@notifRx": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
   "notifBeacon": "信標 {v}",
-  "@notifBeacon": {"placeholders": {"v": {"type": "String"}}},
+  "@notifBeacon": {
+    "placeholders": {
+      "v": {
+        "type": "String"
+      }
+    }
+  },
   "selectAll": "全選",
   "deselectAll": "取消全選",
   "selectedCount": "已選 {n} 項",
@@ -2616,19 +3319,35 @@
   "sysLinkOff": "未啟用",
   "sysRx": "收 {n}",
   "@sysRx": {
-    "placeholders": {"n": {"type": "String"}}
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
   },
   "sysTx": "發 {n}",
   "@sysTx": {
-    "placeholders": {"n": {"type": "String"}}
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
   },
   "sysBeacon": "信標 {t}",
   "@sysBeacon": {
-    "placeholders": {"t": {"type": "String"}}
+    "placeholders": {
+      "t": {
+        "type": "String"
+      }
+    }
   },
   "sysStations": "臺站 {n}",
   "@sysStations": {
-    "placeholders": {"n": {"type": "String"}}
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
   },
   "sysFixOk": "已定位",
   "sysLinkAudio": "音訊",
@@ -2646,7 +3365,11 @@
   "backupCopyDone": "備份內容已複製到剪貼簿",
   "backupSavedTo": "已儲存到：{path}",
   "@backupSavedTo": {
-    "placeholders": {"path": {"type": "String"}}
+    "placeholders": {
+      "path": {
+        "type": "String"
+      }
+    }
   },
   "backupCatSettings": "設定",
   "backupCatSettingsDesc": "電台、信標、地圖、篩選、資料來源、伺服器、歷史軌跡",
@@ -2662,7 +3385,11 @@
   "backupCatHonorsDesc": "解鎖記錄、計數與預設徽章",
   "backupItems": "{n} 項",
   "@backupItems": {
-    "placeholders": {"n": {"type": "int"}}
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
   },
   "backupSelectAll": "全選",
   "backupNoSelection": "請至少選擇一個分組",
@@ -2674,22 +3401,38 @@
   "backupPreview": "備份內容",
   "backupFromVersion": "來源版本 {v}",
   "@backupFromVersion": {
-    "placeholders": {"v": {"type": "String"}}
+    "placeholders": {
+      "v": {
+        "type": "String"
+      }
+    }
   },
   "backupExportedAt": "匯出時間 {t}",
   "@backupExportedAt": {
-    "placeholders": {"t": {"type": "String"}}
+    "placeholders": {
+      "t": {
+        "type": "String"
+      }
+    }
   },
   "backupImportSelected": "匯入所選",
   "backupImportConfirmTitle": "確認匯入？",
   "backupImportConfirm": "所選分組會被備份內容覆蓋，且無法復原。建議先匯出一次目前的資料。",
   "backupImported": "已匯入 {n} 項",
   "@backupImported": {
-    "placeholders": {"n": {"type": "int"}}
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
   },
   "backupSkipped": "略過 {n} 項（本版本不認識的內容）",
   "@backupSkipped": {
-    "placeholders": {"n": {"type": "int"}}
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
   },
   "backupImportNothing": "備份裡不包含所選分組的資料",
   "backupRestartTitle": "匯入完成",
@@ -2732,7 +3475,11 @@
   "themeDelete": "刪除主題",
   "themeDeleteConfirm": "刪除主題「{name}」？此操作無法復原。",
   "@themeDeleteConfirm": {
-    "placeholders": {"name": {"type": "String"}}
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
   },
   "themeReset": "恢復預設",
   "themeResetAll": "重設本主題",
@@ -2747,7 +3494,11 @@
   "themeIconImportHint": "PNG/JPG/WebP/GIF/BMP/SVG，≤2MB",
   "themeIconImportDone": "已匯入圖示：{name}",
   "@themeIconImportDone": {
-    "placeholders": {"name": {"type": "String"}}
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
   },
   "themeIconWebHint": "Web 版不支援匯入圖片，請使用內建圖示庫",
   "themeIconErrFormat": "不支援的圖片格式（支援 PNG/JPG/WebP/GIF/BMP/SVG）",
@@ -2762,7 +3513,11 @@
   "themeImportPaste": "從剪貼簿匯入",
   "themeImportDone": "已匯入 {n} 個主題",
   "@themeImportDone": {
-    "placeholders": {"n": {"type": "int"}}
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
   },
   "themeErrNotJson": "檔案不是有效的 JSON",
   "themeErrNotTheme": "這不是 APRSlocus 主題檔",
@@ -2802,13 +3557,21 @@
   "themeExportWithImages": "匯出時包含圖片",
   "themeExportWithImagesHint": "匯出檔會包含圖片本體（約 {size}），對方匯入後能直接看到同樣的背景與圖示；檔案因此不再適合手動編輯。",
   "@themeExportWithImagesHint": {
-    "placeholders": {"size": {"type": "String"}}
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
   },
   "themeExportNoImages": "目前主題沒有引用圖片，匯出檔只含配色與文字",
   "themeExportClipboardTooBig": "圖片較大，無法透過剪貼簿傳遞，請用「匯出全部主題」存成檔案",
   "themeImportImagesSkipped": "有 {n} 張圖片未匯入（過大或格式不支援）",
   "@themeImportImagesSkipped": {
-    "placeholders": {"n": {"type": "int"}}
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
   },
   "backupThemeImagesHint": "備份會包含主題引用的圖片本體；不包含時，換機還原後主題會回退成內建圖示",
   "backupThemeImagesOff": "不含圖片：備份更小，但換機還原後主題會缺少背景與自訂圖示",
@@ -2864,7 +3627,11 @@
   "audioWavExportToDownloads": "匯出到下載目錄",
   "audioWavSavedTo": "已儲存到 {path}",
   "@audioWavSavedTo": {
-    "placeholders": {"path": {"type": "String"}}
+    "placeholders": {
+      "path": {
+        "type": "String"
+      }
+    }
   },
   "audioWavCopyPath": "複製路徑",
   "audioWavPathCopied": "路徑已複製",
@@ -2876,27 +3643,56 @@
   "audioTxLevelTip": "發射前系統會把媒體音量拉到最大、並暫停麥克風擷取；峰值太低或削頂都會讓對端解不出",
   "audioTxPeak": "峰值 {p}% · {sec}s · 前導 {flags} flag",
   "@audioTxPeak": {
-    "placeholders": {"p": {"type": "int"}, "sec": {"type": "String"}, "flags": {"type": "int"}}
+    "placeholders": {
+      "p": {
+        "type": "int"
+      },
+      "sec": {
+        "type": "String"
+      },
+      "flags": {
+        "type": "int"
+      }
+    }
   },
   "audioTxLevelClip": "波形削頂：請把「輸出幅度」調到 0.8 以下（削頂會產生諧波）",
   "audioTxLevelLow": "電平偏低：對方可能解不出，請調高「輸出幅度」與裝置音量",
   "audioWiringHint": "接電台請用音訊線（耳機孔 → 電台資料孔/麥克風）；手機喇叭在 2200Hz 衰減很大，對著麥克風很難解出。對端是電腦上的 Direwolf 時，先用「匯出」出的 WAV 驗證一遍，能解出就說明問題在音訊通路而不是協定",
   "packetLimitRf": "整包 {bytes} 位元組 · 射頻單幀上限 {max} 位元組",
   "@packetLimitRf": {
-    "placeholders": {"bytes": {"type": "int"}, "max": {"type": "int"}}
+    "placeholders": {
+      "bytes": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
+      }
+    }
   },
   "packetLimitIs": "整包 {bytes} 位元組 · APRS-IS 單行上限 512 位元組",
   "@packetLimitIs": {
-    "placeholders": {"bytes": {"type": "int"}}
+    "placeholders": {
+      "bytes": {
+        "type": "int"
+      }
+    }
   },
   "packetTcpipWarning": "含 TCPIP*：射頻上會被自動剔除（那是 APRS-IS 的路徑）",
   "packetSent": "已交給鏈路發送：{line}",
   "@packetSent": {
-    "placeholders": {"line": {"type": "String"}}
+    "placeholders": {
+      "line": {
+        "type": "String"
+      }
+    }
   },
   "packetSendFailed": "未發送：{err}",
   "@packetSendFailed": {
-    "placeholders": {"err": {"type": "String"}}
+    "placeholders": {
+      "err": {
+        "type": "String"
+      }
+    }
   },
   "tncSerialBaud": "串列埠線速 (bd)",
   "tncSerialBaudTip": "USB 串列線與電台資料埠必須同速，否則一個位元組都收不到。常見值：9600 / 19200 / 38400 / 57600 / 115200。藍牙 SPP 沒有線速概念，綁藍牙裝置時此項不生效。",
@@ -2951,11 +3747,23 @@
   "tierMinDist": "移動距離 (公尺)",
   "tierMinDistHint": "自上次上報以來移動超過這個距離，就補報一次；0 = 關閉（只按間隔）",
   "orMoveM": "或移動 {dist} m",
-  "@orMoveM": {"placeholders": {"dist": {"type": "String"}}},
+  "@orMoveM": {
+    "placeholders": {
+      "dist": {
+        "type": "String"
+      }
+    }
+  },
   "tierMinTurn": "航向變化 (度)",
   "tierMinTurnHint": "轉過這個角度就補報一次（可填 10~180）；0 = 關閉。只在行駛中生效（停著不動時航向是雜訊）",
   "orTurnDeg": "或轉 {deg}°",
-  "@orTurnDeg": {"placeholders": {"deg": {"type": "String"}}},
+  "@orTurnDeg": {
+    "placeholders": {
+      "deg": {
+        "type": "String"
+      }
+    }
+  },
   "inputTapHint": "點擊輸入",
   "callCommentEmpty": "未填寫 · 點這裡輸入",
   "noticeTitle": "公告",
@@ -2963,9 +3771,21 @@
   "noticeLoading": "正在取得…",
   "noticeReadMore": "查看全文",
   "noticeCached": "快取 · {ago}",
-  "@noticeCached": {"placeholders": {"ago": {"type": "String"}}},
+  "@noticeCached": {
+    "placeholders": {
+      "ago": {
+        "type": "String"
+      }
+    }
+  },
   "noticeOfflineCache": "離線快取 · {time}（連網後會自動更新）",
-  "@noticeOfflineCache": {"placeholders": {"time": {"type": "String"}}},
+  "@noticeOfflineCache": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
   "timeJustNow": "剛剛",
   "refresh": "重新整理",
   "noticeEntryDesc": "查看官網發布的最新公告",
@@ -3052,21 +3872,51 @@
   "garminUrlHint": "livetrack.garmin.com/session/…/token/…",
   "beaconGarminSource": "佳明 LiveTrack 上報中",
   "beaconGarminNext": "佳明上報 · {s} · ❤{hr}",
-  "@beaconGarminNext": {"placeholders": {"s": {"type": "String"}, "hr": {"type": "String"}}},
+  "@beaconGarminNext": {
+    "placeholders": {
+      "s": {
+        "type": "String"
+      },
+      "hr": {
+        "type": "String"
+      }
+    }
+  },
   "posSourceLabel": "位置來源",
   "hrSourceLabel": "心率來源",
   "ownSourcePhoneGps": "手機 GPS",
   "positionBeaconDetail": "位置信標 · 網格 {grid} · {detail}",
   "beaconAttachedHr": "心率 {hr}",
   "beaconAttachedNone": "未附帶心率",
-  "@positionBeaconDetail": {"placeholders": {"grid": {"type": "String"}, "detail": {"type": "String"}}},
-  "@beaconAttachedHr": {"placeholders": {"hr": {"type": "String"}}},
+  "@positionBeaconDetail": {
+    "placeholders": {
+      "grid": {
+        "type": "String"
+      },
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "@beaconAttachedHr": {
+    "placeholders": {
+      "hr": {
+        "type": "String"
+      }
+    }
+  },
   "posSourceIdle": "未追蹤（未啟動定位）",
   "ownSourceGarminLive": "追蹤中（手機 GPS 已讓位）",
   "ownSourceGarminStale": "連結有效，但佳明沒有新點（暫時用不到）",
   "ownSourceHrIdle": "未連線（點一下連線心率帶）",
   "hrLineHr": "心率 {hr}",
-  "@hrLineHr": {"placeholders": {"hr": {"type": "String"}}},
+  "@hrLineHr": {
+    "placeholders": {
+      "hr": {
+        "type": "String"
+      }
+    }
+  },
   "garminShareNoLink": "分享的內容裡沒有找到佳明 LiveTrack 連結",
   "hrFromGarmin": "心率來自佳明 LiveTrack（手錶）",
   "sourceMovedHint": "要啟用 / 切換資料來源（鏈路），請到「設定 → 裝置」",
@@ -3076,7 +3926,13 @@
   "posSrcGarmin": "佳明 LiveTrack",
   "posSrcPhone": "手機 GPS",
   "posSrcNone": "未定位",
-  "@posSourceUsing": {"placeholders": {"src": {"type": "String"}}},
+  "@posSourceUsing": {
+    "placeholders": {
+      "src": {
+        "type": "String"
+      }
+    }
+  },
   "garminNotStarted": "未開啟追蹤",
   "garminAutoFilled": "已自動填入分享連結",
   "garminLinkOk": "連結有效",
@@ -3084,7 +3940,13 @@
   "beaconForceCoarseHint": "預設不開啟：網路定位（基地台 / Wi-Fi）常偏幾百公尺，自動發出去等於向全網宣告一個錯座標。只有裝置沒有 GPS（平板 / 只有網路定位）時才建議打開 —— 打開後粗定位也會自動發射；地圖與軌跡仍照原樣過濾粗點，不會因此變亂。手動「立即上報」不受這個開關影響。",
   "beaconCoarseForced": "網路定位（粗）· {s}",
   "beaconCoarseForcedNote": "正在用網路定位（粗）上報",
-  "@beaconCoarseForced": {"placeholders": {"s": {"type": "String"}}},
+  "@beaconCoarseForced": {
+    "placeholders": {
+      "s": {
+        "type": "String"
+      }
+    }
+  },
   "advancedMenu": "進階設定",
   "aprsStatus": "獨立狀態報文",
   "aprsStatusHint": "這一點發的是**獨立一幀**狀態報文（`>` 開頭、不含座標、不會移動你在 aprs.fi 上的位置），與上面那行備註是兩種不同的 APRS 報文。留空則傳送內建的 APRSlocus 在線幀。",
@@ -3095,22 +3957,58 @@
   "beaconAntHeightLabel": "天線高度（英尺）",
   "beaconGainLabel": "增益（dB）",
   "beaconPhgPreview": "報文中將包含：{phg}",
-  "@beaconPhgPreview": {"placeholders": {"phg": {"type": "String"}}},
+  "@beaconPhgPreview": {
+    "placeholders": {
+      "phg": {
+        "type": "String"
+      }
+    }
+  },
   "beaconPhgTip": "功率 / 天線高度 / 增益同屬一個 PHG 資料擴充，填了任一項就一起編碼送出（規範裡它是固定的 7 位元組欄位）。功率取不超過實際值的最大檔：25 W 報 25、30 W 也只報 25 —— 寫大了等於虛報覆蓋範圍。天線高度是「高於當地平均地面」，與上面自動傳送的 /A= 海拔是兩個不同的量。",
   "beaconPowerLabel": "功率（瓦）",
   "txButton": "發射",
   "txPartPosition": "位置報文",
   "txPartStatus": "狀態報文",
   "txSent": "已發射：{parts}",
-  "@txSent": {"placeholders": {"parts": {"type": "String"}}},
+  "@txSent": {
+    "placeholders": {
+      "parts": {
+        "type": "String"
+      }
+    }
+  },
   "txNoFixKeptStatus": "已發射：{parts}（還沒有定位，帶 PHG 的位置報文沒能發出）",
   "connStatusSent": "已連線 · 狀態報文已發送 ({call})",
   "connTncStatusSent": "TNC 已連線 · 狀態報文已發送 ({arg})",
   "connAudioStatusSent": "音訊已發射 · 狀態報文已發送 ({call})",
-  "@txNoFixKeptStatus": {"placeholders": {"parts": {"type": "String"}}},
-  "@connStatusSent": {"placeholders": {"call": {"type": "String"}}},
-  "@connTncStatusSent": {"placeholders": {"arg": {"type": "String"}}},
-  "@connAudioStatusSent": {"placeholders": {"call": {"type": "String"}}},
+  "@txNoFixKeptStatus": {
+    "placeholders": {
+      "parts": {
+        "type": "String"
+      }
+    }
+  },
+  "@connStatusSent": {
+    "placeholders": {
+      "call": {
+        "type": "String"
+      }
+    }
+  },
+  "@connTncStatusSent": {
+    "placeholders": {
+      "arg": {
+        "type": "String"
+      }
+    }
+  },
+  "@connAudioStatusSent": {
+    "placeholders": {
+      "call": {
+        "type": "String"
+      }
+    }
+  },
   "codeContribution": "貢獻程式碼",
   "historyCharts": "折線圖",
   "historyChartsShow": "顯示折線圖",
@@ -3132,18 +4030,57 @@
   "beaconBarTierNetwork": "網路定位固定間隔",
   "beaconBarTierSmart": "智能檔",
   "beaconBarTierSmartFrom": "智能檔 · ≥{speed} km/h",
-  "@beaconBarTierSmartFrom": {"placeholders": {"speed": {"type": "String"}}},
+  "@beaconBarTierSmartFrom": {
+    "placeholders": {
+      "speed": {
+        "type": "String"
+      }
+    }
+  },
   "beaconBarTierFixed": "固定間隔",
   "beaconBarTimeLeft": "時間 {time}",
-  "@beaconBarTimeLeft": {"placeholders": {"time": {"type": "String"}}},
+  "@beaconBarTimeLeft": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
   "beaconBarDistLeft": "距離 {dist}",
-  "@beaconBarDistLeft": {"placeholders": {"dist": {"type": "String"}}},
+  "@beaconBarDistLeft": {
+    "placeholders": {
+      "dist": {
+        "type": "String"
+      }
+    }
+  },
   "beaconBarTurnLeft": "轉彎 {cur}° / {need}°",
-  "@beaconBarTurnLeft": {"placeholders": {"cur": {"type": "String"}, "need": {"type": "String"}}},
+  "@beaconBarTurnLeft": {
+    "placeholders": {
+      "cur": {
+        "type": "String"
+      },
+      "need": {
+        "type": "String"
+      }
+    }
+  },
   "beaconBarTurnLowSpeed": "轉彎待機 · 需 ≥{speed} km/h",
-  "@beaconBarTurnLowSpeed": {"placeholders": {"speed": {"type": "String"}}},
+  "@beaconBarTurnLowSpeed": {
+    "placeholders": {
+      "speed": {
+        "type": "String"
+      }
+    }
+  },
   "beaconBarTurnWait": "轉彎待機 · {time} 後可判",
-  "@beaconBarTurnWait": {"placeholders": {"time": {"type": "String"}}},
+  "@beaconBarTurnWait": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
   "netSymbol": "網路定位時的臺站圖示",
   "netSymbolHint": "純網路定位的點可能偏幾百公尺到幾公里，換一個圖示能讓別人一眼看出「這是網路標的位」。預設跟隨「我的符號」。",
   "netSymbolFollow": "跟隨我的符號",
@@ -3166,7 +4103,19 @@
   "hrAlarmTelTip": "告警時「撥打」用這個號碼，預設 120。不同地區/情境可改成 112 或隊友的號碼。",
   "hrAlarmTitle": "心率異常",
   "hrAlarmBody": "偵測到心率 {bpm} bpm，超出你設定的 {low}~{high} 範圍。\n\n如果身體不適，請立即撥打急救電話；也可以向附近 100 公里內的臺站發出求助訊息，附近有火腿收到就能看到。",
-  "@hrAlarmBody": {"placeholders": {"bpm": {"type": "String"}, "low": {"type": "String"}, "high": {"type": "String"}}},
+  "@hrAlarmBody": {
+    "placeholders": {
+      "bpm": {
+        "type": "String"
+      },
+      "low": {
+        "type": "String"
+      },
+      "high": {
+        "type": "String"
+      }
+    }
+  },
   "hrAlarmDismiss": "我沒事",
   "hrAlarmCall": "撥打急救電話",
   "hrAlarmSendNearby": "向附近臺站求助",
@@ -3174,11 +4123,32 @@
   "hrAlarmNoNearby": "附近 100 公里內沒有已知臺站",
   "hrAlarmSendConfirmTitle": "確認傳送求助",
   "hrAlarmSendConfirmBody": "將向最近的 {n} 個臺站各發一則訊息：\n{calls}\n\n這些訊息會出現在對方的手機上，請確認後再發。",
-  "@hrAlarmSendConfirmBody": {"placeholders": {"n": {"type": "String"}, "calls": {"type": "String"}}},
+  "@hrAlarmSendConfirmBody": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      },
+      "calls": {
+        "type": "String"
+      }
+    }
+  },
   "hrAlarmSent": "已向 {n} 個臺站發出求助",
-  "@hrAlarmSent": {"placeholders": {"n": {"type": "String"}}},
+  "@hrAlarmSent": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
   "hrAlarmNotif": "心率異常 {bpm} bpm",
-  "@hrAlarmNotif": {"placeholders": {"bpm": {"type": "String"}}},
+  "@hrAlarmNotif": {
+    "placeholders": {
+      "bpm": {
+        "type": "String"
+      }
+    }
+  },
   "locExtGpsActive": "外接 GPS 供位 · 手機 GPS 已待機",
   "locExtGpsLost": "外接 GPS 已失效 · 改用導航手機 GPS",
   "locPhoneGpsActive": "手機 GPS 已接管",
@@ -3200,7 +4170,13 @@
   "beaconIncludeSteps": "步數",
   "stepsTodayLabel": "今日步數",
   "stepsCount": "{n} 步",
-  "@stepsCount": {"placeholders": {"n": {"type": "String"}}},
+  "@stepsCount": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
   "stepsUnsupported": "這台裝置沒有計步感測器",
   "stepsNeedPermission": "需要授權才能讀取",
   "stepsGrant": "授予「身體活動」權限",
@@ -3225,7 +4201,16 @@
   "downloadCanceled": "已取消下載",
   "downloadBackgroundHint": "可以離開這一頁或把應用切到背景，下載會繼續（進度也在通知列裡）。但應用程式行程被系統結束時會中斷。",
   "notifUpdateDownload": "正在下載更新 {tag} · {pct}%",
-  "@notifUpdateDownload": {"placeholders": {"tag": {"type": "String"}, "pct": {"type": "String"}}},
+  "@notifUpdateDownload": {
+    "placeholders": {
+      "tag": {
+        "type": "String"
+      },
+      "pct": {
+        "type": "String"
+      }
+    }
+  },
   "notifUpdateReady": "更新包已下載 · 開啟更新頁安裝",
   "notifUpdateFailed": "更新包下載失敗",
   "sportRankGateNoSensor": "這台裝置沒有計步感測器：開關打開也**不會真的發出步數**（本來就沒有步數可發）。打開它只是讓你能看別人的榜單 —— 這沒問題，看得到別人是因為你同意了「互相可見」這套規則。",
@@ -3251,11 +4236,29 @@
   "honorCelebrateTitle": "恭喜獲得新榮譽",
   "honorCelebrateOk": "太棒了",
   "confirmSendToGroup": "確認傳送到 {group}？",
-  "@confirmSendToGroup": {"placeholders": {"group": {"type": "String"}}},
+  "@confirmSendToGroup": {
+    "placeholders": {
+      "group": {
+        "type": "String"
+      }
+    }
+  },
   "confirmInviteMember": "確認邀請 {call} 加入群聊？",
-  "@confirmInviteMember": {"placeholders": {"call": {"type": "String"}}},
+  "@confirmInviteMember": {
+    "placeholders": {
+      "call": {
+        "type": "String"
+      }
+    }
+  },
   "confirmCreateGroup": "確認建立群聊並向 {n} 位成員發出邀請？",
-  "@confirmCreateGroup": {"placeholders": {"n": {"type": "int"}}},
+  "@confirmCreateGroup": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
   "choosePackage": "選擇安裝包",
   "pkgRecommended": "建議",
   "choosePackageHint": "64 位元套件用於絕大多數手機（應用程式內更新下載的是這個）；帶 _armeabi-v7a 的是 32 位元舊機型；_x86_64 只用於模擬器 / Chromebook。點一列會開啟該套件的下載網址。",
@@ -3277,10 +4280,31 @@
   "pruneConfirm": "將清理 {n} 天沒再聽到的 {m} 個台站（收藏 / 手動新增的會保留），此操作不可恢復。",
   "pruneDone": "已清理 {n} 個過時台站",
   "retentionOff": "未啟用自動清理（保留天數為 0）；可手動清理，或先設定保留天數",
-  "@pruneConfirm": {"placeholders": {"n": {"type": "String"}, "m": {"type": "String"}}},
-  "@pruneDone": {"placeholders": {"n": {"type": "String"}}},
+  "@pruneConfirm": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      },
+      "m": {
+        "type": "String"
+      }
+    }
+  },
+  "@pruneDone": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
   "prunePreview": "將清理 {n} 個",
-  "@prunePreview": {"placeholders": {"n": {"type": "String"}}},
+  "@prunePreview": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
   "nDays": "{n} 天",
   "retentionDaysOff": "關閉（不自動清理）",
   "pruneWithin": "清理多少天前的台站",
@@ -3294,7 +4318,13 @@
   "factoryResetWarn": "此操作不可恢復，且會重新執行首次引導。建議先匯出一次備份。",
   "factoryResetButton": "清除所有資料並重新初始化",
   "factoryResetConfirm": "將清除呼號、伺服器、信標與介面等**全部設定**，以及台站、訊息、日誌、軌跡等**全部資料**，然後重新執行首次引導。此操作**不可恢復**。確定繼續嗎？",
-  "@nDays": {"placeholders": {"n": {"type": "String"}}},
+  "@nDays": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
   "reportActions": "上報",
   "reportNow": "立即上報",
   "reportAutoStart": "開啟自動上報",
@@ -3310,7 +4340,11 @@
   "autoReportEntryHint": "開關隨時可在主介面改：地圖左下/底部的「自動 / 單次」按鈕點一下即切換，旁邊「立即上報」立即發一次。",
   "backupTracks": "包含 {n} 天的歷史軌跡",
   "@backupTracks": {
-    "placeholders": {"n": {"type": "int"}}
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
   },
   "sendPositionBeacon": "發射位置信標",
   "strategyMap": "策略地圖",
@@ -3338,7 +4372,13 @@
   "strategyLineHint": "依次點擊地圖放點（至少 2 個），點「完成」結束",
   "strategyNeedTwoPoints": "劃線至少需要兩個點",
   "strategyItemOf": "由 {call} 分享",
-  "@strategyItemOf": {"placeholders": {"call": {"type": "String"}}},
+  "@strategyItemOf": {
+    "placeholders": {
+      "call": {
+        "type": "String"
+      }
+    }
+  },
   "strategyPan": "平移",
   "strategySendFailed": "已顯示，但未傳送成功（請檢查連線）",
   "strategyTeammates": "隊友位置",
@@ -3347,22 +4387,67 @@
   "strategyColorDefault": "預設",
   "strategySeeInMap": "點擊查看策略地圖",
   "strategySharedItem": "{call} 共享了一個{kind}",
-  "@strategyTeammateOf": {"placeholders": {"call": {"type": "String"}}},
-  "@strategySharedItem": {"placeholders": {"call": {"type": "String"}, "kind": {"type": "String"}}},
+  "@strategyTeammateOf": {
+    "placeholders": {
+      "call": {
+        "type": "String"
+      }
+    }
+  },
+  "@strategySharedItem": {
+    "placeholders": {
+      "call": {
+        "type": "String"
+      },
+      "kind": {
+        "type": "String"
+      }
+    }
+  },
   "strategyRetry": "重發未確認",
   "strategyRetryAll": "重發全部",
   "strategyAckPending": "{n} 幀未被確認（射頻丟包時點重發）",
   "strategyAckOk": "隊友已確認收到",
   "strategyRetryNone": "沒有未確認的幀",
-  "@strategyAckPending": {"placeholders": {"n": {"type": "int"}}},
+  "@strategyAckPending": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
   "groupRfNotice": "射頻模式：群聊與策略幀都按廣播發送，隊友守聽同一頻段即可收到。策略幀需隊友回執確認，丟包時在策略地圖頁點重發。",
   "chatNeedConnect": "未連接伺服器，無法傳送；請先連接資料來源。",
   "strategyUpdatedItem": "{call} 更新了{kind}",
   "strategyDeletedItem": "{call} 刪除了{kind}",
   "strategyClearedMsg": "{call} 清空了共享圖層",
-  "@strategyUpdatedItem": {"placeholders": {"call": {"type": "String"}, "kind": {"type": "String"}}},
-  "@strategyDeletedItem": {"placeholders": {"call": {"type": "String"}, "kind": {"type": "String"}}},
-  "@strategyClearedMsg": {"placeholders": {"call": {"type": "String"}}},
+  "@strategyUpdatedItem": {
+    "placeholders": {
+      "call": {
+        "type": "String"
+      },
+      "kind": {
+        "type": "String"
+      }
+    }
+  },
+  "@strategyDeletedItem": {
+    "placeholders": {
+      "call": {
+        "type": "String"
+      },
+      "kind": {
+        "type": "String"
+      }
+    }
+  },
+  "@strategyClearedMsg": {
+    "placeholders": {
+      "call": {
+        "type": "String"
+      }
+    }
+  },
   "sendLocation": "傳送位置點",
   "needFixToSendLocation": "還沒有定位，暫時無法傳送位置點",
   "msgLocation": "位置點",
@@ -3371,7 +4456,13 @@
   "locationPickHint": "在地圖上點擊要傳送的座標",
   "locationMyPos": "我的位置",
   "locationSendTo": "傳送給 {call}",
-  "@locationSendTo": {"placeholders": {"call": {"type": "String"}}},
+  "@locationSendTo": {
+    "placeholders": {
+      "call": {
+        "type": "String"
+      }
+    }
+  },
   "chatMore": "更多",
   "stationTapToView": "點擊查看台站",
   "locationPickStations": "選擇台站",
@@ -3383,8 +4474,23 @@
   "shareStationPick": "傳送到哪個會話？",
   "shareStationSent": "已分享 {call}",
   "locationPageInfo": "第 {n} / {m} 頁",
-  "@locationPageInfo": {"placeholders": {"n": {"type": "String"}, "m": {"type": "String"}}},
-  "@shareStationSent": {"placeholders": {"call": {"type": "String"}}},
+  "@locationPageInfo": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      },
+      "m": {
+        "type": "String"
+      }
+    }
+  },
+  "@shareStationSent": {
+    "placeholders": {
+      "call": {
+        "type": "String"
+      }
+    }
+  },
   "packetSource": "來源",
   "packetSrcLocal": "本機",
   "packetSrcAprsIs": "APRS-IS",
@@ -3396,8 +4502,16 @@
   "audioTxSourceRow": "發射來源",
   "audioTxSourceYes": "是本鏈路",
   "audioTxNotSourceWarn": "音訊鏈路已連上，但目前發射來源不是它 —— 訊息與信標會從「{src}」發出。需要從音訊發射時，去「設定 → 裝置」把音訊選為發射來源。",
-  "@audioTxNotSourceWarn": {"placeholders": {"src": {"type": "String"}}},
+  "@audioTxNotSourceWarn": {
+    "placeholders": {
+      "src": {
+        "type": "String"
+      }
+    }
+  },
   "audioTxPttHint": "音訊鏈路不會去按電台的 PTT —— 它只是播放一段 AFSK 音訊。要讓電台真的發射，必須由電台自己鍵控：把電台設為 VOX 聲控發射，或用支援聲控/資料埠PTT 的接線。若電台一直不發射，先查這一條。",
   "updateChannelAliyunHint": "⚠️ 由開發團隊付費，請少量使用 🙏",
-  "connectingAliyun": "正在透過阿里雲 OSS 檢查更新 ☁️"
+  "connectingAliyun": "正在透過阿里雲 OSS 檢查更新 ☁️",
+  "icomAudioSampleRate": "音訊取樣率",
+  "icomAudioFmtValue": "12000 Hz (LPCM 16-bit 單聲道)"
 }

@@ -37,6 +37,7 @@ import 'strategy_map.dart';
 import 'igate.dart';
 import 'tnc.dart';
 import 'translate.dart';
+import 'agent.dart';
 import 'early_member.dart';
 import 'achievements.dart';
 // 说明：状态层要用 theme.dart 里的 C（应用材质）与 uiMaterialOf / uiMaterialName。
@@ -3492,6 +3493,7 @@ class AppState extends ChangeNotifier {
     ThemeController.instance.resetToDefaults();
     AchievementCenter.instance.resetToDefaults();
     TranslateService.instance.resetToDefaults();
+    AgentService.instance.resetToDefaults();
     try {
       await resetHonorSeen();
     } catch (_) {}
@@ -4141,6 +4143,8 @@ class AppState extends ChangeNotifier {
     // 翻译配置（接口、密钥、语言、每会话偏好）在启动时载入：
     // 消息页可能在用户还没进设置前就要用它（自动翻译）。
     unawaited(TranslateService.instance.load());
+    // 智能体配置与聊天历史同样在启动时载入：用户可能一进界面就用它。
+    unawaited(AgentService.instance.load());
     // 翻译的「我的语言」默认跟随界面语言（见 TranslateService.uiLocale）
     TranslateService.instance.setUiLocale(locale);
     unawaited(ensureMembersLoaded());
@@ -8869,6 +8873,21 @@ class AppState extends ChangeNotifier {
   /// 请求，这里沿用它 —— 一致性比「省一个字段」重要。
   void requestSheetExpand() {
     sheetExpandSeq++;
+    _notify();
+  }
+
+  /// 「切到某个页签」的请求序号与目标页签（见 [requestTab]）。
+  ///
+  /// 复用 [requestSheetExpand] 的「页面 → 外壳」请求模式：目标页签编号两套外壳
+  /// 一致（0 地图 / 1 台站 / 2 消息 / 3 数据 / 4 设置）。智能体把结果展示给用户时，
+  /// 需要先把界面切到对应页签，否则用户会觉得「它只说不动」。
+  int tabJumpSeq = 0;
+  int tabJumpIndex = 0;
+
+  /// 请求外壳切到页签 [index]（越界会被两套壳各自 clamp）。
+  void requestTab(int index) {
+    tabJumpIndex = index;
+    tabJumpSeq++;
     _notify();
   }
 

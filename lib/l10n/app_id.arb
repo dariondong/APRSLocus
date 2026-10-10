@@ -342,6 +342,208 @@
   "codeContributions": "Kontribusi kode",
   "codeContributionI18n": "Internasionalisasi / UI Inggris",
   "codeContributionZhTw": "UI Tionghoa Tradisional",
+  "@icomLinkConnected": {
+    "placeholders": {
+      "model": {
+        "type": "String"
+      }
+    }
+  },
+  "@icomBindHint": {
+    "placeholders": {
+      "model": {
+        "type": "String"
+      }
+    }
+  },
+  "@icomConnectRadio": {
+    "placeholders": {
+      "model": {
+        "type": "String"
+      }
+    }
+  },
+  "@icomSwitchTitle": {
+    "placeholders": {
+      "model": {
+        "type": "String"
+      }
+    }
+  },
+  "@icomCardActive": {
+    "placeholders": {
+      "model": {
+        "type": "String"
+      }
+    }
+  },
+  "@icomConnectingTo": {
+    "placeholders": {
+      "radio": {
+        "type": "String"
+      }
+    }
+  },
+  "@icomConnectTitle": {
+    "placeholders": {
+      "radio": {
+        "type": "String"
+      }
+    }
+  },
+  "@icomConnectingSub": {
+    "placeholders": {
+      "radio": {
+        "type": "String"
+      },
+      "tnc": {
+        "type": "String"
+      }
+    }
+  },
+  "@icomDescHost": {
+    "placeholders": {
+      "host": {
+        "type": "String"
+      }
+    }
+  },
+  "@icomDescRadio": {
+    "placeholders": {
+      "radio": {
+        "type": "String"
+      }
+    }
+  },
+  "icomTitleSubtitle": "Radio Icom via LAN langsung (IC-705 / IC-9700 / IC-7610 / IC-905): audio PCM 12 kHz dan kontrol CI-V",
+  "icomLinkStatusTitle": "Status tautan radio",
+  "icomLinkConnected": "Tautan LAN terjalin dengan {model}",
+  "icomLinkHandshaking": "Belum tersambung atau menjalin",
+  "icomBindHint": "Saat aktif, sumber audio APRS langsung terikat ke tautan LAN {model}",
+  "icomLinkPhase": "Fase tautan",
+  "icomRfStats": "Statistik RF",
+  "icomAudioFmt": "12000 Hz (LPCM 16-bit mono)",
+  "icomProcessing": "Memproses...",
+  "icomDisconnectRadio": "Putuskan radio",
+  "icomConnectRadio": "Sambungkan {model} sekarang",
+  "icomNetworkTitle": "Setelan jaringan radio",
+  "icomNetworkSubtitle": "Pilih preset radio lalu atur IP dan kredensial Network User",
+  "icomModelPreset": "Preset radio",
+  "icomIpHint": "Alamat IP radio",
+  "icomUserHint": "Nama Network User radio",
+  "icomPassHint": "Kata sandi Network User radio",
+  "icomCredHint": "Catatan: nama pengguna dan kata sandi harus sama persis dengan Network User Setting di radio.",
+  "icomCivTitle": "Kontrol CI-V & transmisi",
+  "icomCivSubtitle": "Kontrol otomatis PTT, tunda TX, dan beacon",
+  "icomRfBeaconHint": "Izinkan radio memancarkan beacon otomatis via RF (half-duplex: dengar dibisukan saat memancar).",
+  "icomTxDelayLabel": "Tunda preamble TX (TX Delay, ms)",
+  "icomCivAddrLabel": "Alamat CI-V radio (hex)",
+  "icomControllerAddr": "Alamat pengontrol",
+  "icomControllerAddrValue": "0xE0 (bawaan)",
+  "icomGuideTitle": "Panduan setelan radio",
+  "icomGuideSubtitle": "Langkah persiapan yang diperlukan di radio Icom",
+  "icomGuide1Title": "Koneksi jaringan",
+  "icomGuide1Body": "Di IC-705, pilih Connect to Network di MENU → SET → WLAN Set untuk bergabung ke Wi-Fi router, atau Access Point untuk membuat hotspot bagi ponsel; IC-9700 / IC-7610 / IC-905 dapat tersambung ke port LAN router atau lewat jembatan nirkabel.",
+  "icomGuide2Title": "Tambah Network User",
+  "icomGuide2Body": "Masuk ke WLAN Set / Network Set → Network User Setting, tambah pengguna (dengan nama dan kata sandi) lalu izinkan koneksi.",
+  "icomGuide3Title": "Pastikan alamat dan port CI-V",
+  "icomGuide3Body": "Masuk ke MENU → SET → Connectors → CI-V dan pastikan CI-V Address serta port kontrol.",
+  "icomGuide4Title": "Atur mode dan frekuensi",
+  "icomGuide4Body": "Setel mode radio pada band itu ke FM-D.",
+  "icomLogTitle": "Log diagnostik komunikasi radio",
+  "icomLogSubtitle": "Lihat paket kontrol LAN Icom dan lalu lintas CI-V",
+  "icomLogEmpty": "Belum ada log komunikasi",
+  "icomPhaseOpeningSockets": "Membuka port…",
+  "icomPhaseDiscovering": "Menemukan radio…",
+  "icomPhaseAuthenticating": "Masuk ke radio…",
+  "icomPhaseNegotiating": "Menjalin aliran audio…",
+  "icomPhaseOpeningStreams": "Membuka aliran…",
+  "icomPhaseReady": "Tersambung (menunggu audio)",
+  "icomPhaseReceiving": "Tersambung (menerima)",
+  "icomPhaseReconnect": "Tautan terputus — menyambung ulang…",
+  "icomPhaseFailed": "Koneksi gagal",
+  "icomPhaseUnsupported": "Platform ini tidak mendukung tautan LAN IC-705",
+  "icomSwitchTitle": "Radio WLAN ({model})",
+  "icomLanAddr": "Alamat radio",
+  "icomCardActive": "Mode LAN langsung {model} sedang aktif.",
+  "icomConnectingTo": "Menyambungkan ke {radio}",
+  "icomConnectTitle": "Sambungkan radio {radio}",
+  "icomConnectingSub": "Menyambungkan ke {radio} ({tnc})…",
+  "icomDescHost": "{host} · RX/TX radio via LAN langsung dan kontrol CI-V",
+  "icomDescRadio": "Kirim/terima dan kontrol {radio} via LAN langsung",
+  "modelIc705Desc": "Radio QRP portabel semua-mode (Wi-Fi AP / STA bawaan)",
+  "modelIc9700Desc": "Base semua-mode VHF/UHF/1.2GHz (Ethernet LAN / Wi-Fi)",
+  "modelIc7610Desc": "Base SDR penerima ganda HF/50MHz (Ethernet LAN)",
+  "modelIc905Desc": "Radio gelombang mikro semua-mode 144MHz–10GHz (Ethernet LAN)",
+  "modelCustomName": "Kustom / lainnya",
+  "modelCustomDesc": "Alamat dan port CI-V Icom kustom",
+  "assetWindowsPackage": "Penginstal Windows",
+  "assetApkPackage": "Paket APK",
+  "honorTagPerseverance": "Kebugaran",
+  "@agentTestOk": {
+    "placeholders": {
+      "model": {
+        "type": "String"
+      }
+    }
+  },
+  "@agentError": {
+    "placeholders": {
+      "msg": {
+        "type": "String"
+      }
+    }
+  },
+  "@agentToolCalling": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "agentMode": "Mode agen",
+  "agentModeDesc": "Menampilkan kotak obrolan AI untuk mengubah setelan, mengirim pesan, dan mencari stasiun (bawa kunci API sendiri)",
+  "agentSettings": "Setelan agen",
+  "agentSettingsDesc": "URL dasar / kunci / model API dan tindakan yang diizinkan untuk agen",
+  "agentEnabled": "Aktifkan agen",
+  "agentBaseUrl": "URL dasar API",
+  "agentApiKey": "Kunci API",
+  "agentModel": "Model",
+  "agentPreset": "Preset",
+  "agentPresetCustom": "Kustom",
+  "agentSystemPrompt": "Prompt sistem (opsional)",
+  "agentAllowSend": "Izinkan mengirim pesan",
+  "agentAllowSendDesc": "Izinkan agen mengirim pesan langsung, grup, dan beacon",
+  "agentAllowSettings": "Izinkan mengubah setelan",
+  "agentAllowSettingsDesc": "Izinkan agen mengubah setelan (mati = hanya baca)",
+  "agentTest": "Uji koneksi",
+  "agentTesting": "Menguji…",
+  "agentTestOk": "Berhasil tersambung: {model}",
+  "agentNeedConfig": "Isi URL dasar, kunci, dan model API",
+  "agentChatTitle": "Asisten agen",
+  "agentInputHint": "Beri tahu agen apa yang harus dilakukan…",
+  "agentSend": "Kirim",
+  "agentClear": "Hapus obrolan",
+  "agentClearConfirm": "Hapus percakapan ini?",
+  "agentWelcome": "Hai, saya asisten agen APRSLocus. Minta saya mengubah setelan, mengirim pesan, atau mencari stasiun. Atur kunci API di \"Setelan agen\" dulu.",
+  "agentThinking": "Berpikir…",
+  "agentError": "Kesalahan: {msg}",
+  "agentConfirmTitle": "Agen ingin menjalankan tindakan",
+  "agentConfirmRun": "Izinkan",
+  "agentConfirmDeny": "Tolak",
+  "agentDenied": "Tindakan ditolak",
+  "agentExecuted": "Selesai",
+  "agentToolResult": "Hasil alat",
+  "agentStopped": "Dihentikan",
+  "agentStop": "Hentikan",
+  "agentOpenSettings": "Setelan agen",
+  "agentNeedsEnable": "Aktifkan \"Mode agen\" di fitur Lab dulu",
+  "agentToolCalling": "Menjalankan: {name}",
+  "agentMinimize": "Perkecil",
+  "agentApiKeyTip": "Kunci hanya disimpan di perangkat ini dan tidak pernah dikirim ke server APRSlocus.",
+  "agentPresetHint": "Isi cepat URL dan model API",
+  "agentInterfaceSection": "Konfigurasi API",
+  "agentPermissions": "Izin",
   "codeContributionTranslation": "Terjemahan",
   "dataSourceTxHint": "Beberapa tautan dapat diaktifkan sekaligus untuk menerima, tetapi **hanya satu yang memancar** (titik di kanan). Mengirim tanda panggil sama lewat dua tautan akan menduplikasi paket.",
   "dataSourceTxBadge": "TX",
@@ -374,13 +576,58 @@
   "grpNameTooLong": "Nama grup maksimal {max} karakter (lebih panjang membuat undangan melebihi batas pesan APRS)",
   "grpInviteSent": "Undangan dikirim ke {n} anggota",
   "grpSelfPending": "Menunggu pemilik grup",
-  "@grpSysJoined": {"placeholders": {"call": {"type": "String"}}},
-  "@grpSysLeft": {"placeholders": {"call": {"type": "String"}}},
-  "@grpSysJoinReq": {"placeholders": {"call": {"type": "String"}}},
-  "@grpSysDeclined": {"placeholders": {"call": {"type": "String"}}},
-  "@grpInviteBody": {"placeholders": {"from": {"type": "String"}, "name": {"type": "String"}}},
-  "@grpNameTooLong": {"placeholders": {"max": {"type": "int"}}},
-  "@grpInviteSent": {"placeholders": {"n": {"type": "int"}}},
+  "@grpSysJoined": {
+    "placeholders": {
+      "call": {
+        "type": "String"
+      }
+    }
+  },
+  "@grpSysLeft": {
+    "placeholders": {
+      "call": {
+        "type": "String"
+      }
+    }
+  },
+  "@grpSysJoinReq": {
+    "placeholders": {
+      "call": {
+        "type": "String"
+      }
+    }
+  },
+  "@grpSysDeclined": {
+    "placeholders": {
+      "call": {
+        "type": "String"
+      }
+    }
+  },
+  "@grpInviteBody": {
+    "placeholders": {
+      "from": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "@grpNameTooLong": {
+    "placeholders": {
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "@grpInviteSent": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
   "deviceOverviewTitle": "Perangkat",
   "deviceOverviewSubtitle": "Sumber data, status tautan, dan uji mandiri",
   "deviceCurrentLink": "Tautan saat ini",
@@ -409,18 +656,60 @@
   "tncTxTestOk": "Tertulis ke TNC (total {n} bingkai). Bila radio tetap tidak memancar, masalahnya di sisi TNC: coba string init atau periksa TxDelay.",
   "tncTxTestFail": "Tidak tertulis: {err}",
   "tncNeedConnected": "Hubungkan TNC dulu",
-  "@tncInitSent": {"placeholders": {"n": {"type": "int"}}},
-  "@tncTxTestOk": {"placeholders": {"n": {"type": "String"}}},
-  "@tncTxTestFail": {"placeholders": {"err": {"type": "String"}}},
+  "@tncInitSent": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "@tncTxTestOk": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "@tncTxTestFail": {
+    "placeholders": {
+      "err": {
+        "type": "String"
+      }
+    }
+  },
   "msgLenCounter": "{chars}/67 karakter · total {bytes}/512 byte",
   "msgOverSpecAsk": "Pesan ini {chars} karakter, melebihi batas spesifikasi APRS yaitu 67. Sebagian besar klien masih bisa menampilkannya, tetapi sebagian klien/gateway memotong atau menolaknya, sehingga stasiun lawan mungkin tidak dapat mengurainya. Tetap kirim?",
   "msgOverServerLimit": "Paket berukuran {bytes} byte, melebihi batas 512 byte per baris APRS-IS. Server mungkin membuang seluruh paket (bahkan header tidak sampai). Mohon perpendek sekitar {over} byte.",
   "msgSendAnyway": "Tetap kirim",
   "msgSpecLimitHint": "Spesifikasi APRS menyarankan pesan di bawah 67 karakter: teks yang lebih panjang dapat terpotong atau gagal diurai di sebagian klien.",
   "msgBlockedTooLong": "Pengiriman diblokir: paket melebihi batas APRS-IS",
-  "@msgLenCounter": {"placeholders": {"chars": {"type": "int"}, "bytes": {"type": "int"}}},
-  "@msgOverSpecAsk": {"placeholders": {"chars": {"type": "int"}}},
-  "@msgOverServerLimit": {"placeholders": {"bytes": {"type": "int"}, "over": {"type": "int"}}},
+  "@msgLenCounter": {
+    "placeholders": {
+      "chars": {
+        "type": "int"
+      },
+      "bytes": {
+        "type": "int"
+      }
+    }
+  },
+  "@msgOverSpecAsk": {
+    "placeholders": {
+      "chars": {
+        "type": "int"
+      }
+    }
+  },
+  "@msgOverServerLimit": {
+    "placeholders": {
+      "bytes": {
+        "type": "int"
+      },
+      "over": {
+        "type": "int"
+      }
+    }
+  },
   "beaconRfBeaconOff": "Beacon RF mati",
   "beaconRfEnableHint": "Pemancaran otomatis pada sumber RF memerlukan sakelar \"Beacon RF\". Sebelum itu posisi tidak dipancarkan otomatis (hitung mundur juga tidak berjalan).",
   "beaconRfEnableAction": "Aktifkan beacon RF",
@@ -483,22 +772,124 @@
   "audioRestart": "Mulai ulang tautan audio",
   "audioTxDisabled": "\"Izinkan pancar\" mati — hanya menerima",
   "audioLoopbackHint": "Pemeriksaan benar-benar melakukan modulasi→demodulasi; di Android mikrofon dijeda saat mengirim (half duplex)",
-  "@diagPassed": {"placeholders": {"n": {"type": "int"}}},
-  "@diagFailed": {"placeholders": {"n": {"type": "int"}}},
-  "@diagAx25Mismatch": {"placeholders": {"got": {"type": "String"}}},
-  "@diagTncLoopbackOk": {"placeholders": {"len": {"type": "int"}}},
-  "@diagAfskLoopbackOk": {"placeholders": {"samples": {"type": "int"}, "rate": {"type": "int"}}},
-  "@diagAfskLoopbackFail": {"placeholders": {"n": {"type": "int"}}},
-  "@diagPlatformOk": {"placeholders": {"name": {"type": "String"}}},
-  "@diagCaptureOk": {"placeholders": {"bytes": {"type": "int"}, "rate": {"type": "int"}}},
-  "@diagCaptureFailed": {"placeholders": {"err": {"type": "String"}}},
-  "@diagSpeakerFail": {"placeholders": {"err": {"type": "String"}}},
-  "@diagFileIoOk": {"placeholders": {"rate": {"type": "int"}}},
-  "@diagFileWriteFail": {"placeholders": {"err": {"type": "String"}}},
-  "@testTxFail": {"placeholders": {"err": {"type": "String"}}},
-  "@audioStatRx": {"placeholders": {"n": {"type": "int"}}},
-  "@audioStatTx": {"placeholders": {"n": {"type": "int"}}},
-  "@audioStatDrop": {"placeholders": {"n": {"type": "int"}}},
+  "@diagPassed": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "@diagFailed": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "@diagAx25Mismatch": {
+    "placeholders": {
+      "got": {
+        "type": "String"
+      }
+    }
+  },
+  "@diagTncLoopbackOk": {
+    "placeholders": {
+      "len": {
+        "type": "int"
+      }
+    }
+  },
+  "@diagAfskLoopbackOk": {
+    "placeholders": {
+      "samples": {
+        "type": "int"
+      },
+      "rate": {
+        "type": "int"
+      }
+    }
+  },
+  "@diagAfskLoopbackFail": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "@diagPlatformOk": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "@diagCaptureOk": {
+    "placeholders": {
+      "bytes": {
+        "type": "int"
+      },
+      "rate": {
+        "type": "int"
+      }
+    }
+  },
+  "@diagCaptureFailed": {
+    "placeholders": {
+      "err": {
+        "type": "String"
+      }
+    }
+  },
+  "@diagSpeakerFail": {
+    "placeholders": {
+      "err": {
+        "type": "String"
+      }
+    }
+  },
+  "@diagFileIoOk": {
+    "placeholders": {
+      "rate": {
+        "type": "int"
+      }
+    }
+  },
+  "@diagFileWriteFail": {
+    "placeholders": {
+      "err": {
+        "type": "String"
+      }
+    }
+  },
+  "@testTxFail": {
+    "placeholders": {
+      "err": {
+        "type": "String"
+      }
+    }
+  },
+  "@audioStatRx": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "@audioStatTx": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "@audioStatDrop": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
   "notifAudioConnected": "Tautan audio aktif",
   "notifAudioDisconnected": "Tautan audio terputus",
   "connConnectingAudio": "Membuka audio ({name})…",
@@ -552,16 +943,79 @@
   "audioWavFound": "{n} paket terdekode",
   "audioWavWritten": "Ditulis ke {path}",
   "audioWavFailed": "Gagal baca/tulis berkas: {err}",
-  "@connConnectingAudio": {"placeholders": {"name": {"type": "String"}}},
-  "@connAudioConnected": {"placeholders": {"rate": {"type": "String"}}},
-  "@connRetryAudio": {"placeholders": {"seconds": {"type": "int"}}},
-  "@connRetryAudioDetail": {"placeholders": {"detail": {"type": "String"}, "seconds": {"type": "int"}}},
-  "@connAudioLinkLost": {"placeholders": {"seconds": {"type": "int"}}},
-  "@connAudioPositionSent": {"placeholders": {"call": {"type": "String"}}},
-  "@audioBadFrames": {"placeholders": {"n": {"type": "int"}}},
-  "@audioWavFound": {"placeholders": {"n": {"type": "int"}}},
-  "@audioWavWritten": {"placeholders": {"path": {"type": "String"}}},
-  "@audioWavFailed": {"placeholders": {"err": {"type": "String"}}},
+  "@connConnectingAudio": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "@connAudioConnected": {
+    "placeholders": {
+      "rate": {
+        "type": "String"
+      }
+    }
+  },
+  "@connRetryAudio": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "@connRetryAudioDetail": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      },
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "@connAudioLinkLost": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "@connAudioPositionSent": {
+    "placeholders": {
+      "call": {
+        "type": "String"
+      }
+    }
+  },
+  "@audioBadFrames": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "@audioWavFound": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "@audioWavWritten": {
+    "placeholders": {
+      "path": {
+        "type": "String"
+      }
+    }
+  },
+  "@audioWavFailed": {
+    "placeholders": {
+      "err": {
+        "type": "String"
+      }
+    }
+  },
   "connTncConnected": "TNC terhubung · {arg}",
   "connTncPositionSent": "TNC terhubung · posisi terkirim ({arg})",
   "connRetryTnc": "Koneksi TNC gagal · mencoba lagi dalam {n}s…",
@@ -672,23 +1126,143 @@
   "translateNotNeeded": "Tidak ada yang perlu diterjemahkan (angka / simbol / tanda panggil)",
   "translateBubbleCount": "{n} diterjemahkan",
   "translatePrivacyNote": "Terjemahan mengirim teks pesan ke penyedia pihak ketiga pilihan Anda; pertimbangkan privasi",
-  "@connTncConnected": {"placeholders": {"arg": {"type": "String"}}},
-  "@connTncPositionSent": {"placeholders": {"arg": {"type": "String"}}},
-  "@connRetryTnc": {"placeholders": {"n": {"type": "int"}}},
-  "@connRetryTncDetail": {"placeholders": {"e": {"type": "String"}, "n": {"type": "int"}}},
-  "@connTncLinkLost": {"placeholders": {"n": {"type": "int"}}},
-  "@translateCustomBodyTip": {"placeholders": {"text": {"type": "String"}, "from": {"type": "String"}, "to": {"type": "String"}}},
-  "@translateFreeFailed": {"placeholders": {"e": {"type": "String"}}},
-  "@translateAutoAllFailed": {"placeholders": {"e": {"type": "String"}}},
-  "@translateOutPreview": {"placeholders": {"text": {"type": "String"}}},
-  "@translateOutPreviewHint": {"placeholders": {"lang": {"type": "String"}}},
-  "@translateSentAs": {"placeholders": {"text": {"type": "String"}}},
-  "@translateTooLongAfter": {"placeholders": {"n": {"type": "int"}}},
-  "@translateTestOk": {"placeholders": {"text": {"type": "String"}}},
-  "@translateFailed": {"placeholders": {"e": {"type": "String"}}},
-  "@translateBubbleCount": {"placeholders": {"n": {"type": "int"}}},
-  "@dateDividerFull": {"placeholders": {"y": {"type": "int"}, "m": {"type": "int"}, "d": {"type": "int"}, "w": {"type": "String"}}},
-  "@dateWeekday": {"placeholders": {"d": {"type": "String"}}},
+  "@connTncConnected": {
+    "placeholders": {
+      "arg": {
+        "type": "String"
+      }
+    }
+  },
+  "@connTncPositionSent": {
+    "placeholders": {
+      "arg": {
+        "type": "String"
+      }
+    }
+  },
+  "@connRetryTnc": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "@connRetryTncDetail": {
+    "placeholders": {
+      "e": {
+        "type": "String"
+      },
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "@connTncLinkLost": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "@translateCustomBodyTip": {
+    "placeholders": {
+      "text": {
+        "type": "String"
+      },
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      }
+    }
+  },
+  "@translateFreeFailed": {
+    "placeholders": {
+      "e": {
+        "type": "String"
+      }
+    }
+  },
+  "@translateAutoAllFailed": {
+    "placeholders": {
+      "e": {
+        "type": "String"
+      }
+    }
+  },
+  "@translateOutPreview": {
+    "placeholders": {
+      "text": {
+        "type": "String"
+      }
+    }
+  },
+  "@translateOutPreviewHint": {
+    "placeholders": {
+      "lang": {
+        "type": "String"
+      }
+    }
+  },
+  "@translateSentAs": {
+    "placeholders": {
+      "text": {
+        "type": "String"
+      }
+    }
+  },
+  "@translateTooLongAfter": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "@translateTestOk": {
+    "placeholders": {
+      "text": {
+        "type": "String"
+      }
+    }
+  },
+  "@translateFailed": {
+    "placeholders": {
+      "e": {
+        "type": "String"
+      }
+    }
+  },
+  "@translateBubbleCount": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "@dateDividerFull": {
+    "placeholders": {
+      "y": {
+        "type": "int"
+      },
+      "m": {
+        "type": "int"
+      },
+      "d": {
+        "type": "int"
+      },
+      "w": {
+        "type": "String"
+      }
+    }
+  },
+  "@dateWeekday": {
+    "placeholders": {
+      "d": {
+        "type": "String"
+      }
+    }
+  },
   "notifTncConnected": "TNC terhubung",
   "notifTncDisconnected": "TNC terputus",
   "dataSourceTitle": "Sumber data",
@@ -784,7 +1358,13 @@
   "deviceInUseByTnc": "Sedang dipakai TNC — tidak bisa diikat lagi",
   "deviceInUseByPkwdwpl": "Sedang dipakai PKWDWPL — tidak bisa diikat lagi",
   "rxOnlyBanner": "{arg} terhubung · hanya terima (sumber kirim belum aktif)",
-  "@rxOnlyBanner": {"placeholders": {"arg": {"type": "String"}}},
+  "@rxOnlyBanner": {
+    "placeholders": {
+      "arg": {
+        "type": "String"
+      }
+    }
+  },
   "pkwdwplTip": "Setel format keluaran port PC / GPS di radio ke \"$PKWDWPL\" (biasanya 4800 8N1). Tautan ini hanya baca dan tidak memancarkan apa pun.",
   "pkwdwplStrictChecksum": "Checksum ketat (buang jika tidak cocok)",
   "pkwdwplStrictChecksumTip": "Nonaktif secara bawaan: ketidakcocokan hanya ditandai dan dicatat, tidak dibuang, karena pada kabel lokal hal ini biasanya berarti format firmware berbeda dari manual. Membuang semuanya akan membuat layar kosong dan jauh lebih sulit ditelusuri.",
@@ -795,9 +1375,27 @@
   "pkwdwplStatMismatch": "Ketidakcocokan checksum",
   "pkwdwplStatIgnored": "Kalimat NMEA lain (diabaikan)",
   "pkwdwplLogEmpty": "Belum ada log PKWDWPL",
-  "@connConnectingPkwdwpl": {"placeholders": {"arg": {"type": "String"}}},
-  "@connPkwdwplConnected": {"placeholders": {"arg": {"type": "String"}}},
-  "@pkwdwplStats": {"placeholders": {"rx": {"type": "String"}}},
+  "@connConnectingPkwdwpl": {
+    "placeholders": {
+      "arg": {
+        "type": "String"
+      }
+    }
+  },
+  "@connPkwdwplConnected": {
+    "placeholders": {
+      "arg": {
+        "type": "String"
+      }
+    }
+  },
+  "@pkwdwplStats": {
+    "placeholders": {
+      "rx": {
+        "type": "String"
+      }
+    }
+  },
   "tncBindTitle": "TNC Bluetooth",
   "tncBindSubtitle": "Pasangkan dan hubungkan TNC di radio Anda",
   "tncBoundDevice": "Perangkat terpasang",
@@ -854,9 +1452,30 @@
   "tncGroupDisabled": "Siaran grup tidak tersedia di mode radio",
   "tncMsgLimitHint": "{n} karakter per pesan (spesifikasi APRS)",
   "tncMsgTooLong": "Melebihi batas panjang pesan untuk mode radio",
-  "@tncStats": {"placeholders": {"rx": {"type": "String"}, "tx": {"type": "String"}}},
-  "@connectingToTnc": {"placeholders": {"name": {"type": "String"}}},
-  "@tncMsgLimitHint": {"placeholders": {"n": {"type": "String"}}},
+  "@tncStats": {
+    "placeholders": {
+      "rx": {
+        "type": "String"
+      },
+      "tx": {
+        "type": "String"
+      }
+    }
+  },
+  "@connectingToTnc": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "@tncMsgLimitHint": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
   "licenseSection": "Lisensi",
   "licenseName": "GNU GPL v3",
   "licenseStatement": "Perangkat lunak ini dirilis di bawah lisensi GNU GPL v3. Anda boleh menjalankan, mempelajari, memodifikasi, dan mendistribusikan ulang selama mematuhi ketentuan lisensi; versi modifikasi dan redistribusi wajib mematuhi kewajiban GPL v3 yang berlaku. Perangkat lunak ini disediakan tanpa jaminan apa pun.",
@@ -2112,19 +2731,35 @@
   "sysLinkOff": "Nonaktif",
   "sysRx": "Rx {n}",
   "@sysRx": {
-    "placeholders": {"n": {"type": "String"}}
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
   },
   "sysTx": "Tx {n}",
   "@sysTx": {
-    "placeholders": {"n": {"type": "String"}}
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
   },
   "sysBeacon": "Beacon {t}",
   "@sysBeacon": {
-    "placeholders": {"t": {"type": "String"}}
+    "placeholders": {
+      "t": {
+        "type": "String"
+      }
+    }
   },
   "sysStations": "Stasiun {n}",
   "@sysStations": {
-    "placeholders": {"n": {"type": "String"}}
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
   },
   "sysFixOk": "Terlokasi",
   "sysLinkAudio": "Audio",
@@ -2142,7 +2777,11 @@
   "backupCopyDone": "Cadangan disalin",
   "backupSavedTo": "Disimpan ke: {path}",
   "@backupSavedTo": {
-    "placeholders": {"path": {"type": "String"}}
+    "placeholders": {
+      "path": {
+        "type": "String"
+      }
+    }
   },
   "backupCatSettings": "Pengaturan",
   "backupCatSettingsDesc": "Stasiun, beacon, peta, filter, sumber, server, riwayat lintasan",
@@ -2158,7 +2797,11 @@
   "backupCatHonorsDesc": "Bukaan, penghitung, dan lencana bawaan",
   "backupItems": "{n} item",
   "@backupItems": {
-    "placeholders": {"n": {"type": "int"}}
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
   },
   "backupSelectAll": "Pilih semua",
   "backupNoSelection": "Pilih minimal satu grup",
@@ -2170,22 +2813,38 @@
   "backupPreview": "Isi cadangan",
   "backupFromVersion": "Dari versi {v}",
   "@backupFromVersion": {
-    "placeholders": {"v": {"type": "String"}}
+    "placeholders": {
+      "v": {
+        "type": "String"
+      }
+    }
   },
   "backupExportedAt": "Diekspor {t}",
   "@backupExportedAt": {
-    "placeholders": {"t": {"type": "String"}}
+    "placeholders": {
+      "t": {
+        "type": "String"
+      }
+    }
   },
   "backupImportSelected": "Impor yang dipilih",
   "backupImportConfirmTitle": "Impor cadangan ini?",
   "backupImportConfirm": "Grup terpilih akan ditimpa dan tidak bisa dibatalkan. Sebaiknya ekspor dulu data saat ini.",
   "backupImported": "Mengimpor {n} item",
   "@backupImported": {
-    "placeholders": {"n": {"type": "int"}}
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
   },
   "backupSkipped": "Melewati {n} entri tak dikenal",
   "@backupSkipped": {
-    "placeholders": {"n": {"type": "int"}}
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
   },
   "backupImportNothing": "Cadangan tidak punya data untuk grup terpilih",
   "backupRestartTitle": "Impor selesai",
@@ -2228,7 +2887,11 @@
   "themeDelete": "Hapus tema",
   "themeDeleteConfirm": "Hapus tema “{name}”? Tidak bisa dibatalkan.",
   "@themeDeleteConfirm": {
-    "placeholders": {"name": {"type": "String"}}
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
   },
   "themeReset": "Setel ulang",
   "themeResetAll": "Setel ulang tema ini",
@@ -2243,7 +2906,11 @@
   "themeIconImportHint": "PNG/JPG/WebP/GIF/BMP/SVG, maks 2 MB",
   "themeIconImportDone": "Ikon diimpor: {name}",
   "@themeIconImportDone": {
-    "placeholders": {"name": {"type": "String"}}
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
   },
   "themeIconWebHint": "Di web tidak bisa mengimpor gambar — gunakan pustaka ikon bawaan",
   "themeIconErrFormat": "Format gambar tidak didukung (PNG/JPG/WebP/GIF/BMP/SVG)",
@@ -2258,7 +2925,11 @@
   "themeImportPaste": "Impor dari papan klip",
   "themeImportDone": "Mengimpor {n} tema",
   "@themeImportDone": {
-    "placeholders": {"n": {"type": "int"}}
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
   },
   "themeErrNotJson": "Berkas bukan JSON yang valid",
   "themeErrNotTheme": "Ini bukan berkas tema APRSlocus",
@@ -2298,13 +2969,21 @@
   "themeExportWithImages": "Sertakan gambar saat ekspor",
   "themeExportWithImagesHint": "Ekspor akan menyertakan gambar (sekitar {size}), jadi penerima melihat latar dan ikon yang sama. Berkasnya jadi tidak lagi bisa diedit manual.",
   "@themeExportWithImagesHint": {
-    "placeholders": {"size": {"type": "String"}}
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
   },
   "themeExportNoImages": "Tema ini tidak memakai gambar; ekspornya hanya berisi warna dan teks",
   "themeExportClipboardTooBig": "Gambarnya terlalu besar untuk papan klip — gunakan “Ekspor semua tema” untuk menyimpan berkas",
   "themeImportImagesSkipped": "{n} gambar tidak diimpor (terlalu besar atau tidak didukung)",
   "@themeImportImagesSkipped": {
-    "placeholders": {"n": {"type": "int"}}
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
   },
   "backupThemeImagesHint": "Cadangan akan menyertakan gambar yang dipakai tema. Tanpanya, tema yang dipulihkan kembali ke ikon bawaan.",
   "backupThemeImagesOff": "Tanpa gambar: cadangan lebih kecil, tetapi tema yang dipulihkan kehilangan latar dan ikon kustom",
@@ -2360,7 +3039,11 @@
   "audioWavExportToDownloads": "Ekspor ke Unduhan",
   "audioWavSavedTo": "Disimpan ke {path}",
   "@audioWavSavedTo": {
-    "placeholders": {"path": {"type": "String"}}
+    "placeholders": {
+      "path": {
+        "type": "String"
+      }
+    }
   },
   "audioWavCopyPath": "Salin jalur",
   "audioWavPathCopied": "Jalur disalin",
@@ -2372,27 +3055,56 @@
   "audioTxLevelTip": "Sebelum mengirim, volume media dinaikkan maksimum dan mikrofon dijeda; puncak terlalu rendah atau terpotong membuat lawan tidak bisa mendekode",
   "audioTxPeak": "Puncak {p}% · {sec}s · preamble {flags} flag",
   "@audioTxPeak": {
-    "placeholders": {"p": {"type": "int"}, "sec": {"type": "String"}, "flags": {"type": "int"}}
+    "placeholders": {
+      "p": {
+        "type": "int"
+      },
+      "sec": {
+        "type": "String"
+      },
+      "flags": {
+        "type": "int"
+      }
+    }
   },
   "audioTxLevelClip": "Terpotong: turunkan amplitudo di bawah 0.8 (menimbulkan harmonisa)",
   "audioTxLevelLow": "Level rendah: lawan mungkin tidak bisa mendekode — naikkan amplitudo dan volume",
   "audioWiringHint": "Gunakan kabel audio ke radio (keluaran headphone → konektor data/mikrofon). Speaker ponsel meredam 2200 Hz dengan buruk, jadi kopling akustik hampir tidak pernah bisa didekode. Jika lawan adalah Direwolf, uji dulu dengan WAV hasil ekspor: kalau itu bisa, masalahnya di jalur audio, bukan protokol",
   "packetLimitRf": "Paket {bytes} B · batas bingkai RF {max} B",
   "@packetLimitRf": {
-    "placeholders": {"bytes": {"type": "int"}, "max": {"type": "int"}}
+    "placeholders": {
+      "bytes": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
+      }
+    }
   },
   "packetLimitIs": "Paket {bytes} B · batas baris APRS-IS 512 B",
   "@packetLimitIs": {
-    "placeholders": {"bytes": {"type": "int"}}
+    "placeholders": {
+      "bytes": {
+        "type": "int"
+      }
+    }
   },
   "packetTcpipWarning": "Mengandung TCPIP*: akan dihapus di RF (jalur itu milik APRS-IS)",
   "packetSent": "Diteruskan ke tautan: {line}",
   "@packetSent": {
-    "placeholders": {"line": {"type": "String"}}
+    "placeholders": {
+      "line": {
+        "type": "String"
+      }
+    }
   },
   "packetSendFailed": "Tidak terkirim: {err}",
   "@packetSendFailed": {
-    "placeholders": {"err": {"type": "String"}}
+    "placeholders": {
+      "err": {
+        "type": "String"
+      }
+    }
   },
   "tncSerialBaud": "Kecepatan baud serial (bd)",
   "tncSerialBaudTip": "Kabel serial USB dan port data radio harus sama kecepatannya, kalau tidak satu byte pun tidak akan lewat. Nilai umum: 9600 / 19200 / 38400 / 57600 / 115200. Bluetooth SPP tidak punya konsep baud, jadi ini diabaikan untuk perangkat Bluetooth.",
@@ -2447,11 +3159,23 @@
   "tierMinDist": "Jarak (m)",
   "tierMinDistHint": "Juga lapor setelah berpindah sejauh ini sejak laporan terakhir; 0 = nonaktif (hanya interval)",
   "orMoveM": "atau {dist} m",
-  "@orMoveM": {"placeholders": {"dist": {"type": "String"}}},
+  "@orMoveM": {
+    "placeholders": {
+      "dist": {
+        "type": "String"
+      }
+    }
+  },
   "tierMinTurn": "Belokan (derajat)",
   "tierMinTurnHint": "Lapor setelah berbelok sejauh ini (10–180); 0 = nonaktif. Hanya saat bergerak (saat berhenti, arah hanya derau)",
   "orTurnDeg": "atau {deg}°",
-  "@orTurnDeg": {"placeholders": {"deg": {"type": "String"}}},
+  "@orTurnDeg": {
+    "placeholders": {
+      "deg": {
+        "type": "String"
+      }
+    }
+  },
   "inputTapHint": "Ketuk untuk mengetik",
   "callCommentEmpty": "Belum diisi · ketuk untuk mengetik",
   "noticeTitle": "Pengumuman",
@@ -2459,9 +3183,21 @@
   "noticeLoading": "Memuat…",
   "noticeReadMore": "Baca selengkapnya",
   "noticeCached": "Cache · {ago}",
-  "@noticeCached": {"placeholders": {"ago": {"type": "String"}}},
+  "@noticeCached": {
+    "placeholders": {
+      "ago": {
+        "type": "String"
+      }
+    }
+  },
   "noticeOfflineCache": "Salinan offline · {time} (diperbarui otomatis saat online)",
-  "@noticeOfflineCache": {"placeholders": {"time": {"type": "String"}}},
+  "@noticeOfflineCache": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
   "timeJustNow": "baru saja",
   "refresh": "Segarkan",
   "noticeEntryDesc": "Lihat pengumuman terbaru dari situs web",
@@ -2548,21 +3284,51 @@
   "garminUrlHint": "livetrack.garmin.com/session/…/token/…",
   "beaconGarminSource": "Memancarkan dari Garmin LiveTrack",
   "beaconGarminNext": "Garmin · {s} · ❤{hr}",
-  "@beaconGarminNext": {"placeholders": {"s": {"type": "String"}, "hr": {"type": "String"}}},
+  "@beaconGarminNext": {
+    "placeholders": {
+      "s": {
+        "type": "String"
+      },
+      "hr": {
+        "type": "String"
+      }
+    }
+  },
   "posSourceLabel": "Sumber posisi",
   "hrSourceLabel": "Sumber detak jantung",
   "ownSourcePhoneGps": "GPS ponsel",
   "positionBeaconDetail": "Beacon posisi · Grid {grid} · {detail}",
   "beaconAttachedHr": "HR {hr}",
   "beaconAttachedNone": "tanpa detak jantung",
-  "@positionBeaconDetail": {"placeholders": {"grid": {"type": "String"}, "detail": {"type": "String"}}},
-  "@beaconAttachedHr": {"placeholders": {"hr": {"type": "String"}}},
+  "@positionBeaconDetail": {
+    "placeholders": {
+      "grid": {
+        "type": "String"
+      },
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "@beaconAttachedHr": {
+    "placeholders": {
+      "hr": {
+        "type": "String"
+      }
+    }
+  },
   "posSourceIdle": "Tidak melacak (lokasi nonaktif)",
   "ownSourceGarminLive": "Melacak (GPS ponsel menyingkir)",
   "ownSourceGarminStale": "Tautan ada, tapi Garmin belum punya titik baru",
   "ownSourceHrIdle": "Belum tersambung (ketuk untuk menyambung)",
   "hrLineHr": "HR {hr}",
-  "@hrLineHr": {"placeholders": {"hr": {"type": "String"}}},
+  "@hrLineHr": {
+    "placeholders": {
+      "hr": {
+        "type": "String"
+      }
+    }
+  },
   "garminShareNoLink": "Tidak ada tautan Garmin LiveTrack di konten yang dibagikan",
   "hrFromGarmin": "Detak jantung dari Garmin LiveTrack (jam)",
   "sourceMovedHint": "Untuk mengaktifkan/mengganti sumber data (tautan), buka Setelan → Perangkat",
@@ -2572,7 +3338,13 @@
   "posSrcGarmin": "Garmin LiveTrack",
   "posSrcPhone": "GPS ponsel",
   "posSrcNone": "belum ada posisi",
-  "@posSourceUsing": {"placeholders": {"src": {"type": "String"}}},
+  "@posSourceUsing": {
+    "placeholders": {
+      "src": {
+        "type": "String"
+      }
+    }
+  },
   "garminNotStarted": "Tidak melacak",
   "garminAutoFilled": "Tautan terisi otomatis",
   "garminLinkOk": "Tautan valid",
@@ -2580,7 +3352,13 @@
   "beaconForceCoarseHint": "Mati secara bawaan: posisi jaringan (sel / Wi-Fi) sering meleset ratusan meter, jadi memancarkannya berarti mengumumkan koordinat yang salah ke semua orang. Nyalakan hanya bila perangkat tidak punya GPS (tablet, hanya jaringan). Peta dan jejak tetap menyaring titik kasar seperti biasa, jadi tidak ikut kacau. \"Pancarkan sekarang\" manual tidak terpengaruh.",
   "beaconCoarseForced": "Posisi jaringan (kasar) · {s}",
   "beaconCoarseForcedNote": "Memancarkan posisi jaringan (kasar)",
-  "@beaconCoarseForced": {"placeholders": {"s": {"type": "String"}}},
+  "@beaconCoarseForced": {
+    "placeholders": {
+      "s": {
+        "type": "String"
+      }
+    }
+  },
   "advancedMenu": "Lanjutan",
   "aprsStatus": "Paket status mandiri",
   "aprsStatusHint": "Ini mengirim paket status mandiri (diawali `>`, tanpa koordinat, dan tidak memindahkan posisi Anda di aprs.fi) - jenis paket APRS yang berbeda dari komentar di atas. Bila kosong, frame online APRSlocus bawaan yang dikirim.",
@@ -2591,22 +3369,58 @@
   "beaconAntHeightLabel": "Tinggi antena (kaki)",
   "beaconGainLabel": "Gain (dB)",
   "beaconPhgPreview": "Paket akan memuat: {phg}",
-  "@beaconPhgPreview": {"placeholders": {"phg": {"type": "String"}}},
+  "@beaconPhgPreview": {
+    "placeholders": {
+      "phg": {
+        "type": "String"
+      }
+    }
+  },
   "beaconPhgTip": "Daya, tinggi antena, dan gain berbagi satu ekstensi PHG: mengisi salah satunya akan mengodekan dan mengirim ketiganya (standar menetapkannya sebagai satu bidang tetap 7 byte). Daya memakai tingkat terbesar yang tidak melebihi nilai sebenarnya: 25 W dilaporkan 25, begitu juga 30 W, karena melaporkan berlebih membesarkan lingkaran jangkauan Anda. Tinggi antena diukur di atas permukaan tanah rata-rata - berbeda dari ketinggian /A= yang dikirim otomatis di atas.",
   "beaconPowerLabel": "Daya (W)",
   "txButton": "Kirim",
   "txPartPosition": "paket posisi",
   "txPartStatus": "paket status",
   "txSent": "Terkirim: {parts}",
-  "@txSent": {"placeholders": {"parts": {"type": "String"}}},
+  "@txSent": {
+    "placeholders": {
+      "parts": {
+        "type": "String"
+      }
+    }
+  },
   "txNoFixKeptStatus": "Terkirim: {parts} (belum ada posisi - paket posisi dengan PHG tidak dikirim)",
   "connStatusSent": "Terhubung · paket status terkirim ({call})",
   "connTncStatusSent": "TNC terhubung · paket status terkirim ({arg})",
   "connAudioStatusSent": "Terkirim via audio · paket status terkirim ({call})",
-  "@txNoFixKeptStatus": {"placeholders": {"parts": {"type": "String"}}},
-  "@connStatusSent": {"placeholders": {"call": {"type": "String"}}},
-  "@connTncStatusSent": {"placeholders": {"arg": {"type": "String"}}},
-  "@connAudioStatusSent": {"placeholders": {"call": {"type": "String"}}},
+  "@txNoFixKeptStatus": {
+    "placeholders": {
+      "parts": {
+        "type": "String"
+      }
+    }
+  },
+  "@connStatusSent": {
+    "placeholders": {
+      "call": {
+        "type": "String"
+      }
+    }
+  },
+  "@connTncStatusSent": {
+    "placeholders": {
+      "arg": {
+        "type": "String"
+      }
+    }
+  },
+  "@connAudioStatusSent": {
+    "placeholders": {
+      "call": {
+        "type": "String"
+      }
+    }
+  },
   "codeContribution": "Kontribusi kode",
   "historyCharts": "Grafik",
   "historyChartsShow": "Tampilkan grafik",
@@ -2628,18 +3442,57 @@
   "beaconBarTierNetwork": "Posisi jaringan · interval tetap",
   "beaconBarTierSmart": "Tingkat pintar",
   "beaconBarTierSmartFrom": "Tingkat pintar · ≥{speed} km/h",
-  "@beaconBarTierSmartFrom": {"placeholders": {"speed": {"type": "String"}}},
+  "@beaconBarTierSmartFrom": {
+    "placeholders": {
+      "speed": {
+        "type": "String"
+      }
+    }
+  },
   "beaconBarTierFixed": "Interval tetap",
   "beaconBarTimeLeft": "Waktu {time}",
-  "@beaconBarTimeLeft": {"placeholders": {"time": {"type": "String"}}},
+  "@beaconBarTimeLeft": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
   "beaconBarDistLeft": "Jarak {dist}",
-  "@beaconBarDistLeft": {"placeholders": {"dist": {"type": "String"}}},
+  "@beaconBarDistLeft": {
+    "placeholders": {
+      "dist": {
+        "type": "String"
+      }
+    }
+  },
   "beaconBarTurnLeft": "Belokan {cur}° / {need}°",
-  "@beaconBarTurnLeft": {"placeholders": {"cur": {"type": "String"}, "need": {"type": "String"}}},
+  "@beaconBarTurnLeft": {
+    "placeholders": {
+      "cur": {
+        "type": "String"
+      },
+      "need": {
+        "type": "String"
+      }
+    }
+  },
   "beaconBarTurnLowSpeed": "Belokan ditahan · perlu ≥{speed} km/h",
-  "@beaconBarTurnLowSpeed": {"placeholders": {"speed": {"type": "String"}}},
+  "@beaconBarTurnLowSpeed": {
+    "placeholders": {
+      "speed": {
+        "type": "String"
+      }
+    }
+  },
   "beaconBarTurnWait": "Belokan ditahan · siap dalam {time}",
-  "@beaconBarTurnWait": {"placeholders": {"time": {"type": "String"}}},
+  "@beaconBarTurnWait": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
   "netSymbol": "Ikon stasiun untuk posisi jaringan",
   "netSymbolHint": "Posisi jaringan bisa meleset ratusan meter hingga kilometer; ikon berbeda membuat jelas bahwa posisi berasal dari jaringan. Bawaannya mengikuti simbol Anda.",
   "netSymbolFollow": "Ikuti simbol saya",
@@ -2662,7 +3515,19 @@
   "hrAlarmTelTip": "Nomor yang dihubungi dari alarm; bawaan 120. Ganti ke 112 atau nomor rekan sesuai kebutuhan.",
   "hrAlarmTitle": "Detak jantung tidak normal",
   "hrAlarmBody": "Detak jantung {bpm} bpm di luar rentang {low}–{high} Anda.\n\nJika merasa tidak enak badan, segera hubungi layanan darurat. Anda juga dapat mengirim pesan bantuan ke stasiun dalam 100 km.",
-  "@hrAlarmBody": {"placeholders": {"bpm": {"type": "String"}, "low": {"type": "String"}, "high": {"type": "String"}}},
+  "@hrAlarmBody": {
+    "placeholders": {
+      "bpm": {
+        "type": "String"
+      },
+      "low": {
+        "type": "String"
+      },
+      "high": {
+        "type": "String"
+      }
+    }
+  },
   "hrAlarmDismiss": "Saya tidak apa-apa",
   "hrAlarmCall": "Hubungi darurat",
   "hrAlarmSendNearby": "Minta bantuan stasiun terdekat",
@@ -2670,11 +3535,32 @@
   "hrAlarmNoNearby": "Tidak ada stasiun dikenal dalam 100 km",
   "hrAlarmSendConfirmTitle": "Kirim permintaan bantuan?",
   "hrAlarmSendConfirmBody": "Satu pesan dikirim ke masing-masing {n} stasiun terdekat:\n{calls}\n\nPesan akan muncul di perangkat mereka — mohon konfirmasi.",
-  "@hrAlarmSendConfirmBody": {"placeholders": {"n": {"type": "String"}, "calls": {"type": "String"}}},
+  "@hrAlarmSendConfirmBody": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      },
+      "calls": {
+        "type": "String"
+      }
+    }
+  },
   "hrAlarmSent": "Permintaan bantuan dikirim ke {n} stasiun",
-  "@hrAlarmSent": {"placeholders": {"n": {"type": "String"}}},
+  "@hrAlarmSent": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
   "hrAlarmNotif": "DJ tidak normal {bpm} bpm",
-  "@hrAlarmNotif": {"placeholders": {"bpm": {"type": "String"}}},
+  "@hrAlarmNotif": {
+    "placeholders": {
+      "bpm": {
+        "type": "String"
+      }
+    }
+  },
   "locExtGpsActive": "GPS eksternal aktif · GPS ponsel siaga",
   "locExtGpsLost": "GPS eksternal hilang · memakai GPS ponsel",
   "locPhoneGpsActive": "GPS ponsel mengambil alih",
@@ -2696,7 +3582,13 @@
   "beaconIncludeSteps": "Langkah",
   "stepsTodayLabel": "Langkah hari ini",
   "stepsCount": "{n} langkah",
-  "@stepsCount": {"placeholders": {"n": {"type": "String"}}},
+  "@stepsCount": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
   "stepsUnsupported": "Perangkat ini tidak punya sensor langkah",
   "stepsNeedPermission": "Perlu izin",
   "stepsGrant": "Beri izin aktivitas",
@@ -2721,7 +3613,16 @@
   "downloadCanceled": "Unduhan dibatalkan",
   "downloadBackgroundHint": "Anda boleh meninggalkan halaman ini atau menaruh aplikasi di latar belakang — unduhan tetap berjalan (progresnya juga tampil di notifikasi). Berhenti bila proses dimatikan.",
   "notifUpdateDownload": "Mengunduh pembaruan {tag} · {pct}%",
-  "@notifUpdateDownload": {"placeholders": {"tag": {"type": "String"}, "pct": {"type": "String"}}},
+  "@notifUpdateDownload": {
+    "placeholders": {
+      "tag": {
+        "type": "String"
+      },
+      "pct": {
+        "type": "String"
+      }
+    }
+  },
   "notifUpdateReady": "Pembaruan terunduh · buka halaman pembaruan untuk memasang",
   "notifUpdateFailed": "Unduhan pembaruan gagal",
   "sportRankGateNoSensor": "Perangkat ini tidak punya sensor langkah, jadi mengaktifkannya **tidak akan mengirim langkah** (memang tidak ada). Ini hanya membuka peringkat — dan itu wajar: Anda bisa melihat yang lain karena menerima aturan dua arah yang sama.",
@@ -2747,11 +3648,29 @@
   "honorCelebrateTitle": "Kehormatan baru terbuka",
   "honorCelebrateOk": "Keren",
   "confirmSendToGroup": "Kirim ke {group}?",
-  "@confirmSendToGroup": {"placeholders": {"group": {"type": "String"}}},
+  "@confirmSendToGroup": {
+    "placeholders": {
+      "group": {
+        "type": "String"
+      }
+    }
+  },
   "confirmInviteMember": "Undang {call} ke obrolan grup?",
-  "@confirmInviteMember": {"placeholders": {"call": {"type": "String"}}},
+  "@confirmInviteMember": {
+    "placeholders": {
+      "call": {
+        "type": "String"
+      }
+    }
+  },
   "confirmCreateGroup": "Buat grup dan undang {n} anggota?",
-  "@confirmCreateGroup": {"placeholders": {"n": {"type": "int"}}},
+  "@confirmCreateGroup": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
   "choosePackage": "Pilih paket",
   "pkgRecommended": "Disarankan",
   "choosePackageHint": "Paket 64-bit untuk hampir semua ponsel (inilah yang diunduh pembaruan dalam aplikasi); _armeabi-v7a untuk perangkat 32-bit lama; _x86_64 hanya untuk emulator / Chromebook. Ketuk satu baris untuk membuka tautan unduhan paket itu.",
@@ -2773,10 +3692,31 @@
   "pruneConfirm": "Akan membersihkan {m} stasiun yang {n} hari tidak terdengar (favorit / kontak manual dipertahankan). Tidak bisa dibatalkan.",
   "pruneDone": "Membersihkan {n} stasiun usang",
   "retentionOff": "Pembersihan otomatis nonaktif (retensi 0); bersihkan manual, atau atur jumlah hari dulu",
-  "@pruneConfirm": {"placeholders": {"n": {"type": "String"}, "m": {"type": "String"}}},
-  "@pruneDone": {"placeholders": {"n": {"type": "String"}}},
+  "@pruneConfirm": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      },
+      "m": {
+        "type": "String"
+      }
+    }
+  },
+  "@pruneDone": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
   "prunePreview": "Akan membersihkan {n}",
-  "@prunePreview": {"placeholders": {"n": {"type": "String"}}},
+  "@prunePreview": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
   "nDays": "{n} hari",
   "retentionDaysOff": "Nonaktif (tanpa bersih otomatis)",
   "pruneWithin": "Bersihkan stasiun lebih lama dari",
@@ -2790,7 +3730,13 @@
   "factoryResetWarn": "Tidak dapat dibatalkan, dan panduan awal akan berjalan lagi. Ekspor cadangan dulu.",
   "factoryResetButton": "Hapus semua dan mulai ulang",
   "factoryResetConfirm": "Menghapus **semua pengaturan** (call sign, server, beacon, antarmuka) dan **semua data** (stasiun, pesan, log, jejak), lalu menjalankan panduan awal lagi. **Tidak dapat dibatalkan**. Lanjutkan?",
-  "@nDays": {"placeholders": {"n": {"type": "String"}}},
+  "@nDays": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
   "reportActions": "Lapor",
   "reportNow": "Lapor sekarang",
   "reportAutoStart": "Mulai otomatis",
@@ -2806,7 +3752,11 @@
   "autoReportEntryHint": "Sakelar ini bisa diubah kapan saja di layar utama: ketuk tombol \"AUTO / SEKALI\" di peta (kiri-bawah / bilah bawah) untuk beralih, dan \"Lapor sekarang\" di sampingnya untuk kirim segera.",
   "backupTracks": "Menyertakan {n} hari riwayat lintasan",
   "@backupTracks": {
-    "placeholders": {"n": {"type": "int"}}
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
   },
   "sendPositionBeacon": "Pancarkan beacon posisi",
   "strategyMap": "Peta taktis",
@@ -2834,7 +3784,13 @@
   "strategyLineHint": "Ketuk titik di peta (minimal 2), ketuk Selesai untuk mengakhiri",
   "strategyNeedTwoPoints": "Garis butuh minimal dua titik",
   "strategyItemOf": "Dibagikan oleh {call}",
-  "@strategyItemOf": {"placeholders": {"call": {"type": "String"}}},
+  "@strategyItemOf": {
+    "placeholders": {
+      "call": {
+        "type": "String"
+      }
+    }
+  },
   "strategyPan": "Geser",
   "strategySendFailed": "Tampil lokal, tapi gagal kirim (cek koneksi)",
   "strategyTeammates": "Posisi rekan",
@@ -2843,22 +3799,67 @@
   "strategyColorDefault": "Bawaan",
   "strategySeeInMap": "Ketuk untuk lihat di peta strategi",
   "strategySharedItem": "{call} membagikan {kind}",
-  "@strategyTeammateOf": {"placeholders": {"call": {"type": "String"}}},
-  "@strategySharedItem": {"placeholders": {"call": {"type": "String"}, "kind": {"type": "String"}}},
+  "@strategyTeammateOf": {
+    "placeholders": {
+      "call": {
+        "type": "String"
+      }
+    }
+  },
+  "@strategySharedItem": {
+    "placeholders": {
+      "call": {
+        "type": "String"
+      },
+      "kind": {
+        "type": "String"
+      }
+    }
+  },
   "strategyRetry": "Kirim ulang belum dikonfirmasi",
   "strategyRetryAll": "Kirim ulang semua",
   "strategyAckPending": "{n} frame belum dikonfirmasi — kirim ulang jika hilang di RF",
   "strategyAckOk": "Rekan mengonfirmasi penerimaan",
   "strategyRetryNone": "Tidak ada yang belum dikonfirmasi",
-  "@strategyAckPending": {"placeholders": {"n": {"type": "int"}}},
+  "@strategyAckPending": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
   "groupRfNotice": "Mode RF: obrolan grup dan frame strategi dikirim siaran — rekan yang memantau kanal sama akan menerimanya. Frame strategi perlu konfirmasi rekan; kirim ulang jika hilang.",
   "chatNeedConnect": "Belum terhubung ke server — tidak bisa mengirim. Hubungkan sumber data dulu.",
   "strategyUpdatedItem": "{call} memperbarui {kind}",
   "strategyDeletedItem": "{call} menghapus {kind}",
   "strategyClearedMsg": "{call} mengosongkan lapisan bersama",
-  "@strategyUpdatedItem": {"placeholders": {"call": {"type": "String"}, "kind": {"type": "String"}}},
-  "@strategyDeletedItem": {"placeholders": {"call": {"type": "String"}, "kind": {"type": "String"}}},
-  "@strategyClearedMsg": {"placeholders": {"call": {"type": "String"}}},
+  "@strategyUpdatedItem": {
+    "placeholders": {
+      "call": {
+        "type": "String"
+      },
+      "kind": {
+        "type": "String"
+      }
+    }
+  },
+  "@strategyDeletedItem": {
+    "placeholders": {
+      "call": {
+        "type": "String"
+      },
+      "kind": {
+        "type": "String"
+      }
+    }
+  },
+  "@strategyClearedMsg": {
+    "placeholders": {
+      "call": {
+        "type": "String"
+      }
+    }
+  },
   "sendLocation": "Kirim lokasi",
   "needFixToSendLocation": "Belum ada posisi — tidak bisa mengirim lokasi",
   "msgLocation": "Lokasi",
@@ -2867,7 +3868,13 @@
   "locationPickHint": "Ketuk peta untuk memilih koordinat",
   "locationMyPos": "Posisi saya",
   "locationSendTo": "Kirim ke {call}",
-  "@locationSendTo": {"placeholders": {"call": {"type": "String"}}},
+  "@locationSendTo": {
+    "placeholders": {
+      "call": {
+        "type": "String"
+      }
+    }
+  },
   "chatMore": "Lainnya",
   "stationTapToView": "Ketuk untuk lihat stasiun",
   "locationPickStations": "Pilih stasiun",
@@ -2879,8 +3886,23 @@
   "shareStationPick": "Kirim ke obrolan mana?",
   "shareStationSent": "{call} dibagikan",
   "locationPageInfo": "Halaman {n} / {m}",
-  "@locationPageInfo": {"placeholders": {"n": {"type": "String"}, "m": {"type": "String"}}},
-  "@shareStationSent": {"placeholders": {"call": {"type": "String"}}},
+  "@locationPageInfo": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      },
+      "m": {
+        "type": "String"
+      }
+    }
+  },
+  "@shareStationSent": {
+    "placeholders": {
+      "call": {
+        "type": "String"
+      }
+    }
+  },
   "packetSource": "Sumber",
   "packetSrcLocal": "Lokal",
   "packetSrcAprsIs": "APRS-IS",
@@ -2892,8 +3914,16 @@
   "audioTxSourceRow": "Sumber TX",
   "audioTxSourceYes": "Tautan ini",
   "audioTxNotSourceWarn": "Tautan audio aktif, tetapi bukan sumber TX saat ini — pesan dan beacon keluar lewat \"{src}\". Untuk memancar via audio, pilih audio sebagai sumber TX di Setelan → Perangkat.",
-  "@audioTxNotSourceWarn": {"placeholders": {"src": {"type": "String"}}},
+  "@audioTxNotSourceWarn": {
+    "placeholders": {
+      "src": {
+        "type": "String"
+      }
+    }
+  },
   "audioTxPttHint": "Tautan audio tidak pernah menekan PTT radio — hanya memutar audio AFSK. Agar radio benar-benar memancar, radio sendiri harus ter-key: setel ke VOX (voice-operated), atau pakai kabel yang men-key PTT dari port audio/data. Jika radio tidak memancar, periksa ini dulu.",
   "updateChannelAliyunHint": "⚠️ Dibayar oleh tim pengembang -- mohon gunakan seperlunya 🙏",
-  "connectingAliyun": "Memeriksa pembaruan via Aliyun OSS ☁️"
+  "connectingAliyun": "Memeriksa pembaruan via Aliyun OSS ☁️",
+  "icomAudioSampleRate": "Laju sampel audio",
+  "icomAudioFmtValue": "12000 Hz (LPCM 16-bit mono)"
 }

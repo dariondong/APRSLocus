@@ -19,6 +19,7 @@ import 'early_member.dart';
 import 'honor_celebration.dart';
 import 'l10n/app_localizations.dart';
 import 'update_prompt.dart';
+import 'agent_ui.dart';
 
 /// 将设置里保存的语言码（如 'zh_TW'）解析成 Locale
 Locale _localeOf(String s) {
@@ -252,7 +253,12 @@ class _AppState extends State<App> {
           // ——它位于 Localizations **之下**，所以里面 AppLocalizations.of(context)
           // 拿到的就是当前真正生效的语言（包括「跟随系统」那档）。换到 App 层
           // 就得自己重算 locale，一旦算错，组件上的文字会和界面差一个语言。
-          child: content,
+          child: Stack(children: [
+            Positioned.fill(child: content),
+            // 智能体聊天框：挂在所有页面之上，因此任何页面都能看到它。
+            // 关闭「智能体模式」时 AgentOverlay 自己返回空，不吃手势、零开销。
+            Positioned.fill(child: AgentOverlay(state: _state)),
+          ]),
         );
       },
       home: ListenableBuilder(

@@ -117,6 +117,9 @@ const List<BackupGroupSpec> kBackupGroups = [
     // 已提醒过的更新版本：与公告开关同属「显示/打扰偏好」——换机后不该
     // 因为丢了它而对已经提醒过的版本再弹一次（也不该阻止新版本提醒）。
     'updatePromptedVersion',
+    // 智能体配置（接口地址 / Key / 模型 / 权限开关）与聊天历史：都属于
+    // 「用户自己配的东西」，换机后不该丢（否则要重新填 Key、重新授权）。
+    'agentConfigJson', 'agentChatHistoryJson',
     // 界面材质（磨砂玻璃 / 云母）：与深色模式、界面缩放同类的**显示偏好**，
     // 用户换机后当然希望屏幕还是他调好的那副样子。
     'uiMaterial',

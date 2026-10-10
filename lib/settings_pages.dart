@@ -25,6 +25,8 @@ import 'theme_store.dart';
 import 'markdown_view.dart';
 import 'material.dart';
 import 'notice.dart';
+import 'agent.dart';
+import 'agent_ui.dart';
 
 /// ─── 电台设置 ───
 class StationSettingsPage extends StatefulWidget {
@@ -2557,7 +2559,7 @@ class _ConnectionSettingsPageState extends State<ConnectionSettingsPage> {
     final isIcom = a.config.source == AudioSource.icomLan;
     return SettingsSectionCard(
       title: isIcom
-          ? 'WLAN 电台（${a.config.icomLan.model.id}）'
+          ? S.of(context).icomSwitchTitle(a.config.icomLan.model.id)
           : S.of(context).connectionCard2,
       subtitle: isIcom ? S.of(context).icomLanHint : S.of(context).dataSourceAudioDesc,
       icon: isIcom ? Icons.wifi_tethering_rounded : Icons.graphic_eq_rounded,
@@ -2566,18 +2568,22 @@ class _ConnectionSettingsPageState extends State<ConnectionSettingsPage> {
         _connBanner(),
         Divider(height: 1, color: C.border),
         SettingsRow2(
-          isIcom ? '电台地址' : S.of(context).audioBackend,
+          isIcom ? S.of(context).icomLanAddr : S.of(context).audioBackend,
           isIcom
               ? '${a.config.icomLan.host}:${a.config.icomLan.controlPort}'
               : a.backendName,
         ),
         SettingsRow2(
-          isIcom ? '链路阶段' : S.of(context).audioSampleRate,
+          isIcom ? S.of(context).icomLinkPhase : S.of(context).audioSampleRate,
           isIcom
-              ? (a.icomLanLink?.phaseLabel ??
-                  (a.connected
-                      ? S.of(context).connected
-                      : S.of(context).disconnected))
+              // 阶段串在 net 层是中文，这里翻成当前语言；link 还没建时退回连接态
+              // （那两串本身已本地化，传入 icomPhaseLabel 会原样返回）。
+              ? icomPhaseLabel(
+                  S.of(context),
+                  a.icomLanLink?.phaseLabel ??
+                      (a.connected
+                          ? S.of(context).connected
+                          : S.of(context).disconnected))
               : '${a.config.afsk.sampleRate} Hz',
         ),
         if (st.connected)
@@ -2594,7 +2600,8 @@ class _ConnectionSettingsPageState extends State<ConnectionSettingsPage> {
           valueColor: a.config.rfBeacon ? C.green : C.grey,
         ),
         SettingsHint(isIcom
-            ? '当前已启用 ${a.config.icomLan.model.displayName} 局域网直连模式。'
+            ? S.of(context).icomCardActive(
+                icomModelName(S.of(context), a.config.icomLan.model))
             : S.of(context).connAudioSourceHint),
         Padding(
           padding: const EdgeInsets.fromLTRB(14, 4, 14, 12),
@@ -4746,6 +4753,26 @@ class _AdvancedSettingsPageState extends State<AdvancedSettingsPage> {
             SettingsSwitch(S.of(context).allowLandscape, value: st.labLandscape, color: C.cyan,
                 onChanged: st.setLabLandscape),
             SettingsHint(S.of(context).labDesc),
+            Divider(height: 1, color: C.border),
+            // 智能体模式（实验）：开启后屏幕上出现一个 AI 聊天框。
+            SettingsSwitch(S.of(context).agentMode,
+                value: AgentService.instance.config.enabled, color: C.purple,
+                onChanged: (v) async {
+              AgentService.instance.config.enabled = v;
+              await AgentService.instance.saveConfig();
+              if (mounted) setState(() {});
+            }),
+            SettingsHint(S.of(context).agentModeDesc),
+            SettingsNavRow(
+              title: S.of(context).agentSettings,
+              subtitle: S.of(context).agentSettingsDesc,
+              icon: Icons.smart_toy_rounded,
+              color: C.purple,
+              onTap: () => Navigator.of(context).push(
+                MaterialPageRoute(
+                    builder: (_) => AgentSettingsPage(state: st)),
+              ),
+            ),
           ],
         ),
         SizedBox(height: 16),

@@ -264,7 +264,7 @@ class _VectorMapViewState extends State<VectorMapView> {
                   initialZoom: initZoom,
                   minZoom: 2,
                   maxZoom: 19,
-                  backgroundColor: const Color(0xFFF3F5F9),
+                  backgroundColor: C.mapBg,
                   interactionOptions: const InteractionOptions(
                     flags: InteractiveFlag.all & ~InteractiveFlag.rotate,
                   ),

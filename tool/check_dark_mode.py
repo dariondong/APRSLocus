@@ -14,16 +14,22 @@
 本机跑不了 analyze、也跑不了真机（约束），而它**能编译、能过 analyze、能过所有
 其它检查器**，只有切到深色模式肉眼才看得出来 —— 所以必须钉成检查。
 
-## 判据（只认两条，避免假失败）
+## 判据（只认三条，避免假失败）
 
   * `backgroundColor: Colors.white` —— 弹窗/面板的**表面**底色。这是最高的
     信号量：它一定是「一个会发白的表面」。
   * `BoxDecoration(color: Colors.white)` 里**顶层**的 `color:`（不是嵌套在
     `Border.all(...)` / `BoxShadow(...)` 里的那种）。嵌套的白色是描边/光晕，
     属于**强调**而不是表面，深色下本来就该是白的，不在检查范围。
+  * 另外两条同类：`backgroundColor:` 直接写死成常量色（`const Color(0xFF...)`），
+    以及 `surfaceTint(Colors.white)` / `surfaceTint(const Color(0x...))` ——
+    `surfaceTint` 只在材质开启时才调透明度，材质关闭时**原样返回**那个常量，
+    于是「更新页顶栏」这类表面在深色下永远是一块白板（v2.0.57 修的就是它）。
+    表面色必须走 `C.*` 主题 token，才能跟着运行时调色板变。
 
 ⭐ 允许的写法：`C.white`（跟随主题）、`Colors.white.withValues(...)`（本身
-就带透明度，多用于彩色横幅上的按钮/进度条，不是纯白表面）。
+就带透明度，多用于彩色横幅上的按钮/进度条，不是纯白表面）、
+`C.surfaceFillStrong` / `C.bg` / `C.mapBg`（主题 token）。
 
 用法：python3 tool/check_dark_mode.py
 退出码 0 = 没有；1 = 有（并列出文件与行号）。
@@ -45,6 +51,10 @@ BG = re.compile(r'backgroundColor\s*:\s*Colors\.white\s*[,)]')
 # BoxDecoration 里的顶层颜色（嵌套的靠括号深度排除）。
 BOX = re.compile(r'BoxDecoration\s*\(')
 COLOR_WHITE = re.compile(r'(?<![\w.])color\s*:\s*Colors\.white\s*[,)]')
+# 写死的**不透明**表面底色（`const Color(0xFFRRGGBB)`）—— 运行时换调色板改不到它。
+BG_LITERAL = re.compile(r'backgroundColor\s*:\s*(?:const\s+)?Color\(0xFF[0-9A-Fa-f]{6}\)\s*[,)]')
+# surfaceTint(常量)：材质关时 surfaceTint 原样返回该常量 → 深色下仍是实色白板。
+TINT = re.compile(r'surfaceTint\s*\(\s*(?:const\s+)?(?:Color\(0xFF[0-9A-Fa-f]{6}\)|Colors\.white)\s*[,)]')
 
 # 有意的例外：路径 → (允许出现的次数, 理由)。这些白色**不是表面**，而是
 # 「压在彩色渐变横幅/卡片上的白底按钮」—— 横幅本身是固定彩色（不随主题变），
@@ -136,6 +146,14 @@ def main():
             for m in BG.finditer(masked):
                 problems.append((rel, line_of(masked, m.start()),
                                  'backgroundColor: Colors.white'))
+
+            for m in BG_LITERAL.finditer(masked):
+                problems.append((rel, line_of(masked, m.start()),
+                                 'backgroundColor: 写死常量色（未走主题 token）'))
+
+            for m in TINT.finditer(masked):
+                problems.append((rel, line_of(masked, m.start()),
+                                 'surfaceTint(常量)：材质关闭时该表面不随主题变'))
 
             for start, body in box_decoration_bodies(masked):
                 # 顶层 `color: Colors.white`：body 里嵌套的 Border.all/BoxShadow

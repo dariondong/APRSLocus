@@ -2157,6 +2157,654 @@ abstract class AppLocalizations {
   /// **'繁体中文界面'**
   String get codeContributionZhTw;
 
+  /// No description provided for @icomTitleSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'局域网直连 Icom 电台（IC-705 / IC-9700 / IC-7610 / IC-905），收发 12 kHz PCM 音频与 CI-V 控制'**
+  String get icomTitleSubtitle;
+
+  /// No description provided for @icomLinkStatusTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'电台链路状态'**
+  String get icomLinkStatusTitle;
+
+  /// No description provided for @icomLinkConnected.
+  ///
+  /// In zh, this message translates to:
+  /// **'已与 {model} 建立局域网直连'**
+  String icomLinkConnected(String model);
+
+  /// No description provided for @icomLinkHandshaking.
+  ///
+  /// In zh, this message translates to:
+  /// **'未连接或正在握手'**
+  String get icomLinkHandshaking;
+
+  /// No description provided for @icomBindHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'开启后，APRS 音频收发数据源将直接绑定至 {model} 局域网直连'**
+  String icomBindHint(String model);
+
+  /// No description provided for @icomLinkPhase.
+  ///
+  /// In zh, this message translates to:
+  /// **'链路阶段'**
+  String get icomLinkPhase;
+
+  /// No description provided for @icomRfStats.
+  ///
+  /// In zh, this message translates to:
+  /// **'射频收发统计'**
+  String get icomRfStats;
+
+  /// No description provided for @icomAudioFmt.
+  ///
+  /// In zh, this message translates to:
+  /// **'12000 Hz (LPCM 16-bit 单声道)'**
+  String get icomAudioFmt;
+
+  /// No description provided for @icomProcessing.
+  ///
+  /// In zh, this message translates to:
+  /// **'处理中...'**
+  String get icomProcessing;
+
+  /// No description provided for @icomDisconnectRadio.
+  ///
+  /// In zh, this message translates to:
+  /// **'断开电台连接'**
+  String get icomDisconnectRadio;
+
+  /// No description provided for @icomConnectRadio.
+  ///
+  /// In zh, this message translates to:
+  /// **'立即连接 {model}'**
+  String icomConnectRadio(String model);
+
+  /// No description provided for @icomNetworkTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'电台网络参数'**
+  String get icomNetworkTitle;
+
+  /// No description provided for @icomNetworkSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'选择电台型号预置并配置 IP 与 Network User 凭据'**
+  String get icomNetworkSubtitle;
+
+  /// No description provided for @icomModelPreset.
+  ///
+  /// In zh, this message translates to:
+  /// **'电台型号预置'**
+  String get icomModelPreset;
+
+  /// No description provided for @icomIpHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'电台 IP 地址'**
+  String get icomIpHint;
+
+  /// No description provided for @icomUserHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'电台 Network User 名'**
+  String get icomUserHint;
+
+  /// No description provided for @icomPassHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'电台 Network User 密码'**
+  String get icomPassHint;
+
+  /// No description provided for @icomCredHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'提示：用户名和密码必须与电台内部 Network User Setting 完全一致。'**
+  String get icomCredHint;
+
+  /// No description provided for @icomCivTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'CI-V 控制与发射设置'**
+  String get icomCivTitle;
+
+  /// No description provided for @icomCivSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'PTT 自动控制、前导延时与信标参数'**
+  String get icomCivSubtitle;
+
+  /// No description provided for @icomRfBeaconHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'是否允许通过电台射频自动周期发射信标（半双工，发射时自动静默监听）。'**
+  String get icomRfBeaconHint;
+
+  /// No description provided for @icomTxDelayLabel.
+  ///
+  /// In zh, this message translates to:
+  /// **'发射前导延迟 (TX Delay, ms)'**
+  String get icomTxDelayLabel;
+
+  /// No description provided for @icomCivAddrLabel.
+  ///
+  /// In zh, this message translates to:
+  /// **'电台 CI-V 地址 (十六进制)'**
+  String get icomCivAddrLabel;
+
+  /// No description provided for @icomControllerAddr.
+  ///
+  /// In zh, this message translates to:
+  /// **'控制器地址'**
+  String get icomControllerAddr;
+
+  /// No description provided for @icomControllerAddrValue.
+  ///
+  /// In zh, this message translates to:
+  /// **'0xE0 (默认)'**
+  String get icomControllerAddrValue;
+
+  /// No description provided for @icomGuideTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'电台设置指引'**
+  String get icomGuideTitle;
+
+  /// No description provided for @icomGuideSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'在 Icom 电台上的必要准备步骤'**
+  String get icomGuideSubtitle;
+
+  /// No description provided for @icomGuide1Title.
+  ///
+  /// In zh, this message translates to:
+  /// **'网络连接'**
+  String get icomGuide1Title;
+
+  /// No description provided for @icomGuide1Body.
+  ///
+  /// In zh, this message translates to:
+  /// **'IC-705 可在 MENU → SET → WLAN Set 中选择 Connect to Network 连接路由器 Wi-Fi，或选择 Access Point 开启热点供手机直连；IC-9700 / IC-7610 / IC-905 可直接连接路由器 LAN 口，或通过无线网桥接入局域网。'**
+  String get icomGuide1Body;
+
+  /// No description provided for @icomGuide2Title.
+  ///
+  /// In zh, this message translates to:
+  /// **'添加网络用户'**
+  String get icomGuide2Title;
+
+  /// No description provided for @icomGuide2Body.
+  ///
+  /// In zh, this message translates to:
+  /// **'进入 WLAN Set / Network Set → Network User Setting，添加一个用户（设置好用户名与密码），并开启允许连接。'**
+  String get icomGuide2Body;
+
+  /// No description provided for @icomGuide3Title.
+  ///
+  /// In zh, this message translates to:
+  /// **'确认 CI-V 地址与端口'**
+  String get icomGuide3Title;
+
+  /// No description provided for @icomGuide3Body.
+  ///
+  /// In zh, this message translates to:
+  /// **'进入 MENU → SET → Connectors → CI-V，确认 CI-V Address 与控制端口。'**
+  String get icomGuide3Body;
+
+  /// No description provided for @icomGuide4Title.
+  ///
+  /// In zh, this message translates to:
+  /// **'设置模式与频率'**
+  String get icomGuide4Title;
+
+  /// No description provided for @icomGuide4Body.
+  ///
+  /// In zh, this message translates to:
+  /// **'将电台对应频段模式设为 FM-D。'**
+  String get icomGuide4Body;
+
+  /// No description provided for @icomLogTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'电台通信诊断日志'**
+  String get icomLogTitle;
+
+  /// No description provided for @icomLogSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'查看 Icom 局域网控制包与 CI-V 通信记录'**
+  String get icomLogSubtitle;
+
+  /// No description provided for @icomLogEmpty.
+  ///
+  /// In zh, this message translates to:
+  /// **'暂无通信日志'**
+  String get icomLogEmpty;
+
+  /// No description provided for @icomPhaseOpeningSockets.
+  ///
+  /// In zh, this message translates to:
+  /// **'正在打开端口…'**
+  String get icomPhaseOpeningSockets;
+
+  /// No description provided for @icomPhaseDiscovering.
+  ///
+  /// In zh, this message translates to:
+  /// **'正在发现电台…'**
+  String get icomPhaseDiscovering;
+
+  /// No description provided for @icomPhaseAuthenticating.
+  ///
+  /// In zh, this message translates to:
+  /// **'正在登录电台…'**
+  String get icomPhaseAuthenticating;
+
+  /// No description provided for @icomPhaseNegotiating.
+  ///
+  /// In zh, this message translates to:
+  /// **'正在协商音频流…'**
+  String get icomPhaseNegotiating;
+
+  /// No description provided for @icomPhaseOpeningStreams.
+  ///
+  /// In zh, this message translates to:
+  /// **'正在打开数据流…'**
+  String get icomPhaseOpeningStreams;
+
+  /// No description provided for @icomPhaseReady.
+  ///
+  /// In zh, this message translates to:
+  /// **'已连接（等待音频）'**
+  String get icomPhaseReady;
+
+  /// No description provided for @icomPhaseReceiving.
+  ///
+  /// In zh, this message translates to:
+  /// **'已连接（接收中）'**
+  String get icomPhaseReceiving;
+
+  /// No description provided for @icomPhaseReconnect.
+  ///
+  /// In zh, this message translates to:
+  /// **'连接中断，正在重连…'**
+  String get icomPhaseReconnect;
+
+  /// No description provided for @icomPhaseFailed.
+  ///
+  /// In zh, this message translates to:
+  /// **'连接失败'**
+  String get icomPhaseFailed;
+
+  /// No description provided for @icomPhaseUnsupported.
+  ///
+  /// In zh, this message translates to:
+  /// **'当前平台不支持 IC-705 局域网直连'**
+  String get icomPhaseUnsupported;
+
+  /// No description provided for @icomSwitchTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'WLAN 电台（{model}）'**
+  String icomSwitchTitle(String model);
+
+  /// No description provided for @icomLanAddr.
+  ///
+  /// In zh, this message translates to:
+  /// **'电台地址'**
+  String get icomLanAddr;
+
+  /// No description provided for @icomCardActive.
+  ///
+  /// In zh, this message translates to:
+  /// **'当前已启用 {model} 局域网直连模式。'**
+  String icomCardActive(String model);
+
+  /// No description provided for @icomConnectingTo.
+  ///
+  /// In zh, this message translates to:
+  /// **'正在连接 {radio}'**
+  String icomConnectingTo(String radio);
+
+  /// No description provided for @icomConnectTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'连接 {radio} 电台'**
+  String icomConnectTitle(String radio);
+
+  /// No description provided for @icomConnectingSub.
+  ///
+  /// In zh, this message translates to:
+  /// **'正在连接 {radio}（{tnc}）…'**
+  String icomConnectingSub(String radio, String tnc);
+
+  /// No description provided for @icomDescHost.
+  ///
+  /// In zh, this message translates to:
+  /// **'{host} · 局域网直连电台收发与 CI-V 控制'**
+  String icomDescHost(String host);
+
+  /// No description provided for @icomDescRadio.
+  ///
+  /// In zh, this message translates to:
+  /// **'通过局域网直连 {radio} 电台收发报文与控制'**
+  String icomDescRadio(String radio);
+
+  /// No description provided for @modelIc705Desc.
+  ///
+  /// In zh, this message translates to:
+  /// **'便携全模式 QRP 电台（内置 Wi-Fi AP / STA）'**
+  String get modelIc705Desc;
+
+  /// No description provided for @modelIc9700Desc.
+  ///
+  /// In zh, this message translates to:
+  /// **'VHF/UHF/1.2GHz 全模式基站（以太网 LAN / Wi-Fi）'**
+  String get modelIc9700Desc;
+
+  /// No description provided for @modelIc7610Desc.
+  ///
+  /// In zh, this message translates to:
+  /// **'HF/50MHz 双接收 SDR 基站（以太网 LAN）'**
+  String get modelIc7610Desc;
+
+  /// No description provided for @modelIc905Desc.
+  ///
+  /// In zh, this message translates to:
+  /// **'144MHz~10GHz 全模式微波电台（以太网 LAN）'**
+  String get modelIc905Desc;
+
+  /// No description provided for @modelCustomName.
+  ///
+  /// In zh, this message translates to:
+  /// **'自定义 / 其他 (Custom)'**
+  String get modelCustomName;
+
+  /// No description provided for @modelCustomDesc.
+  ///
+  /// In zh, this message translates to:
+  /// **'自定义 Icom 电台 CI-V 地址与端口'**
+  String get modelCustomDesc;
+
+  /// No description provided for @assetWindowsPackage.
+  ///
+  /// In zh, this message translates to:
+  /// **'Windows 安装包'**
+  String get assetWindowsPackage;
+
+  /// No description provided for @assetApkPackage.
+  ///
+  /// In zh, this message translates to:
+  /// **'APK 安装包'**
+  String get assetApkPackage;
+
+  /// No description provided for @honorTagPerseverance.
+  ///
+  /// In zh, this message translates to:
+  /// **'养生'**
+  String get honorTagPerseverance;
+
+  /// No description provided for @agentMode.
+  ///
+  /// In zh, this message translates to:
+  /// **'智能体模式'**
+  String get agentMode;
+
+  /// No description provided for @agentModeDesc.
+  ///
+  /// In zh, this message translates to:
+  /// **'开启后屏幕上出现一个 AI 聊天框，可以对话让它帮你改设置、发消息、查台站（需自行配置接口 Key）'**
+  String get agentModeDesc;
+
+  /// No description provided for @agentSettings.
+  ///
+  /// In zh, this message translates to:
+  /// **'智能体设置'**
+  String get agentSettings;
+
+  /// No description provided for @agentSettingsDesc.
+  ///
+  /// In zh, this message translates to:
+  /// **'接口地址 / Key / 模型，以及允许智能体执行哪些操作'**
+  String get agentSettingsDesc;
+
+  /// No description provided for @agentEnabled.
+  ///
+  /// In zh, this message translates to:
+  /// **'启用智能体'**
+  String get agentEnabled;
+
+  /// No description provided for @agentBaseUrl.
+  ///
+  /// In zh, this message translates to:
+  /// **'接口地址 (Base URL)'**
+  String get agentBaseUrl;
+
+  /// No description provided for @agentApiKey.
+  ///
+  /// In zh, this message translates to:
+  /// **'接口 Key (API Key)'**
+  String get agentApiKey;
+
+  /// No description provided for @agentModel.
+  ///
+  /// In zh, this message translates to:
+  /// **'模型'**
+  String get agentModel;
+
+  /// No description provided for @agentPreset.
+  ///
+  /// In zh, this message translates to:
+  /// **'预设'**
+  String get agentPreset;
+
+  /// No description provided for @agentPresetCustom.
+  ///
+  /// In zh, this message translates to:
+  /// **'自定义'**
+  String get agentPresetCustom;
+
+  /// No description provided for @agentSystemPrompt.
+  ///
+  /// In zh, this message translates to:
+  /// **'系统提示词（可选）'**
+  String get agentSystemPrompt;
+
+  /// No description provided for @agentAllowSend.
+  ///
+  /// In zh, this message translates to:
+  /// **'允许发送消息'**
+  String get agentAllowSend;
+
+  /// No description provided for @agentAllowSendDesc.
+  ///
+  /// In zh, this message translates to:
+  /// **'允许智能体代为发送私信、群消息与信标'**
+  String get agentAllowSendDesc;
+
+  /// No description provided for @agentAllowSettings.
+  ///
+  /// In zh, this message translates to:
+  /// **'允许修改设置'**
+  String get agentAllowSettings;
+
+  /// No description provided for @agentAllowSettingsDesc.
+  ///
+  /// In zh, this message translates to:
+  /// **'允许智能体修改应用设置（关闭后仅可查看）'**
+  String get agentAllowSettingsDesc;
+
+  /// No description provided for @agentTest.
+  ///
+  /// In zh, this message translates to:
+  /// **'测试连接'**
+  String get agentTest;
+
+  /// No description provided for @agentTesting.
+  ///
+  /// In zh, this message translates to:
+  /// **'正在测试…'**
+  String get agentTesting;
+
+  /// No description provided for @agentTestOk.
+  ///
+  /// In zh, this message translates to:
+  /// **'连接成功：{model}'**
+  String agentTestOk(String model);
+
+  /// No description provided for @agentNeedConfig.
+  ///
+  /// In zh, this message translates to:
+  /// **'请先填写接口地址、Key 和模型'**
+  String get agentNeedConfig;
+
+  /// No description provided for @agentChatTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'智能体助手'**
+  String get agentChatTitle;
+
+  /// No description provided for @agentInputHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'告诉智能体你想做什么…'**
+  String get agentInputHint;
+
+  /// No description provided for @agentSend.
+  ///
+  /// In zh, this message translates to:
+  /// **'发送'**
+  String get agentSend;
+
+  /// No description provided for @agentClear.
+  ///
+  /// In zh, this message translates to:
+  /// **'清空对话'**
+  String get agentClear;
+
+  /// No description provided for @agentClearConfirm.
+  ///
+  /// In zh, this message translates to:
+  /// **'确定清空当前对话？'**
+  String get agentClearConfirm;
+
+  /// No description provided for @agentWelcome.
+  ///
+  /// In zh, this message translates to:
+  /// **'你好，我是 APRSLocus 的智能体助手。你可以让我帮你改设置、发送消息、查看台站。请先在「智能体设置」里配置接口 Key。'**
+  String get agentWelcome;
+
+  /// No description provided for @agentThinking.
+  ///
+  /// In zh, this message translates to:
+  /// **'思考中…'**
+  String get agentThinking;
+
+  /// No description provided for @agentError.
+  ///
+  /// In zh, this message translates to:
+  /// **'出错了：{msg}'**
+  String agentError(String msg);
+
+  /// No description provided for @agentConfirmTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'智能体请求执行操作'**
+  String get agentConfirmTitle;
+
+  /// No description provided for @agentConfirmRun.
+  ///
+  /// In zh, this message translates to:
+  /// **'允许'**
+  String get agentConfirmRun;
+
+  /// No description provided for @agentConfirmDeny.
+  ///
+  /// In zh, this message translates to:
+  /// **'拒绝'**
+  String get agentConfirmDeny;
+
+  /// No description provided for @agentDenied.
+  ///
+  /// In zh, this message translates to:
+  /// **'已拒绝该操作'**
+  String get agentDenied;
+
+  /// No description provided for @agentExecuted.
+  ///
+  /// In zh, this message translates to:
+  /// **'已执行'**
+  String get agentExecuted;
+
+  /// No description provided for @agentToolResult.
+  ///
+  /// In zh, this message translates to:
+  /// **'工具结果'**
+  String get agentToolResult;
+
+  /// No description provided for @agentStopped.
+  ///
+  /// In zh, this message translates to:
+  /// **'已停止'**
+  String get agentStopped;
+
+  /// No description provided for @agentStop.
+  ///
+  /// In zh, this message translates to:
+  /// **'停止'**
+  String get agentStop;
+
+  /// No description provided for @agentOpenSettings.
+  ///
+  /// In zh, this message translates to:
+  /// **'智能体设置'**
+  String get agentOpenSettings;
+
+  /// No description provided for @agentNeedsEnable.
+  ///
+  /// In zh, this message translates to:
+  /// **'请先在实验功能中开启「智能体模式」'**
+  String get agentNeedsEnable;
+
+  /// No description provided for @agentToolCalling.
+  ///
+  /// In zh, this message translates to:
+  /// **'正在执行：{name}'**
+  String agentToolCalling(String name);
+
+  /// No description provided for @agentMinimize.
+  ///
+  /// In zh, this message translates to:
+  /// **'收起'**
+  String get agentMinimize;
+
+  /// No description provided for @agentApiKeyTip.
+  ///
+  /// In zh, this message translates to:
+  /// **'Key 只保存在本机，不会上传到任何 APRSlocus 服务器。'**
+  String get agentApiKeyTip;
+
+  /// No description provided for @agentPresetHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'快速填充接口与模型'**
+  String get agentPresetHint;
+
+  /// No description provided for @agentInterfaceSection.
+  ///
+  /// In zh, this message translates to:
+  /// **'接口配置'**
+  String get agentInterfaceSection;
+
+  /// No description provided for @agentPermissions.
+  ///
+  /// In zh, this message translates to:
+  /// **'权限'**
+  String get agentPermissions;
+
   /// No description provided for @codeContributionTranslation.
   ///
   /// In zh, this message translates to:
@@ -4970,7 +5618,17 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'用户反馈'**
   String get feedback;
+
+  /// No description provided for @feedbackEntryDesc.
+  ///
+  /// In zh, this message translates to:
+  /// **'到仓库提 Issue'**
   String get feedbackEntryDesc;
+
+  /// No description provided for @openLinkFailed.
+  ///
+  /// In zh, this message translates to:
+  /// **'打开链接失败'**
   String get openLinkFailed;
 
   /// No description provided for @officialWebsite.
@@ -8621,9 +9279,12 @@ abstract class AppLocalizations {
   /// **'更新渠道'**
   String get updateChannel;
 
-
-  /// Qingling 渠道说明（自建镜像）
+  /// No description provided for @updateChannelQinglingHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'自建镜像通道（清零）'**
   String get updateChannelQinglingHint;
+
   /// No description provided for @serverReturned.
   ///
   /// In zh, this message translates to:
@@ -14389,6 +15050,7 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'射频模式：群聊与策略帧都按广播发送，队友守听同一频段即可收到。策略帧需队友回执确认，丢包时在策略地图页点重发。'**
   String get groupRfNotice;
+
   /// No description provided for @chatNeedConnect.
   ///
   /// In zh, this message translates to:
@@ -14611,6 +15273,17 @@ abstract class AppLocalizations {
   /// **'正在通过阿里云 OSS 检查更新 ☁️'**
   String get connectingAliyun;
 
+  /// No description provided for @icomAudioSampleRate.
+  ///
+  /// In zh, this message translates to:
+  /// **'音频采样率'**
+  String get icomAudioSampleRate;
+
+  /// No description provided for @icomAudioFmtValue.
+  ///
+  /// In zh, this message translates to:
+  /// **'12000 Hz (LPCM 16-bit 单声道)'**
+  String get icomAudioFmtValue;
 }
 
 class _AppLocalizationsDelegate

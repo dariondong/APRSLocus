@@ -1054,6 +1054,362 @@ class AppLocalizationsZh extends AppLocalizations {
   String get codeContributionZhTw => '繁体中文界面';
 
   @override
+  String get icomTitleSubtitle =>
+      '局域网直连 Icom 电台（IC-705 / IC-9700 / IC-7610 / IC-905），收发 12 kHz PCM 音频与 CI-V 控制';
+
+  @override
+  String get icomLinkStatusTitle => '电台链路状态';
+
+  @override
+  String icomLinkConnected(String model) {
+    return '已与 $model 建立局域网直连';
+  }
+
+  @override
+  String get icomLinkHandshaking => '未连接或正在握手';
+
+  @override
+  String icomBindHint(String model) {
+    return '开启后，APRS 音频收发数据源将直接绑定至 $model 局域网直连';
+  }
+
+  @override
+  String get icomLinkPhase => '链路阶段';
+
+  @override
+  String get icomRfStats => '射频收发统计';
+
+  @override
+  String get icomAudioFmt => '12000 Hz (LPCM 16-bit 单声道)';
+
+  @override
+  String get icomProcessing => '处理中...';
+
+  @override
+  String get icomDisconnectRadio => '断开电台连接';
+
+  @override
+  String icomConnectRadio(String model) {
+    return '立即连接 $model';
+  }
+
+  @override
+  String get icomNetworkTitle => '电台网络参数';
+
+  @override
+  String get icomNetworkSubtitle => '选择电台型号预置并配置 IP 与 Network User 凭据';
+
+  @override
+  String get icomModelPreset => '电台型号预置';
+
+  @override
+  String get icomIpHint => '电台 IP 地址';
+
+  @override
+  String get icomUserHint => '电台 Network User 名';
+
+  @override
+  String get icomPassHint => '电台 Network User 密码';
+
+  @override
+  String get icomCredHint => '提示：用户名和密码必须与电台内部 Network User Setting 完全一致。';
+
+  @override
+  String get icomCivTitle => 'CI-V 控制与发射设置';
+
+  @override
+  String get icomCivSubtitle => 'PTT 自动控制、前导延时与信标参数';
+
+  @override
+  String get icomRfBeaconHint => '是否允许通过电台射频自动周期发射信标（半双工，发射时自动静默监听）。';
+
+  @override
+  String get icomTxDelayLabel => '发射前导延迟 (TX Delay, ms)';
+
+  @override
+  String get icomCivAddrLabel => '电台 CI-V 地址 (十六进制)';
+
+  @override
+  String get icomControllerAddr => '控制器地址';
+
+  @override
+  String get icomControllerAddrValue => '0xE0 (默认)';
+
+  @override
+  String get icomGuideTitle => '电台设置指引';
+
+  @override
+  String get icomGuideSubtitle => '在 Icom 电台上的必要准备步骤';
+
+  @override
+  String get icomGuide1Title => '网络连接';
+
+  @override
+  String get icomGuide1Body =>
+      'IC-705 可在 MENU → SET → WLAN Set 中选择 Connect to Network 连接路由器 Wi-Fi，或选择 Access Point 开启热点供手机直连；IC-9700 / IC-7610 / IC-905 可直接连接路由器 LAN 口，或通过无线网桥接入局域网。';
+
+  @override
+  String get icomGuide2Title => '添加网络用户';
+
+  @override
+  String get icomGuide2Body =>
+      '进入 WLAN Set / Network Set → Network User Setting，添加一个用户（设置好用户名与密码），并开启允许连接。';
+
+  @override
+  String get icomGuide3Title => '确认 CI-V 地址与端口';
+
+  @override
+  String get icomGuide3Body =>
+      '进入 MENU → SET → Connectors → CI-V，确认 CI-V Address 与控制端口。';
+
+  @override
+  String get icomGuide4Title => '设置模式与频率';
+
+  @override
+  String get icomGuide4Body => '将电台对应频段模式设为 FM-D。';
+
+  @override
+  String get icomLogTitle => '电台通信诊断日志';
+
+  @override
+  String get icomLogSubtitle => '查看 Icom 局域网控制包与 CI-V 通信记录';
+
+  @override
+  String get icomLogEmpty => '暂无通信日志';
+
+  @override
+  String get icomPhaseOpeningSockets => '正在打开端口…';
+
+  @override
+  String get icomPhaseDiscovering => '正在发现电台…';
+
+  @override
+  String get icomPhaseAuthenticating => '正在登录电台…';
+
+  @override
+  String get icomPhaseNegotiating => '正在协商音频流…';
+
+  @override
+  String get icomPhaseOpeningStreams => '正在打开数据流…';
+
+  @override
+  String get icomPhaseReady => '已连接（等待音频）';
+
+  @override
+  String get icomPhaseReceiving => '已连接（接收中）';
+
+  @override
+  String get icomPhaseReconnect => '连接中断，正在重连…';
+
+  @override
+  String get icomPhaseFailed => '连接失败';
+
+  @override
+  String get icomPhaseUnsupported => '当前平台不支持 IC-705 局域网直连';
+
+  @override
+  String icomSwitchTitle(String model) {
+    return 'WLAN 电台（$model）';
+  }
+
+  @override
+  String get icomLanAddr => '电台地址';
+
+  @override
+  String icomCardActive(String model) {
+    return '当前已启用 $model 局域网直连模式。';
+  }
+
+  @override
+  String icomConnectingTo(String radio) {
+    return '正在连接 $radio';
+  }
+
+  @override
+  String icomConnectTitle(String radio) {
+    return '连接 $radio 电台';
+  }
+
+  @override
+  String icomConnectingSub(String radio, String tnc) {
+    return '正在连接 $radio（$tnc）…';
+  }
+
+  @override
+  String icomDescHost(String host) {
+    return '$host · 局域网直连电台收发与 CI-V 控制';
+  }
+
+  @override
+  String icomDescRadio(String radio) {
+    return '通过局域网直连 $radio 电台收发报文与控制';
+  }
+
+  @override
+  String get modelIc705Desc => '便携全模式 QRP 电台（内置 Wi-Fi AP / STA）';
+
+  @override
+  String get modelIc9700Desc => 'VHF/UHF/1.2GHz 全模式基站（以太网 LAN / Wi-Fi）';
+
+  @override
+  String get modelIc7610Desc => 'HF/50MHz 双接收 SDR 基站（以太网 LAN）';
+
+  @override
+  String get modelIc905Desc => '144MHz~10GHz 全模式微波电台（以太网 LAN）';
+
+  @override
+  String get modelCustomName => '自定义 / 其他 (Custom)';
+
+  @override
+  String get modelCustomDesc => '自定义 Icom 电台 CI-V 地址与端口';
+
+  @override
+  String get assetWindowsPackage => 'Windows 安装包';
+
+  @override
+  String get assetApkPackage => 'APK 安装包';
+
+  @override
+  String get honorTagPerseverance => '养生';
+
+  @override
+  String get agentMode => '智能体模式';
+
+  @override
+  String get agentModeDesc =>
+      '开启后屏幕上出现一个 AI 聊天框，可以对话让它帮你改设置、发消息、查台站（需自行配置接口 Key）';
+
+  @override
+  String get agentSettings => '智能体设置';
+
+  @override
+  String get agentSettingsDesc => '接口地址 / Key / 模型，以及允许智能体执行哪些操作';
+
+  @override
+  String get agentEnabled => '启用智能体';
+
+  @override
+  String get agentBaseUrl => '接口地址 (Base URL)';
+
+  @override
+  String get agentApiKey => '接口 Key (API Key)';
+
+  @override
+  String get agentModel => '模型';
+
+  @override
+  String get agentPreset => '预设';
+
+  @override
+  String get agentPresetCustom => '自定义';
+
+  @override
+  String get agentSystemPrompt => '系统提示词（可选）';
+
+  @override
+  String get agentAllowSend => '允许发送消息';
+
+  @override
+  String get agentAllowSendDesc => '允许智能体代为发送私信、群消息与信标';
+
+  @override
+  String get agentAllowSettings => '允许修改设置';
+
+  @override
+  String get agentAllowSettingsDesc => '允许智能体修改应用设置（关闭后仅可查看）';
+
+  @override
+  String get agentTest => '测试连接';
+
+  @override
+  String get agentTesting => '正在测试…';
+
+  @override
+  String agentTestOk(String model) {
+    return '连接成功：$model';
+  }
+
+  @override
+  String get agentNeedConfig => '请先填写接口地址、Key 和模型';
+
+  @override
+  String get agentChatTitle => '智能体助手';
+
+  @override
+  String get agentInputHint => '告诉智能体你想做什么…';
+
+  @override
+  String get agentSend => '发送';
+
+  @override
+  String get agentClear => '清空对话';
+
+  @override
+  String get agentClearConfirm => '确定清空当前对话？';
+
+  @override
+  String get agentWelcome =>
+      '你好，我是 APRSLocus 的智能体助手。你可以让我帮你改设置、发送消息、查看台站。请先在「智能体设置」里配置接口 Key。';
+
+  @override
+  String get agentThinking => '思考中…';
+
+  @override
+  String agentError(String msg) {
+    return '出错了：$msg';
+  }
+
+  @override
+  String get agentConfirmTitle => '智能体请求执行操作';
+
+  @override
+  String get agentConfirmRun => '允许';
+
+  @override
+  String get agentConfirmDeny => '拒绝';
+
+  @override
+  String get agentDenied => '已拒绝该操作';
+
+  @override
+  String get agentExecuted => '已执行';
+
+  @override
+  String get agentToolResult => '工具结果';
+
+  @override
+  String get agentStopped => '已停止';
+
+  @override
+  String get agentStop => '停止';
+
+  @override
+  String get agentOpenSettings => '智能体设置';
+
+  @override
+  String get agentNeedsEnable => '请先在实验功能中开启「智能体模式」';
+
+  @override
+  String agentToolCalling(String name) {
+    return '正在执行：$name';
+  }
+
+  @override
+  String get agentMinimize => '收起';
+
+  @override
+  String get agentApiKeyTip => 'Key 只保存在本机，不会上传到任何 APRSlocus 服务器。';
+
+  @override
+  String get agentPresetHint => '快速填充接口与模型';
+
+  @override
+  String get agentInterfaceSection => '接口配置';
+
+  @override
+  String get agentPermissions => '权限';
+
+  @override
   String get codeContributionTranslation => '翻译';
 
   @override
@@ -2628,7 +2984,11 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get feedback => '用户反馈';
+
+  @override
   String get feedbackEntryDesc => '到仓库提 Issue';
+
+  @override
   String get openLinkFailed => '打开链接失败';
 
   @override
@@ -4779,11 +5139,9 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String get updateChannel => '更新渠道';
 
-
-
   @override
-
   String get updateChannelQinglingHint => '自建镜像通道（清零）';
+
   @override
   String serverReturned(int code) {
     return '服务器返回 $code';
@@ -7951,117 +8309,139 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String get groupRfNotice =>
       '射频模式：群聊与策略帧都按广播发送，队友守听同一频段即可收到。策略帧需队友回执确认，丢包时在策略地图页点重发。';
-  @override
-  String get chatNeedConnect => "未连接服务器，无法发送；请先连接数据来源。";
 
   @override
-  String strategyUpdatedItem(String call, String kind) => "$call 更新了$kind";
+  String get chatNeedConnect => '未连接服务器，无法发送；请先连接数据来源。';
 
   @override
-  String strategyDeletedItem(String call, String kind) => "$call 删除了$kind";
+  String strategyUpdatedItem(String call, String kind) {
+    return '$call 更新了$kind';
+  }
 
   @override
-  String strategyClearedMsg(String call) => "$call 清空了共享图层";
+  String strategyDeletedItem(String call, String kind) {
+    return '$call 删除了$kind';
+  }
 
   @override
-  String get sendLocation => "发送位置点";
+  String strategyClearedMsg(String call) {
+    return '$call 清空了共享图层';
+  }
 
   @override
-  String get needFixToSendLocation => "还没有定位，暂时无法发送位置点";
+  String get sendLocation => '发送位置点';
 
   @override
-  String get msgLocation => "位置点";
+  String get needFixToSendLocation => '还没有定位，暂时无法发送位置点';
 
   @override
-  String get locationTapToView => "点击在地图查看";
+  String get msgLocation => '位置点';
 
   @override
-  String get locationPickTitle => "选点发送位置点";
+  String get locationTapToView => '点击在地图查看';
 
   @override
-  String get locationPickHint => "在地图上点击要发送的坐标";
+  String get locationPickTitle => '选点发送位置点';
 
   @override
-  String get locationMyPos => "我的位置";
+  String get locationPickHint => '在地图上点击要发送的坐标';
 
   @override
-  String locationSendTo(String call) => "发送给 $call";
+  String get locationMyPos => '我的位置';
 
   @override
-  String get chatMore => "更多";
+  String locationSendTo(String call) {
+    return '发送给 $call';
+  }
 
   @override
-  String get stationTapToView => "点击查看台站";
+  String get chatMore => '更多';
 
   @override
-  String get locationPickStations => "选择台站";
+  String get stationTapToView => '点击查看台站';
 
   @override
-  String get locationSearchHint => "搜索呼号 / 别名";
+  String get locationPickStations => '选择台站';
 
   @override
-  String get locationNoStation => "没有匹配的台站";
+  String get locationSearchHint => '搜索呼号 / 别名';
 
   @override
-  String get locationPrevPage => "上一页";
+  String get locationNoStation => '没有匹配的台站';
 
   @override
-  String get locationNextPage => "下一页";
+  String get locationPrevPage => '上一页';
 
   @override
-  String get shareStation => "分享台站";
+  String get locationNextPage => '下一页';
 
   @override
-  String get shareStationPick => "发送到哪个会话？";
+  String get shareStation => '分享台站';
 
   @override
-  String shareStationSent(String call) => "已分享 $call";
+  String get shareStationPick => '发送到哪个会话？';
 
   @override
-  String locationPageInfo(String n, String m) => "第 $n / $m 页";
+  String shareStationSent(String call) {
+    return '已分享 $call';
+  }
 
   @override
-  String get packetSource => "来源";
+  String locationPageInfo(String n, String m) {
+    return '第 $n / $m 页';
+  }
 
   @override
-  String get packetSrcLocal => "本机";
+  String get packetSource => '来源';
 
   @override
-  String get packetSrcAprsIs => "APRS-IS";
+  String get packetSrcLocal => '本机';
 
   @override
-  String get packetSrcTnc => "TNC";
+  String get packetSrcAprsIs => 'APRS-IS';
 
   @override
-  String get packetSrcAudio => "声卡";
+  String get packetSrcTnc => 'TNC';
 
   @override
-  String get packetSrcPkwdwpl => "Kenwood";
+  String get packetSrcAudio => '声卡';
 
   @override
-  String get audioTxAmplitude => "输出幅度（0.05~1.0）";
+  String get packetSrcPkwdwpl => 'Kenwood';
 
   @override
-  String get audioTxAmplitudeTip => "发射波形的相对幅度。削顶（≥99%）会产生谐波、直接毁掉 FSK 频谱；过低则对端信噪比不够。默认 0.6 留约 4dB 余量；接电台时先试 0.5~0.7，再看「发射体检」的峰值。";
+  String get audioTxAmplitude => '输出幅度（0.05~1.0）';
 
   @override
-  String get audioTxSourceRow => "发射来源";
+  String get audioTxAmplitudeTip =>
+      '发射波形的相对幅度。削顶（≥99%）会产生谐波、直接毁掉 FSK 频谱；过低则对端信噪比不够。默认 0.6 留约 4dB 余量；接电台时先试 0.5~0.7，再看「发射体检」的峰值。';
 
   @override
-  String get audioTxSourceYes => "是本链路";
+  String get audioTxSourceRow => '发射来源';
 
   @override
-  String audioTxNotSourceWarn(String src) => "音频链路已连上，但当前发射来源不是它 —— 消息与信标会从「$src」发出。需要从音频发射时，去「设置 → 设备」把音频选为发射来源。";
+  String get audioTxSourceYes => '是本链路';
 
   @override
-  String get audioTxPttHint => "音频链路不会去按电台的 PTT —— 它只是播放一段 AFSK 音频。要让电台真的发射，必须由电台自己键控：把电台设为 VOX 声控发射，或用支持声控/数据口PTT 的接线。若电台一直不发射，先查这一条。";
+  String audioTxNotSourceWarn(String src) {
+    return '音频链路已连上，但当前发射来源不是它 —— 消息与信标会从「$src」发出。需要从音频发射时，去「设置 → 设备」把音频选为发射来源。';
+  }
 
   @override
-  String get updateChannelAliyunHint => "⚠️ 由开发团队付费，请少量使用 🙏";
+  String get audioTxPttHint =>
+      '音频链路不会去按电台的 PTT —— 它只是播放一段 AFSK 音频。要让电台真的发射，必须由电台自己键控：把电台设为 VOX 声控发射，或用支持声控/数据口PTT 的接线。若电台一直不发射，先查这一条。';
 
   @override
-  String get connectingAliyun => "正在通过阿里云 OSS 检查更新 ☁️";
+  String get updateChannelAliyunHint => '⚠️ 由开发团队付费，请少量使用 🙏';
 
+  @override
+  String get connectingAliyun => '正在通过阿里云 OSS 检查更新 ☁️';
+
+  @override
+  String get icomAudioSampleRate => '音频采样率';
+
+  @override
+  String get icomAudioFmtValue => '12000 Hz (LPCM 16-bit 单声道)';
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
@@ -9111,6 +9491,362 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get codeContributionZhTw => '繁體中文介面';
+
+  @override
+  String get icomTitleSubtitle =>
+      '區域網路直連 Icom 電台（IC-705 / IC-9700 / IC-7610 / IC-905），收發 12 kHz PCM 音訊與 CI-V 控制';
+
+  @override
+  String get icomLinkStatusTitle => '電台鏈路狀態';
+
+  @override
+  String icomLinkConnected(String model) {
+    return '已與 $model 建立區域網路直連';
+  }
+
+  @override
+  String get icomLinkHandshaking => '未連線或正在握手';
+
+  @override
+  String icomBindHint(String model) {
+    return '開啟後，APRS 音訊收發資料來源將直接綁定至 $model 區域網路直連';
+  }
+
+  @override
+  String get icomLinkPhase => '鏈路階段';
+
+  @override
+  String get icomRfStats => '射頻收發統計';
+
+  @override
+  String get icomAudioFmt => '12000 Hz (LPCM 16-bit 單聲道)';
+
+  @override
+  String get icomProcessing => '處理中...';
+
+  @override
+  String get icomDisconnectRadio => '斷開電台連線';
+
+  @override
+  String icomConnectRadio(String model) {
+    return '立即連線 $model';
+  }
+
+  @override
+  String get icomNetworkTitle => '電台網路參數';
+
+  @override
+  String get icomNetworkSubtitle => '選擇電台型號預設並設定 IP 與 Network User 憑證';
+
+  @override
+  String get icomModelPreset => '電台型號預設';
+
+  @override
+  String get icomIpHint => '電台 IP 位址';
+
+  @override
+  String get icomUserHint => '電台 Network User 名';
+
+  @override
+  String get icomPassHint => '電台 Network User 密碼';
+
+  @override
+  String get icomCredHint => '提示：使用者名稱和密碼必須與電台內部 Network User Setting 完全一致。';
+
+  @override
+  String get icomCivTitle => 'CI-V 控制與發射設定';
+
+  @override
+  String get icomCivSubtitle => 'PTT 自動控制、前導延遲與信標參數';
+
+  @override
+  String get icomRfBeaconHint => '是否允許透過電台射頻自動週期發射信標（半雙工，發射時自動靜默監聽）。';
+
+  @override
+  String get icomTxDelayLabel => '發射前導延遲 (TX Delay, ms)';
+
+  @override
+  String get icomCivAddrLabel => '電台 CI-V 位址 (十六進位)';
+
+  @override
+  String get icomControllerAddr => '控制器位址';
+
+  @override
+  String get icomControllerAddrValue => '0xE0 (預設)';
+
+  @override
+  String get icomGuideTitle => '電台設定指引';
+
+  @override
+  String get icomGuideSubtitle => '在 Icom 電台上的必要準備步驟';
+
+  @override
+  String get icomGuide1Title => '網路連線';
+
+  @override
+  String get icomGuide1Body =>
+      'IC-705 可在 MENU → SET → WLAN Set 中選擇 Connect to Network 連接路由器 Wi-Fi，或選擇 Access Point 開啟熱點供手機直連；IC-9700 / IC-7610 / IC-905 可直接連接路由器 LAN 埠，或透過無線網橋接入區域網路。';
+
+  @override
+  String get icomGuide2Title => '新增網路使用者';
+
+  @override
+  String get icomGuide2Body =>
+      '進入 WLAN Set / Network Set → Network User Setting，新增一個使用者（設定好使用者名稱與密碼），並開啟允許連線。';
+
+  @override
+  String get icomGuide3Title => '確認 CI-V 位址與連接埠';
+
+  @override
+  String get icomGuide3Body =>
+      '進入 MENU → SET → Connectors → CI-V，確認 CI-V Address 與控制連接埠。';
+
+  @override
+  String get icomGuide4Title => '設定模式與頻率';
+
+  @override
+  String get icomGuide4Body => '將電台對應頻段模式設為 FM-D。';
+
+  @override
+  String get icomLogTitle => '電台通訊診斷日誌';
+
+  @override
+  String get icomLogSubtitle => '檢視 Icom 區域網路控制封包與 CI-V 通訊記錄';
+
+  @override
+  String get icomLogEmpty => '尚無通訊日誌';
+
+  @override
+  String get icomPhaseOpeningSockets => '正在開啟連接埠…';
+
+  @override
+  String get icomPhaseDiscovering => '正在尋找電台…';
+
+  @override
+  String get icomPhaseAuthenticating => '正在登入電台…';
+
+  @override
+  String get icomPhaseNegotiating => '正在協商音訊串流…';
+
+  @override
+  String get icomPhaseOpeningStreams => '正在開啟資料串流…';
+
+  @override
+  String get icomPhaseReady => '已連線（等待音訊）';
+
+  @override
+  String get icomPhaseReceiving => '已連線（接收中）';
+
+  @override
+  String get icomPhaseReconnect => '連線中斷，正在重連…';
+
+  @override
+  String get icomPhaseFailed => '連線失敗';
+
+  @override
+  String get icomPhaseUnsupported => '目前平台不支援 IC-705 區域網路直連';
+
+  @override
+  String icomSwitchTitle(String model) {
+    return 'WLAN 電台（$model）';
+  }
+
+  @override
+  String get icomLanAddr => '電台位址';
+
+  @override
+  String icomCardActive(String model) {
+    return '目前啟用 $model 區域網路直連模式。';
+  }
+
+  @override
+  String icomConnectingTo(String radio) {
+    return '正在連線 $radio';
+  }
+
+  @override
+  String icomConnectTitle(String radio) {
+    return '連線 $radio 電台';
+  }
+
+  @override
+  String icomConnectingSub(String radio, String tnc) {
+    return '正在連線 $radio（$tnc）…';
+  }
+
+  @override
+  String icomDescHost(String host) {
+    return '$host · 區域網路直連電台收發與 CI-V 控制';
+  }
+
+  @override
+  String icomDescRadio(String radio) {
+    return '透過區域網路直連 $radio 電台收發報文與控制';
+  }
+
+  @override
+  String get modelIc705Desc => '可攜全模式 QRP 電台（內建 Wi-Fi AP / STA）';
+
+  @override
+  String get modelIc9700Desc => 'VHF/UHF/1.2GHz 全模式基站（乙太網路 LAN / Wi-Fi）';
+
+  @override
+  String get modelIc7610Desc => 'HF/50MHz 雙接收 SDR 基站（乙太網路 LAN）';
+
+  @override
+  String get modelIc905Desc => '144MHz~10GHz 全模式微波電台（乙太網路 LAN）';
+
+  @override
+  String get modelCustomName => '自訂 / 其他 (Custom)';
+
+  @override
+  String get modelCustomDesc => '自訂 Icom 電台 CI-V 位址與連接埠';
+
+  @override
+  String get assetWindowsPackage => 'Windows 安裝包';
+
+  @override
+  String get assetApkPackage => 'APK 安裝包';
+
+  @override
+  String get honorTagPerseverance => '養生';
+
+  @override
+  String get agentMode => '智慧代理模式';
+
+  @override
+  String get agentModeDesc =>
+      '開啟後螢幕上出現一個 AI 聊天框，可對話讓它幫你改設定、發訊息、查台站（需自行設定介面 Key）';
+
+  @override
+  String get agentSettings => '智慧代理設定';
+
+  @override
+  String get agentSettingsDesc => '介面網址 / Key / 模型，以及允許智慧代理執行哪些操作';
+
+  @override
+  String get agentEnabled => '啟用智慧代理';
+
+  @override
+  String get agentBaseUrl => '介面網址 (Base URL)';
+
+  @override
+  String get agentApiKey => '介面 Key (API Key)';
+
+  @override
+  String get agentModel => '模型';
+
+  @override
+  String get agentPreset => '預設';
+
+  @override
+  String get agentPresetCustom => '自訂';
+
+  @override
+  String get agentSystemPrompt => '系統提示詞（選填）';
+
+  @override
+  String get agentAllowSend => '允許傳送訊息';
+
+  @override
+  String get agentAllowSendDesc => '允許智慧代理代為傳送私訊、群訊息與信標';
+
+  @override
+  String get agentAllowSettings => '允許修改設定';
+
+  @override
+  String get agentAllowSettingsDesc => '允許智慧代理修改應用設定（關閉後僅可檢視）';
+
+  @override
+  String get agentTest => '測試連線';
+
+  @override
+  String get agentTesting => '正在測試…';
+
+  @override
+  String agentTestOk(String model) {
+    return '連線成功：$model';
+  }
+
+  @override
+  String get agentNeedConfig => '請先填寫介面網址、Key 和模型';
+
+  @override
+  String get agentChatTitle => '智慧代理助手';
+
+  @override
+  String get agentInputHint => '告訴智慧代理你想做什麼…';
+
+  @override
+  String get agentSend => '傳送';
+
+  @override
+  String get agentClear => '清除對話';
+
+  @override
+  String get agentClearConfirm => '確定清除目前對話？';
+
+  @override
+  String get agentWelcome =>
+      '你好，我是 APRSLocus 的智慧代理助手。你可以讓我幫你改設定、傳送訊息、查看台站。請先在「智慧代理設定」裡設定介面 Key。';
+
+  @override
+  String get agentThinking => '思考中…';
+
+  @override
+  String agentError(String msg) {
+    return '發生錯誤：$msg';
+  }
+
+  @override
+  String get agentConfirmTitle => '智慧代理請求執行操作';
+
+  @override
+  String get agentConfirmRun => '允許';
+
+  @override
+  String get agentConfirmDeny => '拒絕';
+
+  @override
+  String get agentDenied => '已拒絕該操作';
+
+  @override
+  String get agentExecuted => '已執行';
+
+  @override
+  String get agentToolResult => '工具結果';
+
+  @override
+  String get agentStopped => '已停止';
+
+  @override
+  String get agentStop => '停止';
+
+  @override
+  String get agentOpenSettings => '智慧代理設定';
+
+  @override
+  String get agentNeedsEnable => '請先在實驗功能中開啟「智慧代理模式」';
+
+  @override
+  String agentToolCalling(String name) {
+    return '正在執行：$name';
+  }
+
+  @override
+  String get agentMinimize => '收合';
+
+  @override
+  String get agentApiKeyTip => 'Key 只保存在本機，不會上傳到任何 APRSlocus 伺服器。';
+
+  @override
+  String get agentPresetHint => '快速填入介面與模型';
+
+  @override
+  String get agentInterfaceSection => '介面設定';
+
+  @override
+  String get agentPermissions => '權限';
 
   @override
   String get codeContributionTranslation => '翻譯';
@@ -10687,7 +11423,11 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get feedback => '使用者反饋';
+
+  @override
   String get feedbackEntryDesc => '到倉庫提 Issue';
+
+  @override
   String get openLinkFailed => '開啟連結失敗';
 
   @override
@@ -12839,11 +13579,9 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   @override
   String get updateChannel => '更新管道';
 
-
-
   @override
-
   String get updateChannelQinglingHint => '自建鏡像通道（清零）';
+
   @override
   String serverReturned(int code) {
     return '伺服器回傳 $code';
@@ -16010,115 +16748,137 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   @override
   String get groupRfNotice =>
       '射頻模式：群聊與策略幀都按廣播發送，隊友守聽同一頻段即可收到。策略幀需隊友回執確認，丟包時在策略地圖頁點重發。';
-  @override
-  String get chatNeedConnect => "未連接伺服器，無法傳送；請先連接資料來源。";
 
   @override
-  String strategyUpdatedItem(String call, String kind) => "$call 更新了$kind";
+  String get chatNeedConnect => '未連接伺服器，無法傳送；請先連接資料來源。';
 
   @override
-  String strategyDeletedItem(String call, String kind) => "$call 刪除了$kind";
+  String strategyUpdatedItem(String call, String kind) {
+    return '$call 更新了$kind';
+  }
 
   @override
-  String strategyClearedMsg(String call) => "$call 清空了共享圖層";
+  String strategyDeletedItem(String call, String kind) {
+    return '$call 刪除了$kind';
+  }
 
   @override
-  String get sendLocation => "傳送位置點";
+  String strategyClearedMsg(String call) {
+    return '$call 清空了共享圖層';
+  }
 
   @override
-  String get needFixToSendLocation => "還沒有定位，暫時無法傳送位置點";
+  String get sendLocation => '傳送位置點';
 
   @override
-  String get msgLocation => "位置點";
+  String get needFixToSendLocation => '還沒有定位，暫時無法傳送位置點';
 
   @override
-  String get locationTapToView => "點擊在地圖查看";
+  String get msgLocation => '位置點';
 
   @override
-  String get locationPickTitle => "選點傳送位置點";
+  String get locationTapToView => '點擊在地圖查看';
 
   @override
-  String get locationPickHint => "在地圖上點擊要傳送的座標";
+  String get locationPickTitle => '選點傳送位置點';
 
   @override
-  String get locationMyPos => "我的位置";
+  String get locationPickHint => '在地圖上點擊要傳送的座標';
 
   @override
-  String locationSendTo(String call) => "傳送給 $call";
+  String get locationMyPos => '我的位置';
 
   @override
-  String get chatMore => "更多";
+  String locationSendTo(String call) {
+    return '傳送給 $call';
+  }
 
   @override
-  String get stationTapToView => "點擊查看台站";
+  String get chatMore => '更多';
 
   @override
-  String get locationPickStations => "選擇台站";
+  String get stationTapToView => '點擊查看台站';
 
   @override
-  String get locationSearchHint => "搜尋呼號 / 別名";
+  String get locationPickStations => '選擇台站';
 
   @override
-  String get locationNoStation => "沒有符合的台站";
+  String get locationSearchHint => '搜尋呼號 / 別名';
 
   @override
-  String get locationPrevPage => "上一頁";
+  String get locationNoStation => '沒有符合的台站';
 
   @override
-  String get locationNextPage => "下一頁";
+  String get locationPrevPage => '上一頁';
 
   @override
-  String get shareStation => "分享台站";
+  String get locationNextPage => '下一頁';
 
   @override
-  String get shareStationPick => "傳送到哪個會話？";
+  String get shareStation => '分享台站';
 
   @override
-  String shareStationSent(String call) => "已分享 $call";
+  String get shareStationPick => '傳送到哪個會話？';
 
   @override
-  String locationPageInfo(String n, String m) => "第 $n / $m 頁";
+  String shareStationSent(String call) {
+    return '已分享 $call';
+  }
 
   @override
-  String get packetSource => "來源";
+  String locationPageInfo(String n, String m) {
+    return '第 $n / $m 頁';
+  }
 
   @override
-  String get packetSrcLocal => "本機";
+  String get packetSource => '來源';
 
   @override
-  String get packetSrcAprsIs => "APRS-IS";
+  String get packetSrcLocal => '本機';
 
   @override
-  String get packetSrcTnc => "TNC";
+  String get packetSrcAprsIs => 'APRS-IS';
 
   @override
-  String get packetSrcAudio => "音效卡";
+  String get packetSrcTnc => 'TNC';
 
   @override
-  String get packetSrcPkwdwpl => "Kenwood";
+  String get packetSrcAudio => '音效卡';
 
   @override
-  String get audioTxAmplitude => "輸出幅度（0.05~1.0）";
+  String get packetSrcPkwdwpl => 'Kenwood';
 
   @override
-  String get audioTxAmplitudeTip => "發射波形的相對幅度。削頂（≥99%）會產生諧波、直接毀掉 FSK 頻譜；過低則對端信噪比不夠。預設 0.6 留約 4dB 餘量；接電台時先試 0.5~0.7，再看「發射體檢」的峰值。";
+  String get audioTxAmplitude => '輸出幅度（0.05~1.0）';
 
   @override
-  String get audioTxSourceRow => "發射來源";
+  String get audioTxAmplitudeTip =>
+      '發射波形的相對幅度。削頂（≥99%）會產生諧波、直接毀掉 FSK 頻譜；過低則對端信噪比不夠。預設 0.6 留約 4dB 餘量；接電台時先試 0.5~0.7，再看「發射體檢」的峰值。';
 
   @override
-  String get audioTxSourceYes => "是本鏈路";
+  String get audioTxSourceRow => '發射來源';
 
   @override
-  String audioTxNotSourceWarn(String src) => "音訊鏈路已連上，但目前發射來源不是它 —— 訊息與信標會從「$src」發出。需要從音訊發射時，去「設定 → 裝置」把音訊選為發射來源。";
+  String get audioTxSourceYes => '是本鏈路';
 
   @override
-  String get audioTxPttHint => "音訊鏈路不會去按電台的 PTT —— 它只是播放一段 AFSK 音訊。要讓電台真的發射，必須由電台自己鍵控：把電台設為 VOX 聲控發射，或用支援聲控/資料埠PTT 的接線。若電台一直不發射，先查這一條。";
+  String audioTxNotSourceWarn(String src) {
+    return '音訊鏈路已連上，但目前發射來源不是它 —— 訊息與信標會從「$src」發出。需要從音訊發射時，去「設定 → 裝置」把音訊選為發射來源。';
+  }
 
   @override
-  String get updateChannelAliyunHint => "⚠️ 由開發團隊付費，請少量使用 🙏";
+  String get audioTxPttHint =>
+      '音訊鏈路不會去按電台的 PTT —— 它只是播放一段 AFSK 音訊。要讓電台真的發射，必須由電台自己鍵控：把電台設為 VOX 聲控發射，或用支援聲控/資料埠PTT 的接線。若電台一直不發射，先查這一條。';
 
   @override
-  String get connectingAliyun => "正在透過阿里雲 OSS 檢查更新 ☁️";
+  String get updateChannelAliyunHint => '⚠️ 由開發團隊付費，請少量使用 🙏';
 
+  @override
+  String get connectingAliyun => '正在透過阿里雲 OSS 檢查更新 ☁️';
+
+  @override
+  String get icomAudioSampleRate => '音訊取樣率';
+
+  @override
+  String get icomAudioFmtValue => '12000 Hz (LPCM 16-bit 單聲道)';
 }

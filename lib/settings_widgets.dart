@@ -5,6 +5,70 @@ import 'state.dart';
 import 'material.dart';
 import 'guide.dart';
 import 'theme_store.dart';
+import 'net/icom_lan_settings.dart';
+
+/// Icom WLAN 相关的文案助手。
+///
+/// 这几项的共同点：**字符串的真源在别处**（型号枚举、net 层写死的中文阶段），
+/// 界面拿到的是「中文基准值」，而 l10n 键是另一套。判据放在这里，供
+/// `ic705_device_page` / `settings_pages` / `device_page` 三处共用，避免各写一份
+/// switch 而漏掉某个型号 / 阶段。
+
+/// 型号预置的本地化显示名。[WlanRadioModel.nameKey] 返回 null 表示沿用
+/// `displayName`（IC-705 等官方型号名跨语言一致），否则取本地化名（自定义项）。
+String icomModelName(S s, WlanRadioModel m) =>
+    m.nameKey == null ? m.displayName : s.modelCustomName;
+
+/// 型号选择按钮上的短标签：官方型号用 `id`（IC-705 这种数字型号本就是
+/// 国际通用写法），自定义项用本地化名，避免出现中英混排的 `custom`。
+String icomModelTab(S s, WlanRadioModel m) =>
+    m.nameKey == null ? m.id : s.modelCustomName;
+
+/// 型号预置的本地化描述。用 [WlanRadioModel.descKey] 精确映射到 l10n 键。
+String icomModelDesc(S s, WlanRadioModel m) => switch (m.descKey) {
+      'modelIc705Desc' => s.modelIc705Desc,
+      'modelIc9700Desc' => s.modelIc9700Desc,
+      'modelIc7610Desc' => s.modelIc7610Desc,
+      'modelIc905Desc' => s.modelIc905Desc,
+      _ => s.modelCustomDesc,
+    };
+
+/// 把 Icom LAN 链路的 `phaseLabel`（中文，来自 `net/icom_lan_io.dart`）翻成当前语言。
+///
+/// 阶段文案在 net 层是写死的中文（它会经 `onStatus` 进日志），这里按阶段字符串
+/// 精确匹配回本地化键；认不出就原样返回（未来新增阶段不会因此变成空白）。
+/// 与 `iconForPhase` / `_phaseColor` 那套字符串匹配是同一约定。
+///
+/// ⚠ 判颜色时要用**原始**中文阶段（`_phaseColor` 按中文关键字匹配），别拿翻好的
+/// 文案去判 —— 换成日语 / 西语后会全部落回灰色。
+String icomPhaseLabel(S s, String raw) {
+  switch (raw) {
+    case '未连接':
+      return s.disconnected;
+    case '正在打开端口…':
+      return s.icomPhaseOpeningSockets;
+    case '正在发现电台…':
+      return s.icomPhaseDiscovering;
+    case '正在登录电台…':
+      return s.icomPhaseAuthenticating;
+    case '正在协商音频流…':
+      return s.icomPhaseNegotiating;
+    case '正在打开数据流…':
+      return s.icomPhaseOpeningStreams;
+    case '已连接（等待音频）':
+      return s.icomPhaseReady;
+    case '已连接（接收中）':
+      return s.icomPhaseReceiving;
+    case '连接中断，正在重连…':
+      return s.icomPhaseReconnect;
+    case '连接失败':
+      return s.icomPhaseFailed;
+    case '当前平台不支持 IC-705 局域网直连':
+      return s.icomPhaseUnsupported;
+    default:
+      return raw;
+  }
+}
 
 /// 设置子页面外壳：标题 + 返回 + 可滚动内容
 class SettingsPageShell extends StatelessWidget {

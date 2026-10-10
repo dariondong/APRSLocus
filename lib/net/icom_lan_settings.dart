@@ -59,6 +59,24 @@ enum WlanRadioModel {
   String get defaultCivHex =>
       '0x${defaultCivAddress.toRadixString(16).toUpperCase()}';
 
+  /// 本地化的型号描述（`description` 仍是中文基准；l10n 层用这里的映射）。
+  ///
+  /// 键名与 `tool/add_icom_wlan_l10n.py` 里的 DATA 一致。
+  String get descKey => switch (this) {
+        WlanRadioModel.ic705 => 'modelIc705Desc',
+        WlanRadioModel.ic9700 => 'modelIc9700Desc',
+        WlanRadioModel.ic7610 => 'modelIc7610Desc',
+        WlanRadioModel.ic905 => 'modelIc905Desc',
+        WlanRadioModel.custom => 'modelCustomDesc',
+      };
+
+  /// 型号预置在界面上的显示名（中文基准 `displayName` 之外的本地化名）。
+  /// 返回 null 表示沿用 `displayName`（Icom 官方型号名本就跨语言一致）。
+  String? get nameKey => switch (this) {
+        WlanRadioModel.custom => 'modelCustomName',
+        _ => null,
+      };
+
   static WlanRadioModel fromId(String? id) {
     if (id == null || id.trim().isEmpty) return WlanRadioModel.ic705;
     final clean = id.trim().toUpperCase();
