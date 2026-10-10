@@ -327,7 +327,7 @@ class _CheckUpdatePageState extends State<CheckUpdatePage>
     return tmp;
   }
 
-  /// 切换更新渠道（GitHub / GitCode / Qingling / Aliyun OSS）
+  /// 切换更新渠道（GitHub / GitCode / Qingling / Aliyun OSS / Aliyun OSS 香港）
   void _switchChannel() {
     showModalBottomSheet(
       context: context,
@@ -394,6 +394,20 @@ class _CheckUpdatePageState extends State<CheckUpdatePage>
                   widget.state.updateChannel == 'aliyun',
                   () {
                     widget.state.setUpdateChannel('aliyun');
+                    Navigator.pop(context);
+                    _check();
+                  },
+                ),
+                const SizedBox(height: 8),
+                // Aliyun OSS（香港）：同一条 OSS 分发通道，落在**香港**区域，
+                // 走自定义域 aprslocushk.oss.theez.top，国内直连同样稳。
+                // 费用也只由开发团队承担，复用同一条「请少量使用」提示。
+                _channelOption(
+                  'Aliyun OSS（香港）',
+                  S.of(context).updateChannelAliyunHint,
+                  widget.state.updateChannel == 'aliyun_hk',
+                  () {
+                    widget.state.setUpdateChannel('aliyun_hk');
                     Navigator.pop(context);
                     _check();
                   },
@@ -787,7 +801,8 @@ class _CheckUpdatePageState extends State<CheckUpdatePage>
                 switch (widget.state.updateChannel) {
                   'github' => Icons.public_rounded,
                   'gitcode' => Icons.cloud_rounded,
-                  'aliyun' => Icons.cloud_done_rounded, // 阿里云 CDN
+                  'aliyun' => Icons.cloud_done_rounded, // 阿里云 CDN（广州）
+                  'aliyun_hk' => Icons.cloud_done_rounded, // 阿里云 CDN（香港）
                   _ => Icons.dns_rounded, // Qingling 等自建镜像：用服务器图标
                 },
                 color: C.blue,
@@ -812,9 +827,10 @@ class _CheckUpdatePageState extends State<CheckUpdatePage>
           16 + MediaQuery.of(context).viewPadding.bottom,
         ),
         children: [
-          // 阿里云 OSS：**流量由开发团队付费**，进来就先说清楚、请用户省着点用。
-          // 只在这条渠道下显示（其它渠道不花这份钱，没必要打扰）。
-          if (widget.state.updateChannel == 'aliyun') ...[
+          // 阿里云 OSS（广州 / 香港）：**流量由开发团队付费**，进来就先说清楚、
+          // 请用户省着点用。只在这两条渠道下显示（其它渠道不花这份钱，没必要打扰）。
+          if (widget.state.updateChannel == 'aliyun' ||
+              widget.state.updateChannel == 'aliyun_hk') ...[
             _aliyunCostBanner(),
             const SizedBox(height: 16),
           ],
@@ -858,7 +874,9 @@ class _CheckUpdatePageState extends State<CheckUpdatePage>
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Aliyun OSS',
+                Text(
+                    AppState.updateChannelLabels[widget.state.updateChannel] ??
+                        'Aliyun OSS',
                     style: ts(13, w: FontWeight.w700, c: amber)),
                 const SizedBox(height: 2),
                 Text(
@@ -1188,6 +1206,7 @@ class _CheckUpdatePageState extends State<CheckUpdatePage>
                   'github' => S.of(context).connectingGitHub,
                   'gitcode' => S.of(context).connectingGitCode,
                   'aliyun' => S.of(context).connectingAliyun,
+                  'aliyun_hk' => S.of(context).connectingAliyun,
                   _ => S.of(context).updateChannelQinglingHint,
                 },
                 style: TextStyle(fontSize: 11, color: C.greyLight),

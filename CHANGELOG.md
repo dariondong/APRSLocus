@@ -1,5 +1,41 @@
 # 更新日志
 
+## [2.0.55] - 2026-10-10
+
+### 新增香港节点：阿里云 OSS（香港）更新通道
+
+**新增一条更新渠道**：更新页多出「Aliyun OSS（香港）」，与「Aliyun OSS（广州）」
+并列。两者都是团队承担的 CDN 分发节点，区别只是**所在的阿里云区域**：广州节点
+国内可达性好，香港节点在**跨境 / 境外网络**下通常更稳。两条渠道费用都由开发团队
+承担，因此都会显示「请少量使用 🙏」的提示，按你所在网络挑一条即可。
+
+**发版流水线现在同时推两个节点**：每个版本的安装包与更新索引会**同时**上传到
+广州（`aprslocus`）与香港（`aprslocushk`）两个 bucket，任一边读取不到都会让发布
+失败并告警。香港节点走自定义域 `aprslocushk.oss.theez.top`（公开 CA，无需证书
+钉扎），客户端读取的就是这个地址。
+
+---
+
+## [2.0.55] - 2026-10-10 (English)
+
+### New Hong Kong node: "Aliyun OSS (Hong Kong)" update channel
+
+**A new update channel** appears on the update page: "Aliyun OSS (Hong Kong)",
+alongside "Aliyun OSS (Guangzhou)". Both are team-funded CDN distribution nodes;
+the only difference is the **Aliyun region** -- Guangzhou is fast inside mainland
+China, while Hong Kong tends to be more reliable over **cross-border / overseas**
+networks. Both are paid for by the dev team, so both show the "please use
+sparingly 🙏" hint -- just pick whichever suits your network.
+
+**The release pipeline now publishes to both nodes**: every version's installers
+and update index are uploaded to both the Guangzhou (`aprslocus`) and Hong Kong
+(`aprslocushk`) buckets, and the release fails loudly if either node cannot be
+read back. The Hong Kong node is served over the custom domain
+`aprslocushk.oss.theez.top` (public CA, no certificate pinning needed), which is
+exactly what the client reads.
+
+---
+
 ## [2.0.54] - 2026-10-10
 
 ### 地图交互与卫星底图可读性

@@ -293,16 +293,22 @@ jobs:
 
   # ─────────────────────────────────────────────────────────────────────────
   # 阿里云 OSS 更新渠道（**可选**）：把安装包 + 一份 GitHub 同格式的 releases
-  # 索引传到**公开读**的 OSS bucket，客户端即可从 oss-cn-guangzhou 走阿里云
-  # CDN 检查 / 下载更新（见 AppState.updateChannelBases['aliyun']、
+  # 索引传到**公开读**的 OSS bucket，客户端即可从 OSS 走阿里云 CDN 检查 / 下载
+  # 更新（见 AppState.updateChannelBases['aliyun'] / ['aliyun_hk']、
   # tool/oss_index.py、tool/check_oss_channel.py）。
   #
+  # **两个节点一起发**：广州（`aprslocus`，客户端读默认域名
+  # `aprslocus.oss-cn-guangzhou.aliyuncs.com`）与香港（`aprslocushk`，客户端读
+  # CNAME 自定义域 `aprslocushk.oss.theez.top`）。两边的索引 key 相同，各自
+  # 指向自己域名下的安装包；App 的「Aliyun OSS / Aliyun OSS（香港）」两个渠道
+  # 分别对应它们。
+  #
   # 凭据一律来自仓库 Secrets（**绝不写明文**，本仓库是公开的）：
-  #     OSS_ACCESS_KEY_ID / OSS_ACCESS_KEY_SECRET
+  #     OSS_ACCESS_KEY_ID / OSS_ACCESS_KEY_SECRET（两个 bucket 共用同一套）
   # 未配置时**跳过并告警**（该渠道是可选项，不该让每次发版都变红）——与安卓
   # keystore 的处理一致；一旦配置了却传失败，则**当场失败**。本 job 与官方
   # Release 相互独立，它失败不影响 GitHub / Windows / Android / iOS 发版。
-  # 首次启用：① 加上述两个 secret；② 把 bucket 读权限设为公共读。
+  # 首次启用：① 加上述两个 secret；② 把两个 bucket 读权限都设为公共读。
   # ─────────────────────────────────────────────────────────────────────────
   publish-oss:
     name: Publish to Aliyun OSS
@@ -315,6 +321,13 @@ jobs:
       OSS_INDEX_KEY: DarionDong/APRSLocus/releases
       OSS_ACCESS_KEY_ID: ${{ secrets.OSS_ACCESS_KEY_ID }}
       OSS_ACCESS_KEY_SECRET: ${{ secrets.OSS_ACCESS_KEY_SECRET }}
+      # 香港节点（同一条 OSS 通道，香港区域）：客户端走 CNAME 自定义域
+      # `aprslocushk.oss.theez.top`（见 AppState.updateChannelBases['aliyun_hk']），
+      # 上传用原生 endpoint `oss-cn-hongkong.aliyuncs.com`。索引 key 与广州一致。
+      # 复用同一套 OSS_ACCESS_KEY_ID / _SECRET（该 AK 对两个 bucket 都有权限）。
+      OSS_HK_BUCKET: aprslocushk
+      OSS_HK_ENDPOINT: oss-cn-hongkong.aliyuncs.com
+      OSS_HK_DOMAIN: aprslocushk.oss.theez.top
     steps:
       - name: Check OSS credentials
         id: creds
@@ -350,18 +363,24 @@ jobs:
           set -euo pipefail
           ver="${GITHUB_REF#refs/tags/v}"
           prefix="downloads/${ver}"
-          oss() { "$OSSUTIL" "$@" -e "$OSS_ENDPOINT" -i "$OSS_ACCESS_KEY_ID" -k "$OSS_ACCESS_KEY_SECRET"; }
+          # 广州与香港是两个区域、两个 bucket，各用自己的原生 endpoint 上传。
+          ossgz() { "$OSSUTIL" "$@" -e "$OSS_ENDPOINT" -i "$OSS_ACCESS_KEY_ID" -k "$OSS_ACCESS_KEY_SECRET"; }
+          osshk() { "$OSSUTIL" "$@" -e "$OSS_HK_ENDPOINT" -i "$OSS_ACCESS_KEY_ID" -k "$OSS_ACCESS_KEY_SECRET"; }
           shopt -s nullglob
           files=(APRSLocus-Windows/*.exe APRSLocus-Android/*.apk APRSLocus-iOS/*.ipa)
           test "${#files[@]}" -gt 0 || { echo "::error::没有可上传的安装包产物"; exit 1; }
           for f in "${files[@]}"; do
             # 目标对象名由 tool/oss_index.py 的同一套规则给出：OSS 默认域名对
             # `.apk` / `.ipa` 下载返回 400（ApkDownloadForbidden），故会被加上
-            # `.bin` 后缀上传；索引里的 browser_download_url 与这里保持一致。
+            # `.bin` 后缀上传（香港走的是 CNAME 自定义域，本不受此限，但为与
+            # 广州保持同一份索引形状，仍沿用同一套命名）；索引里的
+            # browser_download_url 与这里保持一致。
             obj="$(python3 tool/oss_index.py --delivery-name "$(basename "$f")")"
-            oss cp "$f" "oss://${OSS_BUCKET}/${prefix}/${obj}" -f --acl public-read \
+            ossgz cp "$f" "oss://${OSS_BUCKET}/${prefix}/${obj}" -f --acl public-read \
               --meta "Content-Type:application/octet-stream"
-            echo "uploaded ${obj}"
+            osshk cp "$f" "oss://${OSS_HK_BUCKET}/${prefix}/${obj}" -f --acl public-read \
+              --meta "Content-Type:application/octet-stream"
+            echo "uploaded ${obj} (guangzhou + hongkong)"
           done
 
       - name: Build & upload releases index
@@ -370,34 +389,50 @@ jobs:
           set -euo pipefail
           ver="${GITHUB_REF#refs/tags/v}"
           prefix="downloads/${ver}"
-          oss() { "$OSSUTIL" "$@" -e "$OSS_ENDPOINT" -i "$OSS_ACCESS_KEY_ID" -k "$OSS_ACCESS_KEY_SECRET"; }
-          # 线上旧索引（可能不存在 → 忽略），用于保留历史版本
-          oss cp "oss://${OSS_BUCKET}/${OSS_INDEX_KEY}" /tmp/existing.json -f || true
+          ossgz() { "$OSSUTIL" "$@" -e "$OSS_ENDPOINT" -i "$OSS_ACCESS_KEY_ID" -k "$OSS_ACCESS_KEY_SECRET"; }
+          osshk() { "$OSSUTIL" "$@" -e "$OSS_HK_ENDPOINT" -i "$OSS_ACCESS_KEY_ID" -k "$OSS_ACCESS_KEY_SECRET"; }
           shopt -s nullglob
           files=(APRSLocus-Windows/*.exe APRSLocus-Android/*.apk APRSLocus-iOS/*.ipa)
+          # 广州：url-base 用默认域名（客户端就读这个）。线上旧索引可能不存在 → 忽略。
+          ossgz cp "oss://${OSS_BUCKET}/${OSS_INDEX_KEY}" /tmp/existing_gz.json -f || true
           python3 tool/oss_index.py --ver "$ver" \
             --url-base "https://${OSS_BUCKET}.${OSS_ENDPOINT}/${prefix}" \
-            --changelog CHANGELOG.md --existing /tmp/existing.json \
-            --out /tmp/releases.json "${files[@]}"
-          oss cp /tmp/releases.json "oss://${OSS_BUCKET}/${OSS_INDEX_KEY}" -f --acl public-read
+            --changelog CHANGELOG.md --existing /tmp/existing_gz.json \
+            --out /tmp/releases_gz.json "${files[@]}"
+          ossgz cp /tmp/releases_gz.json "oss://${OSS_BUCKET}/${OSS_INDEX_KEY}" -f --acl public-read
+          # 香港：客户端走 CNAME 自定义域，所以 url-base 必须用 OSS_HK_DOMAIN，
+          # 否则 App 走香港渠道会去下 oss-cn-hongkong 默认域名的对象（可能 400/慢）。
+          osshk cp "oss://${OSS_HK_BUCKET}/${OSS_INDEX_KEY}" /tmp/existing_hk.json -f || true
+          python3 tool/oss_index.py --ver "$ver" \
+            --url-base "https://${OSS_HK_DOMAIN}/${prefix}" \
+            --changelog CHANGELOG.md --existing /tmp/existing_hk.json \
+            --out /tmp/releases_hk.json "${files[@]}"
+          osshk cp /tmp/releases_hk.json "oss://${OSS_HK_BUCKET}/${OSS_INDEX_KEY}" -f --acl public-read
 
       - name: Verify (anonymous, same as the app)
         if: steps.creds.outputs.configured == 'true'
         run: |
           set -euo pipefail
-          url="https://${OSS_BUCKET}.${OSS_ENDPOINT}/${OSS_INDEX_KEY}"
-          body="$(curl -fsS "$url")" || {
-            echo "::error::匿名读取 $url 失败 —— bucket 未开公共读，或对象 ACL 不是 public-read。"
-            echo "::error::请把 bucket 读权限设为「公共读」，否则 App 走阿里云渠道会拿到 403。"
-            exit 1
-          }
-          echo "$body" | python3 -c 'import json,sys; d=json.load(sys.stdin); assert isinstance(d,list) and d and d[0].get("assets"); print("index OK:", d[0]["tag_name"], len(d[0]["assets"]), "assets")'
-          echo "$body" | python3 -c 'import json,sys; [print(a["browser_download_url"]) for a in json.load(sys.stdin)[0]["assets"]]' > /tmp/oss_urls.txt
-          while read -r u; do
-            code="$(curl -s -o /dev/null -w '%{http_code}' -r 0-0 "$u")"
-            if [ "$code" != "200" ] && [ "$code" != "206" ]; then
-              echo "::error::匿名下载失败 HTTP $code：$u"
+          # 两个节点都用**客户端实际会请求的地址**做匿名自检：广州=默认域名，
+          # 香港=CNAME 自定义域。索引读不到、或任一资产拿不到 200/206，都当场失败。
+          verify() {
+            local label="$1" url="$2" urls="$3"
+            local body
+            body="$(curl -fsS "$url")" || {
+              echo "::error::[$label] 匿名读取 $url 失败 —— bucket 未开公共读，或对象 ACL 不是 public-read。"
+              echo "::error::[$label] 请把该 bucket 读权限设为「公共读」，否则 App 走这条渠道会拿到 403。"
               exit 1
-            fi
-            echo "download OK ($code): $u"
-          done < /tmp/oss_urls.txt
+            }
+            echo "$body" | python3 -c 'import json,sys; d=json.load(sys.stdin); assert isinstance(d,list) and d and d[0].get("assets"); print("index OK:", d[0]["tag_name"], len(d[0]["assets"]), "assets")'
+            echo "$body" | python3 -c 'import json,sys; [print(a["browser_download_url"]) for a in json.load(sys.stdin)[0]["assets"]]' > "$urls"
+            while read -r u; do
+              code="$(curl -s -o /dev/null -w '%{http_code}' -r 0-0 "$u")"
+              if [ "$code" != "200" ] && [ "$code" != "206" ]; then
+                echo "::error::[$label] 匿名下载失败 HTTP $code：$u"
+                exit 1
+              fi
+              echo "[$label] download OK ($code): $u"
+            done < "$urls"
+          }
+          verify gz "https://${OSS_BUCKET}.${OSS_ENDPOINT}/${OSS_INDEX_KEY}" /tmp/oss_urls_gz.txt
+          verify hk "https://${OSS_HK_DOMAIN}/${OSS_INDEX_KEY}" /tmp/oss_urls_hk.txt

@@ -7,11 +7,16 @@
 OSS 渠道由**四处**约定拼成，任何一处漏了都**不会报错**，只会表现成
 「更新页少了这个渠道」或「选了这个渠道却 403 —— 看起来像客户端 bug」：
 
-  1. 客户端登记了渠道地址     —— `lib/state.dart` 的 `updateChannelBases['aliyun']`
-  2. 客户端选择器里有这个渠道 —— `lib/check_update_page.dart` 的 `setUpdateChannel('aliyun')`
+  1. 客户端登记了渠道地址     —— `lib/state.dart` 的 `updateChannelBases['aliyun' / 'aliyun_hk']`
+  2. 客户端选择器里有这个渠道 —— `lib/check_update_page.dart` 的 `setUpdateChannel('aliyun' / 'aliyun_hk')`
   3. 发版流水线真的上传了     —— `.github/workflows/build-release.yml` 的 `publish-oss`
      ① 把三个平台的安装包都传上去；② 生成并上传 GitHub 同格式的 releases 索引
   4. 索引生成器的形状对       —— `tool/oss_index.py`（跑它的 selftest）
+
+**两个节点**（广州 + 香港）共用上面这套约定：广州客户端读默认域名
+（`aprslocus.oss-cn-guangzhou.aliyuncs.com`），香港客户端读 CNAME 自定义域
+（`aprslocushk.oss.theez.top`）。流水线必须**同时**推两个 bucket，且香港的
+索引 url-base 必须指向自定义域（否则 App 走香港渠道会去下默认域名的对象）。
 
 外加一条**安全**约定：访问密钥只能来自 GitHub Secrets，
 **绝不能**出现在仓库任何文件里（本仓库是公开的）。
@@ -34,9 +39,12 @@ OSS_TOOL = 'tool/oss_index.py'
 ARB_FILES = ['lib/l10n/app_%s.arb' % l for l in
              ('zh', 'zh_TW', 'en', 'ja', 'es', 'id')]
 
-CHANNEL = 'aliyun'
-BUCKET = 'aprslocus'
-ENDPOINT = 'oss-cn-guangzhou.aliyuncs.com'
+# 渠道 id → (bucket, 客户端读取的 host, 行内 env 前缀)。
+# 行内 env 前缀：广州用 OSS_*，香港用 OSS_HK_*（各自 endpoint）。
+CHANNELS = {
+    'aliyun':    ('aprslocus',   'aprslocus.oss-cn-guangzhou.aliyuncs.com', 'OSS'),
+    'aliyun_hk': ('aprslocushk', 'aprslocushk.oss.theez.top',               'OSS_HK'),
+}
 INDEX_KEY = 'DarionDong/APRSLocus/releases'
 
 # 访问密钥绝不能落到仓库里（公开仓库 = 泄露）。**注意本文件自己也不能写密钥
@@ -59,73 +67,85 @@ def main() -> int:
     page = read(UPDATE_PAGE)
     yml = read(WORKFLOW)
 
-    # ── ① 客户端登记了渠道地址，且 host 与流水线一致 ──
-    m = None
-    for line in state.split('\n'):
-        if "'%s':" % CHANNEL in line and 'https://' in line:
-            m = line
-            break
-    if not m:
-        errors.append('%s 的 updateChannelBases 里没有 `%s` 渠道' % (STATE, CHANNEL))
-    else:
-        if BUCKET not in m or ENDPOINT not in m:
-            errors.append('%s 里 %s 的地址不是 %s.%s（与流水线的 bucket/endpoint 对不上）'
-                          % (STATE, CHANNEL, BUCKET, ENDPOINT))
-    if "'%s':" % CHANNEL not in state or 'updateChannelLabels' not in state:
-        errors.append('%s 缺少 %s 的渠道显示名' % (STATE, CHANNEL))
-    else:
-        lbl = state[state.find('updateChannelLabels'):]
-        if "'%s':" % CHANNEL not in lbl[:lbl.find('}')]:
-            errors.append('%s 的 updateChannelLabels 里没有 `%s`（提示/无障碍标签会回退成裸 id）'
-                          % (STATE, CHANNEL))
+    job = yml[yml.find('publish-oss:'):] if 'publish-oss:' in yml else ''
 
-    # ── ② 选择器里有这个渠道 + 费用提示条 ──
-    if "setUpdateChannel('%s')" % CHANNEL not in page:
-        errors.append('%s 的渠道选择器里没有 `%s` 选项' % (UPDATE_PAGE, CHANNEL))
+    for ch, (_bucket, host, envpfx) in CHANNELS.items():
+        # ── ① 客户端登记了渠道地址，且 host 与流水线一致 ──
+        m = None
+        for line in state.split('\n'):
+            if "'%s':" % ch in line and 'https://' in line:
+                m = line
+                break
+        if not m:
+            errors.append('%s 的 updateChannelBases 里没有 `%s` 渠道' % (STATE, ch))
+        elif host not in m:
+            errors.append('%s 里 %s 的地址不是 %s（与流水线/自定义域对不上）'
+                          % (STATE, ch, host))
+        lbl = state[state.find('updateChannelLabels'):]
+        if "'%s':" % ch not in lbl[:lbl.find('}')]:
+            errors.append('%s 的 updateChannelLabels 里没有 `%s`（提示/无障碍标签会回退成裸 id）'
+                          % (STATE, ch))
+
+        # ── ② 选择器里有这个渠道 + 费用提示条 ──
+        if "setUpdateChannel('%s')" % ch not in page:
+            errors.append('%s 的渠道选择器里没有 `%s` 选项' % (UPDATE_PAGE, ch))
+
+        # ── ③ 流水线真的把安装包与索引传到该 bucket ──
+        if not job:
+            errors.append('%s 里没有 `publish-oss` job —— OSS 渠道永远不会有新包' % WORKFLOW)
+            continue
+        if '$%s_BUCKET' % envpfx not in job and '%s_BUCKET:' % envpfx not in job:
+            errors.append('%s 的 publish-oss 没有用 `%s_BUCKET`（%s 节点没被上传）'
+                          % (WORKFLOW, envpfx, ch))
+        if '%s_ENDPOINT' % envpfx not in job:
+            errors.append('%s 的 publish-oss 没有用 `%s_ENDPOINT`（%s 节点没被上传）'
+                          % (WORKFLOW, envpfx, ch))
+        # 香港节点的索引 url-base 必须指向 CNAME 自定义域（客户端就读这个）
+        if ch == 'aliyun_hk' and host not in job:
+            errors.append('%s 的 publish-oss 没有把 %s 的索引 url-base 指到 `%s` —— '
+                          'App 走香港渠道会去下默认域名的对象' % (WORKFLOW, ch, host))
+
+    # 两个节点都上传了这三个平台的产物
+    for glob in ('APRSLocus-Windows/*.exe', 'APRSLocus-Android/*.apk',
+                 'APRSLocus-iOS/*.ipa'):
+        if glob not in job:
+            errors.append('%s 的 publish-oss 没有上传 `%s`' % (WORKFLOW, glob))
+    if INDEX_KEY not in job:
+        errors.append('%s 的 publish-oss 没有用约定的索引 key `%s` —— '
+                      '客户端会请求到不存在的对象' % (WORKFLOW, INDEX_KEY))
+    if 'oss_index.py' not in job:
+        errors.append('%s 的 publish-oss 没有调用 tool/oss_index.py 生成索引' % WORKFLOW)
+    if '--acl public-read' not in job:
+        errors.append('%s 的 publish-oss 没把对象设为 public-read —— '
+                      '客户端（匿名）会拿到 403' % WORKFLOW)
+    # OSS 默认域名（*.aliyuncs.com）对 `.apk` / `.ipa` 下载返回 400
+    # （ApkDownloadForbidden）。索引 url 与上传目标都必须走
+    # tool/oss_index.py 的 delivery_name()（加 `.bin` 后缀）。这里钉住
+    # 「上传用了同一套规则」与「验证步真去下资产」。
+    if '--delivery-name' not in job:
+        errors.append('%s 的 publish-oss 上传安装包时没有用 '
+                      '`tool/oss_index.py --delivery-name` 算目标对象名 —— '
+                      'OSS 会对 `.apk`/`.ipa` 返回 400（ApkDownloadForbidden）' % WORKFLOW)
+    if 'Content-Type:application/octet-stream' not in job:
+        errors.append('%s 的 publish-oss 上传时没显式设 Content-Type='
+                      'application/octet-stream' % WORKFLOW)
+    if 'browser_download_url' not in job:
+        errors.append('%s 的 publish-oss 的自检没有真去下索引里的资产 —— '
+                      '`.apk`/`.ipa` 的 400 会被漏掉' % WORKFLOW)
+
+    # ── 选择器与加载态：Aliyun 的 l10n 键 ──
     if 'updateChannelAliyunHint' not in page:
         errors.append('%s 没有用到「开发团队付费、请少量使用」的费用提示文案 '
                       '（updateChannelAliyunHint）' % UPDATE_PAGE)
     if 'connectingAliyun' not in page:
-        errors.append('%s 的加载状态行没处理 `%s`（会退回 Qingling 的文案）'
-                      % (UPDATE_PAGE, CHANNEL))
+        errors.append('%s 的加载状态行没处理 Aliyun 渠道（会退回 Qingling 的文案）'
+                      % UPDATE_PAGE)
 
-    # ── ③ 流水线真的把安装包与索引传到 OSS ──
-    if 'publish-oss:' not in yml:
-        errors.append('%s 里没有 `publish-oss` job —— OSS 渠道永远不会有新包' % WORKFLOW)
-    else:
-        job = yml[yml.find('publish-oss:'):]
-        for glob in ('APRSLocus-Windows/*.exe', 'APRSLocus-Android/*.apk',
-                     'APRSLocus-iOS/*.ipa'):
-            if glob not in job:
-                errors.append('%s 的 publish-oss 没有上传 `%s`' % (WORKFLOW, glob))
-        if INDEX_KEY not in job:
-            errors.append('%s 的 publish-oss 没有用约定的索引 key `%s` —— '
-                          '客户端会请求到不存在的对象' % (WORKFLOW, INDEX_KEY))
-        if 'oss_index.py' not in job:
-            errors.append('%s 的 publish-oss 没有调用 tool/oss_index.py 生成索引' % WORKFLOW)
-        if '--acl public-read' not in job:
-            errors.append('%s 的 publish-oss 没把对象设为 public-read —— '
-                          '客户端（匿名）会拿到 403' % WORKFLOW)
-        # OSS 默认域名（*.aliyuncs.com）对 `.apk` / `.ipa` 下载返回 400
-        # （ApkDownloadForbidden）。索引 url 与上传目标都必须走
-        # tool/oss_index.py 的 delivery_name()（加 `.bin` 后缀）。这里钉住
-        # 「上传用了同一套规则」与「验证步真去下资产」。
-        if '--delivery-name' not in job:
-            errors.append('%s 的 publish-oss 上传安装包时没有用 '
-                          '`tool/oss_index.py --delivery-name` 算目标对象名 —— '
-                          'OSS 会对 `.apk`/`.ipa` 返回 400（ApkDownloadForbidden）' % WORKFLOW)
-        if 'Content-Type:application/octet-stream' not in job:
-            errors.append('%s 的 publish-oss 上传时没显式设 Content-Type='
-                          'application/octet-stream' % WORKFLOW)
-        if 'browser_download_url' not in job:
-            errors.append('%s 的 publish-oss 的自检没有真去下索引里的资产 —— '
-                          '`.apk`/`.ipa` 的 400 会被漏掉' % WORKFLOW)
-
-        # 凭据必须来自 secrets
-        for need in ('secrets.OSS_ACCESS_KEY_ID', 'secrets.OSS_ACCESS_KEY_SECRET'):
-            if need not in job:
-                errors.append('%s 的 publish-oss 没有用 `%s`（凭据应来自 Secrets）'
-                              % (WORKFLOW, need))
+    # ── 凭据必须来自 secrets ──
+    for need in ('secrets.OSS_ACCESS_KEY_ID', 'secrets.OSS_ACCESS_KEY_SECRET'):
+        if job and need not in job:
+            errors.append('%s 的 publish-oss 没有用 `%s`（凭据应来自 Secrets）'
+                          % (WORKFLOW, need))
 
     # ── ④ 索引生成器自带 selftest，且真能跑过 ──
     if not os.path.exists(os.path.join(ROOT, OSS_TOOL)):
@@ -167,7 +187,7 @@ def main() -> int:
         for e in errors:
             print('  -', e)
         return 1
-    print('OSS 渠道接线检查：OK')
+    print('OSS 渠道接线检查：OK（广州 + 香港两个节点）')
     return 0
 
 

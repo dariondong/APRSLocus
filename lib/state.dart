@@ -115,7 +115,7 @@ class SmartBeaconTier {
 
 class AppState extends ChangeNotifier {
   /// 应用版本（用于信标备注、APRSlocus 识别）
-  static const appVersion = '2.0.54';
+  static const appVersion = '2.0.55';
   // 我的电台
   String myCall = 'BV2AAA';
   int mySsid = 0; // 0 = 无后缀, 1-15 = -1 到 -15
@@ -3031,7 +3031,7 @@ class AppState extends ChangeNotifier {
     _notify();
   }
 
-  // 更新渠道：'github' / 'gitcode' / 'qingling' / 'aliyun'
+  // 更新渠道：'github' / 'gitcode' / 'qingling' / 'aliyun' / 'aliyun_hk'
   //
   // 默认 **GitHub**：GitCode 的 release API 在境外/部分网络下不稳定，而且
   // 镜像站可能滞后或缺少资产 —— 默认指向「官方发布的地方」更不容易出现
@@ -3048,6 +3048,12 @@ class AppState extends ChangeNotifier {
   // 从 `aprslocus.oss-cn-guangzhou.aliyuncs.com` 取（阿里云 CDN，国内可达性
   // 好、用公开 CA、无需证书钉扎）。⚠ bucket 必须**公共读**，否则客户端拿到 403；
   // 发版流水线写入后会做一次匿名 GET 自检，不通过会告警（见 build-release.yml）。
+  //
+  // **Aliyun HK（阿里云 OSS · 香港）**：与上面同一条通道，只是落在**香港**区域，
+  // 走 CNAME 自定义域 `aprslocushk.oss.theez.top`（`aprslocushk` bucket）。
+  // 香港节点国内直连也比 GitHub 稳，且**不受**默认域名对 `.apk`/`.ipa` 的
+  // `ApkDownloadForbidden` 拦截（自定义域）。费用同样由开发团队承担（复用同一条
+  // 「请少量使用」提示）。发版流水线把同一份安装包与索引**同时**推向两个节点。
   String updateChannel = 'github';
 
   /// 各更新渠道的 **API 根地址**。
@@ -3069,6 +3075,9 @@ class AppState extends ChangeNotifier {
     'gitcode': 'https://api.gitcode.com/api/v5/repos',
     'qingling': 'https://47.104.251.69/v1/repos',
     'aliyun': 'https://aprslocus.oss-cn-guangzhou.aliyuncs.com',
+    // 香港节点走自定义 CNAME 域（`aprslocushk` bucket，香港区域）：
+    // 客户端从 `aprslocushk.oss.theez.top` 取，索引 key 与广州一致。
+    'aliyun_hk': 'https://aprslocushk.oss.theez.top',
   };
 
   /// 取某渠道的 API 根地址；未知渠道回退 GitHub，避免旧配置写坏后无法检查更新。
@@ -3081,6 +3090,7 @@ class AppState extends ChangeNotifier {
     'gitcode': 'GitCode',
     'qingling': 'Qingling（清零）',
     'aliyun': 'Aliyun OSS',
+    'aliyun_hk': 'Aliyun OSS（香港）',
   };
 
   void setUpdateChannel(String c) {

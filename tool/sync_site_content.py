@@ -204,6 +204,33 @@ CARDS = [
 # 只列「重点版本」：中间几十个纯修 bug 的版本归纳进文字说明，完整记录指向 Releases。
 CL = [
     {
+        'ver': 'v2.0.55', 'date': '2026-10-10',
+        'items': [
+            ('new',
+             T('**新增香港节点：阿里云 OSS（香港）更新通道**。更新页多出与该渠道'
+               '并列的「Aliyun OSS（香港）」，与广州节点同属团队承担的 CDN 分发，'
+               '区别只是阿里云区域 —— 广州国内可达性好，香港在**跨境 / 境外网络**'
+               '下更稳；两条渠道都会显示「请少量使用 🙏」。发版流水线现在把每个版本'
+               '的安装包与索引**同时**推到广州（`aprslocus`）与香港（`aprslocushk`）'
+               '两个 bucket，香港走自定义域 `aprslocushk.oss.theez.top`。',
+               '**新增香港節點：阿里雲 OSS（香港）更新通道**。更新頁多出與該通道'
+               '並列的「Aliyun OSS（香港）」，與廣州節點同屬團隊承擔的 CDN 分發，'
+               '區別只是阿里雲區域 —— 廣州國內可達性好，香港在**跨境 / 境外網路**'
+               '下更穩；兩條通道都會顯示「請少量使用 🙏」。發版流水線現在把每個版本'
+               '的安裝包與索引**同時**推到廣州（`aprslocus`）與香港（`aprslocushk`）'
+               '兩個 bucket，香港走自訂網域 `aprslocushk.oss.theez.top`。',
+               '**New Hong Kong node: "Aliyun OSS (Hong Kong)" update channel**. The '
+               'update page gains an "Aliyun OSS (Hong Kong)" option next to the '
+               'Guangzhou one -- both are team-funded CDN distribution, differing only in '
+               'Aliyun region: Guangzhou is fast inside mainland China, Hong Kong is more '
+               'reliable over **cross-border / overseas** networks. Both show the "please '
+               'use sparingly 🙏" hint. The release pipeline now pushes each version\'s '
+               'installers and index to **both** the Guangzhou (`aprslocus`) and Hong Kong '
+               '(`aprslocushk`) buckets; Hong Kong is served over the custom domain '
+               '`aprslocushk.oss.theez.top`.')),
+        ],
+    },
+    {
         'ver': 'v2.0.54', 'date': '2026-10-10',
         'items': [
             ('up',
