@@ -1,5 +1,62 @@
 # 更新日志
 
+## [2.0.57] - 2026-10-10
+
+### 新增实验功能：内置智能体（自带 OpenAI 兼容 API Key）
+
+「设置 → 实验功能」新增**智能体模式**。开启后屏幕上出现一个悬浮聊天框，填入自己的
+OpenAI 兼容 API Key（支持 OpenAI / DeepSeek / Moonshot / 智谱 GLM / 通义千问 /
+Ollama / LM Studio 等预设，也可手填 baseUrl 与模型名），即可用自然语言让智能体
+**读取并修改你的设置**、查台站、切页签等。带副作用的操作执行前会在聊天框内联弹出
+确认条，由你决定是否执行；可分别限制「允许发信」与「允许改设置」。
+
+### 修复：WLAN 电台页面部分文案未国际化
+
+IC-705 / IC-9700 / IC-7610 / IC-905 局域网直连页面里，**链路阶段**（连接中 /
+接收中 / 重连中……）、**型号描述**、CI-V 与配网指引等文案此前是写死的中文，
+切到英 / 日 / 西 / 印尼语时仍是中文。现已全部接入本地化（6 种语言齐备）。
+
+### 修复：更新页顶栏在暗色模式下仍是白条
+
+`check_update` 页顶栏用了 `surfaceTint(Colors.white)` —— 材质关闭时它原样返回
+白色常量，暗色下顶栏始终是一条白板。改为走主题 token `C.surfaceFillStrong`，
+随深浅色模式切换。同时给 `tool/check_dark_mode.py` 增加两条判据（写死的常量底色、
+`surfaceTint(常量)`），钉住这条不变量。
+
+---
+
+## [2.0.57] - 2026-10-10 (English)
+
+### New experimental feature: built-in agent (bring your own OpenAI-compatible API key)
+
+"Settings → Experimental Features" now has an **Agent mode**. Turn it on and a
+floating chat box appears on screen. Enter your own OpenAI-compatible API key
+(presets for OpenAI / DeepSeek / Moonshot / Zhipu GLM / Qwen / Ollama / LM Studio,
+or type a custom baseUrl and model) and you can ask the agent in natural language
+to **read and change your settings**, look up stations, switch tabs, and more.
+Any action with side effects shows an inline confirmation bar in the chat box
+before it runs; "allow sending" and "allow settings changes" can be limited
+separately.
+
+### Fix: some WLAN radio page text was not localized
+
+On the IC-705 / IC-9700 / IC-7610 / IC-905 LAN direct page, the **link phase**
+(connecting / receiving / reconnecting...), the **model descriptions**, the CI-V
+section and the setup guide were hard-coded Chinese, so they stayed Chinese even
+when the UI was switched to English / Japanese / Spanish / Indonesian. All of
+them are now localized (six languages).
+
+### Fix: the update page's app bar stayed a white bar in dark mode
+
+The `check_update` page app bar used `surfaceTint(Colors.white)` -- when the
+material is disabled `surfaceTint` returns the constant as-is, so the bar stayed
+a white slab in dark mode. It now uses the theme token `C.surfaceFillStrong` and
+follows light/dark mode. Two new invariants were added to
+`tool/check_dark_mode.py` (hard-coded literal fills, `surfaceTint(constant)`) to
+pin this down.
+
+---
+
 ## [2.0.56] - 2026-10-10
 
 ### 修复暗色模式：更新页与聊天 / 台站等页面的「白板」弹窗
