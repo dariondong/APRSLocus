@@ -10039,4 +10039,34 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get oobeFinishLocal => "Finish";
 
+  @override
+  String get oobeDoneTitle => "All set";
+
+  @override
+  String get oobeDoneLocalNote => "No address, so the app stays local. Fill in a server in settings when you want to go online.";
+
+  @override
+  String oobeDoneConnectNote(String link) => "Finishing will connect to $link.";
+
+  @override
+  String get oobeDoneSymbolLabel => "Symbol";
+
+  @override
+  String get oobeDoneUnset => "Empty";
+
+  @override
+  String get oobeDoneMap => "Stations";
+
+  @override
+  String get oobeDoneMapDesc => "Neighbouring stations are on the map and stations tabs.";
+
+  @override
+  String get oobeDoneBeacon => "Send a beacon";
+
+  @override
+  String get oobeDoneBeaconDesc => "Once connected, the start button sits at the bottom of the map page.";
+
+  @override
+  String get oobeDoneManualDesc => "Settings has the manual. It covers hooking up a radio and what to check when sending fails.";
+
 }

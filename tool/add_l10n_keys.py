@@ -142,6 +142,54 @@ KEYS = {
     # ── 首次引导：没填地址时最后一步不叫「完成并连接」 ──
     'oobeFinishLocal': (
         '完成', '完成', 'Finish', '完了', 'Terminar', 'Selesai'),
+    # ── 首次引导：最后一步「配置完成」 ──
+    'oobeDoneTitle': (
+        '配置完成', '設定完成', 'All set', '設定できました',
+        'Configuración lista', 'Pengaturan selesai'),
+    'oobeDoneLocalNote': (
+        '地址留空，现在是纯本地模式。要联网去设置里的服务器。',
+        '位址留空，現在是純本機模式。要連網去設定裡的伺服器。',
+        'No address, so the app stays local. Fill in a server in settings when you want to go online.',
+        'アドレス未入力なので、いまはローカルだけで動きます。オンラインにするときは設定のサーバーに入力してください。',
+        'Sin dirección, la app funciona solo en local. Para conectarte, pon un servidor en ajustes.',
+        'Alamat masih kosong, jadi aplikasi jalan lokal saja. Isi server di pengaturan kalau mau online.'),
+    'oobeDoneConnectNote': (
+        '点完成后会连接 {link}。',
+        '點完成後會連線 {link}。',
+        'Finishing will connect to {link}.',
+        '「完了」を押すと {link} に接続します。',
+        'Al terminar se conectará a {link}.',
+        'Setelah selesai, aplikasi menyambung ke {link}.'),
+    'oobeDoneSymbolLabel': (
+        '符号', '符號', 'Symbol', 'シンボル', 'Símbolo', 'Simbol'),
+    'oobeDoneUnset': (
+        '未填', '未填', 'Empty', '未入力', 'Sin rellenar', 'Kosong'),
+    'oobeDoneMap': (
+        '看台站', '看臺站', 'Stations', '局を見る', 'Estaciones', 'Stasiun'),
+    'oobeDoneMapDesc': (
+        '地图和台站两个页签里是附近的台站。',
+        '地圖和臺站兩個頁籤裡是附近的臺站。',
+        'Neighbouring stations are on the map and stations tabs.',
+        '近くの局は地図と局のタブに出ます。',
+        'Las estaciones cercanas están en las pestañas de mapa y estaciones.',
+        'Stasiun sekitar ada di tab peta dan stasiun.'),
+    'oobeDoneBeacon': (
+        '发位置', '發位置', 'Send a beacon', '位置を送る', 'Enviar baliza',
+        'Kirim posisi'),
+    'oobeDoneBeaconDesc': (
+        '连上之后，地图页底部有开始上报的按钮。',
+        '連上之後，地圖頁底部有開始上報的按鈕。',
+        'Once connected, the start button sits at the bottom of the map page.',
+        '接続すると、地図ページの下に開始ボタンが出ます。',
+        'Al conectar, el botón de inicio aparece abajo en la página del mapa.',
+        'Setelah tersambung, tombol mulai ada di bawah halaman peta.'),
+    'oobeDoneManualDesc': (
+        '设置里有使用手册。设备怎么接、发不出去怎么查都写在里面。',
+        '設定裡有使用手冊。裝置怎麼接、發不出去怎麼查都寫在裡面。',
+        'Settings has the manual. It covers hooking up a radio and what to check when sending fails.',
+        '設定にマニュアルがあります。無線機のつなぎ方や送れないときの調べ方が書いてあります。',
+        'En ajustes está el manual. Explica cómo conectar un equipo y qué revisar cuando no se envía.',
+        'Panduan ada di pengaturan. Isinya cara menyambung perangkat dan apa yang dicek saat gagal kirim.'),
     # ── 首次引导：呼号形状校验 ──
     'oobeCallInvalid': (
         '呼号格式不对。常见的写法是 BG7LZQ 或 JA1AA。',
@@ -160,6 +208,7 @@ KEYS = {
 }
 
 META = {
+    'oobeDoneConnectNote': '{"placeholders": {"link": {"type": "String"}}}',
     'notifLiveNearShort': '{"placeholders": {"n": {"type": "String"}}}',
     'acnServerRetention': '{"placeholders": {"hours": {"type": "String"}}}',
     'acnSyncDone': '{"placeholders": {"total": {"type": "String"}, "added": {"type": "String"}}}',

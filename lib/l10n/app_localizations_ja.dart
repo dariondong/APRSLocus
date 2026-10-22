@@ -9760,4 +9760,34 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String get oobeFinishLocal => "完了";
 
+  @override
+  String get oobeDoneTitle => "設定できました";
+
+  @override
+  String get oobeDoneLocalNote => "アドレス未入力なので、いまはローカルだけで動きます。オンラインにするときは設定のサーバーに入力してください。";
+
+  @override
+  String oobeDoneConnectNote(String link) => "「完了」を押すと $link に接続します。";
+
+  @override
+  String get oobeDoneSymbolLabel => "シンボル";
+
+  @override
+  String get oobeDoneUnset => "未入力";
+
+  @override
+  String get oobeDoneMap => "局を見る";
+
+  @override
+  String get oobeDoneMapDesc => "近くの局は地図と局のタブに出ます。";
+
+  @override
+  String get oobeDoneBeacon => "位置を送る";
+
+  @override
+  String get oobeDoneBeaconDesc => "接続すると、地図ページの下に開始ボタンが出ます。";
+
+  @override
+  String get oobeDoneManualDesc => "設定にマニュアルがあります。無線機のつなぎ方や送れないときの調べ方が書いてあります。";
+
 }

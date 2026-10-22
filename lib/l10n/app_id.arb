@@ -4350,5 +4350,16 @@
   "cracCertLocal": "Pemeriksaan dijalankan oleh program, tanpa tinjauan manusia. Hasilnya kembali hanya ke perangkat ini, berisi lulus dan kelas lisensi saja.",
   "oobeCallInvalid": "Tanda panggil itu sepertinya tidak tepat. Bentuk umum: BG7LZQ atau JA1AA.",
   "oobeSsidInvalid": "SSID hanya boleh satu atau dua huruf atau angka.",
-  "oobeFinishLocal": "Selesai"
+  "oobeFinishLocal": "Selesai",
+  "oobeDoneTitle": "Pengaturan selesai",
+  "oobeDoneLocalNote": "Alamat masih kosong, jadi aplikasi jalan lokal saja. Isi server di pengaturan kalau mau online.",
+  "oobeDoneConnectNote": "Setelah selesai, aplikasi menyambung ke {link}.",
+  "oobeDoneSymbolLabel": "Simbol",
+  "oobeDoneUnset": "Kosong",
+  "oobeDoneMap": "Stasiun",
+  "oobeDoneMapDesc": "Stasiun sekitar ada di tab peta dan stasiun.",
+  "oobeDoneBeacon": "Kirim posisi",
+  "oobeDoneBeaconDesc": "Setelah tersambung, tombol mulai ada di bawah halaman peta.",
+  "oobeDoneManualDesc": "Panduan ada di pengaturan. Isinya cara menyambung perangkat dan apa yang dicek saat gagal kirim.",
+  "@oobeDoneConnectNote": {"placeholders": {"link": {"type": "String"}}}
 }

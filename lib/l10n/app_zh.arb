@@ -5029,5 +5029,16 @@
   "cracCertLocal": "查询由程序直接完成，没有人工审核。结果只回本机，只保留是否通过和证书类别。",
   "oobeCallInvalid": "呼号格式不对。常见的写法是 BG7LZQ 或 JA1AA。",
   "oobeSsidInvalid": "后缀只能是一位或两位数字、字母。",
-  "oobeFinishLocal": "完成"
+  "oobeFinishLocal": "完成",
+  "oobeDoneTitle": "配置完成",
+  "oobeDoneLocalNote": "地址留空，现在是纯本地模式。要联网去设置里的服务器。",
+  "oobeDoneConnectNote": "点完成后会连接 {link}。",
+  "oobeDoneSymbolLabel": "符号",
+  "oobeDoneUnset": "未填",
+  "oobeDoneMap": "看台站",
+  "oobeDoneMapDesc": "地图和台站两个页签里是附近的台站。",
+  "oobeDoneBeacon": "发位置",
+  "oobeDoneBeaconDesc": "连上之后，地图页底部有开始上报的按钮。",
+  "oobeDoneManualDesc": "设置里有使用手册。设备怎么接、发不出去怎么查都写在里面。",
+  "@oobeDoneConnectNote": {"placeholders": {"link": {"type": "String"}}}
 }

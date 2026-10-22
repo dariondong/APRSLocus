@@ -9660,6 +9660,36 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String get oobeFinishLocal => "完成";
 
+  @override
+  String get oobeDoneTitle => "配置完成";
+
+  @override
+  String get oobeDoneLocalNote => "地址留空，现在是纯本地模式。要联网去设置里的服务器。";
+
+  @override
+  String oobeDoneConnectNote(String link) => "点完成后会连接 $link。";
+
+  @override
+  String get oobeDoneSymbolLabel => "符号";
+
+  @override
+  String get oobeDoneUnset => "未填";
+
+  @override
+  String get oobeDoneMap => "看台站";
+
+  @override
+  String get oobeDoneMapDesc => "地图和台站两个页签里是附近的台站。";
+
+  @override
+  String get oobeDoneBeacon => "发位置";
+
+  @override
+  String get oobeDoneBeaconDesc => "连上之后，地图页底部有开始上报的按钮。";
+
+  @override
+  String get oobeDoneManualDesc => "设置里有使用手册。设备怎么接、发不出去怎么查都写在里面。";
+
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
@@ -19316,5 +19346,35 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get oobeFinishLocal => "完成";
+
+  @override
+  String get oobeDoneTitle => "設定完成";
+
+  @override
+  String get oobeDoneLocalNote => "位址留空，現在是純本機模式。要連網去設定裡的伺服器。";
+
+  @override
+  String oobeDoneConnectNote(String link) => "點完成後會連線 $link。";
+
+  @override
+  String get oobeDoneSymbolLabel => "符號";
+
+  @override
+  String get oobeDoneUnset => "未填";
+
+  @override
+  String get oobeDoneMap => "看臺站";
+
+  @override
+  String get oobeDoneMapDesc => "地圖和臺站兩個頁籤裡是附近的臺站。";
+
+  @override
+  String get oobeDoneBeacon => "發位置";
+
+  @override
+  String get oobeDoneBeaconDesc => "連上之後，地圖頁底部有開始上報的按鈕。";
+
+  @override
+  String get oobeDoneManualDesc => "設定裡有使用手冊。裝置怎麼接、發不出去怎麼查都寫在裡面。";
 
 }

@@ -17679,6 +17679,66 @@ abstract class AppLocalizations {
   /// **'完成'**
   String get oobeFinishLocal;
 
+  /// No description provided for @oobeDoneTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'配置完成'**
+  String get oobeDoneTitle;
+
+  /// No description provided for @oobeDoneLocalNote.
+  ///
+  /// In zh, this message translates to:
+  /// **'地址留空，现在是纯本地模式。要联网去设置里的服务器。'**
+  String get oobeDoneLocalNote;
+
+  /// No description provided for @oobeDoneConnectNote.
+  ///
+  /// In zh, this message translates to:
+  /// **'点完成后会连接 {link}。'**
+  String oobeDoneConnectNote(String link);
+
+  /// No description provided for @oobeDoneSymbolLabel.
+  ///
+  /// In zh, this message translates to:
+  /// **'符号'**
+  String get oobeDoneSymbolLabel;
+
+  /// No description provided for @oobeDoneUnset.
+  ///
+  /// In zh, this message translates to:
+  /// **'未填'**
+  String get oobeDoneUnset;
+
+  /// No description provided for @oobeDoneMap.
+  ///
+  /// In zh, this message translates to:
+  /// **'看台站'**
+  String get oobeDoneMap;
+
+  /// No description provided for @oobeDoneMapDesc.
+  ///
+  /// In zh, this message translates to:
+  /// **'地图和台站两个页签里是附近的台站。'**
+  String get oobeDoneMapDesc;
+
+  /// No description provided for @oobeDoneBeacon.
+  ///
+  /// In zh, this message translates to:
+  /// **'发位置'**
+  String get oobeDoneBeacon;
+
+  /// No description provided for @oobeDoneBeaconDesc.
+  ///
+  /// In zh, this message translates to:
+  /// **'连上之后，地图页底部有开始上报的按钮。'**
+  String get oobeDoneBeaconDesc;
+
+  /// No description provided for @oobeDoneManualDesc.
+  ///
+  /// In zh, this message translates to:
+  /// **'设置里有使用手册。设备怎么接、发不出去怎么查都写在里面。'**
+  String get oobeDoneManualDesc;
+
 }
 
 class _AppLocalizationsDelegate

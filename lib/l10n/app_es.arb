@@ -4350,5 +4350,16 @@
   "cracCertLocal": "La comprobación la hace el programa, sin revisión humana. El resultado vuelve solo a este dispositivo y guarda únicamente si pasó y la clase.",
   "oobeCallInvalid": "Ese indicativo no parece correcto. Formatos habituales: BG7LZQ o JA1AA.",
   "oobeSsidInvalid": "El SSID puede ser una o dos letras o cifras.",
-  "oobeFinishLocal": "Terminar"
+  "oobeFinishLocal": "Terminar",
+  "oobeDoneTitle": "Configuración lista",
+  "oobeDoneLocalNote": "Sin dirección, la app funciona solo en local. Para conectarte, pon un servidor en ajustes.",
+  "oobeDoneConnectNote": "Al terminar se conectará a {link}.",
+  "oobeDoneSymbolLabel": "Símbolo",
+  "oobeDoneUnset": "Sin rellenar",
+  "oobeDoneMap": "Estaciones",
+  "oobeDoneMapDesc": "Las estaciones cercanas están en las pestañas de mapa y estaciones.",
+  "oobeDoneBeacon": "Enviar baliza",
+  "oobeDoneBeaconDesc": "Al conectar, el botón de inicio aparece abajo en la página del mapa.",
+  "oobeDoneManualDesc": "En ajustes está el manual. Explica cómo conectar un equipo y qué revisar cuando no se envía.",
+  "@oobeDoneConnectNote": {"placeholders": {"link": {"type": "String"}}}
 }

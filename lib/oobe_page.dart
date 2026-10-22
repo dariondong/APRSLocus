@@ -23,6 +23,10 @@ class OobePage extends StatefulWidget {
 }
 
 class _OobePageState extends State<OobePage> {
+  /// 向导一共几步：语言 → 协议 → 欢迎 → 呼号 → 符号 → 筛选 → 服务器 → 完成。
+  /// 进度条、页码、最后一步的判定都读它，加一步只改这一处。
+  static const int _total = 8;
+
   int _step = 0;
   // 页面切换动画进行中标记：防止快速连点导致 PageView 与 _step 失步（偶发卡死）
   bool _busy = false;
@@ -145,8 +149,12 @@ class _OobePageState extends State<OobePage> {
         // 接收筛选步骤：把选择的国家写入 state（默认不勾选 = 不做限制）
         _applyFilterCountries();
         break;
+      case 6:
+        // 服务器步骤：先把填的地址写进 state，下一步的「配置完成」要回读它。
+        _saveServer();
+        break;
     }
-    if (_step >= 6) {
+    if (_step >= _total - 1) {
       _finish();
       return;
     }
@@ -204,12 +212,14 @@ class _OobePageState extends State<OobePage> {
         : '';
   }
 
-  Future<void> _finish() async {
+  /// 把服务器那一步填的内容写进 state。
+  ///
+  /// 服务器**留空就是不连接**：本软件不预置、也不推荐任何服务器地址（用户协议
+  /// 2.4）。以前这里会把空值悄悄填成公共服务器并立刻连接 —— 那是"软件自己决定
+  /// 连到哪里"，与"默认不连接任何服务器"的声明冲突。
+  void _saveServer() {
     final st = widget.state;
     final acnLink = _link == AppState.srcAcn;
-    // 服务器**留空就是不连接**：本软件不预置、也不推荐任何服务器地址（用户协议 2.4）。
-    // 以前这里会把空值悄悄填成公共服务器并立刻连接 —— 那是"软件自己决定连到哪里"，
-    // 与"默认不连接任何服务器"的声明冲突。
     final server = _server.text.trim();
     final port = int.tryParse(_port.text.trim()) ?? 14580;
     final pass = _pass.text.trim().isEmpty
@@ -226,6 +236,12 @@ class _OobePageState extends State<OobePage> {
       st.aprs.passcode = pass;
     }
     st.persist();
+  }
+
+  Future<void> _finish() async {
+    final st = widget.state;
+    final acnLink = _link == AppState.srcAcn;
+    final server = _server.text.trim();
     // 先进主页，连接放到后台进行（主页底部横幅显示连接状态）
     st.completeOobe();
     // 只有用户**自己填了**服务器才连接；留空则保持纯本地（不碰任何网络服务器）。
@@ -247,7 +263,7 @@ class _OobePageState extends State<OobePage> {
 
   @override
   Widget build(BuildContext context) {
-    final last = _step >= 6;
+    final last = _step >= _total - 1;
     return Scaffold(
       backgroundColor: C.pageFill,
       body: SafeArea(
@@ -265,7 +281,7 @@ class _OobePageState extends State<OobePage> {
                     style: ts(16, w: FontWeight.w800, ls: -0.3),
                   ),
                   Spacer(),
-                  Text('${_step + 1} / 7', style: ts(12, c: C.grey)),
+                  Text('${_step + 1} / $_total', style: ts(12, c: C.grey)),
                 ],
               ),
             ),
@@ -274,7 +290,7 @@ class _OobePageState extends State<OobePage> {
               padding: const EdgeInsets.symmetric(horizontal: 24),
               child: Row(
                 children: [
-                  for (var i = 0; i < 7; i++) ...[
+                  for (var i = 0; i < _total; i++) ...[
                     Expanded(
                       child: AnimatedContainer(
                         duration: const Duration(milliseconds: 200),
@@ -285,7 +301,7 @@ class _OobePageState extends State<OobePage> {
                         ),
                       ),
                     ),
-                    if (i < 6) const SizedBox(width: 6),
+                    if (i < _total - 1) const SizedBox(width: 6),
                   ],
                 ],
               ),
@@ -304,6 +320,7 @@ class _OobePageState extends State<OobePage> {
                   _symbolPick(),
                   _filterPick(),
                   _serverPage(),
+                  _done(),
                 ],
               ),
             ),
@@ -1166,6 +1183,90 @@ class _OobePageState extends State<OobePage> {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  // ─── 第 8 步：配置完成 ───
+  /// 最后一步做两件事：把刚才存下来的三样东西回读一次，再指一下接下来常用的
+  /// 三处地方。首次使用的人真正缺的是「然后呢」，而不是更多选项。
+  Widget _done() {
+    final s = S.of(context);
+    final acnLink = _link == AppState.srcAcn;
+    final call =
+        '${_call.text.trim().toUpperCase()}${_ssid.isEmpty ? '' : '-$_ssid'}';
+    final server = _server.text.trim();
+    final linkName = acnLink ? s.acnCardTitle : s.dataSourceAprsIs;
+    return SingleChildScrollView(
+      padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 20),
+      child: Column(
+        children: [
+          SizedBox(height: 16),
+          Icon(Icons.check_circle_rounded, color: C.green, size: 52),
+          SizedBox(height: 16),
+          Text(s.oobeDoneTitle, style: ts(20, w: FontWeight.w800, ls: -0.4)),
+          SizedBox(height: 8),
+          Text(
+            server.isEmpty
+                ? s.oobeDoneLocalNote
+                : s.oobeDoneConnectNote(linkName),
+            textAlign: TextAlign.center,
+            style: ts(12, c: C.slate, h: 1.6),
+          ),
+          SizedBox(height: 20),
+          // 回读：让用户确认向导真的写进了设置，而不是一路「下一步」到底
+          SoftCard(
+            padding: EdgeInsets.zero,
+            child: Column(
+              children: [
+                _sumRow(s.callsign, call.isEmpty ? '—' : call),
+                _sumRow(
+                  s.oobeDoneSymbolLabel,
+                  localizedAprsSymbolName(context, _symbol),
+                ),
+                _sumRow(
+                  s.server,
+                  server.isEmpty ? s.oobeDoneUnset : '$linkName · $server',
+                ),
+              ],
+            ),
+          ),
+          SizedBox(height: 18),
+          _feature(Icons.public_rounded, s.oobeDoneMap, s.oobeDoneMapDesc),
+          SizedBox(height: 12),
+          _feature(Icons.send_rounded, s.oobeDoneBeacon, s.oobeDoneBeaconDesc),
+          SizedBox(height: 12),
+          _feature(
+            Icons.menu_book_rounded,
+            s.manualTitle,
+            s.oobeDoneManualDesc,
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// 完成页的回读行：左边是名目，右边是刚才存下来的值。
+  Widget _sumRow(String label, String value) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
+      decoration: BoxDecoration(
+        border: Border(bottom: BorderSide(color: C.border, width: 0.4)),
+      ),
+      child: Row(
+        children: [
+          Text(label, style: ts(12, c: C.slate)),
+          SizedBox(width: 12),
+          Expanded(
+            child: Text(
+              value,
+              textAlign: TextAlign.right,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: ts(12.5, c: C.ink, w: FontWeight.w700),
+            ),
+          ),
+        ],
       ),
     );
   }

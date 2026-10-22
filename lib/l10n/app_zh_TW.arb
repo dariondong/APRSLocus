@@ -4938,5 +4938,16 @@
   "cracCertLocal": "查詢由程式直接完成，沒有任何人工作業。結果只回本機，只保留是否通過和證書類別。",
   "oobeCallInvalid": "呼號格式不對。常見的寫法是 BG7LZQ 或 JA1AA。",
   "oobeSsidInvalid": "後綴只能是一位或兩位數字、字母。",
-  "oobeFinishLocal": "完成"
+  "oobeFinishLocal": "完成",
+  "oobeDoneTitle": "設定完成",
+  "oobeDoneLocalNote": "位址留空，現在是純本機模式。要連網去設定裡的伺服器。",
+  "oobeDoneConnectNote": "點完成後會連線 {link}。",
+  "oobeDoneSymbolLabel": "符號",
+  "oobeDoneUnset": "未填",
+  "oobeDoneMap": "看臺站",
+  "oobeDoneMapDesc": "地圖和臺站兩個頁籤裡是附近的臺站。",
+  "oobeDoneBeacon": "發位置",
+  "oobeDoneBeaconDesc": "連上之後，地圖頁底部有開始上報的按鈕。",
+  "oobeDoneManualDesc": "設定裡有使用手冊。裝置怎麼接、發不出去怎麼查都寫在裡面。",
+  "@oobeDoneConnectNote": {"placeholders": {"link": {"type": "String"}}}
 }

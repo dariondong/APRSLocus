@@ -10098,4 +10098,34 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get oobeFinishLocal => "Terminar";
 
+  @override
+  String get oobeDoneTitle => "Configuración lista";
+
+  @override
+  String get oobeDoneLocalNote => "Sin dirección, la app funciona solo en local. Para conectarte, pon un servidor en ajustes.";
+
+  @override
+  String oobeDoneConnectNote(String link) => "Al terminar se conectará a $link.";
+
+  @override
+  String get oobeDoneSymbolLabel => "Símbolo";
+
+  @override
+  String get oobeDoneUnset => "Sin rellenar";
+
+  @override
+  String get oobeDoneMap => "Estaciones";
+
+  @override
+  String get oobeDoneMapDesc => "Las estaciones cercanas están en las pestañas de mapa y estaciones.";
+
+  @override
+  String get oobeDoneBeacon => "Enviar baliza";
+
+  @override
+  String get oobeDoneBeaconDesc => "Al conectar, el botón de inicio aparece abajo en la página del mapa.";
+
+  @override
+  String get oobeDoneManualDesc => "En ajustes está el manual. Explica cómo conectar un equipo y qué revisar cuando no se envía.";
+
 }

@@ -4350,5 +4350,16 @@
   "cracCertLocal": "照合はプログラムが行い、人手の審査はありません。結果はこの端末にだけ戻り、通過と資格クラスだけを残します。",
   "oobeCallInvalid": "コールサインの形式が正しくありません。例：BG7LZQ、JA1AA。",
   "oobeSsidInvalid": "SSID は数字か英字の 1〜2 文字です。",
-  "oobeFinishLocal": "完了"
+  "oobeFinishLocal": "完了",
+  "oobeDoneTitle": "設定できました",
+  "oobeDoneLocalNote": "アドレス未入力なので、いまはローカルだけで動きます。オンラインにするときは設定のサーバーに入力してください。",
+  "oobeDoneConnectNote": "「完了」を押すと {link} に接続します。",
+  "oobeDoneSymbolLabel": "シンボル",
+  "oobeDoneUnset": "未入力",
+  "oobeDoneMap": "局を見る",
+  "oobeDoneMapDesc": "近くの局は地図と局のタブに出ます。",
+  "oobeDoneBeacon": "位置を送る",
+  "oobeDoneBeaconDesc": "接続すると、地図ページの下に開始ボタンが出ます。",
+  "oobeDoneManualDesc": "設定にマニュアルがあります。無線機のつなぎ方や送れないときの調べ方が書いてあります。",
+  "@oobeDoneConnectNote": {"placeholders": {"link": {"type": "String"}}}
 }

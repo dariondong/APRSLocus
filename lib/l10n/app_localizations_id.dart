@@ -10049,4 +10049,34 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get oobeFinishLocal => "Selesai";
 
+  @override
+  String get oobeDoneTitle => "Pengaturan selesai";
+
+  @override
+  String get oobeDoneLocalNote => "Alamat masih kosong, jadi aplikasi jalan lokal saja. Isi server di pengaturan kalau mau online.";
+
+  @override
+  String oobeDoneConnectNote(String link) => "Setelah selesai, aplikasi menyambung ke $link.";
+
+  @override
+  String get oobeDoneSymbolLabel => "Simbol";
+
+  @override
+  String get oobeDoneUnset => "Kosong";
+
+  @override
+  String get oobeDoneMap => "Stasiun";
+
+  @override
+  String get oobeDoneMapDesc => "Stasiun sekitar ada di tab peta dan stasiun.";
+
+  @override
+  String get oobeDoneBeacon => "Kirim posisi";
+
+  @override
+  String get oobeDoneBeaconDesc => "Setelah tersambung, tombol mulai ada di bawah halaman peta.";
+
+  @override
+  String get oobeDoneManualDesc => "Panduan ada di pengaturan. Isinya cara menyambung perangkat dan apa yang dicek saat gagal kirim.";
+
 }
