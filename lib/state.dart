@@ -130,7 +130,7 @@ class SmartBeaconTier {
 
 class AppState extends ChangeNotifier {
   /// 应用版本（用于信标备注、APRSlocus 识别）
-  static const appVersion = '2.1.31';
+  static const appVersion = '2.1.32';
   // 我的电台
   String myCall = 'BV2AAA';
 

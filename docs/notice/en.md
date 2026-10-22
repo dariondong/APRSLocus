@@ -133,11 +133,12 @@ The fault was ours. Sorry for the trouble.
 
 ---
 
-## 🔔 What is new: 2.1.31
+## 🔔 What is new: 2.1.32
 
-- The station page gained a licence check. It opens a page of its own, and the form only appears after you read the notes and tap "I agree".
-- Type your name and licence number; the app asks the CRAC check endpoint once. The result comes back to this device only and keeps just the pass and the class.
-- Verification is voluntary and the app works the same without it. Only mainland China callsigns see the block.
+- The setup wizard is reworked into eight steps: language, terms, welcome, callsign, symbol, receive filter, server, done. Each step asks one thing.
+- The callsign is checked against the app's rules, and an -SSID typed into the box is split into the suffix, with the full callsign shown below as you type.
+- The last step follows the address, and with it empty the button reads Finish only. A new final page reads back the callsign, symbol and server, then points at the stations, sending a position, and the manual.
+- The welcome page gained Restore from a backup. On a new phone or after a reinstall you import the whole backup here instead of walking seven steps first.
 
 ---
 
@@ -155,9 +156,9 @@ Look up APALOC in the official TOCALL table and you will find it.
 
 The 2.2.0 build published on the Qingling (清零) channel by mistake has been taken down, and the channel works normally again.
 
-Checking for updates now returns the latest stable version, 2.1.31. If you installed 2.2.0, uninstall it first, then install 2.1.31.
+Checking for updates now returns the latest stable version, 2.1.32. If you installed 2.2.0, uninstall it first, then install 2.1.32.
 
-**[Download 2.1.31](https://github.com/dariondong/APRSLocus/releases/download/v2.1.31/APRSLocus_2.1.31.apk)**
+**[Download 2.1.32](https://github.com/dariondong/APRSLocus/releases/download/v2.1.32/APRSLocus_2.1.32.apk)**
 
 ---
 

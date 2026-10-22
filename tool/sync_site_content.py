@@ -419,6 +419,34 @@ CARDS = [
 # 只列「重点版本」：中间几十个纯修 bug 的版本归纳进文字说明，完整记录指向 Releases。
 CL = [
     {
+        'ver': 'v2.1.32', 'date': '2026-10-22',
+        'items': [
+            ('new',
+             T('新手引导重做成八步：语言、用户协议、欢迎、呼号、符号、接收筛选、服务器、配置完成。每一步只问一件事。',
+               '新手引導重做成八步：語言、用戶協議、歡迎、呼號、符號、接收篩選、伺服器、設定完成。每一步只問一件事。',
+               'The setup wizard is reworked into eight steps: language, terms, welcome, callsign, symbol, '
+               'receive filter, server, done. Each step asks one thing.')),
+            ('up',
+             T('呼号按软件里同一套规则校验，形状不对就停在原地提示。把 -SSID 直接写在呼号框里也行，会自动拆到后缀，下面实时显示完整呼号。',
+               '呼號按軟體裡同一套規則校驗，形狀不對就停在原地提示。把 -SSID 直接寫在呼號框裡也行，會自動拆到後綴，下面即時顯示完整呼號。',
+               'The callsign is checked with the same rules the app uses, and a wrong shape stops you there. '
+               'You can also type -SSID straight into the box; it is split into the suffix and the full '
+               'callsign shows below as you type.')),
+            ('up',
+             T('服务器的最后一步跟着地址走，地址留空时按钮只写「完成」。新增的最后一页回读呼号、符号和服务器，再指出看台站、发位置、使用手册三处地方。',
+               '伺服器的最後一步跟著地址走，地址留空時按鈕只寫「完成」。新增的最後一頁回讀呼號、符號和伺服器，再指出看臺站、發位置、使用手冊三處地方。',
+               'The last step follows the address, and with it empty the button reads Finish only. A new final '
+               'page reads back the callsign, symbol and server, then points at the stations, sending a '
+               'position, and the manual.')),
+            ('new',
+             T('欢迎页多了一个「从备份恢复」。换机或重装的人在这里整份导入备份，不用先走完七步再进设置，呼号、符号、筛选和服务器跟着一起回来。',
+               '歡迎頁多了一個「從備份還原」。換機或重裝的人在這裡整份匯入備份，不用先走完七步再進設定，呼號、符號、篩選和伺服器跟著一起回來。',
+               'The welcome page gained Restore from a backup. On a new phone or after a reinstall you import '
+               'the whole backup here instead of walking seven steps first, and the callsign, symbol, filter '
+               'and server come back with it.')),
+        ],
+    },
+    {
         'ver': 'v2.1.31', 'date': '2026-10-22',
         'items': [
             ('new',

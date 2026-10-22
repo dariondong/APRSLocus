@@ -1,5 +1,29 @@
 # 更新日志
 
+## [2.1.32] - 2026-10-22
+
+### 新手引导重做
+
+- **引导现在是八步**：语言、用户协议、欢迎、呼号、符号、接收筛选、服务器、配置完成。每一步只问一件事。
+- 呼号按软件里同一套规则校验，形状不对就停在原地提示。把 `-SSID` 直接写在呼号框里也行，会自动拆到后缀，下面实时显示完整呼号。
+- 服务器的最后一步跟着地址走。地址留空时按钮只写「完成」，软件不会替你连到任何地方。
+- 新增的最后一页回读你的呼号、符号和服务器，再指出接下来三处地方：看台站、发位置、使用手册。
+- 欢迎页多了一个「从备份恢复」。换机或重装的人在这里整份导入备份，不用先走完七步再进设置，呼号、符号、筛选和服务器跟着一起回来。
+
+---
+
+## [2.1.32] - 2026-10-22 (English)
+
+### Setup wizard rework
+
+- **The wizard now has eight steps**: language, terms, welcome, callsign, symbol, receive filter, server, done. Each step asks one thing.
+- The callsign is checked with the same rules the app uses, and a wrong shape stops you there. You can also type `-SSID` straight into the callsign box; it is split into the suffix, and the full callsign shows below as you type.
+- The last step follows the address. With the address empty the button reads Finish only, and the app connects nowhere on your behalf.
+- A new final page reads back your callsign, symbol and server, then points at three places: stations, sending a position, the manual.
+- The welcome page gained Restore from a backup. On a new phone or after a reinstall you import the whole backup here instead of walking seven steps first, and the callsign, symbol, filter and server come back with it.
+
+---
+
 ## [2.1.31] - 2026-10-22
 
 ### 电台页可以验证操作证
