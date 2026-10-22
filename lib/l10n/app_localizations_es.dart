@@ -10128,4 +10128,7 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get oobeDoneManualDesc => "En ajustes está el manual. Explica cómo conectar un equipo y qué revisar cuando no se envía.";
 
+  @override
+  String get oobeRestore => "Restaurar desde una copia";
+
 }

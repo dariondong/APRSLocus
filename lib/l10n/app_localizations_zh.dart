@@ -9690,6 +9690,9 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String get oobeDoneManualDesc => "设置里有使用手册。设备怎么接、发不出去怎么查都写在里面。";
 
+  @override
+  String get oobeRestore => "从备份恢复";
+
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
@@ -19376,5 +19379,8 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get oobeDoneManualDesc => "設定裡有使用手冊。裝置怎麼接、發不出去怎麼查都寫在裡面。";
+
+  @override
+  String get oobeRestore => "從備份還原";
 
 }

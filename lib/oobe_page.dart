@@ -4,9 +4,11 @@ import 'terms_version.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart'
     show defaultTargetPlatform, TargetPlatform, kIsWeb;
-import 'package:flutter/services.dart' show SystemNavigator;
+import 'package:flutter/services.dart' show Clipboard, SystemNavigator;
 import 'package:url_launcher/url_launcher.dart';
 
+import 'backup.dart';
+import 'backup_io.dart' if (dart.library.html) 'backup_io_web.dart' as backup_io;
 import 'theme.dart';
 import 'state.dart';
 import 'models.dart';
@@ -253,6 +255,140 @@ class _OobePageState extends State<OobePage> {
       await st.toggleSource(AppState.srcAprsIs, false);
     }
     st.toggleConnect();
+  }
+
+  // ─── 从备份恢复（欢迎页） ───
+
+  String _restoreErrText(S s, BackupErrorCode code) {
+    switch (code) {
+      case BackupErrorCode.notJson:
+        return s.backupErrNotJson;
+      case BackupErrorCode.notBackup:
+        return s.backupErrNotBackup;
+      case BackupErrorCode.schemaNewer:
+        return s.backupErrSchemaNewer;
+      case BackupErrorCode.empty:
+        return s.backupErrEmpty;
+    }
+  }
+
+  /// 不能选文件时（Web 版）从剪贴板取备份文本。
+  Future<String?> _backupFromClipboard(S s) async {
+    Object? text;
+    try {
+      final d = await Clipboard.getData('text/plain');
+      text = d?.text;
+    } catch (_) {}
+    if (!mounted) return null;
+    final t = (text ?? '').toString();
+    if (t.trim().isEmpty) {
+      _toast(s.backupPasteEmpty);
+      return null;
+    }
+    return t;
+  }
+
+  /// 选一份备份并读回文本；取消或出错时提示并返回 null。
+  Future<String?> _pickBackupText(S s) async {
+    backup_io.BackupPickResult r;
+    try {
+      r = await backup_io.pickBackupFile();
+    } catch (_) {
+      r = const backup_io.BackupPickResult.fail(
+        backup_io.BackupPickError.readFailed,
+      );
+    }
+    if (!mounted) return null;
+    final t = r.file?.content;
+    if (t != null) return t;
+    switch (r.error) {
+      case backup_io.BackupPickError.cancelled:
+        return null; // 用户自己取消，不提示
+      case backup_io.BackupPickError.tooLarge:
+        _toast(s.backupErrTooLarge);
+        return null;
+      case backup_io.BackupPickError.unsupported:
+        // 选不了文件就走剪贴板，与备份页给的出路一致
+        return _backupFromClipboard(s);
+      default:
+        _toast(s.backupErrRead);
+        return null;
+    }
+  }
+
+  /// 整份导入一份备份，再按备份里的「引导已完成」决定下一步。
+  ///
+  /// 入口只放在欢迎页：重装或换机的人最先到这里，让他走完七步再进设置恢复，
+  /// 等于把呼号、符号、服务器又手填一遍，备份就白做了。备份的设置分组里带着
+  /// `oobeDone`（见 lib/backup.dart），恢复成功后 App 层（app.dart）会按它
+  /// 直接切到主界面，这一页随即被替换掉。
+  Future<void> _restoreFromBackup() async {
+    if (_busy) return;
+    final s = S.of(context);
+    setState(() => _busy = true);
+    final content = await _pickBackupText(s);
+    if (!mounted) return;
+    setState(() => _busy = false);
+    if (content == null) return; // 取消或出错，提示已经在里面发过了
+    BackupData data;
+    try {
+      data = parseBackupJson(content);
+    } on BackupException catch (e) {
+      _toast(_restoreErrText(s, e.code));
+      return;
+    } catch (_) {
+      _toast(s.backupErrRead);
+      return;
+    }
+    final cats = data.categories.toSet();
+    if (cats.isEmpty) {
+      _toast(s.backupErrEmpty);
+      return;
+    }
+    setState(() => _busy = true);
+    BackupApplyResult? res;
+    var days = 0;
+    try {
+      res = await applyBackup(data, cats);
+      // 历史轨迹拼在设置分组里（见 lib/backup.dart），按天合并，不动本地其它天。
+      if (cats.contains(BackupCategory.settings) && data.trackDays.isNotEmpty) {
+        try {
+          days = await backup_io.applyTrackDays(data.trackDays);
+        } catch (_) {}
+      }
+      if (res.applied > 0 || days > 0) await widget.state.reloadFromPrefs();
+    } catch (_) {}
+    if (!mounted) return;
+    setState(() => _busy = false);
+    if (res == null) {
+      _toast(s.backupErrRead);
+      return;
+    }
+    // 备份说引导已经走完：主界面已经接上，这一页正在被替换，不必再刷表单。
+    if (widget.state.oobeDone) return;
+    _adoptRestored();
+    _toast(s.backupImported(res.applied));
+  }
+
+  /// 把恢复出来的值搬回本页表单：备份没带「引导已完成」时用户接着往下走，
+  /// 看到的是备份里的呼号/符号/筛选/服务器，而不是一片空白。
+  void _adoptRestored() {
+    final st = widget.state;
+    final acn = st.acnOn;
+    setState(() {
+      _call.text = st.myCall;
+      _ssid = st.mySsid;
+      _symbol = st.mySymbol;
+      _lang = st.locale;
+      _link = acn ? AppState.srcAcn : AppState.srcAprsIs;
+      _filterCountries = List<String>.from(st.receiveCountries);
+      _receiveOthers = st.receiveOthers;
+      // 服务器三格直接读恢复出来的值：这里不能用 _pickLink，它按「是否重跑
+      // 向导」决定填不填，会把刚恢复的地址又清成空。
+      _server.text = acn ? st.acnServer : st.aprs.server;
+      _port.text = '${acn ? st.acnPort : st.aprs.port}';
+      _pass.text = acn ? st.acnPasscode : st.aprs.passcode;
+    });
   }
 
   void _toast(String msg) {
@@ -687,6 +823,17 @@ class _OobePageState extends State<OobePage> {
             SizedBox(height: 16),
           ],
           Text(S.of(context).oobeNextSteps, style: ts(11, c: C.grey, h: 1.5)),
+          SizedBox(height: 4),
+          // 恢复入口只放在欢迎页：重装或换机的人到这里就能整份搬回来。
+          TextButton.icon(
+            onPressed: _busy ? null : _restoreFromBackup,
+            icon: Icon(Icons.settings_backup_restore_rounded, size: 16),
+            label: Text(
+              S.of(context).oobeRestore,
+              style: ts(12, w: FontWeight.w600),
+            ),
+            style: TextButton.styleFrom(foregroundColor: C.blue),
+          ),
         ],
       ),
     );

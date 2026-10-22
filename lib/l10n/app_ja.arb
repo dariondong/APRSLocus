@@ -4361,5 +4361,6 @@
   "oobeDoneBeacon": "位置を送る",
   "oobeDoneBeaconDesc": "接続すると、地図ページの下に開始ボタンが出ます。",
   "oobeDoneManualDesc": "設定にマニュアルがあります。無線機のつなぎ方や送れないときの調べ方が書いてあります。",
-  "@oobeDoneConnectNote": {"placeholders": {"link": {"type": "String"}}}
+  "@oobeDoneConnectNote": {"placeholders": {"link": {"type": "String"}}},
+  "oobeRestore": "バックアップから復元"
 }

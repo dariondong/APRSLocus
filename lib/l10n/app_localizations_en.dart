@@ -10069,4 +10069,7 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get oobeDoneManualDesc => "Settings has the manual. It covers hooking up a radio and what to check when sending fails.";
 
+  @override
+  String get oobeRestore => "Restore from a backup";
+
 }

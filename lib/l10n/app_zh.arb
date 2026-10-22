@@ -5040,5 +5040,6 @@
   "oobeDoneBeacon": "发位置",
   "oobeDoneBeaconDesc": "连上之后，地图页底部有开始上报的按钮。",
   "oobeDoneManualDesc": "设置里有使用手册。设备怎么接、发不出去怎么查都写在里面。",
-  "@oobeDoneConnectNote": {"placeholders": {"link": {"type": "String"}}}
+  "@oobeDoneConnectNote": {"placeholders": {"link": {"type": "String"}}},
+  "oobeRestore": "从备份恢复"
 }

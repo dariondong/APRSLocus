@@ -10079,4 +10079,7 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get oobeDoneManualDesc => "Panduan ada di pengaturan. Isinya cara menyambung perangkat dan apa yang dicek saat gagal kirim.";
 
+  @override
+  String get oobeRestore => "Pulihkan dari cadangan";
+
 }

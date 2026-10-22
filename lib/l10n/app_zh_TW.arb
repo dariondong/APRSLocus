@@ -4949,5 +4949,6 @@
   "oobeDoneBeacon": "發位置",
   "oobeDoneBeaconDesc": "連上之後，地圖頁底部有開始上報的按鈕。",
   "oobeDoneManualDesc": "設定裡有使用手冊。裝置怎麼接、發不出去怎麼查都寫在裡面。",
-  "@oobeDoneConnectNote": {"placeholders": {"link": {"type": "String"}}}
+  "@oobeDoneConnectNote": {"placeholders": {"link": {"type": "String"}}},
+  "oobeRestore": "從備份還原"
 }

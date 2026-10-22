@@ -9790,4 +9790,7 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String get oobeDoneManualDesc => "設定にマニュアルがあります。無線機のつなぎ方や送れないときの調べ方が書いてあります。";
 
+  @override
+  String get oobeRestore => "バックアップから復元";
+
 }

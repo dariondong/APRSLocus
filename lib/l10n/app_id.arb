@@ -4361,5 +4361,6 @@
   "oobeDoneBeacon": "Kirim posisi",
   "oobeDoneBeaconDesc": "Setelah tersambung, tombol mulai ada di bawah halaman peta.",
   "oobeDoneManualDesc": "Panduan ada di pengaturan. Isinya cara menyambung perangkat dan apa yang dicek saat gagal kirim.",
-  "@oobeDoneConnectNote": {"placeholders": {"link": {"type": "String"}}}
+  "@oobeDoneConnectNote": {"placeholders": {"link": {"type": "String"}}},
+  "oobeRestore": "Pulihkan dari cadangan"
 }

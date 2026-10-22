@@ -17739,6 +17739,12 @@ abstract class AppLocalizations {
   /// **'设置里有使用手册。设备怎么接、发不出去怎么查都写在里面。'**
   String get oobeDoneManualDesc;
 
+  /// No description provided for @oobeRestore.
+  ///
+  /// In zh, this message translates to:
+  /// **'从备份恢复'**
+  String get oobeRestore;
+
 }
 
 class _AppLocalizationsDelegate
