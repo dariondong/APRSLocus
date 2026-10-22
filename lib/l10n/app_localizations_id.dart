@@ -10046,4 +10046,7 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get oobeSsidInvalid => "SSID hanya boleh satu atau dua huruf atau angka.";
 
+  @override
+  String get oobeFinishLocal => "Selesai";
+
 }

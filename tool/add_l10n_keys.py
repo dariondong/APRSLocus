@@ -139,6 +139,9 @@ KEYS = {
         'APRS-IS プロトコルでは、利用者がアマチュア無線家であることを確認する責任と義務がソフトウェア開発者にあります。',
         'El protocolo APRS-IS pone en el desarrollador del software el deber de verificar que los usuarios sean radioaficionados.',
         'Protokol APRS-IS menetapkan kewajiban pengembang perangkat lunak untuk memastikan pengguna adalah penggemar radio amatir.'),
+    # ── 首次引导：没填地址时最后一步不叫「完成并连接」 ──
+    'oobeFinishLocal': (
+        '完成', '完成', 'Finish', '完了', 'Terminar', 'Selesai'),
     # ── 首次引导：呼号形状校验 ──
     'oobeCallInvalid': (
         '呼号格式不对。常见的写法是 BG7LZQ 或 JA1AA。',

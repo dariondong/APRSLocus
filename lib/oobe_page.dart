@@ -330,26 +330,41 @@ class _OobePageState extends State<OobePage> {
                   else
                     SizedBox(width: 96),
                   Spacer(),
-                  FilledButton.icon(
-                    onPressed: _next,
-                    icon: Icon(
-                      last ? Icons.check_rounded : Icons.arrow_forward_rounded,
-                      size: 16,
-                    ),
-                    label: Text(
-                      last ? S.of(context).finish : S.of(context).next,
-                    ),
-                    style: FilledButton.styleFrom(
-                      backgroundColor: C.blue,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 22,
-                        vertical: 12,
-                      ),
-                      textStyle: ts(13, w: FontWeight.w700),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
+                  // 最后一步的按钮文案跟着地址走：没填地址时只是「完成」，
+                  // 因为留空就是不连接（软件不预置服务器）。写成「完成并连接」
+                  // 会让人以为点完会去哪台服务器。
+                  ValueListenableBuilder<TextEditingValue>(
+                    valueListenable: _server,
+                    builder: (_, v, __) {
+                      final filled = v.text.trim().isNotEmpty;
+                      return FilledButton.icon(
+                        onPressed: _next,
+                        icon: Icon(
+                          last
+                              ? Icons.check_rounded
+                              : Icons.arrow_forward_rounded,
+                          size: 16,
+                        ),
+                        label: Text(
+                          last
+                              ? (filled
+                                    ? S.of(context).finish
+                                    : S.of(context).oobeFinishLocal)
+                              : S.of(context).next,
+                        ),
+                        style: FilledButton.styleFrom(
+                          backgroundColor: C.blue,
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 22,
+                            vertical: 12,
+                          ),
+                          textStyle: ts(13, w: FontWeight.w700),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                      );
+                    },
                   ),
                 ],
               ),

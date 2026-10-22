@@ -17673,6 +17673,12 @@ abstract class AppLocalizations {
   /// **'后缀只能是一位或两位数字、字母。'**
   String get oobeSsidInvalid;
 
+  /// No description provided for @oobeFinishLocal.
+  ///
+  /// In zh, this message translates to:
+  /// **'完成'**
+  String get oobeFinishLocal;
+
 }
 
 class _AppLocalizationsDelegate

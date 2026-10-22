@@ -9757,4 +9757,7 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String get oobeSsidInvalid => "SSID は数字か英字の 1〜2 文字です。";
 
+  @override
+  String get oobeFinishLocal => "完了";
+
 }

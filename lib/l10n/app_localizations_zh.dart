@@ -9657,6 +9657,9 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String get oobeSsidInvalid => "后缀只能是一位或两位数字、字母。";
 
+  @override
+  String get oobeFinishLocal => "完成";
+
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
@@ -19310,5 +19313,8 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get oobeSsidInvalid => "後綴只能是一位或兩位數字、字母。";
+
+  @override
+  String get oobeFinishLocal => "完成";
 
 }

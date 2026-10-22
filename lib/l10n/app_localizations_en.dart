@@ -10036,4 +10036,7 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get oobeSsidInvalid => "The SSID can be one or two letters or digits.";
 
+  @override
+  String get oobeFinishLocal => "Finish";
+
 }
