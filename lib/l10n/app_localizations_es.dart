@@ -10089,4 +10089,10 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get cracCertLocal => "La comprobación la hace el programa, sin revisión humana. El resultado vuelve solo a este dispositivo y guarda únicamente si pasó y la clase.";
 
+  @override
+  String get oobeCallInvalid => "Ese indicativo no parece correcto. Formatos habituales: BG7LZQ o JA1AA.";
+
+  @override
+  String get oobeSsidInvalid => "El SSID puede ser una o dos letras o cifras.";
+
 }

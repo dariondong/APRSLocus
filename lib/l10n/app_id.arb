@@ -4347,5 +4347,7 @@
   "cracCertWhyRequired": "Protokol APRS-IS menetapkan kewajiban pengembang perangkat lunak untuk memastikan pengguna adalah penggemar radio amatir.",
   "cracCertEntry": "Pemeriksaan lisensi",
   "cracCertVoluntary": "Verifikasi bersifat sukarela. Aplikasi tetap berjalan sama tanpanya.",
-  "cracCertLocal": "Pemeriksaan dijalankan oleh program, tanpa tinjauan manusia. Hasilnya kembali hanya ke perangkat ini, berisi lulus dan kelas lisensi saja."
+  "cracCertLocal": "Pemeriksaan dijalankan oleh program, tanpa tinjauan manusia. Hasilnya kembali hanya ke perangkat ini, berisi lulus dan kelas lisensi saja.",
+  "oobeCallInvalid": "Tanda panggil itu sepertinya tidak tepat. Bentuk umum: BG7LZQ atau JA1AA.",
+  "oobeSsidInvalid": "SSID hanya boleh satu atau dua huruf atau angka."
 }

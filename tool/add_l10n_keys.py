@@ -139,6 +139,21 @@ KEYS = {
         'APRS-IS プロトコルでは、利用者がアマチュア無線家であることを確認する責任と義務がソフトウェア開発者にあります。',
         'El protocolo APRS-IS pone en el desarrollador del software el deber de verificar que los usuarios sean radioaficionados.',
         'Protokol APRS-IS menetapkan kewajiban pengembang perangkat lunak untuk memastikan pengguna adalah penggemar radio amatir.'),
+    # ── 首次引导：呼号形状校验 ──
+    'oobeCallInvalid': (
+        '呼号格式不对。常见的写法是 BG7LZQ 或 JA1AA。',
+        '呼號格式不對。常見的寫法是 BG7LZQ 或 JA1AA。',
+        'That callsign does not look right. Common forms are BG7LZQ or JA1AA.',
+        'コールサインの形式が正しくありません。例：BG7LZQ、JA1AA。',
+        'Ese indicativo no parece correcto. Formatos habituales: BG7LZQ o JA1AA.',
+        'Tanda panggil itu sepertinya tidak tepat. Bentuk umum: BG7LZQ atau JA1AA.'),
+    'oobeSsidInvalid': (
+        '后缀只能是一位或两位数字、字母。',
+        '後綴只能是一位或兩位數字、字母。',
+        'The SSID can be one or two letters or digits.',
+        'SSID は数字か英字の 1〜2 文字です。',
+        'El SSID puede ser una o dos letras o cifras.',
+        'SSID hanya boleh satu atau dua huruf atau angka.'),
 }
 
 META = {

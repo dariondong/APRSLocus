@@ -10030,4 +10030,10 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get cracCertLocal => "The check runs by program, with no human review. The result comes back to this device only, and keeps just the pass and the licence class.";
 
+  @override
+  String get oobeCallInvalid => "That callsign does not look right. Common forms are BG7LZQ or JA1AA.";
+
+  @override
+  String get oobeSsidInvalid => "The SSID can be one or two letters or digits.";
+
 }

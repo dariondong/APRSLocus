@@ -107,13 +107,32 @@ class _OobePageState extends State<OobePage> {
         // 欢迎页：无校验
         break;
       case 3:
-        // 呼号步骤
-        final c = _call.text.trim().toUpperCase();
-        if (c.isEmpty) {
+        // 呼号步骤：不能只判「非空」。形状不对的呼号在 APRS-IS 上发不出去，
+        // 用户却以为配好了，所以这里按 state 的同一套规则校验。
+        // 顺手写在呼号里的 -SSID（BG7LZQ-9）拆出来交给后缀 ——
+        // 一个输入框写完是最自然的输入方式，不该要求他分成两步填。
+        final raw = _call.text.trim().toUpperCase();
+        if (raw.isEmpty) {
           _toast(S.of(context).enterCallsign);
           return;
         }
-        widget.state.myCall = c;
+        final dash = raw.indexOf('-');
+        final base = (dash < 0 ? raw : raw.substring(0, dash)).trim();
+        final typedSsid = dash < 0 ? '' : raw.substring(dash + 1).trim();
+        if (!AppState.isValidCallsign(base)) {
+          _toast(S.of(context).oobeCallInvalid);
+          return;
+        }
+        if (typedSsid.isNotEmpty) {
+          final v = AppState.normalizeSsid(typedSsid);
+          if (v == null) {
+            _toast(S.of(context).oobeSsidInvalid);
+            return;
+          }
+          _ssid = v;
+        }
+        _call.text = base;
+        widget.state.myCall = base;
         widget.state.setSsid(_ssid);
         widget.state.persist();
         break;
@@ -779,20 +798,22 @@ class _OobePageState extends State<OobePage> {
             ),
           ),
           SizedBox(height: 6),
-          // 预览完整呼号
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-            decoration: BoxDecoration(
-              color: C.blueBg,
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Text(
-              S
-                  .of(context)
-                  .fullCallsign(
-                    '${_call.text.trim().toUpperCase()}${_ssid.isEmpty ? '' : '-$_ssid'}',
-                  ),
-              style: ts(12, c: C.blue, w: FontWeight.w600),
+          // 预览完整呼号：跟着输入框实时刷新（文本框自己改字不会重建父组件，
+          // 所以用 ValueListenableBuilder 盯 controller，整页不跟着逐字重建）
+          ValueListenableBuilder<TextEditingValue>(
+            valueListenable: _call,
+            builder: (_, v, __) => Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              decoration: BoxDecoration(
+                color: C.blueBg,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Text(
+                S.of(context).fullCallsign(
+                  '${v.text.trim().toUpperCase()}${_ssid.isEmpty ? '' : '-$_ssid'}',
+                ),
+                style: ts(12, c: C.blue, w: FontWeight.w600),
+              ),
             ),
           ),
           SizedBox(height: 14),

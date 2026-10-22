@@ -4935,5 +4935,7 @@
   "cracCertWhyRequired": "APRS-IS 協議 軟體開發者有責任與義務驗證軟體使用者為業餘無線電愛好者",
   "cracCertEntry": "操作證驗證",
   "cracCertVoluntary": "驗證自願，不驗證也能照常用。",
-  "cracCertLocal": "查詢由程式直接完成，沒有任何人工作業。結果只回本機，只保留是否通過和證書類別。"
+  "cracCertLocal": "查詢由程式直接完成，沒有任何人工作業。結果只回本機，只保留是否通過和證書類別。",
+  "oobeCallInvalid": "呼號格式不對。常見的寫法是 BG7LZQ 或 JA1AA。",
+  "oobeSsidInvalid": "後綴只能是一位或兩位數字、字母。"
 }

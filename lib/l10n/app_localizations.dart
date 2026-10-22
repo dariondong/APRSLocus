@@ -17661,6 +17661,18 @@ abstract class AppLocalizations {
   /// **'查询由程序直接完成，没有人工审核。结果只回本机，只保留是否通过和证书类别。'**
   String get cracCertLocal;
 
+  /// No description provided for @oobeCallInvalid.
+  ///
+  /// In zh, this message translates to:
+  /// **'呼号格式不对。常见的写法是 BG7LZQ 或 JA1AA。'**
+  String get oobeCallInvalid;
+
+  /// No description provided for @oobeSsidInvalid.
+  ///
+  /// In zh, this message translates to:
+  /// **'后缀只能是一位或两位数字、字母。'**
+  String get oobeSsidInvalid;
+
 }
 
 class _AppLocalizationsDelegate

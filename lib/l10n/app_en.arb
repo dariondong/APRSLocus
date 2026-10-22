@@ -4347,5 +4347,7 @@
   "cracCertWhyRequired": "The APRS-IS protocol puts the duty on the software developer to verify that users are amateur radio operators.",
   "cracCertEntry": "Licence check",
   "cracCertVoluntary": "Verification is voluntary. The app works the same without it.",
-  "cracCertLocal": "The check runs by program, with no human review. The result comes back to this device only, and keeps just the pass and the licence class."
+  "cracCertLocal": "The check runs by program, with no human review. The result comes back to this device only, and keeps just the pass and the licence class.",
+  "oobeCallInvalid": "That callsign does not look right. Common forms are BG7LZQ or JA1AA.",
+  "oobeSsidInvalid": "The SSID can be one or two letters or digits."
 }

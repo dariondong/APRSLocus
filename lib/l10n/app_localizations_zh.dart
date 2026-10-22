@@ -9651,6 +9651,12 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String get cracCertLocal => "查询由程序直接完成，没有人工审核。结果只回本机，只保留是否通过和证书类别。";
 
+  @override
+  String get oobeCallInvalid => "呼号格式不对。常见的写法是 BG7LZQ 或 JA1AA。";
+
+  @override
+  String get oobeSsidInvalid => "后缀只能是一位或两位数字、字母。";
+
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
@@ -19298,5 +19304,11 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get cracCertLocal => "查詢由程式直接完成，沒有任何人工作業。結果只回本機，只保留是否通過和證書類別。";
+
+  @override
+  String get oobeCallInvalid => "呼號格式不對。常見的寫法是 BG7LZQ 或 JA1AA。";
+
+  @override
+  String get oobeSsidInvalid => "後綴只能是一位或兩位數字、字母。";
 
 }

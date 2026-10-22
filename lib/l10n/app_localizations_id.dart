@@ -10040,4 +10040,10 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get cracCertLocal => "Pemeriksaan dijalankan oleh program, tanpa tinjauan manusia. Hasilnya kembali hanya ke perangkat ini, berisi lulus dan kelas lisensi saja.";
 
+  @override
+  String get oobeCallInvalid => "Tanda panggil itu sepertinya tidak tepat. Bentuk umum: BG7LZQ atau JA1AA.";
+
+  @override
+  String get oobeSsidInvalid => "SSID hanya boleh satu atau dua huruf atau angka.";
+
 }

@@ -9751,4 +9751,10 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String get cracCertLocal => "照合はプログラムが行い、人手の審査はありません。結果はこの端末にだけ戻り、通過と資格クラスだけを残します。";
 
+  @override
+  String get oobeCallInvalid => "コールサインの形式が正しくありません。例：BG7LZQ、JA1AA。";
+
+  @override
+  String get oobeSsidInvalid => "SSID は数字か英字の 1〜2 文字です。";
+
 }

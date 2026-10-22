@@ -5026,5 +5026,7 @@
   "cracCertWhyRequired": "APRS-IS 协议 软件开发者有责任与义务验证软件使用者为业余无线电爱好者",
   "cracCertEntry": "操作证验证",
   "cracCertVoluntary": "验证自愿，不验证也能照常用。",
-  "cracCertLocal": "查询由程序直接完成，没有人工审核。结果只回本机，只保留是否通过和证书类别。"
+  "cracCertLocal": "查询由程序直接完成，没有人工审核。结果只回本机，只保留是否通过和证书类别。",
+  "oobeCallInvalid": "呼号格式不对。常见的写法是 BG7LZQ 或 JA1AA。",
+  "oobeSsidInvalid": "后缀只能是一位或两位数字、字母。"
 }
