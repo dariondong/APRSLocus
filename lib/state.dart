@@ -9100,7 +9100,12 @@ class AppState extends ChangeNotifier {
     // 使图标与其它 APRS 地图一致；FMO 分类由 fmo 结构化字段决定
     final symbol = p.symbol;
     final symbolTable = p.symbolTable;
-    final comment = isFmo ? _cleanFmoComment(p.comment) : _trunc(p.comment);
+    // 台站备注**整句保留**，不再截断。原来这里留 60 字（多出来的换成「…」），
+    // 长备注（中继频点表、活动通知、台站自述）到详情面板与台站列表里只剩半句，
+    // 看着像「这条报文没说完」。界面那头本来就按需换行（StationNote 不限行数），
+    // 数据层先砍一刀只会丢信息、不会省版面。FMO 那类超长证书数据仍由
+    // _cleanFmoComment 收拾。
+    final comment = isFmo ? _cleanFmoComment(p.comment) : p.comment;
     // APRSlocus 专属信息（版本等）
     Map<String, String>? apInfo;
     if (isAprslocus && p.comment != null) {

@@ -1044,11 +1044,11 @@ class _StationDetailState extends State<StationDetail> {
                                 color: C.bgSoft,
                                 borderRadius: BorderRadius.circular(8),
                               ),
+                              // 原始报文整条折行显示。详情面板正是给人逐字核对
+                              // 报文的地方，省略号藏起来的恰好是要看的尾巴。
                               child: Text(
                                 p.raw,
                                 style: mono(10, c: C.slate),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
                               ),
                             ),
                           ),
