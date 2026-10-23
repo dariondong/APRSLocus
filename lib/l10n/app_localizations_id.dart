@@ -10082,4 +10082,16 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get oobeRestore => "Pulihkan dari cadangan";
 
+  @override
+  String get trayCloseToTray => "Perkecil ke tray saat ditutup";
+
+  @override
+  String get trayMenuShow => "Tampilkan jendela";
+
+  @override
+  String get trayMenuHide => "Sembunyikan ke tray";
+
+  @override
+  String get trayMenuQuit => "Keluar dari APRSlocus";
+
 }

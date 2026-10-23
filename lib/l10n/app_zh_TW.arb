@@ -4950,5 +4950,9 @@
   "oobeDoneBeaconDesc": "連上之後，地圖頁底部有開始上報的按鈕。",
   "oobeDoneManualDesc": "設定裡有使用手冊。裝置怎麼接、發不出去怎麼查都寫在裡面。",
   "@oobeDoneConnectNote": {"placeholders": {"link": {"type": "String"}}},
-  "oobeRestore": "從備份還原"
+  "oobeRestore": "從備份還原",
+  "trayCloseToTray": "關閉視窗時最小化到系統匣",
+  "trayMenuShow": "顯示主視窗",
+  "trayMenuHide": "隱藏到系統匣",
+  "trayMenuQuit": "結束 APRSLocus"
 }

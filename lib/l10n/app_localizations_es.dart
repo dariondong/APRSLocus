@@ -10131,4 +10131,16 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get oobeRestore => "Restaurar desde una copia";
 
+  @override
+  String get trayCloseToTray => "Minimizar a la bandeja al cerrar";
+
+  @override
+  String get trayMenuShow => "Mostrar ventana";
+
+  @override
+  String get trayMenuHide => "Ocultar en la bandeja";
+
+  @override
+  String get trayMenuQuit => "Salir de APRSLocus";
+
 }

@@ -4362,5 +4362,9 @@
   "oobeDoneBeaconDesc": "Once connected, the start button sits at the bottom of the map page.",
   "oobeDoneManualDesc": "Settings has the manual. It covers hooking up a radio and what to check when sending fails.",
   "@oobeDoneConnectNote": {"placeholders": {"link": {"type": "String"}}},
-  "oobeRestore": "Restore from a backup"
+  "oobeRestore": "Restore from a backup",
+  "trayCloseToTray": "Minimize to tray on close",
+  "trayMenuShow": "Show window",
+  "trayMenuHide": "Hide to tray",
+  "trayMenuQuit": "Quit APRSLocus"
 }

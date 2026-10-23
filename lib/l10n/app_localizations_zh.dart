@@ -9693,6 +9693,18 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String get oobeRestore => "从备份恢复";
 
+  @override
+  String get trayCloseToTray => "关闭窗口时最小化到托盘";
+
+  @override
+  String get trayMenuShow => "显示主窗口";
+
+  @override
+  String get trayMenuHide => "隐藏到托盘";
+
+  @override
+  String get trayMenuQuit => "退出 APRSLocus";
+
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
@@ -19382,5 +19394,17 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get oobeRestore => "從備份還原";
+
+  @override
+  String get trayCloseToTray => "關閉視窗時最小化到系統匣";
+
+  @override
+  String get trayMenuShow => "顯示主視窗";
+
+  @override
+  String get trayMenuHide => "隱藏到系統匣";
+
+  @override
+  String get trayMenuQuit => "結束 APRSLocus";
 
 }

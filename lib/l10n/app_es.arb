@@ -4362,5 +4362,9 @@
   "oobeDoneBeaconDesc": "Al conectar, el botón de inicio aparece abajo en la página del mapa.",
   "oobeDoneManualDesc": "En ajustes está el manual. Explica cómo conectar un equipo y qué revisar cuando no se envía.",
   "@oobeDoneConnectNote": {"placeholders": {"link": {"type": "String"}}},
-  "oobeRestore": "Restaurar desde una copia"
+  "oobeRestore": "Restaurar desde una copia",
+  "trayCloseToTray": "Minimizar a la bandeja al cerrar",
+  "trayMenuShow": "Mostrar ventana",
+  "trayMenuHide": "Ocultar en la bandeja",
+  "trayMenuQuit": "Salir de APRSLocus"
 }

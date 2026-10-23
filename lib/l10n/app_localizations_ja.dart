@@ -9793,4 +9793,16 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String get oobeRestore => "バックアップから復元";
 
+  @override
+  String get trayCloseToTray => "閉じたらトレイに格納";
+
+  @override
+  String get trayMenuShow => "ウィンドウを表示";
+
+  @override
+  String get trayMenuHide => "トレイに格納";
+
+  @override
+  String get trayMenuQuit => "APRSLocus を終了";
+
 }

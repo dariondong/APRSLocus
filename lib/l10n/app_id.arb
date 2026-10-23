@@ -4362,5 +4362,9 @@
   "oobeDoneBeaconDesc": "Setelah tersambung, tombol mulai ada di bawah halaman peta.",
   "oobeDoneManualDesc": "Panduan ada di pengaturan. Isinya cara menyambung perangkat dan apa yang dicek saat gagal kirim.",
   "@oobeDoneConnectNote": {"placeholders": {"link": {"type": "String"}}},
-  "oobeRestore": "Pulihkan dari cadangan"
+  "oobeRestore": "Pulihkan dari cadangan",
+  "trayCloseToTray": "Perkecil ke tray saat ditutup",
+  "trayMenuShow": "Tampilkan jendela",
+  "trayMenuHide": "Sembunyikan ke tray",
+  "trayMenuQuit": "Keluar dari APRSlocus"
 }

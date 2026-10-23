@@ -4362,5 +4362,9 @@
   "oobeDoneBeaconDesc": "接続すると、地図ページの下に開始ボタンが出ます。",
   "oobeDoneManualDesc": "設定にマニュアルがあります。無線機のつなぎ方や送れないときの調べ方が書いてあります。",
   "@oobeDoneConnectNote": {"placeholders": {"link": {"type": "String"}}},
-  "oobeRestore": "バックアップから復元"
+  "oobeRestore": "バックアップから復元",
+  "trayCloseToTray": "閉じたらトレイに格納",
+  "trayMenuShow": "ウィンドウを表示",
+  "trayMenuHide": "トレイに格納",
+  "trayMenuQuit": "APRSLocus を終了"
 }

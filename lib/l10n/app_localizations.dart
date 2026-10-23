@@ -17745,6 +17745,30 @@ abstract class AppLocalizations {
   /// **'从备份恢复'**
   String get oobeRestore;
 
+  /// No description provided for @trayCloseToTray.
+  ///
+  /// In zh, this message translates to:
+  /// **'关闭窗口时最小化到托盘'**
+  String get trayCloseToTray;
+
+  /// No description provided for @trayMenuShow.
+  ///
+  /// In zh, this message translates to:
+  /// **'显示主窗口'**
+  String get trayMenuShow;
+
+  /// No description provided for @trayMenuHide.
+  ///
+  /// In zh, this message translates to:
+  /// **'隐藏到托盘'**
+  String get trayMenuHide;
+
+  /// No description provided for @trayMenuQuit.
+  ///
+  /// In zh, this message translates to:
+  /// **'退出 APRSLocus'**
+  String get trayMenuQuit;
+
 }
 
 class _AppLocalizationsDelegate
