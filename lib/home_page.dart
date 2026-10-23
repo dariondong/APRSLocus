@@ -529,33 +529,43 @@ class _HomePageState extends State<HomePage> {
         child: Column(
           children: [
             // Logo
+            //
+            // 左内边距刻意与下面导航项**同一左基线**（列表 8/12 + 项内 10/14）：
+            // 原来是 12/20，Logo 图标比那五个图标各自偏出去 6 ~ 8 px，
+            // 整列看着就是歪的 —— 这不是配色问题，是对不齐。
             Padding(
               padding: compact
-                  ? const EdgeInsets.fromLTRB(12, 12, 12, 10)
-                  : const EdgeInsets.fromLTRB(20, 20, 20, 16),
+                  ? const EdgeInsets.fromLTRB(18, 12, 18, 10)
+                  : const EdgeInsets.fromLTRB(26, 20, 26, 16),
               child: Row(
                 children: [
                   AppLogo(size: compact ? 30 : 38),
-                  SizedBox(width: 10),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'APRSlocus',
-                        style: ts(
-                          compact ? 14 : 17,
-                          w: FontWeight.w800,
-                          ls: -0.3,
-                        ),
-                      ),
-                      if (!compact) ...[
-                        SizedBox(height: 1),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
                         Text(
-                          S.of(context).appTagline,
-                          style: ts(10, c: C.grey),
+                          'APRSlocus',
+                          style: ts(
+                            compact ? 14 : 17,
+                            w: FontWeight.w800,
+                            ls: -0.3,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                         ),
+                        if (!compact) ...[
+                          const SizedBox(height: 1),
+                          Text(
+                            S.of(context).appTagline,
+                            style: ts(10, c: C.grey),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ],
                       ],
-                    ],
+                    ),
                   ),
                 ],
               ),
@@ -572,23 +582,26 @@ class _HomePageState extends State<HomePage> {
                 itemBuilder: (_, i) {
                   final sel = _tab == i;
                   final item = _nav[i];
+                  // 圆角取主题令牌（与卡片/输入框同一套，默认 12）：
+                  // 原来写死 12，用户把卡片圆角调大后侧栏不跟，壳和内容两种圆角。
+                  final itemRadius = BorderRadius.circular(C.fieldRadius);
+                  final itemAccent = ThemeController.instance.tabAccent(
+                        item.$1,
+                        isDark: C.dark,
+                      ) ??
+                      C.blue;
                   return AnimatedContainer(
                     duration: const Duration(milliseconds: 150),
                     decoration: BoxDecoration(
                       color: sel
-                          ? (ThemeController.instance.tabAccent(
-                                      item.$1,
-                                      isDark: C.dark,
-                                    ) ??
-                                    C.blue)
-                                .withValues(alpha: 0.12)
+                          ? itemAccent.withValues(alpha: 0.12)
                           : Colors.transparent,
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: itemRadius,
                     ),
                     child: Material(
                       color: Colors.transparent,
                       child: InkWell(
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: itemRadius,
                         onTap: () {
                           if (i == 2) widget.state.clearUnread();
                           setState(() => _tab = i);
@@ -603,28 +616,16 @@ class _HomePageState extends State<HomePage> {
                               ThemeController.instance.buildSlotIcon(
                                 item.$1,
                                 size: compact ? 18 : 20,
-                                color: sel
-                                    ? (ThemeController.instance.tabAccent(
-                                            item.$1,
-                                            isDark: C.dark,
-                                          ) ??
-                                          C.blue)
-                                    : C.slate,
+                                color: sel ? itemAccent : C.slate,
                                 fallbackIcon: themeIconByName(item.$2),
                                 selected: sel,
                               ),
-                              SizedBox(width: 10),
+                              const SizedBox(width: 10),
                               Text(
                                 item.$3,
                                 style: ts(
                                   compact ? 12 : 13,
-                                  c: sel
-                                      ? (ThemeController.instance.tabAccent(
-                                              item.$1,
-                                              isDark: C.dark,
-                                            ) ??
-                                            C.blue)
-                                      : C.ink,
+                                  c: sel ? itemAccent : C.ink,
                                   w: sel ? FontWeight.w600 : FontWeight.w500,
                                 ),
                                 overflow: TextOverflow.ellipsis,
