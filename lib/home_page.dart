@@ -690,8 +690,19 @@ class _HomePageState extends State<HomePage> {
 
 
   // ─── 顶栏 ───
+
+  /// 顶栏右侧那排控件共用的高度。
+  ///
+  /// 原来是三个数：搜索框 38、统计胶囊 ~25、设备按钮 34 —— 并排站在一起
+  /// 高低不齐，整条顶栏看着就是散的。现在统一到一条基线上。
+  static const double _kTopCtrlH = 34;
+
+  /// 顶栏控件的间距（原来 8 与 12 混用）。
+  static const double _kTopGap = 8;
+
   Widget _topBar() {
     final compact = _compact;
+    final st = widget.state;
     return MaterialSurface(
       // 同上：顶栏背后没有内容，只有壁纸
       overWallpaper: true,
@@ -701,8 +712,11 @@ class _HomePageState extends State<HomePage> {
         color: C.surfaceFillStrong,
         child: LayoutBuilder(
           builder: (context, constraints) {
-            // 手机横屏紧凑模式下：只要右侧宽度足够就保留搜索+统计，否则只留标题+在线数
-            final wide = constraints.maxWidth > 560;
+            // 手机横屏紧凑模式下：右侧宽度够才放搜索框与三项统计。
+            // 两个门槛是按「标题还留得下字」定的：640 以下只剩搜索以外的一格，
+            // 860 以下先砍「收包」（它最长，而且是三项里最不常用的那个）。
+            final wide = constraints.maxWidth > 640;
+            final showPackets = constraints.maxWidth > 860;
             final searchW = (constraints.maxWidth * 0.28).clamp(140.0, 260.0);
             return Row(
               children: [
@@ -715,93 +729,23 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
                 if (wide) ...[
-                  Container(
-                    width: searchW,
-                    height: 38,
-                    decoration: BoxDecoration(
-                      color: C.bgSoft,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: TextField(
-                      controller: _searchCtrl,
-                      onChanged: (v) {
-                        // 防抖：输入停止 300ms 才更新搜索，台站多时避免逐字重建卡顿
-                        _searchDebounce?.cancel();
-                        _searchDebounce = Timer(
-                          const Duration(milliseconds: 300),
-                          () {
-                            if (mounted) setState(() => _search = v);
-                          },
-                        );
-                      },
-                      style: ts(13),
-                      decoration: InputDecoration(
-                        hintText: S.of(context).searchHint,
-                        hintStyle: ts(13, c: C.grey),
-                        prefixIcon: Icon(
-                          Icons.search_rounded,
-                          size: 18,
-                          color: C.grey,
-                        ),
-                        suffixIcon: _search.isNotEmpty
-                            ? IconButton(
-                                icon: Icon(
-                                  Icons.close_rounded,
-                                  size: 16,
-                                  color: C.grey,
-                                ),
-                                onPressed: () {
-                                  _searchCtrl.clear();
-                                  setState(() => _search = '');
-                                },
-                              )
-                            : null,
-                        border: InputBorder.none,
-                        isDense: true,
-                        contentPadding: const EdgeInsets.symmetric(vertical: 9),
-                      ),
-                    ),
-                  ),
-                  SizedBox(width: 12),
-                  // 天气组件（在线左侧）：默认显示当前天气 + 温度，点击弹浮动面板
-                  if (widget.state.weatherEnabled) ...[
-                    WeatherBadge(state: widget.state),
-                    const SizedBox(width: 8),
-                  ],
-                  _statTag(
-                    '${widget.state.online}',
-                    S.of(context).online,
-                    C.green,
-                    C.greenBg,
-                  ),
-                  SizedBox(width: 8),
-                  _statTag(
-                    '${widget.state.moving}',
-                    S.of(context).moving,
-                    C.blue,
-                    C.blueBg,
-                  ),
-                  SizedBox(width: 8),
-                  _statTag(
-                    '${widget.state.packetsRx}',
-                    S.of(context).packetsReceived,
-                    C.slate,
-                    C.greyBg,
-                  ),
-                ] else ...[
-                  // 天气组件（在线左侧）：窄屏同样展示（标题可收缩防溢出）
-                  if (widget.state.weatherEnabled) ...[
-                    WeatherBadge(state: widget.state),
-                    const SizedBox(width: 8),
-                  ],
-                  _statTag(
-                    '${widget.state.online}',
-                    S.of(context).online,
-                    C.green,
-                    C.greenBg,
-                  ),
+                  _searchBox(searchW),
+                  const SizedBox(width: _kTopGap),
                 ],
-                const SizedBox(width: 8),
+                // 天气组件（在线左侧）：点击弹浮动面板。它的自然高度比这排控件
+                // 矮一截，包一层等高的盒子让它与搜索框、统计胶囊居中对齐。
+                if (st.weatherEnabled) ...[
+                  SizedBox(
+                    height: _kTopCtrlH,
+                    child: Center(child: WeatherBadge(state: st)),
+                  ),
+                  const SizedBox(width: _kTopGap),
+                ],
+                _statGroup(
+                  moving: wide,
+                  packets: wide && showPackets,
+                ),
+                const SizedBox(width: _kTopGap),
                 // 设备快捷面板：APRS-IS / APRSNETCN / TNC / 音频一屏切换。
                 // 与 2.0 顶栏那颗同一个入口、同一个面板（[showLinkSheet]）。
                 _quickPanelBtn(),
@@ -810,6 +754,103 @@ class _HomePageState extends State<HomePage> {
           },
         ),
       ),
+    );
+  }
+
+  Widget _searchBox(double width) {
+    return Container(
+      width: width,
+      height: _kTopCtrlH,
+      decoration: BoxDecoration(
+        color: C.bgSoft,
+        borderRadius: BorderRadius.circular(C.fieldRadius),
+      ),
+      child: TextField(
+        controller: _searchCtrl,
+        onChanged: (v) {
+          // 防抖：输入停止 300ms 才更新搜索，台站多时避免逐字重建卡顿
+          _searchDebounce?.cancel();
+          _searchDebounce = Timer(const Duration(milliseconds: 300), () {
+            if (mounted) setState(() => _search = v);
+          });
+        },
+        style: ts(13),
+        decoration: InputDecoration(
+          hintText: S.of(context).searchHint,
+          hintStyle: ts(12, c: C.grey),
+          prefixIcon: Icon(Icons.search_rounded, size: 17, color: C.grey),
+          suffixIcon: _search.isNotEmpty
+              ? IconButton(
+                  icon: Icon(Icons.close_rounded, size: 16, color: C.grey),
+                  onPressed: () {
+                    _searchCtrl.clear();
+                    setState(() => _search = '');
+                  },
+                )
+              : null,
+          border: InputBorder.none,
+          isDense: true,
+          contentPadding: const EdgeInsets.symmetric(vertical: 7),
+        ),
+      ),
+    );
+  }
+
+  /// 顶栏的三项统计：收成**一只中性胶囊**，段间一条细竖线。
+  ///
+  /// 原来三个各自上色的彩块（绿底 / 蓝底 / 灰底）并排在一条顶栏里，加上搜索框、
+  /// 天气胶囊、设备按钮，一块地方四种底色，又碎又抢眼。现在底色只留一层，
+  /// 颜色退到每个数值前的小圆点上，「在线 / 移动 / 收包」照样一眼分得开。
+  Widget _statGroup({bool moving = true, bool packets = true}) {
+    final st = widget.state;
+    final s = S.of(context);
+    return Container(
+      height: _kTopCtrlH,
+      padding: const EdgeInsets.symmetric(horizontal: 12),
+      decoration: BoxDecoration(
+        color: C.bgSoft,
+        borderRadius: BorderRadius.circular(999),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          _statCell(C.green, '${st.online}', s.online),
+          if (moving) ...[
+            _statDivider(),
+            _statCell(C.blue, '${st.moving}', s.moving),
+          ],
+          if (packets) ...[
+            _statDivider(),
+            _statCell(C.slate, '${st.packetsRx}', s.packetsReceived),
+          ],
+        ],
+      ),
+    );
+  }
+
+  Widget _statDivider() {
+    return Container(
+      width: 1,
+      height: 12,
+      margin: const EdgeInsets.symmetric(horizontal: 10),
+      color: C.border,
+    );
+  }
+
+  Widget _statCell(Color dot, String val, String label) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          width: 6,
+          height: 6,
+          decoration: BoxDecoration(color: dot, shape: BoxShape.circle),
+        ),
+        const SizedBox(width: 5),
+        Text(val, style: ts(11, w: FontWeight.w700)),
+        const SizedBox(width: 4),
+        Text(label, style: ts(10, c: C.slate)),
+      ],
     );
   }
 
@@ -824,8 +865,8 @@ class _HomePageState extends State<HomePage> {
           onTap: () => showLinkSheet(context, widget.state),
           behavior: HitTestBehavior.opaque,
           child: Container(
-            width: 34,
-            height: 34,
+            width: _kTopCtrlH,
+            height: _kTopCtrlH,
             decoration: BoxDecoration(
               color: C.blue.withValues(alpha: 0.12),
               shape: BoxShape.circle,
@@ -836,21 +877,6 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
-
-  Widget _statTag(String val, String label, Color c, Color bg) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-      decoration: BoxDecoration(
-        color: bg,
-        borderRadius: BorderRadius.circular(24),
-      ),
-      child: Text(
-        '$val $label',
-        style: ts(11, c: c, w: FontWeight.w600),
-      ),
-    );
-  }
-
 
   // ─── 未连接 / Passcode 错误提示横幅 ───
   Widget _connBanner() {
