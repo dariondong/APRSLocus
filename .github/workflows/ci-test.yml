@@ -34,6 +34,15 @@ jobs:
       - name: Check backup preference keys
         run: python3 tool/check_backup_keys.py
 
+      # 桌面三平台的插件注册表（windows/linux/macos 的 generated_plugin_* 和
+      # GeneratedPluginRegistrant.swift）**只由 `flutter create` 重写**，
+      # pub get 与 build 都不碰它们。于是新加一个原生插件后：分析过、CI 绿，
+      # 装出来的程序里那个插件却没注册 —— 方法通道抛 MissingPluginException，
+      # 被功能自己的 try/catch 咽掉，表现成「一点反应都没有」
+      # （2.1.33 的系统托盘就是这么没的）。
+      - name: Check desktop plugin registrants
+        run: python3 tool/check_plugin_registrants.py
+
       # Android 资源的静态检查：ResId 对不上、布局引用了不存在的 drawable、
       # `setInt("方法名")` 在目标控件上不存在、**小组件尺寸声明不合法**等。
       # 这些**全都是只在装机时才发作**的问题（白块、默认尺寸落不下来），
