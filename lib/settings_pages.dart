@@ -22,6 +22,7 @@ import 'crac_cert.dart';
 import 'crac_cert_page.dart';
 import 'ic705_device_page.dart';
 import 'platform_caps.dart';
+import 'desktop_tray.dart';
 import 'pkwdwpl_device_page.dart';
 import 'tnc_page.dart';
 import 'early_member.dart';
@@ -3407,6 +3408,13 @@ class _DisplaySettingsPageState extends State<DisplaySettingsPage> {
               // 精简模式下这套外壳不用了（有它自己的一套），所以这一行不显示 ——
               // 留着能选会让人以为「选了却看不出来」。
               if (!st.liteMode) _uiLayoutSelector(st),
+              // 桌面三平台才有系统托盘（手机/Web 上不出现这一行，也没意义）。
+              // 开着 = 关窗口收进托盘、托盘菜单可叫回；关着 = 关窗口就是退出。
+              if (desktopTraySupported)
+                SettingsSwitch(S.of(context).trayCloseToTray,
+                    value: st.closeToTray,
+                    color: C.slate,
+                    onChanged: (v) => st.setCloseToTray(v)),
               _notifStyleSelector(st),
               if (st.notifLiveUpdates) _notifLiveTextSelector(st),
               _notifDiagRow(st),
