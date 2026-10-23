@@ -1471,6 +1471,21 @@ class AppState extends ChangeNotifier {
     _notify();
   }
 
+  /// 关闭窗口时是否收进系统托盘（只有桌面三平台有托盘）。
+  ///
+  /// **默认开**：桌面版关窗口本来是退出，而开着 APRS 的人多半想让它继续在
+  /// 后台收报文，一关窗口就把两条链路全断掉太粗暴。真要退出走托盘菜单里的
+  /// 「退出」，或者把这一档关掉，恢复成「关窗口 = 退出」。
+  /// 手机与 Web 上没有托盘，这一档在那里不参与任何判断。
+  bool closeToTray = true;
+
+  void setCloseToTray(bool v) {
+    if (closeToTray == v) return;
+    closeToTray = v;
+    persist();
+    _notify();
+  }
+
   /// 本次里程（公里）：从**本次开启信标**（或本次启动）起走过的距离。
   double tripMileageKm = 0;
 
@@ -4560,6 +4575,7 @@ class AppState extends ChangeNotifier {
     beaconIncludeHr = true;
     beaconBarDetailed = true;
     trackLogOn = false;
+    closeToTray = true;
     networkSymbol = '';
     extGpsStandby = true;
     hrAlarmEnabled = true;
@@ -5072,6 +5088,7 @@ class AppState extends ChangeNotifier {
       beaconBarDetailed =
           p.getBool('beaconBarDetailed') ?? beaconBarDetailed;
       trackLogOn = p.getBool('trackLogOn') ?? trackLogOn;
+      closeToTray = p.getBool('closeToTray') ?? closeToTray;
       networkSymbol = p.getString('networkSymbol') ?? networkSymbol;
       extGpsStandby = p.getBool('extGpsStandby') ?? extGpsStandby;
       hrAlarmEnabled = p.getBool('hrAlarmEnabled') ?? hrAlarmEnabled;
@@ -5483,6 +5500,7 @@ class AppState extends ChangeNotifier {
     await p.setBool('beaconIncludeHr', beaconIncludeHr);
     await p.setBool('beaconBarDetailed', beaconBarDetailed);
     await p.setBool('trackLogOn', trackLogOn);
+    await p.setBool('closeToTray', closeToTray);
     await p.setString('networkSymbol', networkSymbol);
     await p.setBool('extGpsStandby', extGpsStandby);
     await p.setBool('hrAlarmEnabled', hrAlarmEnabled);

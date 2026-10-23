@@ -26,6 +26,7 @@ import 'l10n/app_localizations.dart';
 import 'permission_check.dart';
 import 'settings_pages.dart';
 import 'update_prompt.dart';
+import 'desktop_tray.dart';
 import 'agent_ui.dart';
 
 /// 将设置里保存的语言码（如 'zh_TW'）解析成 Locale
@@ -422,6 +423,9 @@ class _AppState extends State<App> {
         // 而那几页看起来就像「背景图/材质有时候不生效」。
         final bg = ThemeController.instance.buildBackdrop();
         Widget content = AppWidgetSync(state: _state, child: child!);
+        // 系统托盘（桌面三平台）搭在这一层：builder 位于 Localizations 之下，
+        // 托盘菜单的语言才能跟着界面走。手机 / Web 上它只是一层直通。
+        content = DesktopTrayHost(state: _state, child: content);
         if (bg != null) {
           content = Stack(
             children: [

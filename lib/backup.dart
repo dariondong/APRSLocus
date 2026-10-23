@@ -146,6 +146,9 @@ const List<BackupGroupSpec> kBackupGroups = [
     // 精简模式与自选模块：与 uiLayout 同类的显示偏好 —— 用户在旧机上关掉了
     // 排行榜、开着精简模式，新机上当然还是那一套。
     'liteMode', 'featuresOff',
+    // 关窗口时收进托盘（桌面三平台）：与上面几条同类的显示偏好 ——
+    // 用户在旧机上把这一档关了，新机上不该又被拦着关不掉窗口。
+    'closeToTray',
     'uiScale', 'mapType', 'updateChannel', 'heatLevel',
     // 地图标签：与热力图档位同属**地图显示偏好** —— 换机后不该被静默关掉。
     'mapLabelsAlways',
