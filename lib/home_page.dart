@@ -525,7 +525,12 @@ class _HomePageState extends State<HomePage> {
       overWallpaper: true,
       child: Container(
         width: width,
-        color: C.surfaceFillStrong,
+        // 侧栏右沿一条 1px 分隔线。原来侧栏与内容同是白底，只有用户设了
+        // 背景图 / 材质时才分得开；一条线把骨架立起来（2.0 的顶栏横条也这么做）。
+        decoration: BoxDecoration(
+          color: C.surfaceFillStrong,
+          border: Border(right: BorderSide(color: C.border)),
+        ),
         child: Column(
           children: [
             // Logo
@@ -691,7 +696,12 @@ class _HomePageState extends State<HomePage> {
       child: Container(
         height: compact ? 48 : 58,
         padding: EdgeInsets.symmetric(horizontal: compact ? 12 : 20),
-        color: C.surfaceFillStrong,
+        // 下沿一条分隔线，与侧栏那条同色同粗细：三条壳（侧栏 / 顶栏 / 底栏）
+        // 都有边界，内容区才像「被框住的一块」，而不是浮在白色里。
+        decoration: BoxDecoration(
+          color: C.surfaceFillStrong,
+          border: Border(bottom: BorderSide(color: C.border)),
+        ),
         child: LayoutBuilder(
           builder: (context, constraints) {
             // 手机横屏紧凑模式下：右侧宽度够才放搜索框与三项统计。
