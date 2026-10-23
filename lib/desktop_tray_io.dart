@@ -25,15 +25,23 @@ const String _iconOther = 'assets/tray_icon.png';
 
 final _Tray _instance = _Tray();
 
-class _Tray with TrayListener, WindowListener {
-  /// window_manager 初始化试过了（无论成败，只试一次）
-  bool _inited = false;
+bool get _onWindows => defaultTargetPlatform == TargetPlatform.windows;
+bool get _onMacOS => defaultTargetPlatform == TargetPlatform.macOS;
 
-  /// 窗口控制真的可用
+class _Tray with TrayListener, WindowListener {
+  /// window_manager 初始化成功过
   bool _windowOk = false;
 
   /// 托盘真的建起来了
   bool _trayOk = false;
+
+  /// 两个 listener 各只挂一次（`addListener` 会重复登记，事件就成倍地来）
+  bool _winListener = false;
+  bool _trayListener = false;
+
+  /// 建托盘 / 初始化窗口控制都失败时，隔一会儿再试：早先是「试一次就封死」，
+  /// 那一次没成就再也没有托盘。
+  DateTime _retryAt = DateTime.fromMillisecondsSinceEpoch(0);
 
   /// 当前是否真的在拦关闭（与「用户想不想」是两件事）
   bool _prevent = false;
@@ -59,11 +67,16 @@ class _Tray with TrayListener, WindowListener {
     _onQuit = onQuit;
     _closeToTray = closeToTray;
 
-    if (!_inited) {
-      _inited = true;
+    final now = DateTime.now();
+    final due = !now.isBefore(_retryAt);
+
+    if (!_windowOk && due) {
       try {
         await windowManager.ensureInitialized();
-        windowManager.addListener(this);
+        if (!_winListener) {
+          windowManager.addListener(this);
+          _winListener = true;
+        }
         _windowOk = true;
       } catch (_) {
         // 某些 Linux 桌面/容器里没有窗口管理集成：托盘照建，只是藏不起来。
@@ -71,16 +84,24 @@ class _Tray with TrayListener, WindowListener {
       }
     }
 
-    if (!_trayOk) await _createTray();
+    if (!_trayOk && due) await _createTray();
+
+    if (!_trayOk || !_windowOk) {
+      _retryAt = now.add(const Duration(seconds: 3));
+    }
+
     await _rebuildMenu(show: show, hide: hide, quit: quit);
     await _applyPrevent();
   }
 
-  /// 建图标与提示文字。失败（没有托盘宿主）就记下 `_trayOk = false`，
-  /// 之后不再重试 —— 每帧重试也没有意义，反而会刷一屏异常。
+  /// 建图标与提示文字。失败（没有托盘宿主、图标读不出来）就记下
+  /// `_trayOk = false`，[sync] 之后会隔 3 s 再试，不会一次不成永远没有托盘。
   Future<void> _createTray() async {
     try {
-      trayManager.addListener(this);
+      if (!_trayListener) {
+        trayManager.addListener(this);
+        _trayListener = true;
+      }
       await trayManager.setIcon(
         defaultTargetPlatform == TargetPlatform.windows
             ? _iconWindows
@@ -182,9 +203,40 @@ class _Tray with TrayListener, WindowListener {
     await exitApplication();
   }
 
+  /// 点托盘图标。三个平台的差别是真的，不是风格问题：
+  ///
+  /// * Windows：菜单**不会**自己弹 —— tray_manager 的 Windows 实现里
+  ///   `setContextMenu` 只把条目塞进一个 HMENU，真正的 `TrackPopupMenu` 只在
+  ///   `popUpContextMenu` 里。所以右键必须自己调，左键留给「叫回窗口」。
+  /// * macOS：`setContextMenu` 也只是把菜单存下来，`popUpContextMenu` 才把它挂
+  ///   到 statusItem 上点一下 —— 左键不弹菜单的话，那条菜单永远看不到。
+  /// * Linux：appindicator 自己挂着菜单，点一下系统就弹，别再插手。
   @override
   void onTrayIconMouseDown() {
-    unawaited(_toggleWindow());
+    if (_quitting || !_trayOk) return;
+    if (_onWindows) {
+      unawaited(_toggleWindow());
+    } else if (_onMacOS) {
+      unawaited(_popMenu());
+    }
+  }
+
+  @override
+  void onTrayIconRightMouseDown() {
+    if (_quitting || !_trayOk || !_onWindows) return;
+    unawaited(_popMenu());
+  }
+
+  /// 把菜单弹到鼠标位置。
+  ///
+  /// `bringAppToFront` 在 Windows 上会把主窗口设成前景窗口 —— Win32 的规矩：
+  /// 不这么做，`TrackPopupMenu` 的菜单点外面关不掉。它对隐藏的窗口只做激活，
+  /// 不会把它显示出来。
+  Future<void> _popMenu() async {
+    try {
+      // ignore: deprecated_member_use
+      await trayManager.popUpContextMenu(bringAppToFront: true);
+    } catch (_) {}
   }
 
   @override
