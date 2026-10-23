@@ -133,12 +133,17 @@ The fault was ours. Sorry for the trouble.
 
 ---
 
-## 🔔 What is new: 2.1.32
+## 🔔 What is new: 2.1.33
 
-- The setup wizard is reworked into eight steps: language, terms, welcome, callsign, symbol, receive filter, server, done. Each step asks one thing.
-- The callsign is checked against the app's rules, and an -SSID typed into the box is split into the suffix, with the full callsign shown below as you type.
-- The last step follows the address, and with it empty the button reads Finish only. A new final page reads back the callsign, symbol and server, then points at the stations, sending a position, and the manual.
-- The welcome page gained Restore from a backup. On a new phone or after a reinstall you import the whole backup here instead of walking seven steps first.
+- There is a tray icon on the desktop now. Closing the window no longer quits, the window goes to the tray, packets keep arriving and the links stay up.
+- The tray menu has three rows: show the window, hide to tray, quit APRSLocus. A left click on the icon toggles the window.
+- Settings → Display gained Minimize to tray on close, on by default. Turn it off and closing the window quits again.
+- A station note is no longer cut to 60 characters. The station list, the detail panel and the map popup all show it in full.
+- Each row under Recent packets now wraps in full, so the tail of a long packet is no longer swallowed by an ellipsis.
+- In the 1.0 layout the sidebar logo and the navigation icons share one left baseline.
+- In the 1.0 layout the top bar controls share one height and one gap, and the three counts collapse into a single capsule.
+- In the 1.0 layout the narrow-screen bottom bar uses the same selected state as the sidebar, and the unread badges are one badge.
+- The disconnected banner and the passcode banner share one shape.
 
 ---
 
@@ -156,9 +161,9 @@ Look up APALOC in the official TOCALL table and you will find it.
 
 The 2.2.0 build published on the Qingling (清零) channel by mistake has been taken down, and the channel works normally again.
 
-Checking for updates now returns the latest stable version, 2.1.32. If you installed 2.2.0, uninstall it first, then install 2.1.32.
+Checking for updates now returns the latest stable version, 2.1.33. If you installed 2.2.0, uninstall it first, then install 2.1.33.
 
-**[Download 2.1.32](https://github.com/dariondong/APRSLocus/releases/download/v2.1.32/APRSLocus_2.1.32.apk)**
+**[Download 2.1.33](https://github.com/dariondong/APRSLocus/releases/download/v2.1.33/APRSLocus_2.1.33.apk)**
 
 ---
 
