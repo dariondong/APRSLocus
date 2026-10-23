@@ -1,6 +1,6 @@
 {
-  "version": 67,
-  "updated": "2026-10-17",
+  "version": 68,
+  "updated": "2026-10-23",
   "developers": [
     {
       "call": "BG7LZQ",
@@ -2009,6 +2009,54 @@
         "sower"
       ],
       "primary": "sower"
+    },
+    {
+      "call": "BG2GNI",
+      "who": {
+        "zh": "BG2GNI",
+        "zh-TW": "BG2GNI",
+        "en": "BG2GNI"
+      },
+      "role": {
+        "zh": "赞助支持",
+        "zh-TW": "贊助支持",
+        "en": "Sponsorship support"
+      },
+      "brief": {
+        "zh": "以琼琚相赠，愿这盏灯亮得久一些。",
+        "zh-TW": "以瓊琚相贈，願這盞燈亮得久一些。",
+        "en": "Gifted with jade, so this light may burn a while longer."
+      },
+      "contrib": {
+        "zh": "馈赠支持 APRSlocus 的持续开发与运营，让这盏信标灯一直亮着。",
+        "zh-TW": "饋贈支持 APRSlocus 的持續開發與營運，讓這盞信標燈一直亮著。",
+        "en": "Gifted support for APRSlocus's ongoing development and operation, keeping the beacon lit."
+      },
+      "quote": {
+        "zh": "琼琚相赠，以声相报。",
+        "zh-TW": "瓊琚相贈，以聲相報。",
+        "en": "Jade given, answered in signal."
+      },
+      "tags": {
+        "zh": [
+          "馈赠支持",
+          "赞助"
+        ],
+        "zh-TW": [
+          "饋贈支持",
+          "贊助"
+        ],
+        "en": [
+          "Gift support",
+          "Sponsorship"
+        ]
+      },
+      "c": "#0EA5B7",
+      "grp": "support",
+      "honors": [
+        "jadeGift"
+      ],
+      "primary": "jadeGift"
     }
   ],
   "groups": [
