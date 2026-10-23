@@ -1,5 +1,51 @@
 # 更新日志
 
+## [2.1.33] - 2026-10-23
+
+### 桌面上多了一枚托盘图标
+
+- **关闭窗口不再直接退出**。窗口收进系统托盘，报文照收，链路不断。
+- 托盘菜单有三条：显示主窗口、隐藏到托盘、退出 APRSLocus。左键点图标在显示与隐藏之间切换。
+- 设置 → 显示 里多了一档「关闭窗口时最小化到托盘」，默认开着。关掉它，关窗口就恢复成退出。
+- 托盘建不起来时不拦关闭。窗口关掉之后找不回来，比不做这个功能更糟。
+
+### 台站备注与详情面板不再截断
+
+- 台站备注以前在数据层就被砍到 60 字，多出来的换成省略号。现在整条保留，台站列表、详情面板、地图浮窗都是全文。
+- 台站详情面板里「最近报文」的每一行改为整条折行，长报文的尾巴不再被省略号吃掉。
+
+### 1.0 界面收拾了一遍
+
+- 侧栏 Logo 与导航图标对齐到同一条左基线。
+- 顶栏一排控件同高同间距，三项统计收成一只胶囊。
+- 窄屏底栏与侧栏共用同一套选中态，未读角标合并成一个。
+- 未连接与验证码两条横幅统一成同一个形状。
+
+---
+
+## [2.1.33] - 2026-10-23 (English)
+
+### A tray icon on the desktop
+
+- **Closing the window no longer quits.** The window goes to the system tray, packets keep arriving, and the links stay up.
+- The tray menu has three rows: show the window, hide to tray, quit APRSlocus. A left click on the icon toggles the window.
+- Settings → Display gained Minimize to tray on close, on by default. Turn it off and closing the window quits again.
+- When the tray cannot be created, closing is not intercepted. A window that vanishes with no way back is worse than not shipping this.
+
+### Station notes and the detail panel are no longer cut off
+
+- A station note used to be cut to 60 characters in the data layer, the rest replaced by an ellipsis. The whole note is kept now, and the station list, the detail panel and the map popup all show it in full.
+- Each row under Recent packets in the station detail panel now wraps in full, so the tail of a long packet is no longer swallowed by an ellipsis.
+
+### A pass over the 1.0 shell
+
+- The sidebar logo and the navigation icons now share one left baseline.
+- The top bar controls share one height and one gap, and the three counts collapse into a single capsule.
+- The narrow-screen bottom bar uses the same selected state as the sidebar, and the unread badges are one badge.
+- The disconnected banner and the passcode banner now share one shape.
+
+---
+
 ## [2.1.32] - 2026-10-22
 
 ### 新手引导重做

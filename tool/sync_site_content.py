@@ -419,6 +419,27 @@ CARDS = [
 # 只列「重点版本」：中间几十个纯修 bug 的版本归纳进文字说明，完整记录指向 Releases。
 CL = [
     {
+        'ver': 'v2.1.33', 'date': '2026-10-23',
+        'items': [
+            ('new',
+             T('桌面版多了系统托盘。关窗口不再退出，窗口收进托盘，托盘菜单里可以显示主窗口、隐藏到托盘、退出。设置里有「关闭窗口时最小化到托盘」一档，默认开着。',
+               '桌面版多了系統匣。關視窗不再結束，視窗收進系統匣，系統匣選單裡可以顯示主視窗、隱藏到系統匣、結束。設定裡有「關閉視窗時最小化到系統匣」一檔，預設開著。',
+               'The desktop build gained a system tray. Closing the window no longer quits; it goes to the tray, '
+               'and the tray menu can show the window, hide it again, or quit. Settings carries Minimize to tray '
+               'on close, on by default.')),
+            ('fix',
+             T('台站备注不再截到 60 字，台站列表、详情面板与地图浮窗都显示全文。台站详情面板里的原始报文改为整条折行。',
+               '臺站備註不再截到 60 字，臺站列表、詳情面板與地圖浮窗都顯示全文。臺站詳情面板裡的原始報文改為整條折行。',
+               'A station note is no longer cut at 60 characters: the station list, the detail panel and the map '
+               'popup show it in full. Raw packets in the detail panel wrap instead of ending in an ellipsis.')),
+            ('up',
+             T('1.0 界面收拾了一遍：侧栏与顶栏对齐，窄屏底栏与侧栏同一套选中态，未连接与验证码两条横幅同一个形状。',
+               '1.0 介面收拾了一遍：側欄與頂欄對齊，窄屏底欄與側欄同一套選中態，未連線與驗證碼兩條橫幅同一個形狀。',
+               'A pass over the 1.0 shell: the sidebar and top bar line up, the narrow bottom bar shares the '
+               'sidebar selected state, and the two banners share one shape.')),
+        ],
+    },
+    {
         'ver': 'v2.1.32', 'date': '2026-10-22',
         'items': [
             ('new',
