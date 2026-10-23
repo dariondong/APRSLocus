@@ -1,70 +1,5 @@
-# A letter to APRSLocus users
 
-## 💌 From BG5ESN
-
-> FMO began as something I simply wanted very much to build myself.
->
-> Back then a lot of things had no rules, and there was no "after-sales service", no "server responsibility", no "certificate management". When something went wrong people came to me, and if I could fix it, I fixed it. When someone wanted to tinker, I was glad to dig in with them. Many of the features and many of the ideas grew out of that kind of conversation, a little at a time.
->
-> I have always treasured that feeling.
->
-> But as the devices multiplied, the servers multiplied and more and more people joined in, I came to see that a project cannot be held up forever by one person's enthusiasm and improvised judgement.
->
-> Some things, once there are no boundaries, end up as something that no matter who did it, where it happened, or whether it was ever within my control, in the end I am the one who has to explain it, deal with it, and even answer for it.
->
-> That is not a state one person can carry for long.
->
-> BG5ESN
-
-As a software developer myself, I feel exactly the same way.
-
-APRSLocus had been in my head for a year. How good it would be to have a proper APRS client of our own, with plenty of room to extend it, lots of features, and fewer rough edges. In the summer holiday of my second year of high school I finally started building it, a practical cross-platform network APRS client.
-
-At first I did not want to support real radios at all. But as it grew I figured that once the work was under way, I might as well add more, and the features piled up one after another. Version 2.0 finally brought in real-radio support, TNCs and the other links, and it became a client with several links at once. That went far beyond what I had planned.
-
-APRSLocus getting this far has depended on your support and trust, and that is what kept the project growing. I like that feeling, the happiness of sharing it with everyone. The features were filled out the same way. The changelog now runs to thousands of lines. I never expected it to last this long, with this many users and this many features.
-
-As the users grew in number, one question came with them. Will this get out of control? I am not sure.
-
-APRS is a free environment. Anyone can send any message, over radio, over the network, across borders. It relies entirely on personal conduct, and that is not enough. The amateur radio scene here is not what I would call clean. At the very least it is a bit of a mess. APRS data is public too, unencrypted, laid out in the open. The data question has to be considered as well.
-
-Back in 2.0 I brought in a new terms of use, to set out how users behave and to ban users, devices and so on. I did it just in case, for the day I might have to consider shutting the service down.
-
-> Some things, once there are no boundaries, end up as something that no matter who did it, where it happened, or whether it was ever within my control, in the end I am the one who has to explain it, deal with it, and even answer for it.
-
-I am glad to have new users join in, sharing and tinkering together. What I do not want is a few people upsetting the order of the whole network. As a software developer, keeping the community in order is a duty I owe it.
-
-I want APRSLocus to be a long-lived project. It should not stop at any one moment. I want it to keep improving and growing with time, to make more interesting things, and to give more back to the APRS ecosystem.
-
-I am in my third year of high school now. I cannot say the project has not affected me. It has become part of my life. Every day I look at who came online and how many users there are; that is what I follow daily. I think it is time I gave myself some room to relax. I am really tired, and I would like more space to breathe.
-
-So the time and service I can offer are limited. I am the developer of the project, one person, and it is hard to meet everyone's needs, but I want to help as far as I can. The project is open source. Anyone can download it, change it, build it, or send a PR and contribute. I also do not want my stepping away to leave the project stalled or stuck.
-
-I want to stop and rest a while.
-
-Thank you for your support and understanding.
-
-73!
-
-**APRSLocus BG7LZQ**
-
-2026.10.19
-
-## 🎵 A song with the letter: 灰色轨迹 (Grey Traces)
-
-@video https://player.bilibili.com/player.html?isOutside=true&aid=829419761&bvid=BV1Ru4y1179h&cid=1227059812&p=1
-
-## 🚩 Report a violation
-
-If you find a violating callsign or violating content, send it in with this form and help the team keep the network in order.
-
-The form is anonymous.
-
-[APRSLocus violation report form](https://ccncqe00x1e4.feishu.cn/share/base/form/shrcn3W4dM6sf47QOfMuYT2kb6b)
-
----
-
-## 📡 APRSNETCN OA · #261024 Half a Cat Bed
+# APRSNETCN OA · #261024 Half a Cat Bed
 
 APRSNETCN OA is an APRS message check-in run by APRSNET.CN. It lasts a whole Saturday, Beijing time. OA stands for On Air.
 
@@ -118,6 +53,72 @@ If you miss this one, there is another round next Saturday.
 In APRSLocus, open the Messages page and set the recipient to the duty callsign.
 
 The roster for the day is on the activity page. **[Open the activity page](https://oa.aprsnet.cn)**
+
+---
+
+## 💌 A letter to APRSLocus users
+
+### 💌 From BG5ESN
+
+> FMO began as something I simply wanted very much to build myself.
+>
+> Back then a lot of things had no rules, and there was no "after-sales service", no "server responsibility", no "certificate management". When something went wrong people came to me, and if I could fix it, I fixed it. When someone wanted to tinker, I was glad to dig in with them. Many of the features and many of the ideas grew out of that kind of conversation, a little at a time.
+>
+> I have always treasured that feeling.
+>
+> But as the devices multiplied, the servers multiplied and more and more people joined in, I came to see that a project cannot be held up forever by one person's enthusiasm and improvised judgement.
+>
+> Some things, once there are no boundaries, end up as something that no matter who did it, where it happened, or whether it was ever within my control, in the end I am the one who has to explain it, deal with it, and even answer for it.
+>
+> That is not a state one person can carry for long.
+>
+> BG5ESN
+
+As a software developer myself, I feel exactly the same way.
+
+APRSLocus had been in my head for a year. How good it would be to have a proper APRS client of our own, with plenty of room to extend it, lots of features, and fewer rough edges. In the summer holiday of my second year of high school I finally started building it, a practical cross-platform network APRS client.
+
+At first I did not want to support real radios at all. But as it grew I figured that once the work was under way, I might as well add more, and the features piled up one after another. Version 2.0 finally brought in real-radio support, TNCs and the other links, and it became a client with several links at once. That went far beyond what I had planned.
+
+APRSLocus getting this far has depended on your support and trust, and that is what kept the project growing. I like that feeling, the happiness of sharing it with everyone. The features were filled out the same way. The changelog now runs to thousands of lines. I never expected it to last this long, with this many users and this many features.
+
+As the users grew in number, one question came with them. Will this get out of control? I am not sure.
+
+APRS is a free environment. Anyone can send any message, over radio, over the network, across borders. It relies entirely on personal conduct, and that is not enough. The amateur radio scene here is not what I would call clean. At the very least it is a bit of a mess. APRS data is public too, unencrypted, laid out in the open. The data question has to be considered as well.
+
+Back in 2.0 I brought in a new terms of use, to set out how users behave and to ban users, devices and so on. I did it just in case, for the day I might have to consider shutting the service down.
+
+> Some things, once there are no boundaries, end up as something that no matter who did it, where it happened, or whether it was ever within my control, in the end I am the one who has to explain it, deal with it, and even answer for it.
+
+I am glad to have new users join in, sharing and tinkering together. What I do not want is a few people upsetting the order of the whole network. As a software developer, keeping the community in order is a duty I owe it.
+
+I want APRSLocus to be a long-lived project. It should not stop at any one moment. I want it to keep improving and growing with time, to make more interesting things, and to give more back to the APRS ecosystem.
+
+I am in my third year of high school now. I cannot say the project has not affected me. It has become part of my life. Every day I look at who came online and how many users there are; that is what I follow daily. I think it is time I gave myself some room to relax. I am really tired, and I would like more space to breathe.
+
+So the time and service I can offer are limited. I am the developer of the project, one person, and it is hard to meet everyone's needs, but I want to help as far as I can. The project is open source. Anyone can download it, change it, build it, or send a PR and contribute. I also do not want my stepping away to leave the project stalled or stuck.
+
+I want to stop and rest a while.
+
+Thank you for your support and understanding.
+
+73!
+
+**APRSLocus BG7LZQ**
+
+2026.10.19
+
+### 🎵 A song with the letter: 灰色轨迹 (Grey Traces)
+
+@video https://player.bilibili.com/player.html?isOutside=true&aid=829419761&bvid=BV1Ru4y1179h&cid=1227059812&p=1
+
+### 🚩 Report a violation
+
+If you find a violating callsign or violating content, send it in with this form and help the team keep the network in order.
+
+The form is anonymous.
+
+[APRSLocus violation report form](https://ccncqe00x1e4.feishu.cn/share/base/form/shrcn3W4dM6sf47QOfMuYT2kb6b)
 
 ---
 

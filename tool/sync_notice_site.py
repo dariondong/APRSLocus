@@ -73,22 +73,22 @@ PAGES = [
 # ⚠ 换一期公告时这里必须一起改，否则会出现「正文是新的、标题还是上一期」。
 HEAD = {
     'zh': {
-        'kicker': '💌 一封信',
-        'title': '送给 APRSLocus 用户的一封信',
-        'en': 'A letter to APRSLocus users',
-        'sub': '写给大家的一封长信，关于这个项目从哪里来、边界在哪里，以及接下来的一段休息。',
+        'kicker': '📡 周六空中签到',
+        'title': 'APRSNETCN OA · #261024 半间猫窝',
+        'en': 'APRSNETCN OA · #261024 Half a Cat Bed',
+        'sub': '北京时间周六一整天，报文的收件人填轮值呼号 BH6RIZ-6。收到 ACK 就上了当天的签到表。',
     },
     'zh_TW': {
-        'kicker': '💌 一封信',
-        'title': '送給 APRSLocus 使用者的一封信',
-        'en': 'A letter to APRSLocus users',
-        'sub': '寫給大家的一封長信，關於這個專案從哪裡來、邊界在哪裡，以及接下來的一段休息。',
+        'kicker': '📡 週六空中簽到',
+        'title': 'APRSNETCN OA · #261024 半間貓窩',
+        'en': 'APRSNETCN OA · #261024 Half a Cat Bed',
+        'sub': '北京時間週六一整天，報文的收件人填輪值呼號 BH6RIZ-6。收到 ACK 就上了當天的簽到表。',
     },
     'en': {
-        'kicker': '💌 A letter',
-        'title': 'A letter to APRSLocus users',
-        'en': '73 from BG7LZQ',
-        'sub': 'A long letter to everyone about where this project came from, where its boundaries are, and the rest ahead.',
+        'kicker': '📡 Saturday check-in',
+        'title': 'APRSNETCN OA · #261024 Half a Cat Bed',
+        'en': 'Every Saturday, on air',
+        'sub': 'A whole Saturday, Beijing time. Address the message to the duty callsign BH6RIZ-6 and its ACK puts you on that day\'s roster.',
     },
 }
 
