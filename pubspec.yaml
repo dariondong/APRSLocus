@@ -29,6 +29,15 @@ dependencies:
   # url_launcher（应用内打开外链的既有做法）。
   markdown: ^7.3.0
   webview_flutter: ^4.14.1
+  # 桌面三平台（Windows / macOS / Linux）的系统托盘与窗口控制。
+  #
+  # 只有桌面用得上：两个插件都直接 import dart:io，所以真实现放在
+  # lib/desktop_tray_io.dart，由 lib/desktop_tray.dart 条件导入 —— Web 构建
+  # 不会把这两个包编进去（与 lib/exit_app.dart 同一个做法）。
+  # Linux 构建机需装 libayatana-appindicator3-dev（只是构建期依赖，
+  # 不进 apk / ipa）。
+  tray_manager: ^0.5.3
+  window_manager: ^0.5.2
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -47,3 +56,7 @@ flutter:
     - assets/terms_zh.txt
     - assets/terms_zh_TW.txt
     - assets/terms_en.txt
+    # 系统托盘图标：.png 给 macOS（模板图）/ Linux，.ico 给 Windows
+    # （Windows 的托盘用 LoadImage(IMAGE_ICON) 读，只认 .ico）。
+    - assets/tray_icon.png
+    - assets/tray_icon.ico
