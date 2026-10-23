@@ -869,73 +869,25 @@ class _HomePageState extends State<HomePage> {
         final compact = _compact;
         // Passcode 未验证：显示黄色警告横幅（类似未连接提示）
         if (st.connected && st.passcodeInvalid) {
-          return Container(
-            margin: EdgeInsets.fromLTRB(
-                compact ? 10 : 12, 0, compact ? 10 : 12, compact ? 6 : 10),
-            padding: EdgeInsets.symmetric(
-                horizontal: compact ? 12 : 14, vertical: compact ? 7 : 10),
-            decoration: BoxDecoration(
-              gradient: const LinearGradient(
-                colors: [Color(0xFFF59E0B), Color(0xFFD97706)],
-                begin: Alignment.centerLeft,
-                end: Alignment.centerRight,
-              ),
-              borderRadius: BorderRadius.circular(16),
-              boxShadow: elev3(),
-            ),
-            child: Row(
-              children: [
-                const Icon(
-                  Icons.warning_amber_rounded,
-                  color: Colors.white,
-                  size: 20,
+          return _bannerCard(
+            compact: compact,
+            icon: Icons.warning_amber_rounded,
+            tint: C.yellow,
+            bg: C.yellowBg,
+            title: S.of(context).passcodeUnverified,
+            subtitle: S.of(context).passcodeWarning,
+            actionLabel: S.of(context).goSettings,
+            onAction: () {
+              // 跳到设置 tab 并直接打开「连接设置」（passcode 输入所在页），
+              // 而不是只停在设置首页
+              if (_tab != 4) setState(() => _tab = 4);
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) => ConnectionSettingsPage(state: widget.state),
                 ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        S.of(context).passcodeUnverified,
-                        style: ts(12, c: Colors.white, w: FontWeight.w700),
-                      ),
-                      Text(
-                        S.of(context).passcodeWarning,
-                        style: ts(10, c: Colors.white70),
-                      ),
-                    ],
-                  ),
-                ),
-                GestureDetector(
-                  onTap: () {
-                    // 跳到设置 tab 并直接打开「连接设置」（passcode 输入所在页），
-                    // 而不是只停在设置首页
-                    if (_tab != 4) setState(() => _tab = 4);
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (_) => ConnectionSettingsPage(
-                          state: widget.state,
-                        ),
-                      ),
-                    );
-                  },
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 10,
-                      vertical: 6,
-                    ),
-                    decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.2),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Text(
-                      S.of(context).goSettings,
-                      style: ts(11, c: Colors.white, w: FontWeight.w700),
-                    ),
-                  ),
-                ),
-              ],
-            ),
+              );
+            },
+            filled: false,
           );
         }
         if (st.connected) return const SizedBox.shrink();
@@ -1007,85 +959,114 @@ class _HomePageState extends State<HomePage> {
                         : (rxOnly
                             ? S.of(context).rxOnlyBanner(st.rxSourceLabel)
                             : S.of(context).connectNearbyDesc))));
-        return Container(
-          margin: EdgeInsets.fromLTRB(
-              compact ? 10 : 12, 0, compact ? 10 : 12, compact ? 6 : 10),
-          padding: EdgeInsets.symmetric(
-              horizontal: compact ? 12 : 14, vertical: compact ? 7 : 10),
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [C.blue, C.indigo],
-              begin: Alignment.centerLeft,
-              end: Alignment.centerRight,
-            ),
-            borderRadius: BorderRadius.circular(16),
-            boxShadow: elev3(),
-          ),
-          child: Row(
-            children: [
-              if (connecting)
-                SizedBox(
-                  width: 18,
-                  height: 18,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2.2,
-                    color: Colors.white,
-                  ),
-                )
-              else
-                Icon(
-                  isIcom
-                      ? Icons.wifi_tethering_rounded
-                      : (audioMode
-                          ? Icons.graphic_eq_rounded
-                          : (tncMode
-                              ? Icons.settings_input_antenna_rounded
-                              : Icons.cloud_off_rounded)),
-                  color: Colors.white,
-                  size: 20,
-                ),
-              SizedBox(width: 10),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      title,
-                      style: ts(13, c: Colors.white, w: FontWeight.w700),
-                    ),
-                    Text(
-                      subtitle,
-                      style: ts(10, c: Colors.white.withValues(alpha: 0.8)),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(width: 8),
-              GestureDetector(
-                onTap: connecting ? null : st.toggleConnect,
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 14,
-                    vertical: 8,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Text(
-                    connecting
-                        ? S.of(context).connecting
-                        : S.of(context).connectAction,
-                    style: ts(12, c: C.blue, w: FontWeight.w700),
-                  ),
-                ),
-              ),
-            ],
-          ),
+        return _bannerCard(
+          compact: compact,
+          icon: isIcom
+              ? Icons.wifi_tethering_rounded
+              : (audioMode
+                  ? Icons.graphic_eq_rounded
+                  : (tncMode
+                      ? Icons.settings_input_antenna_rounded
+                      : Icons.cloud_off_rounded)),
+          spinner: connecting,
+          tint: C.blue,
+          bg: C.blueBg,
+          title: title,
+          subtitle: subtitle,
+          actionLabel:
+              connecting ? S.of(context).connecting : S.of(context).connectAction,
+          onAction: connecting ? null : st.toggleConnect,
         );
       },
+    );
+  }
+
+  /// 未连接 / 验证码这两条横幅的**同一个形状**。
+  ///
+  /// 原来两条各写一遍：一条蓝→紫渐变、一条写死的琥珀渐变（`0xFFF59E0B`），
+  /// 与整页的令牌色、与上面那条公告横幅都不是一套；两条的形状也不一样
+  /// （16 圆角 + 投影 vs 16 圆角 + 投影，但内边距与按钮各是一套）。
+  /// 现在统一成：主题淡底 + 同色描边 + 一枚小图标，只有动作按钮是实色 ——
+  /// 一屏里强调色只出现一次，也不再有不随主题走的写死颜色。
+  Widget _bannerCard({
+    required bool compact,
+    required IconData icon,
+    required Color tint,
+    required Color bg,
+    required String title,
+    required String subtitle,
+    required String actionLabel,
+    required VoidCallback? onAction,
+    bool filled = true,
+    bool spinner = false,
+  }) {
+    final h = compact ? 8.0 : 10.0;
+    return Container(
+      margin: EdgeInsets.fromLTRB(
+          compact ? 10 : 12, 0, compact ? 10 : 12, compact ? 6 : 10),
+      padding: EdgeInsets.fromLTRB(compact ? 10 : 12, h, 8, h),
+      decoration: BoxDecoration(
+        color: bg,
+        borderRadius: BorderRadius.circular(compact ? 10 : 12),
+        border: Border.all(color: tint.withValues(alpha: 0.40)),
+      ),
+      child: Row(
+        children: [
+          SizedBox(
+            width: 18,
+            height: 18,
+            child: spinner
+                ? CircularProgressIndicator(strokeWidth: 2.2, color: tint)
+                : Icon(icon, size: 18, color: tint),
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  title,
+                  style: ts(compact ? 12 : 13, c: C.ink, w: FontWeight.w700),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                const SizedBox(height: 1),
+                Text(
+                  subtitle,
+                  style: ts(10, c: C.slate),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(width: 8),
+          GestureDetector(
+            onTap: onAction,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+              decoration: BoxDecoration(
+                color: filled
+                    ? (onAction == null
+                        ? tint.withValues(alpha: 0.45)
+                        : tint)
+                    : tint.withValues(alpha: 0.12),
+                borderRadius: BorderRadius.circular(999),
+              ),
+              child: Text(
+                actionLabel,
+                style: ts(
+                  11,
+                  c: filled ? Colors.white : tint,
+                  w: FontWeight.w700,
+                ),
+                maxLines: 1,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 

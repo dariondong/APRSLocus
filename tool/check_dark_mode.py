@@ -63,8 +63,6 @@ TINT = re.compile(r'surfaceTint\s*\(\s*(?:const\s+)?(?:Color\(0xFF[0-9A-Fa-f]{6}
 ALLOW = {
     'lib/check_update_page.dart': (
         2, '版本卡是固定彩色渐变，上面两个白底按钮刻意保持白色'),
-    'lib/home_page.dart': (
-        1, '蓝色连接横幅是固定彩色渐变，上面的白底按钮刻意保持白色'),
 }
 
 
