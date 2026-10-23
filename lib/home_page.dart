@@ -632,7 +632,7 @@ class _HomePageState extends State<HomePage> {
                               ),
                               const Spacer(),
                               if (i == 2 && widget.state.unreadMessages > 0)
-                                _countBadge(widget.state.unreadMessages),
+                                _unreadBadge(widget.state.unreadMessages),
                             ],
                           ),
                         ),
@@ -650,28 +650,10 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _countBadge(int n) {
-    if (n == 0) return const SizedBox.shrink();
-    return Container(
-      width: 18,
-      height: 18,
-      decoration: BoxDecoration(
-        color: C.red,
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Center(
-        child: Text(
-          '$n',
-          style: ts(9, c: Colors.white, w: FontWeight.w700),
-        ),
-      ),
-    );
-  }
-
-  /// 底部导航小角标（窄屏）
-  Widget _miniBadge(int n) {
+  /// 未读角标。侧栏与窄屏底栏**共用同一颗**：两处各画一遍的话，
+  /// 尺寸/圆角/字号迟早会分头漂（一颗 18、一颗 14，并排就看出来了）。
+  Widget _unreadBadge(int n) {
     if (n <= 0) return const SizedBox.shrink();
-    final text = n > 99 ? '99+' : '$n';
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
       constraints: const BoxConstraints(minWidth: 14, minHeight: 14),
@@ -681,7 +663,7 @@ class _HomePageState extends State<HomePage> {
       ),
       child: Center(
         child: Text(
-          text,
+          n > 99 ? '99+' : '$n',
           style: ts(9, c: Colors.white, w: FontWeight.w700),
         ),
       ),
@@ -1125,6 +1107,14 @@ class _HomePageState extends State<HomePage> {
             child: Row(
               children: List.generate(_nav.length, (i) {
                 final sel = _tab == i;
+                // 与侧栏的导航项同一套选中态：同一个 tabAccent、同一档淡底
+                // （侧栏 12% 的圆角块）。原来底栏只有图标变色，
+                // 竖屏与横屏看同一件事却是两种样子。
+                final accent = ThemeController.instance.tabAccent(
+                      _nav[i].$1,
+                      isDark: C.dark,
+                    ) ??
+                    C.blue;
                 return Expanded(
                   child: GestureDetector(
                     onTap: () {
@@ -1138,41 +1128,46 @@ class _HomePageState extends State<HomePage> {
                         Stack(
                           clipBehavior: Clip.none,
                           children: [
-                            ThemeController.instance.buildSlotIcon(
-                              _nav[i].$1,
-                              size: 22,
-                              color: sel
-                                  ? (ThemeController.instance.tabAccent(
-                                          _nav[i].$1,
-                                          isDark: C.dark,
-                                        ) ??
-                                        C.blue)
-                                  : C.grey,
-                              fallbackIcon: themeIconByName(_nav[i].$2),
-                              selected: sel,
+                            AnimatedContainer(
+                              duration: const Duration(milliseconds: 150),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 14,
+                                vertical: 3,
+                              ),
+                              decoration: BoxDecoration(
+                                color: sel
+                                    ? accent.withValues(alpha: 0.12)
+                                    : Colors.transparent,
+                                borderRadius: BorderRadius.circular(999),
+                              ),
+                              child: ThemeController.instance.buildSlotIcon(
+                                _nav[i].$1,
+                                size: 20,
+                                color: sel ? accent : C.grey,
+                                fallbackIcon: themeIconByName(_nav[i].$2),
+                                selected: sel,
+                              ),
                             ),
                             if (i == 2 && widget.state.unreadMessages > 0)
                               Positioned(
                                 right: -8,
                                 top: -4,
-                                child: _miniBadge(widget.state.unreadMessages),
+                                child: _unreadBadge(
+                                  widget.state.unreadMessages,
+                                ),
                               ),
                           ],
                         ),
-                        SizedBox(height: 3),
+                        const SizedBox(height: 2),
                         Text(
                           _nav[i].$3,
                           style: ts(
                             10,
-                            c: sel
-                                ? (ThemeController.instance.tabAccent(
-                                        _nav[i].$1,
-                                        isDark: C.dark,
-                                      ) ??
-                                      C.blue)
-                                : C.grey,
+                            c: sel ? accent : C.grey,
                             w: sel ? FontWeight.w600 : FontWeight.w400,
                           ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ],
                     ),
