@@ -1,6 +1,6 @@
 {
-  "version": 14,
-  "updated": "2026-10-16",
+  "version": 15,
+  "updated": "2026-10-23",
   "sponsors": [
     {
       "kind": "group",
@@ -155,6 +155,16 @@
         "zh": "赠我以琼琚 · 琼琚在手，回响不息",
         "zh-TW": "贈我以瓊琚 · 瓊琚在手，回響不息",
         "en": "Gifted with jade — jade in hand, the echo goes on."
+      }
+    },
+    {
+      "kind": "jade",
+      "name": "BG2GNI",
+      "desc": "赠我以琼琚 · 琼琚一片，回声不散",
+      "descs": {
+        "zh": "赠我以琼琚 · 琼琚一片，回声不散",
+        "zh-TW": "贈我以瓊琚 · 瓊琚一片，回聲不散",
+        "en": "Gifted with jade — one piece of jade, an echo that lingers."
       }
     },
     {
