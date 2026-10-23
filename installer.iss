@@ -40,7 +40,10 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 [Files]
 Source: "build\windows\x64\runner\Release\aprslocus.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "build\windows\x64\runner\Release\flutter_windows.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "build\windows\x64\runner\Release\url_launcher_windows_plugin.dll"; DestDir: "{app}"; Flags: ignoreversion
+; 插件的原生 DLL 一律按通配符收：Flutter 的插件 DLL 都叫 *_plugin.dll。
+; 逐个列名字漏一个，装好的程序就缺插件——轻则该功能没反应（托盘那次就是这样），
+; 重则启动器直接报找不到 DLL。
+Source: "build\windows\x64\runner\Release\*_plugin.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "build\windows\x64\runner\Release\data\*"; DestDir: "{app}\data"; Flags: ignoreversion recursesubdirs createallsubdirs
 
 [Icons]
