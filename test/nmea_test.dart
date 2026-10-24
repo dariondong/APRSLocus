@@ -243,6 +243,48 @@ void main() {
     });
   });
 
+  group('卫星数：双模模块的 GGA 按 talker 相加', () {
+    // 真机写法：双模模块每轮各发一条 GGA，每条只报自己那个系统的颗数
+    const gp = r'$GPGGA,120047.00,3956.12345,N,11623.54321,E,1,10,0.9,52.3,M,-9.1,M,,*4B';
+    const bd = r'$BDGGA,120046.00,3956.12345,N,11623.54321,E,1,10,0.9,52.3,M,-9.1,M,,*5B';
+    const gn = r'$GNGGA,120048.00,3956.12345,N,11623.54321,E,1,20,0.9,52.3,M,-9.1,M,,*59';
+
+    test('GPS 10 + 北斗 10 → 20（只留最后一条时永远是 10）', () {
+      final asm = NmeaAssembler();
+      expect(asm.feed(bd)!.satellites, 10, reason: '只有北斗时如实是 10');
+      expect(asm.feed(gp)!.satellites, 20, reason: '两个系统都在，合计 20');
+      expect(asm.feed(bd)!.satellites, 20, reason: '次序反过来也是 20');
+    });
+
+    test('GN 联合解本身就是合计，不能再加一遍 (20 不是 40)', () {
+      final asm = NmeaAssembler();
+      expect(asm.feed(gp)!.satellites, 10);
+      expect(asm.feed(gn)!.satellites, 20);
+      expect(asm.feed(gp)!.satellites, 20, reason: 'GN 在就以 GN 为准');
+    });
+
+    test('单系统模块不受影响：8 颗还是 8 颗', () {
+      final asm = NmeaAssembler();
+      expect(asm.feed(gga)!.satellites, 8);
+    });
+
+    test('掉了一个系统就不再计入（15 秒不报即过期）', () {
+      final asm = NmeaAssembler();
+      final t0 = DateTime.utc(2026, 10, 24, 4, 0, 0);
+      expect(asm.feed(bd, now: t0)!.satellites, 10);
+      final later = t0.add(const Duration(seconds: 40));
+      expect(asm.feed(gp, now: later)!.satellites, 10,
+          reason: '北斗那条已经过期，只报 GPS 的 10');
+    });
+
+    test('reset 清掉各系统的颗数（重连不该继承上一条链路的数）', () {
+      final asm = NmeaAssembler();
+      expect(asm.feed(bd)!.satellites, 10);
+      asm.reset();
+      expect(asm.feed(gp)!.satellites, 10);
+    });
+  });
+
   group('分帧（蓝牙回调不按行对齐）', () {
     test('一条语句被切成三块也能拼回', () {
       final sp = NmeaLineSplitter();

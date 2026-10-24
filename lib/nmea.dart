@@ -706,7 +706,8 @@ class NmeaFix {
   /// 水平精度因子（原始值，来自 GGA/GSA）
   final double? hdop;
 
-  /// 参与定位的卫星数（GGA）
+  /// 参与定位的卫星数（GGA）。双模模块会把各系统相加，见
+  /// [NmeaAssembler] 的 `_combinedSats`。
   final int? satellites;
 
   /// GGA 定位质量（0~8；null = 该模块不发 GGA）
@@ -776,6 +777,23 @@ class NmeaAssembler {
   double? _hdop;
   int? _satellites;
   int? _fixQuality;
+
+  /// 一个 talker 的颗数算「这一轮」多久。
+  ///
+  /// 模块每轮 1 秒发一遍 GGA，15 秒是留给丢包与低频输出的余量；
+  /// 超过它还不再报的系统就是真的掉了，继续留着只会把合计撑大。
+  static const Duration _satsFresh = Duration(seconds: 15);
+
+  /// 每个 talker 最近一次 GGA 报的「参与解算颗数」（`GP` / `BD` / `GL` / `GA` / `GB` / `GN`）。
+  ///
+  /// 为什么按 talker 分开记：双模模块每轮会**各发一条** GGA，每条只报自己那个
+  /// 系统的颗数（`$GPGGA` 报 10、`$BDGGA` 报 10）。只留最后一条看到的值，
+  /// 界面上就会出现「模组明明 20 颗、软件只显示 10 颗」。
+  final Map<String, int> _satsByTalker = <String, int>{};
+
+  /// 上面每个数是什么时候收到的（本机时钟），过期的系统不再计入合计。
+  final Map<String, DateTime> _satsAt = <String, DateTime>{};
+
   String _fixType = '';
   String _utcTime = '';
   String _date = '';
@@ -810,7 +828,11 @@ class NmeaAssembler {
         if (_utcTime.isEmpty && s.utcTime.isNotEmpty) _utcTime = s.utcTime;
         if (s.altitudeM != null) _altM = s.altitudeM;
         if (s.hdop != null) _hdop = s.hdop;
-        if (s.satellites != null) _satellites = s.satellites;
+        if (s.satellites != null) {
+          _satellites = s.satellites;
+          _satsByTalker[s.talker] = s.satellites!;
+          _satsAt[s.talker] = now ?? DateTime.now();
+        }
         if (s.fixQuality != null) _fixQuality = s.fixQuality;
       case NmeaKind.gll:
         if (_utcTime.isEmpty && s.utcTime.isNotEmpty) _utcTime = s.utcTime;
@@ -857,7 +879,7 @@ class NmeaAssembler {
       speedKmh: speedKmh,
       courseDeg: s.courseDegrees ?? _course,
       hdop: hdop,
-      satellites: s.satellites ?? _satellites,
+      satellites: _combinedSats(now ?? DateTime.now()) ?? s.satellites,
       fixQuality: s.fixQuality ?? _fixQuality,
       accuracyM: (hdop != null && hdop > 0) ? hdop * uereM : null,
       utc: s.utc ?? _zdaUtc ?? nmeaCombineUtc(_date, _utcTime),
@@ -870,6 +892,31 @@ class NmeaAssembler {
   /// 最近一次 GSA 的定位类型（1 未定位 / 2 二维 / 3 三维），供界面显示
   String get fixType => _fixType;
 
+  /// 各系统 GGA 报的参与解算颗数合计。
+  ///
+  /// 双模模块每轮分别发 `$GPGGA` / `$BDGGA`，每条只含**自己系统**的数（10 + 10），
+  /// 所以这里按 talker 分别记、再相加。
+  /// `GN` 是模块自己算出的联合解，本身就是合计，它在就只取它 —— 再加一遍
+  /// 会变成 10 + 10 + 20 这种荒唐数。
+  int? _combinedSats(DateTime now) {
+    if (_satsByTalker.isEmpty) return _satellites;
+    bool fresh(String talker) {
+      final at = _satsAt[talker];
+      return at == null || now.difference(at) <= _satsFresh;
+    }
+
+    final gn = _satsByTalker['GN'];
+    if (gn != null && fresh('GN')) return gn;
+    var sum = 0;
+    var any = false;
+    _satsByTalker.forEach((talker, n) {
+      if (talker == 'GN' || !fresh(talker)) return;
+      sum += n;
+      any = true;
+    });
+    return any ? sum : _satellites;
+  }
+
   /// 断开重连时清空缓存：跨链路残留的日期/海拔会把新链路的头几条定位
   /// 拼成一条「跨设备」的怪数据（症状是刚连上时海拔/速度明显是上一次的值）。
   void reset() {
@@ -879,6 +926,8 @@ class NmeaAssembler {
     _altM = null;
     _hdop = null;
     _satellites = null;
+    _satsByTalker.clear();
+    _satsAt.clear();
     _fixQuality = null;
     _fixType = '';
     _utcTime = '';
