@@ -1,5 +1,35 @@
 # 更新日志
 
+## [2.1.34] - 2026-10-24
+
+### 位置可以模糊
+
+- 设置 → 自动上报 新增「定位模糊」：关、约 200 米、约 2 公里、约 20 公里。默认关。
+- 走 APRS101 的位置模糊：只把最低位的几个数字换成空格，对方看到的是一片方格而不是一个点。
+- 只改发出去的那一包。本机地图、轨迹与网格仍按真实坐标算。
+
+### 首页的上报开关不再被挤掉
+
+- 连着但还没点「开始上报」时，首页那枚自动/单次开关以前整块让位给按钮，只剩一个「立即上报」。现在两枚并排，两个方向随时切。
+- 地图状态栏、我的面板、沉浸页与精简模式状态条一起改。
+
+---
+
+## [2.1.34] - 2026-10-24 (English)
+
+### Your position can be fuzzed
+
+- Settings → Auto reporting gained Location fuzz: off, about 200 m, 2 km, 20 km. Off by default.
+- It follows APRS101 position ambiguity: the lowest digits become spaces, so a receiver sees a square instead of a point.
+- Only the packet that goes out changes. The local map, the track and the grid still use the real coordinates.
+
+### The auto/single switch no longer gives way
+
+- While a link is up but reporting has not been confirmed yet, the auto/single switch used to give way to the start button, leaving only Send once. The two now sit side by side and switch both ways at any time.
+- The map bar, my panel, the immersive page and the lite status bar change together.
+
+---
+
 ## [2.1.33] - 2026-10-23
 
 ### 桌面上多了一枚托盘图标

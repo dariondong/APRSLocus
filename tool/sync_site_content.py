@@ -419,6 +419,27 @@ CARDS = [
 # 只列「重点版本」：中间几十个纯修 bug 的版本归纳进文字说明，完整记录指向 Releases。
 CL = [
     {
+        'ver': 'v2.1.34', 'date': '2026-10-24',
+        'items': [
+            ('new',
+             T('设置 → 自动上报 多了「定位模糊」一档：关、约 200 米、约 2 公里、约 20 公里。默认关。'
+               '按 APRS101 的位置模糊，把最低位的几个数字换成空格，对方看到一片方格而不是一个点。'
+               '只改发出去的那一包，本机地图与轨迹仍按真实坐标。',
+               '設定 → 自動上報 多了「定位模糊」一檔：關、約 200 公尺、約 2 公里、約 20 公里。預設關。'
+               '照 APRS101 的位置模糊，把最低位的幾個數字換成空格，對方看到一片方格而不是一個點。'
+               '只改送出去的那一包，本機地圖與軌跡仍按真實座標。',
+               'Settings → Auto reporting gained Location fuzz: off, about 200 m, 2 km, 20 km, off by default. '
+               'It follows APRS101 position ambiguity, replacing the lowest digits with spaces so a receiver '
+               'sees a square instead of a point. Only the outgoing packet changes; the local map and track '
+               'still use the real coordinates.')),
+            ('fix',
+             T('首页的自动/单次开关不再被「开始上报」按钮挤掉。连着但还没确认上报时，两枚并排出现，两个方向随时切。',
+               '首頁的自動/單次開關不再被「開始上報」按鈕擠掉。連著但還沒確認上報時，兩枚並排出現，兩個方向隨時切。',
+               'The auto/single switch on the home screen is no longer pushed out by the start button. While a '
+               'link is up but reporting is unconfirmed, both sit side by side and switch either way at any time.')),
+        ],
+    },
+    {
         'ver': 'v2.1.33', 'date': '2026-10-23',
         'items': [
             ('new',

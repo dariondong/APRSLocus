@@ -612,6 +612,16 @@ html{overflow-x:hidden}
 <!-- site-sync:changelog -->
     <div class="cl-version reveal">
       <div class="cl-head">
+        <span class="cl-tag">v2.1.34</span>
+        <span class="cl-date">2026-10-24</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot new"></span>Settings → Auto reporting gained Location fuzz: off, about 200 m, 2 km, 20 km, off by default. It follows APRS101 position ambiguity, replacing the lowest digits with spaces so a receiver sees a square instead of a point. Only the outgoing packet changes; the local map and track still use the real coordinates.</div>
+        <div class="cl-item"><span class="cl-dot fix"></span>The auto/single switch on the home screen is no longer pushed out by the start button. While a link is up but reporting is unconfirmed, both sit side by side and switch either way at any time.</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
         <span class="cl-tag">v2.1.33</span>
         <span class="cl-date">2026-10-23</span>
       </div>
