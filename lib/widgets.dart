@@ -747,49 +747,19 @@ class ReportActions extends StatelessWidget {
     final s = S.of(context);
     final on = state.beaconEnabled;
 
-    // ── 上报前的正式确认（本次改动）──
+    // ── 上报前的正式确认 ──
     //
     // 用户要求：连上服务器后**不要**自动上报；给一个正式的「开始上报」按钮，
     // 由用户手动确认后再开始。做成一枚醒目的实心按钮，而不是弹窗（用户明确说
     // 不用提示、只要按钮）。坐标还没拿到本轮定位时按钮置灰 —— 「确认坐标有效」
     // 之后它才可点（与 myPositionReportable 同源）。
-    if (state.connected && !state.beaconArmed) {
-      final ready = state.myPositionReportable;
-      // 自动上报总开关没开时，这枚按钮就是「发一次」，文案也跟着换成「立即上报」：
-      // 点它不会把自动上报顺手打开（用户 2026-10-20）。总开关开着、只是本次连接
-      // 还没确认时，它才是「开始上报」。
-      final autoOn = state.beaconEnabled;
-      return ClickCursor(
-        child: FilledButton.icon(
-          onPressed: ready
-              ? () => (autoOn
-                  ? _startReporting(context)
-                  : _reportNow(context))
-              : null,
-          icon: Icon(
-            ready ? Icons.send_rounded : Icons.location_searching_rounded,
-            size: 14,
-          ),
-          label: Text(
-            ready
-                ? (autoOn ? s.reportStartNow : s.reportNow)
-                : s.beaconWaitingFix,
-            style: ts(11.5, w: FontWeight.w700, c: Colors.white),
-          ),
-          style: FilledButton.styleFrom(
-            backgroundColor: C.green,
-            disabledBackgroundColor: C.greyBg,
-            disabledForegroundColor: C.slate,
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-            minimumSize: const Size(0, 0),
-            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(9),
-            ),
-          ),
-        ),
-      );
-    }
+    //
+    // ⚠ 这枚按钮**不取代**左边那枚模式开关（用户 2026-10-24 报的问题）：
+    // 以前它是整块替换，于是「连着但还没点开始上报」的那段时间里首页只剩下
+    // 这一枚按钮 —— 界面上看不到自动/单次的开关，想再开自动就只能跑设置页。
+    final needsConfirm =
+        state.connected && !state.beaconArmed && state.beaconEnabled;
+    final ready = state.myPositionReportable;
 
     // 状态胶囊：绿=自动上报中；灰=单次。文字直接写模式，点它切换。
     final toggleFg = on ? Colors.white : (onDark ? Colors.white : C.slate);
@@ -861,9 +831,40 @@ class ReportActions extends StatelessWidget {
       ),
     );
 
+    // 动作按钮两选一：还没接过本次连接时是「开始上报」（实心绿，确认那一下），
+    // 其余时候都是「立即上报」（发一次）。模式开关永远在它左边 —— 两枚一起出现，
+    // 用户不必为了开关自动上报而离开当前页。
+    final action = needsConfirm
+        ? ClickCursor(
+            child: FilledButton.icon(
+              onPressed: ready ? () => _startReporting(context) : null,
+              icon: Icon(
+                ready ? Icons.send_rounded : Icons.location_searching_rounded,
+                size: 14,
+              ),
+              label: Text(
+                ready ? s.reportStartNow : s.beaconWaitingFix,
+                style: ts(11.5, w: FontWeight.w700, c: Colors.white),
+              ),
+              style: FilledButton.styleFrom(
+                backgroundColor: C.green,
+                disabledBackgroundColor: C.greyBg,
+                disabledForegroundColor: C.slate,
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                minimumSize: const Size(0, 0),
+                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(9),
+                ),
+              ),
+            ),
+          )
+        : now;
+
     return Row(
       mainAxisSize: MainAxisSize.min,
-      children: [toggle, const SizedBox(width: 6), now],
+      children: [toggle, const SizedBox(width: 6), action],
     );
   }
 }

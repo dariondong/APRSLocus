@@ -312,8 +312,16 @@ def main() -> int:
     need('lib/state.dart', '  needConfirm,\n  /// 当前是**粗定位',
          'BeaconPhase 少了 needConfirm 这一档')
     # UI 侧：正式按钮必须真的出现，且与 beaconArmed 同源。
-    need('lib/widgets.dart', 'if (state.connected && !state.beaconArmed) {',
+    #
+    # 2026-10-24 改：它不再整块取代模式开关（那样首页会有一段时间看不到
+    # 自动/单次），而是与开关并排；判据改为一对（连着 + 本次还没确认 + 自动开着）。
+    need('lib/widgets.dart',
+         'state.connected && !state.beaconArmed && state.beaconEnabled;',
          'ReportActions 没有「开始上报」按钮 —— 用户无处确认上报')
+    need('lib/widgets.dart',
+         'children: [toggle, const SizedBox(width: 6), action],',
+         'ReportActions 把模式开关从动作按钮旁边摘掉了 —— 首页又会只剩一个'
+         '「立即上报」，想再开自动就得回设置页')
     need('lib/widgets.dart', 'state.beginReporting();',
          '「开始上报」按钮没有调用 beginReporting')
 
