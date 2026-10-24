@@ -4954,5 +4954,10 @@
   "trayCloseToTray": "關閉視窗時最小化到系統匣",
   "trayMenuShow": "顯示主視窗",
   "trayMenuHide": "隱藏到系統匣",
-  "trayMenuQuit": "結束 APRSLocus"
+  "trayMenuQuit": "結束 APRSLocus",
+  "beaconFuzz": "定位模糊",
+  "beaconFuzzOff": "關",
+  "beaconFuzz200m": "約 200 公尺",
+  "beaconFuzz2km": "約 2 公里",
+  "beaconFuzz20km": "約 20 公里"
 }

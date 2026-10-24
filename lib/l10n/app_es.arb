@@ -4366,5 +4366,10 @@
   "trayCloseToTray": "Minimizar a la bandeja al cerrar",
   "trayMenuShow": "Mostrar ventana",
   "trayMenuHide": "Ocultar en la bandeja",
-  "trayMenuQuit": "Salir de APRSLocus"
+  "trayMenuQuit": "Salir de APRSLocus",
+  "beaconFuzz": "Difuminar ubicación",
+  "beaconFuzzOff": "Desactivado",
+  "beaconFuzz200m": "~200 m",
+  "beaconFuzz2km": "~2 km",
+  "beaconFuzz20km": "~20 km"
 }

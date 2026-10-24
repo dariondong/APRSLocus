@@ -9805,4 +9805,19 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String get trayMenuQuit => "APRSLocus を終了";
 
+  @override
+  String get beaconFuzz => "位置ぼかし";
+
+  @override
+  String get beaconFuzzOff => "オフ";
+
+  @override
+  String get beaconFuzz200m => "約 200 m";
+
+  @override
+  String get beaconFuzz2km => "約 2 km";
+
+  @override
+  String get beaconFuzz20km => "約 20 km";
+
 }

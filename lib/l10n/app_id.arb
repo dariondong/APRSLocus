@@ -4366,5 +4366,10 @@
   "trayCloseToTray": "Perkecil ke tray saat ditutup",
   "trayMenuShow": "Tampilkan jendela",
   "trayMenuHide": "Sembunyikan ke tray",
-  "trayMenuQuit": "Keluar dari APRSlocus"
+  "trayMenuQuit": "Keluar dari APRSlocus",
+  "beaconFuzz": "Buram lokasi",
+  "beaconFuzzOff": "Nonaktif",
+  "beaconFuzz200m": "~200 m",
+  "beaconFuzz2km": "~2 km",
+  "beaconFuzz20km": "~20 km"
 }

@@ -4366,5 +4366,10 @@
   "trayCloseToTray": "閉じたらトレイに格納",
   "trayMenuShow": "ウィンドウを表示",
   "trayMenuHide": "トレイに格納",
-  "trayMenuQuit": "APRSLocus を終了"
+  "trayMenuQuit": "APRSLocus を終了",
+  "beaconFuzz": "位置ぼかし",
+  "beaconFuzzOff": "オフ",
+  "beaconFuzz200m": "約 200 m",
+  "beaconFuzz2km": "約 2 km",
+  "beaconFuzz20km": "約 20 km"
 }

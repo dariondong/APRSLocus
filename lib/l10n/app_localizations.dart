@@ -17769,6 +17769,36 @@ abstract class AppLocalizations {
   /// **'退出 APRSLocus'**
   String get trayMenuQuit;
 
+  /// No description provided for @beaconFuzz.
+  ///
+  /// In zh, this message translates to:
+  /// **'定位模糊'**
+  String get beaconFuzz;
+
+  /// No description provided for @beaconFuzzOff.
+  ///
+  /// In zh, this message translates to:
+  /// **'关'**
+  String get beaconFuzzOff;
+
+  /// No description provided for @beaconFuzz200m.
+  ///
+  /// In zh, this message translates to:
+  /// **'约 200 米'**
+  String get beaconFuzz200m;
+
+  /// No description provided for @beaconFuzz2km.
+  ///
+  /// In zh, this message translates to:
+  /// **'约 2 公里'**
+  String get beaconFuzz2km;
+
+  /// No description provided for @beaconFuzz20km.
+  ///
+  /// In zh, this message translates to:
+  /// **'约 20 公里'**
+  String get beaconFuzz20km;
+
 }
 
 class _AppLocalizationsDelegate

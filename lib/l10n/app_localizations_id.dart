@@ -10094,4 +10094,19 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get trayMenuQuit => "Keluar dari APRSlocus";
 
+  @override
+  String get beaconFuzz => "Buram lokasi";
+
+  @override
+  String get beaconFuzzOff => "Nonaktif";
+
+  @override
+  String get beaconFuzz200m => "~200 m";
+
+  @override
+  String get beaconFuzz2km => "~2 km";
+
+  @override
+  String get beaconFuzz20km => "~20 km";
+
 }

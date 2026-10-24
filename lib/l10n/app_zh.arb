@@ -5045,5 +5045,10 @@
   "trayCloseToTray": "关闭窗口时最小化到托盘",
   "trayMenuShow": "显示主窗口",
   "trayMenuHide": "隐藏到托盘",
-  "trayMenuQuit": "退出 APRSLocus"
+  "trayMenuQuit": "退出 APRSLocus",
+  "beaconFuzz": "定位模糊",
+  "beaconFuzzOff": "关",
+  "beaconFuzz200m": "约 200 米",
+  "beaconFuzz2km": "约 2 公里",
+  "beaconFuzz20km": "约 20 公里"
 }

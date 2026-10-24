@@ -4366,5 +4366,10 @@
   "trayCloseToTray": "Minimize to tray on close",
   "trayMenuShow": "Show window",
   "trayMenuHide": "Hide to tray",
-  "trayMenuQuit": "Quit APRSLocus"
+  "trayMenuQuit": "Quit APRSLocus",
+  "beaconFuzz": "Location fuzz",
+  "beaconFuzzOff": "Off",
+  "beaconFuzz200m": "~200 m",
+  "beaconFuzz2km": "~2 km",
+  "beaconFuzz20km": "~20 km"
 }

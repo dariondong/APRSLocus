@@ -1593,6 +1593,20 @@ class _BeaconSettingsPageState extends State<BeaconSettingsPage> {
             // 用户反馈「上报的开关到处都有、不知道点哪个」——这里明确指路：
             // 这个开关在主界面（地图）也有一键入口，且带「立即上报」。见
             // widgets.ReportActions。
+            // 位置模糊：把发出去的位置降成一片方格（APRS101 第 8 章）。
+            // 只影响上报的那一包，本机地图与轨迹仍按真实坐标画。
+            SettingsChoice<int>(
+              S.of(context).beaconFuzz,
+              value: st.beaconAmbiguity,
+              options: const [0, 1, 2, 3],
+              labelOf: (v) => switch (v) {
+                1 => S.of(context).beaconFuzz200m,
+                2 => S.of(context).beaconFuzz2km,
+                3 => S.of(context).beaconFuzz20km,
+                _ => S.of(context).beaconFuzzOff,
+              },
+              onChanged: st.setBeaconAmbiguity,
+            ),
             // ── 打开软件时：不做 / 自动连接 / 自动上报 ──
             //
             // 默认「不做操作」：开机就连网、就发位置是替用户做决定，所以由他自己

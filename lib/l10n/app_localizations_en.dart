@@ -10084,4 +10084,19 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get trayMenuQuit => "Quit APRSLocus";
 
+  @override
+  String get beaconFuzz => "Location fuzz";
+
+  @override
+  String get beaconFuzzOff => "Off";
+
+  @override
+  String get beaconFuzz200m => "~200 m";
+
+  @override
+  String get beaconFuzz2km => "~2 km";
+
+  @override
+  String get beaconFuzz20km => "~20 km";
+
 }

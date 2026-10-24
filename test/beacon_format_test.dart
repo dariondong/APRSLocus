@@ -640,5 +640,75 @@ void main() {
       }
     });
   });
-}
 
+  // ─── 定位模糊（APRS101 第 8 章的位置模糊）───
+  //
+  // 只改**发出去的那一包**：最低位的几个数字换成空格，收端看到一片方格。
+  // 三条要钉住的：
+  //   ① 小数点与 N/S/E/W 原地保留（少一个字符就整包解析不出位置）；
+  //   ② 位数与格子对得上（1 位 = 0.1 分，2 位 = 1 分，3 位 = 10 分）；
+  //   ③ 本机自己的坐标与轨迹不受影响 —— 模糊是给别人的。
+  group('定位模糊', () {
+    AppState base() => AppState()
+      ..myCall = 'BG7LZQ'
+      ..mySsid = '2'
+      ..mySymbol = 'b'
+      ..myLat = 39.9075
+      ..myLng = 116.3972
+      ..myHasFix = true
+      ..debugSetFreshFix()
+      ..beaconIncludeBattery = false
+      ..beaconIncludeSpeed = false
+      ..beaconIncludeCourse = false
+      ..myComment = ''
+      ..debugGrantConsent();
+
+    String posRaw(AppState st) {
+      final hits = st.packets.where((p) => p.type == 'position');
+      return hits.isEmpty ? '' : hits.first.raw;
+    }
+
+    test('0 位模糊：与不带这个参数逐字节相同', () {
+      final a = AprsFmt.position('BG7LZQ-9', 39.070833, 116.407333, '>');
+      final b = AprsFmt.position('BG7LZQ-9', 39.070833, 116.407333, '>',
+          ambiguity: 0);
+      expect(b, a);
+      expect(a.endsWith(':!3904.25N/11624.44E>'), isTrue, reason: a);
+    });
+
+    test('逐位模糊：小数点与方向字母都留着，空位只落在数字上', () {
+      String at(int n) => AprsFmt.position(
+          'BG7LZQ-9', 39.070833, 116.407333, '>',
+          ambiguity: n);
+      expect(at(1), endsWith(':!3904.2 N/11624.4 E>'));
+      expect(at(2), endsWith(':!3904.  N/11624.  E>'));
+      expect(at(3), endsWith(':!390 .  N/1162 .  E>'));
+    });
+
+    test('发报时按档位模糊，本机坐标不动', () {
+      final st = base()..beaconAmbiguity = 2;
+      st.sendBeacon();
+      final raw = posRaw(st);
+      expect(raw, 'BG7LZQ-2>APALOC,TCPIP*:!3954.  N/11623.  Eb');
+      expect(st.myLat, 39.9075, reason: '模糊只作用于报文，本机仍按真实坐标画');
+      expect(st.myLng, 116.3972);
+      // 自己的解析器读自己发的包：认出 2 位模糊，且落回那一格里。
+      final p = parseAprsPosition(raw.substring(raw.indexOf(':') + 1));
+      expect(p, isNotNull);
+      expect(p!.posAmbiguity, 2);
+      expect((p.lat - 39.9075).abs() <= 1 / 60, isTrue, reason: 'lat=${p.lat}');
+      expect((p.lng - 116.3972).abs() <= 1 / 60, isTrue,
+          reason: 'lng=${p.lng}');
+      st.dispose();
+    });
+
+    test('档位夹在 0..3：越界不会把整个分钟位擦空', () {
+      final st = base();
+      st.setBeaconAmbiguity(9);
+      expect(st.beaconAmbiguity, 3);
+      st.setBeaconAmbiguity(-2);
+      expect(st.beaconAmbiguity, 0);
+      st.dispose();
+    });
+  });
+}

@@ -9705,6 +9705,21 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String get trayMenuQuit => "退出 APRSLocus";
 
+  @override
+  String get beaconFuzz => "定位模糊";
+
+  @override
+  String get beaconFuzzOff => "关";
+
+  @override
+  String get beaconFuzz200m => "约 200 米";
+
+  @override
+  String get beaconFuzz2km => "约 2 公里";
+
+  @override
+  String get beaconFuzz20km => "约 20 公里";
+
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
@@ -19406,5 +19421,20 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get trayMenuQuit => "結束 APRSLocus";
+
+  @override
+  String get beaconFuzz => "定位模糊";
+
+  @override
+  String get beaconFuzzOff => "關";
+
+  @override
+  String get beaconFuzz200m => "約 200 公尺";
+
+  @override
+  String get beaconFuzz2km => "約 2 公里";
+
+  @override
+  String get beaconFuzz20km => "約 20 公里";
 
 }

@@ -475,6 +475,26 @@ class AprsFmt {
     return '$d$m${v >= 0 ? 'E' : 'W'}';
   }
 
+  /// 位置模糊：把经纬度**最低位的数字换成空格**（APRS101 第 8 章）。
+  ///
+  /// 一个空位 = 一格，接收方据此画出一片区域而不是一个点：1 位约 0.1 分
+  /// （约 200 米），2 位约 1 分（约 2 公里），3 位约 10 分（约 20 公里）。
+  ///
+  /// 只换**数字位**：小数点与 N/S/E/W 一律留在原地。有的解析器按字符位切分
+  /// 位置字段，少一个字符就整包解析不出位置。
+  static String blur(String field, int digits) {
+    if (digits <= 0) return field;
+    final dir = field.substring(field.length - 1);
+    final chars = field.substring(0, field.length - 1).split('');
+    var left = digits;
+    for (var i = chars.length - 1; i >= 0 && left > 0; i--) {
+      if (chars[i] == '.') continue;
+      chars[i] = ' ';
+      left--;
+    }
+    return '${chars.join()}$dir';
+  }
+
   /// 位置数据包：CALL>APALOC,TCPIP*:!DDMM.HHN/DDDMM.HHW符号表+符号码+注释
   ///
   /// symbol 参数为符号码（如 '>'）；符号表使用默认主表 '/'
@@ -493,10 +513,13 @@ class AprsFmt {
   /// 锚定注释行首）就匹配不上，会把 `ddd/sss` 当成普通备注文字显示，
   /// 即「速度与方位角出现在备注里」。
   /// 实测：带空格 → course/speed 解析为 None；无空格 → 正常解析。
+  /// [ambiguity] 是位置模糊位数（0 关，见 [blur]）：把发出去的那个点换成一片
+  /// 区域。传 0 时与不带这个参数逐字节相同。
   static String position(
       String call, double latitude, double longitude, String symbol,
-      {String? comment, String path = 'APALOC,TCPIP*'}) {
-    final body = '!${lat(latitude)}/${lng(longitude)}$symbol';
+      {String? comment, String path = 'APALOC,TCPIP*', int ambiguity = 0}) {
+    final body = '!${blur(lat(latitude), ambiguity)}'
+        '/${blur(lng(longitude), ambiguity)}$symbol';
     final c = comment?.trim() ?? '';
     return '$call>$path:$body$c';
   }

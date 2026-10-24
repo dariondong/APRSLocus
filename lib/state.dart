@@ -935,6 +935,24 @@ class AppState extends ChangeNotifier {
   /// 来源不提供时**不发**（而不是发一个会被读成「没有卫星」的 0）。
   bool beaconIncludeSats = false;
 
+  /// 上报位置的**模糊位数**（APRS101 第 8 章的位置模糊）。
+  ///
+  /// 0 = 不模糊（默认），1 ≈ 200 米，2 ≈ 2 公里，3 ≈ 20 公里。发出去的那一包
+  /// 里最低位的几个数字换成空格，接收方只能看到一片方格。
+  ///
+  /// 只改**发出去的那一包**：本机的地图、轨迹、网格仍按真实坐标算。默认关 ——
+  /// 精度是用户自己的选择，不该替他降。
+  int beaconAmbiguity = 0;
+
+  /// 改位置模糊档位（非法值夹回 0..3）。
+  void setBeaconAmbiguity(int n) {
+    final v = n.clamp(0, 3);
+    if (v == beaconAmbiguity) return;
+    beaconAmbiguity = v;
+    persist();
+    _notify();
+  }
+
   /// 今日步数（0 = 还没读到或确实没走）。
   ///
   /// **必须落盘**（见 [_persistSteps]）：只留内存的话，每次冷启动、
@@ -4586,6 +4604,7 @@ class AppState extends ChangeNotifier {
     emergencyTel = '120';
     beaconIncludeSteps = false;
     beaconIncludeSats = false;
+    beaconAmbiguity = 0;
     notifStyle = 'plain';
     notifLiveText = 'default';
     _stepsBaseline = -1;
@@ -5103,6 +5122,8 @@ class AppState extends ChangeNotifier {
           p.getBool('beaconIncludeSteps') ?? beaconIncludeSteps;
       beaconIncludeSats =
           p.getBool('beaconIncludeSats') ?? beaconIncludeSats;
+      beaconAmbiguity =
+          (p.getInt('beaconAmbiguity') ?? beaconAmbiguity).clamp(0, 3);
       // 只认两种值：早期版本存过 'focus'（小米焦点通知那一档已删）。
       // 不归一化的话它既不是 plain 也不是 live，用户选了实时更新也永远提不上去。
       notifStyle = p.getString('notifStyle') == 'live' ? 'live' : 'plain';
@@ -5511,6 +5532,7 @@ class AppState extends ChangeNotifier {
     await p.setString('emergencyTel', emergencyTel);
     await p.setBool('beaconIncludeSteps', beaconIncludeSteps);
     await p.setBool('beaconIncludeSats', beaconIncludeSats);
+    await p.setInt('beaconAmbiguity', beaconAmbiguity);
     await p.setString('notifStyle', notifStyle);
     await p.setString('notifLiveText', notifLiveText);
     await p.setInt('stepsBaseline', _stepsBaseline);
@@ -7983,6 +8005,7 @@ class AppState extends ChangeNotifier {
       lat,
       lng,
       beaconSymbolNow,
+      ambiguity: beaconAmbiguity,
       comment: _beaconComment(),
       path: txPath,
     );
