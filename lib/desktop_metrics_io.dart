@@ -56,7 +56,7 @@ class DesktopMetrics {
   //
   // `/proc/stat` 第一行是整机累计的 CPU 时间片，必须两次相减才有「使用率」；
   // 所以第一次读不到比率（cpu 为 null），再等一小会儿读第二次。
-  static ({int? cpu, int? mem})? _prevStat;
+  static ({int total, int idle})? _prevStat;
 
   static Future<({int? cpu, int? mem})?> _linux() async {
     final cpu = await _linuxCpu();
@@ -212,7 +212,8 @@ class DesktopMetrics {
       final size = await Process.run('sysctl', ['-n', 'hw.memsize'])
           .timeout(const Duration(seconds: 4));
       final total = int.tryParse('${size.stdout}'.trim());
-      final vm = await Process.run('vm_stat').timeout(const Duration(seconds: 4));
+      final vm =
+          await Process.run('vm_stat', const []).timeout(const Duration(seconds: 4));
       if (total != null && total > 0) {
         final text = '${vm.stdout}';
         int pages(String key) {
