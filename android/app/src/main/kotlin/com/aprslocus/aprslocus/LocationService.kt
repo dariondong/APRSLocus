@@ -90,6 +90,54 @@ object NotifHelper {
         nm.notify(ALARM_NOTIF_ID, notif)
     }
 
+    /// 订阅命中通道。
+    ///
+    /// 与「APRS 消息」分开的理由与强提醒那条一样：两种提醒的**性质**不同。
+    /// 消息是「有人对我说话了」，订阅是「我在盯的那件事发生了」—— 用户可能想
+    /// 留着一头、静音另一头，共用一个通道就只能一刀切。
+    const val SUBS_CHANNEL_ID = "aprslocus_subs"
+    const val SUBS_NOTIF_BASE = 3000
+
+    fun ensureSubsChannel(context: Context) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val nm = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            if (nm.getNotificationChannel(SUBS_CHANNEL_ID) == null) {
+                val ch = NotificationChannel(
+                    SUBS_CHANNEL_ID, "订阅命中", NotificationManager.IMPORTANCE_DEFAULT
+                ).apply {
+                    description = "订阅规则命中时提醒"
+                }
+                nm.createNotificationChannel(ch)
+            }
+        }
+    }
+
+    /// 订阅命中：一条订阅固定占一个通知位（id 由订阅 id 派生）。
+    ///
+    /// 更新同一条而不是每条命中都新建，理由与常驻通知去重一样：同一个订阅占满
+    /// 整屏通知栏只是吵，用户要的是「有新命中」这件事本身。
+    fun showSubs(context: Context, title: String, text: String, id: String) {
+        ensureSubsChannel(context)
+        val pi = PendingIntent.getActivity(
+            context, id.hashCode() and 0xff,
+            Intent(context, MainActivity::class.java)
+                .addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP),
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+        val notif = NotificationCompat.Builder(context, SUBS_CHANNEL_ID)
+            .setContentTitle(title)
+            .setContentText(text)
+            .setStyle(NotificationCompat.BigTextStyle().bigText(text))
+            .setSmallIcon(R.drawable.ic_stat_aprs)
+            .setLargeIcon(notifLargeIcon(context))
+            .setContentIntent(pi)
+            .setAutoCancel(true)
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .build()
+        val nm = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        nm.notify(SUBS_NOTIF_BASE + (id.hashCode() and 0xffff), notif)
+    }
+
     fun ensureMsgChannel(context: Context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val nm = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager

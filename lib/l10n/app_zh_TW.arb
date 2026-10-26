@@ -5007,5 +5007,10 @@
   "subsHitSource": "發出",
   "subsHitPath": "中繼",
   "myOtherSsidNone": "還沒收到同一呼號的其他 SSID",
-  "subsEdit": "修改訂閱"
+  "subsEdit": "修改訂閱",
+  "subsNotify": "系統通知",
+  "subsNotifyTitle": "訂閱命中 · {value}",
+  "subsNotifyMore": "另有 {n} 條",
+  "@subsNotifyTitle": {"placeholders": {"value": {"type": "String"}}},
+  "@subsNotifyMore": {"placeholders": {"n": {"type": "String"}}}
 }

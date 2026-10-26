@@ -10238,4 +10238,13 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get subsEdit => "Ubah langganan";
 
+  @override
+  String get subsNotify => "Notifikasi";
+
+  @override
+  String subsNotifyTitle(String value) => "Langganan cocok · $value";
+
+  @override
+  String subsNotifyMore(String n) => "+$n lagi";
+
 }

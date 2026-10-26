@@ -106,6 +106,9 @@ const List<BackupGroupSpec> kBackupGroups = [
     'beaconIncludeSats',
     'beaconIncludeDeskLoad',
     'acceptOtherSsidMsgs',
+    // 订阅命中要不要弹系统通知：通知偏好，换机后应跟着走（否则新机上订阅
+    // 静悄悄，用户会以为订阅坏了）。
+    'subsNotify',
     // 上报位置的模糊档位：隐私选择，换机后应跟着走（回到不模糊就等于把
     // 用户刚降下来的精度自己抬回去）。
     'beaconAmbiguity',

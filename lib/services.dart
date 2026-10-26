@@ -434,6 +434,18 @@ class LocService {
     } catch (_) {}
   }
 
+  /// 订阅命中时的系统通知。
+  ///
+  /// [id] 是订阅自己的 id：同一条订阅复用同一个通知位，新的命中把旧内容顶掉
+  /// （原生侧 `SUBS_NOTIF_BASE + id.hashCode()`），不会一条订阅占满通知栏。
+  Future<void> showSubscriptionNotification(
+      String title, String text, String id) async {
+    try {
+      await _channel
+          .invokeMethod('showSubs', {'title': title, 'text': text, 'id': id});
+    } catch (_) {}
+  }
+
   /// 群聊事件系统通知（邀请/加入/离开等）
   Future<void> showGroupNotification(String title, String text) async {
     try {

@@ -9849,6 +9849,15 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String get subsEdit => "修改订阅";
 
+  @override
+  String get subsNotify => "系统通知";
+
+  @override
+  String subsNotifyTitle(String value) => "订阅命中 · $value";
+
+  @override
+  String subsNotifyMore(String n) => "另有 $n 条";
+
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
@@ -19694,5 +19703,14 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get subsEdit => "修改訂閱";
+
+  @override
+  String get subsNotify => "系統通知";
+
+  @override
+  String subsNotifyTitle(String value) => "訂閱命中 · $value";
+
+  @override
+  String subsNotifyMore(String n) => "另有 $n 條";
 
 }

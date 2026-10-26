@@ -4419,5 +4419,10 @@
   "subsHitSource": "sent",
   "subsHitPath": "relayed",
   "myOtherSsidNone": "No other SSID under your callsign heard yet",
-  "subsEdit": "Edit subscription"
+  "subsEdit": "Edit subscription",
+  "subsNotify": "Notifications",
+  "subsNotifyTitle": "Subscription hit · {value}",
+  "subsNotifyMore": "+{n} more",
+  "@subsNotifyTitle": {"placeholders": {"value": {"type": "String"}}},
+  "@subsNotifyMore": {"placeholders": {"n": {"type": "String"}}}
 }

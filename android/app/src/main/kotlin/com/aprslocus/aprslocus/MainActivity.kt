@@ -218,6 +218,14 @@ class MainActivity : FlutterActivity() {
                     NotifHelper.showMessage(this, from, text)
                     result.success(true)
                 }
+                // 订阅命中（lib/state.dart 的 _noteSubscriptions）：一条订阅一个通知位。
+                "showSubs" -> {
+                    val title = call.argument<String>("title") ?: ""
+                    val text = call.argument<String>("text") ?: ""
+                    val id = call.argument<String>("id") ?: ""
+                    NotifHelper.showSubs(this, title, text, id)
+                    result.success(true)
+                }
                 // 生命守护强提醒（issue #32）：高优先级 + 震动 + 抬头横幅。
                 "showAlarm" -> {
                     val title = call.argument<String>("title") ?: ""

@@ -3768,6 +3768,21 @@ class AppState extends ChangeNotifier {
   @visibleForTesting
   void debugSetFreshFix() => _pendingSavedPos = false;
 
+  /// 测试口子：喂一条收到的报文（走真实的收包路径，含订阅记账）。
+  ///
+  /// 生产代码不要用它 —— 真实报文从各条链路的 `onLine` 进来。
+  @visibleForTesting
+  void debugFeedLine(String line) =>
+      _onAprsLine(line, rf: false, source: srcAprsIs);
+
+  /// 测试口子：把某条订阅「上次弹通知」的时刻推回 [ago] 之前，
+  /// 用来验证限流窗口前后两种行为（等 30 秒的测试不可接受）。
+  @visibleForTesting
+  void debugAgeSubNotify(String ruleId, Duration ago) {
+    if (!_subNotifiedAt.containsKey(ruleId)) return;
+    _subNotifiedAt[ruleId] = DateTime.now().subtract(ago);
+  }
+
   /// 仅测试用：模拟「当前坐标只是上次保存的位置、尚未重新定位」。
   @visibleForTesting
   void debugSetSavedPosPending() => _pendingSavedPos = true;
@@ -4634,6 +4649,7 @@ class AppState extends ChangeNotifier {
     beaconIncludeSats = false;
     beaconIncludeDeskLoad = false;
     acceptOtherSsidMsgs = true;
+    subsNotify = true;
     beaconAmbiguity = 0;
     notifStyle = 'plain';
     notifLiveText = 'default';
@@ -5188,6 +5204,7 @@ class AppState extends ChangeNotifier {
       autoStartMode = (p.getInt('autoStartMode') ?? autoStartMode).clamp(0, 2);
       acceptOtherSsidMsgs =
           p.getBool('acceptOtherSsidMsgs') ?? acceptOtherSsidMsgs;
+      subsNotify = p.getBool('subsNotify') ?? subsNotify;
       bleHrId = p.getString('bleHrId') ?? bleHrId;
       bleHrName = p.getString('bleHrName') ?? bleHrName;
       // 只恢复「记住的是哪台」，不自动连（权限/设备不在身边时静默失败更困惑）
@@ -5585,6 +5602,7 @@ class AppState extends ChangeNotifier {
     await p.setBool('beaconIncludeSats', beaconIncludeSats);
     await p.setBool('beaconIncludeDeskLoad', beaconIncludeDeskLoad);
     await p.setBool('acceptOtherSsidMsgs', acceptOtherSsidMsgs);
+    await p.setBool('subsNotify', subsNotify);
     await p.setInt('beaconAmbiguity', beaconAmbiguity);
     await p.setString('notifStyle', notifStyle);
     await p.setString('notifLiveText', notifLiveText);
@@ -9586,6 +9604,33 @@ class AppState extends ChangeNotifier {
   /// 待写盘的订阅 JSON（命中太密时不每次都落盘）
   String? _subJson;
 
+  /// 命中要不要弹到系统通知栏（订阅页上的「系统通知」开关，默认开）。
+  ///
+  /// 只管通知栏提醒，不改命中记录：关掉它，命中照旧进 [subHits]。
+  bool subsNotify = true;
+
+  /// 同一条订阅两次通知之间的最短间隔。
+  ///
+  /// 为什么必须限流：一条盯着繁忙中继或热门关键词的规则，可能一分钟命中好几次，
+  /// 每条都弹一次等于把手机变成蜂鸣器。限流窗口里压下的条数会在下一条通知里一起说，
+  /// 信息不会丢。
+  static const Duration subNotifyGap = Duration(seconds: 30);
+
+  /// 每条订阅上次弹通知的时刻 / 限流窗口里被压下的条数
+  final Map<String, DateTime> _subNotifiedAt = {};
+  final Map<String, int> _subMutedCount = {};
+
+  void setSubsNotify(bool v) {
+    if (subsNotify == v) return;
+    subsNotify = v;
+    if (!v) {
+      _subNotifiedAt.clear();
+      _subMutedCount.clear();
+    }
+    persist();
+    _notify();
+  }
+
   /// 所有命中（新的在前）
   int get subHitCount => subHits.length;
 
@@ -9670,6 +9715,9 @@ class AppState extends ChangeNotifier {
   void removeSubscription(String id) {
     subscriptions.removeWhere((r) => r.id == id);
     subHits.removeWhere((h) => h.ruleId == id);
+    // 限流状态跟着规则一起丢掉，否则删了再加回来会带上一段「刚弹过」的记忆
+    _subNotifiedAt.remove(id);
+    _subMutedCount.remove(id);
     _saveSubscriptions();
     persist();
     _notify();
@@ -9726,11 +9774,13 @@ class AppState extends ChangeNotifier {
     final mine = myFullCall.toUpperCase();
     if (p.src.toUpperCase() == mine) return; // 自己发的不算「看到别人」
     var hit = false;
+    final matched = <SubRule>[];
     final pk = subPacketKindOf(p);
     for (final r in subscriptions) {
       final role = subMatch(r, p);
       if (role == null) continue;
       r.hits++;
+      matched.add(r);
       subHits.insert(
         0,
         SubHit(
@@ -9754,7 +9804,39 @@ class AppState extends ChangeNotifier {
     _subJson = encodeSubscriptions(subscriptions, subHits);
     _subSaveTimer?.cancel();
     _subSaveTimer = Timer(const Duration(seconds: 8), () => persist());
+    _notifySubscriptions(matched, p);
     _notify();
+  }
+
+  /// 把这一包命中的订阅弹到通知栏。
+  ///
+  /// 一条订阅一个通知位（原生侧按订阅 id 取 id），所以同一条规则的新命中只会
+  /// 把旧的那条换掉；[subNotifyGap] 以内再命中只计数，下一条通知里带上
+  /// 「另有 N 条」—— 高频命中时不刷屏，也不悄悄吞掉数量。
+  void _notifySubscriptions(List<SubRule> matched, Packet p) {
+    if (!subsNotify || matched.isEmpty) return;
+    final l = l10n;
+    final now = DateTime.now();
+    final body = _subNotifyBody(p);
+    for (final r in matched) {
+      final last = _subNotifiedAt[r.id];
+      if (last != null && now.difference(last) < subNotifyGap) {
+        _subMutedCount[r.id] = (_subMutedCount[r.id] ?? 0) + 1;
+        continue;
+      }
+      _subNotifiedAt[r.id] = now;
+      final muted = _subMutedCount.remove(r.id) ?? 0;
+      final text = muted > 0 ? '${l.subsNotifyMore('$muted')} · $body' : body;
+      unawaited(loc.showSubscriptionNotification(
+          l.subsNotifyTitle(r.value), text, r.id));
+    }
+  }
+
+  /// 通知正文：呼号 + 报文内容（没有内容就退回原文）
+  String _subNotifyBody(Packet p) {
+    final info = (p.info ?? '').trim();
+    final line = info.isEmpty ? p.raw.trim() : '${p.src} $info';
+    return line.length > 140 ? '${line.substring(0, 140)}…' : line;
   }
 
   // ─── 台站屏蔽（本地不上图，包仍接收）───

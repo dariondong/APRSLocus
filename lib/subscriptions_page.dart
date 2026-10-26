@@ -355,6 +355,8 @@ class _SubscriptionsPageState extends State<SubscriptionsPage> {
             children: [
               Text(s.subsLead,
                   style: ts(12, c: C.slate, h: 1.6)),
+              const SizedBox(height: 12),
+              _notifyRow(s, st),
               const SizedBox(height: 14),
               // ── 规则 ──
               if (rules.isEmpty)
@@ -465,6 +467,37 @@ class _SubscriptionsPageState extends State<SubscriptionsPage> {
             child: Padding(
               padding: const EdgeInsets.all(6),
               child: Icon(Icons.close_rounded, size: 16, color: C.greyLight),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// 命中要不要弹到系统通知栏（默认开）。
+  ///
+  /// 命中记录不受它影响：关掉只是不弹通知，命中照旧记在下面。
+  Widget _notifyRow(S s, AppState st) {
+    return Container(
+      padding: const EdgeInsets.fromLTRB(14, 6, 10, 6),
+      decoration: BoxDecoration(
+        color: C.surfaceFill,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: C.border, width: 0.6),
+      ),
+      child: Row(
+        children: [
+          Icon(Icons.notifications_active_rounded, size: 16, color: C.orange),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(s.subsNotify,
+                style: ts(12, c: C.slate, w: FontWeight.w600)),
+          ),
+          Transform.scale(
+            scale: 0.8,
+            child: Switch(
+              value: st.subsNotify,
+              onChanged: (v) => st.setSubsNotify(v),
             ),
           ),
         ],

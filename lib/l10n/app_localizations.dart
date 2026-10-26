@@ -18057,6 +18057,24 @@ abstract class AppLocalizations {
   /// **'修改订阅'**
   String get subsEdit;
 
+  /// No description provided for @subsNotify.
+  ///
+  /// In zh, this message translates to:
+  /// **'系统通知'**
+  String get subsNotify;
+
+  /// No description provided for @subsNotifyTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'订阅命中 · {value}'**
+  String subsNotifyTitle(String value);
+
+  /// No description provided for @subsNotifyMore.
+  ///
+  /// In zh, this message translates to:
+  /// **'另有 {n} 条'**
+  String subsNotifyMore(String n);
+
 }
 
 class _AppLocalizationsDelegate

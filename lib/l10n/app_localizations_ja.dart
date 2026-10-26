@@ -9949,4 +9949,13 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String get subsEdit => "購読を編集";
 
+  @override
+  String get subsNotify => "通知";
+
+  @override
+  String subsNotifyTitle(String value) => "購読ヒット · $value";
+
+  @override
+  String subsNotifyMore(String n) => "ほか $n 件";
+
 }

@@ -10228,4 +10228,13 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get subsEdit => "Edit subscription";
 
+  @override
+  String get subsNotify => "Notifications";
+
+  @override
+  String subsNotifyTitle(String value) => "Subscription hit · $value";
+
+  @override
+  String subsNotifyMore(String n) => "+$n more";
+
 }

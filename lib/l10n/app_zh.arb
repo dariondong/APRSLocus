@@ -5098,5 +5098,10 @@
   "subsHitSource": "发出",
   "subsHitPath": "中继",
   "myOtherSsidNone": "还没收到同一呼号的其他 SSID",
-  "subsEdit": "修改订阅"
+  "subsEdit": "修改订阅",
+  "subsNotify": "系统通知",
+  "subsNotifyTitle": "订阅命中 · {value}",
+  "subsNotifyMore": "另有 {n} 条",
+  "@subsNotifyTitle": {"placeholders": {"value": {"type": "String"}}},
+  "@subsNotifyMore": {"placeholders": {"n": {"type": "String"}}}
 }

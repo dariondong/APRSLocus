@@ -4419,5 +4419,10 @@
   "subsHitSource": "enviado",
   "subsHitPath": "retransmitido",
   "myOtherSsidNone": "Aún no se ha oído otro SSID de tu indicativo",
-  "subsEdit": "Editar suscripción"
+  "subsEdit": "Editar suscripción",
+  "subsNotify": "Notificaciones",
+  "subsNotifyTitle": "Coincidencia · {value}",
+  "subsNotifyMore": "+{n} más",
+  "@subsNotifyTitle": {"placeholders": {"value": {"type": "String"}}},
+  "@subsNotifyMore": {"placeholders": {"n": {"type": "String"}}}
 }

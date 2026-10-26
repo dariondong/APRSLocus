@@ -4419,5 +4419,10 @@
   "subsHitSource": "発信",
   "subsHitPath": "中継",
   "myOtherSsidNone": "同じコールサインの他の SSID はまだ受信していません",
-  "subsEdit": "購読を編集"
+  "subsEdit": "購読を編集",
+  "subsNotify": "通知",
+  "subsNotifyTitle": "購読ヒット · {value}",
+  "subsNotifyMore": "ほか {n} 件",
+  "@subsNotifyTitle": {"placeholders": {"value": {"type": "String"}}},
+  "@subsNotifyMore": {"placeholders": {"n": {"type": "String"}}}
 }

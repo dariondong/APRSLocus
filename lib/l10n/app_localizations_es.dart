@@ -10287,4 +10287,13 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get subsEdit => "Editar suscripción";
 
+  @override
+  String get subsNotify => "Notificaciones";
+
+  @override
+  String subsNotifyTitle(String value) => "Coincidencia · $value";
+
+  @override
+  String subsNotifyMore(String n) => "+$n más";
+
 }

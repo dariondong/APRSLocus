@@ -4419,5 +4419,10 @@
   "subsHitSource": "kirim",
   "subsHitPath": "diteruskan",
   "myOtherSsidNone": "Belum ada SSID lain dengan panggilan yang sama",
-  "subsEdit": "Ubah langganan"
+  "subsEdit": "Ubah langganan",
+  "subsNotify": "Notifikasi",
+  "subsNotifyTitle": "Langganan cocok · {value}",
+  "subsNotifyMore": "+{n} lagi",
+  "@subsNotifyTitle": {"placeholders": {"value": {"type": "String"}}},
+  "@subsNotifyMore": {"placeholders": {"n": {"type": "String"}}}
 }
