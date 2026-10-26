@@ -4633,6 +4633,7 @@ class AppState extends ChangeNotifier {
     beaconIncludeSteps = false;
     beaconIncludeSats = false;
     beaconIncludeDeskLoad = false;
+    acceptOtherSsidMsgs = true;
     beaconAmbiguity = 0;
     notifStyle = 'plain';
     notifLiveText = 'default';
@@ -5185,6 +5186,8 @@ class AppState extends ChangeNotifier {
           p.getBool('beaconForceCoarse') ?? beaconForceCoarse;
       // 打开软件时自动做什么：认不出的值（改坏 / 旧版不写这一项）回到「不做操作」
       autoStartMode = (p.getInt('autoStartMode') ?? autoStartMode).clamp(0, 2);
+      acceptOtherSsidMsgs =
+          p.getBool('acceptOtherSsidMsgs') ?? acceptOtherSsidMsgs;
       bleHrId = p.getString('bleHrId') ?? bleHrId;
       bleHrName = p.getString('bleHrName') ?? bleHrName;
       // 只恢复「记住的是哪台」，不自动连（权限/设备不在身边时静默失败更困惑）
@@ -5581,6 +5584,7 @@ class AppState extends ChangeNotifier {
     await p.setBool('beaconIncludeSteps', beaconIncludeSteps);
     await p.setBool('beaconIncludeSats', beaconIncludeSats);
     await p.setBool('beaconIncludeDeskLoad', beaconIncludeDeskLoad);
+    await p.setBool('acceptOtherSsidMsgs', acceptOtherSsidMsgs);
     await p.setInt('beaconAmbiguity', beaconAmbiguity);
     await p.setString('notifStyle', notifStyle);
     await p.setString('notifLiveText', notifLiveText);
@@ -8760,6 +8764,8 @@ class AppState extends ChangeNotifier {
                 _baseCall(myFullCall.toUpperCase())) {
           return null; // 既不是我的 SSID，也不是群呼号，忽略
         }
+        // 用户关掉「接收其他 SSID 的消息」时退回旧行为：只收发给本机 ID 的
+        if (!acceptOtherSsidMsgs) return null;
       }
     }
     // 提取消息编号与 ack 标记：`{NNNN` 或 `{NNNN_`
@@ -10347,6 +10353,20 @@ class AppState extends ChangeNotifier {
     }
     applySsidCommand(cmd);
     return true;
+  }
+
+  /// 是否接收**发给同一呼号其他 SSID** 的消息。
+  ///
+  /// 开：对方发给 `BG7LZQ-9` 的报文，本机（`BG7LZQ-7`）也收下，气泡上标出来；
+  /// 关：只收发给本机 ID 的，其余当场忽略 —— 多台设备并用时，可以让每台只回
+  /// 自己的那一份。默认开（用户先要的是「都收到」）。
+  bool acceptOtherSsidMsgs = true;
+
+  void setAcceptOtherSsidMsgs(bool v) {
+    if (acceptOtherSsidMsgs == v) return;
+    acceptOtherSsidMsgs = v;
+    persist();
+    _notify();
   }
 
   /// 消息发送身份：默认本机 ID，可以临时选用自己另一个 SSID

@@ -10248,4 +10248,10 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get ssidCmdNoLink => "No hay enlace activo, así que el comando no sale";
 
+  @override
+  String get msgRecvTitle => "Recepción de mensajes";
+
+  @override
+  String get msgRecvSsid => "Recibir también mensajes de mis otros SSID";
+
 }

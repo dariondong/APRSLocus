@@ -4406,5 +4406,7 @@
   "ssidCmdStop": "Stop reporting",
   "ssidCmdSent": "Sent to {call}: {cmd}",
   "ssidCmdNoLink": "No link is up, so the command cannot go out",
-  "@ssidCmdSent": {"placeholders": {"call": {"type": "String"}, "cmd": {"type": "String"}}}
+  "@ssidCmdSent": {"placeholders": {"call": {"type": "String"}, "cmd": {"type": "String"}}},
+  "msgRecvTitle": "Message reception",
+  "msgRecvSsid": "Also receive messages for my other SSIDs"
 }

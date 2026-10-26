@@ -4994,5 +4994,7 @@
   "ssidCmdStop": "停止上報",
   "ssidCmdSent": "已發給 {call}：{cmd}",
   "ssidCmdNoLink": "鏈路沒連上，指令發不出去",
-  "@ssidCmdSent": {"placeholders": {"call": {"type": "String"}, "cmd": {"type": "String"}}}
+  "@ssidCmdSent": {"placeholders": {"call": {"type": "String"}, "cmd": {"type": "String"}}},
+  "msgRecvTitle": "訊息接收",
+  "msgRecvSsid": "其他 SSID 的訊息也收"
 }

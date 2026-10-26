@@ -5085,5 +5085,7 @@
   "ssidCmdStop": "停止上报",
   "ssidCmdSent": "已发给 {call}：{cmd}",
   "ssidCmdNoLink": "链路没连上，指令发不出去",
-  "@ssidCmdSent": {"placeholders": {"call": {"type": "String"}, "cmd": {"type": "String"}}}
+  "@ssidCmdSent": {"placeholders": {"call": {"type": "String"}, "cmd": {"type": "String"}}},
+  "msgRecvTitle": "消息接收",
+  "msgRecvSsid": "其他 SSID 的消息也收"
 }

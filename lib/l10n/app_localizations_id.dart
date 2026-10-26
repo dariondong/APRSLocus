@@ -10199,4 +10199,10 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get ssidCmdNoLink => "Tautan belum tersambung, perintah tidak terkirim";
 
+  @override
+  String get msgRecvTitle => "Penerimaan pesan";
+
+  @override
+  String get msgRecvSsid => "Terima juga pesan untuk SSID saya yang lain";
+
 }

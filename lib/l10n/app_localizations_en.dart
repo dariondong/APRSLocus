@@ -10189,4 +10189,10 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get ssidCmdNoLink => "No link is up, so the command cannot go out";
 
+  @override
+  String get msgRecvTitle => "Message reception";
+
+  @override
+  String get msgRecvSsid => "Also receive messages for my other SSIDs";
+
 }

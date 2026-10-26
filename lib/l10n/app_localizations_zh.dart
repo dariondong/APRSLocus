@@ -9810,6 +9810,12 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String get ssidCmdNoLink => "链路没连上，指令发不出去";
 
+  @override
+  String get msgRecvTitle => "消息接收";
+
+  @override
+  String get msgRecvSsid => "其他 SSID 的消息也收";
+
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
@@ -19616,5 +19622,11 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get ssidCmdNoLink => "鏈路沒連上，指令發不出去";
+
+  @override
+  String get msgRecvTitle => "訊息接收";
+
+  @override
+  String get msgRecvSsid => "其他 SSID 的訊息也收";
 
 }

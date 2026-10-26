@@ -9910,4 +9910,10 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String get ssidCmdNoLink => "リンクが繋がっていないため送信できません";
 
+  @override
+  String get msgRecvTitle => "メッセージ受信";
+
+  @override
+  String get msgRecvSsid => "他の SSID 宛てのメッセージも受信";
+
 }

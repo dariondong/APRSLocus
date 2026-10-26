@@ -17979,6 +17979,18 @@ abstract class AppLocalizations {
   /// **'链路没连上，指令发不出去'**
   String get ssidCmdNoLink;
 
+  /// No description provided for @msgRecvTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'消息接收'**
+  String get msgRecvTitle;
+
+  /// No description provided for @msgRecvSsid.
+  ///
+  /// In zh, this message translates to:
+  /// **'其他 SSID 的消息也收'**
+  String get msgRecvSsid;
+
 }
 
 class _AppLocalizationsDelegate

@@ -105,6 +105,7 @@ const List<BackupGroupSpec> kBackupGroups = [
     // 信标是否附带卫星数（非标准字段，同 STEPS= 一类）：属于信标内容偏好。
     'beaconIncludeSats',
     'beaconIncludeDeskLoad',
+    'acceptOtherSsidMsgs',
     // 上报位置的模糊档位：隐私选择，换机后应跟着走（回到不模糊就等于把
     // 用户刚降下来的精度自己抬回去）。
     'beaconAmbiguity',

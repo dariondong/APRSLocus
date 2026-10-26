@@ -2551,6 +2551,20 @@ class _ConnectionSettingsPageState extends State<ConnectionSettingsPage> {
             ],
             const SizedBox(height: 16),
             // ④ 接收筛选：按国家或地区（客户端本地筛选，两个来源都适用）
+            // 消息收件人口径：与「接收筛选」在同一页 —— 两者都是「收什么」。
+            // 关掉后本机只回自己的那一份，多台设备并用时不互相打扰。
+            SettingsSectionCard(
+              title: S.of(context).msgRecvTitle,
+              icon: Icons.forum_rounded,
+              color: C.purple,
+              children: [
+                SettingsSwitch(S.of(context).msgRecvSsid,
+                    value: st.acceptOtherSsidMsgs,
+                    color: C.purple,
+                    onChanged: st.setAcceptOtherSsidMsgs),
+              ],
+            ),
+            const SizedBox(height: 16),
             _receivePrefCard(),
           ]),
       );

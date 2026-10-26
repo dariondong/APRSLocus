@@ -4406,5 +4406,7 @@
   "ssidCmdStop": "送信停止",
   "ssidCmdSent": "{call} に送信しました：{cmd}",
   "ssidCmdNoLink": "リンクが繋がっていないため送信できません",
-  "@ssidCmdSent": {"placeholders": {"call": {"type": "String"}, "cmd": {"type": "String"}}}
+  "@ssidCmdSent": {"placeholders": {"call": {"type": "String"}, "cmd": {"type": "String"}}},
+  "msgRecvTitle": "メッセージ受信",
+  "msgRecvSsid": "他の SSID 宛てのメッセージも受信"
 }

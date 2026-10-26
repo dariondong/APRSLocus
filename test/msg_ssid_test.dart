@@ -39,6 +39,20 @@ void main() {
     expect(st.messages.first.to.toUpperCase(), 'BG7LZQ-9');
   });
 
+  test('关掉「其他 SSID 的消息也收」后，只收发给本机 ID 的', () async {
+    final st = await ready();
+    expect(st.acceptOtherSsidMsgs, isTrue); // 默认开
+    st.setAcceptOtherSsidMsgs(false);
+    st.injectRawPacket(line('BG7LZQ-9', 'to the other device'));
+    expect(st.messages, isEmpty);
+    // 发给本机 ID 的照旧收
+    st.injectRawPacket(line('BG7LZQ-7', 'to me'));
+    expect(st.messages.length, 1);
+    st.setAcceptOtherSsidMsgs(true);
+    st.injectRawPacket(line('BG7LZQ-9', 'again to the other device'));
+    expect(st.messages.length, 2);
+  });
+
   test('发给别人呼号的消息仍然丢掉', () async {
     final st = await ready();
     st.injectRawPacket(line('BG5XYZ-3', 'not for me'));
