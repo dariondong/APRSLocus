@@ -9889,4 +9889,7 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String msgOtherSsid(String to) => "このメッセージは別の SSID 宛てに届きました。$to でも本機 ID でも送信できます。";
 
+  @override
+  String get beaconIncludeLoad => "パソコンの CPU・メモリ使用率";
+
 }

@@ -4398,5 +4398,6 @@
   "@subsExists": {"placeholders": {"v": {"type": "String"}}},
   "msgSendId": "Enviar como",
   "msgOtherSsid": "Este mensaje llegó para otro SSID. Puedes responder como {to} o como este equipo.",
-  "@msgOtherSsid": {"placeholders": {"to": {"type": "String"}}}
+  "@msgOtherSsid": {"placeholders": {"to": {"type": "String"}}},
+  "beaconIncludeLoad": "CPU y memoria del equipo"
 }

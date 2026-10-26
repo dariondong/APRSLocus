@@ -16,6 +16,7 @@ import 'aprs_parse.dart';
 import 'aprs_device.dart';
 import 'pos_quality.dart';
 import 'track_log.dart';
+import 'desktop_metrics.dart';
 import 'subscriptions.dart';
 import 'motion.dart';
 import 'adif.dart';
@@ -948,6 +949,18 @@ class AppState extends ChangeNotifier {
   /// 值来自 [mySats]：正在供位的那个来源（手机 GPS / 外接模块）说多少就是多少；
   /// 来源不提供时**不发**（而不是发一个会被读成「没有卫星」的 0）。
   bool beaconIncludeSats = false;
+
+  /// 信标带上电脑的 CPU / 内存占用（`CPU=42% MEM=63%`）。
+  ///
+  /// 只对桌面平台有意义：手机上没有「整机负载」这回事，取不到值就不发。
+  /// 非标准备注字段（与 SAT= / STEPS= 同类），默认关。
+  bool beaconIncludeDeskLoad = false;
+
+  void setBeaconIncludeDeskLoad(bool v) {
+    beaconIncludeDeskLoad = v;
+    persist();
+    _notify();
+  }
 
   /// 上报位置的**模糊位数**（APRS101 第 8 章的位置模糊）。
   ///
@@ -4618,6 +4631,7 @@ class AppState extends ChangeNotifier {
     emergencyTel = '120';
     beaconIncludeSteps = false;
     beaconIncludeSats = false;
+    beaconIncludeDeskLoad = false;
     beaconAmbiguity = 0;
     notifStyle = 'plain';
     notifLiveText = 'default';
@@ -5140,6 +5154,8 @@ class AppState extends ChangeNotifier {
           p.getBool('beaconIncludeSteps') ?? beaconIncludeSteps;
       beaconIncludeSats =
           p.getBool('beaconIncludeSats') ?? beaconIncludeSats;
+      beaconIncludeDeskLoad =
+          p.getBool('beaconIncludeDeskLoad') ?? beaconIncludeDeskLoad;
       beaconAmbiguity =
           (p.getInt('beaconAmbiguity') ?? beaconAmbiguity).clamp(0, 3);
       // 只认两种值：早期版本存过 'focus'（小米焦点通知那一档已删）。
@@ -5562,6 +5578,7 @@ class AppState extends ChangeNotifier {
     await p.setString('emergencyTel', emergencyTel);
     await p.setBool('beaconIncludeSteps', beaconIncludeSteps);
     await p.setBool('beaconIncludeSats', beaconIncludeSats);
+    await p.setBool('beaconIncludeDeskLoad', beaconIncludeDeskLoad);
     await p.setInt('beaconAmbiguity', beaconAmbiguity);
     await p.setString('notifStyle', notifStyle);
     await p.setString('notifLiveText', notifLiveText);
@@ -5953,6 +5970,12 @@ class AppState extends ChangeNotifier {
           _acnRetryAt = null;
           unawaited(_connectAcn());
         }
+      }
+      // 电脑负载（CPU / 内存）：开了才采样，内部自己节流到 60 秒一次。
+      // 放在 tick 里而不是信标里：采样要开进程（Windows），不能卡在发送路径上。
+      if (beaconIncludeDeskLoad) {
+        unawaited(
+            DesktopMetrics.refresh(minGap: const Duration(seconds: 60)));
       }
       // 每秒刷新：只通知“秒级 UI”（信标倒计时/收包速率），
       // 不再全量 _notify() 重建整个页面树
@@ -8258,6 +8281,15 @@ class AppState extends ChangeNotifier {
     // 而实际可能只是这个平台不给这个字段。
     if (beaconIncludeSats && (mySats ?? 0) > 0) {
       parts.add('SAT=$mySats');
+    }
+    // 电脑负载：非标准字段（同 SAT= / STEPS=），只在桌面平台且真读到值时发。
+    // 读不到就不发 —— 发 `CPU=0%` 会被当成「这台机器闲着」。
+    if (beaconIncludeDeskLoad) {
+      final u = DesktopMetrics.latest;
+      final cpu = u?.cpu;
+      final mem = u?.mem;
+      if (cpu != null && cpu >= 0) parts.add('CPU=$cpu%');
+      if (mem != null && mem >= 0) parts.add('MEM=$mem%');
     }
     if (myComment.trim().isNotEmpty) {
       parts.add(myComment.trim());

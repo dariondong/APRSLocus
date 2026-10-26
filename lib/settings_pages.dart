@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'theme.dart';
 import 'state.dart';
 import 'consent.dart';
+import 'desktop_metrics.dart';
 import 'models.dart';
 import 'widgets.dart';
 import 'settings_widgets.dart';
@@ -1715,6 +1716,12 @@ class _BeaconSettingsPageState extends State<BeaconSettingsPage> {
                   SettingsMiniSwitch(S.of(context).beaconIncludeSats,
                       value: st.beaconIncludeSats,
                       onChanged: st.setBeaconIncludeSats),
+                  // 电脑负载（用户要求）：桌面平台才出现 —— 手机上取不到
+                  // 「整机 CPU / 内存」，摆一个永远发不出值的开关只会让人以为坏了。
+                  if (DesktopMetrics.supported)
+                    SettingsMiniSwitch(S.of(context).beaconIncludeLoad,
+                        value: st.beaconIncludeDeskLoad,
+                        onChanged: st.setBeaconIncludeDeskLoad),
                 ],
               ),
             ),

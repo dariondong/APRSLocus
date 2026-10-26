@@ -5077,5 +5077,6 @@
   "@subsExists": {"placeholders": {"v": {"type": "String"}}},
   "msgSendId": "发送 ID",
   "msgOtherSsid": "该消息由其他 SSID 接收，可以选用 {to} 或本机 ID 发送。",
-  "@msgOtherSsid": {"placeholders": {"to": {"type": "String"}}}
+  "@msgOtherSsid": {"placeholders": {"to": {"type": "String"}}},
+  "beaconIncludeLoad": "电脑 CPU 与内存占用"
 }

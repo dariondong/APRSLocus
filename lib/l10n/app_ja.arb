@@ -4398,5 +4398,6 @@
   "@subsExists": {"placeholders": {"v": {"type": "String"}}},
   "msgSendId": "送信 ID",
   "msgOtherSsid": "このメッセージは別の SSID 宛てに届きました。{to} でも本機 ID でも送信できます。",
-  "@msgOtherSsid": {"placeholders": {"to": {"type": "String"}}}
+  "@msgOtherSsid": {"placeholders": {"to": {"type": "String"}}},
+  "beaconIncludeLoad": "パソコンの CPU・メモリ使用率"
 }

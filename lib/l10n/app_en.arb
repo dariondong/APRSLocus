@@ -4398,5 +4398,6 @@
   "@subsExists": {"placeholders": {"v": {"type": "String"}}},
   "msgSendId": "Send as",
   "msgOtherSsid": "This one arrived for another SSID. You can reply as {to} or as this device.",
-  "@msgOtherSsid": {"placeholders": {"to": {"type": "String"}}}
+  "@msgOtherSsid": {"placeholders": {"to": {"type": "String"}}},
+  "beaconIncludeLoad": "PC CPU and memory load"
 }

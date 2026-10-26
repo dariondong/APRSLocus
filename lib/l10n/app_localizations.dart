@@ -17937,6 +17937,12 @@ abstract class AppLocalizations {
   /// **'该消息由其他 SSID 接收，可以选用 {to} 或本机 ID 发送。'**
   String msgOtherSsid(String to);
 
+  /// No description provided for @beaconIncludeLoad.
+  ///
+  /// In zh, this message translates to:
+  /// **'电脑 CPU 与内存占用'**
+  String get beaconIncludeLoad;
+
 }
 
 class _AppLocalizationsDelegate

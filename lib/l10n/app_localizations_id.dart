@@ -10178,4 +10178,7 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String msgOtherSsid(String to) => "Pesan ini tiba untuk SSID lain. Kamu bisa membalas sebagai $to atau sebagai perangkat ini.";
 
+  @override
+  String get beaconIncludeLoad => "Beban CPU dan memori PC";
+
 }

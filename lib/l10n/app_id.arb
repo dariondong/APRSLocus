@@ -4398,5 +4398,6 @@
   "@subsExists": {"placeholders": {"v": {"type": "String"}}},
   "msgSendId": "Kirim sebagai",
   "msgOtherSsid": "Pesan ini tiba untuk SSID lain. Kamu bisa membalas sebagai {to} atau sebagai perangkat ini.",
-  "@msgOtherSsid": {"placeholders": {"to": {"type": "String"}}}
+  "@msgOtherSsid": {"placeholders": {"to": {"type": "String"}}},
+  "beaconIncludeLoad": "Beban CPU dan memori PC"
 }

@@ -4986,5 +4986,6 @@
   "@subsExists": {"placeholders": {"v": {"type": "String"}}},
   "msgSendId": "傳送 ID",
   "msgOtherSsid": "該訊息由其他 SSID 接收，可以選用 {to} 或本機 ID 傳送。",
-  "@msgOtherSsid": {"placeholders": {"to": {"type": "String"}}}
+  "@msgOtherSsid": {"placeholders": {"to": {"type": "String"}}},
+  "beaconIncludeLoad": "電腦 CPU 與記憶體佔用"
 }

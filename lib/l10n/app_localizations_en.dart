@@ -10168,4 +10168,7 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String msgOtherSsid(String to) => "This one arrived for another SSID. You can reply as $to or as this device.";
 
+  @override
+  String get beaconIncludeLoad => "PC CPU and memory load";
+
 }

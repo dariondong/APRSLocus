@@ -9789,6 +9789,9 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String msgOtherSsid(String to) => "该消息由其他 SSID 接收，可以选用 $to 或本机 ID 发送。";
 
+  @override
+  String get beaconIncludeLoad => "电脑 CPU 与内存占用";
+
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
@@ -19574,5 +19577,8 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String msgOtherSsid(String to) => "該訊息由其他 SSID 接收，可以選用 $to 或本機 ID 傳送。";
+
+  @override
+  String get beaconIncludeLoad => "電腦 CPU 與記憶體佔用";
 
 }

@@ -10227,4 +10227,7 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String msgOtherSsid(String to) => "Este mensaje llegó para otro SSID. Puedes responder como $to o como este equipo.";
 
+  @override
+  String get beaconIncludeLoad => "CPU y memoria del equipo";
+
 }
