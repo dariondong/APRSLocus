@@ -1326,10 +1326,11 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
   /// 换行位置全看字多不多 —— 窄屏上会拉成一长条，读起来要横着扫。
   ///
   /// 现在按「一层一件事」排：
-  ///   ① 头行：呼号 + 状态点 + 距离，右侧一个箭头示意可点；
-  ///   ② 数字行：速度 / 高度 / 网格（有哪个写哪个，不占位 `--`）；
-  ///   ③ 备注（最多两行，网址照旧可点）；
-  ///   ④ 状态报文（紫色，独立一帧的东西，不与备注混行）。
+  ///   ① 呼号单独一行（右侧箭头示意可点）；
+  ///   ② 状态行：在线点 + 状态 + 距离；
+  ///   ③ 数字行：速度 / 高度 / 网格（有哪个写哪个，不占位 `--`）；
+  ///   ④ 备注（最多两行，网址照旧可点）；
+  ///   ⑤ 状态报文（紫色，独立一帧的东西，不与备注混行）。
   ///
   /// 固定宽度 + 在 [_buildMarkers] 里按屏幕边缘夹紧，手机上不会顶出画面。
   Widget _infoWindow(Station s) {
@@ -1361,18 +1362,26 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // ① 头行
+            // ① 头行：呼号单独占一行（它永远不该被后面的状态/距离挤成省略号 ——
+            //    用户：「它呼号显示不全，呼号要单独一行」）
             Row(
               children: [
-                Flexible(
+                Expanded(
                   child: Text(
                     s.call,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: ts(12, c: s.color, w: FontWeight.w800, ls: 0.3),
+                    style: ts(13, c: s.color, w: FontWeight.w800, ls: 0.3),
                   ),
                 ),
-                const SizedBox(width: 5),
+                const SizedBox(width: 4),
+                Icon(Icons.chevron_right_rounded, size: 14, color: C.greyLight),
+              ],
+            ),
+            // ② 状态行：在线点 + 状态 + 距离
+            const SizedBox(height: 1),
+            Row(
+              children: [
                 Container(
                   width: 6,
                   height: 6,
@@ -1389,11 +1398,9 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                 const Spacer(),
                 if (dist != null)
                   Text(dist, style: ts(9.5, c: C.slate, w: FontWeight.w600)),
-                const SizedBox(width: 3),
-                Icon(Icons.chevron_right_rounded, size: 13, color: C.greyLight),
               ],
             ),
-            // ② 数字行：只写在的
+            // ③ 数字行：只写在的
             const SizedBox(height: 2),
             Text(
               nums.join('  ·  '),
@@ -1401,13 +1408,13 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
               overflow: TextOverflow.ellipsis,
               style: ts(10.5, c: C.slate, w: FontWeight.w600),
             ),
-            // ③ 备注（中继频点 / 活动公告常在这里，网址可点）
+            // ④ 备注（中继频点 / 活动公告常在这里，网址可点）
             if (comment.isNotEmpty) ...[
               const SizedBox(height: 4),
               StationNote(comment,
                   maxLines: 2, style: ts(10, c: C.ink, h: 1.35)),
             ],
-            // ④ 状态报文：与备注是两个字段，各自一行
+            // ⑤ 状态报文：与备注是两个字段，各自一行
             if (statusText.isNotEmpty) ...[
               const SizedBox(height: 3),
               StationNote(statusText,
