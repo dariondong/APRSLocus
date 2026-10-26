@@ -59,7 +59,8 @@ class _LiteShellState extends State<LiteShell> {
         StationsPage(state: st),
         MessagesPage(state: st, isActive: _tab == 1),
         PacketsPage(state: st),
-        SettingsPage(state: st),
+        // 同上：设置页常驻，动画的起跑跟着页签
+        SettingsPage(state: st, isActive: _tab == 3),
       ],
     );
     return _cachedPage!;

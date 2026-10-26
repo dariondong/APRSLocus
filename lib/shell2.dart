@@ -813,7 +813,8 @@ class _HomeShell2State extends State<HomeShell2>
         // 写死 true 会让消息页在别的 tab 上也拦返回、也把「正在看的会话」算错。
         MessagesPage(state: widget.state, isActive: _tab == 2),
         PacketsPage(state: widget.state),
-        SettingsPage(state: widget.state),
+        // 同上：设置页常驻，动画的起跑跟着页签
+        SettingsPage(state: widget.state, isActive: _tab == 4),
       ],
     );
     return _contentCache!;

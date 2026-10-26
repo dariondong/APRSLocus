@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'theme.dart';
+import 'entrance.dart';
 import 'widgets.dart';
 import 'state.dart';
 import 'material.dart';
@@ -175,7 +176,7 @@ class SettingsPageShell extends StatelessWidget {
           16,
           16 + MediaQuery.of(context).viewPadding.bottom,
         ),
-        child: Column(
+        child: StaggerColumn(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             if (guideId != null && state != null)

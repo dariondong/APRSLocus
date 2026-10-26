@@ -376,7 +376,9 @@ class _HomePageState extends State<HomePage> {
           StationsPage(state: widget.state, searchQuery: _search),
           MessagesPage(state: widget.state, isActive: _tab == 2),
           PacketsPage(state: widget.state),
-          SettingsPage(state: widget.state),
+          // 卡片逐条淡入上移跟着页签走：它是常驻子页，不传这一条就会在开
+          // 机那一刻把动画跑完，用户点开设置时什么都看不到。
+          SettingsPage(state: widget.state, isActive: _tab == 4),
         ],
       ),
     );

@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart'
 import 'package:url_launcher/url_launcher.dart';
 
 import 'crac_cert.dart';
+import 'entrance.dart';
 import 'feature_page.dart';
 import 'manual_page.dart';
 import 'features.dart';
@@ -35,7 +36,12 @@ import 'theme_text.dart';
 
 class SettingsPage extends StatefulWidget {
   final AppState state;
-  const SettingsPage({super.key, required this.state});
+
+  /// 当前页签是不是本页（三套外壳都是 `IndexedStack` 常驻子页，见 [RiseIn.play]）。
+  /// 默认 true：单独推入这个页面的地方不用管它。
+  final bool isActive;
+
+  const SettingsPage({super.key, required this.state, this.isActive = true});
   @override
   State<SettingsPage> createState() => _SettingsPageState();
 }
@@ -66,8 +72,11 @@ class _SettingsPageState extends State<SettingsPage> {
         return Padding(
           padding: const EdgeInsets.all(20),
           child: SingleChildScrollView(
-            child: Column(
+            // 卡片逐条淡入上移（`Column` 的替身，见 lib/entrance.dart）：
+            // 只改这一行，下面两百多行 children 一个字节不动。
+            child: StaggerColumn(
               crossAxisAlignment: CrossAxisAlignment.start,
+              play: widget.isActive,
               children: [
                 // 页面标题：顶部栏已显示“设置”，这里用问候语（早上好，呼号）避免重复
                 Row(

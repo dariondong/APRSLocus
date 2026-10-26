@@ -421,6 +421,11 @@ jobs:
       - name: Test subscription notifications
         run: flutter test test/subs_notify_test.dart
 
+      # 设置页卡片逐条进场（用户：「设置页引入线性动画」，选的是卡片淡入上移）。
+      # 错了不会编译失败，只会表现成「设置页空白」或「只在开机时播一次」。
+      - name: Test settings entrance animation
+        run: flutter test test/entrance_test.dart
+
       # 消息接收身份：发给我另一个 SSID 的消息必须收下（以前直接丢掉），
       # 且发送身份默认仍是本机 ID。这条错了不会编译失败，只会「对方说发了，我没收到」。
       - name: Test message SSID reception
