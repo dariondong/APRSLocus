@@ -419,6 +419,27 @@ CARDS = [
 # 只列「重点版本」：中间几十个纯修 bug 的版本归纳进文字说明，完整记录指向 Releases。
 CL = [
     {
+        'ver': 'v2.1.35', 'date': '2026-10-26',
+        'items': [
+            ('new',
+             T('沉浸地图不再用一色圆点，换成台站自己的 APRS 符号，离线台站去饱和。单击台站后那条小条重排成卡片，贴近屏幕边缘时会夹回画面。',
+               '沉浸地圖不再用一色圓點，換成台站自己的 APRS 符號，離線臺站去飽和。單擊臺站後那條小條重排成卡片，貼近螢幕邊緣時會夾回畫面。',
+               'The immersive map now draws each station\u2019s own APRS symbol instead of a single-colour dot, with offline stations desaturated. The chip that follows a tapped station is re-laid out as a card and clamped to the screen edges.')),
+            ('new',
+             T('设置 → 订阅：盯住一个台站、一个中继，或者报文里的一个词。命中集中在一页，能看到原文；台站面板里也能直接订阅这一台。',
+               '設定 → 訂閱：盯住一個臺站、一個中繼，或者報文裡的一個詞。命中集中在一頁，能看到原文；臺站面板裡也能直接訂閱這一臺。',
+               'Settings → Subscriptions: watch a station, a digipeater, or a word inside a packet. Matches collect on one page with the raw line, and the station panel can watch that station directly.')),
+            ('new',
+             T('发给我其他 SSID 的消息也收下了，气泡上会标出来，输入栏上方可选「发送 ID」。设备快捷面板多了「我的其他 SSID」，装 APRSlocus 的那几台可远程激活、发信标、停止上报。',
+               '發給我其他 SSID 的訊息也收下了，氣泡上會標出來，輸入欄上方可選「傳送 ID」。裝置快捷面板多了「我的其他 SSID」，裝 APRSlocus 的那幾臺可遠端啟用、發信標、停止上報。',
+               'Messages addressed to another SSID of your callsign are accepted and marked in the bubble, with a Send as row above the input. The device quick panel gained My other SSIDs; the ones running APRSlocus can be woken, sent one beacon, or told to stop reporting.')),
+            ('fix',
+             T('卫星弱又没开强制网络上报时，轨迹点放稀，精度太差就不记，等下一次有效定位。地图缩小时不再整片闪一下。',
+               '衛星弱又沒開強制網路回報時，軌跡點放稀，精度太差就不記，等下一次有效定位。地圖縮小時不再整片閃一下。',
+               'With a weak satellite fix and no forced network reporting, track points thin out and a fix too poor to trust is skipped until the next valid one. Zooming the map no longer flashes the whole tile grid.')),
+        ],
+    },
+    {
         'ver': 'v2.1.34', 'date': '2026-10-24',
         'items': [
             ('new',

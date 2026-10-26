@@ -1,5 +1,69 @@
 # 更新日志
 
+## [2.1.35] - 2026-10-26
+
+### 地图看得清楚了
+
+- 沉浸地图不再用青色圆点，改用台站自己的 APRS 符号。图标反向转回来，转地图时不会歪着头。离线台站去饱和。
+- 单击台站后那条小条重排：头行是呼号、状态和距离，第二行只写在的速度 / 高度 / 网格，备注最多两行，状态报文单独一行。
+- 小条按屏幕边缘夹紧，靠近底边时翻到标记上方。
+- 缩放时不再整片闪一下：瓦片进了一层内存缓存，磁盘都不用等。
+
+### 订阅
+
+- 设置 → 订阅：盯住一个台站、一个中继，或者报文里的一个词。命中记在一页里，可点开看原文。
+- 台站面板的菜单里也能直接订阅这一台。
+
+### 消息
+
+- 发给我其他 SSID 的消息也收下了，气泡上会标出来。输入栏上方多一条「发送 ID」，可以选用哪个 ID 回。
+- 设置 → 连接 可关掉这一档，只收发给本机 ID 的消息。
+
+### 快捷面板
+
+- 设备快捷面板多了一组「我的其他 SSID」，列出同呼号下的其他设备。
+- 装 APRSlocus 的那几台可以远程激活、发一次信标、停止上报。别的设备点开看信息。
+- 远程指令只认同一呼号发来的报文。
+
+### 轨迹与上报
+
+- 卫星弱又没开强制网络上报时，轨迹点放稀，精度差到没法用就不记，等下一次有效定位。
+- 电脑端可随位置报文带上 CPU 与内存占用率。设置 → 自动上报 里打开，默认关。
+
+---
+
+## [2.1.35] - 2026-10-26 (English)
+
+### The map reads better
+
+- The immersive map draws each station's own APRS symbol instead of a cyan dot. Icons counter-rotate so they stay upright while the map turns; offline stations are desaturated.
+- The chip that follows a tapped station was re-laid out: callsign, status and distance on the head line, speed, altitude and grid on the second, up to two lines of comment, and the status frame on its own line.
+- The chip is clamped to the screen and flips above the marker near the bottom edge.
+- Zooming no longer flashes the whole map: tiles now sit in a memory cache, so even the disk is not on the path.
+
+### Subscriptions
+
+- Settings → Subscriptions: watch a station, a digipeater, or a word inside a packet. Matches collect on one page with the raw line.
+- The station panel's menu can watch that station directly.
+
+### Messages
+
+- Messages addressed to another SSID of your callsign are accepted and marked in the bubble. A Send as row above the input lets you answer from either ID.
+- Settings → Connection can turn that off and keep only messages for this device's ID.
+
+### Quick panel
+
+- The device quick panel gained My other SSIDs, listing the other devices under your callsign.
+- The ones running APRSlocus can be woken, told to send one beacon, or told to stop reporting. Other devices open their info panel.
+- Remote commands are only accepted from the same callsign.
+
+### Track and reporting
+
+- With a weak satellite fix and no forced network reporting, track points thin out; a fix too poor to trust is skipped until the next valid one.
+- Desktop builds can carry CPU and memory load in the position packet. It is a switch under Settings → Auto reporting, off by default.
+
+---
+
 ## [2.1.34] - 2026-10-24
 
 ### 位置可以模糊
