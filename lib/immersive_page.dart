@@ -7,6 +7,7 @@ import 'coord.dart';
 import 'l10n/app_localizations.dart';
 import 'models.dart';
 import 'state.dart';
+import 'symbol_images.dart';
 import 'theme.dart';
 import 'guide.dart';
 import 'tile_map.dart';
@@ -325,6 +326,9 @@ class _ImmersiveMapPageState extends State<ImmersiveMapPage>
                       me: _meStation(),
                       others: _otherStations(),
                       toScreen: _toScreen,
+                      // 整层被 Transform.rotate 转过，图标要反向转回来才立得住
+                      counterRot: _rot,
+                      onIconReady: _onIconReady,
                     ),
                   ),
                 ),
@@ -334,6 +338,12 @@ class _ImmersiveMapPageState extends State<ImmersiveMapPage>
         ),
       ),
     );
+  }
+
+  /// 符号 PNG 解码完成后重绘一次（每个新符号只触发一次）
+  void _onIconReady() {
+    if (!mounted) return;
+    setState(() {});
   }
 
   /// 把「我」包装成 Station 以便复用绘制（无定位时返回 null）
@@ -745,40 +755,54 @@ class _ImmersiveMapPageState extends State<ImmersiveMapPage>
   }
 }
 
-/// 沉浸层绘制：我的航向箭头（居中）+ 其它台站淡点 + 我的轨迹
+/// 沉浸层绘制：真实 APRS 符号图标 + 我的航向指向 + 我的轨迹
 class _ImmersivePainter extends CustomPainter {
   final Station? me;
   final List<Station> others;
   final Offset Function(double lat, double lng) toScreen;
 
+  /// 外层 `Transform.rotate` 当前的角度；图标按它反向转回来，屏幕上永远是正的
+  final double counterRot;
+  final VoidCallback onIconReady;
+
   _ImmersivePainter({
     required this.me,
     required this.others,
     required this.toScreen,
+    this.counterRot = 0,
+    required this.onIconReady,
   });
+
+  /// 离线弱化：去饱和 + 降透明度（与 `AprsSymbolImage(grayscale: true)` 同一套算法）
+  static const List<double> _gray = <double>[
+    0.2126, 0.7152, 0.0722, 0, 0, //
+    0.2126, 0.7152, 0.0722, 0, 0, //
+    0.2126, 0.7152, 0.0722, 0, 0, //
+    0, 0, 0, 0.62, 0,
+  ];
 
   @override
   void paint(Canvas canvas, Size size) {
-    // ── 其它台站：小圆点（仅参照，不可交互）──
+    // ── 其它台站：官方符号原图（离线去饱和）──
     //
-    // 可见性优先：此前用 C.slate @0.55 / 半径 3.2，在花哨底图上几乎看不见。
-    // 现改为「深色描边 + 亮色实心」，浅街道图 / 深卫星图上都醒目；
-    // 离线台站用偏暗实心色，保留层级但不会整片消失。
-    final dotEdge = Paint()..color = const Color(0xCC1B2333);
-    final dotOnline = Paint()..color = const Color(0xFF29B6F6); // 亮青
-    final dotOffline = Paint()..color = const Color(0xFF90A4AE); // 偏灰
+    // 这里以前是清一色的青色圆点，看不出对方是车、是中继还是气象站 ——
+    // 而符号恰恰是 APRS 里信息量最大的一个字段。图标压在浅街道图或深卫星图
+    // 上都容易糊，所以每个图标背后垫一个半透明白底片。
     for (final s in others) {
       final o = toScreen(s.lat, s.lng);
-      if (o.dx < -20 ||
-          o.dx > size.width + 20 ||
-          o.dy < -20 ||
-          o.dy > size.height + 20) {
+      if (o.dx < -24 ||
+          o.dx > size.width + 24 ||
+          o.dy < -24 ||
+          o.dy > size.height + 24) {
         continue;
       }
       final offline = s.effectiveStatus == St.offline;
-      final r = offline ? 3.0 : 4.0;
-      canvas.drawCircle(o, r + 1.2, dotEdge); // 描边 → 任何底图都可读
-      canvas.drawCircle(o, r, offline ? dotOffline : dotOnline);
+      _plate(canvas, o, offline ? 9.5 : 10.5, dark: offline);
+      if (!_symbol(canvas, o, s, offline ? 15 : 17, gray: offline)) {
+        // 图标还没解码好：先用一个小圆点占位，绝不留空
+        canvas.drawCircle(
+            o, offline ? 3.0 : 3.6, Paint()..color = const Color(0xFF29B6F6));
+      }
     }
 
     final m = me;
@@ -808,30 +832,85 @@ class _ImmersivePainter extends CustomPainter {
       );
     }
 
-    // ── 我的位置：光晕 + 航向箭头 ──
-    canvas.drawCircle(c, 20, Paint()..color = C.blue.withValues(alpha: 0.16));
+    // ── 我的位置：光晕 + 我的信标符号 + 航向尖角 ──
+    canvas.drawCircle(c, 23, Paint()..color = C.blue.withValues(alpha: 0.16));
+    _plate(canvas, c, 15.5, accent: C.blue, width: 2);
+    if (!_symbol(canvas, c, m, 22)) {
+      canvas.drawCircle(c, 5, Paint()..color = C.blue);
+    }
+
+    // 航向尖角：画在**地图坐标系**里（不反向旋转），跟随模式下合成后正好指向屏幕上方
+    final crs = m.course;
+    if (crs != null && crs >= 0) {
+      canvas.save();
+      canvas.translate(c.dx, c.dy);
+      canvas.rotate(crs * math.pi / 180);
+      final tip = Path()
+        ..moveTo(0, -24)
+        ..lineTo(6, -16)
+        ..lineTo(-6, -16)
+        ..close();
+      canvas.drawPath(tip, Paint()..color = C.blue);
+      canvas.drawPath(
+        tip,
+        Paint()
+          ..color = Colors.white
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 1.6
+          ..strokeJoin = StrokeJoin.round,
+      );
+      canvas.restore();
+    }
+  }
+
+  /// 图标背后的底片：半透明白圈（深底图上靠描边，浅底图上靠白底）
+  void _plate(Canvas canvas, Offset c, double r,
+      {bool dark = false, Color? accent, double width = 1.2}) {
+    canvas.drawCircle(
+      c,
+      r,
+      Paint()
+        ..color = dark
+            ? const Color(0xE6FFFFFF)
+            : Colors.white.withValues(alpha: 0.90),
+    );
+    canvas.drawCircle(
+      c,
+      r,
+      Paint()
+        ..color = accent ?? const Color(0x66101418)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = width,
+    );
+  }
+
+  /// 画一个台站的官方符号；图还没解码好返回 false
+  bool _symbol(Canvas canvas, Offset c, Station s, double size,
+      {bool gray = false}) {
+    final img = AprsSymbolImages.get(
+      s.symbolTable,
+      s.symbol,
+      onReady: onIconReady,
+    );
+    if (img == null) return false;
     canvas.save();
     canvas.translate(c.dx, c.dy);
-    // 直接 null 判断以启用可空提升（不要用中间 bool 变量）
-    final crs = m.course;
-    if (crs != null && crs >= 0) canvas.rotate(crs * math.pi / 180);
-    // 三角箭头（指向屏幕上方；地图已按 -航向 旋转，故合成后即「朝前」）
-    final arrow = Path()
-      ..moveTo(0, -13)
-      ..lineTo(9, 11)
-      ..lineTo(0, 6)
-      ..lineTo(-9, 11)
-      ..close();
-    canvas.drawPath(arrow, Paint()..color = C.blue);
-    canvas.drawPath(
-      arrow,
-      Paint()
-        ..color = Colors.white
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 2
-        ..strokeJoin = StrokeJoin.round,
+    // 反向旋转：外层整层转过 counterRot，图标自己转回来才不会歪着头
+    if (counterRot != 0) canvas.rotate(-counterRot);
+    final dst = Rect.fromCenter(
+        center: Offset.zero, width: size, height: size);
+    final paint = Paint()
+      ..filterQuality = FilterQuality.medium
+      ..colorFilter =
+          gray ? const ColorFilter.matrix(_gray) : null;
+    canvas.drawImageRect(
+      img,
+      Rect.fromLTWH(0, 0, img.width.toDouble(), img.height.toDouble()),
+      dst,
+      paint,
     );
     canvas.restore();
+    return true;
   }
 
   @override
