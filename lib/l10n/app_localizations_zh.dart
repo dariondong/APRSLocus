@@ -9846,6 +9846,9 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String get myOtherSsidNone => "还没收到同一呼号的其他 SSID";
 
+  @override
+  String get subsEdit => "修改订阅";
+
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
@@ -19688,5 +19691,8 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get myOtherSsidNone => "還沒收到同一呼號的其他 SSID";
+
+  @override
+  String get subsEdit => "修改訂閱";
 
 }

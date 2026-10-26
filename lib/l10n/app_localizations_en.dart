@@ -10225,4 +10225,7 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get myOtherSsidNone => "No other SSID under your callsign heard yet";
 
+  @override
+  String get subsEdit => "Edit subscription";
+
 }

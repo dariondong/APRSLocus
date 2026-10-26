@@ -4418,5 +4418,6 @@
   "subsPacketMessage": "Pesan",
   "subsHitSource": "kirim",
   "subsHitPath": "diteruskan",
-  "myOtherSsidNone": "Belum ada SSID lain dengan panggilan yang sama"
+  "myOtherSsidNone": "Belum ada SSID lain dengan panggilan yang sama",
+  "subsEdit": "Ubah langganan"
 }

@@ -18051,6 +18051,12 @@ abstract class AppLocalizations {
   /// **'还没收到同一呼号的其他 SSID'**
   String get myOtherSsidNone;
 
+  /// No description provided for @subsEdit.
+  ///
+  /// In zh, this message translates to:
+  /// **'修改订阅'**
+  String get subsEdit;
+
 }
 
 class _AppLocalizationsDelegate

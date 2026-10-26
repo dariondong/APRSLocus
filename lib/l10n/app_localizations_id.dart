@@ -10235,4 +10235,7 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get myOtherSsidNone => "Belum ada SSID lain dengan panggilan yang sama";
 
+  @override
+  String get subsEdit => "Ubah langganan";
+
 }

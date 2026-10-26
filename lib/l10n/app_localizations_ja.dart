@@ -9946,4 +9946,7 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String get myOtherSsidNone => "同じコールサインの他の SSID はまだ受信していません";
 
+  @override
+  String get subsEdit => "購読を編集";
+
 }

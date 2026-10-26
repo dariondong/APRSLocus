@@ -4418,5 +4418,6 @@
   "subsPacketMessage": "メッセージ",
   "subsHitSource": "発信",
   "subsHitPath": "中継",
-  "myOtherSsidNone": "同じコールサインの他の SSID はまだ受信していません"
+  "myOtherSsidNone": "同じコールサインの他の SSID はまだ受信していません",
+  "subsEdit": "購読を編集"
 }

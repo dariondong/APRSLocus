@@ -4418,5 +4418,6 @@
   "subsPacketMessage": "Mensajes",
   "subsHitSource": "enviado",
   "subsHitPath": "retransmitido",
-  "myOtherSsidNone": "Aún no se ha oído otro SSID de tu indicativo"
+  "myOtherSsidNone": "Aún no se ha oído otro SSID de tu indicativo",
+  "subsEdit": "Editar suscripción"
 }

@@ -5097,5 +5097,6 @@
   "subsPacketMessage": "消息",
   "subsHitSource": "发出",
   "subsHitPath": "中继",
-  "myOtherSsidNone": "还没收到同一呼号的其他 SSID"
+  "myOtherSsidNone": "还没收到同一呼号的其他 SSID",
+  "subsEdit": "修改订阅"
 }

@@ -10284,4 +10284,7 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get myOtherSsidNone => "Aún no se ha oído otro SSID de tu indicativo";
 
+  @override
+  String get subsEdit => "Editar suscripción";
+
 }

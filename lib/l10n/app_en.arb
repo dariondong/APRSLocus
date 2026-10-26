@@ -4418,5 +4418,6 @@
   "subsPacketMessage": "Messages",
   "subsHitSource": "sent",
   "subsHitPath": "relayed",
-  "myOtherSsidNone": "No other SSID under your callsign heard yet"
+  "myOtherSsidNone": "No other SSID under your callsign heard yet",
+  "subsEdit": "Edit subscription"
 }

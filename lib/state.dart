@@ -9590,11 +9590,20 @@ class AppState extends ChangeNotifier {
   int get subHitCount => subHits.length;
 
   bool isSubscribedStation(String call) => subscriptions.any((r) =>
-      r.kind == SubKind.station &&
+      (r.kind == SubKind.station || r.kind == SubKind.digi) &&
+      r.asSource &&
       subBaseCall(r.value.replaceAll('*', '')) == subBaseCall(call));
 
   /// 加一条订阅；已存在同一种同一值时返回 false
-  bool addSubscription(SubKind kind, String value) {
+  ///
+  /// [asSource] / [asPath] / [packet] 不传就按口径取默认值（见 [SubRule]）。
+  bool addSubscription(
+    SubKind kind,
+    String value, {
+    bool? asSource,
+    bool? asPath,
+    SubPacket? packet,
+  }) {
     final v = value.trim();
     if (v.isEmpty) return false;
     final exists = subscriptions.any((r) =>
@@ -9606,7 +9615,51 @@ class AppState extends ChangeNotifier {
         id: 's${DateTime.now().microsecondsSinceEpoch}',
         kind: kind,
         value: v,
+        asSource: asSource,
+        asPath: asPath,
+        packet: packet,
       ),
+    );
+    _saveSubscriptions();
+    persist();
+    _notify();
+    return true;
+  }
+
+  /// 改一条已有订阅（口径、值、身份、报文种类）
+  bool updateSubscription(
+    String id, {
+    SubKind? kind,
+    String? value,
+    bool? asSource,
+    bool? asPath,
+    SubPacket? packet,
+  }) {
+    final i = subscriptions.indexWhere((r) => r.id == id);
+    if (i < 0) return false;
+    final r = subscriptions[i];
+    final v = (value ?? r.value).trim();
+    if (v.isEmpty) return false;
+    final k = kind ?? r.kind;
+    var src = asSource ?? (k == r.kind ? r.asSource : k != SubKind.digi);
+    var path = asPath ?? (k == r.kind ? r.asPath : k == SubKind.digi);
+    if (k == SubKind.keyword) {
+      // 关键词不看身份
+      src = true;
+      path = false;
+    }
+    // 两个身份都关掉就什么都收不到，至少留一个
+    if (!src && !path) src = true;
+    subscriptions[i] = SubRule(
+      id: r.id,
+      kind: k,
+      value: v,
+      asSource: src,
+      asPath: path,
+      packet: packet ?? r.packet,
+      enabled: r.enabled,
+      hits: r.hits,
+      createdAt: r.createdAt,
     );
     _saveSubscriptions();
     persist();
@@ -9673,8 +9726,10 @@ class AppState extends ChangeNotifier {
     final mine = myFullCall.toUpperCase();
     if (p.src.toUpperCase() == mine) return; // 自己发的不算「看到别人」
     var hit = false;
+    final pk = subPacketKindOf(p);
     for (final r in subscriptions) {
-      if (!subMatches(r, p)) continue;
+      final role = subMatch(r, p);
+      if (role == null) continue;
       r.hits++;
       subHits.insert(
         0,
@@ -9684,6 +9739,8 @@ class AppState extends ChangeNotifier {
           raw: p.raw,
           info: p.info,
           time: p.time,
+          role: role,
+          packet: pk,
         ),
       );
       hit = true;

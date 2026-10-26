@@ -5006,5 +5006,6 @@
   "subsPacketMessage": "訊息",
   "subsHitSource": "發出",
   "subsHitPath": "中繼",
-  "myOtherSsidNone": "還沒收到同一呼號的其他 SSID"
+  "myOtherSsidNone": "還沒收到同一呼號的其他 SSID",
+  "subsEdit": "修改訂閱"
 }
