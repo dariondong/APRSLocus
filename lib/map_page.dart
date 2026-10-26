@@ -1206,6 +1206,12 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
     }).map((s) {
       final pos = _toScreen(s.lat, s.lng, size);
       final sel = _selected?.call == s.call;
+      // 选中后那条小条（宽 196）的落点：以标记为中心，再夹进屏幕；
+      // 下方放不下（离底边近）就翻到标记上方，免得被屏幕边缘切掉。
+      final chipLeft = (pos.dx - 98)
+              .clamp(6.0, math.max(6.0, size.width - 202.0)) -
+          (pos.dx - 28);
+      final chipTop = pos.dy > size.height - 150 ? -78.0 : 34.0;
       final pulsing = s.effectiveStatus == St.moving || sel;
       final dx = pos.dx - 28;
       final dy = pos.dy - 28;
@@ -1265,8 +1271,8 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                     ),
                   if (sel)
                     Positioned(
-                      top: 34,
-                      left: 0,
+                      top: chipTop,
+                      left: chipLeft,
                       child: GestureDetector(
                         onTap: () => _openDetail(s),
                         child: _infoWindow(s),
@@ -1313,47 +1319,101 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
     );
   }
 
-  /// 地图标记的信息窗（悬停/选中时跟着走的那张小浮窗）。
+  /// 单击台站后跟着标记走的那条小条（不是详情面板 —— 详情走双击）。
   ///
-  /// 显示「三个报文」里落在这个台站上的内容：
-  ///   * 状态 / 速度 / 距离 —— 原有信息；
-  ///   * **高度** —— 位置报文的 `/A=` 数据扩展（`s.alt` 由它解析而来）；
-  ///   * **位置备注** —— 位置报文里跟在符号后的注释（中继台的频点常在这里）；
-  ///   * **状态文本** —— 独立状态报文（DTI `>`）。（紫色，与台站详情一致）
+  /// 上一版是一段用 ` · ` 串起来的长文本：呼号、状态、速度、高度、距离、
+  /// 备注、状态报文、还有一句「点击查看」全挤在同一个 StringBuffer 里，
+  /// 换行位置全看字多不多 —— 窄屏上会拉成一长条，读起来要横着扫。
   ///
-  /// 为什么这四行要**按需出现**而不是常驻占位：这三个字段绝大多数台站都没有，
-  /// 常驻会给出两行 `--`，把「没有」和「没收到」显示成同一个样子。
+  /// 现在按「一层一件事」排：
+  ///   ① 头行：呼号 + 状态点 + 距离，右侧一个箭头示意可点；
+  ///   ② 数字行：速度 / 高度 / 网格（有哪个写哪个，不占位 `--`）；
+  ///   ③ 备注（最多两行，网址照旧可点）；
+  ///   ④ 状态报文（紫色，独立一帧的东西，不与备注混行）。
+  ///
+  /// 固定宽度 + 在 [_buildMarkers] 里按屏幕边缘夹紧，手机上不会顶出画面。
   Widget _infoWindow(Station s) {
-    final st = localizedStatusLabel(context, s.effectiveStatus);
-    final info = StringBuffer(s.call)..write('  ·  $st');
-    if (s.speed != null) info.write('  ·  ${s.speedStr}');
-    if (s.alt != null) info.write('  ·  ${s.altStr}');
+    final online = s.effectiveStatus != St.offline;
     final my = widget.state.myStation;
-    if (my != null) {
-      info.write('  ·  ${s.distKm(my.lat, my.lng).toStringAsFixed(1)}km');
-    }
+    final dist = my == null
+        ? null
+        : '${s.distKm(my.lat, my.lng).toStringAsFixed(1)} km';
+    final nums = <String>[
+      if (s.speed != null) s.speedStr,
+      if (s.alt != null) s.altStr,
+      s.grid,
+    ];
     final comment = s.comment?.trim() ?? '';
-    if (comment.isNotEmpty) info.write('\n$comment');
     final statusText = s.statusText?.trim() ?? '';
-    if (statusText.isNotEmpty) info.write('\n$statusText');
-    info.write('  · ${S.of(context).tapToView}');
-    // blurSigma: 0：这是跟着鼠标走的小信息窗，原来自己带 12 的模糊 ——
-    // 每次悬停都要重算一层离屏模糊。小浮层不值得付这个代价（见 material.dart）。
+    // blurSigma: C.chipBlur —— 跟手的小浮层不值得自己再算一层 12 的离屏模糊
     return MaterialSurface(
       radius: 12,
       blurSigma: C.chipBlur,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+        width: 196,
+        padding: const EdgeInsets.fromLTRB(10, 7, 8, 8),
         decoration: BoxDecoration(
           color: C.chipFill,
           borderRadius: BorderRadius.circular(12),
           boxShadow: elev2(),
         ),
-        // 备注里常带网址（中继频点表 / 活动页），这里也交 StationNote 渲染，
-        // 让地图浮窗里的链接可直接点开 —— 与台站列表、详情页保持一致。
-        child: StationNote(
-          info.toString(),
-          style: ts(11, c: s.color, w: FontWeight.w700),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // ① 头行
+            Row(
+              children: [
+                Flexible(
+                  child: Text(
+                    s.call,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: ts(12, c: s.color, w: FontWeight.w800, ls: 0.3),
+                  ),
+                ),
+                const SizedBox(width: 5),
+                Container(
+                  width: 6,
+                  height: 6,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: online ? C.green : C.greyLight,
+                  ),
+                ),
+                const SizedBox(width: 4),
+                Text(
+                  localizedStatusLabel(context, s.effectiveStatus),
+                  style: ts(9.5, c: C.grey),
+                ),
+                const Spacer(),
+                if (dist != null)
+                  Text(dist, style: ts(9.5, c: C.slate, w: FontWeight.w600)),
+                const SizedBox(width: 3),
+                Icon(Icons.chevron_right_rounded, size: 13, color: C.greyLight),
+              ],
+            ),
+            // ② 数字行：只写在的
+            const SizedBox(height: 2),
+            Text(
+              nums.join('  ·  '),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: ts(10.5, c: C.slate, w: FontWeight.w600),
+            ),
+            // ③ 备注（中继频点 / 活动公告常在这里，网址可点）
+            if (comment.isNotEmpty) ...[
+              const SizedBox(height: 4),
+              StationNote(comment,
+                  maxLines: 2, style: ts(10, c: C.ink, h: 1.35)),
+            ],
+            // ④ 状态报文：与备注是两个字段，各自一行
+            if (statusText.isNotEmpty) ...[
+              const SizedBox(height: 3),
+              StationNote(statusText,
+                  maxLines: 1, style: ts(10, c: C.purple, h: 1.35)),
+            ],
+          ],
         ),
       ),
     );
