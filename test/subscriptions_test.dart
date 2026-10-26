@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:aprs_locus/models.dart';
-import 'package:aprs_locus/subscriptions.dart';
+import 'package:aprslocus/models.dart';
+import 'package:aprslocus/subscriptions.dart';
 
 Packet pkt(String raw, {String src = 'BG7LZQ-9', String? info}) => Packet(
       raw,
