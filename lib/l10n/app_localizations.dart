@@ -17799,6 +17799,132 @@ abstract class AppLocalizations {
   /// **'约 20 公里'**
   String get beaconFuzz20km;
 
+  /// No description provided for @subsTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'订阅'**
+  String get subsTitle;
+
+  /// No description provided for @subsLead.
+  ///
+  /// In zh, this message translates to:
+  /// **'盯住一个台站、一个中继，或者报文里的一个词。命中记在下面。'**
+  String get subsLead;
+
+  /// No description provided for @subsAdd.
+  ///
+  /// In zh, this message translates to:
+  /// **'加一条订阅'**
+  String get subsAdd;
+
+  /// No description provided for @subsKindStation.
+  ///
+  /// In zh, this message translates to:
+  /// **'台站'**
+  String get subsKindStation;
+
+  /// No description provided for @subsKindDigi.
+  ///
+  /// In zh, this message translates to:
+  /// **'中继'**
+  String get subsKindDigi;
+
+  /// No description provided for @subsKindKeyword.
+  ///
+  /// In zh, this message translates to:
+  /// **'关键词'**
+  String get subsKindKeyword;
+
+  /// No description provided for @subsFieldStation.
+  ///
+  /// In zh, this message translates to:
+  /// **'呼号，可省略 SSID'**
+  String get subsFieldStation;
+
+  /// No description provided for @subsFieldDigi.
+  ///
+  /// In zh, this message translates to:
+  /// **'中继或网关呼号'**
+  String get subsFieldDigi;
+
+  /// No description provided for @subsFieldKeyword.
+  ///
+  /// In zh, this message translates to:
+  /// **'报文里出现的词'**
+  String get subsFieldKeyword;
+
+  /// No description provided for @subsEmpty.
+  ///
+  /// In zh, this message translates to:
+  /// **'还没有订阅'**
+  String get subsEmpty;
+
+  /// No description provided for @subsEmptyNote.
+  ///
+  /// In zh, this message translates to:
+  /// **'加一条之后，命中的报文会出现在这里。'**
+  String get subsEmptyNote;
+
+  /// No description provided for @subsHitsTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'命中记录'**
+  String get subsHitsTitle;
+
+  /// No description provided for @subsNoHits.
+  ///
+  /// In zh, this message translates to:
+  /// **'还没有命中。'**
+  String get subsNoHits;
+
+  /// No description provided for @subsHitsCount.
+  ///
+  /// In zh, this message translates to:
+  /// **'{n} 条'**
+  String subsHitsCount(String n);
+
+  /// No description provided for @subsClear.
+  ///
+  /// In zh, this message translates to:
+  /// **'清空'**
+  String get subsClear;
+
+  /// No description provided for @subsAdded.
+  ///
+  /// In zh, this message translates to:
+  /// **'已订阅 {v}'**
+  String subsAdded(String v);
+
+  /// No description provided for @subsExists.
+  ///
+  /// In zh, this message translates to:
+  /// **'{v} 已经订阅过了'**
+  String subsExists(String v);
+
+  /// No description provided for @subsRemoved.
+  ///
+  /// In zh, this message translates to:
+  /// **'已取消订阅'**
+  String get subsRemoved;
+
+  /// No description provided for @subsMenuOn.
+  ///
+  /// In zh, this message translates to:
+  /// **'订阅这个台站'**
+  String get subsMenuOn;
+
+  /// No description provided for @subsMenuOff.
+  ///
+  /// In zh, this message translates to:
+  /// **'取消订阅'**
+  String get subsMenuOff;
+
+  /// No description provided for @subsCopied.
+  ///
+  /// In zh, this message translates to:
+  /// **'已复制报文'**
+  String get subsCopied;
+
 }
 
 class _AppLocalizationsDelegate

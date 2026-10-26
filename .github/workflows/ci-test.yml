@@ -410,6 +410,11 @@ jobs:
       - name: Test GPX export
         run: flutter test test/gpx_test.dart
 
+      # 订阅：呼号省略 SSID / 通配前缀 / 中继路径 / 关键词四种判据，错了不会
+      # 编译失败，只会表现成「订阅了却一条也不来」或「全世界的包都来」。
+      - name: Test subscriptions
+        run: flutter test test/subscriptions_test.dart
+
       # 备份/恢复（含 v2.0.39 的历史轨迹拼入）：导出/导入错了不会编译失败、
       # analyze 也全绿，只会在用户换机那天才发现「少了东西」。轨迹载荷尤其
       # 不能落进偏好白名单，否则一份伪造 JSON 就能改任意偏好。

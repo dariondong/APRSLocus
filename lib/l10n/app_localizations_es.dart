@@ -10158,4 +10158,67 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get beaconFuzz20km => "~20 km";
 
+  @override
+  String get subsTitle => "Suscripciones";
+
+  @override
+  String get subsLead => "Sigue una estación, un digipeater o una palabra del paquete. Las coincidencias quedan abajo.";
+
+  @override
+  String get subsAdd => "Añadir";
+
+  @override
+  String get subsKindStation => "Estación";
+
+  @override
+  String get subsKindDigi => "Digipeater";
+
+  @override
+  String get subsKindKeyword => "Palabra";
+
+  @override
+  String get subsFieldStation => "Indicativo, SSID opcional";
+
+  @override
+  String get subsFieldDigi => "Indicativo del digipeater o gateway";
+
+  @override
+  String get subsFieldKeyword => "Una palabra del paquete";
+
+  @override
+  String get subsEmpty => "Aún no hay suscripciones";
+
+  @override
+  String get subsEmptyNote => "Añade una y los paquetes coincidentes aparecerán aquí.";
+
+  @override
+  String get subsHitsTitle => "Coincidencias";
+
+  @override
+  String get subsNoHits => "Aún sin coincidencias.";
+
+  @override
+  String subsHitsCount(String n) => "$n coincidencias";
+
+  @override
+  String get subsClear => "Borrar";
+
+  @override
+  String subsAdded(String v) => "Siguiendo $v";
+
+  @override
+  String subsExists(String v) => "$v ya se está siguiendo";
+
+  @override
+  String get subsRemoved => "Dejó de seguir";
+
+  @override
+  String get subsMenuOn => "Seguir esta estación";
+
+  @override
+  String get subsMenuOff => "Dejar de seguir";
+
+  @override
+  String get subsCopied => "Paquete copiado";
+
 }

@@ -9820,4 +9820,67 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String get beaconFuzz20km => "約 20 km";
 
+  @override
+  String get subsTitle => "購読";
+
+  @override
+  String get subsLead => "局・デジピーター・パケット内の語を監視します。一致したものは下に残ります。";
+
+  @override
+  String get subsAdd => "購読を追加";
+
+  @override
+  String get subsKindStation => "局";
+
+  @override
+  String get subsKindDigi => "デジ";
+
+  @override
+  String get subsKindKeyword => "キーワード";
+
+  @override
+  String get subsFieldStation => "コールサイン（SSID 省略可）";
+
+  @override
+  String get subsFieldDigi => "デジかゲートウェイのコールサイン";
+
+  @override
+  String get subsFieldKeyword => "パケットに出る語";
+
+  @override
+  String get subsEmpty => "まだ購読はありません";
+
+  @override
+  String get subsEmptyNote => "追加すると、一致したパケットがここに出ます。";
+
+  @override
+  String get subsHitsTitle => "一致した記録";
+
+  @override
+  String get subsNoHits => "まだ一致はありません。";
+
+  @override
+  String subsHitsCount(String n) => "$n 件";
+
+  @override
+  String get subsClear => "消去";
+
+  @override
+  String subsAdded(String v) => "$v を購読しました";
+
+  @override
+  String subsExists(String v) => "$v はすでに購読済みです";
+
+  @override
+  String get subsRemoved => "購読をやめました";
+
+  @override
+  String get subsMenuOn => "この局を購読";
+
+  @override
+  String get subsMenuOff => "購読をやめる";
+
+  @override
+  String get subsCopied => "パケットをコピーしました";
+
 }

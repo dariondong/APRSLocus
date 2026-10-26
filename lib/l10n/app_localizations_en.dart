@@ -10099,4 +10099,67 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get beaconFuzz20km => "~20 km";
 
+  @override
+  String get subsTitle => "Subscriptions";
+
+  @override
+  String get subsLead => "Watch one station, one digipeater, or a word inside a packet. Matches are listed below.";
+
+  @override
+  String get subsAdd => "Add";
+
+  @override
+  String get subsKindStation => "Station";
+
+  @override
+  String get subsKindDigi => "Digipeater";
+
+  @override
+  String get subsKindKeyword => "Keyword";
+
+  @override
+  String get subsFieldStation => "Callsign, SSID optional";
+
+  @override
+  String get subsFieldDigi => "Digipeater or gateway callsign";
+
+  @override
+  String get subsFieldKeyword => "A word in the packet";
+
+  @override
+  String get subsEmpty => "Nothing watched yet";
+
+  @override
+  String get subsEmptyNote => "Add one and matching packets show up here.";
+
+  @override
+  String get subsHitsTitle => "Matches";
+
+  @override
+  String get subsNoHits => "No matches yet.";
+
+  @override
+  String subsHitsCount(String n) => "$n hits";
+
+  @override
+  String get subsClear => "Clear";
+
+  @override
+  String subsAdded(String v) => "Watching $v";
+
+  @override
+  String subsExists(String v) => "$v is already watched";
+
+  @override
+  String get subsRemoved => "Stopped watching";
+
+  @override
+  String get subsMenuOn => "Watch this station";
+
+  @override
+  String get subsMenuOff => "Stop watching";
+
+  @override
+  String get subsCopied => "Packet copied";
+
 }

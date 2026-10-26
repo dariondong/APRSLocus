@@ -10109,4 +10109,67 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get beaconFuzz20km => "~20 km";
 
+  @override
+  String get subsTitle => "Langganan";
+
+  @override
+  String get subsLead => "Pantau satu stasiun, satu digipeater, atau satu kata di dalam paket. Kecocokan dicatat di bawah.";
+
+  @override
+  String get subsAdd => "Tambah";
+
+  @override
+  String get subsKindStation => "Stasiun";
+
+  @override
+  String get subsKindDigi => "Digipeater";
+
+  @override
+  String get subsKindKeyword => "Kata kunci";
+
+  @override
+  String get subsFieldStation => "Tanda panggil, SSID opsional";
+
+  @override
+  String get subsFieldDigi => "Tanda panggil digipeater atau gateway";
+
+  @override
+  String get subsFieldKeyword => "Kata di dalam paket";
+
+  @override
+  String get subsEmpty => "Belum ada langganan";
+
+  @override
+  String get subsEmptyNote => "Tambah satu, paket yang cocok akan muncul di sini.";
+
+  @override
+  String get subsHitsTitle => "Catatan cocok";
+
+  @override
+  String get subsNoHits => "Belum ada yang cocok.";
+
+  @override
+  String subsHitsCount(String n) => "$n cocok";
+
+  @override
+  String get subsClear => "Hapus";
+
+  @override
+  String subsAdded(String v) => "Memantau $v";
+
+  @override
+  String subsExists(String v) => "$v sudah dipantau";
+
+  @override
+  String get subsRemoved => "Berhenti memantau";
+
+  @override
+  String get subsMenuOn => "Pantau stasiun ini";
+
+  @override
+  String get subsMenuOff => "Berhenti memantau";
+
+  @override
+  String get subsCopied => "Paket disalin";
+
 }

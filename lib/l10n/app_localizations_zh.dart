@@ -9720,6 +9720,69 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String get beaconFuzz20km => "约 20 公里";
 
+  @override
+  String get subsTitle => "订阅";
+
+  @override
+  String get subsLead => "盯住一个台站、一个中继，或者报文里的一个词。命中记在下面。";
+
+  @override
+  String get subsAdd => "加一条订阅";
+
+  @override
+  String get subsKindStation => "台站";
+
+  @override
+  String get subsKindDigi => "中继";
+
+  @override
+  String get subsKindKeyword => "关键词";
+
+  @override
+  String get subsFieldStation => "呼号，可省略 SSID";
+
+  @override
+  String get subsFieldDigi => "中继或网关呼号";
+
+  @override
+  String get subsFieldKeyword => "报文里出现的词";
+
+  @override
+  String get subsEmpty => "还没有订阅";
+
+  @override
+  String get subsEmptyNote => "加一条之后，命中的报文会出现在这里。";
+
+  @override
+  String get subsHitsTitle => "命中记录";
+
+  @override
+  String get subsNoHits => "还没有命中。";
+
+  @override
+  String subsHitsCount(String n) => "$n 条";
+
+  @override
+  String get subsClear => "清空";
+
+  @override
+  String subsAdded(String v) => "已订阅 $v";
+
+  @override
+  String subsExists(String v) => "$v 已经订阅过了";
+
+  @override
+  String get subsRemoved => "已取消订阅";
+
+  @override
+  String get subsMenuOn => "订阅这个台站";
+
+  @override
+  String get subsMenuOff => "取消订阅";
+
+  @override
+  String get subsCopied => "已复制报文";
+
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
@@ -19436,5 +19499,68 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get beaconFuzz20km => "約 20 公里";
+
+  @override
+  String get subsTitle => "訂閱";
+
+  @override
+  String get subsLead => "盯住一個臺站、一個中繼，或者報文裡的一個詞。命中記在下面。";
+
+  @override
+  String get subsAdd => "加一條訂閱";
+
+  @override
+  String get subsKindStation => "臺站";
+
+  @override
+  String get subsKindDigi => "中繼";
+
+  @override
+  String get subsKindKeyword => "關鍵詞";
+
+  @override
+  String get subsFieldStation => "呼號，可省略 SSID";
+
+  @override
+  String get subsFieldDigi => "中繼或閘道呼號";
+
+  @override
+  String get subsFieldKeyword => "報文裡出現的詞";
+
+  @override
+  String get subsEmpty => "還沒有訂閱";
+
+  @override
+  String get subsEmptyNote => "加一條之後，命中的報文會出現在這裡。";
+
+  @override
+  String get subsHitsTitle => "命中記錄";
+
+  @override
+  String get subsNoHits => "還沒有命中。";
+
+  @override
+  String subsHitsCount(String n) => "$n 條";
+
+  @override
+  String get subsClear => "清空";
+
+  @override
+  String subsAdded(String v) => "已訂閱 $v";
+
+  @override
+  String subsExists(String v) => "$v 已經訂閱過了";
+
+  @override
+  String get subsRemoved => "已取消訂閱";
+
+  @override
+  String get subsMenuOn => "訂閱這個臺站";
+
+  @override
+  String get subsMenuOff => "取消訂閱";
+
+  @override
+  String get subsCopied => "已複製報文";
 
 }

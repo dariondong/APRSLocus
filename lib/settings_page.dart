@@ -23,6 +23,7 @@ import 'exit_app.dart';
 import 'early_member.dart';
 import 'honor_wall_page.dart';
 import 'settings_pages.dart';
+import 'subscriptions_page.dart';
 import 'life_guard_page.dart';
 import 'translate_page.dart';
 import 'export_adif_page.dart';
@@ -273,6 +274,17 @@ class _SettingsPageState extends State<SettingsPage> {
                     title: S.of(context).historyTracks,
                     onTap: () => _push(TrackHistoryPage(state: st)),
                   ),
+                SizedBox(height: 12),
+                // 订阅：盯住某个台站 / 中继 / 关键词，命中记在那一页
+                SettingsEntryTile(
+                  icon: Icons.notifications_active_rounded,
+                  fallback: const [Color(0xFFEA580C), Color(0xFF9A3412)],
+                  title: S.of(context).subsTitle,
+                  desc: st.subUnread > 0
+                      ? S.of(context).subsHitsCount('${st.subUnread}')
+                      : null,
+                  onTap: () => _push(SubscriptionsPage(state: st)),
+                ),
                 SizedBox(height: 12),
                 // 备份与恢复（与 ADIF 导出并列的数据出入口）
                 SettingsEntryTile(

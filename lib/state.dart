@@ -16,6 +16,7 @@ import 'aprs_parse.dart';
 import 'aprs_device.dart';
 import 'pos_quality.dart';
 import 'track_log.dart';
+import 'subscriptions.dart';
 import 'motion.dart';
 import 'adif.dart';
 import 'l10n/app_localizations.dart';
@@ -4717,6 +4718,10 @@ class AppState extends ChangeNotifier {
     myFixAt = null;
     myHrAt = null;
     ignoredStations.clear();
+    subscriptions.clear();
+    subHits.clear();
+    subUnread = 0;
+    _subJson = null;
     _resetSelfFix();
     _bumpStationsVersion();
     _reconnectAttempt = 0;
@@ -5431,6 +5436,18 @@ class AppState extends ChangeNotifier {
       ignoredStations
         ..clear()
         ..addAll(p.getStringList('ignoredStations') ?? const []);
+      // 加载订阅规则与命中记录（坏了就当没有，不影响启动）
+      final subRaw = p.getString('subscriptions');
+      if (subRaw != null && subRaw.isNotEmpty) {
+        final d = decodeSubscriptions(subRaw);
+        subscriptions
+          ..clear()
+          ..addAll(d.rules);
+        subHits
+          ..clear()
+          ..addAll(d.hits);
+        _subJson = subRaw;
+      }
       // 加载收藏/手动联系人
       _loadStations(p);
       // 数据维护：若用户开启了「台站保留天数」，启动时顺带清一次过时台站
@@ -5591,6 +5608,9 @@ class AppState extends ChangeNotifier {
     await p.setStringList('receiveCountries', receiveCountries);
     await p.setStringList('guideSeen', guideSeen.toList());
     await p.setStringList('packetSearchHistory', packetSearchHistory);
+    // 订阅规则 + 命中记录（合成一条 JSON，省得逐条写键）
+    await p.setString(
+        'subscriptions', _subJson ?? encodeSubscriptions(subscriptions, subHits));
     await p.setStringList('serverHistory', serverHistory);
     await p.setBool('receiveOthers', receiveOthers);
     await p.setBool('labLandscape', labLandscape);
@@ -6131,6 +6151,7 @@ class AppState extends ChangeNotifier {
     _keepaliveTimer?.cancel();
     _reconnectTimer?.cancel();
     _rxNotifyTimer?.cancel();
+    _subSaveTimer?.cancel();
     tick.dispose();
     _stationsCtrl.close();
     loc.stop();
@@ -9436,6 +9457,7 @@ class AppState extends ChangeNotifier {
   void _pushPacket(Packet p) {
     packets.insert(0, p);
     packetsRx++;
+    _noteSubscriptions(p);
     AchievementCenter.instance.bump('worldListener'); // 世界聆听者(累计3万)
     _rxTimes.add(DateTime.now());
     // 顺带清理超过 60 秒的记录，防止 _rxTimes 无界增长
@@ -9472,6 +9494,135 @@ class AppState extends ChangeNotifier {
       return;
     }
     if (on) addManualStation(c);
+  }
+
+  // ─── 订阅（只看，不改收发）───
+  //
+  // 三种口径见 lib/subscriptions.dart。命中只记一条记录，不额外上报、
+  // 不过滤台站，所以关掉订阅与从来没订阅过在功能上等价。
+  final List<SubRule> subscriptions = [];
+  final List<SubHit> subHits = [];
+
+  /// 上次看过之后又命中了几条（列表页打开时清零）
+  int subUnread = 0;
+  static const int subHitMax = 200;
+  Timer? _subSaveTimer;
+
+  /// 待写盘的订阅 JSON（命中太密时不每次都落盘）
+  String? _subJson;
+
+  /// 所有命中（新的在前）
+  int get subHitCount => subHits.length;
+
+  bool isSubscribedStation(String call) => subscriptions.any((r) =>
+      r.kind == SubKind.station &&
+      subBaseCall(r.value.replaceAll('*', '')) == subBaseCall(call));
+
+  /// 加一条订阅；已存在同一种同一值时返回 false
+  bool addSubscription(SubKind kind, String value) {
+    final v = value.trim();
+    if (v.isEmpty) return false;
+    final exists = subscriptions.any((r) =>
+        r.kind == kind && r.value.toLowerCase() == v.toLowerCase());
+    if (exists) return false;
+    subscriptions.insert(
+      0,
+      SubRule(
+        id: 's${DateTime.now().microsecondsSinceEpoch}',
+        kind: kind,
+        value: v,
+      ),
+    );
+    _saveSubscriptions();
+    persist();
+    _notify();
+    return true;
+  }
+
+  void removeSubscription(String id) {
+    subscriptions.removeWhere((r) => r.id == id);
+    subHits.removeWhere((h) => h.ruleId == id);
+    _saveSubscriptions();
+    persist();
+    _notify();
+  }
+
+  void setSubscriptionEnabled(String id, bool on) {
+    final i = subscriptions.indexWhere((r) => r.id == id);
+    if (i < 0 || subscriptions[i].enabled == on) return;
+    subscriptions[i].enabled = on;
+    _saveSubscriptions();
+    persist();
+    _notify();
+  }
+
+  /// 某个台站「订阅 / 取消订阅」（面板菜单用）
+  bool toggleStationSubscription(String call) {
+    final base = subBaseCall(call);
+    final i = subscriptions.indexWhere((r) =>
+        r.kind == SubKind.station && subBaseCall(r.value) == base);
+    if (i >= 0) {
+      removeSubscription(subscriptions[i].id);
+      return false;
+    }
+    addSubscription(SubKind.station, base);
+    return true;
+  }
+
+  void clearSubHits() {
+    subHits.clear();
+    for (final r in subscriptions) {
+      r.hits = 0;
+    }
+    subUnread = 0;
+    _saveSubscriptions();
+    persist();
+    _notify();
+  }
+
+  void markSubscriptionsRead() {
+    if (subUnread == 0) return;
+    subUnread = 0;
+    _notify();
+  }
+
+  void _saveSubscriptions() {
+    _subSaveTimer?.cancel();
+    _subSaveTimer = null;
+    _subJson = encodeSubscriptions(subscriptions, subHits);
+  }
+
+  /// 命中记账（每收到一个包调用一次；没有订阅时立即返回）
+  void _noteSubscriptions(Packet p) {
+    if (subscriptions.isEmpty) return;
+    final mine = myFullCall.toUpperCase();
+    if (p.src.toUpperCase() == mine) return; // 自己发的不算「看到别人」
+    var hit = false;
+    for (final r in subscriptions) {
+      if (!subMatches(r, p)) continue;
+      r.hits++;
+      subHits.insert(
+        0,
+        SubHit(
+          ruleId: r.id,
+          call: p.src,
+          raw: p.raw,
+          info: p.info,
+          time: p.time,
+        ),
+      );
+      hit = true;
+    }
+    if (!hit) return;
+    if (subHits.length > subHitMax) {
+      subHits.removeRange(subHitMax, subHits.length);
+    }
+    subUnread++;
+    // 命中有多有少，写盘节流：高频收包时不跟着一次次落盘
+    _subJson = encodeSubscriptions(subscriptions, subHits);
+    _subSaveTimer?.cancel();
+    _subSaveTimer = Timer(const Duration(seconds: 8), () => persist());
+    _notify();
   }
 
   // ─── 台站屏蔽（本地不上图，包仍接收）───

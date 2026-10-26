@@ -215,7 +215,7 @@ const List<BackupGroupSpec> kBackupGroups = [
   ]),
   // 台站与联系人：整份 stations JSON（收藏/手动添加/备注）+ 本地屏蔽列表
   // （用户主动隐藏的台站，属于「用户自己攒的台站偏好」，换机后应保留）。
-  BackupGroupSpec(BackupCategory.stations, ['stations', 'ignoredStations']),
+  BackupGroupSpec(BackupCategory.stations, ['stations', 'ignoredStations', 'subscriptions']),
   // 消息记录：单聊消息 + 两套已读时间点
   BackupGroupSpec(BackupCategory.messages, ['messages', 'readAt', 'groupReadAt']),
   // 群聊：群组、成员状态、群内共享的策略地图元素（标点/线/圈/集合点）

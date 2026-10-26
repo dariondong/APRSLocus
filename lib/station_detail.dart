@@ -376,6 +376,29 @@ class _StationDetailState extends State<StationDetail> {
                                   ),
                                 ),
                                 PopupMenuItem(
+                                  value: 'sub',
+                                  child: Row(
+                                    children: [
+                                      Icon(
+                                        widget.state
+                                                .isSubscribedStation(s.call)
+                                            ? Icons.notifications_off_rounded
+                                            : Icons.notifications_active_rounded,
+                                        size: 18,
+                                        color: C.blue,
+                                      ),
+                                      SizedBox(width: 10),
+                                      Text(
+                                        widget.state
+                                                .isSubscribedStation(s.call)
+                                            ? S.of(ctx).subsMenuOff
+                                            : S.of(ctx).subsMenuOn,
+                                        style: ts(13),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                PopupMenuItem(
                                   value: 'delete',
                                   child: Row(
                                     children: [
@@ -1446,6 +1469,13 @@ class _StationDetailState extends State<StationDetail> {
       await Clipboard.setData(ClipboardData(text: s.call));
       if (!mounted) return;
       _toast(S.of(context).callsignCopied);
+      return;
+    }
+    if (action == 'sub') {
+      final on = st.toggleStationSubscription(s.call);
+      if (!mounted) return;
+      setState(() {});
+      _toast(on ? S.of(context).subsAdded(s.baseCall) : S.of(context).subsRemoved);
       return;
     }
     if (action != 'delete') return;
