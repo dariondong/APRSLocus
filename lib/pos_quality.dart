@@ -57,6 +57,37 @@ class PosQuality {
   /// 取 3m 是因为它远小于 GPS 自身的噪声量级（静止时 σ 就有 30m），
   /// 不会把噪声当成位移；而 5 秒内真的在走就轻松超过它。
   static const double trackMinMoveM = 3;
+
+  // ─── 弱信号下的轨迹（用户要求）───
+  //
+  // 卫星少 / 精度差时，GPS 每秒给的是一堆彼此差几十米的点。按正常门限落点，
+  // 屏幕上就是「一坨」：看不出路线，还让人以为自己刚才在原地打转。
+  // 处理：弱信号时把落点门限放大、间隔拉长；精度差到没参考价值就不记，
+  // 等下一次有效定位。**只在没开「强制网络上报」时**这么做 —— 开了强制上报
+  // 就是用户明确要先有数据，不再为了整齐而丢点。
+
+  /// 颗数少于这个数算弱信号（3D 定点最少 4 颗，5 颗以下基本都在边缘）
+  static const int weakSatsMin = 5;
+
+  /// 精度差于它（米）算弱信号
+  static const double weakAccuracyM = 30;
+
+  /// 弱信号时的落点门限（米）：不按速度自适应，直接放大
+  static const double weakTrackMinDistM = 25;
+
+  /// 弱信号时的最小落点间隔（秒）
+  static const double weakTrackMinGapSec = 20;
+
+  /// 精度差到这个量级（米）就别落点了：那个点连方向都是错的
+  static const double weakSkipAccuracyM = 100;
+
+  /// 当前定位算不算「弱信号」：颗数或精度任一不够。
+  ///
+  /// [sats] 为 null（这个源不说颗数，如佳明）时只看精度。
+  static bool weakFix({int? sats, required double accuracyM}) {
+    if (sats != null && sats > 0 && sats < weakSatsMin) return true;
+    return accuracyM > 0 && accuracyM > weakAccuracyM;
+  }
 }
 
 /// 不确定半径的展示格式：米 / 千米（≥10km 不再给小数 —— 这个尺度上小数是假精度）

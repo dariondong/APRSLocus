@@ -420,6 +420,11 @@ jobs:
       - name: Test message SSID reception
         run: flutter test test/msg_ssid_test.dart
 
+      # 弱信号下的轨迹：颗数与精度两条判据、弱信号门限必须宽于正常门限。
+      # 错了只会表现成「轨迹一坨」或「轨迹缺一大段」。
+      - name: Test weak-fix track gating
+        run: flutter test test/pos_quality_weak_test.dart
+
       # 备份/恢复（含 v2.0.39 的历史轨迹拼入）：导出/导入错了不会编译失败、
       # analyze 也全绿，只会在用户换机那天才发现「少了东西」。轨迹载荷尤其
       # 不能落进偏好白名单，否则一份伪造 JSON 就能改任意偏好。

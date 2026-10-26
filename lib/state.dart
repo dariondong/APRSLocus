@@ -501,11 +501,24 @@ class AppState extends ChangeNotifier {
     // （外面的点本身就是干净的；停着不动时手表/模块也会给点，画出来才对）。
     final speed = speedKmh ?? 0;
     final last = myTrack.isEmpty ? null : myTrack.last;
-    final minDistM = PosQuality.trackMinDistM(speedKmh: speed);
+    final weak = PosQuality.weakFix(sats: satellites, accuracyM: accuracyM);
+    final weakGate = weak && !beaconForceCoarse;
+    var minDistM = PosQuality.trackMinDistM(speedKmh: speed);
+    if (weakGate) {
+      minDistM = math.max(minDistM, PosQuality.weakTrackMinDistM);
+    }
     final movedM = last == null
         ? double.infinity
         : haversine(last.lat, last.lng, lat, lng) * 1000;
-    if (last == null || movedM > minDistM) {
+    final gapSec = last == null
+        ? double.infinity
+        : DateTime.now().difference(last.time).inSeconds.toDouble();
+    // 弱信号时还要求「离上个点够久」，否则一秒一个点照样能把它堆成一坨
+    final farEnough = weakGate
+        ? (movedM > minDistM && gapSec >= PosQuality.weakTrackMinGapSec)
+        : movedM > minDistM;
+    final skipWeak = weakGate && accuracyM > PosQuality.weakSkipAccuracyM;
+    if (!skipWeak && (last == null || farEnough)) {
       myTrack.add(TrackPt(lat, lng, DateTime.now()));
       if (myTrack.length > maxTrackPts) {
         myTrack.removeRange(0, myTrack.length - maxTrackPts);
@@ -7922,19 +7935,29 @@ class AppState extends ChangeNotifier {
     // 只有前一条时，速度越低点越疏（步行 8m 要 5.8s），而慢速正是用户最想
     // 看清细节的时候 —— 那条「保底」就是为此加的。
     final last = myTrack.isEmpty ? null : myTrack.last;
+    // 弱信号（卫星少 / 精度差）：开了「强制网络上报」就不管，没开就把点放稀，
+    // 精度差到没参考价值时干脆不记 —— 等下一次有效定位再接着画。
+    final weak = PosQuality.weakFix(sats: satellites, accuracyM: accuracy);
+    final weakGate = weak && !beaconForceCoarse;
     if (!lastKnown &&
         !coarse &&
         !still &&
-        accuracy <= SelfFixFilter.trackAccuracyLimitM) {
-      final minDistM = PosQuality.trackMinDistM(speedKmh: speed * 3.6);
+        accuracy <= SelfFixFilter.trackAccuracyLimitM &&
+        !(weakGate && accuracy > PosQuality.weakSkipAccuracyM)) {
+      var minDistM = PosQuality.trackMinDistM(speedKmh: speed * 3.6);
+      var gapNeed = PosQuality.trackMaxGapSec;
+      if (weakGate) {
+        minDistM = math.max(minDistM, PosQuality.weakTrackMinDistM);
+        gapNeed = PosQuality.weakTrackMinGapSec;
+      }
       final movedM = last == null
           ? double.infinity
           : haversine(last.lat, last.lng, outLat, outLng) * 1000;
       final gapSec = last == null
           ? double.infinity
           : DateTime.now().difference(last.time).inSeconds.toDouble();
-      final keepAlive = gapSec >= PosQuality.trackMaxGapSec &&
-          movedM >= PosQuality.trackMinMoveM;
+      final keepAlive =
+          gapSec >= gapNeed && movedM >= PosQuality.trackMinMoveM;
       if (last == null || movedM > minDistM || keepAlive) {
         myTrack.add(TrackPt(outLat, outLng, DateTime.now()));
         if (myTrack.length > maxTrackPts) {

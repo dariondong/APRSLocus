@@ -334,6 +334,16 @@ def main() -> int:
 
     # 轨迹抽稀：自己用自适应门限（固定 20m 在步行时太粗、高速时太细）
     need('lib/state.dart', 'PosQuality.trackMinDistM(', '自己轨迹没按速度自适应抽稀')
+
+    # 弱信号下的轨迹（用户要求）：卫星少 / 精度差时把点放稀，差到没法用就不记，
+    # 等下一次有效定位；开了「强制网络上报」则照记不误。
+    need('lib/pos_quality.dart',
+         'static bool weakFix({int? sats, required double accuracyM})',
+         '弱信号判据（PosQuality.weakFix）没了 —— 卫星弱时轨迹又会堆成一坨')
+    need('lib/state.dart', 'final weakGate = weak && !beaconForceCoarse;',
+         '弱信号轨迹门限没接上，或者没尊重「强制网络上报」这个开关')
+    need('lib/state.dart', 'PosQuality.weakSkipAccuracyM',
+         '精度差到没法用时没有跳过落点（会画出方向都错的轨迹）')
     forbid('lib/state.dart', 'haversine(last.lat, last.lng, lat, lng) > 0.02',
            '自己轨迹的固定 20m 门限又回来了（应改为按速度自适应）')
 
