@@ -4399,5 +4399,12 @@
   "msgSendId": "Send as",
   "msgOtherSsid": "This one arrived for another SSID. You can reply as {to} or as this device.",
   "@msgOtherSsid": {"placeholders": {"to": {"type": "String"}}},
-  "beaconIncludeLoad": "PC CPU and memory load"
+  "beaconIncludeLoad": "PC CPU and memory load",
+  "myOtherSsidLabel": "My other SSIDs",
+  "ssidCmdActivate": "Wake",
+  "ssidCmdBeacon": "Send beacon",
+  "ssidCmdStop": "Stop reporting",
+  "ssidCmdSent": "Sent to {call}: {cmd}",
+  "ssidCmdNoLink": "No link is up, so the command cannot go out",
+  "@ssidCmdSent": {"placeholders": {"call": {"type": "String"}, "cmd": {"type": "String"}}}
 }

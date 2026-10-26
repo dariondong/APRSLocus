@@ -9,7 +9,10 @@ import 'garmin_page.dart';
 import 'hr_page.dart';
 import 'ic705_device_page.dart';
 import 'pkwdwpl_device_page.dart';
+import 'models.dart';
 import 'platform_caps.dart';
+import 'station_detail.dart';
+import 'ssid_remote.dart';
 import 'state.dart';
 import 'theme.dart';
 import 'tnc_device_page.dart';
@@ -315,6 +318,16 @@ class DataSourceCard extends StatelessWidget {
           disabled: !bleHrPlatformSupported,
           disabledReason: s.hrNotSupported,
         ),
+        // ── 我的其他 SSID（用户要求）──
+        //
+        // 同一个呼号下的其它设备（手机 -7、电脑 -9 …）在台站列表里是独立台站，
+        // 但它们是「我自己的设备」：应当一眼看到，并且对其中装 APRSlocus 的
+        // 那几台能直接下指令（激活 / 发一次信标 / 停止上报）。
+        // 不是 APRSlocus 的，点一下走标准台站面板看信息。
+        if (state.myOtherSsidStations.isNotEmpty) ...[
+          _ownLabel(context, s.myOtherSsidLabel),
+          for (final o in state.myOtherSsidStations) _ssidRow(context, o),
+        ],
         // 多选时才需要解释「发射走哪条」，单选时这句话是噪音
         // 位置来源的**优先级**（与上报页同一句文案、同一个 getter）：两处都写清楚，
         // 用户才不会觉得「两个地方各说一个来源、不知道听谁的」。
@@ -327,6 +340,131 @@ class DataSourceCard extends StatelessWidget {
         if (state.nmeaGpsOn) SettingsHint(s.dataSourceNmeaGpsHint),
         if (extra != null) SettingsHint(extra!),
       ],
+    );
+  }
+
+  /// 我另一个 SSID 的一行。
+  ///
+  /// 装 APRSlocus 的那些台站多一条指令行（激活 / 发信标 / 停止）；别的设备
+  /// 只显示状态，点一下走标准台站面板 —— 没有约定好的指令通道，硬塞按钮等于骗人。
+  Widget _ssidRow(BuildContext context, Station o) {
+    final s = S.of(context);
+    final online = o.effectiveStatus != St.offline;
+    final app = o.isAprslocusStation;
+    final ago = localizedLastSeen(context, o);
+    return Container(
+      padding: const EdgeInsets.fromLTRB(14, 9, 14, 9),
+      decoration: BoxDecoration(
+        border: Border(bottom: BorderSide(color: C.border, width: 0.4)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ClickCursor(
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () => showModalBottomSheet<void>(
+                context: context,
+                isScrollControlled: true,
+                backgroundColor: Colors.transparent,
+                builder: (_) => StationDetail(state: state, station: o),
+              ),
+              child: Row(children: [
+                SizedBox(
+                  width: 26,
+                  height: 26,
+                  child: Center(
+                    child: AprsSymbolImage(o.symbol, o.symbolTable,
+                        size: 20,
+                        grayscale: !online,
+                        halo: true),
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(children: [
+                        Text(o.call,
+                            style: ts(12.5, w: FontWeight.w700, ls: 0.3)),
+                        if (app) ...[
+                          const SizedBox(width: 5),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 5, vertical: 1),
+                            decoration: BoxDecoration(
+                              color: C.blue.withValues(alpha: 0.12),
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                            child: Text('APRSlocus',
+                                style:
+                                    ts(9, c: C.blue, w: FontWeight.w700)),
+                          ),
+                        ],
+                      ]),
+                      const SizedBox(height: 1),
+                      Text(
+                        '${online ? s.online : s.offline} · $ago',
+                        style: ts(10.5, c: C.grey),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ),
+                ),
+                Icon(Icons.chevron_right_rounded, size: 16, color: C.greyLight),
+              ]),
+            ),
+          ),
+          if (app)
+            Padding(
+              padding: const EdgeInsets.only(left: 36, top: 6),
+              child: Wrap(
+                spacing: 6,
+                runSpacing: 6,
+                children: [
+                  _ssidCmd(context, s.ssidCmdActivate, Icons.power_settings_new_rounded,
+                      SsidCmd.activate, o),
+                  _ssidCmd(context, s.ssidCmdBeacon, Icons.send_rounded,
+                      SsidCmd.beacon, o),
+                  _ssidCmd(context, s.ssidCmdStop,
+                      Icons.stop_circle_outlined, SsidCmd.stop, o),
+                ],
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
+  /// 一条指令按钮：发出去之后给出「发了什么」的反馈，发不出去（链路没连）
+  /// 也要说清楚，否则用户只会以为按钮坏了。
+  Widget _ssidCmd(BuildContext context, String label, IconData icon,
+      SsidCmd cmd, Station o) {
+    return GestureDetector(
+      onTap: () {
+        final ok = state.sendSsidCommand(o.call, cmd);
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(ok
+              ? S.of(context).ssidCmdSent(o.call, label)
+              : S.of(context).ssidCmdNoLink),
+          behavior: SnackBarBehavior.floating,
+        ));
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
+        decoration: BoxDecoration(
+          color: C.blue.withValues(alpha: 0.08),
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(color: C.blue.withValues(alpha: 0.3)),
+        ),
+        child: Row(mainAxisSize: MainAxisSize.min, children: [
+          Icon(icon, size: 12, color: C.blue),
+          const SizedBox(width: 4),
+          Text(label, style: ts(10.5, c: C.blue, w: FontWeight.w600)),
+        ]),
+      ),
     );
   }
 

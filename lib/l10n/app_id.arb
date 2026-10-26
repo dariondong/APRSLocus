@@ -4399,5 +4399,12 @@
   "msgSendId": "Kirim sebagai",
   "msgOtherSsid": "Pesan ini tiba untuk SSID lain. Kamu bisa membalas sebagai {to} atau sebagai perangkat ini.",
   "@msgOtherSsid": {"placeholders": {"to": {"type": "String"}}},
-  "beaconIncludeLoad": "Beban CPU dan memori PC"
+  "beaconIncludeLoad": "Beban CPU dan memori PC",
+  "myOtherSsidLabel": "SSID saya yang lain",
+  "ssidCmdActivate": "Bangunkan",
+  "ssidCmdBeacon": "Kirim beacon",
+  "ssidCmdStop": "Hentikan kirim",
+  "ssidCmdSent": "Terkirim ke {call}: {cmd}",
+  "ssidCmdNoLink": "Tautan belum tersambung, perintah tidak terkirim",
+  "@ssidCmdSent": {"placeholders": {"call": {"type": "String"}, "cmd": {"type": "String"}}}
 }

@@ -9792,6 +9792,24 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String get beaconIncludeLoad => "电脑 CPU 与内存占用";
 
+  @override
+  String get myOtherSsidLabel => "我的其他 SSID";
+
+  @override
+  String get ssidCmdActivate => "激活";
+
+  @override
+  String get ssidCmdBeacon => "发信标";
+
+  @override
+  String get ssidCmdStop => "停止上报";
+
+  @override
+  String ssidCmdSent(String call, String cmd) => "已发给 $call：$cmd";
+
+  @override
+  String get ssidCmdNoLink => "链路没连上，指令发不出去";
+
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
@@ -19580,5 +19598,23 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get beaconIncludeLoad => "電腦 CPU 與記憶體佔用";
+
+  @override
+  String get myOtherSsidLabel => "我的其他 SSID";
+
+  @override
+  String get ssidCmdActivate => "啟用";
+
+  @override
+  String get ssidCmdBeacon => "發信標";
+
+  @override
+  String get ssidCmdStop => "停止上報";
+
+  @override
+  String ssidCmdSent(String call, String cmd) => "已發給 $call：$cmd";
+
+  @override
+  String get ssidCmdNoLink => "鏈路沒連上，指令發不出去";
 
 }

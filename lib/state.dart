@@ -17,6 +17,7 @@ import 'aprs_device.dart';
 import 'pos_quality.dart';
 import 'track_log.dart';
 import 'desktop_metrics.dart';
+import 'ssid_remote.dart';
 import 'subscriptions.dart';
 import 'motion.dart';
 import 'adif.dart';
@@ -8789,6 +8790,9 @@ class AppState extends ChangeNotifier {
       _notify();
       return null;
     }
+    // 「我的其他 SSID」远程指令（`!AL ACT/BCN/STP`）：执行，但**照旧进会话**，
+    // 用户能看到自己另一台设备收到了什么指令。
+    _maybeSsidCommand(src, text);
     // ─── 策略地图帧（群内共享的标点/线/圈/集合点）───
     // 与群协议一样只解析一次、命中的帧**不进聊天列表**（否则几十个元素会
     // 把聊天记录冲掉）。策略帧前缀 `$M`，与 GroupProto 的命令字不冲突。
@@ -10278,6 +10282,73 @@ class AppState extends ChangeNotifier {
   /// [sentAs] 是**实际发到空中的文本**（发送前翻译时传入译文）。
   /// 空中的报文用 `sentAs ?? text`，长度限制也按空中内容判定 ——
   /// 否则会出现「原文 60 字符通过、译文 80 字符被对端丢弃」这种静默失败。
+  // ─── 我的其他 SSID ───
+  //
+  // 同一个呼号常有多台设备（手机 -7、电脑 -9、车载 -13），台站列表里它们是
+  // 一个个独立台站。快捷面板把它们单列出来：自己的设备应当一眼看到，
+  // 而不是在一堆别人的台站里找。
+
+  /// 同呼号下、除本机 ID 以外的台站（新听到的在前，最多 12 台）
+  List<Station> get myOtherSsidStations {
+    final me = myFullCall.toUpperCase();
+    final base = _baseCall(me);
+    final list = stations
+        .where((s) =>
+            s.call.toUpperCase() != me &&
+            _baseCall(s.call.toUpperCase()) == base)
+        .toList()
+      ..sort((a, b) => b.lastHeard.compareTo(a.lastHeard));
+    return list.length > 12 ? list.sublist(0, 12) : list;
+  }
+
+  /// 给另一个 SSID 发一条远程指令（`!AL ACT` 之类）。
+  ///
+  /// 源呼号**强制**是本机 ID：对方要靠「基础呼号相同」来认指令，
+  /// 用别的 ID 发出去照样能认，但会话里会让人搞不清是谁下发的。
+  bool sendSsidCommand(String call, SsidCmd cmd) {
+    final target = call.trim().toUpperCase();
+    if (target.isEmpty) return false;
+    if (!msgLinkUp) return false;
+    sendMessage(target, ssidCmdText(cmd), fromCall: myFullCall);
+    _log(LogLevel.info, '远程', '已向 $target 发送指令 ${ssidCmdCode(cmd)}');
+    return true;
+  }
+
+  /// 执行一条远程指令（只有同呼号的另一个 SSID 发来的才会走到这里）。
+  void applySsidCommand(SsidCmd cmd) {
+    switch (cmd) {
+      case SsidCmd.activate:
+        // 激活 = 把定位跑起来，并顺手发一次位置：对端要能「看见它醒了」。
+        // 没开自动上报就不自作主张打开（那是本机用户的开关），只发这一帧。
+        unawaited(ensureLocationRunning());
+        sendBeacon();
+        _log(LogLevel.info, '远程', '收到激活指令');
+      case SsidCmd.beacon:
+        sendBeacon();
+        _log(LogLevel.info, '远程', '收到发信标指令');
+      case SsidCmd.stop:
+        setBeaconEnabled(false);
+        _log(LogLevel.info, '远程', '收到停止上报指令');
+    }
+    _notify();
+  }
+
+  /// 这条消息是不是发给我的远程指令；是就执行并返回 true
+  bool _maybeSsidCommand(String src, String text) {
+    final cmd = parseSsidCommand(text);
+    if (cmd == null) return false;
+    final me = myFullCall.toUpperCase();
+    final from = src.trim().toUpperCase();
+    // 只认同一基础呼号，且不是从本机 ID 发出来的（否则自己发一条就自己执行）
+    if (from == me) return false;
+    if (_baseCall(from) != _baseCall(me)) {
+      _log(LogLevel.warn, '远程', '忽略外人发来的指令：$from ${ssidCmdCode(cmd)}');
+      return false;
+    }
+    applySsidCommand(cmd);
+    return true;
+  }
+
   /// 消息发送身份：默认本机 ID，可以临时选用自己另一个 SSID
   ///
   /// 只影响**消息**报文的源呼号。myCall、信标、连接身份都不动 ——
@@ -10296,7 +10367,8 @@ class AppState extends ChangeNotifier {
   /// 实际用来发消息的呼号
   String get msgSendCall => msgSendAs ?? myFullCall;
 
-  void sendMessage(String to, String text, {String? sentAs}) {
+  void sendMessage(String to, String text,
+      {String? sentAs, String? fromCall}) {
     if (text.trim().isEmpty) return;
     // 防止误发给群呼号：重定向到对应群聊
     for (final g in chatGroups) {
@@ -10307,8 +10379,8 @@ class AppState extends ChangeNotifier {
     }
     // 发送身份：默认本机 ID，也可以选用自己另一个 SSID
     //（收到“发给另一个 SSID”的消息时用）。只换这一帧消息的源呼号，
-    // 不动 myCall 与信标/连接身份。
-    final from = msgSendCall;
+    // 不动 myCall 与信标/连接身份。[fromCall] 由调用方强制指定（远程指令）。
+    final from = fromCall ?? msgSendCall;
     final wire = (sentAs ?? text).trim();
     // TNC（射频）模式下的长度限制：APRS101 规定消息文本上限 67 字符。
     // 超长时报文会被对端 TNC/网关丢弃，与其静默失败不如在源头拦住。

@@ -425,6 +425,11 @@ jobs:
       - name: Test weak-fix track gating
         run: flutter test test/pos_quality_weak_test.dart
 
+      # 「我的其他 SSID」远程指令：格式解析，以及「只执行同呼号发来的」这条边界。
+      # 边界错了就是任何人都能拿一条报文把你的上报关掉。
+      - name: Test other-SSID remote commands
+        run: flutter test test/ssid_command_test.dart
+
       # 备份/恢复（含 v2.0.39 的历史轨迹拼入）：导出/导入错了不会编译失败、
       # analyze 也全绿，只会在用户换机那天才发现「少了东西」。轨迹载荷尤其
       # 不能落进偏好白名单，否则一份伪造 JSON 就能改任意偏好。

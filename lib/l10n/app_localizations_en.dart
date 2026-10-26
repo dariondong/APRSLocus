@@ -10171,4 +10171,22 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get beaconIncludeLoad => "PC CPU and memory load";
 
+  @override
+  String get myOtherSsidLabel => "My other SSIDs";
+
+  @override
+  String get ssidCmdActivate => "Wake";
+
+  @override
+  String get ssidCmdBeacon => "Send beacon";
+
+  @override
+  String get ssidCmdStop => "Stop reporting";
+
+  @override
+  String ssidCmdSent(String call, String cmd) => "Sent to $call: $cmd";
+
+  @override
+  String get ssidCmdNoLink => "No link is up, so the command cannot go out";
+
 }

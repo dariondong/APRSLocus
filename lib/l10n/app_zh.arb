@@ -5078,5 +5078,12 @@
   "msgSendId": "发送 ID",
   "msgOtherSsid": "该消息由其他 SSID 接收，可以选用 {to} 或本机 ID 发送。",
   "@msgOtherSsid": {"placeholders": {"to": {"type": "String"}}},
-  "beaconIncludeLoad": "电脑 CPU 与内存占用"
+  "beaconIncludeLoad": "电脑 CPU 与内存占用",
+  "myOtherSsidLabel": "我的其他 SSID",
+  "ssidCmdActivate": "激活",
+  "ssidCmdBeacon": "发信标",
+  "ssidCmdStop": "停止上报",
+  "ssidCmdSent": "已发给 {call}：{cmd}",
+  "ssidCmdNoLink": "链路没连上，指令发不出去",
+  "@ssidCmdSent": {"placeholders": {"call": {"type": "String"}, "cmd": {"type": "String"}}}
 }

@@ -4987,5 +4987,12 @@
   "msgSendId": "傳送 ID",
   "msgOtherSsid": "該訊息由其他 SSID 接收，可以選用 {to} 或本機 ID 傳送。",
   "@msgOtherSsid": {"placeholders": {"to": {"type": "String"}}},
-  "beaconIncludeLoad": "電腦 CPU 與記憶體佔用"
+  "beaconIncludeLoad": "電腦 CPU 與記憶體佔用",
+  "myOtherSsidLabel": "我的其他 SSID",
+  "ssidCmdActivate": "啟用",
+  "ssidCmdBeacon": "發信標",
+  "ssidCmdStop": "停止上報",
+  "ssidCmdSent": "已發給 {call}：{cmd}",
+  "ssidCmdNoLink": "鏈路沒連上，指令發不出去",
+  "@ssidCmdSent": {"placeholders": {"call": {"type": "String"}, "cmd": {"type": "String"}}}
 }

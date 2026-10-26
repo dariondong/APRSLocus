@@ -10230,4 +10230,22 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get beaconIncludeLoad => "CPU y memoria del equipo";
 
+  @override
+  String get myOtherSsidLabel => "Mis otros SSID";
+
+  @override
+  String get ssidCmdActivate => "Activar";
+
+  @override
+  String get ssidCmdBeacon => "Enviar baliza";
+
+  @override
+  String get ssidCmdStop => "Detener envío";
+
+  @override
+  String ssidCmdSent(String call, String cmd) => "Enviado a $call: $cmd";
+
+  @override
+  String get ssidCmdNoLink => "No hay enlace activo, así que el comando no sale";
+
 }

@@ -4399,5 +4399,12 @@
   "msgSendId": "送信 ID",
   "msgOtherSsid": "このメッセージは別の SSID 宛てに届きました。{to} でも本機 ID でも送信できます。",
   "@msgOtherSsid": {"placeholders": {"to": {"type": "String"}}},
-  "beaconIncludeLoad": "パソコンの CPU・メモリ使用率"
+  "beaconIncludeLoad": "パソコンの CPU・メモリ使用率",
+  "myOtherSsidLabel": "自分の他の SSID",
+  "ssidCmdActivate": "起動",
+  "ssidCmdBeacon": "ビーコン送信",
+  "ssidCmdStop": "送信停止",
+  "ssidCmdSent": "{call} に送信しました：{cmd}",
+  "ssidCmdNoLink": "リンクが繋がっていないため送信できません",
+  "@ssidCmdSent": {"placeholders": {"call": {"type": "String"}, "cmd": {"type": "String"}}}
 }

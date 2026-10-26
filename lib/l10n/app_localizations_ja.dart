@@ -9892,4 +9892,22 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String get beaconIncludeLoad => "パソコンの CPU・メモリ使用率";
 
+  @override
+  String get myOtherSsidLabel => "自分の他の SSID";
+
+  @override
+  String get ssidCmdActivate => "起動";
+
+  @override
+  String get ssidCmdBeacon => "ビーコン送信";
+
+  @override
+  String get ssidCmdStop => "送信停止";
+
+  @override
+  String ssidCmdSent(String call, String cmd) => "$call に送信しました：$cmd";
+
+  @override
+  String get ssidCmdNoLink => "リンクが繋がっていないため送信できません";
+
 }

@@ -17943,6 +17943,42 @@ abstract class AppLocalizations {
   /// **'电脑 CPU 与内存占用'**
   String get beaconIncludeLoad;
 
+  /// No description provided for @myOtherSsidLabel.
+  ///
+  /// In zh, this message translates to:
+  /// **'我的其他 SSID'**
+  String get myOtherSsidLabel;
+
+  /// No description provided for @ssidCmdActivate.
+  ///
+  /// In zh, this message translates to:
+  /// **'激活'**
+  String get ssidCmdActivate;
+
+  /// No description provided for @ssidCmdBeacon.
+  ///
+  /// In zh, this message translates to:
+  /// **'发信标'**
+  String get ssidCmdBeacon;
+
+  /// No description provided for @ssidCmdStop.
+  ///
+  /// In zh, this message translates to:
+  /// **'停止上报'**
+  String get ssidCmdStop;
+
+  /// No description provided for @ssidCmdSent.
+  ///
+  /// In zh, this message translates to:
+  /// **'已发给 {call}：{cmd}'**
+  String ssidCmdSent(String call, String cmd);
+
+  /// No description provided for @ssidCmdNoLink.
+  ///
+  /// In zh, this message translates to:
+  /// **'链路没连上，指令发不出去'**
+  String get ssidCmdNoLink;
+
 }
 
 class _AppLocalizationsDelegate
