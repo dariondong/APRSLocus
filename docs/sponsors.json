@@ -1,6 +1,6 @@
 {
-  "version": 15,
-  "updated": "2026-10-23",
+  "version": 16,
+  "updated": "2026-10-25",
   "sponsors": [
     {
       "kind": "group",
@@ -165,6 +165,16 @@
         "zh": "赠我以琼琚 · 琼琚一片，回声不散",
         "zh-TW": "贈我以瓊琚 · 瓊琚一片，回聲不散",
         "en": "Gifted with jade — one piece of jade, an echo that lingers."
+      }
+    },
+    {
+      "kind": "jade",
+      "name": "BG5AON",
+      "desc": "赠我以琼琚 · 琼琚在手，长路有灯",
+      "descs": {
+        "zh": "赠我以琼琚 · 琼琚在手，长路有灯",
+        "zh-TW": "贈我以瓊琚 · 瓊琚在手，長路有燈",
+        "en": "Gifted with jade — jade in hand, a light along the road."
       }
     },
     {
