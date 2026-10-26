@@ -1,6 +1,6 @@
 {
-  "version": 16,
-  "updated": "2026-10-25",
+  "version": 17,
+  "updated": "2026-10-26",
   "sponsors": [
     {
       "kind": "group",
@@ -175,6 +175,16 @@
         "zh": "赠我以琼琚 · 琼琚在手，长路有灯",
         "zh-TW": "贈我以瓊琚 · 瓊琚在手，長路有燈",
         "en": "Gifted with jade — jade in hand, a light along the road."
+      }
+    },
+    {
+      "kind": "jade",
+      "name": "BG5WRY",
+      "desc": "赠我以琼琚 · 琼琚在握，长波有应",
+      "descs": {
+        "zh": "赠我以琼琚 · 琼琚在握，长波有应",
+        "zh-TW": "贈我以瓊琚 · 瓊琚在握，長波有應",
+        "en": "Gifted with jade — jade in hand, the long wave answers."
       }
     },
     {
