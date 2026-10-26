@@ -486,6 +486,13 @@ class _TileState extends State<_Tile> {
   int _annUpSteps = 0;
   (int, int) _annQuad = (0, 0);
 
+  /// 本格由**更细一级的子瓦片拼出来**时，这些子瓦片的字节与行列。
+  ///
+  /// 缩放**缩小**时用：新一层（更粗）的瓦片此前没下过，而刚看的那层（更细）
+  /// 就在内存里 —— 拿子瓦片拼一次，手里有图、不必等网络。
+  List<({Uint8List bytes, int col, int row})>? _parts;
+  int _partsSteps = 0;
+
   /// 本次是否已尝试落盘：同一张瓦片被多次重建时不重复写
   bool _triedWrite = false;
 
@@ -495,11 +502,11 @@ class _TileState extends State<_Tile> {
   @override
   void initState() {
     super.initState();
-    // 拖动期间新滚进来的瓦片先不加载（等手势停下，见 _TileMapViewState）。
-    if (!widget.deferLoad) {
-      _load();
-      _resolveAnnotation();
-    }
+    // 拖动期间新滚进来的瓦片先不**下载**（等手势停下，见 _TileMapViewState）。
+    // 但内存里的图（本格 / 祖先 / 子瓦片）照常同步取：捏合缩放时新一层的
+    // 每一格都欠着加载，统统留白就是「缩放白屏」。
+    _load(allowAsync: !widget.deferLoad);
+    if (!widget.deferLoad) _resolveAnnotation();
   }
 
   /// 取图入口：先看**内存缓存**（同步，缩放跨层级时就是靠它不闪），
@@ -507,13 +514,14 @@ class _TileState extends State<_Tile> {
   ///
   /// 内存命中时直接写字段而不走 setState：这个方法在 initState 与
   /// didUpdateWidget 里调用，此刻本来就在重建，再 setState 只会多排一帧。
-  void _load() {
+  void _load({bool allowAsync = true}) {
     final src = _src;
     final hit = TileMem.get(src, widget.z, widget.tx, widget.ty);
     if (hit != null) {
       _bytes = hit;
       _upSteps = 0;
       _quad = (0, 0);
+      _parts = null;
       return;
     }
     if (widget.hd) {
@@ -522,10 +530,78 @@ class _TileState extends State<_Tile> {
         _bytes = lo;
         _upSteps = 0;
         _quad = (0, 0);
+        _parts = null;
         return;
       }
     }
-    _resolve();
+    // 内存里有更细一级的子瓦片（缩小）：先拼一张顶着，网络回来再换成原图。
+    final kids = _memChildren(2);
+    if (kids != null) {
+      _bytes = null;
+      _upSteps = 0;
+      _parts = kids.parts;
+      _partsSteps = kids.steps;
+      if (allowAsync) _resolve();
+      return;
+    }
+    // 内存里有祖先（放大）：放大顶上。
+    final up = _memAncestor();
+    if (up != null) {
+      _bytes = up.bytes;
+      _upSteps = up.upSteps;
+      _quad = up.quad;
+      _parts = null;
+      if (allowAsync) _resolve();
+      return;
+    }
+    if (allowAsync) _resolve();
+  }
+
+  /// 内存里同步找祖先瓦片（最多上 4 级）。只查内存、不碰磁盘 ——
+  /// 这个方法在 initState 与缩放动画的每一帧里被调用，必须便宜。
+  ({Uint8List bytes, int upSteps, (int, int) quad})? _memAncestor() {
+    final me = TileId(widget.z, widget.tx, widget.ty);
+    var cur = me.parent;
+    for (var steps = 1; steps <= 4 && cur != null; steps++) {
+      final hi = widget.hd
+          ? TileMem.get(hdSourceName(widget.mapType), cur.z, cur.x, cur.y)
+          : null;
+      if (hi != null) return (bytes: hi, upSteps: steps, quad: me.quadIn(cur));
+      final lo = TileMem.get(widget.mapType.name, cur.z, cur.x, cur.y);
+      if (lo != null) return (bytes: lo, upSteps: steps, quad: me.quadIn(cur));
+      cur = cur.parent;
+    }
+    return null;
+  }
+
+  /// 内存里同步找**下 n 级**的子瓦片：只有整块拼齐（4 格 / 16 格全在）才算数，
+  /// 缺一格就会缺一块地图 —— 那不是顶用，是画错。
+  ({List<({Uint8List bytes, int col, int row})> parts, int steps})?
+      _memChildren(int maxSteps) {
+    for (var steps = 1; steps <= maxSteps; steps++) {
+      final f = 1 << steps;
+      final cz = widget.z + steps;
+      if (cz > 19) return null;
+      final out = <({Uint8List bytes, int col, int row})>[];
+      var complete = true;
+      for (var row = 0; row < f && complete; row++) {
+        for (var col = 0; col < f && complete; col++) {
+          final x = (widget.tx << steps) + col;
+          final y = (widget.ty << steps) + row;
+          final b = (widget.hd
+                  ? TileMem.get(hdSourceName(widget.mapType), cz, x, y)
+                  : null) ??
+              TileMem.get(widget.mapType.name, cz, x, y);
+          if (b == null) {
+            complete = false;
+            break;
+          }
+          out.add((bytes: b, col: col, row: row));
+        }
+      }
+      if (complete && out.isNotEmpty) return (parts: out, steps: steps);
+    }
+    return null;
   }
 
   @override
@@ -541,12 +617,11 @@ class _TileState extends State<_Tile> {
       _bytes = null;
       _annBytes = null;
       _upSteps = 0;
+      _parts = null;
       _triedWrite = false;
       _triedAnnWrite = false;
-      if (!widget.deferLoad) {
-        _load();
-        _resolveAnnotation();
-      }
+      _load(allowAsync: !widget.deferLoad);
+      if (!widget.deferLoad) _resolveAnnotation();
     }
     // 手势结束（deferLoad: true → false）：把拖动期间欠下的加载补上。
     if (old.deferLoad && !widget.deferLoad) {
@@ -590,6 +665,7 @@ class _TileState extends State<_Tile> {
       _bytes = b;
       _upSteps = b == null ? 0 : upSteps;
       _quad = quad;
+      _parts = null;
     });
   }
 
@@ -606,20 +682,7 @@ class _TileState extends State<_Tile> {
   /// 按**当前**缩放比现算尺寸的图像（底图与注记通用）。
   Widget _tileImageBytes(Uint8List bytes, int upSteps, (int, int) quad) {
     final px = _px;
-    final provider =
-        ResizeImage(MemoryImage(bytes), width: 256, allowUpscaling: true);
-    if (upSteps == 0) {
-      return Image(
-        image: provider,
-        width: px,
-        height: px,
-        fit: BoxFit.fill,
-        gaplessPlayback: true,
-        // high（双三次）：瓦片在非整数 zoom / 高 dpr 下几乎总要被放大一点，
-        // medium（双线性）是放大时最糊的一档。贵不了多少，观感差别明显。
-        filterQuality: FilterQuality.high,
-      );
-    }
+    if (upSteps == 0) return _imgBytes(bytes, px);
     // 祖先图有 f×f 个本瓦片那么大，只露出本瓦片所在的那一格
     final f = 1 << upSteps;
     return ClipRect(
@@ -629,20 +692,25 @@ class _TileState extends State<_Tile> {
         alignment: Alignment.topLeft,
         child: Transform.translate(
           offset: Offset(-quad.$1 * px, -quad.$2 * px),
-          child: Image(
-            image: provider,
-            width: px * f,
-            height: px * f,
-            fit: BoxFit.fill,
-            gaplessPlayback: true,
-            filterQuality: FilterQuality.high,
-          ),
+          child: _imgBytes(bytes, px * f),
         ),
       ),
     );
   }
 
   Widget _tileImage() => _tileImageBytes(_bytes!, _upSteps, _quad);
+
+  /// 单张瓦片（或它的祖先放大版 / 子瓦片）按给定边长画一格
+  Widget _imgBytes(Uint8List bytes, double size) => Image(
+        image: ResizeImage(MemoryImage(bytes), width: 256, allowUpscaling: true),
+        width: size,
+        height: size,
+        fit: BoxFit.fill,
+        gaplessPlayback: true,
+        // high（双三次）：瓦片在非整数 zoom / 高 dpr 下几乎总要被放大一点，
+        // medium（双线性）是放大时最糊的一档。贵不了多少，观感差别明显。
+        filterQuality: FilterQuality.high,
+      );
 
   Future<void> _resolve() async {
     final src = _src;
@@ -724,8 +792,9 @@ class _TileState extends State<_Tile> {
       }
     }
 
-    // 5) 放弃：透出自绘底图
-    _setBytes(null);
+    // 5) 放弃：透出自绘底图。但**已经在画的**（祖先放大 / 子瓦片拼的）留着 ——
+    //    拆掉只会把好端端的一屏图变白，而它本来就是这张瓦片缺失时的兑底。
+    if (_bytes == null && _parts == null) _setBytes(null);
   }
 
   /// 取最近的（最多向上 4 级）祖先瓦片，按象限裁切放大顶替本瓦片。
@@ -839,19 +908,38 @@ class _TileState extends State<_Tile> {
   @override
   Widget build(BuildContext context) {
     // 尺寸始终占住（避免 Stack 布局抖动）；几何按当前缩放比现算
+    final parts = _parts;
     final hasBase = _bytes != null;
     final hasAnn = _annBytes != null;
-    if (!hasBase && !hasAnn) {
+    if (!hasBase && !hasAnn && parts == null) {
       return SizedBox(width: _px, height: _px);
     }
     // 底图与注记各自盖住同一格；注记在上（透明底文字层盖住底图）
     Widget stack = Stack(
       fit: StackFit.passthrough,
       children: [
-        if (hasBase) _tileImage(),
+        if (parts != null) ..._composedParts(parts),
+        if (parts == null && hasBase) _tileImage(),
         if (hasAnn) _tileImageBytes(_annBytes!, _annUpSteps, _annQuad),
       ],
     );
     return SizedBox(width: _px, height: _px, child: stack);
+  }
+
+  /// 子瓦片拼成的一格：n×n 张图按象限摆进本格
+  List<Widget> _composedParts(
+      List<({Uint8List bytes, int col, int row})> parts) {
+    final f = 1 << _partsSteps;
+    final cell = _px / f;
+    return [
+      for (final p in parts)
+        Positioned(
+          left: p.col * cell,
+          top: p.row * cell,
+          width: cell,
+          height: cell,
+          child: _imgBytes(p.bytes, cell),
+        ),
+    ];
   }
 }

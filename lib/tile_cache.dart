@@ -54,8 +54,11 @@ bool looksLikeImage(Uint8List b) => impl.looksLikeImage(b);
 class TileMem {
   TileMem._();
 
-  /// 封顶条数：256² 的 PNG 一般 10–40 KB，160 张大约 2–6 MB
-  static const int maxEntries = 160;
+  /// 封顶条数：256² 的 PNG 一般 10–40 KB，320 张大约 4–12 MB。
+  ///
+  /// 为什么不是 160：手机一块屏在 dpr 2~3 下就有 60~80 张瓦片，两层就把
+  /// 160 条顶满 —— 子瓦片/父瓦片被挤掉，缩小或放大就只剩白屏。
+  static const int maxEntries = 320;
 
   static final Map<String, Uint8List> _m = <String, Uint8List>{};
 
