@@ -1,9 +1,9 @@
 {
   "version": 1,
-  "updated": "2026-10-13 16:06",
-  "updatedIso": "2026-10-13T16:06:00+08:00",
-  "packets": 509260,
-  "packetsPerMinute": 22,
+  "updated": "2026-10-26 19:28",
+  "updatedIso": "2026-10-26T19:28:00+08:00",
+  "packets": 1014641,
+  "packetsPerMinute": 27,
   "source": "APRS-IS 累计上报报文（含射频链路转发）",
   "note": "首页 Hero 遥测读数。改这里就要同步改 index.html / zh-TW / en 三语首页的静态回退值与 check_site.py 断言，否则 tool/check_site.py 会报不一致。"
 }
