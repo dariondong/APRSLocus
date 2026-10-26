@@ -407,6 +407,7 @@ class _OfflineMapPageState extends State<OfflineMapPage> {
             onPressed: () async {
               Navigator.pop(ctx);
               await TileCache.clear();
+              TileMem.clear();
               for (final r in store.regions) {
                 r.done = 0;
                 r.bytes = 0;

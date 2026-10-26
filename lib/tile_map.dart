@@ -497,9 +497,35 @@ class _TileState extends State<_Tile> {
     super.initState();
     // 拖动期间新滚进来的瓦片先不加载（等手势停下，见 _TileMapViewState）。
     if (!widget.deferLoad) {
-      _resolve();
+      _load();
       _resolveAnnotation();
     }
+  }
+
+  /// 取图入口：先看**内存缓存**（同步，缩放跨层级时就是靠它不闪），
+  /// 没有才走磁盘 / 网络 / 祖先放大那条异步链路。
+  ///
+  /// 内存命中时直接写字段而不走 setState：这个方法在 initState 与
+  /// didUpdateWidget 里调用，此刻本来就在重建，再 setState 只会多排一帧。
+  void _load() {
+    final src = _src;
+    final hit = TileMem.get(src, widget.z, widget.tx, widget.ty);
+    if (hit != null) {
+      _bytes = hit;
+      _upSteps = 0;
+      _quad = (0, 0);
+      return;
+    }
+    if (widget.hd) {
+      final lo = TileMem.get(widget.mapType.name, widget.z, widget.tx, widget.ty);
+      if (lo != null) {
+        _bytes = lo;
+        _upSteps = 0;
+        _quad = (0, 0);
+        return;
+      }
+    }
+    _resolve();
   }
 
   @override
@@ -518,13 +544,13 @@ class _TileState extends State<_Tile> {
       _triedWrite = false;
       _triedAnnWrite = false;
       if (!widget.deferLoad) {
-        _resolve();
+        _load();
         _resolveAnnotation();
       }
     }
     // 手势结束（deferLoad: true → false）：把拖动期间欠下的加载补上。
     if (old.deferLoad && !widget.deferLoad) {
-      _resolve();
+      _load();
       _resolveAnnotation();
     }
     // 只有 scale 变化（捏合/滚轮缩放）时**不重新解析**：图还是同一张，
@@ -624,11 +650,18 @@ class _TileState extends State<_Tile> {
     // 1) 本图源缓存（高清模式先找 512，再退到 1×）
     if (TileCache.available) {
       final hit = await TileCache.get(src, widget.z, widget.tx, widget.ty);
-      if (hit != null) return _setBytes(hit);
+      if (hit != null) {
+        TileMem.put(src, widget.z, widget.tx, widget.ty, hit);
+        return _setBytes(hit);
+      }
       if (widget.hd) {
         final lo = await TileCache.get(
             widget.mapType.name, widget.z, widget.tx, widget.ty);
-        if (lo != null) return _setBytes(lo);
+        if (lo != null) {
+          TileMem.put(
+              widget.mapType.name, widget.z, widget.tx, widget.ty, lo);
+          return _setBytes(lo);
+        }
       }
     }
 
@@ -646,6 +679,10 @@ class _TileState extends State<_Tile> {
             timeout: const Duration(seconds: 15),
           );
           if (!looksLikeImage(bytes)) continue;
+          // 内存里留一份：来回跨层级缩放时下一档能同步出图
+          TileMem.put(
+              isHd ? hdSourceName(t) : t.name, widget.z, widget.tx, widget.ty,
+              bytes);
           if (widget.cacheEnabled && !_triedWrite) {
             _triedWrite = true;
             // 落盘不阻塞显示：写盘失败（无权限/满盘）不该让瓦片显示不出来
@@ -680,7 +717,10 @@ class _TileState extends State<_Tile> {
       for (final t in MapType.values) {
         if (t == widget.mapType || !_sameDatum(t)) continue;
         final hit = await TileCache.get(t.name, widget.z, widget.tx, widget.ty);
-        if (hit != null) return _setBytes(hit);
+        if (hit != null) {
+          TileMem.put(t.name, widget.z, widget.tx, widget.ty, hit);
+          return _setBytes(hit);
+        }
       }
     }
 
@@ -697,20 +737,26 @@ class _TileState extends State<_Tile> {
   /// 尺寸必须留到 build 时按当前缩放比现算，理由见 [didUpdateWidget]。
   Future<({Uint8List bytes, int upSteps, (int, int) quad})?>
       _upscaleFromAncestor() async {
-    if (!TileCache.available) return null;
     final me = TileId(widget.z, widget.tx, widget.ty);
     var cur = me.parent;
     for (var steps = 1; steps <= 4 && cur != null; steps++) {
       // 高清模式：先找高清祖先，再退到 1× 祖先（离线包只有 1×）
       if (widget.hd) {
-        final hi = await TileCache.get(
-            hdSourceName(widget.mapType), cur.z, cur.x, cur.y);
+        // 内存优先：刚放大一级时父级瓦片就在内存里，同步取到就不会闪
+        final hi = TileMem.get(
+                hdSourceName(widget.mapType), cur.z, cur.x, cur.y) ??
+            (TileCache.available
+                ? await TileCache.get(
+                    hdSourceName(widget.mapType), cur.z, cur.x, cur.y)
+                : null);
         if (hi != null) {
           return (bytes: hi, upSteps: steps, quad: me.quadIn(cur));
         }
       }
-      final hit =
-          await TileCache.get(widget.mapType.name, cur.z, cur.x, cur.y);
+      final hit = TileMem.get(widget.mapType.name, cur.z, cur.x, cur.y) ??
+          (TileCache.available
+              ? await TileCache.get(widget.mapType.name, cur.z, cur.x, cur.y)
+              : null);
       if (hit != null) {
         return (bytes: hit, upSteps: steps, quad: me.quadIn(cur));
       }

@@ -4779,6 +4779,7 @@ class AppState extends ChangeNotifier {
     } catch (_) {}
     try {
       await TileCache.clear();
+      TileMem.clear(); // 内存里那份也一起丢掉，否则清完缓存地图还画得出来
     } catch (_) {}
 
     // 收尾：清掉「不重连」闸门、进入向导、换 key 重建导航栈
