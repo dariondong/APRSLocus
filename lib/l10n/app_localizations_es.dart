@@ -10254,4 +10254,34 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get msgRecvSsid => "Recibir también mensajes de mis otros SSID";
 
+  @override
+  String get subsRoleTitle => "Qué hace";
+
+  @override
+  String get subsRoleSource => "Enviado por sí mismo";
+
+  @override
+  String get subsRolePath => "Retransmitido por él";
+
+  @override
+  String get subsPacketTitle => "Paquetes";
+
+  @override
+  String get subsPacketAll => "Todo";
+
+  @override
+  String get subsPacketBeacon => "Balizas";
+
+  @override
+  String get subsPacketMessage => "Mensajes";
+
+  @override
+  String get subsHitSource => "enviado";
+
+  @override
+  String get subsHitPath => "retransmitido";
+
+  @override
+  String get myOtherSsidNone => "Aún no se ha oído otro SSID de tu indicativo";
+
 }

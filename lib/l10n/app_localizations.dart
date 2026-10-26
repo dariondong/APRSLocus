@@ -17991,6 +17991,66 @@ abstract class AppLocalizations {
   /// **'其他 SSID 的消息也收'**
   String get msgRecvSsid;
 
+  /// No description provided for @subsRoleTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'看它做什么'**
+  String get subsRoleTitle;
+
+  /// No description provided for @subsRoleSource.
+  ///
+  /// In zh, this message translates to:
+  /// **'自己发出的'**
+  String get subsRoleSource;
+
+  /// No description provided for @subsRolePath.
+  ///
+  /// In zh, this message translates to:
+  /// **'经它中继的'**
+  String get subsRolePath;
+
+  /// No description provided for @subsPacketTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'报文'**
+  String get subsPacketTitle;
+
+  /// No description provided for @subsPacketAll.
+  ///
+  /// In zh, this message translates to:
+  /// **'全部'**
+  String get subsPacketAll;
+
+  /// No description provided for @subsPacketBeacon.
+  ///
+  /// In zh, this message translates to:
+  /// **'信标'**
+  String get subsPacketBeacon;
+
+  /// No description provided for @subsPacketMessage.
+  ///
+  /// In zh, this message translates to:
+  /// **'消息'**
+  String get subsPacketMessage;
+
+  /// No description provided for @subsHitSource.
+  ///
+  /// In zh, this message translates to:
+  /// **'发出'**
+  String get subsHitSource;
+
+  /// No description provided for @subsHitPath.
+  ///
+  /// In zh, this message translates to:
+  /// **'中继'**
+  String get subsHitPath;
+
+  /// No description provided for @myOtherSsidNone.
+  ///
+  /// In zh, this message translates to:
+  /// **'还没收到同一呼号的其他 SSID'**
+  String get myOtherSsidNone;
+
 }
 
 class _AppLocalizationsDelegate

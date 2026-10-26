@@ -4408,5 +4408,15 @@
   "ssidCmdNoLink": "No link is up, so the command cannot go out",
   "@ssidCmdSent": {"placeholders": {"call": {"type": "String"}, "cmd": {"type": "String"}}},
   "msgRecvTitle": "Message reception",
-  "msgRecvSsid": "Also receive messages for my other SSIDs"
+  "msgRecvSsid": "Also receive messages for my other SSIDs",
+  "subsRoleTitle": "What it does",
+  "subsRoleSource": "Sent by itself",
+  "subsRolePath": "Relayed through it",
+  "subsPacketTitle": "Packets",
+  "subsPacketAll": "All",
+  "subsPacketBeacon": "Beacons",
+  "subsPacketMessage": "Messages",
+  "subsHitSource": "sent",
+  "subsHitPath": "relayed",
+  "myOtherSsidNone": "No other SSID under your callsign heard yet"
 }

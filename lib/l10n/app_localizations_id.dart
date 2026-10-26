@@ -10205,4 +10205,34 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get msgRecvSsid => "Terima juga pesan untuk SSID saya yang lain";
 
+  @override
+  String get subsRoleTitle => "Apa yang dilakukannya";
+
+  @override
+  String get subsRoleSource => "Dikirim sendiri";
+
+  @override
+  String get subsRolePath => "Diteruskan lewat itu";
+
+  @override
+  String get subsPacketTitle => "Paket";
+
+  @override
+  String get subsPacketAll => "Semua";
+
+  @override
+  String get subsPacketBeacon => "Beacon";
+
+  @override
+  String get subsPacketMessage => "Pesan";
+
+  @override
+  String get subsHitSource => "kirim";
+
+  @override
+  String get subsHitPath => "diteruskan";
+
+  @override
+  String get myOtherSsidNone => "Belum ada SSID lain dengan panggilan yang sama";
+
 }

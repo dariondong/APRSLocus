@@ -4408,5 +4408,15 @@
   "ssidCmdNoLink": "Tautan belum tersambung, perintah tidak terkirim",
   "@ssidCmdSent": {"placeholders": {"call": {"type": "String"}, "cmd": {"type": "String"}}},
   "msgRecvTitle": "Penerimaan pesan",
-  "msgRecvSsid": "Terima juga pesan untuk SSID saya yang lain"
+  "msgRecvSsid": "Terima juga pesan untuk SSID saya yang lain",
+  "subsRoleTitle": "Apa yang dilakukannya",
+  "subsRoleSource": "Dikirim sendiri",
+  "subsRolePath": "Diteruskan lewat itu",
+  "subsPacketTitle": "Paket",
+  "subsPacketAll": "Semua",
+  "subsPacketBeacon": "Beacon",
+  "subsPacketMessage": "Pesan",
+  "subsHitSource": "kirim",
+  "subsHitPath": "diteruskan",
+  "myOtherSsidNone": "Belum ada SSID lain dengan panggilan yang sama"
 }

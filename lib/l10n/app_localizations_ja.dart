@@ -9916,4 +9916,34 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String get msgRecvSsid => "他の SSID 宛てのメッセージも受信";
 
+  @override
+  String get subsRoleTitle => "何をするか";
+
+  @override
+  String get subsRoleSource => "自分が発信したもの";
+
+  @override
+  String get subsRolePath => "中継したもの";
+
+  @override
+  String get subsPacketTitle => "パケット";
+
+  @override
+  String get subsPacketAll => "すべて";
+
+  @override
+  String get subsPacketBeacon => "ビーコン";
+
+  @override
+  String get subsPacketMessage => "メッセージ";
+
+  @override
+  String get subsHitSource => "発信";
+
+  @override
+  String get subsHitPath => "中継";
+
+  @override
+  String get myOtherSsidNone => "同じコールサインの他の SSID はまだ受信していません";
+
 }

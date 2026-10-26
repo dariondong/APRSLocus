@@ -9816,6 +9816,36 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String get msgRecvSsid => "其他 SSID 的消息也收";
 
+  @override
+  String get subsRoleTitle => "看它做什么";
+
+  @override
+  String get subsRoleSource => "自己发出的";
+
+  @override
+  String get subsRolePath => "经它中继的";
+
+  @override
+  String get subsPacketTitle => "报文";
+
+  @override
+  String get subsPacketAll => "全部";
+
+  @override
+  String get subsPacketBeacon => "信标";
+
+  @override
+  String get subsPacketMessage => "消息";
+
+  @override
+  String get subsHitSource => "发出";
+
+  @override
+  String get subsHitPath => "中继";
+
+  @override
+  String get myOtherSsidNone => "还没收到同一呼号的其他 SSID";
+
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
@@ -19628,5 +19658,35 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get msgRecvSsid => "其他 SSID 的訊息也收";
+
+  @override
+  String get subsRoleTitle => "看它做什麼";
+
+  @override
+  String get subsRoleSource => "自己發出的";
+
+  @override
+  String get subsRolePath => "經它中繼的";
+
+  @override
+  String get subsPacketTitle => "報文";
+
+  @override
+  String get subsPacketAll => "全部";
+
+  @override
+  String get subsPacketBeacon => "信標";
+
+  @override
+  String get subsPacketMessage => "訊息";
+
+  @override
+  String get subsHitSource => "發出";
+
+  @override
+  String get subsHitPath => "中繼";
+
+  @override
+  String get myOtherSsidNone => "還沒收到同一呼號的其他 SSID";
 
 }

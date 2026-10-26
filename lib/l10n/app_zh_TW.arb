@@ -4996,5 +4996,15 @@
   "ssidCmdNoLink": "鏈路沒連上，指令發不出去",
   "@ssidCmdSent": {"placeholders": {"call": {"type": "String"}, "cmd": {"type": "String"}}},
   "msgRecvTitle": "訊息接收",
-  "msgRecvSsid": "其他 SSID 的訊息也收"
+  "msgRecvSsid": "其他 SSID 的訊息也收",
+  "subsRoleTitle": "看它做什麼",
+  "subsRoleSource": "自己發出的",
+  "subsRolePath": "經它中繼的",
+  "subsPacketTitle": "報文",
+  "subsPacketAll": "全部",
+  "subsPacketBeacon": "信標",
+  "subsPacketMessage": "訊息",
+  "subsHitSource": "發出",
+  "subsHitPath": "中繼",
+  "myOtherSsidNone": "還沒收到同一呼號的其他 SSID"
 }

@@ -4408,5 +4408,15 @@
   "ssidCmdNoLink": "No hay enlace activo, así que el comando no sale",
   "@ssidCmdSent": {"placeholders": {"call": {"type": "String"}, "cmd": {"type": "String"}}},
   "msgRecvTitle": "Recepción de mensajes",
-  "msgRecvSsid": "Recibir también mensajes de mis otros SSID"
+  "msgRecvSsid": "Recibir también mensajes de mis otros SSID",
+  "subsRoleTitle": "Qué hace",
+  "subsRoleSource": "Enviado por sí mismo",
+  "subsRolePath": "Retransmitido por él",
+  "subsPacketTitle": "Paquetes",
+  "subsPacketAll": "Todo",
+  "subsPacketBeacon": "Balizas",
+  "subsPacketMessage": "Mensajes",
+  "subsHitSource": "enviado",
+  "subsHitPath": "retransmitido",
+  "myOtherSsidNone": "Aún no se ha oído otro SSID de tu indicativo"
 }

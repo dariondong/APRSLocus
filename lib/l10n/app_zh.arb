@@ -5087,5 +5087,15 @@
   "ssidCmdNoLink": "链路没连上，指令发不出去",
   "@ssidCmdSent": {"placeholders": {"call": {"type": "String"}, "cmd": {"type": "String"}}},
   "msgRecvTitle": "消息接收",
-  "msgRecvSsid": "其他 SSID 的消息也收"
+  "msgRecvSsid": "其他 SSID 的消息也收",
+  "subsRoleTitle": "看它做什么",
+  "subsRoleSource": "自己发出的",
+  "subsRolePath": "经它中继的",
+  "subsPacketTitle": "报文",
+  "subsPacketAll": "全部",
+  "subsPacketBeacon": "信标",
+  "subsPacketMessage": "消息",
+  "subsHitSource": "发出",
+  "subsHitPath": "中继",
+  "myOtherSsidNone": "还没收到同一呼号的其他 SSID"
 }

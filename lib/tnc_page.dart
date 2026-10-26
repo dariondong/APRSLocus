@@ -327,6 +327,14 @@ class DataSourceCard extends StatelessWidget {
         if (state.myOtherSsidStations.isNotEmpty) ...[
           _ownLabel(context, s.myOtherSsidLabel),
           for (final o in state.myOtherSsidStations) _ssidRow(context, o),
+        ] else ...[
+          // 一台也没有时也把这一块露出来：用户找「其他 SSID」到底在哪儿
+          // （隐藏的区等于不存在），并说清它是什么时候才会出现。
+          _ownLabel(context, s.myOtherSsidLabel),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(23, 2, 14, 8),
+            child: Text(s.myOtherSsidNone, style: ts(11, c: C.grey, h: 1.4)),
+          ),
         ],
         // 多选时才需要解释「发射走哪条」，单选时这句话是噪音
         // 位置来源的**优先级**（与上报页同一句文案、同一个 getter）：两处都写清楚，

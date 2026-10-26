@@ -421,6 +421,8 @@ class _MessagesPageState extends State<MessagesPage> {
                                     overflow: TextOverflow.ellipsis),
                               ),
                               const SizedBox(width: 10),
+                              _recvButton(context, st),
+                              const SizedBox(width: 8),
                               _sendBeaconButton(context, st,
                                   compact: _compactPane),
                             ],
@@ -1363,6 +1365,81 @@ class _MessagesPageState extends State<MessagesPage> {
           ),
           child: Icon(icon, size: 15, color: fg),
         ),
+      ),
+    );
+  }
+
+  /// 「消息接收」入口：收件人口径（要不要连其它 SSID 的消息一起收）。
+  ///
+  /// 用户反馈：设置里那张「消息接收」卡在「服务器」页底部，根本找不到。
+  /// 收什么消息是消息页的事，所以入口就放在消息页标题栏。
+  Widget _recvButton(BuildContext context, AppState st) {
+    return Tooltip(
+      message: S.of(context).msgRecvTitle,
+      child: GestureDetector(
+        onTap: () => _showRecvSheet(st),
+        child: Container(
+          height: 34,
+          width: 40,
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            color: C.purpleBg,
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Icon(Icons.tune_rounded, size: 17, color: C.purple),
+        ),
+      ),
+    );
+  }
+
+  void _showRecvSheet(AppState st) {
+    showModalBottomSheet<void>(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) => StatefulBuilder(
+        builder: (ctx, setSheet) {
+          final s = S.of(ctx);
+          return MaterialSurface(
+            radius: 18,
+            topOnly: true,
+            child: Container(
+              decoration: BoxDecoration(
+                color: C.sheetFill,
+                borderRadius:
+                    const BorderRadius.vertical(top: Radius.circular(18)),
+              ),
+              padding: const EdgeInsets.fromLTRB(18, 16, 14, 12),
+              child: SafeArea(
+                top: false,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(s.msgRecvTitle, style: ts(15, w: FontWeight.w800)),
+                    const SizedBox(height: 10),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(s.msgRecvSsid,
+                              style: ts(13, w: FontWeight.w600)),
+                        ),
+                        const SizedBox(width: 8),
+                        Switch(
+                          value: st.acceptOtherSsidMsgs,
+                          onChanged: (v) {
+                            st.setAcceptOtherSsidMsgs(v);
+                            setSheet(() {});
+                          },
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 4),
+                  ],
+                ),
+              ),
+            ),
+          );
+        },
       ),
     );
   }

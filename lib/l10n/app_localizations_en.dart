@@ -10195,4 +10195,34 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get msgRecvSsid => "Also receive messages for my other SSIDs";
 
+  @override
+  String get subsRoleTitle => "What it does";
+
+  @override
+  String get subsRoleSource => "Sent by itself";
+
+  @override
+  String get subsRolePath => "Relayed through it";
+
+  @override
+  String get subsPacketTitle => "Packets";
+
+  @override
+  String get subsPacketAll => "All";
+
+  @override
+  String get subsPacketBeacon => "Beacons";
+
+  @override
+  String get subsPacketMessage => "Messages";
+
+  @override
+  String get subsHitSource => "sent";
+
+  @override
+  String get subsHitPath => "relayed";
+
+  @override
+  String get myOtherSsidNone => "No other SSID under your callsign heard yet";
+
 }
