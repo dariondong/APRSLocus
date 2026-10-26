@@ -4983,5 +4983,8 @@
   "subsCopied": "已複製報文",
   "@subsHitsCount": {"placeholders": {"n": {"type": "String"}}},
   "@subsAdded": {"placeholders": {"v": {"type": "String"}}},
-  "@subsExists": {"placeholders": {"v": {"type": "String"}}}
+  "@subsExists": {"placeholders": {"v": {"type": "String"}}},
+  "msgSendId": "傳送 ID",
+  "msgOtherSsid": "該訊息由其他 SSID 接收，可以選用 {to} 或本機 ID 傳送。",
+  "@msgOtherSsid": {"placeholders": {"to": {"type": "String"}}}
 }

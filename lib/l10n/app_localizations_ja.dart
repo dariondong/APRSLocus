@@ -9883,4 +9883,10 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String get subsCopied => "パケットをコピーしました";
 
+  @override
+  String get msgSendId => "送信 ID";
+
+  @override
+  String msgOtherSsid(String to) => "このメッセージは別の SSID 宛てに届きました。$to でも本機 ID でも送信できます。";
+
 }

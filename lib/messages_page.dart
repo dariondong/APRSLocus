@@ -1035,6 +1035,7 @@ class _MessagesPageState extends State<MessagesPage> {
       // 译发预览在输入栏正上方：用户能同时看到「要发的译文」与输入框里的原文
       _outPreviewBar(st),
       counter,
+      _sendAsBar(st),
       tncBanner,
       Container(
       decoration: BoxDecoration(
@@ -1103,6 +1104,71 @@ class _MessagesPageState extends State<MessagesPage> {
       ),
       ),
       ],
+    );
+  }
+
+  /// 这个会话里「发给我的其他 SSID」的那些收件人（去重，含本机 ID）
+  List<String> _sendAsOptions(AppState st) {
+    final me = st.myFullCall.toUpperCase();
+    final base = me.split('-').first;
+    final names = <String>[me];
+    for (final m in st.messages) {
+      if (m.sent || m.groupId != null) continue;
+      if (_selected.isEmpty || m.from.toUpperCase() != _selected.toUpperCase()) {
+        continue;
+      }
+      final to = m.to.toUpperCase();
+      if (to == me) continue;
+      if (to.split('-').first != base) continue;
+      if (!names.contains(to)) names.add(to);
+    }
+    return names;
+  }
+
+  /// 「发送 ID」选择条：只有这个会话里真的收到过发给我另一个 SSID 的消息时才出现。
+  ///
+  /// 不放进输入框提示里：那不是一句提示能承载的选择，而且它改动的是
+  /// **下一条报文从哪个呼号发出**，必须一直看得见。
+  Widget _sendAsBar(AppState st) {
+    if (_selectedGroupId != null || _selected.isEmpty) {
+      return const SizedBox.shrink();
+    }
+    final opts = _sendAsOptions(st);
+    if (opts.length < 2) return const SizedBox.shrink();
+    final cur = st.msgSendCall;
+    return Container(
+      padding: const EdgeInsets.fromLTRB(14, 6, 14, 6),
+      decoration: BoxDecoration(
+        border: Border(top: BorderSide(color: C.border, width: 0.6)),
+      ),
+      child: Row(children: [
+        Text(S.of(context).msgSendId, style: ts(10, c: C.grey, w: FontWeight.w600)),
+        const SizedBox(width: 8),
+        for (final c in opts) ...[
+          GestureDetector(
+            onTap: () => st.setMsgSendAs(c.toUpperCase() == st.myFullCall.toUpperCase() ? null : c),
+            child: Container(
+              margin: const EdgeInsets.only(right: 6),
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+              decoration: BoxDecoration(
+                color: c.toUpperCase() == cur.toUpperCase() ? C.blue : C.bgSoft,
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(
+                  color: c.toUpperCase() == cur.toUpperCase() ? C.blue : C.border,
+                ),
+              ),
+              child: Text(
+                c,
+                style: ts(10,
+                    c: c.toUpperCase() == cur.toUpperCase()
+                        ? Colors.white
+                        : C.slate,
+                    w: FontWeight.w700),
+              ),
+            ),
+          ),
+        ],
+      ]),
     );
   }
 
@@ -1723,6 +1789,9 @@ class _MessagesPageState extends State<MessagesPage> {
           return;
         }
         widget.state.markConversationRead(p);
+        // 换会话就回到本机 ID：上一个会话里选的「用另一个 SSID 发」
+        // 如果带过来，下一条消息会从一个对方根本不认识的 ID 发出去。
+        widget.state.setMsgSendAs(null);
         setState(() {
           _selected = p;
           _selectedGroupId = null;
@@ -2620,6 +2689,30 @@ class _MessagesPageState extends State<MessagesPage> {
                   ],
                 ],
               ),
+              // 这条是发给我的另一个 SSID 的：说清楚它不是发给本机 ID 的，
+              // 并给出「用哪个 ID 回」的选择（选择条在输入栏上方）
+              if (!mine &&
+                  m.groupId == null &&
+                  m.to.isNotEmpty &&
+                  m.to.toUpperCase() !=
+                      widget.state.myFullCall.toUpperCase())
+                Padding(
+                  padding: const EdgeInsets.only(top: 4),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Icons.alternate_email_rounded,
+                          size: 10, color: C.orange),
+                      const SizedBox(width: 4),
+                      Flexible(
+                        child: Text(
+                          S.of(context).msgOtherSsid(m.to.toUpperCase()),
+                          style: ts(9, c: C.orange, h: 1.35),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
             ],
           ),
         ),

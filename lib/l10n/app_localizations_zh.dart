@@ -9783,6 +9783,12 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String get subsCopied => "已复制报文";
 
+  @override
+  String get msgSendId => "发送 ID";
+
+  @override
+  String msgOtherSsid(String to) => "该消息由其他 SSID 接收，可以选用 $to 或本机 ID 发送。";
+
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
@@ -19562,5 +19568,11 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get subsCopied => "已複製報文";
+
+  @override
+  String get msgSendId => "傳送 ID";
+
+  @override
+  String msgOtherSsid(String to) => "該訊息由其他 SSID 接收，可以選用 $to 或本機 ID 傳送。";
 
 }

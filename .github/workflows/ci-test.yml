@@ -415,6 +415,11 @@ jobs:
       - name: Test subscriptions
         run: flutter test test/subscriptions_test.dart
 
+      # 消息接收身份：发给我另一个 SSID 的消息必须收下（以前直接丢掉），
+      # 且发送身份默认仍是本机 ID。这条错了不会编译失败，只会「对方说发了，我没收到」。
+      - name: Test message SSID reception
+        run: flutter test test/msg_ssid_test.dart
+
       # 备份/恢复（含 v2.0.39 的历史轨迹拼入）：导出/导入错了不会编译失败、
       # analyze 也全绿，只会在用户换机那天才发现「少了东西」。轨迹载荷尤其
       # 不能落进偏好白名单，否则一份伪造 JSON 就能改任意偏好。

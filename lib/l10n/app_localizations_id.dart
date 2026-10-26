@@ -10172,4 +10172,10 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get subsCopied => "Paket disalin";
 
+  @override
+  String get msgSendId => "Kirim sebagai";
+
+  @override
+  String msgOtherSsid(String to) => "Pesan ini tiba untuk SSID lain. Kamu bisa membalas sebagai $to atau sebagai perangkat ini.";
+
 }

@@ -4395,5 +4395,8 @@
   "subsCopied": "Paquete copiado",
   "@subsHitsCount": {"placeholders": {"n": {"type": "String"}}},
   "@subsAdded": {"placeholders": {"v": {"type": "String"}}},
-  "@subsExists": {"placeholders": {"v": {"type": "String"}}}
+  "@subsExists": {"placeholders": {"v": {"type": "String"}}},
+  "msgSendId": "Enviar como",
+  "msgOtherSsid": "Este mensaje llegó para otro SSID. Puedes responder como {to} o como este equipo.",
+  "@msgOtherSsid": {"placeholders": {"to": {"type": "String"}}}
 }

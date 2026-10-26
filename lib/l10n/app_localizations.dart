@@ -17925,6 +17925,18 @@ abstract class AppLocalizations {
   /// **'已复制报文'**
   String get subsCopied;
 
+  /// No description provided for @msgSendId.
+  ///
+  /// In zh, this message translates to:
+  /// **'发送 ID'**
+  String get msgSendId;
+
+  /// No description provided for @msgOtherSsid.
+  ///
+  /// In zh, this message translates to:
+  /// **'该消息由其他 SSID 接收，可以选用 {to} 或本机 ID 发送。'**
+  String msgOtherSsid(String to);
+
 }
 
 class _AppLocalizationsDelegate

@@ -8694,7 +8694,16 @@ class AppState extends ChangeNotifier {
           break;
         }
       }
-      if (!isGroupMsg) return null; // 不是发给我的，也不是群呼号，忽略
+      if (!isGroupMsg) {
+        // 「同一呼号的其他 SSID」也能收（用户要求）：对方可能发给 BG7LZQ-9，
+        // 而这台设备是 BG7LZQ-7。直接丢掉的话，看起来就是「对方发了、我没收到」。
+        // 收下时 `to` 保留原收件人，气泡上据此提示「这不是发给本机 ID 的」。
+        if (addressee.isEmpty ||
+            _baseCall(addressee.toUpperCase()) !=
+                _baseCall(myFullCall.toUpperCase())) {
+          return null; // 既不是我的 SSID，也不是群呼号，忽略
+        }
+      }
     }
     // 提取消息编号与 ack 标记：`{NNNN` 或 `{NNNN_`
     String? ackId;
@@ -8770,7 +8779,7 @@ class AppState extends ChangeNotifier {
     // ─── 加入会话列表 ───
     final msg = AprsMsg(
       src,
-      isGroupMsg ? addressee : myFullCall,
+      isGroupMsg ? addressee : (addressee.isEmpty ? myFullCall : addressee),
       text,
       DateTime.now(),
       groupId: groupId,
@@ -10213,6 +10222,24 @@ class AppState extends ChangeNotifier {
   /// [sentAs] 是**实际发到空中的文本**（发送前翻译时传入译文）。
   /// 空中的报文用 `sentAs ?? text`，长度限制也按空中内容判定 ——
   /// 否则会出现「原文 60 字符通过、译文 80 字符被对端丢弃」这种静默失败。
+  /// 消息发送身份：默认本机 ID，可以临时选用自己另一个 SSID
+  ///
+  /// 只影响**消息**报文的源呼号。myCall、信标、连接身份都不动 ——
+  /// 那些是这台设备的固定身份，改了会把整个会话的对端搞乱。
+  String? msgSendAs;
+
+  void setMsgSendAs(String? call) {
+    final v = (call == null || call.trim().isEmpty)
+        ? null
+        : call.trim().toUpperCase();
+    if (v == msgSendAs) return;
+    msgSendAs = v;
+    _notify();
+  }
+
+  /// 实际用来发消息的呼号
+  String get msgSendCall => msgSendAs ?? myFullCall;
+
   void sendMessage(String to, String text, {String? sentAs}) {
     if (text.trim().isEmpty) return;
     // 防止误发给群呼号：重定向到对应群聊
@@ -10222,6 +10249,10 @@ class AppState extends ChangeNotifier {
         return;
       }
     }
+    // 发送身份：默认本机 ID，也可以选用自己另一个 SSID
+    //（收到“发给另一个 SSID”的消息时用）。只换这一帧消息的源呼号，
+    // 不动 myCall 与信标/连接身份。
+    final from = msgSendCall;
     final wire = (sentAs ?? text).trim();
     // TNC（射频）模式下的长度限制：APRS101 规定消息文本上限 67 字符。
     // 超长时报文会被对端 TNC/网关丢弃，与其静默失败不如在源头拦住。
@@ -10232,10 +10263,10 @@ class AppState extends ChangeNotifier {
       return;
     }
     final id = AprsFmt.randId();
-    final raw = AprsFmt.message(myFullCall, to, wire, id, path: txPath);
+    final raw = AprsFmt.message(from, to, wire, id, path: txPath);
     messages.insert(
       0,
-      AprsMsg(myFullCall, to, text.trim(), DateTime.now(),
+      AprsMsg(from, to, text.trim(), DateTime.now(),
           sent: true, id: id, sentAs: sentAs == null ? null : wire),
     );
     _saveMessages();
@@ -10249,7 +10280,7 @@ class AppState extends ChangeNotifier {
     _pushPacket(
       Packet(
         raw,
-        myFullCall,
+        from,
         'APRS',
         'message',
         DateTime.now(),

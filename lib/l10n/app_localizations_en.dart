@@ -10162,4 +10162,10 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get subsCopied => "Packet copied";
 
+  @override
+  String get msgSendId => "Send as";
+
+  @override
+  String msgOtherSsid(String to) => "This one arrived for another SSID. You can reply as $to or as this device.";
+
 }

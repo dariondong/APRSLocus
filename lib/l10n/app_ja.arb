@@ -4395,5 +4395,8 @@
   "subsCopied": "パケットをコピーしました",
   "@subsHitsCount": {"placeholders": {"n": {"type": "String"}}},
   "@subsAdded": {"placeholders": {"v": {"type": "String"}}},
-  "@subsExists": {"placeholders": {"v": {"type": "String"}}}
+  "@subsExists": {"placeholders": {"v": {"type": "String"}}},
+  "msgSendId": "送信 ID",
+  "msgOtherSsid": "このメッセージは別の SSID 宛てに届きました。{to} でも本機 ID でも送信できます。",
+  "@msgOtherSsid": {"placeholders": {"to": {"type": "String"}}}
 }

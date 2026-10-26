@@ -5074,5 +5074,8 @@
   "subsCopied": "已复制报文",
   "@subsHitsCount": {"placeholders": {"n": {"type": "String"}}},
   "@subsAdded": {"placeholders": {"v": {"type": "String"}}},
-  "@subsExists": {"placeholders": {"v": {"type": "String"}}}
+  "@subsExists": {"placeholders": {"v": {"type": "String"}}},
+  "msgSendId": "发送 ID",
+  "msgOtherSsid": "该消息由其他 SSID 接收，可以选用 {to} 或本机 ID 发送。",
+  "@msgOtherSsid": {"placeholders": {"to": {"type": "String"}}}
 }

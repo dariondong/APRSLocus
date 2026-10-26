@@ -4395,5 +4395,8 @@
   "subsCopied": "Packet copied",
   "@subsHitsCount": {"placeholders": {"n": {"type": "String"}}},
   "@subsAdded": {"placeholders": {"v": {"type": "String"}}},
-  "@subsExists": {"placeholders": {"v": {"type": "String"}}}
+  "@subsExists": {"placeholders": {"v": {"type": "String"}}},
+  "msgSendId": "Send as",
+  "msgOtherSsid": "This one arrived for another SSID. You can reply as {to} or as this device.",
+  "@msgOtherSsid": {"placeholders": {"to": {"type": "String"}}}
 }

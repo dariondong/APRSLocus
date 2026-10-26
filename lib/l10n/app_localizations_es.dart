@@ -10221,4 +10221,10 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get subsCopied => "Paquete copiado";
 
+  @override
+  String get msgSendId => "Enviar como";
+
+  @override
+  String msgOtherSsid(String to) => "Este mensaje llegó para otro SSID. Puedes responder como $to o como este equipo.";
+
 }
