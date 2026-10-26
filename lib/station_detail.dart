@@ -559,39 +559,8 @@ class _StationDetailState extends State<StationDetail> {
                           ),
                         ],
                         SizedBox(height: 16),
-                        // 指标
-                        Row(
-                          children: [
-                            Expanded(
-                              child: _metric(
-                                S.of(context).speedLabel,
-                                s.speedStr,
-                                Icons.speed_rounded,
-                                C.blue,
-                              ),
-                            ),
-                            SizedBox(width: 10),
-                            Expanded(
-                              child: _metric(
-                                S.of(context).altitude,
-                                s.altStr,
-                                Icons.height_rounded,
-                                C.purple,
-                              ),
-                            ),
-                            SizedBox(width: 10),
-                            Expanded(
-                              child: _metric(
-                                S.of(context).courseLabel,
-                                s.course != null
-                                    ? '${s.course!.toStringAsFixed(0)}°'
-                                    : '--',
-                                Icons.navigation_rounded,
-                                C.cyan,
-                              ),
-                            ),
-                          ],
-                        ),
+                        // 读数：速度 / 高度 / 航向 / 距离，一张卡 2×2 细线分格
+                        _readoutCard(context, s),
                         // PHG（功率 / 天线高度 / 增益 / 方向）：报文里带了才出现。
                         // 做成一张**独立小卡片**、四项各自带标签 —— 上一版是一行
                         // 灰字（`4W · 6.1m · 2dB · omni`），不显眼也不好读。
@@ -669,51 +638,6 @@ class _StationDetailState extends State<StationDetail> {
                           SizedBox(height: 14),
                           _deviceCard(context, s)!,
                         ],
-                        if (widget.state.myStation != null) ...[
-                          SizedBox(height: 10),
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 14,
-                              vertical: 10,
-                            ),
-                            decoration: BoxDecoration(
-                              color: C.blueBg,
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(
-                                color: C.blue.withValues(alpha: 0.3),
-                              ),
-                            ),
-                            child: Row(
-                              children: [
-                                Icon(
-                                  Icons.navigation_rounded,
-                                  color: C.blue,
-                                  size: 18,
-                                ),
-                                SizedBox(width: 8),
-                                Text(
-                                  S
-                                      .of(context)
-                                      .distanceBearing(
-                                        s
-                                            .distKm(
-                                              widget.state.myLat!,
-                                              widget.state.myLng!,
-                                            )
-                                            .toStringAsFixed(1),
-                                        s
-                                            .bearingFrom(
-                                              widget.state.myLat!,
-                                              widget.state.myLng!,
-                                            )
-                                            .toStringAsFixed(0),
-                                      ),
-                                  style: ts(12, c: C.blue, w: FontWeight.w600),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
                         if (s.wx != null) ...[
                           SizedBox(height: 12),
                           Container(
@@ -758,16 +682,12 @@ class _StationDetailState extends State<StationDetail> {
                                 icon: Icons.grid_4x4_rounded,
                               ),
                               SizedBox(height: 8),
-                              SizedBox(height: 8),
+                              // 经纬度合成一行：分成两行时数字各占一条，
+                              // 读「这个点在哪」要来回扫两趟
                               KV(
-                                S.of(context).latitude,
-                                s.lat.toStringAsFixed(5),
-                                icon: Icons.explore_rounded,
-                              ),
-                              SizedBox(height: 8),
-                              KV(
-                                S.of(context).longitude,
-                                s.lng.toStringAsFixed(5),
+                                S.of(context).position,
+                                '${s.lat.toStringAsFixed(5)}, '
+                                    '${s.lng.toStringAsFixed(5)}',
                                 icon: Icons.explore_rounded,
                               ),
                               SizedBox(height: 8),
@@ -775,12 +695,6 @@ class _StationDetailState extends State<StationDetail> {
                                 S.of(context).lastSeen,
                                 localizedLastSeen(context, s),
                                 icon: Icons.access_time_rounded,
-                              ),
-                              SizedBox(height: 8),
-                              KV(
-                                S.of(context).symbolLabel,
-                                '${s.symbol}  ${localizedAprsSymbolName(context, s.symbol)}',
-                                icon: Icons.tag_rounded,
                               ),
                             ],
                           ),
@@ -1727,22 +1641,97 @@ class _StationDetailState extends State<StationDetail> {
         ],
       );
 
-  Widget _metric(String label, String value, IconData icon, Color c) {
+  /// 读数卡：把「这一刻它在哪、怎么动」压进一张卡。
+  ///
+  /// 上一版是三个各自独立的小卡（速度/高度/航向），右边再挂一条蓝色
+  /// 「距离·方位」横条 —— 四个数分散在四处，读起来要跳四次视线。现在
+  /// 2×2 细线分格，同一张卡里从上到下就是「多快、多高、朝哪、离我多远」。
+  Widget _readoutCard(BuildContext context, Station s) {
+    final st = widget.state;
+    final hasMe = st.myLat != null && st.myLng != null;
+    final dist = hasMe
+        ? '${s.distKm(st.myLat!, st.myLng!).toStringAsFixed(1)} km'
+        : '--';
+    final bear = hasMe
+        ? '${s.bearingFrom(st.myLat!, st.myLng!).toStringAsFixed(0)}°'
+        : null;
+    final cells = <(String, String, String?, Color)>[
+      (S.of(context).speedLabel, s.speedStr, null, C.blue),
+      (S.of(context).altitude, s.altStr, null, C.purple),
+      (
+        S.of(context).courseLabel,
+        s.course != null ? '${s.course!.toStringAsFixed(0)}°' : '--',
+        null,
+        C.cyan
+      ),
+      (S.of(context).distance, dist, bear, C.blue),
+    ];
+    Widget divider(bool vertical) => Container(
+      width: vertical ? 0.7 : null,
+      height: vertical ? 30 : 0.7,
+      margin: vertical
+          ? const EdgeInsets.symmetric(vertical: 8)
+          : const EdgeInsets.symmetric(horizontal: 12),
+      color: C.border.withValues(alpha: 0.6),
+    );
+    Widget cellRow(int a, int b) => Row(
+      children: [
+        _readoutCell(cells[a]),
+        divider(true),
+        _readoutCell(cells[b]),
+      ],
+    );
     return SoftCard(
-      padding: const EdgeInsets.symmetric(vertical: 12),
+      padding: const EdgeInsets.symmetric(vertical: 2),
       child: Column(
-        children: [
-          Icon(icon, color: c, size: 18),
-          SizedBox(height: 6),
-          Text(
-            value,
-            style: ts(13, c: c, w: FontWeight.w700),
-          ),
-          Text(
-            label,
-            style: ts(9, c: C.grey, w: FontWeight.w600, ls: 0.8),
-          ),
-        ],
+        children: [cellRow(0, 1), divider(false), cellRow(2, 3)],
+      ),
+    );
+  }
+
+  Widget _readoutCell((String, String, String?, Color) cell) {
+    final (label, value, suffix, c) = cell;
+    return Expanded(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Container(
+                  width: 5,
+                  height: 5,
+                  decoration: BoxDecoration(color: c, shape: BoxShape.circle),
+                ),
+                const SizedBox(width: 5),
+                Text(
+                  label,
+                  style: ts(9, c: C.grey, w: FontWeight.w600, ls: 0.8),
+                ),
+              ],
+            ),
+            const SizedBox(height: 4),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.baseline,
+              textBaseline: TextBaseline.alphabetic,
+              children: [
+                Flexible(
+                  child: Text(
+                    value,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: ts(15, c: C.ink, w: FontWeight.w800, ls: -0.2),
+                  ),
+                ),
+                if (suffix != null) ...[
+                  const SizedBox(width: 4),
+                  Text(suffix, style: ts(10, c: C.grey, w: FontWeight.w600)),
+                ],
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
