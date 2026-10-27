@@ -1,5 +1,53 @@
 # 更新日志
 
+## [2.1.36] - 2026-10-27
+
+### 地图
+
+- 往一个方向一直拖，经度不再越滚越大，拖回来还是原地。
+- 屏幕正中多了一个中心标记和读数牌，写着这里的经纬度。手机没有悬停，靠它看地图中心落在哪。设置 → 显示 → 地图 可以关掉。
+- 右侧按钮按当帧剩下的高度分列，最下面那颗不再被上报条压住。窄屏横屏、分屏下都能点全。
+
+### 坐标格式
+
+- 经纬度可以按度分、度分秒显示。地图底部读数、我的位置、台站详情、选点的提示都跟着变。设置 → 显示 里选。
+- 只改显示。报文、存储和地图计算仍是十进制，换格式不影响发出去了什么。
+
+### 订阅
+
+- 订阅命中弹一条系统通知，标题是订阅值，正文是呼号和报文内容。同一条规则 30 秒内只计数，不刷屏。
+- 设置 → 订阅 顶部可以关掉通知，命中记录照记。
+
+### 设置
+
+- 打开设置页时，卡片逐条淡入上移。
+
+---
+
+## [2.1.36] - 2026-10-27 (English)
+
+### Map
+
+- Dragging one way no longer makes the longitude climb without end; drag back and you land where you started.
+- A centre mark and a coordinate readout now sit in the middle of the map. A phone has no hover, so this is where the centre is. Settings → Display → Map can hide it.
+- The buttons on the right split into columns by the height actually left on screen, so the bottom one is no longer buried under the report bar. Narrow landscape and split-screen get every button.
+
+### Coordinate format
+
+- Latitude and longitude can read as degrees-minutes or degrees-minutes-seconds. The map readout, my position, station details and the pick prompt follow it. Choose it in Settings → Display.
+- Display only. Packets, storage and map maths stay decimal, so what goes on air does not change.
+
+### Subscriptions
+
+- A match raises a system notification titled with the watched value, carrying the callsign and the packet text. The same rule counts once per 30 seconds instead of flooding.
+- Settings → Subscriptions can turn the notification off and still keep the match record.
+
+### Settings
+
+- Cards fade in and rise one by one when the settings page opens.
+
+---
+
 ## [2.1.35] - 2026-10-26
 
 ### 地图看得清楚了

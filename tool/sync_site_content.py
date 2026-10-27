@@ -419,6 +419,27 @@ CARDS = [
 # 只列「重点版本」：中间几十个纯修 bug 的版本归纳进文字说明，完整记录指向 Releases。
 CL = [
     {
+        'ver': 'v2.1.36', 'date': '2026-10-27',
+        'items': [
+            ('new',
+             T('经纬度可以按度分、度分秒显示，地图读数、我的位置、台站详情都跟着变。报文和存储仍是十进制。',
+               '經緯度可以按度分、度分秒顯示，地圖讀數、我的位置、臺站詳情都跟著變。報文和儲存仍是十進位。',
+               'Latitude and longitude can read as degrees-minutes or degrees-minutes-seconds across the map readout, my position and station details. Packets and storage stay decimal.')),
+            ('new',
+             T('屏幕正中多了一个中心标记和经纬度读数，手机没有悬停也能看中心在哪。设置 → 显示 → 地图 可以关。',
+               '螢幕正中多了一個中心標記和經緯度讀數，手機沒有懸停也能看中心在哪。設定 → 顯示 → 地圖 可以關。',
+               'A centre mark and coordinate readout now sit on the map centre, so a phone without hover can still tell where the centre is. Settings → Display → Map hides it.')),
+            ('new',
+             T('订阅命中弹一条系统通知，标题是订阅值，正文是呼号和报文内容。同一条规则 30 秒内只计数，不刷屏。',
+               '訂閱命中彈一條系統通知，標題是訂閱值，正文是呼號和報文內容。同一條規則 30 秒內只計數，不刷屏。',
+               'A subscription match raises a system notification with the callsign and the packet text. The same rule counts once per 30 seconds instead of flooding.')),
+            ('fix',
+             T('往一个方向拖地图，经度不再越滚越大。右侧按钮按剩下的高度分列，最下面那颗不再被上报条压住。',
+               '往一個方向拖地圖，經度不再越滾越大。右側按鈕按剩下的高度分列，最下面那顆不再被上報條壓住。',
+               'Dragging one way no longer makes the longitude climb without end, and the right-hand buttons split into columns by the height left on screen, so the bottom one is no longer buried under the report bar.')),
+        ],
+    },
+    {
         'ver': 'v2.1.35', 'date': '2026-10-26',
         'items': [
             ('new',
