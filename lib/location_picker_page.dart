@@ -83,10 +83,12 @@ class _LocationPickerPageState extends State<LocationPickerPage> {
       s.dy + c.dy - _size.height / 2 - _pan.dy,
     );
     final g = _proj.pxToLatLng(p, _zoom);
+    // 经度收进 [-180,180)：pan 不封顶，拖过整圈后会一路累加（见 [wrapLng]）
     if (_isGcj && widget.state.coordDatum != 'gcj') {
-      return Gcj.gcjToWgs(g.$1, g.$2);
+      final w = Gcj.gcjToWgs(g.$1, g.$2);
+      return (w.$1, wrapLng(w.$2));
     }
-    return g;
+    return (g.$1, wrapLng(g.$2));
   }
 
   Offset _panFor(double lat, double lng, double zoom) {

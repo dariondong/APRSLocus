@@ -430,11 +430,15 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
     final g = _proj.pxToLatLng(p, _zoom);
     // GCJ 瓦片：坐标是 GCJ-02，按用户 datum 偏好输出 WGS-84；
     // 百度由投影内部转回 WGS-84；国际 WGS 瓦片原样。
+    //
+    // 经度一律用 [wrapLng] 收进 [-180,180)：pan 是不封顶的（瓦片按取模换列），
+    // 拖动越过一整圈之后反算出来的经度会一路累加，读数就成了 181°、360°…
     if (_isGcjTile) {
-      if (widget.state.coordDatum == 'gcj') return g;
-      return Gcj.gcjToWgs(g.$1, g.$2);
+      if (widget.state.coordDatum == 'gcj') return (g.$1, wrapLng(g.$2));
+      final w = Gcj.gcjToWgs(g.$1, g.$2);
+      return (w.$1, wrapLng(w.$2));
     }
-    return g;
+    return (g.$1, wrapLng(g.$2));
   }
 
   /// 让某点居中的 pan：screen = p - c + size/2 + pan = size/2 → pan = c - p
