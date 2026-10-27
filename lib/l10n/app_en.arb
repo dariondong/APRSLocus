@@ -4424,5 +4424,9 @@
   "subsNotifyTitle": "Subscription hit · {value}",
   "subsNotifyMore": "+{n} more",
   "@subsNotifyTitle": {"placeholders": {"value": {"type": "String"}}},
-  "@subsNotifyMore": {"placeholders": {"n": {"type": "String"}}}
+  "@subsNotifyMore": {"placeholders": {"n": {"type": "String"}}},
+  "coordFormat": "Coordinate format",
+  "coordFormatDec": "Decimal",
+  "coordFormatDm": "Deg-min",
+  "coordFormatDms": "Deg-min-sec"
 }

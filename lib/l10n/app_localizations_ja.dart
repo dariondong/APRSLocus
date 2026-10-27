@@ -9958,4 +9958,16 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String subsNotifyMore(String n) => "ほか $n 件";
 
+  @override
+  String get coordFormat => "緯度経度の書式";
+
+  @override
+  String get coordFormatDec => "十進度";
+
+  @override
+  String get coordFormatDm => "度分";
+
+  @override
+  String get coordFormatDms => "度分秒";
+
 }

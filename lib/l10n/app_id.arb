@@ -4424,5 +4424,9 @@
   "subsNotifyTitle": "Langganan cocok · {value}",
   "subsNotifyMore": "+{n} lagi",
   "@subsNotifyTitle": {"placeholders": {"value": {"type": "String"}}},
-  "@subsNotifyMore": {"placeholders": {"n": {"type": "String"}}}
+  "@subsNotifyMore": {"placeholders": {"n": {"type": "String"}}},
+  "coordFormat": "Format koordinat",
+  "coordFormatDec": "Desimal",
+  "coordFormatDm": "Derajat-menit",
+  "coordFormatDms": "Derajat-menit-detik"
 }

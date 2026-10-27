@@ -10,6 +10,7 @@ import 'services.dart';
 import 'state.dart';
 import 'widgets.dart';
 import 'coord.dart';
+import 'coord_format.dart';
 import 'early_member.dart';
 import 'honor_wall_page.dart';
 import 'station_note.dart';
@@ -784,13 +785,13 @@ class _StationDetailState extends State<StationDetail> {
                               SizedBox(height: 8),
                               KV(
                                 S.of(context).latitude,
-                                s.lat.toStringAsFixed(5),
+                                fmtLat(s.lat, widget.state.coordFmt),
                                 icon: Icons.explore_rounded,
                               ),
                               SizedBox(height: 8),
                               KV(
                                 S.of(context).longitude,
-                                s.lng.toStringAsFixed(5),
+                                fmtLng(s.lng, widget.state.coordFmt),
                                 icon: Icons.explore_rounded,
                               ),
                               SizedBox(height: 8),

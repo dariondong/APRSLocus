@@ -5103,5 +5103,9 @@
   "subsNotifyTitle": "订阅命中 · {value}",
   "subsNotifyMore": "另有 {n} 条",
   "@subsNotifyTitle": {"placeholders": {"value": {"type": "String"}}},
-  "@subsNotifyMore": {"placeholders": {"n": {"type": "String"}}}
+  "@subsNotifyMore": {"placeholders": {"n": {"type": "String"}}},
+  "coordFormat": "经纬度格式",
+  "coordFormatDec": "十进制度",
+  "coordFormatDm": "度分",
+  "coordFormatDms": "度分秒"
 }

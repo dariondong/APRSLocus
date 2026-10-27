@@ -8,6 +8,7 @@ import 'state.dart';
 import 'consent.dart';
 import 'desktop_metrics.dart';
 import 'models.dart';
+import 'coord_format.dart';
 import 'widgets.dart';
 import 'settings_widgets.dart';
 import 'garmin_page.dart';
@@ -3457,6 +3458,20 @@ class _DisplaySettingsPageState extends State<DisplaySettingsPage> {
               _uiScaleSelector(st),
               SettingsRow2(S.of(context).unit, S.of(context).metricUnits),
               SettingsRow2(S.of(context).grid, 'Maidenhead'),
+              // 经纬度显示格式：只换**显示**，不换坐标系（那是下一行的事）。
+              // 用下拉而不是分段按钮：三种写法的标签（度分秒）在窄屏 + 西语
+              // 会挤爆一行，下拉自己会折。
+              SettingsChoice<String>(
+                S.of(context).coordFormat,
+                value: st.coordFormat,
+                options: const ['dec', 'dm', 'dms'],
+                labelOf: (v) => switch (coordFormatOf(v)) {
+                  CoordFormat.dec => S.of(context).coordFormatDec,
+                  CoordFormat.dm => S.of(context).coordFormatDm,
+                  CoordFormat.dms => S.of(context).coordFormatDms,
+                },
+                onChanged: st.setCoordFormat,
+              ),
               _datumSelector(),
             ],
           ),

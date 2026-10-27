@@ -9,6 +9,7 @@ import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'models.dart';
+import 'coord_format.dart';
 import 'features.dart';
 import 'mock_data.dart';
 import 'services.dart';
@@ -3892,6 +3893,22 @@ class AppState extends ChangeNotifier {
   // 坐标显示：'wgs84' 标准 / 'gcj' 高德火星坐标
   String coordDatum = 'wgs84';
 
+  /// 经纬度**显示格式**：'dec' 十进制度 / 'dm' 度分 / 'dms' 度分秒。
+  ///
+  /// 只换给人看的字符串（见 coord_format.dart），报文与所有计算仍用十进制度。
+  String coordFormat = 'dec';
+
+  /// 当前显示格式（枚举）
+  CoordFormat get coordFmt => coordFormatOf(coordFormat);
+
+  void setCoordFormat(String v) {
+    final n = coordFormatName(coordFormatOf(v));
+    if (n == coordFormat) return;
+    coordFormat = n;
+    notifyListeners();
+    persist();
+  }
+
   // 深色模式
   bool darkMode = false;
 
@@ -4668,6 +4685,7 @@ class AppState extends ChangeNotifier {
     bleHr.deviceName = '';
     garminUrl = '';
     coordDatum = 'wgs84';
+    coordFormat = 'dec';
     darkMode = false;
     weatherEnabled = true;
     noticeBanner = true;
@@ -5217,6 +5235,8 @@ class AppState extends ChangeNotifier {
       garminUrl = p.getString('garminUrl') ?? garminUrl;
       garminOn = false;
       coordDatum = p.getString('coordDatum') ?? coordDatum;
+      coordFormat =
+          coordFormatName(coordFormatOf(p.getString('coordFormat') ?? coordFormat));
       darkMode = p.getBool('darkMode') ?? darkMode;
       weatherEnabled = p.getBool('weatherEnabled') ?? weatherEnabled;
       noticeBanner = p.getBool('noticeBanner') ?? noticeBanner;
@@ -5619,6 +5639,7 @@ class AppState extends ChangeNotifier {
     await p.setString('bleHrName', bleHrName);
     await p.setString('garminUrl', garminUrl);
     await p.setString('coordDatum', coordDatum);
+    await p.setString('coordFormat', coordFormat);
     await p.setBool('darkMode', darkMode);
     await p.setBool('weatherEnabled', weatherEnabled);
     await p.setBool('noticeBanner', noticeBanner);

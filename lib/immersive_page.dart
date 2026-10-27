@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
 import 'coord.dart';
+import 'coord_format.dart';
 import 'l10n/app_localizations.dart';
 import 'models.dart';
 import 'state.dart';
@@ -679,7 +680,7 @@ class _ImmersiveMapPageState extends State<ImmersiveMapPage>
         const SizedBox(height: 3),
         Text(
             st.myHasFix && st.myLat != null && st.myLng != null
-                ? '${st.myLat!.toStringAsFixed(5)}, ${st.myLng!.toStringAsFixed(5)}'
+                ? fmtLatLng(st.myLat!, st.myLng!, st.coordFmt)
                 : '--',
             style: ts(9, c: Colors.white.withValues(alpha: 0.55))),
       ],

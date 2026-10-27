@@ -4424,5 +4424,9 @@
   "subsNotifyTitle": "購読ヒット · {value}",
   "subsNotifyMore": "ほか {n} 件",
   "@subsNotifyTitle": {"placeholders": {"value": {"type": "String"}}},
-  "@subsNotifyMore": {"placeholders": {"n": {"type": "String"}}}
+  "@subsNotifyMore": {"placeholders": {"n": {"type": "String"}}},
+  "coordFormat": "緯度経度の書式",
+  "coordFormatDec": "十進度",
+  "coordFormatDm": "度分",
+  "coordFormatDms": "度分秒"
 }

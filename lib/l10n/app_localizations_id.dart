@@ -10247,4 +10247,16 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String subsNotifyMore(String n) => "+$n lagi";
 
+  @override
+  String get coordFormat => "Format koordinat";
+
+  @override
+  String get coordFormatDec => "Desimal";
+
+  @override
+  String get coordFormatDm => "Derajat-menit";
+
+  @override
+  String get coordFormatDms => "Derajat-menit-detik";
+
 }

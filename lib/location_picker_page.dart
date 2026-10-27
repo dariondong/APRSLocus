@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'coord.dart';
+import 'coord_format.dart';
 import 'map_math.dart';
 import 'material.dart';
 import 'models.dart';
@@ -233,7 +234,7 @@ class _LocationPickerPageState extends State<LocationPickerPage> {
   Widget _topBar() {
     final gc = _picked == null
         ? ''
-        : '${_picked!.$1.toStringAsFixed(5)}, ${_picked!.$2.toStringAsFixed(5)}';
+        : fmtLatLng(_picked!.$1, _picked!.$2, widget.state.coordFmt);
     return Positioned(
       top: 8 + MediaQuery.of(context).padding.top,
       left: 12,

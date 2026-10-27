@@ -18075,6 +18075,30 @@ abstract class AppLocalizations {
   /// **'另有 {n} 条'**
   String subsNotifyMore(String n);
 
+  /// No description provided for @coordFormat.
+  ///
+  /// In zh, this message translates to:
+  /// **'经纬度格式'**
+  String get coordFormat;
+
+  /// No description provided for @coordFormatDec.
+  ///
+  /// In zh, this message translates to:
+  /// **'十进制度'**
+  String get coordFormatDec;
+
+  /// No description provided for @coordFormatDm.
+  ///
+  /// In zh, this message translates to:
+  /// **'度分'**
+  String get coordFormatDm;
+
+  /// No description provided for @coordFormatDms.
+  ///
+  /// In zh, this message translates to:
+  /// **'度分秒'**
+  String get coordFormatDms;
+
 }
 
 class _AppLocalizationsDelegate

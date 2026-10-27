@@ -10237,4 +10237,16 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String subsNotifyMore(String n) => "+$n more";
 
+  @override
+  String get coordFormat => "Coordinate format";
+
+  @override
+  String get coordFormatDec => "Decimal";
+
+  @override
+  String get coordFormatDm => "Deg-min";
+
+  @override
+  String get coordFormatDms => "Deg-min-sec";
+
 }

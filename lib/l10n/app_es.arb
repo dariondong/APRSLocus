@@ -4424,5 +4424,9 @@
   "subsNotifyTitle": "Coincidencia · {value}",
   "subsNotifyMore": "+{n} más",
   "@subsNotifyTitle": {"placeholders": {"value": {"type": "String"}}},
-  "@subsNotifyMore": {"placeholders": {"n": {"type": "String"}}}
+  "@subsNotifyMore": {"placeholders": {"n": {"type": "String"}}},
+  "coordFormat": "Formato de coordenadas",
+  "coordFormatDec": "Decimal",
+  "coordFormatDm": "Grados y min",
+  "coordFormatDms": "Grados-min-seg"
 }

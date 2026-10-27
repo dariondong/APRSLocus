@@ -128,6 +128,8 @@ const List<BackupGroupSpec> kBackupGroups = [
     // 不该在换机后丢（重新找一遍设备/再问一次链接很烦）。
     'bleHrId', 'bleHrName', 'garminUrl',
     'coordDatum', 'darkMode', 'weatherEnabled', 'locale', 'themeColor',
+    // 经纬度显示格式：与坐标系同类的显示偏好，换机后没理由变回十进制度
+    'coordFormat',
     // 公告横幅：与深色模式同类的**显示偏好** —— 用户关掉了它，
     // 换机后不该被静默打开（那会表现为「怎么又开始联网拉公告了」）。
     'noticeBanner',

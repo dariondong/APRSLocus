@@ -5012,5 +5012,9 @@
   "subsNotifyTitle": "訂閱命中 · {value}",
   "subsNotifyMore": "另有 {n} 條",
   "@subsNotifyTitle": {"placeholders": {"value": {"type": "String"}}},
-  "@subsNotifyMore": {"placeholders": {"n": {"type": "String"}}}
+  "@subsNotifyMore": {"placeholders": {"n": {"type": "String"}}},
+  "coordFormat": "經緯度格式",
+  "coordFormatDec": "十進制度",
+  "coordFormatDm": "度分",
+  "coordFormatDms": "度分秒"
 }

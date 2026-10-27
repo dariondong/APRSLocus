@@ -355,6 +355,12 @@ jobs:
       - name: Test steps persistence
         run: flutter test test/steps_persist_test.dart
 
+      # 经纬度显示格式（用户要求「可以按度分、度分秒显示」）：进位（59.9996′ →
+      # 下一度）、半球取舍、经度先规整 —— 三种错都编译能过、analyze 全绿，
+      # 只表现成「读数是 60 分」「南纬写成 N」。
+      - name: Test coordinate format
+        run: flutter test test/coord_format_test.dart
+
       # 台站排序「能记忆」（用户要求）：排序原来只活在台站页的 State 里，退出面板
       # 就回到按呼号排。它同样编译能过、analyze 全绿，只表现成「怎么又变回去了」；
       # 脏值回落与落盘读回也一并钉住。

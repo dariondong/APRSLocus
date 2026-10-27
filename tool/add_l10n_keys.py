@@ -36,6 +36,20 @@ CLASSES = {
 
 # ── 要加的键：key → (zh, zh_TW, en, ja, es, id) ──
 KEYS = {
+    # ── 经纬度显示格式：十进制度 / 度分 / 度分秒 ──
+    #
+    # 只换给人看的字符串（地图底部读数、「我的」面板、台站详情、沉浸页、
+    # 选点提示）。报文与所有计算仍用十进制度。
+    'coordFormat': (
+        '经纬度格式', '經緯度格式', 'Coordinate format', '緯度経度の書式',
+        'Formato de coordenadas', 'Format koordinat'),
+    'coordFormatDec': (
+        '十进制度', '十進制度', 'Decimal', '十進度', 'Decimal', 'Desimal'),
+    'coordFormatDm': (
+        '度分', '度分', 'Deg-min', '度分', 'Grados y min', 'Derajat-menit'),
+    'coordFormatDms': (
+        '度分秒', '度分秒', 'Deg-min-sec', '度分秒', 'Grados-min-seg',
+        'Derajat-menit-detik'),
     # ── 翻译接口：B 站 Index-Translate ──
     #
     # OpenAI 规范的公共接口，免密钥。中文语料上比网页端点稳，但不保证可用性。

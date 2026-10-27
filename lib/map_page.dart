@@ -18,6 +18,7 @@ import 'immersive_page.dart';
 import 'strategy_map_page.dart';
 import 'track_groups_sheet.dart';
 import 'coord.dart';
+import 'coord_format.dart';
 import 'material.dart';
 
 class MapPage extends StatefulWidget {
@@ -1666,13 +1667,17 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                       children: [
                         KV(
                           S.of(context).latitude,
-                          st.myLat?.toStringAsFixed(5) ?? '--',
+                          st.myLat == null
+                              ? '--'
+                              : fmtLat(st.myLat!, st.coordFmt),
                           icon: Icons.explore_rounded,
                         ),
                         const SizedBox(height: 8),
                         KV(
                           S.of(context).longitude,
-                          st.myLng?.toStringAsFixed(5) ?? '--',
+                          st.myLng == null
+                              ? '--'
+                              : fmtLng(st.myLng!, st.coordFmt),
                           icon: Icons.explore_rounded,
                         ),
                         // 定位精度：GPS 实测值（1σ）。以前它算而不报，用户无从
@@ -1817,8 +1822,8 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                 .of(context)
                 .pickedCoord(
                   maidenhead(lat, lng),
-                  lat.toStringAsFixed(5),
-                  lng.toStringAsFixed(5),
+                  fmtLat(lat, widget.state.coordFmt),
+                  fmtLng(lng, widget.state.coordFmt),
                 ),
           ),
           behavior: SnackBarBehavior.floating,
@@ -1846,8 +1851,8 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                 .of(context)
                 .pickedCoord(
                   maidenhead(lat, lng),
-                  lat.toStringAsFixed(5),
-                  lng.toStringAsFixed(5),
+                  fmtLat(lat, widget.state.coordFmt),
+                  fmtLng(lng, widget.state.coordFmt),
                 ),
           ),
           behavior: SnackBarBehavior.floating,
@@ -3091,7 +3096,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
     if (hoverPos != null && hoverPos.dx > 0 && _lastSize.width > 0) {
       // 悬停点是**页面坐标**（MouseRegion 在旋转之外），转过之后要反旋回来
       final (lat, lng) = _pageToLatLng(hoverPos, _lastSize);
-      coord = '${lat.toStringAsFixed(4)}, ${lng.toStringAsFixed(4)}';
+      coord = fmtLatLng(lat, lng, widget.state.coordFmt);
       grid = maidenhead(lat, lng);
     } else if (hasFix &&
         myLat != null &&

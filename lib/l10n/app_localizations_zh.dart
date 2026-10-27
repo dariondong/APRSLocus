@@ -9858,6 +9858,18 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String subsNotifyMore(String n) => "另有 $n 条";
 
+  @override
+  String get coordFormat => "经纬度格式";
+
+  @override
+  String get coordFormatDec => "十进制度";
+
+  @override
+  String get coordFormatDm => "度分";
+
+  @override
+  String get coordFormatDms => "度分秒";
+
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
@@ -19712,5 +19724,17 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String subsNotifyMore(String n) => "另有 $n 條";
+
+  @override
+  String get coordFormat => "經緯度格式";
+
+  @override
+  String get coordFormatDec => "十進制度";
+
+  @override
+  String get coordFormatDm => "度分";
+
+  @override
+  String get coordFormatDms => "度分秒";
 
 }
