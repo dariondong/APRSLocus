@@ -134,17 +134,14 @@ The fault was ours. Sorry for the trouble.
 
 ---
 
-## 🔔 What is new: 2.1.33
+## 🔔 What is new: 2.1.36
 
-- There is a tray icon on the desktop now. Closing the window no longer quits, the window goes to the tray, packets keep arriving and the links stay up.
-- The tray menu has three rows: show the window, hide to tray, quit APRSLocus. A left click on the icon toggles the window.
-- Settings → Display gained Minimize to tray on close, on by default. Turn it off and closing the window quits again.
-- A station note is no longer cut to 60 characters. The station list, the detail panel and the map popup all show it in full.
-- Each row under Recent packets now wraps in full, so the tail of a long packet is no longer swallowed by an ellipsis.
-- In the 1.0 layout the sidebar logo and the navigation icons share one left baseline.
-- In the 1.0 layout the top bar controls share one height and one gap, and the three counts collapse into a single capsule.
-- In the 1.0 layout the narrow-screen bottom bar uses the same selected state as the sidebar, and the unread badges are one badge.
-- The disconnected banner and the passcode banner share one shape.
+- Dragging the map one way no longer makes the longitude climb without end; drag back and you land where you started.
+- A centre mark and a coordinate readout sit in the middle of the map. Settings → Display → Map can hide it.
+- The buttons on the right split into columns by the height actually left, so the bottom one is no longer buried under the report bar.
+- Latitude and longitude can read as degrees-minutes or degrees-minutes-seconds. The map readout, my position and station details follow it. Choose it in Settings → Display. Display only, what goes on air does not change.
+- A subscription match raises a system notification titled with the watched value, carrying the callsign and the packet text. One rule counts once per 30 seconds. Settings → Subscriptions can turn it off.
+- The cards on the settings page rise in one after another.
 
 ---
 
@@ -162,9 +159,9 @@ Look up APALOC in the official TOCALL table and you will find it.
 
 The 2.2.0 build published on the Qingling (清零) channel by mistake has been taken down, and the channel works normally again.
 
-Checking for updates now returns the latest stable version, 2.1.33. If you installed 2.2.0, uninstall it first, then install 2.1.33.
+Checking for updates now returns the latest stable version, 2.1.36. If you installed 2.2.0, uninstall it first, then install 2.1.36.
 
-**[Download 2.1.33](https://github.com/dariondong/APRSLocus/releases/download/v2.1.33/APRSLocus_2.1.33.apk)**
+**[Download 2.1.36](https://github.com/dariondong/APRSLocus/releases/download/v2.1.36/APRSLocus_2.1.36.apk)**
 
 ---
 
