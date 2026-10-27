@@ -3483,6 +3483,11 @@ class _DisplaySettingsPageState extends State<DisplaySettingsPage> {
             color: C.blue,
             children: [
               _mapTypeSelector(),
+              // 屏幕正中的经纬度读数（手机没有悬停，只有它能回答「正中这点在哪」）
+              SettingsSwitch(S.of(context).mapCenterCoord,
+                  value: st.mapCenterCoord,
+                  color: C.blue,
+                  onChanged: (v) => st.setMapCenterCoord(v)),
               _heatLevelSelector(st),
               // 无论台站多密 / 缩得多小都画呼号标签。开 = 强制显示（可能糊成一片、
               // 也更费渲染）；关 = 沿用原取舍（台站少或放大到 13 级以上才显示）。

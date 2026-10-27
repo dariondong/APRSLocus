@@ -4428,5 +4428,6 @@
   "coordFormat": "Coordinate format",
   "coordFormatDec": "Decimal",
   "coordFormatDm": "Deg-min",
-  "coordFormatDms": "Deg-min-sec"
+  "coordFormatDms": "Deg-min-sec",
+  "mapCenterCoord": "Centre coordinates"
 }

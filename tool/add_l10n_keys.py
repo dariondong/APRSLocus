@@ -50,6 +50,10 @@ KEYS = {
     'coordFormatDms': (
         '度分秒', '度分秒', 'Deg-min-sec', '度分秒', 'Grados-min-seg',
         'Derajat-menit-detik'),
+    # ── 屏幕正中的经纬度读数（设置 → 显示 → 地图）──
+    'mapCenterCoord': (
+        '中心经纬度', '中心經緯度', 'Centre coordinates', '中心の緯度経度',
+        'Coordenadas del centro', 'Koordinat tengah'),
     # ── 翻译接口：B 站 Index-Translate ──
     #
     # OpenAI 规范的公共接口，免密钥。中文语料上比网页端点稳，但不保证可用性。

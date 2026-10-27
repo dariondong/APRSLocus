@@ -10249,4 +10249,7 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get coordFormatDms => "Deg-min-sec";
 
+  @override
+  String get mapCenterCoord => "Centre coordinates";
+
 }

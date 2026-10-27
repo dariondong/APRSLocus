@@ -9870,6 +9870,9 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String get coordFormatDms => "度分秒";
 
+  @override
+  String get mapCenterCoord => "中心经纬度";
+
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
@@ -19736,5 +19739,8 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get coordFormatDms => "度分秒";
+
+  @override
+  String get mapCenterCoord => "中心經緯度";
 
 }

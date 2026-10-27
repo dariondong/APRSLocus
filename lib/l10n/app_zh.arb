@@ -5107,5 +5107,6 @@
   "coordFormat": "经纬度格式",
   "coordFormatDec": "十进制度",
   "coordFormatDm": "度分",
-  "coordFormatDms": "度分秒"
+  "coordFormatDms": "度分秒",
+  "mapCenterCoord": "中心经纬度"
 }

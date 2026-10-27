@@ -9970,4 +9970,7 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String get coordFormatDms => "度分秒";
 
+  @override
+  String get mapCenterCoord => "中心の緯度経度";
+
 }

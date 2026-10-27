@@ -10308,4 +10308,7 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get coordFormatDms => "Grados-min-seg";
 
+  @override
+  String get mapCenterCoord => "Coordenadas del centro";
+
 }

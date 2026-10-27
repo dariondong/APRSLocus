@@ -1040,6 +1040,10 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                               builder: (_, hp, _) => _bottomControls(hp),
                             ),
                           ),
+                        // 屏幕正中的经纬度：手机没有鼠标悬停，只有这一圈能回答
+                        // 「正中这个点在哪」（见 [_centerCoord]）。
+                        if (widget.state.mapCenterCoord)
+                          Positioned.fill(child: _centerCoord(size)),
                       ],
                     ),
                   ),
@@ -3080,6 +3084,75 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
   static String _fmtDistM(double m) {
     if (m < 1000) return '${m.round()} m';
     return '${(m / 1000).toStringAsFixed(m >= 10000 ? 0 : 1)} km';
+  }
+
+  /// 屏幕正中那一圈：半透明小圈 + 下面一行经纬度读数。
+  ///
+  /// 手机上没地方悬停，底部那条读数只能说「离我多远」；用户要把地图拖到某个
+  /// 位置时想知道「我现在看的是哪里」。圈心就是地图中心（[_screenToLatLng]
+  /// 已经把经度收进 ±180），所以它同时是个准星。
+  ///
+  /// 只读不改，且整块 `IgnorePointer`：它坐在台站标记之上，但绝不能抢走
+  /// 「点台站 / 点地图选点」的点击。
+  Widget _centerCoord(Size size) {
+    final (lat, lng) = _screenToLatLng(size.center(Offset.zero), size);
+    return IgnorePointer(
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          // 半透明圈：填得很浅，底图还看得见；描边给它在卫星图上也足够对比度
+          Container(
+            width: 30,
+            height: 30,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: C.white.withValues(alpha: 0.14),
+              border: Border.all(
+                color: C.white.withValues(alpha: 0.85),
+                width: 1.4,
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: C.black.withValues(alpha: 0.28),
+                  blurRadius: 6,
+                ),
+              ],
+            ),
+            child: Center(
+              child: Container(
+                width: 4,
+                height: 4,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: C.blue,
+                ),
+              ),
+            ),
+          ),
+          // 读数放在圈下面：圈心必须正好落在屏幕中心，不能被文字顶偏
+          Transform.translate(
+            offset: const Offset(0, 27),
+            child: MaterialSurface(
+              radius: 9,
+              blurSigma: C.chipBlur,
+              child: Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(
+                  color: C.chipFill,
+                  borderRadius: BorderRadius.circular(9),
+                  boxShadow: elev1(),
+                ),
+                child: Text(
+                  fmtLatLng(lat, lng, widget.state.coordFmt),
+                  style: mono(10, c: C.ink, w: FontWeight.w600),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   Widget _bottomControls(Offset? hoverPos) {

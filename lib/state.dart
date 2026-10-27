@@ -3909,6 +3909,19 @@ class AppState extends ChangeNotifier {
     persist();
   }
 
+  /// 地图正中那一圈的经纬度读数（见 MapPage 的「中心读数」）。
+  ///
+  /// 默认开：手机没有鼠标悬停，底部读数条只能说「离我多远」，用户在屏幕上
+  /// 根本看不到「正中这个点在哪」。嫌重可以在 设置 → 显示 里关掉。
+  bool mapCenterCoord = true;
+
+  void setMapCenterCoord(bool v) {
+    if (v == mapCenterCoord) return;
+    mapCenterCoord = v;
+    notifyListeners();
+    persist();
+  }
+
   // 深色模式
   bool darkMode = false;
 
@@ -4686,6 +4699,7 @@ class AppState extends ChangeNotifier {
     garminUrl = '';
     coordDatum = 'wgs84';
     coordFormat = 'dec';
+    mapCenterCoord = true;
     darkMode = false;
     weatherEnabled = true;
     noticeBanner = true;
@@ -5237,6 +5251,7 @@ class AppState extends ChangeNotifier {
       coordDatum = p.getString('coordDatum') ?? coordDatum;
       coordFormat =
           coordFormatName(coordFormatOf(p.getString('coordFormat') ?? coordFormat));
+      mapCenterCoord = p.getBool('mapCenterCoord') ?? mapCenterCoord;
       darkMode = p.getBool('darkMode') ?? darkMode;
       weatherEnabled = p.getBool('weatherEnabled') ?? weatherEnabled;
       noticeBanner = p.getBool('noticeBanner') ?? noticeBanner;
@@ -5640,6 +5655,7 @@ class AppState extends ChangeNotifier {
     await p.setString('garminUrl', garminUrl);
     await p.setString('coordDatum', coordDatum);
     await p.setString('coordFormat', coordFormat);
+    await p.setBool('mapCenterCoord', mapCenterCoord);
     await p.setBool('darkMode', darkMode);
     await p.setBool('weatherEnabled', weatherEnabled);
     await p.setBool('noticeBanner', noticeBanner);

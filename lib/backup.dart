@@ -130,6 +130,8 @@ const List<BackupGroupSpec> kBackupGroups = [
     'coordDatum', 'darkMode', 'weatherEnabled', 'locale', 'themeColor',
     // 经纬度显示格式：与坐标系同类的显示偏好，换机后没理由变回十进制度
     'coordFormat',
+    // 地图中心读数：同属显示偏好（关掉的人换机后不该自己又冒出来）
+    'mapCenterCoord',
     // 公告横幅：与深色模式同类的**显示偏好** —— 用户关掉了它，
     // 换机后不该被静默打开（那会表现为「怎么又开始联网拉公告了」）。
     'noticeBanner',

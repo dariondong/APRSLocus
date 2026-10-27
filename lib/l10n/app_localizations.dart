@@ -18099,6 +18099,12 @@ abstract class AppLocalizations {
   /// **'度分秒'**
   String get coordFormatDms;
 
+  /// No description provided for @mapCenterCoord.
+  ///
+  /// In zh, this message translates to:
+  /// **'中心经纬度'**
+  String get mapCenterCoord;
+
 }
 
 class _AppLocalizationsDelegate

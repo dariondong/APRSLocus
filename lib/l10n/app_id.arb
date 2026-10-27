@@ -4428,5 +4428,6 @@
   "coordFormat": "Format koordinat",
   "coordFormatDec": "Desimal",
   "coordFormatDm": "Derajat-menit",
-  "coordFormatDms": "Derajat-menit-detik"
+  "coordFormatDms": "Derajat-menit-detik",
+  "mapCenterCoord": "Koordinat tengah"
 }

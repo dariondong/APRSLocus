@@ -10259,4 +10259,7 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get coordFormatDms => "Derajat-menit-detik";
 
+  @override
+  String get mapCenterCoord => "Koordinat tengah";
+
 }
