@@ -173,14 +173,51 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
   Station? _selected;
   final ValueNotifier<Offset?> _hover = ValueNotifier(null);
 
-  /// 右侧工具列**单列**的总高：3 个工具钮（3×38 + 2×6 间隙）+ 组间 6
-  /// + 6 个缩放钮（6×38 + 5×6 间隙）= 390。
+  /// 右侧工具列的按钮尺寸与间距 —— 列高是由它们**算**出来的，不是写死的。
+  static const double _kToolBtn = 38;
+  static const double _kToolGap = 6;
+
+  /// 工具列两组按钮的颗数：4 颗工具（图层 / 轨迹组 / 策略 / 底图）
+  /// + 6 颗缩放（放大 / 缩小 / 轨迹 / 热力图 / 定位 / 锁定中心）。
+  static const int _kToolCount = 4;
+  static const int _kZoomCount = 6;
+
+  /// 单列总高：4 颗工具 + 组间一道 gap + 6 颗缩放 = 434。
   ///
-  /// 只用来判断「要不要分两列」（见 [_rightToolbar]）。以前那里是一个裸的
-  /// 「520」，看不出与按钮尺寸的关系 —— 改一颗按钮的高度就得重新猜阈值。
-  /// ⚠ 缩放钮加了「锁定地图中心」这一颗之后，这个数必须跟着涨：
-  /// `check_landscape_layout.py` 就是按它判断「矮横屏要不要分两列」的。
-  static const double _kToolbarColH = 390;
+  /// 只用来判断「贴底控件（坐标条 / 上报横杠）还摆不摆得下」；工具列本身分
+  /// 几列是**按当帧可用高度**算的（见 [_toolbarColumns]）—— 以前这里写死
+  /// 390 去判「矮横屏」，加了「锁定中心」那颗之后就不再等于真实高度了，
+  /// 于是处在中间那一档的窗口（尤其桌面上的矮窗口）会漏判：工具列最下面
+  /// 那颗被裁掉、点不到（用户报的「操作控件最下面有概率被遮挡」）。
+  static const double _kToolbarColH = _kToolCount * _kToolBtn +
+      (_kToolCount - 1) * _kToolGap +
+      _kToolGap +
+      _kZoomCount * _kToolBtn +
+      (_kZoomCount - 1) * _kToolGap;
+
+  /// 工具列最多分几列：再多就挤到地图中间去了，不如让贴底控件（坐标条 /
+  /// 上报横杠）让位。
+  static const int _kToolbarMaxCols = 3;
+
+  /// 工具列按钮总数
+  static int get _kToolbarBtns => _kToolCount + _kZoomCount;
+
+  /// 分 [cols] 列时，一列的高度（n 颗钮 + n-1 道间距）
+  static double _toolbarHeight(int cols) {
+    final per = (_kToolbarBtns + cols - 1) ~/ cols;
+    return per * _kToolBtn + (per - 1) * _kToolGap;
+  }
+
+  /// 装进 [room] 高最少要分几列。
+  ///
+  /// 「矮横屏」不是看朝向或裸屏高，而是看这一帧**真有多少高**：桌面上的矮窗口、
+  /// 2.0 外壳的横幅把顶栏顶下去一截，都会让同一块屏幕在不同时刻需要不同列数。
+  static int _toolbarColumns(double room) {
+    for (var c = 1; c <= _kToolbarBtns; c++) {
+      if (_toolbarHeight(c) <= room) return c;
+    }
+    return _kToolbarBtns;
+  }
 
   /// 上报横杠（[_beaconBar]）自身的高度：一行 12 号字 + 上下各 8 内边距 + 描边。
   ///
@@ -644,26 +681,40 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
             _syncRot();
             final vis = _visible;
             final searched = widget.searchQuery.trim().isNotEmpty;
-            // 矮横屏（小屏手机横放，以及「窗口很宽但很矮」的桌面窗口）：
-            // 隐藏图例减少遮挡，并让右侧工具列换两列（见 _rightToolbar）。
+            // ── 右侧工具列多高、要分几列 —— 这一帧现算 ──
             //
             // 判据用**顶栏之下实际可用**的高度，而不是裸屏高：顶部让位量会被
             // 未连接横幅与公告横幅各顶掉一行（合计 +84），桌面上又常有「很宽
-            // 但很矮」的窗口形状 —— 按裸屏高判断这些都会漏判，而漏判的表现
-            // 就是工具列最下面的「定位」被 Stack 裁掉、点不到。
+            // 但很矮」的窗口形状 —— 按裸屏高判这些都会漏判，而漏判的表现
+            // 就是工具列最下面那颗被 Stack 裁掉、点不到。
             final double availH =
                 size.height - widget.topInset - widget.bottomInset;
-            final bool shortWide =
-                size.width > size.height && availH < _kToolbarColH + 54;
             // 顶部锚点的基准：所有顶部浮层从 14 挪到「外壳顶栏之下」
             final double topBase = 14 + widget.topInset;
-            // 贴底控件（比例尺/坐标条、上报横杠）在 2.0 里会被卡片顶上来。
-            // 顶到右侧工具列（约 434 高）那一段就会同时压住工具列与顶栏 ——
-            // 这正是「混乱」的来源。所以按顶栏之下的可用高度判断：
-            // 不够就**不显示**，而不是硬塞进去。484 ≈ 工具列高 + 间隙
-            // （阈值一直跟着 [_kToolbarColH] 涨：工具列长高了，贴底控件就得
-            // 更晚才出现，不然两者会在矮屏上叠在一起）。
-            final bool roomForBottom = availH > 484;
+            final double padBottom = MediaQuery.of(context).padding.bottom;
+            // 贴底控件（坐标条 / 上报横杠）从屏幕底边往上占掉的高度（含安全区）
+            final double bottomSlot = (widget.state.connected &&
+                        widget.state.myHasFix
+                    ? 62 + _kBeaconBarH
+                    : 14 + _kBottomCtrlH) +
+                padBottom +
+                widget.bottomInset;
+            // 贴底控件只在「工具列最多三列就装得下」时才出现：否则它会被工具列
+            // 压住（以前这里是一个跟按钮尺寸无关的 484，工具列长高后就不再成立）。
+            final double roomWithBottom = availH - 14 - (bottomSlot + 8);
+            final double roomNoBottom =
+                availH - 14 - (14 + padBottom + widget.bottomInset);
+            final int colsWithBottom = _toolbarColumns(roomWithBottom);
+            final bool roomForBottom = colsWithBottom <= _kToolbarMaxCols;
+            // 工具列能用的净高：顶上留 14，底下要么让开贴底控件，要么只留边距
+            final double toolbarRoom =
+                roomForBottom ? roomWithBottom : roomNoBottom;
+            final int toolbarCols =
+                roomForBottom ? colsWithBottom : _toolbarColumns(toolbarRoom);
+            // 左侧那一列浮层要让开工具列：它以前写死 `right: 74`（只够一列），
+            // 工具列换成两列/三列后就会压在它的右端。
+            final double rightGutter =
+                14 + toolbarCols * _kToolBtn + (toolbarCols - 1) * _kToolGap + 12;
             // ── 地图**画出来的**那几层也要让开外壳占用的区域 ──
             //
             // 与贴左控件同一个口径（见 [leftInset] 与 [bottomInset]）：2.0 外壳的
@@ -675,7 +726,6 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
             //
             // 画笔坐标与各层位置都不变：`CustomPaint` 自己就是 `size` 大小，外面包
             // 一层同尺寸的 `ClipRect` 只改「画到哪儿」，不改「画在哪儿」。
-            final double padBottom = MediaQuery.of(context).padding.bottom;
             _ovClip = _OverlayInsetClipper(
               left: widget.leftInset,
               top: widget.topInset,
@@ -907,7 +957,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                 Positioned(
                   top: topBase,
                   left: 14 + widget.leftInset,
-                  right: 74,
+                  right: rightGutter,
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -1001,14 +1051,14 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                     child: Stack(
                       children: [
                         // ── 右侧工具列 ──
-                        // 此前用 14 / 58 / 102 / 146 四个硬编码 top 各自 Positioned，
-                        // 而 `_zoomCtrl()` 含 6 个按钮（放大/缩小/轨迹/热力图/定位/锁定，一直
-                        // 排到 448），矮屏上必然打架。改成「单列顺序排布」后结构上不可能再重叠；
-                        // 手机横放时**再分两列**（见 `_rightToolbar`，否则最下面的「定位」会被裁掉）。
+                        // 以前是 14 / 58 / 102 / 146 四个硬编码 top 各自 Positioned，
+                        // 8 颗钮排到 448，矮屏上必然打架。现在是「一串按钮 + 按可用
+                        // 高度分列」（见 `_rightToolbar`），结构上不会再互相盖住，
+                        // 也不会被 Stack 裁掉最下面那颗 —— 位置由 toolbarCols 定。
                         Positioned(
                           right: 14,
                           top: topBase,
-                          child: _rightToolbar(shortWide),
+                          child: _rightToolbar(toolbarCols),
                         ),
                         // 竖屏：底部通栏“上报通知”横杠（仅已连接+有定位时显示，横屏由侧边栏承担）
                         if (roomForBottom &&
@@ -2250,73 +2300,82 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
     );
   }
 
-  /// 右侧工具列。
+  /// 右侧工具列：按钮摊平成一串，再按 [cols] 分列（[cols] 由可用高度算，见
+  /// [_toolbarColumns]）。
   ///
-  /// 竖屏（及高度充裕的横屏）用**单列**；矮横屏（`shortWide`）必须换成**两列**。
-  ///
-  /// 为什么：单列共 8 个按钮 ≈ 346px（3 个工具钮 126 + 5 个缩放钮 214 + 间隙），
-  /// 而手机横放时可用高度常只有 300px 出头 —— 单列会被 Stack 裁掉（默认
-  /// `Clip.hardEdge`），而裁掉的恰好是最下面的「定位」：横屏看地图时最常用的
-  /// 那一个。横向空间在横屏是宽裕的，所以分两列是最直接的解法，
-  /// 分组也是现成的：左列「图层 / 轨迹分组 / 底图」，右列「缩放 / 轨迹 / 热力图 / 定位」。
-  ///
-  /// 两列都靠上对齐（`CrossAxisAlignment.start`），否则高的那列会把矮的推居中，
-  /// 上沿就不是齐的了。
-  Widget _rightToolbar(bool shortWide) {
-    final toolCol = Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        _toolBtn(
-          icon: Icons.layers_rounded,
-          onTap: () => _showLayerMenu(context),
-          // 用 surfaceTint 保留「选中变蓝 / 普通白」的语义，
-          // 只让通透程度跟着材质走（详见 material.dart）
-          bg: chipTint(_hiddenTypes.isNotEmpty ? C.blueBg : C.white),
-          fg: _hiddenTypes.isNotEmpty ? C.blue : C.slate,
-          border: _hiddenTypes.isNotEmpty ? C.blue : C.border,
-        ),
-        const SizedBox(height: 6),
-        _toolBtn(
-          icon: Icons.group_rounded,
-          onTap: () => showTrackGroupPicker(context, widget.state),
-          bg: C.orangeBg,
-          fg: C.orange,
-          border: C.orange.withValues(alpha: 0.4),
-        ),
-        const SizedBox(height: 6),
-        _toolBtn(
-          icon: Icons.flag_rounded,
-          onTap: _openStrategyMap,
-          bg: C.green.withValues(alpha: 0.14),
-          fg: C.green,
-          border: C.green.withValues(alpha: 0.4),
-        ),
-        const SizedBox(height: 6),
-        _toolBtn(
-          icon: Icons.map_rounded,
-          // ⚠ 必须带 ()：写成 `() => _showMapTypeMenu` 只是**返回这个函数本身**，
-          // 从不调用它 —— 点下去等于什么都不做（用户报的「底图选择面板弹不出来」）。
-          // 而 Dart 允许把 `void Function() Function()` 赋给 `VoidCallback`
-          // （返回值位置的 `void` 是顶类型），所以编译与 analyze **都不会报**。
-          onTap: () => _showMapTypeMenu(),
-          bg: chipTint(C.white),
-          fg: C.slate,
-          border: C.border,
-        ),
-      ],
-    );
-    if (!shortWide) {
-      return Column(
+  /// 为什么摊平：按钮的**颗数**与**尺寸**是唯一真相（[_kToolBtn] / [_kToolGap]），
+  /// 列高由它们算出来。以前是「单列固定多高 + 一个朝向判据」，每加一颗钮就得
+  /// 重新猜阈值，猜漏了的表现就是最下面那颗被裁掉、点不到。
+  Widget _rightToolbar(int cols) {
+    final btns = <Widget>[
+      _toolBtn(
+        icon: Icons.layers_rounded,
+        onTap: () => _showLayerMenu(context),
+        // 用 surfaceTint 保留「选中变蓝 / 普通白」的语义，
+        // 只让通透程度跟着材质走（详见 material.dart）
+        bg: chipTint(_hiddenTypes.isNotEmpty ? C.blueBg : C.white),
+        fg: _hiddenTypes.isNotEmpty ? C.blue : C.slate,
+        border: _hiddenTypes.isNotEmpty ? C.blue : C.border,
+      ),
+      _toolBtn(
+        icon: Icons.group_rounded,
+        onTap: () => showTrackGroupPicker(context, widget.state),
+        bg: C.orangeBg,
+        fg: C.orange,
+        border: C.orange.withValues(alpha: 0.4),
+      ),
+      _toolBtn(
+        icon: Icons.flag_rounded,
+        onTap: _openStrategyMap,
+        bg: C.green.withValues(alpha: 0.14),
+        fg: C.green,
+        border: C.green.withValues(alpha: 0.4),
+      ),
+      _toolBtn(
+        icon: Icons.map_rounded,
+        // ⚠ 必须带 ()：写成 `() => _showMapTypeMenu` 只是**返回这个函数本身**，
+        // 从不调用它 —— 点下去等于什么都不做（用户报的「底图选择面板弹不出来」）。
+        // 而 Dart 允许把 `void Function() Function()` 赋给 `VoidCallback`
+        // （返回值位置的 `void` 是顶类型），所以编译与 analyze **都不会报**。
+        onTap: () => _showMapTypeMenu(),
+        bg: chipTint(C.white),
+        fg: C.slate,
+        border: C.border,
+      ),
+      ..._zoomBtns(),
+    ];
+    if (cols <= 1) {
+      return Column(mainAxisSize: MainAxisSize.min, children: _spaced(btns));
+    }
+    // 按算出来的列数均分：第一列在最右（贴着屏幕边），后面几列往左排。
+    final per = (btns.length + cols - 1) ~/ cols;
+    final columns = <Widget>[];
+    for (var i = 0; i < btns.length; i += per) {
+      final end = math.min(i + per, btns.length);
+      columns.add(Column(
         mainAxisSize: MainAxisSize.min,
-        children: [toolCol, const SizedBox(height: 6), _zoomCtrl()],
-      );
+        children: _spaced(btns.sublist(i, end)),
+      ));
     }
     return Row(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: [toolCol, const SizedBox(width: 6), _zoomCtrl()],
+      children: [
+        for (var i = 0; i < columns.length; i++) ...[
+          if (i > 0) const SizedBox(width: _kToolGap),
+          columns[i],
+        ],
+      ],
     );
   }
+
+  /// 按钮之间插 [_kToolGap] 的竖间距（[_toolbarHeight] 的算式与它一一对应）
+  static List<Widget> _spaced(List<Widget> btns) => [
+        for (var i = 0; i < btns.length; i++) ...[
+          if (i > 0) const SizedBox(height: _kToolGap),
+          btns[i],
+        ],
+      ];
 
   /// 沉浸地图入口（导航风格：以我为中心 / 航向朝上 / 四角 HUD）。
   ///
@@ -2350,9 +2409,8 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
     );
   }
 
-  Widget _zoomCtrl() {
-    return Column(
-      children: [
+  List<Widget> _zoomBtns() {
+    return [
         RoundIconBtn(
           Icons.add_rounded,
           onTap: () {
@@ -2364,7 +2422,6 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
             _animateTo(z, _panForCenter(z));
           },
         ),
-        SizedBox(height: 6),
         RoundIconBtn(
           Icons.remove_rounded,
           onTap: () {
@@ -2376,14 +2433,12 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
             _animateTo(z, _panForCenter(z));
           },
         ),
-        SizedBox(height: 6),
         RoundIconBtn(
           _showTracks ? Icons.route_rounded : Icons.route_outlined,
           tooltip: S.of(context).track,
           color: _showTracks ? C.green : C.slate,
           onTap: () => setState(() => _showTracks = !_showTracks),
         ),
-        SizedBox(height: 6),
         // 低缩放热力图开关
         RoundIconBtn(
           _heatEnabled
@@ -2393,7 +2448,6 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
           color: _heatEnabled ? C.orange : C.slate,
           onTap: () => setState(() => _heatEnabled = !_heatEnabled),
         ),
-        SizedBox(height: 6),
         RoundIconBtn(
           Icons.my_location_rounded,
           tooltip: S.of(context).locateMe,
@@ -2413,7 +2467,6 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
             }
           },
         ),
-        SizedBox(height: 6),
         // ── 锁定地图中心（三态）──
         //
         // 与上面那颗「定位」配成一对：定位是**跳一次**（还会把缩放拉到 15），
@@ -2453,8 +2506,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
             setState(() => st.setMapFollowMode(next));
           },
         ),
-      ],
-    );
+    ];
   }
 
   // ─── 插件地图（矢量）动作分发 ───

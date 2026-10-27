@@ -22,13 +22,14 @@
      报了假失败。假失败比没有检查更坏（人会顺手把规则放宽）。现在改成按**结构**判：
      竖列本身要让开、**沉浸入口必须真的在那个竖列里**、上报横杠与底部条各自让开。
 
-  2. **右侧工具列在手机横屏被裁掉**。
-     单列是 8 个按钮 ≈ 346px（3 个小工具钮 3×38+2×6=126，5 个缩放钮 5×38+4×6=214，
-     加上两组之间的 6），而手机横放的可用高度常常只有 300px 出头。`Stack` 默认
-     `Clip.hardEdge`，于是**最下面的「定位」被剪掉且点不到** —— 偏偏那是横屏看地图时
-     最常用的按钮。横屏横向空间宽裕，分成两列即可。
-     判据：右侧工具列必须走 `_rightToolbar(shortWide)` 这个分派函数，
-     且 `shortWide` 分支里必须有 `Row(`（两列）。
+  2. **右侧工具列在矮屏被裁掉**。
+     单列是 10 个按钮（4 颗工具 + 6 颗缩放）≈ 434px，而手机横放的可用高度常常
+     只有 300px 出头；`Stack` 默认 `Clip.hardEdge`，于是**最下面那颗被剪掉且点不到**。
+     历史上这里先是写死「单列 390」去判「要不要换两列」，加了「锁定中心」那颗之后
+     阈值就不再等于真实高度 —— 手算出来的常数迟早会漂。
+     判据：按钮尺寸（`_kToolBtn` / `_kToolGap`）是唯一真相，列高由它们算，列数由
+     **当帧可用高度**（`_toolbarColumns(room)`）算；多列必须 `Row(` + `start` 对齐，
+     按钮之间的间距必须统一（否则 n-1 道 gap 的算式对不上），列高不许写死。
 
   3. **底部让位量把安全区算了两遍**。
      `MapPage` 的口径是「相对底部安全区」——它自己会加一次 `MediaQuery.padding.bottom`。
@@ -78,9 +79,10 @@
   8. **「矮横屏」要按顶栏之下的可用高度判断**（v1.6.163）。
      顶部让位量会被未连接横幅 / 公告横幅各顶掉一行（合计 +84），桌面上又常有
      「很宽但很矮」的窗口；按**裸屏高**判断会漏判 —— 而漏判的表现正是本文件第 2 条
-     要防的「工具列最下面的『定位』被裁掉、点不到」。
+     要防的「工具列最下面的按钮被裁掉、点不到」。
      判据：先算 `availH = size.height - widget.topInset - widget.bottomInset`，
-     `shortWide` 用它跟 `_kToolbarColH`（单列工具列的实际高度）比。
+     分几列、贴底控件还要不要显示，都从它推出来；`availH < _kToolbarColH + 54`
+     这种写死阈值不许再出现。
 
   9. **换栏／降级不许按「朝向」判**（v1.6.164，真实缺陷）。
      消息页原写作 `!landscape && maxWidth < 720` —— 等价于「只要是横屏就走双栏」，
@@ -149,23 +151,32 @@ def main() -> int:
         errors.append('mapLeftInset 的公式变了/漏了项 —— 竖条与展开时的内容面板宽度都'
                       '必须算进去，否则地图贴左控件会糊在工作区卡背后')
 
-    # ② 右侧工具列在矮横屏必须分两列
-    if 'child: _rightToolbar(shortWide)' not in map_page:
-        errors.append('右侧工具列没走 `_rightToolbar(shortWide)` —— 手机横屏下最下面的'
-                      '「定位」会被 Stack 裁掉且点不到')
-    if 'Widget _rightToolbar(bool shortWide)' not in map_page:
+    # ② 右侧工具列必须按**当帧可用高度**分列（数量由按钮尺寸算，不许写死）
+    if 'child: _rightToolbar(toolbarCols)' not in map_page:
+        errors.append('右侧工具列没走 `_rightToolbar(toolbarCols)` —— 手机横屏 / 矮窗口下'
+                      '最下面的那颗会被 Stack 裁掉且点不到')
+    if 'Widget _rightToolbar(int cols)' not in map_page:
         errors.append('_rightToolbar 没了')
     else:
-        seg = map_code[map_code.find('Widget _rightToolbar(bool shortWide)'):]
-        end = seg.find('Widget _zoomCtrl()')
+        seg = map_code[map_code.find('Widget _rightToolbar(int cols)'):]
+        end = seg.find('List<Widget> _zoomBtns()')
         if end > 0:
             seg = seg[:end]
         if 'Row(' not in seg:
-            errors.append('_rightToolbar 的 shortWide 分支没有 Row( —— 矮横屏还是单列，'
-                          '仍会被裁掉')
+            errors.append('_rightToolbar 分列的分支没有 Row( —— 矮屏还是单列，仍会被裁掉')
         if 'crossAxisAlignment: CrossAxisAlignment.start' not in seg:
-            errors.append('_rightToolbar 两列没有 start 对齐 —— 矮的那列会被推居中，'
+            errors.append('_rightToolbar 多列没有 start 对齐 —— 矮的那列会被推居中，'
                           '两列上沿不齐')
+        if '_spaced(' not in seg:
+            errors.append('_rightToolbar 没给按钮加统一间距 —— 列高算式的 n-1 道 gap '
+                          '就对不上了，最后一颗仍可能被裁')
+
+    # ②b 列高的算式必须真的从按钮尺寸来（以前是写死的 390 / 一个 484 阈值）
+    if 'per * _kToolBtn + (per - 1) * _kToolGap' not in map_code:
+        errors.append('工具列列高不是由 _kToolBtn / _kToolGap 算出来的 —— '
+                      '写死的高度只要加一颗钮就漏判，表现为最下面那颗被遮挡')
+    if 'static int _toolbarColumns(double room)' not in map_code:
+        errors.append('没有 _toolbarColumns(room) —— 分几列必须看当帧可用高度')
 
     # ③ 底部让位量不许重复计入安全区
     if 'bottomInset: _kGutter,' not in shell:
@@ -307,9 +318,13 @@ def main() -> int:
             or 'size.height - widget.topInset - widget.bottomInset' not in map_code):
         errors.append('MapPage 没有按「顶栏之下的可用高度」(availH) 判断矮横屏 —— '
                       '横幅占位/桌面矮窗口会漏判，工具列最下面的按钮被裁')
-    if 'availH < _kToolbarColH + 54' not in map_code:
-        errors.append('shortWide 没有用 _kToolbarColH（单列工具列高度）判断 —— '
+    if 'final int toolbarCols =' not in map_code or 'roomForBottom = colsWithBottom' not in map_code:
+        errors.append('没有按可用高度算 toolbarCols / 贴底控件要不要让位 —— '
                       '阈值又变回与按钮尺寸脱钩的魔数了')
+    for magic in ('availH < _kToolbarColH + 54', 'availH > 484'):
+        if magic in map_code:
+            errors.append(f'切回写死阈值了（{magic}）—— 加一颗钮就漏判，'
+                          '贴底控件与工具列会叠在一起')
 
     # ⑨ 换栏/降级不许按「朝向」判（2.0 横屏的面板只有 200~280 宽）
     if '!landscape && constraints.maxWidth < 720' in msgs:
