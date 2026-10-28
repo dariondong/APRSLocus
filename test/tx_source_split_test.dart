@@ -95,6 +95,9 @@ void main() {
   test('位置/状态报文可以同时发好几条：取消主链路时另一条顶上来', () async {
     final st = await fresh();
     await st.toggleSource(AppState.srcTnc, true);
+    // 「同时发好几条」现在是**高级模式**的事：默认（开关关着）位置一律发给
+    // 所有已连上的链路，没有「勾哪几条」这回事。
+    st.setAdvChannels(true);
 
     st.togglePosTx(AppState.srcTnc);
     expect(st.posTxHas(AppState.srcTnc), isTrue);
@@ -112,10 +115,12 @@ void main() {
   test('同时发的那几条也落盘', () async {
     final a = await fresh();
     await a.toggleSource(AppState.srcTnc, true);
+    a.setAdvChannels(true);
     a.togglePosTx(AppState.srcTnc);
     await a.persistNow();
 
     final b = await fresh();
+    expect(b.advChannels, isTrue, reason: '高级开关本身也要记得');
     expect(b.posTxHas(AppState.srcTnc), isTrue);
   });
 
