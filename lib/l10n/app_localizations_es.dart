@@ -10311,4 +10311,7 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get mapCenterCoord => "Coordenadas del centro";
 
+  @override
+  String get oobeServerSkip => "Saltar, lo pongo luego en ajustes";
+
 }

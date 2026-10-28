@@ -10262,4 +10262,7 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get mapCenterCoord => "Koordinat tengah";
 
+  @override
+  String get oobeServerSkip => "Lewati, isi nanti di pengaturan";
+
 }

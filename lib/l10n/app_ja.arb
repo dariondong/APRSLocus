@@ -4429,5 +4429,6 @@
   "coordFormatDec": "十進度",
   "coordFormatDm": "度分",
   "coordFormatDms": "度分秒",
-  "mapCenterCoord": "中心の緯度経度"
+  "mapCenterCoord": "中心の緯度経度",
+  "oobeServerSkip": "スキップ（あとで設定に入力）"
 }

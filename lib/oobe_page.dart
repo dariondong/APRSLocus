@@ -1268,9 +1268,40 @@ class _OobePageState extends State<OobePage> {
               ],
             ),
           ),
+          SizedBox(height: 18),
+          // 服务器这一步**可以完全不填**（留空 = 纯本地）。但底部那颗
+          // 「下一步」长得像「必须填完才能过」，重跑向导的人会卡在这里 ——
+          // 给一个大按钮明说可以跳过。
+          SizedBox(
+            width: double.infinity,
+            height: 46,
+            child: OutlinedButton(
+              onPressed: _skipServer,
+              style: OutlinedButton.styleFrom(
+                foregroundColor: C.slate,
+                side: BorderSide(color: C.borderStrong),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                textStyle: ts(13.5, w: FontWeight.w700),
+              ),
+              child: Text(S.of(context).oobeServerSkip),
+            ),
+          ),
         ],
       ),
     );
+  }
+
+  /// 「跳过服务器配置」：把三个输入框清空，再照常走下一步。
+  ///
+  /// 清空不是多余的：重跑向导时这三格回填的是上次存的值，只跳过不清空
+  /// 会变成「以为跳过了，其实地址还在」。留空就是不连接。
+  void _skipServer() {
+    _server.clear();
+    _port.clear();
+    _pass.clear();
+    _next();
   }
 
   /// 第 7 步的二选一卡片（与筛选页那一组选中卡同一个观感）。

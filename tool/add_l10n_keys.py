@@ -36,6 +36,14 @@ CLASSES = {
 
 # ── 要加的键：key → (zh, zh_TW, en, ja, es, id) ──
 KEYS = {
+    # ── 首次引导：服务器那一步给一个大按钮明说可以跳过 ──
+    #
+    # 留空 = 纯本地，规则早就有，但底部那颗「下一步」长得像「必须填完才
+    # 能过」，重跑向导的人会卡在这里。
+    'oobeServerSkip': (
+        '跳过，稍后在设置里填', '跳過，稍後在設定裡填',
+        'Skip, set it later in settings', 'スキップ（あとで設定に入力）',
+        'Saltar, lo pongo luego en ajustes', 'Lewati, isi nanti di pengaturan'),
     # ── 经纬度显示格式：十进制度 / 度分 / 度分秒 ──
     #
     # 只换给人看的字符串（地图底部读数、「我的」面板、台站详情、沉浸页、

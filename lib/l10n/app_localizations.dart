@@ -18105,6 +18105,12 @@ abstract class AppLocalizations {
   /// **'中心经纬度'**
   String get mapCenterCoord;
 
+  /// No description provided for @oobeServerSkip.
+  ///
+  /// In zh, this message translates to:
+  /// **'跳过，稍后在设置里填'**
+  String get oobeServerSkip;
+
 }
 
 class _AppLocalizationsDelegate

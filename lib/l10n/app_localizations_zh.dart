@@ -9873,6 +9873,9 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String get mapCenterCoord => "中心经纬度";
 
+  @override
+  String get oobeServerSkip => "跳过，稍后在设置里填";
+
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
@@ -19742,5 +19745,8 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get mapCenterCoord => "中心經緯度";
+
+  @override
+  String get oobeServerSkip => "跳過，稍後在設定裡填";
 
 }

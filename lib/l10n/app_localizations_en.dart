@@ -10252,4 +10252,7 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get mapCenterCoord => "Centre coordinates";
 
+  @override
+  String get oobeServerSkip => "Skip, set it later in settings";
+
 }

@@ -4429,5 +4429,6 @@
   "coordFormatDec": "Decimal",
   "coordFormatDm": "Grados y min",
   "coordFormatDms": "Grados-min-seg",
-  "mapCenterCoord": "Coordenadas del centro"
+  "mapCenterCoord": "Coordenadas del centro",
+  "oobeServerSkip": "Saltar, lo pongo luego en ajustes"
 }

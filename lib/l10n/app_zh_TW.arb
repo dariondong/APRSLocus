@@ -5017,5 +5017,6 @@
   "coordFormatDec": "十進制度",
   "coordFormatDm": "度分",
   "coordFormatDms": "度分秒",
-  "mapCenterCoord": "中心經緯度"
+  "mapCenterCoord": "中心經緯度",
+  "oobeServerSkip": "跳過，稍後在設定裡填"
 }

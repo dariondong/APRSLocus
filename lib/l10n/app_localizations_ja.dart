@@ -9973,4 +9973,7 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String get mapCenterCoord => "中心の緯度経度";
 
+  @override
+  String get oobeServerSkip => "スキップ（あとで設定に入力）";
+
 }

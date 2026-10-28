@@ -4429,5 +4429,6 @@
   "coordFormatDec": "Desimal",
   "coordFormatDm": "Derajat-menit",
   "coordFormatDms": "Derajat-menit-detik",
-  "mapCenterCoord": "Koordinat tengah"
+  "mapCenterCoord": "Koordinat tengah",
+  "oobeServerSkip": "Lewati, isi nanti di pengaturan"
 }

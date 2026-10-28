@@ -4429,5 +4429,6 @@
   "coordFormatDec": "Decimal",
   "coordFormatDm": "Deg-min",
   "coordFormatDms": "Deg-min-sec",
-  "mapCenterCoord": "Centre coordinates"
+  "mapCenterCoord": "Centre coordinates",
+  "oobeServerSkip": "Skip, set it later in settings"
 }
