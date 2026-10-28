@@ -612,6 +612,18 @@ html{overflow-x:hidden}
 <!-- site-sync:changelog -->
     <div class="cl-version reveal">
       <div class="cl-head">
+        <span class="cl-tag">v2.1.37</span>
+        <span class="cl-date">2026-10-28</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot fix"></span>When a position packet goes out on radio and on the internet at once, each link uses its own header. The radio copy no longer carries TCPIP*, so its digipeater path survives.</div>
+        <div class="cl-item"><span class="cl-dot new"></span>The device panel gained a "Per-link sending" switch, off by default. While it is off, position and status packets go out on every connected link, while messages keep going on the link picked last.</div>
+        <div class="cl-item"><span class="cl-dot fix"></span>The button column on the right no longer re-flows with whatever is temporarily on screen. A banner appearing, reporting starting or the panel opening no longer rearranges it.</div>
+        <div class="cl-item"><span class="cl-dot fix"></span>Incoming packets are detected as UTF-8 or GBK, so Chinese no longer turns into mojibake. The centre coordinate readout is off by default; tap the crosshair in the tool column to see it.</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
         <span class="cl-tag">v2.1.36</span>
         <span class="cl-date">2026-10-27</span>
       </div>

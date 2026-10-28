@@ -1,5 +1,61 @@
 # 更新日志
 
+## [2.1.37] - 2026-10-28
+
+### 链路
+
+- 位置报文同时发往射频和互联网时，两条链路各用各的报头。射频那份不再带 TCPIP*，中继路径保住了。互联网那份也不会带上 WIDE。
+- 消息按它自己那条链路算报头，与位置报文无关。
+
+### 设备面板
+
+- 新增「高级连接通道设置」，默认关。关着时位置与状态报文发给所有已连上的链路。
+- 消息照旧按上次勾的那条发，这个开关不影响它。
+- 打开开关就回到逐条挑：位置可以多选，消息单选。
+
+### 地图
+
+- 右侧那排按钮的分栏不再跟屏幕上的临时占位走。横幅出现、开始上报、拉开面板都不会让它重排。
+- 中心经纬度读数默认关。想看在右侧工具列点那颗准星，设置里那一行照旧能用。
+
+### 报文
+
+- 收到的报文自动识别 UTF-8 和 GBK，中文不再变成乱码。感谢 zhwb187。
+
+### 首次引导
+
+- 服务器那一步加了一个大按钮，可以直接跳过，稍后在设置里填。点它会清空已填的地址。
+
+---
+
+## [2.1.37] - 2026-10-28 (English)
+
+### Links
+
+- When a position packet goes out on radio and on the internet at once, each link uses its own header. The radio copy no longer carries TCPIP*, so its digipeater path survives. The internet copy no longer carries WIDE.
+- A message computes its header from the link it is sent on, independent of the position packet.
+
+### Device panel
+
+- New "Per-link sending" switch, off by default. While it is off, position and status packets go out on every connected link.
+- Messages keep going on the link you picked last. The switch does not touch them.
+- Turn it on to pick per link again: position can be several links, messages one.
+
+### Map
+
+- The button column on the right no longer re-flows with whatever is temporarily on screen. A banner appearing, reporting starting or the panel opening no longer rearranges it.
+- The centre coordinate readout is off by default now. Tap the crosshair in the tool column to see it; the settings row still works.
+
+### Packets
+
+- Incoming packets are detected as UTF-8 or GBK, so Chinese no longer turns into mojibake. Thanks to zhwb187.
+
+### First-run wizard
+
+- The server step has a large button to skip it and fill the address later in settings. Tapping it clears whatever was typed.
+
+---
+
 ## [2.1.36] - 2026-10-27
 
 ### 地图

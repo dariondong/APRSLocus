@@ -614,6 +614,18 @@ html{overflow-x:hidden}
 <!-- site-sync:changelog -->
     <div class="cl-version reveal">
       <div class="cl-head">
+        <span class="cl-tag">v2.1.37</span>
+        <span class="cl-date">2026-10-28</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot fix"></span>位置报文同时发往射频和互联网时，两条链路各用各的报头。射频那份不再带 TCPIP*，中继路径保住了。</div>
+        <div class="cl-item"><span class="cl-dot new"></span>设备面板新增「高级连接通道设置」，默认关。关着时位置与状态报文发给所有已连上的链路，消息仍按上次勾的那条发。</div>
+        <div class="cl-item"><span class="cl-dot fix"></span>右侧那排按钮的分栏不再跟屏幕上的临时占位走。横幅出现、开始上报、拉开面板都不会让它重排。</div>
+        <div class="cl-item"><span class="cl-dot fix"></span>收到的报文自动识别 UTF-8 和 GBK，中文不再变成乱码。中心经纬度读数默认关，想看在右侧工具列点那颗准星。</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
         <span class="cl-tag">v2.1.36</span>
         <span class="cl-date">2026-10-27</span>
       </div>

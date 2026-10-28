@@ -419,6 +419,27 @@ CARDS = [
 # 只列「重点版本」：中间几十个纯修 bug 的版本归纳进文字说明，完整记录指向 Releases。
 CL = [
     {
+        'ver': 'v2.1.37', 'date': '2026-10-28',
+        'items': [
+            ('fix',
+             T('位置报文同时发往射频和互联网时，两条链路各用各的报头。射频那份不再带 TCPIP*，中继路径保住了。',
+               '位置報文同時發往射頻和網際網路時，兩條鏈路各用各的報頭。射頻那份不再帶 TCPIP*，中繼路徑保住了。',
+               'When a position packet goes out on radio and on the internet at once, each link uses its own header. The radio copy no longer carries TCPIP*, so its digipeater path survives.')),
+            ('new',
+             T('设备面板新增「高级连接通道设置」，默认关。关着时位置与状态报文发给所有已连上的链路，消息仍按上次勾的那条发。',
+               '裝置面板新增「高階連線通道設定」，預設關。關着時位置與狀態報文發給所有已連上的鏈路，訊息仍按上次勾的那條發。',
+               'The device panel gained a "Per-link sending" switch, off by default. While it is off, position and status packets go out on every connected link, while messages keep going on the link picked last.')),
+            ('fix',
+             T('右侧那排按钮的分栏不再跟屏幕上的临时占位走。横幅出现、开始上报、拉开面板都不会让它重排。',
+               '右側那排按鈕的分欄不再跟螢幕上的臨時佔位走。橫幅出現、開始上報、拉開面板都不會讓它重排。',
+               'The button column on the right no longer re-flows with whatever is temporarily on screen. A banner appearing, reporting starting or the panel opening no longer rearranges it.')),
+            ('fix',
+             T('收到的报文自动识别 UTF-8 和 GBK，中文不再变成乱码。中心经纬度读数默认关，想看在右侧工具列点那颗准星。',
+               '收到的報文自動識別 UTF-8 和 GBK，中文不再變成亂碼。中心經緯度讀數預設關，想看在右側工具列點那顆準星。',
+               'Incoming packets are detected as UTF-8 or GBK, so Chinese no longer turns into mojibake. The centre coordinate readout is off by default; tap the crosshair in the tool column to see it.')),
+        ],
+    },
+    {
         'ver': 'v2.1.36', 'date': '2026-10-27',
         'items': [
             ('new',

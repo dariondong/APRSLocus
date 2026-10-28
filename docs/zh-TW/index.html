@@ -614,6 +614,18 @@ html{overflow-x:hidden}
 <!-- site-sync:changelog -->
     <div class="cl-version reveal">
       <div class="cl-head">
+        <span class="cl-tag">v2.1.37</span>
+        <span class="cl-date">2026-10-28</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot fix"></span>位置報文同時發往射頻和網際網路時，兩條鏈路各用各的報頭。射頻那份不再帶 TCPIP*，中繼路徑保住了。</div>
+        <div class="cl-item"><span class="cl-dot new"></span>裝置面板新增「高階連線通道設定」，預設關。關着時位置與狀態報文發給所有已連上的鏈路，訊息仍按上次勾的那條發。</div>
+        <div class="cl-item"><span class="cl-dot fix"></span>右側那排按鈕的分欄不再跟螢幕上的臨時佔位走。橫幅出現、開始上報、拉開面板都不會讓它重排。</div>
+        <div class="cl-item"><span class="cl-dot fix"></span>收到的報文自動識別 UTF-8 和 GBK，中文不再變成亂碼。中心經緯度讀數預設關，想看在右側工具列點那顆準星。</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
         <span class="cl-tag">v2.1.36</span>
         <span class="cl-date">2026-10-27</span>
       </div>
