@@ -711,4 +711,70 @@ void main() {
       st.dispose();
     });
   });
+
+  // ─── 每条链路各用自己的报头路径 ───
+  //
+  // 事故（2026-10-27 用户日志）：开了音频链路、位置报文又同时发一份互联网，
+  // 日志里音频那一行写成 `BD1FLM-7>APALOC,TCPIP*:!…` —— 报头路径按「主发射
+  // 链路」算一次、逐条链路照抄。射频上 `TCPIP*` 会被 Ax25 剔掉，而它当时是
+  // 唯一一项，于是中继路径整段消失；反过来那份互联网报文则会带上 `WIDE1-1`。
+  // 现在按链路重算（AppState.pathFor / lineForLink），四条要钉住：
+  //   ① 射频链路不带 TCPIP*、用该链路自己的中继；
+  //   ② 互联网链路一律 `APALOC,TCPIP*`；
+  //   ③ 消息走消息链路（dataSourceMsg）的路径；
+  //   ④ 不是自己组的报文（网关转递 / 手写）一个字都不改。
+  group('每条链路用自己的报头路径', () {
+    AppState base() => AppState()
+      ..myCall = 'BG7LZQ'
+      ..mySsid = '2'
+      ..mySymbol = 'b';
+
+    test('位置同发射频与互联网：两边路径不同，且互不串味', () {
+      final st = base()..dataSource = AppState.srcAprsIs;
+      st.audio.config.path = 'WIDE1-1';
+      st.posTxExtra = [AppState.srcAudio];
+      final raw = AprsFmt.position(
+          st.myFullCall, 39.070833, 116.407333, 'b', path: st.txPath);
+      final isLine = st.lineForLink(AppState.srcAprsIs, raw);
+      final rfLine = st.lineForLink(AppState.srcAudio, raw);
+      expect(isLine, startsWith('${st.myFullCall}>APALOC,TCPIP*:'));
+      expect(rfLine, startsWith('${st.myFullCall}>APALOC,WIDE1-1:'));
+      expect(rfLine.toUpperCase(), isNot(contains('TCPIP')),
+          reason: '射频上不能带 APRS-IS 专有的 TCPIP*');
+      st.dispose();
+    });
+
+    test('主链路是射频时，另发的互联网那一份回到 APALOC,TCPIP*', () {
+      final st = base()..dataSource = AppState.srcTnc;
+      st.tnc.config.path = 'WIDE2-1';
+      final raw = AprsFmt.position(
+          st.myFullCall, 39.070833, 116.407333, 'b', path: st.txPath);
+      expect(st.lineForLink(AppState.srcTnc, raw),
+          startsWith('${st.myFullCall}>APALOC,WIDE2-1:'));
+      expect(st.lineForLink(AppState.srcAprsIs, raw),
+          startsWith('${st.myFullCall}>APALOC,TCPIP*:'));
+      st.dispose();
+    });
+
+    test('消息走消息链路自己的路径', () {
+      final st = base();
+      st.dataSourceMsg = AppState.srcAudio;
+      st.audio.config.path = '';
+      expect(st.txPath, 'APALOC,TCPIP*');
+      expect(st.txPathMsg, 'APALOC', reason: '中继留空 = 只写目的呼号');
+      final raw = AprsFmt.message(st.myFullCall, 'BG7LZZ-9', 'hi', '01',
+          path: st.txPathMsg);
+      expect(st.lineForLink(AppState.srcAudio, raw),
+          startsWith('${st.myFullCall}>APALOC:'));
+      st.dispose();
+    });
+
+    test('不是自己组的报文，路径原样保留', () {
+      final st = base()..dataSource = AppState.srcAudio;
+      const foreign = 'BG7LZZ-9>APRS,WIDE1-1,qAR,BG7LZQ-2:>hello';
+      expect(st.lineForLink(AppState.srcAudio, foreign), foreign);
+      expect(st.lineForLink(AppState.srcAprsIs, foreign), foreign);
+      st.dispose();
+    });
+  });
 }

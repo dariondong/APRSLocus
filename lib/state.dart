@@ -3265,16 +3265,13 @@ class AppState extends ChangeNotifier {
   ///
   /// 二者在协议与合规上完全同类：都经电台上空、都用 APALOC 目的呼号、
   /// 都受 67 字符消息上限、自动发射都要显式开关。
-  /// （射频下群聊现也开放 —— 见 [groupChatAllowed]；发射路径走 [_rfPath]。）
+  /// （射频下群聊现也开放 —— 见 [groupChatAllowed]；发射路径走 [pathFor]。）
   /// 因此射频相关判断统一用本 getter，避免只改 TNC 漏改音频
   /// （那会导致音频模式下群聊被放行、限长失效这类静默错误）。
   bool get usingRf => usingTnc || usingAudio;
 
   /// 消息那条链路是不是射频（策略帧按它决定带不带 ack）。
   bool get usingRfMsg => dataSourceMsg == srcTnc || dataSourceMsg == srcAudio;
-
-  /// 当前射频来源的中继路径配置
-  String get _rfPath => rfPathOf(dataSource);
 
   /// 数据来源的中文名（日志用；界面文案一律走 l10n）
   String _sourceName(String s) => s == srcTnc
@@ -3338,12 +3335,43 @@ class AppState extends ChangeNotifier {
   /// 导致按 `u/APALOC` 订阅的第三方统计站只能收到状态包、收不到位置包
   /// （表现为这些台站在统计站上没有位置）。回归测试见
   /// test/beacon_format_test.dart「发射路径的目的呼号」。
-  String get txPath {
-    if (!usingRf) return 'APALOC,TCPIP*';
-    final p = _rfPath.trim();
+  String get txPath => pathFor(dataSource);
+
+  /// **某一条链路**该用的报头路径（目的呼号 + 中继）。
+  ///
+  /// 为什么必须按链路算，而不是只算一条：位置/状态报文可以同时发往多条
+  /// 链路（见 [posTxExtra]），消息那条链路（[dataSourceMsg]）也可以与位置
+  /// 不同。以前整个发送路径只用 [dataSource] 算一次 `txPath`，逐条链路复用
+  /// 同一个字符串，于是「位置走射频、同时再发一份 APRS-IS」时射频那一份
+  /// 带着 `TCPIP*` 出去 —— Ax25 会把它剔掉，而它是射频路径上唯一的一项，
+  /// 于是**中继路径整段消失**；日志里也写着 `>APALOC,TCPIP*:`，看起来就像
+  /// 发的是网络报文。反过来（主链路射频、另发一份互联网）则会让 APRS-IS
+  /// 收到一条带 `WIDE1-1` 的报文，等于把中继语义交给服务器。
+  String pathFor(String src) {
+    final s0 = _normalizeSrc(src);
+    if (s0 != srcTnc && s0 != srcAudio) return 'APALOC,TCPIP*';
+    final p = rfPathOf(s0).trim();
     // 去掉头部逗号/空格，避免出现 `APALOC,,WIDE1-1`
     final cleaned = p.replaceAll(RegExp(r'^[,\s]+'), '');
     return cleaned.isEmpty ? 'APALOC' : 'APALOC,$cleaned';
+  }
+
+  /// 消息那条链路该用的报头路径（[dataSourceMsg] 决定）。
+  String get txPathMsg => pathFor(dataSourceMsg);
+
+  /// 把一条**我们自己组出来的报文**的报头改成指定链路该用的路径。
+  ///
+  /// 只改源呼号等于 [myFullCall] 的报文：网关转递的报文（[Igate] 产出的
+  /// `qAR`/`qAO` 路径）与用户手写的报文都不在此列，改了就成伪造路径。
+  String lineForLink(String src, String raw) {
+    final gt = raw.indexOf('>');
+    if (gt <= 0) return raw;
+    final colon = raw.indexOf(':', gt);
+    if (colon < 0) return raw;
+    if (raw.substring(0, gt).trim() != myFullCall) return raw;
+    final want = pathFor(src);
+    if (raw.substring(gt + 1, colon) == want) return raw;
+    return '${raw.substring(0, gt)}>$want${raw.substring(colon)}';
   }
 
   /// 启用/停用某条链路（多选）。
@@ -7336,13 +7364,16 @@ class AppState extends ChangeNotifier {
       // **发射数就在这里数**：信标、状态帧、测试帧走的都是这条路。
       // 以前只有发消息时 packetsTx++，于是胶囊里的「发射数」永远是 0 ——
       // 用户看着实际发了报，数字却一动不动。
-      if (_sendVia(src, raw) == null) packetsTx++;
+      //
+      // 逐条链路重新算报头路径（[lineForLink]）：同时发往射频与互联网时，
+      // 两边该带的路径不同，不能一份报文两处照抄。
+      if (_sendVia(src, lineForLink(src, raw)) == null) packetsTx++;
     }
   }
 
   /// 发一条**消息**：走用户给消息单独选的那条链路。
   void _sendRawMsg(String raw) {
-    _sendVia(dataSourceMsg, raw);
+    _sendVia(dataSourceMsg, lineForLink(dataSourceMsg, raw));
   }
 
   /// 按指定来源发送（网关向射频转递时需要指定，而不是走「发射来源」——
@@ -10588,7 +10619,7 @@ class AppState extends ChangeNotifier {
       return;
     }
     final id = AprsFmt.randId();
-    final raw = AprsFmt.message(from, to, wire, id, path: txPath);
+    final raw = AprsFmt.message(from, to, wire, id, path: txPathMsg);
     messages.insert(
       0,
       AprsMsg(from, to, text.trim(), DateTime.now(),
@@ -10650,7 +10681,7 @@ class AppState extends ChangeNotifier {
     final id = AprsFmt.randId();
     // 私聊是点对点：用带 ack 的单播（与 [sendMessage] 一致），射频下靠对方
     // 标准自动 ack 确认送达 —— 位置点丢了对双方都没意义，值得要回执。
-    final raw = AprsFmt.message(myFullCall, target, frame, id, path: txPath);
+    final raw = AprsFmt.message(myFullCall, target, frame, id, path: txPathMsg);
     messages.insert(
       0,
       AprsMsg(
@@ -10724,8 +10755,8 @@ class AppState extends ChangeNotifier {
   int sendGroupMessage(String groupCall, String text, {String? groupId}) {
     if (text.trim().isEmpty || groupCall.isEmpty) return 0;
     final id = AprsFmt.randId();
-    final raw =
-        AprsFmt.messageNoAck(myFullCall, groupCall, text.trim(), id, path: txPath);
+    final raw = AprsFmt.messageNoAck(
+        myFullCall, groupCall, text.trim(), id, path: txPathMsg);
     AchievementCenter.instance.bump('sendMsg'); // 我发出去了吗？
     messages.insert(
       0,
@@ -10825,7 +10856,7 @@ class AppState extends ChangeNotifier {
       memberCall,
       'INVITE $groupCall $groupName',
       AprsFmt.randId(),
-      path: txPath,
+      path: txPathMsg,
     );
     _trySend(raw);
     _log(LogLevel.info, '群聊', '发送邀请给 $memberCall：$groupCall $groupName');
@@ -10838,7 +10869,7 @@ class AppState extends ChangeNotifier {
       ownerCall,
       'JOIN_CONFIRM $groupCall',
       AprsFmt.randId(),
-      path: txPath,
+      path: txPathMsg,
     );
     _trySend(raw);
     // 同时更新本地状态：否则「我点了同意」但成员表里自己仍是 pending，
@@ -10862,7 +10893,7 @@ class AppState extends ChangeNotifier {
       ownerCall,
       'LEFT $groupCall',
       AprsFmt.randId(),
-      path: txPath,
+      path: txPathMsg,
     );
     _trySend(raw);
     final g = chatGroups
@@ -11107,8 +11138,8 @@ class AppState extends ChangeNotifier {
     // 射频：带 ack 发（队友的自动 ack 是唯一的送达凭据）；
     // APRS-IS：no-ack（`{id_`）广播，避免群呼号被每个成员回 ack 造成噪声。
     final raw = usingRfMsg
-        ? AprsFmt.message(myFullCall, gc, frame, id, path: txPath)
-        : AprsFmt.messageNoAck(myFullCall, gc, frame, id, path: txPath);
+        ? AprsFmt.message(myFullCall, gc, frame, id, path: txPathMsg)
+        : AprsFmt.messageNoAck(myFullCall, gc, frame, id, path: txPathMsg);
     _trySend(raw);
     // 只有射频才记「待确认」：APRS-IS 用的是 no-ack，本来就不会有回执，
     // 记进去只会让 UI 永远显示「未确认」。射频下队友的标准自动 ack 会带
