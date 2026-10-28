@@ -296,6 +296,11 @@ jobs:
       - name: Test foreground notification dedupe
         run: flutter test test/notification_dedupe_test.dart
 
+      # 报文字节的 UTF-8 / GBK 自动识别：旧实现把字节喂给 16 位编码的 `gbk`，
+      # GBK 中文一直是乱码（`ÄãºÃ`），却没有任何测试发现。
+      - name: Test APRS text decoding (UTF-8 / GBK)
+        run: flutter test test/text_decode_test.dart
+
       # 外置 GPS 供位时，手机定位只能「待机」不能停服务（用户报的「断开外置 GPS
       # 后自动上报停了、手动上报只有报文没有位置」）：停了前台服务就丢掉后台生存
       # 能力，连接静默断、定时器停摆。这属于「编译能过、analyze 也全绿」的那类。

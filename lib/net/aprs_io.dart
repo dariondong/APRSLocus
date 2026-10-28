@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'package:gbk_codec/gbk_codec.dart';
 import 'aprs_base.dart';
 import '../state.dart';
+import '../text_decode.dart';
 
 /// 桌面平台：dart:io Socket 直连 APRS-IS TCP 14580（标准协议）
 class AprsIo extends AprsConnector {
@@ -15,18 +15,8 @@ class AprsIo extends AprsConnector {
   StreamSubscription<List<int>>? _sub;
   final List<int> _buf = [];
 
-  /// 按行解码：先按 UTF-8，失败回退 GBK（兼容中文 APRS 消息）
-  static String _decodeLine(List<int> bytes) {
-    try {
-      return utf8.decode(bytes);
-    } catch (_) {
-      try {
-        return gbk.decode(bytes);
-      } catch (_) {
-        return utf8.decode(bytes, allowMalformed: true);
-      }
-    }
-  }
+  /// 按行解码：自动识别 UTF-8 / GBK（兼容中文 APRS 备注与消息），见 [decodeAprsBytes]
+  static String _decodeLine(List<int> bytes) => decodeAprsBytes(bytes);
 
   @override
   Future<bool> connect() async {

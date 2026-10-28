@@ -16,6 +16,8 @@ library;
 import 'dart:convert' show utf8;
 import 'dart:typed_data';
 
+import 'text_decode.dart';
+
 /// KISS 常量与编解码
 class Kiss {
   Kiss._();
@@ -299,14 +301,7 @@ class Ax25 {
     return '$head:$info';
   }
 
-  /// 信息字段解码：先 UTF-8，非法字节序列则按原字节字面量保留
-  /// （不做 GBK 猜测 —— KISS 层只负责还原字节，字符集判断留给上层）
-  static String _decodeInfo(List<int> bytes) {
-    try {
-      return utf8.decode(bytes);
-    } catch (_) {
-      // 宽容解码：把非法字节按 Latin-1 映射保留，至少不丢信息
-      return String.fromCharCodes(bytes);
-    }
-  }
+  /// 信息字段解码：自动识别 UTF-8 / GBK，都不是则按 Latin-1 保留原字节
+  /// （见 [decodeAprsBytes]）。备注里的中文因此在 TNC / 声卡链路上也能正确显示。
+  static String _decodeInfo(List<int> bytes) => decodeAprsBytes(bytes);
 }
