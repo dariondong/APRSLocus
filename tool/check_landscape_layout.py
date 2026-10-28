@@ -76,13 +76,21 @@
      （debug 下溢出条纹、release 下直接被截）。
      判据：`_infoChip` 必须按可用宽度分档（`compact`），每个计数再用 `Flexible` 兜底。
 
-  8. **「矮横屏」要按顶栏之下的可用高度判断**（v1.6.163）。
-     顶部让位量会被未连接横幅 / 公告横幅各顶掉一行（合计 +84），桌面上又常有
-     「很宽但很矮」的窗口；按**裸屏高**判断会漏判 —— 而漏判的表现正是本文件第 2 条
-     要防的「工具列最下面的按钮被裁掉、点不到」。
-     判据：先算 `availH = size.height - widget.topInset - widget.bottomInset`，
-     分几列、贴底控件还要不要显示，都从它推出来；`availH < _kToolbarColH + 54`
-     这种写死阈值不许再出现。
+  8. **「矮横屏」要按地图框尺寸判断，**不能**按当帧让位量判**（v1.6.163 立规，
+     2026-10-28 改判据）。
+     立规时的理由：顶部让位量会被未连接横幅 / 公告横幅各顶掉一行（合计 +84），
+     桌面上又常有「很宽但很矮」的窗口，按**裸屏高**判会漏判 —— 漏判的表现正是
+     第 2 条要防的「工具列最下面的按钮被裁掉」。
+     改成「当帧可用高度」后又出现另一个毛病（用户报的「地图控件排序被重排」）：
+     `topInset` / `bottomInset` / 上报横杠都是一时一变的（横幅出现与收起、开始
+     上报、内容面板开合各改一次），列数于是在 3↔4 之间跳，整排按钮跟着重排。
+     判据现在是：
+       * 分几列只看**地图框尺寸**减两个**固定预留**（`_kToolbarTopReserve` /
+         `_kToolbarBottomReserve`）—— 同一块屏幕上永远同一个答案，只有旋转 /
+         改窗口大小才变；
+       * 贴底控件让不让位仍看**当帧** `availH`（那管的是「会不会真的压住」）；
+       * `availH` 不许出现在 `_toolbarColumns(...)` 的参数里，也不许再写回
+          `availH < _kToolbarColH + 54` 这类写死阈值。
 
   9. **换栏／降级不许按「朝向」判**（v1.6.164，真实缺陷）。
      消息页原写作 `!landscape && maxWidth < 720` —— 等价于「只要是横屏就走双栏」，
@@ -313,14 +321,25 @@ def main() -> int:
             errors.append('_infoChip 的计数没有**全部**(≥3) 用 Flexible + ellipsis '
                           '兜底 —— 西语/日语的长文案（`120 en movimiento`）会溢出')
 
-    # ⑧ 「矮横屏」按顶栏之下的可用高度判断，而不是裸屏高
+    # ⑧ 分几列只看地图框尺寸（固定预留），贴底控件让位才看当帧可用高度
     if ('final double availH =' not in map_code
             or 'size.height - widget.topInset - widget.bottomInset' not in map_code):
-        errors.append('MapPage 没有按「顶栏之下的可用高度」(availH) 判断矮横屏 —— '
-                      '横幅占位/桌面矮窗口会漏判，工具列最下面的按钮被裁')
-    if 'final int toolbarCols =' not in map_code or 'roomForBottom = colsWithBottom' not in map_code:
-        errors.append('没有按可用高度算 toolbarCols / 贴底控件要不要让位 —— '
-                      '阈值又变回与按钮尺寸脱钩的魔数了')
+        errors.append('MapPage 没有算「这一帧顶栏之下还剩多少」(availH) —— '
+                      '贴底控件该不该让位就判不了')
+    if ('final int toolbarCols = math.max(' not in map_code
+            or '_toolbarColumns(toolbarRoom),' not in map_code):
+        errors.append('工具列列数不是从「地图框尺寸 - 固定预留」(toolbarRoom) 算的 —— '
+                      '拿当帧让位量算，横幅/上报横杠/面板一改列数就重排（控件排序被重排）')
+    if ('_kToolbarTopReserve' not in map_code
+            or '_kToolbarBottomReserve' not in map_code):
+        errors.append('没有 _kToolbarTopReserve / _kToolbarBottomReserve —— '
+                      '分栏的预留必须是常量，否则同一块屏幕上答案会飘')
+    if re.search(r'roomForBottom\s*=\s*_toolbarColumns\(roomWithBottom\)', map_code) is None:
+        errors.append('贴底控件让不让位不是按当帧可用高度判的 —— '
+                      '真实几何一变它就判错（要么压住工具列，要么白占一条）')
+    if '_toolbarColumns(availH' in map_code:
+        errors.append('分栏又把 availH（当帧让位量）算进去了 —— 那几项一时一变，'
+                      '列数会跟着横幅 / 上报横杠 / 面板重排')
     for magic in ('availH < _kToolbarColH + 54', 'availH > 484'):
         if magic in map_code:
             errors.append(f'切回写死阈值了（{magic}）—— 加一颗钮就漏判，'

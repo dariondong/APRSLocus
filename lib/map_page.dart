@@ -185,7 +185,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
   /// 单列总高：5 颗工具 + 组间一道 gap + 6 颗缩放 = 478。
   ///
   /// 只用来判断「贴底控件（坐标条 / 上报横杠）还摆不摆得下」；工具列本身分
-  /// 几列是**按当帧可用高度**算的（见 [_toolbarColumns]）—— 以前这里写死
+  /// 几列是按地图框尺寸算的（见 [_toolbarColumns]）—— 以前这里写死
   /// 390 去判「矮横屏」，加了「锁定中心」那颗之后就不再等于真实高度了，
   /// 于是处在中间那一档的窗口（尤其桌面上的矮窗口）会漏判：工具列最下面
   /// 那颗被裁掉、点不到（用户报的「操作控件最下面有概率被遮挡」）。
@@ -194,6 +194,16 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
       _kToolGap +
       _kZoomCount * _kToolBtn +
       (_kZoomCount - 1) * _kToolGap;
+
+  /// 判工具列分栏时的上下固定预留（顶部：顶栏 + 最多一排横幅；底部：导航 +
+  /// 贴底控件）。
+  ///
+  /// 用常量而不是当帧的 `topInset` / `bottomInset`：那两项一时一变（横幅出现与
+  /// 收起、开始上报、内容面板开合），扣它们会让列数在同一块屏幕上跳，整排按钮
+  /// 跟着重排。数值取那几件东西的尺寸上限 —— 宁可多分一列，也不让最下面那颗
+  /// 按钮被 Stack 裁掉（那正是这条分栏机制当初要解决的事）。
+  static const double _kToolbarTopReserve = 100;
+  static const double _kToolbarBottomReserve = 70;
 
   /// 工具列最多分几列：再多就挤到地图中间去了，不如让贴底控件（坐标条 /
   /// 上报横杠）让位。
@@ -210,8 +220,9 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
 
   /// 装进 [room] 高最少要分几列。
   ///
-  /// 「矮横屏」不是看朝向或裸屏高，而是看这一帧**真有多少高**：桌面上的矮窗口、
-  /// 2.0 外壳的横幅把顶栏顶下去一截，都会让同一块屏幕在不同时刻需要不同列数。
+  /// 「矮横屏」不是看朝向或裸屏高，而是看这一块**地图框**有多大（减去固定的
+  /// 顶/底预留，见 [_kToolbarTopReserve]）—— 桌面上的矮窗口、手机横放，都会让
+  /// 同一块屏幕需要不同列数。
   static int _toolbarColumns(double room) {
     for (var c = 1; c <= _kToolbarBtns; c++) {
       if (_toolbarHeight(c) <= room) return c;
@@ -681,36 +692,47 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
             _syncRot();
             final vis = _visible;
             final searched = widget.searchQuery.trim().isNotEmpty;
-            // ── 右侧工具列多高、要分几列 —— 这一帧现算 ──
+            // ── 右侧工具列多高、要分几列 ──
             //
-            // 判据用**顶栏之下实际可用**的高度，而不是裸屏高：顶部让位量会被
-            // 未连接横幅与公告横幅各顶掉一行（合计 +84），桌面上又常有「很宽
-            // 但很矮」的窗口形状 —— 按裸屏高判这些都会漏判，而漏判的表现
-            // 就是工具列最下面那颗被 Stack 裁掉、点不到。
+            // `availH` 是「顶栏之下这一帧真剩多少」：它只看**这一帧**的让位量，
+            // 所以只用来判断贴底控件（坐标条 / 上报横杠）还摆不摆得下 ——
+            // 那件事本质上是「会不会压住」，必须用真实几何。工具列分几列**不能**
+            // 用它，否则横幅出现/收起、开始上报、面板开合都会把整排按钮重排一遍。
             final double availH =
                 size.height - widget.topInset - widget.bottomInset;
             // 顶部锚点的基准：所有顶部浮层从 14 挪到「外壳顶栏之下」
             final double topBase = 14 + widget.topInset;
             final double padBottom = MediaQuery.of(context).padding.bottom;
-            // 贴底控件（坐标条 / 上报横杠）从屏幕底边往上占掉的高度（含安全区）
-            final double bottomSlot = (widget.state.connected &&
-                        widget.state.myHasFix
-                    ? 62 + _kBeaconBarH
-                    : 14 + _kBottomCtrlH) +
-                padBottom +
-                widget.bottomInset;
-            // 贴底控件只在「工具列最多三列就装得下」时才出现：否则它会被工具列
-            // 压住（以前这里是一个跟按钮尺寸无关的 484，工具列长高后就不再成立）。
-            final double roomWithBottom = availH - 14 - (bottomSlot + 8);
-            final double roomNoBottom =
-                availH - 14 - (14 + padBottom + widget.bottomInset);
-            final int colsWithBottom = _toolbarColumns(roomWithBottom);
-            final bool roomForBottom = colsWithBottom <= _kToolbarMaxCols;
-            // 工具列能用的净高：顶上留 14，底下要么让开贴底控件，要么只留边距
+            // ── 工具列分几列：只看**这块地图框有多大**，不问这一帧被谁占了多少 ──
+            //
+            // 以前这里用「当帧可用高度」（减去 topInset / bottomInset / 上报横杠）。
+            // 那几项都是一时的：未连接横幅、公告横幅、开始上报、内容面板开合
+            // 各自改一次，列数就在 3↔4 之间跳，整排按钮跟着重排一遍 —— 用户报的
+            // 「地图控件排序被重排」。现在只减两个**固定预留**（取那几件东西的
+            // 尺寸上限），同一块屏幕上永远同一个答案，只有旋转 / 改窗口大小才会变。
             final double toolbarRoom =
-                roomForBottom ? roomWithBottom : roomNoBottom;
-            final int toolbarCols =
-                roomForBottom ? colsWithBottom : _toolbarColumns(toolbarRoom);
+                size.height - _kToolbarTopReserve - _kToolbarBottomReserve;
+            // 「这一帧什么都不摆时」能装下的列数：只在**矮到连稳定答案都装不下**
+            // 的窗口里才会更大（那时宁可破一次稳定性，也不让按钮被 Stack 裁掉）。
+            final double roomNoBottom = availH - 14 - (14 + padBottom);
+            final int toolbarCols = math.max(
+              _toolbarColumns(toolbarRoom),
+              _toolbarColumns(roomNoBottom),
+            );
+            // 贴底控件（坐标条 / 上报横杠）还摆不摆得下：这条得看**这一帧**，
+            // 它管的是「会不会真的压住」，与按钮怎么排无关。
+            //
+            // ⚠ `bottomInset` 只算一次（在 `availH` 里）：以前这里又把整份
+            // `bottomInset` 加进贴底占位，面板拉开一半时可用高度被扣两遍，
+            // 贴底控件会莫名其妙消失。
+            final double bottomBars = widget.state.connected &&
+                    widget.state.myHasFix
+                ? 62 + _kBeaconBarH
+                : 14 + _kBottomCtrlH;
+            final double roomWithBottom =
+                availH - 14 - (bottomBars + padBottom + 8);
+            final bool roomForBottom =
+                _toolbarColumns(roomWithBottom) <= _kToolbarMaxCols;
             // 左侧那一列浮层要让开工具列：它以前写死 `right: 74`（只够一列），
             // 工具列换成两列/三列后就会压在它的右端。
             final double rightGutter =
@@ -2361,7 +2383,9 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
     if (cols <= 1) {
       return Column(mainAxisSize: MainAxisSize.min, children: _spaced(btns));
     }
-    // 按算出来的列数均分：第一列在最右（贴着屏幕边），后面几列往左排。
+    // 按算出来的列数均分：先排满一列再排下一列（从上到下、从左到右），
+    // 于是「读的顺序」始终就是按钮表本身的顺序，列数怎么变都不会前后颠倒。
+    // 工具列整体靠右（`right: 14`），所以最后一列贴着屏幕边。
     final per = (btns.length + cols - 1) ~/ cols;
     final columns = <Widget>[];
     for (var i = 0; i < btns.length; i += per) {
