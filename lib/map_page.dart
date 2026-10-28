@@ -177,12 +177,12 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
   static const double _kToolBtn = 38;
   static const double _kToolGap = 6;
 
-  /// 工具列两组按钮的颗数：4 颗工具（图层 / 轨迹组 / 策略 / 底图）
+  /// 工具列两组按钮的颗数：5 颗工具（图层 / 轨迹组 / 策略 / 底图 / 中心经纬度）
   /// + 6 颗缩放（放大 / 缩小 / 轨迹 / 热力图 / 定位 / 锁定中心）。
-  static const int _kToolCount = 4;
+  static const int _kToolCount = 5;
   static const int _kZoomCount = 6;
 
-  /// 单列总高：4 颗工具 + 组间一道 gap + 6 颗缩放 = 434。
+  /// 单列总高：5 颗工具 + 组间一道 gap + 6 颗缩放 = 478。
   ///
   /// 只用来判断「贴底控件（坐标条 / 上报横杠）还摆不摆得下」；工具列本身分
   /// 几列是**按当帧可用高度**算的（见 [_toolbarColumns]）—— 以前这里写死
@@ -2341,6 +2341,20 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
         bg: chipTint(C.white),
         fg: C.slate,
         border: C.border,
+      ),
+      // 屏幕正中的经纬度读数：**默认关**，开关就摆在地图自己身上。
+      // 想看「正中这个点在哪」的人在图上点一下就开，不必绕进设置 → 显示；
+      // 状态本身持久化（AppState.mapCenterCoord），下次打开还是他选的那样。
+      _toolBtn(
+        icon: widget.state.mapCenterCoord
+            ? Icons.center_focus_strong_rounded
+            : Icons.center_focus_weak_rounded,
+        onTap: () => setState(
+          () => widget.state.setMapCenterCoord(!widget.state.mapCenterCoord),
+        ),
+        bg: chipTint(widget.state.mapCenterCoord ? C.blueBg : C.white),
+        fg: widget.state.mapCenterCoord ? C.blue : C.slate,
+        border: widget.state.mapCenterCoord ? C.blue : C.border,
       ),
       ..._zoomBtns(),
     ];

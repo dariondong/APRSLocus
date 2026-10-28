@@ -3911,9 +3911,10 @@ class AppState extends ChangeNotifier {
 
   /// 地图正中那一圈的经纬度读数（见 MapPage 的「中心读数」）。
   ///
-  /// 默认开：手机没有鼠标悬停，底部读数条只能说「离我多远」，用户在屏幕上
-  /// 根本看不到「正中这个点在哪」。嫌重可以在 设置 → 显示 里关掉。
-  bool mapCenterCoord = true;
+  /// **默认关**。它是一件「要知道的时候才要」的东西：读数是给「正中这个点
+  /// 在哪」用的，平时只挡地图。开关有两个入口 —— 地图工具列里那一颗（就地
+  /// 开关）与 设置 → 显示 → 地图，两处改的是同一个值，都持久化。
+  bool mapCenterCoord = false;
 
   void setMapCenterCoord(bool v) {
     if (v == mapCenterCoord) return;
@@ -4699,7 +4700,7 @@ class AppState extends ChangeNotifier {
     garminUrl = '';
     coordDatum = 'wgs84';
     coordFormat = 'dec';
-    mapCenterCoord = true;
+    mapCenterCoord = false;
     darkMode = false;
     weatherEnabled = true;
     noticeBanner = true;
