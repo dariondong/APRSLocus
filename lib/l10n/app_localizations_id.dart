@@ -10265,4 +10265,7 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get oobeServerSkip => "Lewati, isi nanti di pengaturan";
 
+  @override
+  String get advChannels => "Pengaturan kirim lanjutan";
+
 }

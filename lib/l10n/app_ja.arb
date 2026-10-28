@@ -4430,5 +4430,6 @@
   "coordFormatDm": "度分",
   "coordFormatDms": "度分秒",
   "mapCenterCoord": "中心の緯度経度",
-  "oobeServerSkip": "スキップ（あとで設定に入力）"
+  "oobeServerSkip": "スキップ（あとで設定に入力）",
+  "advChannels": "送信先の詳細設定"
 }

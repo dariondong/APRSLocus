@@ -160,13 +160,15 @@ class _AcnCardsState extends State<AcnCards> {
         _accountInputs(s),
         // 与 APRS-IS 那张卡同样的两行：位置/状态报文一行，消息一行。
         // 勾上就是这条链路发；没连上也能先选好，另一条不会顶上来。
-        SettingsTxPick(
-          S.of(context).txKindPosition,
-          icon: Icons.my_location_rounded,
-          multi: true,
-          checked: st.posTxHas(AppState.srcAcn),
-          onTap: () => st.togglePosTx(AppState.srcAcn),
-        ),
+        // 位置那一行只在「高级连接通道设置」打开时出现（关着时位置全发）。
+        if (st.advChannels)
+          SettingsTxPick(
+            S.of(context).txKindPosition,
+            icon: Icons.my_location_rounded,
+            multi: true,
+            checked: st.posTxHas(AppState.srcAcn),
+            onTap: () => st.togglePosTx(AppState.srcAcn),
+          ),
         SettingsTxPick(
           S.of(context).messages,
           icon: Icons.forum_rounded,

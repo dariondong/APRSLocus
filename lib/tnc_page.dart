@@ -208,6 +208,15 @@ class DataSourceCard extends StatelessWidget {
             MaterialPageRoute(builder: (_) => PkwdwplDevicePage(state: state)),
           ),
         ),
+        // 「高级连接通道设置」：默认关 —— 关着时位置与状态报文发往所有
+        // 已启用且连上的可发射链路（见 posTxTargets），不再逐条打勾；
+        // 消息仍按上一次勾的那一条发。打开后每行右侧才出现位置那颗圆点。
+        SettingsSwitch(
+          s.advChannels,
+          value: state.advChannels,
+          color: C.blue,
+          onChanged: state.setAdvChannels,
+        ),
         // ── 位置来源 / 心率来源（用户要求：佳明应当作为「数据来源」的一种选择）──
         //
         // 与上面那些**报文链路**分开列：那几条的语义是「报文从哪条链路收发」，
@@ -631,8 +640,10 @@ class DataSourceCard extends StatelessWidget {
     final isUp = up ?? state.isUp(key);
     // 只读来源（PKWDWPL）永远不是发射来源，圆点也不画 ——
     // 否则用户会以为「选上它就能发」。
-    // 两类报文各一颗：位置与状态（可多选，同时发）、消息（单选）。
-    final posTx = isTx ?? (canTx && state.posTxHas(key));
+    // 位置那颗只在「高级连接通道设置」打开时才画：关着时位置一律全发，
+    // 画出来也只是个点不动的东西。消息那颗一直在（它不受那个开关影响）。
+    final showPosDot = canTx && state.advChannels;
+    final posTx = isTx ?? (showPosDot && state.posTxHas(key));
     final msgTx = isTxMsg ?? (canTx && state.dataSourceMsg == key);
     return SettingsLinkEntry(
       title: title,
@@ -645,7 +656,7 @@ class DataSourceCard extends StatelessWidget {
       onToggle: onToggle ?? (v) => state.toggleSource(key, v),
       icon: icon,
       color: C.blue,
-      txPos: (!disabled && canTx) ? posTx : null,
+      txPos: (!disabled && showPosDot) ? posTx : null,
       txMsg: (!disabled && canTx) ? msgTx : null,
       onTxPos: () => state.togglePosTx(
           key == 'icomlan' ? AppState.srcAudio : key),

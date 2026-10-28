@@ -4430,5 +4430,6 @@
   "coordFormatDm": "Derajat-menit",
   "coordFormatDms": "Derajat-menit-detik",
   "mapCenterCoord": "Koordinat tengah",
-  "oobeServerSkip": "Lewati, isi nanti di pengaturan"
+  "oobeServerSkip": "Lewati, isi nanti di pengaturan",
+  "advChannels": "Pengaturan kirim lanjutan"
 }

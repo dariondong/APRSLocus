@@ -5018,5 +5018,6 @@
   "coordFormatDm": "度分",
   "coordFormatDms": "度分秒",
   "mapCenterCoord": "中心經緯度",
-  "oobeServerSkip": "跳過，稍後在設定裡填"
+  "oobeServerSkip": "跳過，稍後在設定裡填",
+  "advChannels": "高階連線通道設定"
 }

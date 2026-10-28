@@ -36,6 +36,10 @@ CLASSES = {
 
 # ── 要加的键：key → (zh, zh_TW, en, ja, es, id) ──
 KEYS = {
+    # ── 设备面板：位置/消息逐条挑还是位置全发 ──
+    'advChannels': (
+        '高级连接通道设置', '高階連線通道設定', 'Per-link sending',
+        '送信先の詳細設定', 'Envío por enlace', 'Pengaturan kirim lanjutan'),
     # ── 首次引导：服务器那一步给一个大按钮明说可以跳过 ──
     #
     # 留空 = 纯本地，规则早就有，但底部那颗「下一步」长得像「必须填完才

@@ -140,13 +140,16 @@ class _AprsIsCardsState extends State<AprsIsCards> {
           _save();
         }),
         _passcodeInput(),
-        SettingsTxPick(
-          S.of(context).txKindPosition,
-          icon: Icons.my_location_rounded,
-          multi: true,
-          checked: st.posTxHas(AppState.srcAprsIs),
-          onTap: () => st.togglePosTx(AppState.srcAprsIs),
-        ),
+        // 位置与状态报文那一行只在「高级连接通道设置」打开时出现：关着时
+        // 位置一律发往所有已启用且连上的链路，这一行勾了也不起作用。
+        if (st.advChannels)
+          SettingsTxPick(
+            S.of(context).txKindPosition,
+            icon: Icons.my_location_rounded,
+            multi: true,
+            checked: st.posTxHas(AppState.srcAprsIs),
+            onTap: () => st.togglePosTx(AppState.srcAprsIs),
+          ),
         SettingsTxPick(
           S.of(context).messages,
           icon: Icons.forum_rounded,

@@ -366,6 +366,15 @@ jobs:
       - name: Test coordinate format
         run: flutter test test/coord_format_test.dart
 
+      # 「高级连接通道设置」开关（用户要求「位置默认全部都发、消息保留勾选」）：
+      # 关着时位置发给所有已启用且连上的可发射链路、消息那条链路不动。
+      # 三条错都编译能过、analyze 全绿：
+      #   ① 列表里夹进没连上的链路（每次信标一条 not-connected）；
+      #   ② 一条都没连上时返回空列表（发送静默什么都不做）；
+      #   ③ 切开关顺手把消息链路也改了。
+      - name: Test advanced channel switch
+        run: flutter test test/adv_channels_test.dart
+
       # 台站排序「能记忆」（用户要求）：排序原来只活在台站页的 State 里，退出面板
       # 就回到按呼号排。它同样编译能过、analyze 全绿，只表现成「怎么又变回去了」；
       # 脏值回落与落盘读回也一并钉住。

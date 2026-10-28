@@ -2614,10 +2614,27 @@ class AppState extends ChangeNotifier {
   ///
   /// 用户要求「位置也要能同时发」：射频与网络各发一份，两侧都看得到这个站。
   /// 第一条仍然是 [dataSource]（许多判断靠它），这里只放额外的那些。
+  /// 这份名单只在 [advChannels] 打开时才生效。
   List<String> posTxExtra = <String>[];
 
+  /// 位置/状态报文要逐条挑还是全发（设备面板的「高级连接通道设置」）。
+  ///
+  /// 默认关（简单模式）：位置与状态报文发往**所有**已启用且连上的可发射
+  /// 链路 —— 「开了哪几条，位置就从哪几条出去」，不必逐个打勾。消息不受这个
+  /// 开关影响，始终按上一次勾的那一条发（[dataSourceMsg]）。
+  /// 打开后才回到逐条挑：位置可多选（[posTxExtra]）、消息仍旧单选。
+  bool advChannels = false;
+
+  void setAdvChannels(bool v) {
+    if (advChannels == v) return;
+    advChannels = v;
+    persist();
+    _notify();
+    _updateNotification();
+  }
+
   /// 这条链路发不发位置/状态报文。
-  bool posTxHas(String src) => src == dataSource || posTxExtra.contains(src);
+  bool posTxHas(String src) => posTxTargets.contains(src);
 
   /// 已启用的来源集合（至少一个；发射来源必须在此集合内）
   final Set<String> enabledSources = {srcAprsIs};
@@ -3692,10 +3709,28 @@ class AppState extends ChangeNotifier {
   }
 
   /// 位置/状态报文实际要发的链路，第一条是 [dataSource]。
-  List<String> get posTxTargets => <String>[
+  ///
+  /// 两种模式（见 [advChannels]）：
+  ///   * 高级（true）：用户逐条勾的 —— [dataSource] + [posTxExtra]；
+  ///   * 默认（false）：所有已启用**且已连上**的可发射链路。
+  ///
+  /// 没连上的链路不进默认列表：勾着却发不出去，每次信标都会在日志里留一条
+  /// not-connected，而用户并没有做错什么。一条都没连上时仍返回主链路，让
+  /// 发送路径照常报错，而不是静默不发。
+  List<String> get posTxTargets {
+    if (advChannels) {
+      return <String>[
         dataSource,
         ...posTxExtra.where((s) => s != dataSource),
       ];
+    }
+    final out = <String>[
+      if (isUp(dataSource)) dataSource,
+      for (final s in enabledSources)
+        if (s != dataSource && canTransmit(s) && isUp(s)) s,
+    ];
+    return out.isEmpty ? <String>[dataSource] : out;
+  }
 
   /// 指定**消息**的发射来源（同样必须已启用、可发射）。
   void setTxMsgSource(String src) {
@@ -4796,6 +4831,7 @@ class AppState extends ChangeNotifier {
     dataSource = srcAprsIs;
     dataSourceMsg = srcAprsIs;
     posTxExtra = <String>[];
+    advChannels = false;
     enabledSources
       ..clear()
       ..add(srcAprsIs);
@@ -5446,6 +5482,7 @@ class AppState extends ChangeNotifier {
               s != dataSource && enabledSources.contains(s) && canTransmit(s))
           .toSet()
           .toList();
+      advChannels = p.getBool('advChannels') ?? advChannels;
       igateEnabled = p.getBool('igateEnabled') ?? igateEnabled;
       igateTwoWay = p.getBool('igateTwoWay') ?? igateTwoWay;
       await tnc.load();
@@ -5749,6 +5786,7 @@ class AppState extends ChangeNotifier {
     await p.setString('dataSource', dataSource);
     await p.setString('dataSourceMsg', dataSourceMsg);
     await p.setStringList('posTxExtra', posTxExtra);
+    await p.setBool('advChannels', advChannels);
     await p.setStringList('enabledSources', enabledSources.toList());
     // 老版本只认这一个开关（它没有 enabledSources）：照当前的启用状态同步
     // 写一份，免得磁盘上留着的旧 true 在下次启动时把已经关掉的链路又补回来。

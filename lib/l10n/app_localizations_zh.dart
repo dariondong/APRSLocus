@@ -9876,6 +9876,9 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String get oobeServerSkip => "跳过，稍后在设置里填";
 
+  @override
+  String get advChannels => "高级连接通道设置";
+
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
@@ -19748,5 +19751,8 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get oobeServerSkip => "跳過，稍後在設定裡填";
+
+  @override
+  String get advChannels => "高階連線通道設定";
 
 }

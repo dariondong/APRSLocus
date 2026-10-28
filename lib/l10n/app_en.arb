@@ -4430,5 +4430,6 @@
   "coordFormatDm": "Deg-min",
   "coordFormatDms": "Deg-min-sec",
   "mapCenterCoord": "Centre coordinates",
-  "oobeServerSkip": "Skip, set it later in settings"
+  "oobeServerSkip": "Skip, set it later in settings",
+  "advChannels": "Per-link sending"
 }

@@ -9976,4 +9976,7 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String get oobeServerSkip => "スキップ（あとで設定に入力）";
 
+  @override
+  String get advChannels => "送信先の詳細設定";
+
 }

@@ -18111,6 +18111,12 @@ abstract class AppLocalizations {
   /// **'跳过，稍后在设置里填'**
   String get oobeServerSkip;
 
+  /// No description provided for @advChannels.
+  ///
+  /// In zh, this message translates to:
+  /// **'高级连接通道设置'**
+  String get advChannels;
+
 }
 
 class _AppLocalizationsDelegate

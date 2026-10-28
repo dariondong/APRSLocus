@@ -10314,4 +10314,7 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get oobeServerSkip => "Saltar, lo pongo luego en ajustes";
 
+  @override
+  String get advChannels => "Envío por enlace";
+
 }

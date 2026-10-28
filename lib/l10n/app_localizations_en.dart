@@ -10255,4 +10255,7 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get oobeServerSkip => "Skip, set it later in settings";
 
+  @override
+  String get advChannels => "Per-link sending";
+
 }
