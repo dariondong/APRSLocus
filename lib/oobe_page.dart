@@ -1198,7 +1198,7 @@ class _OobePageState extends State<OobePage> {
   /// 用户要求（2026-10-29）：「OOBE 阶段增加功能设置，涵盖历史轨迹和其他功能」。
   /// 装完第一件事常常就是「这些花哨的东西我不要」，在这里就能关掉，不必先装好
   /// 再跑一趟设置。开关写的就是同一份 state（setFeature 自己落盘）——「设置 →
-  /// 功能」里那七个与这里是同一批开关，不会各记一套。
+  /// 功能」里那批开关与这里是同一批，不会各记一套。
   ///
   /// 精简模式**不**放在这一步：它是整套外壳的切换，在向导里按一下会让后面的页面
   /// 直接换个样子，装完也记不住「刚才是我自己按的」。
@@ -1235,10 +1235,14 @@ class _OobePageState extends State<OobePage> {
                   onChanged: (v) =>
                       setState(() => widget.state.setWeatherEnabled(v)),
                 ),
+                // ⚠ 这里读 `featuresOff` 而不是 `featureEnabled`：后者在精简模式下
+                // 一律 false，若用户是从一份开着精简模式的备份恢复过来的，开关会
+                // 显示成关、点下去也「不动」（值写了但不显示）—— 那正是「启用了却
+                // 激活不了」的观感。向导里显示的是他自己关过哪几个。
                 for (final f in AppFeature.values)
                   SettingsSwitch(
                     _featureLabel(f, s),
-                    value: widget.state.featureEnabled(f),
+                    value: !widget.state.featuresOff.contains(f.id),
                     color: C.purple,
                     onChanged: (v) =>
                         setState(() => widget.state.setFeature(f.id, v)),
