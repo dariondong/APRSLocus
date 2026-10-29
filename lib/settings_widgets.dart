@@ -782,11 +782,16 @@ class SettingsLinkEntry extends StatelessWidget {
                     ),
                   ]),
                 ],
-                const SizedBox(height: 2),
-                Text(subtitle,
-                    style: ts(10, c: enabled ? C.greyLight : C.orange),
-                    maxLines: enabled ? 1 : 2,
-                    overflow: TextOverflow.ellipsis),
+                // 没有说明就不画那一行：设备页上五行链路各有两三行小字，
+                // 用户的原话是「太多小字了」。空串还留着 2px 间距 + 一个空
+                // Text 的高度，看着像没对齐。
+                if (subtitle.isNotEmpty) ...[
+                  const SizedBox(height: 2),
+                  Text(subtitle,
+                      style: ts(10, c: enabled ? C.greyLight : C.orange),
+                      maxLines: enabled ? 1 : 2,
+                      overflow: TextOverflow.ellipsis),
+                ],
               ],
             ),
           ),

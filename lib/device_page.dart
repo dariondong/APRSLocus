@@ -53,7 +53,8 @@ class _DeviceOverviewPageState extends State<DeviceOverviewPage> {
       builder: (context, _) => SettingsPageShell(
         guideId: 'device',
         title: s.deviceOverviewTitle,
-        subtitle: s.deviceOverviewSubtitle,
+        // 页副标题「数据来源、链路状态与自检」只是把这页有几块念了一遍 ——
+        // 用户说「设备页太多小字了」，这类描述结构的小字先删。
         icon: Icons.devices_other_rounded,
         color: C.indigo,
         body: Column(children: [
@@ -139,7 +140,8 @@ class _DeviceOverviewPageState extends State<DeviceOverviewPage> {
           color: C.purple,
           onChanged: state.setIgateEnabled,
         ),
-        SettingsHint(s.igateHint),
+        // 原来这里还有一段两行的长说明（同样的意思副标题已经说过一遍）。
+        // 真正缺条件时下面那条橙色提示会指名道姓缺什么，不必常驻一条。
         // 启用前置条件没满足时**明确说缺什么**，而不是静默不工作。
         // 四种情形由 AppState.igateIdleReason 统一判定（勾没勾、连没连、
         // 是不是全被环路防护拒收），这里只负责把它翻成人话。
@@ -262,7 +264,7 @@ class _DeviceOverviewPageState extends State<DeviceOverviewPage> {
     }
     return SettingsSectionCard(
       title: s.deviceCurrentLink,
-      subtitle: s.deviceCurrentLinkDesc,
+      // 「只读摘要 · 改参数请进对应子页」是讲这页怎么用的小字，删。
       icon: Icons.sensors_rounded,
       color: C.green,
       children: rows,
@@ -273,7 +275,7 @@ class _DeviceOverviewPageState extends State<DeviceOverviewPage> {
   Widget _entriesCard(BuildContext context, S s) {
     return SettingsSectionCard(
       title: s.deviceEntries,
-      subtitle: s.deviceEntriesDesc,
+      // 「每条链路一个子页，各管各的参数」同上：下面五行的标题已经说明了。
       icon: Icons.tune_rounded,
       color: C.cyan,
       children: [

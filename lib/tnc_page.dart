@@ -109,7 +109,9 @@ class DataSourceCard extends StatelessWidget {
     final s = S.of(context);
     return SettingsSectionCard(
       title: s.dataSourceTitle,
-      subtitle: s.dataSourceSubtitle,
+      // 副标题「报文从哪里来」与下面每一行的说明都是小字，用户的原话是
+      // 「设备页太多小字了」。这里只留「名字 + 通没通」：每条链路的细节就在
+      // 它自己的子页里（点整行进去），不必在概览里再写一遍。
       icon: Icons.swap_horiz_rounded,
       color: C.blue,
       children: [
@@ -121,7 +123,6 @@ class DataSourceCard extends StatelessWidget {
           context,
           key: AppState.srcAprsIs,
           title: s.dataSourceAprsIs,
-          desc: s.dataSourceAprsIsDesc,
           icon: Icons.cloud_rounded,
           // 与下面 APRSNETCN 那一行同一个口径：点整行进它自己的设置页。
           // 少了这一句，整行看着能点、点下去什么都不发生。
@@ -135,7 +136,6 @@ class DataSourceCard extends StatelessWidget {
             context,
             key: AppState.srcAcn,
             title: s.acnCardTitle,
-            desc: s.acnCardSubtitle,
             icon: Icons.hub_rounded,
             enabled: state.acnOn,
             up: state.acnConnected,
@@ -149,7 +149,6 @@ class DataSourceCard extends StatelessWidget {
           context,
           key: AppState.srcTnc,
           title: s.dataSourceTnc,
-          desc: s.dataSourceTncDesc,
           icon: Icons.settings_input_antenna_rounded,
           disabled: !tncPlatformSupported,
           disabledReason: s.iosFeatureUnsupported,
@@ -161,9 +160,10 @@ class DataSourceCard extends StatelessWidget {
           context,
           key: 'icomlan',
           title: 'WLAN 电台（${state.audio.config.icomLan.model.id}）',
+          // 这一行只留配置好的地址；没配过就什么都不写（不在概览里列型号清单）。
           desc: state.audio.config.icomLan.host.isNotEmpty
               ? '${state.audio.config.icomLan.model.displayName} · ${state.audio.config.icomLan.host}:${state.audio.config.icomLan.controlPort}'
-              : '局域网直连 Icom 电台（IC-705 / IC-9700 / IC-7610 / IC-905）',
+              : '',
           icon: Icons.wifi_tethering_rounded,
           enabled: state.icomLanOn,
           isTx: state.isIcomLanTx,
@@ -180,7 +180,6 @@ class DataSourceCard extends StatelessWidget {
           context,
           key: AppState.srcAudio,
           title: s.dataSourceAudio,
-          desc: s.dataSourceAudioDesc,
           icon: Icons.graphic_eq_rounded,
           enabled: state.audioDeviceOn,
           isTx: state.isAudioDeviceTx,
@@ -199,7 +198,6 @@ class DataSourceCard extends StatelessWidget {
           context,
           key: AppState.srcPkwdwpl,
           title: s.dataSourcePkwdwpl,
-          desc: s.dataSourcePkwdwplDesc,
           icon: Icons.route_rounded,
           canTx: false,
           disabled: !tncPlatformSupported,
@@ -621,7 +619,7 @@ class DataSourceCard extends StatelessWidget {
     BuildContext context, {
     required String key,
     required String title,
-    required String desc,
+    String desc = '',
     required IconData icon,
     bool? enabled,
     bool? isTx,
