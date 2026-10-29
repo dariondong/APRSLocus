@@ -61,13 +61,24 @@ void main() {
     expect(st.posTxTargets, <String>[st.dataSource]);
   });
 
-  test('打开高级：回到逐条勾选，没勾的不发', () async {
+  test('简单模式下启用通道，该通道的位置发射也跟着开', () async {
+    final st = await bothUp();
+    expect(st.advChannels, isFalse);
+    expect(st.posTxHas(AppState.srcAudio), isTrue,
+        reason: '启用通道 = 这条通道也发位置');
+    // 切到高级：刚启用的通道仍然是勾着的 —— 两种口径不许自相矛盾
+    st.setAdvChannels(true);
+    expect(st.posTxTargets, <String>[AppState.srcAprsIs, AppState.srcAudio]);
+    // 高级模式下逐条取消，没勾的就不发
+    st.togglePosTx(AppState.srcAudio);
+    expect(st.posTxTargets, <String>[AppState.srcAprsIs]);
+  });
+
+  test('关掉通道时，它的位置勾选一起删掉', () async {
     final st = await bothUp();
     st.setAdvChannels(true);
-    expect(st.posTxTargets, <String>[AppState.srcAprsIs]);
-    st.togglePosTx(AppState.srcAudio);
-    expect(st.posTxTargets, <String>[AppState.srcAprsIs, AppState.srcAudio]);
-    st.togglePosTx(AppState.srcAudio);
+    await st.toggleSource(AppState.srcAudio, false);
+    expect(st.posTxHas(AppState.srcAudio), isFalse);
     expect(st.posTxTargets, <String>[AppState.srcAprsIs]);
   });
 

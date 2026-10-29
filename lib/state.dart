@@ -2614,7 +2614,8 @@ class AppState extends ChangeNotifier {
   ///
   /// 用户要求「位置也要能同时发」：射频与网络各发一份，两侧都看得到这个站。
   /// 第一条仍然是 [dataSource]（许多判断靠它），这里只放额外的那些。
-  /// 这份名单只在 [advChannels] 打开时才生效。
+  /// 这份名单只在 [advChannels] 打开时才生效；简单模式下它跟着
+  /// [enabledSources] 走（见 [_notePosTxLink]），切回高级时勾选与通道开关一致。
   List<String> posTxExtra = <String>[];
 
   /// 位置/状态报文要逐条挑还是全发（设备面板的「高级连接通道设置」）。
@@ -3391,6 +3392,19 @@ class AppState extends ChangeNotifier {
     return '${raw.substring(0, gt)}>$want${raw.substring(colon)}';
   }
 
+  /// 简单模式（[advChannels] 关）下「启用通道 = 该通道也发位置」。
+  ///
+  /// 简单模式发送时看的是「已启用 + 已连上」，这份名单只在运行时算，不落盘；
+  /// 用户打开某条通道后如果只记在 [enabledSources] 里，切到高级模式时它又是
+  /// 没勾的 —— 同一台设备上两种口径自相矛盾（用户报的「关闭高级通道设置后，
+  /// 启用其中一个通道，该通道的位置发射也该跟着开启」）。所以启用链路时把这条
+  /// 同时记进 [posTxExtra]（高级模式用的那份勾选），关掉时由 [toggleSource]
+  /// 删掉，两边永远一致。
+  void _notePosTxLink(String src) {
+    if (advChannels || !canTransmit(src) || posTxExtra.contains(src)) return;
+    posTxExtra = <String>[...posTxExtra, src];
+  }
+
   /// 启用/停用某条链路（多选）。
   ///
   /// 不能把最后一个来源关掉 —— 那样应用会变成「什么都不收」，
@@ -3400,6 +3414,7 @@ class AppState extends ChangeNotifier {
     if (on) {
       if (enabledSources.contains(s0)) return;
       enabledSources.add(s0);
+      _notePosTxLink(s0);
     } else {
       if (!enabledSources.contains(s0)) return;
       if (enabledSources.length <= 1) {
@@ -3550,6 +3565,7 @@ class AppState extends ChangeNotifier {
     final s0 = _normalizeSrc(src);
     if (enabledSources.contains(s0)) return;
     enabledSources.add(s0);
+    _notePosTxLink(s0);
     _log(LogLevel.info, '连接', '${_sourceName(s0)} 已加入数据来源（设备页手动连接）');
     persist();
     _notify();
