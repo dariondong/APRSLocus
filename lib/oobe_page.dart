@@ -154,8 +154,14 @@ class _OobePageState extends State<OobePage> {
         _applyFilterCountries();
         break;
       case 6:
-        // 功能步骤：模块开关是**边点边落盘**的（setFeature 自己 persist），
-        // 这一步不需要额外写状态，只需要允许往下走。
+        // 功能步骤：模块开关是**边点边落盘**的（setFeature 自己 persist）。
+        // 只有历史轨迹要再补一步 —— 它自己那道「记录」开关默认是关的
+        // （2.1.30），于是在设置里看着模块开着、却什么都不记。用户在向导里
+        // 留着它就是要它记，所以这里跟着开关一次；反过来关掉模块就停记，
+        // 否则入口没了、后台还在写。
+        final tracksOn =
+            !widget.state.featuresOff.contains(AppFeature.tracks.id);
+        widget.state.setTrackLogOn(tracksOn);
         break;
       case 7:
         // 服务器步骤：先把填的地址写进 state，下一步的「配置完成」要回读它。
