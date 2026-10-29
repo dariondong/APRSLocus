@@ -4432,5 +4432,7 @@
   "mapCenterCoord": "Centre coordinates",
   "oobeServerSkip": "Skip, set it later in settings",
   "advChannels": "Per-link sending",
-  "codeContributionEncoding": "Chinese text encoding"
+  "codeContributionEncoding": "Chinese text encoding",
+  "oobeFeatureTitle": "Which extras do you want",
+  "oobeFeatureDesc": "A module you turn off leaves the settings page. Change it later in Settings → Features."
 }

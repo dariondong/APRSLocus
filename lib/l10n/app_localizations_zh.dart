@@ -9882,6 +9882,12 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String get codeContributionEncoding => "中文编码兼容";
 
+  @override
+  String get oobeFeatureTitle => "要哪些功能";
+
+  @override
+  String get oobeFeatureDesc => "关掉的模块不会出现在设置里。以后想改，设置 → 功能。";
+
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
@@ -19760,5 +19766,11 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get codeContributionEncoding => "中文編碼相容";
+
+  @override
+  String get oobeFeatureTitle => "要哪些功能";
+
+  @override
+  String get oobeFeatureDesc => "關掉的模組不會出現在設定裡。以後想改，設定 → 功能。";
 
 }

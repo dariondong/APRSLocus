@@ -235,6 +235,20 @@ KEYS = {
         'SSID は数字か英字の 1〜2 文字です。',
         'El SSID puede ser una o dos letras o cifras.',
         'SSID hanya boleh satu atau dua huruf atau angka.'),
+    # ── 首次引导：功能（自选模块）那一步 ──
+    #
+    # 用户在待办里说「OOBE 阶段增加功能设置，涵盖历史轨迹和其他功能」：
+    # 装完就想把不要的模块关掉，不必先跑到设置里翻。
+    'oobeFeatureTitle': (
+        '要哪些功能', '要哪些功能', 'Which extras do you want',
+        '使う機能', 'Qué extras quieres', 'Fitur mana yang dipakai'),
+    'oobeFeatureDesc': (
+        '关掉的模块不会出现在设置里。以后想改，设置 → 功能。',
+        '關掉的模組不會出現在設定裡。以後想改，設定 → 功能。',
+        'A module you turn off leaves the settings page. Change it later in Settings → Features.',
+        'オフにしたモジュールは設定に出てきません。あとから「設定 → 機能」で変えられます。',
+        'Un módulo apagado desaparece de los ajustes. Puedes cambiarlo en Ajustes → Funciones.',
+        'Modul yang dimatikan hilang dari pengaturan. Ubah nanti di Pengaturan → Fitur'),
     # ── 关于页的代码贡献：BGTPEE 的 UTF-8 / GBK 自动识别（PR #38）──
     'codeContributionEncoding': (
         '中文编码兼容', '中文編碼相容', 'Chinese text encoding',

@@ -10271,4 +10271,10 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get codeContributionEncoding => "Encoding Tionghoa";
 
+  @override
+  String get oobeFeatureTitle => "Fitur mana yang dipakai";
+
+  @override
+  String get oobeFeatureDesc => "Modul yang dimatikan hilang dari pengaturan. Ubah nanti di Pengaturan → Fitur";
+
 }

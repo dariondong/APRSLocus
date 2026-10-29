@@ -10320,4 +10320,10 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get codeContributionEncoding => "Codificación china";
 
+  @override
+  String get oobeFeatureTitle => "Qué extras quieres";
+
+  @override
+  String get oobeFeatureDesc => "Un módulo apagado desaparece de los ajustes. Puedes cambiarlo en Ajustes → Funciones.";
+
 }

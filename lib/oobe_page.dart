@@ -12,6 +12,7 @@ import 'backup_io.dart' if (dart.library.html) 'backup_io_web.dart' as backup_io
 import 'theme.dart';
 import 'state.dart';
 import 'models.dart';
+import 'features.dart';
 import 'widgets.dart';
 import 'terms_page.dart';
 import 'settings_widgets.dart';
@@ -25,9 +26,10 @@ class OobePage extends StatefulWidget {
 }
 
 class _OobePageState extends State<OobePage> {
-  /// 向导一共几步：语言 → 协议 → 欢迎 → 呼号 → 符号 → 筛选 → 服务器 → 完成。
-  /// 进度条、页码、最后一步的判定都读它，加一步只改这一处。
-  static const int _total = 8;
+  /// 向导一共几步：语言 → 协议 → 欢迎 → 呼号 → 符号 → 筛选 → 功能 → 服务器
+  /// → 完成。进度条、页码、最后一步的判定都读它，加一步只改这一处（以及下面
+  /// `_next()` 的 case 与 PageView 里那串顺序）。
+  static const int _total = 9;
 
   int _step = 0;
   // 页面切换动画进行中标记：防止快速连点导致 PageView 与 _step 失步（偶发卡死）
@@ -152,6 +154,10 @@ class _OobePageState extends State<OobePage> {
         _applyFilterCountries();
         break;
       case 6:
+        // 功能步骤：模块开关是**边点边落盘**的（setFeature 自己 persist），
+        // 这一步不需要额外写状态，只需要允许往下走。
+        break;
+      case 7:
         // 服务器步骤：先把填的地址写进 state，下一步的「配置完成」要回读它。
         _saveServer();
         break;
@@ -455,6 +461,7 @@ class _OobePageState extends State<OobePage> {
                   _callsign(),
                   _symbolPick(),
                   _filterPick(),
+                  _featuresPage(),
                   _serverPage(),
                   _done(),
                 ],
@@ -1186,6 +1193,76 @@ class _OobePageState extends State<OobePage> {
   }
 
   // ─── 第 7 步：服务器连接 ───
+  /// 第 7 步：功能 —— 自选模块。
+  ///
+  /// 用户要求（2026-10-29）：「OOBE 阶段增加功能设置，涵盖历史轨迹和其他功能」。
+  /// 装完第一件事常常就是「这些花哨的东西我不要」，在这里就能关掉，不必先装好
+  /// 再跑一趟设置。开关写的就是同一份 state（setFeature 自己落盘）——「设置 →
+  /// 功能」里那七个与这里是同一批开关，不会各记一套。
+  ///
+  /// 精简模式**不**放在这一步：它是整套外壳的切换，在向导里按一下会让后面的页面
+  /// 直接换个样子，装完也记不住「刚才是我自己按的」。
+  Widget _featuresPage() {
+    final s = S.of(context);
+    return SingleChildScrollView(
+      padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 20),
+      child: Column(
+        children: [
+          SizedBox(height: 16),
+          Icon(Icons.widgets_rounded, color: C.purple, size: 52),
+          SizedBox(height: 16),
+          Text(
+            s.oobeFeatureTitle,
+            style: ts(20, w: FontWeight.w800, ls: -0.4),
+          ),
+          SizedBox(height: 8),
+          Text(
+            s.oobeFeatureDesc,
+            textAlign: TextAlign.center,
+            style: ts(12, c: C.slate, h: 1.6),
+          ),
+          SizedBox(height: 16),
+          SoftCard(
+            padding: EdgeInsets.zero,
+            child: Column(
+              children: [
+                for (final f in AppFeature.values)
+                  SettingsSwitch(
+                    _featureLabel(f, s),
+                    value: widget.state.featureEnabled(f),
+                    color: C.purple,
+                    onChanged: (v) =>
+                        setState(() => widget.state.setFeature(f.id, v)),
+                  ),
+              ],
+            ),
+          ),
+          SizedBox(height: 12),
+        ],
+      ),
+    );
+  }
+
+  /// 模块名：与「设置 → 功能」用的是同一批文案键。
+  String _featureLabel(AppFeature f, S s) {
+    switch (f) {
+      case AppFeature.rank:
+        return s.sportRank;
+      case AppFeature.honor:
+        return s.honorWall;
+      case AppFeature.sponsor:
+        return s.sponsorEntry;
+      case AppFeature.lifeGuard:
+        return s.lifeGuard;
+      case AppFeature.translate:
+        return s.featureTranslate;
+      case AppFeature.tracks:
+        return s.historyTracks;
+      case AppFeature.adif:
+        return s.exportAdif;
+    }
+  }
+
   Widget _serverPage() {
     return SingleChildScrollView(
       padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 20),

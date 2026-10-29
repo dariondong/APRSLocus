@@ -5111,5 +5111,7 @@
   "mapCenterCoord": "中心经纬度",
   "oobeServerSkip": "跳过，稍后在设置里填",
   "advChannels": "高级连接通道设置",
-  "codeContributionEncoding": "中文编码兼容"
+  "codeContributionEncoding": "中文编码兼容",
+  "oobeFeatureTitle": "要哪些功能",
+  "oobeFeatureDesc": "关掉的模块不会出现在设置里。以后想改，设置 → 功能。"
 }

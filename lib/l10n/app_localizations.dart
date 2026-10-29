@@ -18123,6 +18123,18 @@ abstract class AppLocalizations {
   /// **'中文编码兼容'**
   String get codeContributionEncoding;
 
+  /// No description provided for @oobeFeatureTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'要哪些功能'**
+  String get oobeFeatureTitle;
+
+  /// No description provided for @oobeFeatureDesc.
+  ///
+  /// In zh, this message translates to:
+  /// **'关掉的模块不会出现在设置里。以后想改，设置 → 功能。'**
+  String get oobeFeatureDesc;
+
 }
 
 class _AppLocalizationsDelegate

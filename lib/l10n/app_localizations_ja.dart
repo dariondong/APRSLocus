@@ -9982,4 +9982,10 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String get codeContributionEncoding => "中国語エンコード";
 
+  @override
+  String get oobeFeatureTitle => "使う機能";
+
+  @override
+  String get oobeFeatureDesc => "オフにしたモジュールは設定に出てきません。あとから「設定 → 機能」で変えられます。";
+
 }

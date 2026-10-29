@@ -10261,4 +10261,10 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get codeContributionEncoding => "Chinese text encoding";
 
+  @override
+  String get oobeFeatureTitle => "Which extras do you want";
+
+  @override
+  String get oobeFeatureDesc => "A module you turn off leaves the settings page. Change it later in Settings → Features.";
+
 }

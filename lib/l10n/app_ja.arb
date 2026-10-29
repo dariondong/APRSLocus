@@ -4432,5 +4432,7 @@
   "mapCenterCoord": "中心の緯度経度",
   "oobeServerSkip": "スキップ（あとで設定に入力）",
   "advChannels": "送信先の詳細設定",
-  "codeContributionEncoding": "中国語エンコード"
+  "codeContributionEncoding": "中国語エンコード",
+  "oobeFeatureTitle": "使う機能",
+  "oobeFeatureDesc": "オフにしたモジュールは設定に出てきません。あとから「設定 → 機能」で変えられます。"
 }

@@ -4432,5 +4432,7 @@
   "mapCenterCoord": "Coordenadas del centro",
   "oobeServerSkip": "Saltar, lo pongo luego en ajustes",
   "advChannels": "Envío por enlace",
-  "codeContributionEncoding": "Codificación china"
+  "codeContributionEncoding": "Codificación china",
+  "oobeFeatureTitle": "Qué extras quieres",
+  "oobeFeatureDesc": "Un módulo apagado desaparece de los ajustes. Puedes cambiarlo en Ajustes → Funciones."
 }

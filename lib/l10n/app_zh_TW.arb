@@ -5020,5 +5020,7 @@
   "mapCenterCoord": "中心經緯度",
   "oobeServerSkip": "跳過，稍後在設定裡填",
   "advChannels": "高階連線通道設定",
-  "codeContributionEncoding": "中文編碼相容"
+  "codeContributionEncoding": "中文編碼相容",
+  "oobeFeatureTitle": "要哪些功能",
+  "oobeFeatureDesc": "關掉的模組不會出現在設定裡。以後想改，設定 → 功能。"
 }

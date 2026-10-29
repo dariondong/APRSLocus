@@ -4432,5 +4432,7 @@
   "mapCenterCoord": "Koordinat tengah",
   "oobeServerSkip": "Lewati, isi nanti di pengaturan",
   "advChannels": "Pengaturan kirim lanjutan",
-  "codeContributionEncoding": "Encoding Tionghoa"
+  "codeContributionEncoding": "Encoding Tionghoa",
+  "oobeFeatureTitle": "Fitur mana yang dipakai",
+  "oobeFeatureDesc": "Modul yang dimatikan hilang dari pengaturan. Ubah nanti di Pengaturan → Fitur"
 }
