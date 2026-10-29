@@ -1226,6 +1226,15 @@ class _OobePageState extends State<OobePage> {
             padding: EdgeInsets.zero,
             child: Column(
               children: [
+                // 天气不是模块（它只是顶栏的一条读数），但在「设置 → 功能」那张
+                // 单子上排第一 —— 这里跟着排同一份，两处看到的顺序一致。
+                SettingsSwitch(
+                  s.featureWeather,
+                  value: widget.state.weatherEnabled,
+                  color: C.purple,
+                  onChanged: (v) =>
+                      setState(() => widget.state.setWeatherEnabled(v)),
+                ),
                 for (final f in AppFeature.values)
                   SettingsSwitch(
                     _featureLabel(f, s),
