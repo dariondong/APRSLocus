@@ -96,11 +96,12 @@ void main() {
     final st = await fresh();
     await st.toggleSource(AppState.srcTnc, true);
     // 「同时发好几条」现在是**高级模式**的事：默认（开关关着）位置一律发给
-    // 所有已连上的链路，没有「勾哪几条」这回事。
+    // 所有已连上的链路，没有「勾哪几条」这回事。而启用通道时就把它记进了
+    // 那份勾选（见 AppState._notePosTxLink），所以切到高级模式它已经是勾着的。
     st.setAdvChannels(true);
 
-    st.togglePosTx(AppState.srcTnc);
-    expect(st.posTxHas(AppState.srcTnc), isTrue);
+    expect(st.posTxHas(AppState.srcTnc), isTrue,
+        reason: '启用通道 = 这条通道也发位置，切到高级模式不该又变成没勾');
     expect(st.posTxTargets,
         [AppState.srcAprsIs, AppState.srcTnc],
         reason: '两条都要发');
@@ -116,7 +117,6 @@ void main() {
     final a = await fresh();
     await a.toggleSource(AppState.srcTnc, true);
     a.setAdvChannels(true);
-    a.togglePosTx(AppState.srcTnc);
     await a.persistNow();
 
     final b = await fresh();
