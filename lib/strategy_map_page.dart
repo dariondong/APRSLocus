@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'coord.dart';
+import 'coord_format.dart';
 import 'map_math.dart';
 import 'material.dart';
 import 'models.dart';
@@ -619,8 +620,7 @@ class _StrategyMapPageState extends State<StrategyMapPage>
                           const SizedBox(height: 2),
                           Text(
                             '${S.of(ctx).strategyItemOf(it.owner)} · '
-                            '${it.lat.toStringAsFixed(5)}, '
-                            '${it.lng.toStringAsFixed(5)}',
+                            '${fmtLatLng(it.lat, it.lng, widget.state.coordFmt)}',
                             style: ts(11, c: C.slate),
                           ),
                         ],

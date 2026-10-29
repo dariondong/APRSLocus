@@ -7,6 +7,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import 'theme.dart';
 import 'coord.dart';
+import 'coord_format.dart';
 import 'guide.dart';
 import 'models.dart';
 import 'back_router.dart';
@@ -727,7 +728,7 @@ class _MessagesPageState extends State<MessagesPage> {
                           Text(label.isEmpty ? s.msgLocation : label,
                               style: ts(13, w: FontWeight.w700)),
                           Text(
-                            '${lat.toStringAsFixed(5)}, ${lng.toStringAsFixed(5)}',
+                            fmtLatLng(lat, lng, widget.state.coordFmt),
                             style: mono(10, c: C.slate),
                           ),
                         ],
@@ -2558,7 +2559,7 @@ class _MessagesPageState extends State<MessagesPage> {
                         style: ts(12, w: FontWeight.w700)),
                     const SizedBox(height: 2),
                     Text(
-                      '${m.lat!.toStringAsFixed(5)}, ${m.lng!.toStringAsFixed(5)}',
+                      fmtLatLng(m.lat!, m.lng!, widget.state.coordFmt),
                       style: mono(10, c: C.slate),
                     ),
                     const SizedBox(height: 2),

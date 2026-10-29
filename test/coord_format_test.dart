@@ -38,19 +38,29 @@ void main() {
     expect(fmtLat(39.9042, CoordFormat.dm), '39°54.252′N');
     expect(fmtLng(116.4074, CoordFormat.dm), '116°24.444′E');
     // 0.999999° = 59.99994′ → 舍入成 60.000′，必须进到 1°0.000′
-    expect(fmtLat(0.999999, CoordFormat.dm), '1°0.000′N');
+    expect(fmtLat(0.999999, CoordFormat.dm), '1°00.000′N');
+    // 分的整数部分补到两位：位数一变整行宽度就跳
+    expect(fmtLat(39.0817, CoordFormat.dm), '39°04.902′N');
   });
 
   test('度分秒：秒进位到分、分进位到度', () {
     expect(fmtLat(39.9042, CoordFormat.dms), '39°54′15″N');
     expect(fmtLng(116.4074, CoordFormat.dms), '116°24′27″E');
     // 59.9999″ → 60″ → 进到 1′
-    expect(fmtLat(0.01666663, CoordFormat.dms), '0°1′0″N');
+    expect(fmtLat(0.01666663, CoordFormat.dms), '0°01′00″N');
+  });
+
+  test('度分秒补位：分与秒不足两位补 0', () {
+    // 39°05′04″：分 5、秒 4 都要补成两位
+    expect(fmtLat(39.0844444, CoordFormat.dms), '39°05′04″N');
+    expect(fmtLat(39.0169444, CoordFormat.dms), '39°01′01″N');
+    // 进位后也不能掉成一位
+    expect(fmtLat(39.9999999, CoordFormat.dms), '40°00′00″N');
   });
 
   test('半球取自原始值：南纬 / 西经', () {
-    expect(fmtLat(-0.5, CoordFormat.dms), '0°30′0″S');
-    expect(fmtLng(-0.5, CoordFormat.dms), '0°30′0″W');
+    expect(fmtLat(-0.5, CoordFormat.dms), '0°30′00″S');
+    expect(fmtLng(-0.5, CoordFormat.dms), '0°30′00″W');
   });
 
   test('经度先规整：越圈累加出来的值显示在 ±180 内', () {

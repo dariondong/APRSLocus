@@ -62,6 +62,11 @@ String fmtLatLng(double lat, double lng, CoordFormat f) =>
 /// 进位是这里唯一容易错的地方：59.9996′ 舍入成 `60.000′` 而不是 `59.000′`，
 /// 秒同理（59.6″ → `60″` → 进到下一分）。所以先把值拆成度、分、秒，再从最小
 /// 单位往上收，而不是在三处各写一遍进位。
+///
+/// 补位：分与秒一律两位、分的整数部分也两位（`39°05′04″N`、`39°05.252′N`），
+/// 度不补。理由同一个：这几串在界面上是**每帧变**的读数，位数一变整行
+/// 宽度就跳一下（地图底栏、台站详情、沉浸页 dock 都有这个问题），
+/// 而 `39°5′4″N` 读起来也比 `39°05′04″N` 容易看错位。
 String _fmt(double v, CoordFormat f, String hemi) {
   final a = v.abs();
   switch (f) {
@@ -75,7 +80,9 @@ String _fmt(double v, CoordFormat f, String hemi) {
         d += 1;
         m = 0;
       }
-      return '$d°${m.toStringAsFixed(3)}′$hemi';
+      // 6 = 「54.252」的长度；「5.252」补成「05.252」
+      final mt = m.toStringAsFixed(3).padLeft(6, '0');
+      return '$d°$mt′$hemi';
     case CoordFormat.dms:
       var d = a.floor();
       final mf = (a - d) * 60;
@@ -89,6 +96,8 @@ String _fmt(double v, CoordFormat f, String hemi) {
         m -= 60;
         d += 1;
       }
-      return '$d°$m′$s″$hemi';
+      final mt = '$m'.padLeft(2, '0');
+      final st = '$s'.padLeft(2, '0');
+      return '$d°$mt′$st″$hemi';
   }
 }
