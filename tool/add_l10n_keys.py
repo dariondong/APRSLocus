@@ -249,7 +249,7 @@ KEYS = {
         'オフにしたモジュールは設定に出てきません。あとから「設定 → 機能」で変えられます。',
         'Un módulo apagado desaparece de los ajustes. Puedes cambiarlo en Ajustes → Funciones.',
         'Modul yang dimatikan hilang dari pengaturan. Ubah nanti di Pengaturan → Fitur'),
-    # ── 关于页的代码贡献：BGTPEE 的 UTF-8 / GBK 自动识别（PR #38）──
+    # ── 关于页的代码贡献：BG7PFE 的 UTF-8 / GBK 自动识别（PR #38）──
     'codeContributionEncoding': (
         '中文编码兼容', '中文編碼相容', 'Chinese text encoding',
         '中国語エンコード', 'Codificación china', 'Encoding Tionghoa'),

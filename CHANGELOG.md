@@ -27,7 +27,7 @@
 
 ### 关于
 
-- 代码贡献里加上 BGTPEE 的中文编码兼容。
+- 代码贡献里加上 BG7PFE 的中文编码兼容。
 
 ---
 
@@ -58,7 +58,7 @@
 
 ### About
 
-- BGTPEE added to the code contributions for the Chinese text encoding.
+- BG7PFE added to the code contributions for the Chinese text encoding.
 
 ---
 
