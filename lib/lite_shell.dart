@@ -168,26 +168,37 @@ class _LiteShellState extends State<LiteShell> {
           decoration: BoxDecoration(
             border: Border(bottom: BorderSide(color: C.border, width: 0.5)),
           ),
-          child: Row(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(
-                st.beaconEnabled
-                    ? Icons.send_rounded
-                    : Icons.notifications_off_rounded,
-                size: 14,
-                color: c,
+              Row(
+                children: [
+                  Icon(
+                    st.beaconEnabled
+                        ? Icons.send_rounded
+                        : Icons.notifications_off_rounded,
+                    size: 14,
+                    color: c,
+                  ),
+                  const SizedBox(width: 6),
+                  Expanded(
+                    child: Text(
+                      beaconBarText(context, st),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: ts(11.5, c: C.ink, w: FontWeight.w600),
+                    ),
+                  ),
+                  const SizedBox(width: 6),
+                  ReportActions(state: st),
+                ],
               ),
-              const SizedBox(width: 6),
-              Expanded(
-                child: Text(
-                  beaconBarText(context, st),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: ts(11.5, c: C.ink, w: FontWeight.w600),
+              // 声卡链路在收时，状态条底下挂一条声压条（与地图那条同一份）
+              if (showAudioLevel(st))
+                Padding(
+                  padding: const EdgeInsets.only(top: 5),
+                  child: AudioLevelStrip(level: st.audio.levelNotifier),
                 ),
-              ),
-              const SizedBox(width: 6),
-              ReportActions(state: st),
             ],
           ),
         );

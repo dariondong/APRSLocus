@@ -658,6 +658,67 @@ class SettingRow extends StatelessWidget {
   }
 }
 
+/// ─── 音频声压条（主页状态条用）───
+///
+/// 用户要求：「若应用了音频输入功能，需要在主页的状态条上显示音频声压条」。
+/// 声卡 TNC 收报文时，最容易出错的就是**进来多大声音**——太小解不出帧、太大
+/// 削顶失真，而这两件事在手机上看不出来。所以把「音频」页那个电平表缩成一条
+/// 细条，摆在状态条最下面：只看它就能知道信道里有没有声、是不是快满刻度。
+///
+/// 数据源是 [AudioLink.levelNotifier]（采集回调里节流），不是每秒的 tick——
+/// 挂 tick 的话它一秒跳一格，看着像卡住。这一层订阅只重建这条三个像素的小条，
+/// 不惊动状态条里的文案与按钮。
+class AudioLevelStrip extends StatelessWidget {
+  /// 0~1 的实时电平
+  final ValueListenable<double> level;
+
+  /// 高度（状态条里给 3，独立显示时可以给大一点）
+  final double height;
+
+  const AudioLevelStrip({super.key, required this.level, this.height = 3});
+
+  @override
+  Widget build(BuildContext context) {
+    return ValueListenableBuilder<double>(
+      valueListenable: level,
+      builder: (_, v, _) {
+        final x = v.clamp(0.0, 1.0);
+        // 快到满刻度转橙：这就是「要削顶了」的信号，与音频页的电平表同口径
+        final c = x >= 0.9 ? C.orange : C.cyan;
+        return ClipRRect(
+          borderRadius: BorderRadius.circular(height),
+          child: SizedBox(
+            height: height,
+            child: Stack(
+              children: [
+                Positioned.fill(child: ColoredBox(color: C.greyBg)),
+                // 至少留一个像素：0 电平也要看得见这条轨存在（否则分不清
+                // 「没声」与「没面」）。
+                Positioned.fill(
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: FractionallySizedBox(
+                      widthFactor: x <= 0.02 ? 0.02 : x,
+                      heightFactor: 1,
+                      child: ColoredBox(color: c),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+/// 主页状态条要不要挂声压条：只在**声卡这条链路真的在收**的时候挂。
+///
+/// 只看「开了没有」不够：开关开着但采集没起来时，条子会一直贴在 0，
+/// 看起来就像「有声卡但一直没声」。
+bool showAudioLevel(AppState st) => st.audioOn && st.audio.connected;
+
 /// 给**自绘**的可点区域一个桌面端手型指针。
 ///
 /// 为什么需要它：`GestureDetector` **没有** `mouseCursor` 参数（那是 `InkWell` /

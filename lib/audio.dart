@@ -21,6 +21,9 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
 
+// 只为一个 ValueNotifier：主页状态条的声压条要按采集节拍刷新，而其余 UI 仍按
+// 每秒 tick 走。放在这里而不是 UI 层，是因为「电平」这个量只在本层产生。
+import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'afsk.dart';
@@ -249,6 +252,17 @@ class AudioLink {
   /// 链路日志（环形，最多 100 条；供「音频」页排查用）
   final List<String> log = [];
 
+  /// 收话音量（0~1）的实时通知器 —— 主页状态条那条声压条用它。
+  ///
+  /// 为什么不直接读 [level]：那个值每来一块 PCM 就变一次（44.1k/1024 ≈ 每秒
+  /// 四十几次），而主页只在每秒的 tick 上重建，于是声压条会变成「一秒跳一格」，
+  /// 看着像卡住。这里在采集回调里节流到 ~15Hz 推一次，只重建那几个像素的小条，
+  /// 不惊动地图/状态条的其他部分（它们仍按 tick 走）。
+  final ValueNotifier<double> levelNotifier = ValueNotifier<double>(0);
+
+  /// 上一次推电平的时间（毫秒）—— 节流用，见 [levelNotifier]
+  int _levelAt = 0;
+
   /// 解出的 TNC2 报文
   void Function(String line)? onLine;
 
@@ -283,6 +297,14 @@ class AudioLink {
 
   /// 信道是否忙（有 AFSK 信号）：发射前 CSMA 依据
   bool get channelBusy => connected && (_demod.level > 0.18 && _demod.synced);
+
+  /// 把当前电平推给界面（~15Hz 节流，见 [levelNotifier]）。
+  void _pushLevel() {
+    final now = DateTime.now().millisecondsSinceEpoch;
+    if (now - _levelAt < 60) return;
+    _levelAt = now;
+    levelNotifier.value = level.clamp(0.0, 1.0);
+  }
 
   /// 是否正在发射（半双工，期间不监听自己）
   bool get transmitting => _txActive;
@@ -404,6 +426,7 @@ class AudioLink {
     connecting = false;
     _txActive = false;
     _playing = false;
+    levelNotifier.value = 0;
     status = AudioStatus.idle;
     if (manual) _log('已断开');
     onStateChanged?.call();
@@ -414,6 +437,7 @@ class AudioLink {
     if (!connected) return;
     connected = false;
     status = AudioStatus.closed;
+    levelNotifier.value = 0;
     _log('音频采集被系统中断');
     onStateChanged?.call();
     onClosed?.call();
@@ -458,6 +482,9 @@ class AudioLink {
       return;
     }
     final frames = _demod.feedBytes(bytes);
+    // 声压条：逐块节流推送（见 [levelNotifier]）。放在解调之后 —— 先让
+    // 解调器吃掉这一块，level 才是「刚收到的那段声音」的幅度。
+    _pushLevel();
     for (final f in frames) {
       final tnc2 = Ax25.decodeToTnc2(f);
       if (tnc2 == null) {

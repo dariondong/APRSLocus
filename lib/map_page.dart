@@ -3092,6 +3092,13 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                       ),
                     ),
                   ),
+                // 声卡链路在收的时候，最下面挂一条声压条（见 widgets.AudioLevelStrip）。
+                // 只占三个像素高、横跨整条，不挤文案与按钮。
+                if (showAudioLevel(st))
+                  Padding(
+                    padding: const EdgeInsets.only(top: 6),
+                    child: AudioLevelStrip(level: st.audio.levelNotifier),
+                  ),
               ],
             ),
           ),
