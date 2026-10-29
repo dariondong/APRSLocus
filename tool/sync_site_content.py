@@ -419,6 +419,31 @@ CARDS = [
 # 只列「重点版本」：中间几十个纯修 bug 的版本归纳进文字说明，完整记录指向 Releases。
 CL = [
     {
+        'ver': 'v2.1.38', 'date': '2026-10-29',
+        'items': [
+            ('fix',
+             T('地图右侧那排按钮只跟窗口尺寸走。拉开内容面板不再让它换列或换位置。',
+               '地圖右側那排按鈕只跟視窗尺寸走。拉開內容面板不再讓它換欄或換位置。',
+               'The button column on the map now follows the window size alone. Opening a content pane no longer re-columns or moves it.')),
+            ('fix',
+             T('启用一条通道，这条通道的位置发射也跟着打开；设备页去掉重复的小字，每条链路只留名字和通没通。',
+               '啟用一條通道，這條通道的位置發射也跟着打開；裝置頁去掉重複的小字，每條鏈路只留名字和通沒通。',
+               'Turning a channel on also turns on its position transmit, and the device page lost its repeated small print: each link keeps its name and whether it is up.')),
+            ('new',
+             T('声卡在收报文时，地图的上报横条底下多一条声压条。',
+               '聲卡在收報文時，地圖的上報橫條底下多一條聲壓條。',
+               'While the sound card is receiving, the map beacon bar carries a level strip.')),
+            ('new',
+             T('度分、度分秒的分与秒补到两位，读数位数不再跳；消息里的位置气泡也按设置里的格式显示。',
+               '度分、度分秒的分與秒補到兩位，讀數位數不再跳；訊息裡的位置氣泡也按設定裡的格式顯示。',
+               'Minutes and seconds are padded to two digits in the degree-minute formats, so the readout stops changing width; position bubbles in messages follow the chosen format too.')),
+            ('new',
+             T('首次引导加一步「要哪些功能」：天气和七个模块在那里就能选，关掉的不出现在设置里。',
+               '首次引導加一步「要哪些功能」：天氣和七個模組在那裡就能選，關掉的不出現在設定裡。',
+               'Onboarding gained a "Which extras do you want" step: weather and the seven modules are picked there, and a module you turn off leaves the settings page.')),
+        ],
+    },
+    {
         'ver': 'v2.1.37', 'date': '2026-10-28',
         'items': [
             ('fix',

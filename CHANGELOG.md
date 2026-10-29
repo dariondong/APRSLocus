@@ -1,5 +1,67 @@
 # 更新日志
 
+## [2.1.38] - 2026-10-29
+
+### 地图
+
+- 右侧工具列的排列只跟窗口尺寸走。拉开内容面板不会再让它换列或换位置。
+
+### 数据来源
+
+- 启用一条通道，这条通道的位置发射也跟着打开。切到高级模式时勾选与通道开关一致。
+- 设备页去掉重复的小字：数据来源卡只留每条链路的名字和通没通，细节在各自的子页里。
+
+### 音频
+
+- 声卡在收报文时，地图的上报横条和精简模式的状态条底下多一条声压条。
+
+### 经纬度
+
+- 度分、度分秒的分与秒补到两位，读数位数不再跳。
+- 消息里的位置气泡、策略点的信息卡也按设置里的格式显示。
+
+### 首次引导
+
+- 加一步「要哪些功能」：天气和七个模块在这里就能选，关掉的不出现在设置里。
+- 向导里留着历史轨迹就一起打开记录。
+
+### 关于
+
+- 代码贡献里加上 BGTPEE 的中文编码兼容。
+
+---
+
+## [2.1.38] - 2026-10-29 (English)
+
+### Map
+
+- The right-hand toolbar lays itself out from the window size alone. Opening a content pane no longer re-columns or moves it.
+
+### Sources
+
+- Turning a channel on also turns on its position transmit. The advanced per-link ticks now match the channel switches.
+- The device page lost its repeated small print: the source card keeps each link's name and whether it is up, the rest lives on that link's own page.
+
+### Audio
+
+- While the sound card is receiving, the map's beacon bar and the lite status bar carry a level strip.
+
+### Coordinates
+
+- Minutes and seconds in the degree-minute and degree-minute-second formats are padded to two digits, so the readout stops changing width.
+- Position bubbles in messages and the strategy point card follow the format chosen in settings.
+
+### Onboarding
+
+- New "Which extras do you want" step: weather and the seven modules can be picked here, and a module you turn off leaves the settings page.
+- Keeping the track history module during onboarding also turns its recording on.
+
+### About
+
+- BGTPEE added to the code contributions for the Chinese text encoding.
+
+---
+
 ## [2.1.37] - 2026-10-28
 
 ### 链路
