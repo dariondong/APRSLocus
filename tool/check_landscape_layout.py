@@ -91,6 +91,12 @@
        * 贴底控件让不让位仍看**当帧** `availH`（那管的是「会不会真的压住」）；
        * `availH` 不许出现在 `_toolbarColumns(...)` 的参数里，也不许再写回
           `availH < _kToolbarColH + 54` 这类写死阈值。
+      2026-10-29 又抓到一条：给矮窗口留的那条兜底支路（`roomNoBottom`）算的
+     也是 `availH`，而它含 `bottomInset` —— 一开 2.0 内容面板可用高度骤减，
+     兜底反过来要求更**多**的列，整排按钮又重排一遍（用户报的「地图页的控件
+     不应受 UI 2.0 其他页面底层的影响」）。现在兜底支路删了，列数是 `size` 的
+     纯函数；同时 2.0 竖屏传给地图的 `bottomInset` 也不含面板（面板只是盖在
+     上面，地图控件的排列与位置一份不变）。
 
   9. **换栏／降级不许按「朝向」判**（v1.6.164，真实缺陷）。
      消息页原写作 `!landscape && maxWidth < 720` —— 等价于「只要是横屏就走双栏」，
@@ -326,10 +332,15 @@ def main() -> int:
             or 'size.height - widget.topInset - widget.bottomInset' not in map_code):
         errors.append('MapPage 没有算「这一帧顶栏之下还剩多少」(availH) —— '
                       '贴底控件该不该让位就判不了')
-    if ('final int toolbarCols = math.max(' not in map_code
-            or '_toolbarColumns(toolbarRoom),' not in map_code):
+    if 'final int toolbarCols = _toolbarColumns(toolbarRoom);' not in map_code:
         errors.append('工具列列数不是从「地图框尺寸 - 固定预留」(toolbarRoom) 算的 —— '
                       '拿当帧让位量算，横幅/上报横杠/面板一改列数就重排（控件排序被重排）')
+    if 'roomNoBottom' in map_code:
+        errors.append('又给矮窗口留了按当帧可用高度兜底的分栏支路 —— 那条里含 '
+                      'bottomInset，一开 2.0 内容面板列数就变，整排按钮跟着重排')
+    if 'bottomInset: navSpace - pad.bottom,' not in shell:
+        errors.append('2.0 竖屏传给地图的 bottomInset 又含了内容面板 —— '
+                      '一开面板地图自己的控件就被顶上去、重排（控件只该跟窗口尺寸走）')
     if ('_kToolbarTopReserve' not in map_code
             or '_kToolbarBottomReserve' not in map_code):
         errors.append('没有 _kToolbarTopReserve / _kToolbarBottomReserve —— '

@@ -95,10 +95,8 @@ class _HomeShell2State extends State<HomeShell2>
   /// 「自身固定为最高档高度、只裁出可视区」（见面板那一段的注释）—— 拖动时
   /// 模糊层的几何完全不变，代价只剩「底图不变时可复用」的那一次。
   ///
-  /// 它现在只服务两件事：
-  /// * [_paneOpen]（→ 地图冻结）—— 动画中面板也在往上长，就得算「开着」；
-  /// * [_insetSheetH]（→ 传给地图的让位量）—— 动画中要传**吸附目标值**，
-  ///   否则地图每帧重排重绘。
+  /// 它现在只服务一件事：[_paneOpen]（→ 地图冻结）—— 动画中面板也在
+  /// 往上长，就得算「开着」。
   bool get _paneAnimating => _anim.isAnimating || _dragging || _movedByScroll;
 
   /// 面板是否**占着屏幕**（含动画：动画中它也在往上长）。
@@ -407,18 +405,6 @@ class _HomeShell2State extends State<HomeShell2>
   /// 当前屏高 / 面板可达的最大比例（拖动与滚动两条路共用，避免两处算法漂移）
   double _screenH() => MediaQuery.of(context).size.height;
 
-  /// 传给地图的「面板占用高度」：动画/拖动期间取**吸附目标**，静止时取当前值。
-  ///
-  /// 两个值在静止时相同（所以不会出现跳变），只在动画中是「目标 vs 逐帧中间态」——
-  /// 而后者正是我们不想让地图知道的：它每帧变一次，地图就每帧重排重绘一次。
-  double _insetSheetH() {
-    if (!_paneAnimating) return _extent * _screenH();
-    // `Tween.end` 的类型是 `double?`（可以为 null），必须兜一下 ——
-    // 否则 analyze 报 unchecked_use_of_nullable_value。
-    final target = _anim.isAnimating ? (_snap.end ?? _extent) : _extent;
-    return target.clamp(0.0, 1.0) * _screenH();
-  }
-
   double _fullRatioOf() =>
       _fullRatio(MediaQuery.of(context).size, _navSpace(context), _topInset());
 
@@ -439,7 +425,7 @@ class _HomeShell2State extends State<HomeShell2>
   void _onDrag(double dy) {
     _anim.stop();
     setState(() {
-      _dragging = true; // 只用于 _paneAnimating/_insetSheetH 的判断（不再影响模糊）
+      _dragging = true; // 只用于 _paneAnimating 的判断（不再影响模糊）
       _extent = (_extent - dy / _screenH()).clamp(0.0, _fullRatioOf());
     });
   }
@@ -531,17 +517,17 @@ class _HomeShell2State extends State<HomeShell2>
               // RepaintBoundary 的光栅化结果可以被复用，面板的模糊改成采样缓存纹理。
               frozen: _paneOpen,
               topInset: topInset,
-              // 底部被占用的边界 B（自屏幕底算起）＝ 导航 + （面板 + 间隙）。
-              // 地图那边的口径是「相对安全区」，所以这里减去 pad.bottom ——
-              // 这样贴底控件永远落在 B 上方 14px：面板收起时贴着导航，
-              // 面板打开时贴着面板，而不是随卡片高度漂出一个大空隙。
+              // 底部被占用的边界 B（自屏幕底算起）＝ 导航条 + 间隙。
               //
-              // ⚠ 动画/拖动期间用**吸附目标值** `_snap.end` 而不是当前 `sheetH`：
-              // 否则每帧都会把新的 inset 传进 MapPage，触发一次重排 + 重绘，
-              // 正好把上面那个「冻结」抵消掉。地图在动画期间本来就该是「固定」的。
-              bottomInset: navSpace +
-                  (showSheet ? _kGutter + _insetSheetH() : 0) -
-                  pad.bottom,
+              // **不含内容面板**：面板是别的页的底层，它开合一次只改「盖住多少
+              // 地图」，与地图自己的控件怎么摆、摆在哪毫无关系。以前把它算进
+              // 让位量，一开面板工具列与贴底控件就被顶上去（矮屏时还多分一列），
+              // 看起来就是「地图控件被重排了」（用户报的「地图页的控件不应受 UI 2.0
+              // 其他页面底层的影响，目前触发了重新排序」）。现在面板只是盖在上面，
+              // 地图控件的排列与位置一份不变 —— 收起面板看到的就是刚才那份。
+              //
+              // 地图那边的口径是「相对安全区」，所以这里减去 pad.bottom。
+              bottomInset: navSpace - pad.bottom,
             ),
           ),
 

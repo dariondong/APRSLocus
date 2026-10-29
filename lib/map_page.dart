@@ -712,13 +712,13 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
             // 尺寸上限），同一块屏幕上永远同一个答案，只有旋转 / 改窗口大小才会变。
             final double toolbarRoom =
                 size.height - _kToolbarTopReserve - _kToolbarBottomReserve;
-            // 「这一帧什么都不摆时」能装下的列数：只在**矮到连稳定答案都装不下**
-            // 的窗口里才会更大（那时宁可破一次稳定性，也不让按钮被 Stack 裁掉）。
-            final double roomNoBottom = availH - 14 - (14 + padBottom);
-            final int toolbarCols = math.max(
-              _toolbarColumns(toolbarRoom),
-              _toolbarColumns(roomNoBottom),
-            );
+            // 列数只由**窗口尺寸**决定：同一块屏幕、同一个方向，永远是同一个
+            // 答案 —— 横幅、开始上报、2.0 内容面板都不参与。以前还给「矮窗口」
+            // 留了一个按**当帧**可用高度兜底的支路（`roomNoBottom`），而那一项
+            // 里含 `bottomInset`：一开内容面板可用高度就骤减，兜底支路反过来
+            // 要求更**多**的列，整排按钮于是重排一遍（用户报的「地图页的控件
+            // 不应受 UI 2.0 其他页面底层的影响」）。那个支路已删。
+            final int toolbarCols = _toolbarColumns(toolbarRoom);
             // 贴底控件（坐标条 / 上报横杠）还摆不摆得下：这条得看**这一帧**，
             // 它管的是「会不会真的压住」，与按钮怎么排无关。
             //

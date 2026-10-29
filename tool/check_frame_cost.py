@@ -19,8 +19,9 @@
      固定高度 ⇒ 模糊层的几何在拖动/动画中不变 ⇒ 可以**一直开着模糊**。
      反过来（让高度跟着变、动画期关模糊）就是老做法：要么卡，要么为了不卡而把
      填色换成不透明的白 —— 那就是用户看到的「莫名其妙变白」。
-  5. 传给地图的 `bottomInset` 在动画期必须是**吸附目标值**：逐帧变的话，
-     地图每帧重排重绘，正好把第 1 条抵消掉。
+  5. 传给地图的 `bottomInset` 必须**不含内容面板**：面板开合只是盖住多少地图，
+     不该牵动地图自己的控件（用户报的「控件被重排」）。顺带也就没有「逐帧变」
+     的机会了 —— 它现在只跟窗口与导航条有关。
   6. 面板内容要做**实例缓存**：否则动画每帧重建四个页面。
   7. 磨砂层要走**共享底**那条路（`BackdropFilter.grouped` + 地图小浮层那一簇的
      `BackdropGroup`）：每个 `BackdropFilter` 都要让引擎「结束当前 render pass →
@@ -121,21 +122,19 @@ def main() -> int:
     need('lib/shell2.dart', 'addStatusListener',
          '没有状态监听：动画结束后不会按新状态重算（面板会停在旧的让位量上）')
 
-    # ⑦ inset 在动画期必须是吸附目标值
-    need('lib/shell2.dart', 'double _insetSheetH()',
-         '没有 _insetSheetH —— bottomInset 会逐帧变，地图每帧重排重绘')
-    # ⚠ 断言里必须带 `()`：第一版写的是 `_kGutter + _insetSheetH`（少了括号），
-    # 于是它把「方法当值用」这个**编译错误**当成了正确实现 —— 检查通过、CI 编译红。
-    # 教训：静态断言要断言**能编译的字符串**，不要把「看起来像」当「是对的」。
-    need('lib/shell2.dart', '_kGutter + _insetSheetH()',
-         'bottomInset 没用 _insetSheetH()（动画期仍然逐帧变化）')
-    forbid('lib/shell2.dart', '_kGutter + _insetSheetH ',
-           '_insetSheetH 少了括号（方法当值用，编译不过）')
-    forbid('lib/shell2.dart', '_kGutter + _insetSheetH:',
-           '_insetSheetH 少了括号（方法当值用，编译不过）')
-    for m in re.finditer(r'_insetSheetH(?![\s(])', code_only(read('lib/shell2.dart'))):
-        errors.append('lib/shell2.dart 里 `_insetSheetH` 有被当值用的地方'
-                      '（应写成 `_insetSheetH()`）')
+    # ⑦ 传给地图的 bottomInset 不含内容面板（2026-10-29 改判据）
+    #
+    # 老判据要求「动画期传给地图的是吸附目标值 `_insetSheetH()`」——那时面板
+    # 确实算进地图的底部让位量，逐帧变就会让地图每帧重排重绘。
+    # 用户后来报「地图页的控件不应受 UI 2.0 其他页面底层的影响，目前触发了
+    # 重新排序」，根因正是这份让位量：面板一开，地图的工具列与贴底控件被整体
+    # 顶上去（矮屏时还多分一列）。现在面板只是盖在地图上，`bottomInset` 不含
+    # 它 —— 地图每帧算出来的都是同一个常量，那个「逐帧变」的老毛病也就无从
+    # 谈起，比吸附目标值更彻底。
+    need('lib/shell2.dart', 'bottomInset: navSpace - pad.bottom,',
+         '2.0 竖屏传给地图的 bottomInset 又含了内容面板 —— 地图控件会跟着面板重排')
+    forbid('lib/shell2.dart', '_insetSheetH',
+           '面板占用高度又参与了地图几何（_insetSheetH）—— 面板开合会把地图控件重排')
 
     # ⑧ 面板内容实例缓存
     need('lib/shell2.dart', '_contentCache',
