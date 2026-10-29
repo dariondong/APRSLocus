@@ -9979,4 +9979,7 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String get advChannels => "送信先の詳細設定";
 
+  @override
+  String get codeContributionEncoding => "中国語エンコード";
+
 }

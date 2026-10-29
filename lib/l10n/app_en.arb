@@ -4431,5 +4431,6 @@
   "coordFormatDms": "Deg-min-sec",
   "mapCenterCoord": "Centre coordinates",
   "oobeServerSkip": "Skip, set it later in settings",
-  "advChannels": "Per-link sending"
+  "advChannels": "Per-link sending",
+  "codeContributionEncoding": "Chinese text encoding"
 }

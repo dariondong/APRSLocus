@@ -581,6 +581,9 @@ class _AboutPageState extends State<AboutPage>
                               // BH7GZB：贡献代码（PR #11 —— 位置报文数据扩展 `/A=` 高度与
                               // `PHGphgd` 功率 / 天线高度 / 增益，以及独立状态报文的收发与显示）。
                               _eggRow(t.codeContribution, 'BH7GZB'),
+                              // BGTPEE：中文编码兼容（PR #38 —— 报文文本自动识别
+                              // UTF-8 / GBK，APRS-IS 与 TNC / 声卡两条链路的解码都走它）。
+                              _eggRow(t.codeContributionEncoding, 'BGTPEE'),
                               _row(
                                 t.settingsContribCodeOptimization,
                                 '清零（BG2HCB）',

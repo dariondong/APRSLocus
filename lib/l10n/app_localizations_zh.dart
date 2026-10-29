@@ -9879,6 +9879,9 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String get advChannels => "高级连接通道设置";
 
+  @override
+  String get codeContributionEncoding => "中文编码兼容";
+
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
@@ -19754,5 +19757,8 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get advChannels => "高階連線通道設定";
+
+  @override
+  String get codeContributionEncoding => "中文編碼相容";
 
 }

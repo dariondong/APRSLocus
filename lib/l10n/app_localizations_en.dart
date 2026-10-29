@@ -10258,4 +10258,7 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get advChannels => "Per-link sending";
 
+  @override
+  String get codeContributionEncoding => "Chinese text encoding";
+
 }

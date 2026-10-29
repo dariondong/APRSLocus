@@ -18117,6 +18117,12 @@ abstract class AppLocalizations {
   /// **'高级连接通道设置'**
   String get advChannels;
 
+  /// No description provided for @codeContributionEncoding.
+  ///
+  /// In zh, this message translates to:
+  /// **'中文编码兼容'**
+  String get codeContributionEncoding;
+
 }
 
 class _AppLocalizationsDelegate

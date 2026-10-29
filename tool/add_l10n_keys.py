@@ -235,6 +235,10 @@ KEYS = {
         'SSID は数字か英字の 1〜2 文字です。',
         'El SSID puede ser una o dos letras o cifras.',
         'SSID hanya boleh satu atau dua huruf atau angka.'),
+    # ── 关于页的代码贡献：BGTPEE 的 UTF-8 / GBK 自动识别（PR #38）──
+    'codeContributionEncoding': (
+        '中文编码兼容', '中文編碼相容', 'Chinese text encoding',
+        '中国語エンコード', 'Codificación china', 'Encoding Tionghoa'),
 }
 
 META = {

@@ -4431,5 +4431,6 @@
   "coordFormatDms": "Derajat-menit-detik",
   "mapCenterCoord": "Koordinat tengah",
   "oobeServerSkip": "Lewati, isi nanti di pengaturan",
-  "advChannels": "Pengaturan kirim lanjutan"
+  "advChannels": "Pengaturan kirim lanjutan",
+  "codeContributionEncoding": "Encoding Tionghoa"
 }

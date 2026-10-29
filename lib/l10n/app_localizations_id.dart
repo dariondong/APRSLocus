@@ -10268,4 +10268,7 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get advChannels => "Pengaturan kirim lanjutan";
 
+  @override
+  String get codeContributionEncoding => "Encoding Tionghoa";
+
 }
