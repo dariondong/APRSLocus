@@ -1,5 +1,52 @@
 
-# APRSNETCN OA · #261024 Half a Cat Bed
+# APRSNETCN OA · #261031
+
+APRSNETCN OA is a weekly APRS message roll call run by APRSNET.CN.
+
+## 1. When
+
+Saturday, 31 October 2026, 00:00–23:59 Beijing time (UTC+8).
+
+Other zones: UTC 16:00 on 30 October to 15:59 on 31 October; Japan (UTC+9) 01:00 on 31 October to 00:59 on 1 November; India (UTC+5:30) 21:30 on 30 October to 21:29 on 31 October; US Eastern (EDT, UTC-4) 12:00 on 30 October to 11:59 on 31 October.
+
+## 2. Duty callsign
+
+**BG7OSL-6** (ZhangZhanRui).
+
+The duty callsign changes every week. The site's page for the current week is the one to read.
+
+@video https://aprsnet.cn/oa/en/embed.html
+
+## 3. How to check in
+
+- Send an APRS message to **BG7OSL-6** with the body **CQ CNNET**, your own call and your own grid, for example **CQ CNNET BG7XXX OL62**. A grid of 4 or 6 characters both work, and the call in the body is your own.
+- When the ACK arrives, send a new message to **BG7OSL-6** with **U CNNET** alone.
+- Optional: add a sentence after the grid, for example **CQ CNNET BG7XXX OL62 weekend on the hill**. The roster gains a message row.
+
+## 4. Two ways in
+
+- Over the network (APRS-IS): connect a phone or a computer to a server and send.
+- Over the air (RF): send from a handheld or a mobile rig, and a nearby gateway carries it into the network.
+
+Both count. RF counts more.
+
+## 5. Worth knowing
+
+- The message recipient is **BG7OSL-6**, and the call in the body is your own. Do not mix the two up.
+- After the ACK, send a separate **U CNNET**. Do not reply on top of the ACK.
+- One send that day is enough. Sending again adds no row.
+- An extra sentence does not change whether the check-in counts.
+- Transmit under your own call and licence, on the frequency and path your local rules allow.
+
+Activity page: **[Open the activity page](https://oa.aprsnet.cn)**
+
+Saturday, 31 October: one CQ out, one ACK in, one U back.
+
+**APRSNET.CN**
+
+---
+
+## APRSNETCN OA · #261024 Half a Cat Bed
 
 APRSNETCN OA is an APRS message check-in run by APRSNET.CN. It lasts a whole Saturday, Beijing time. OA stands for On Air.
 
@@ -9,16 +56,14 @@ One station is on duty each week. Send it a message, it answers with an ACK, and
 
 No sign-up, and nothing to be present for.
 
-## 📡 When, and who is on duty
+### 📡 When, and who is on duty
 
 - Round #261024, called 半间猫窝 (Half a Cat Bed)
 - Saturday, 24 October 2026, 00:00–23:59 Beijing time (UTC+8)
 - In UTC that is 16:00 on 23 October to 15:59 on 24 October
 - The duty callsign this week is **BH6RIZ-6**, and zelin is at the key
 
-@video https://aprsnet.cn/oa/en/embed.html
-
-## 📮 How to join
+### 📮 How to join
 
 Address the message to **BH6RIZ-6**.
 
@@ -34,7 +79,7 @@ Packets over the network and packets over RF both count, RF first. An RF packet 
 
 You need a valid callsign and licence, and please follow your local regulations.
 
-## 📋 What shows up
+### 📋 What shows up
 
 The duty station answers every check-in with an ACK.
 
@@ -42,7 +87,7 @@ Your callsign then appears on the activity page roster, with your grid and the t
 
 The roster image and the grid image can be downloaded the same day.
 
-## 🙋 About this round
+### 🙋 About this round
 
 No scoring, no leaderboard, and no commercial use.
 

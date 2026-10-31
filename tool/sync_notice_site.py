@@ -74,21 +74,21 @@ PAGES = [
 HEAD = {
     'zh': {
         'kicker': '📡 周六空中签到',
-        'title': 'APRSNETCN OA · #261024 半间猫窝',
-        'en': 'APRSNETCN OA · #261024 Half a Cat Bed',
-        'sub': '北京时间周六一整天，报文的收件人填轮值呼号 BH6RIZ-6。收到 ACK 就上了当天的签到表。',
+        'title': 'APRSNETCN OA · #261031',
+        'en': 'APRSNETCN OA · #261031',
+        'sub': '北京时间周六一整天，这一周由轮值呼号 BG7OSL-6 值守。',
     },
     'zh_TW': {
         'kicker': '📡 週六空中簽到',
-        'title': 'APRSNETCN OA · #261024 半間貓窩',
-        'en': 'APRSNETCN OA · #261024 Half a Cat Bed',
-        'sub': '北京時間週六一整天，報文的收件人填輪值呼號 BH6RIZ-6。收到 ACK 就上了當天的簽到表。',
+        'title': 'APRSNETCN OA · #261031',
+        'en': 'APRSNETCN OA · #261031',
+        'sub': '北京時間週六一整天，這一週由輪值呼號 BG7OSL-6 值守。',
     },
     'en': {
         'kicker': '📡 Saturday check-in',
-        'title': 'APRSNETCN OA · #261024 Half a Cat Bed',
+        'title': 'APRSNETCN OA · #261031',
         'en': 'Every Saturday, on air',
-        'sub': 'A whole Saturday, Beijing time. Address the message to the duty callsign BH6RIZ-6 and its ACK puts you on that day\'s roster.',
+        'sub': 'A whole Saturday, Beijing time, with BG7OSL-6 on duty this week.',
     },
 }
 
