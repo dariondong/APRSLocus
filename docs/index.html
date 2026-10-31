@@ -607,6 +607,18 @@ html{overflow-x:hidden}
 <!-- site-sync:changelog -->
     <div class="cl-version reveal">
       <div class="cl-head">
+        <span class="cl-tag">v2.1.39</span>
+        <span class="cl-date">2026-10-31</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot fix"></span>音频输出跟随耳机 / Type-C / 蓝牙：本 App 的播放原来被标成「提示音」内容类型，部分 ROM 会直接送扬声器 —— 别的 App 插上耳机就转耳机，只有本 App 还在外放。现在按媒体内容处理，并显式绑定到系统当前已连接的输出设备；没有外接时仍走系统默认。</div>
+        <div class="cl-item"><span class="cl-dot fix"></span>「位置上报」按钮更可靠：加大命中区并由按钮自己吃掉手势，地图底部横杠不再抢点击（长按也不会误弹身份面板）；还没拿到本轮定位时给出「等待定位」提示而不是禁用，未连接时明确说没发出去、不再显示「已发送」。</div>
+        <div class="cl-item"><span class="cl-dot up"></span>顶栏与上报条的按钮尺寸统一：天气、连接状态、连接按钮、快捷按钮、上报动作组都是 30px 高，圆角与字号也一致，并排时不再高低不齐。</div>
+        <div class="cl-item"><span class="cl-dot fix"></span>横屏地图操作控件不再被导航栏遮挡：横屏时系统导航栏 / 挖孔在屏幕右侧，地图原来只让了底部安全区 —— 贴右的工具列、上报横杠、底部坐标条会被盖住。现在右侧安全区一并计算，搜索与选点提示也相对可见地图区居中。</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
         <span class="cl-tag">v2.1.38</span>
         <span class="cl-date">2026-10-29</span>
       </div>

@@ -703,6 +703,10 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
             // 顶部锚点的基准：所有顶部浮层从 14 挪到「外壳顶栏之下」
             final double topBase = 14 + widget.topInset;
             final double padBottom = MediaQuery.of(context).padding.bottom;
+            // 横屏时系统导航栏 / 挖孔在**右**侧（竖屏才在底部）—— 贴右控件必须
+            // 让开，否则工具列、上报横杠、底部坐标条会被导航栏盖住
+            //（用户报的「横屏地图操作控件被遮挡」）。
+            final double padRight = MediaQuery.of(context).padding.right;
             // ── 工具列分几列：只看**这块地图框有多大**，不问这一帧被谁占了多少 ──
             //
             // 以前这里用「当帧可用高度」（减去 topInset / bottomInset / 上报横杠）。
@@ -979,7 +983,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                 Positioned(
                   top: topBase,
                   left: 14 + widget.leftInset,
-                  right: rightGutter,
+                  right: rightGutter + padRight,
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -998,8 +1002,8 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                 if (_pickMode)
                   Positioned(
                     top: topBase,
-                    left: 0,
-                    right: 0,
+                    left: widget.leftInset,
+                    right: padRight,
                     child: Center(
                       child: Container(
                         padding: const EdgeInsets.symmetric(
@@ -1078,7 +1082,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                         // 高度分列」（见 `_rightToolbar`），结构上不会再互相盖住，
                         // 也不会被 Stack 裁掉最下面那颗 —— 位置由 toolbarCols 定。
                         Positioned(
-                          right: 14,
+                          right: 14 + padRight,
                           top: topBase,
                           child: _rightToolbar(toolbarCols),
                         ),
@@ -1088,7 +1092,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                             widget.state.myHasFix)
                           Positioned(
                             left: 14 + widget.leftInset,
-                            right: 14,
+                            right: 14 + padRight,
                             bottom: 62 + MediaQuery.of(context).padding.bottom + widget.bottomInset,
                             // 「距下次上报 12 秒」是**秒级**字段：整页只在
                             // AppState 通知（有台站刷新 / 状态翻转）时重建，
@@ -1105,7 +1109,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                         if (roomForBottom)
                           Positioned(
                             left: 14 + widget.leftInset,
-                            right: 14,
+                            right: 14 + padRight,
                             bottom: 14 + MediaQuery.of(context).padding.bottom + widget.bottomInset,
                             child: ValueListenableBuilder<Offset?>(
                               valueListenable: _hover,
@@ -1127,7 +1131,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                     // 横屏时左侧被竖条占着：居中要相对**可见的地图区**，
                     // 否则提示条会偏向左侧、压到卡片边缘
                     left: widget.leftInset,
-                    right: 0,
+                    right: padRight,
                     child: Center(
                       child: MaterialSurface(
                         radius: 12,
@@ -3068,7 +3072,16 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                     ),
                     // 上报动作组（切换自动上报 + 立即上报）——三处共用同一个
                     // widgets.ReportActions，不再各写一份（见该 widget 说明）。
-                    ReportActions(state: st),
+                    //
+                    // ⚠ 用一层空手势把横杠自身的 onTap / onLongPress 挡住：否则点
+                    // 「立即上报」时外层也会抢手势（长按会弹身份面板），表现为
+                    // 「按钮有时没反应」。按钮自己更深，仍然优先触发。
+                    GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      onTap: () {},
+                      onLongPress: () {},
+                      child: ReportActions(state: st),
+                    ),
                   ],
                 ),
                 // ── 详细档：一行「当前触发条件」（issue #21-2）──

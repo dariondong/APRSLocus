@@ -1,5 +1,48 @@
 # 更新日志
 
+## [2.1.39] - 2026-10-31
+
+### 音频与上报
+
+- **音频输出跟随耳机 / Type-C / 蓝牙**：本 App 的播放原来被标成「提示音」内容类型，部分
+  ROM 会把它当 UI 提示音直送扬声器 —— 于是别的 App 插上耳机就转耳机，只有本 App 还在外放。
+  现在按媒体内容处理，并按系统当前已连接的输出设备（有线 / USB / 蓝牙）显式绑定；没有外接
+  时仍走系统默认。
+- **「位置上报」按钮更可靠**：加大命中区，并由按钮自己吃掉手势 —— 地图底部横杠不再抢点击
+  （长按也不会误弹身份面板）。还没拿到本轮定位时不再是一个「点了完全没反应」的禁用态，
+  而是给出「等待定位」提示；未连接时会明确说没发出去，不再显示「已发送」。
+- **顶栏与上报条的按钮尺寸统一**：天气、连接状态、连接按钮、快捷按钮、上报动作组统一为
+  30px 高、同一圆角与字号 —— 并排时不再高低不齐。
+- **横屏地图操作控件不再被导航栏遮挡**：横屏时系统导航栏 / 挖孔在屏幕**右**侧，而地图
+  原来只让了底部安全区 —— 贴右的工具列、上报横杠、底部坐标条会被盖住。现在右侧安全区
+  一并计算，搜索提示与选点提示也相对可见地图区居中。
+
+---
+
+## [2.1.39] - 2026-10-31 (English)
+
+### Audio and reporting
+
+- **Audio output follows a plugged-in headset / Type-C / Bluetooth**: playback was tagged as
+  "sonification", and some ROMs send that straight to the speaker - other apps switch to the
+  headset but this one stayed on the loudspeaker. It is treated as media now and bound
+  explicitly to the currently connected output device (wired / USB / Bluetooth). With nothing
+  plugged in, the system default is kept.
+- **More reliable "report now" button**: bigger hit targets, and the button claims its own
+  gesture so the map's bottom bar no longer steals the tap (a long press no longer opens the
+  identity sheet by mistake). Before a current fix exists the button stays tappable and says
+  "waiting for a fix" instead of being silently disabled; when disconnected it says so instead
+  of claiming the position was sent.
+- **Top bar and report bar controls share one size**: weather, link status, connect, quick panel
+  and the report actions are all 30px high with the same corner radius and text size, so they no
+  longer sit at different heights.
+- **Landscape map controls are no longer hidden behind the navigation bar**: in landscape the
+  system bar / notch sits on the right, while the map only respected the bottom inset - the
+  right-hand toolbar, beacon bar and bottom coordinate bar were covered. The right inset is now
+  applied too, and the search/pick hints centre inside the visible map area.
+
+---
+
 ## [2.1.38] - 2026-10-29
 
 ### 地图

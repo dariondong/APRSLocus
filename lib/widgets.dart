@@ -729,6 +729,12 @@ bool showAudioLevel(AppState st) => st.audioOn && st.audio.connected;
 ///
 /// 包一层 `MouseRegion` 是最小的做法，而且它只改指针、**不抢手势**：
 /// 命中测试先走子节点，`GestureDetector` 仍然在命中路径上。
+/// 顶栏 / 上报条里小胶囊的统一高度。
+///
+/// 天气、连接状态、连接按钮、快捷按钮、上报动作组经常并排出现；之前
+/// 26 / 26 / 29 / 32 混着，看起来像几套控件。统一用这一个值。
+const double kChipControlHeight = 30;
+
 class ClickCursor extends StatelessWidget {
   final Widget child;
   const ClickCursor({super.key, required this.child});
@@ -768,6 +774,13 @@ class ReportActions extends StatelessWidget {
     this.onDark = false,
   });
 
+  /// 三枚按钮（切换 / 立即上报 / 开始上报）共用同一套尺寸：
+  /// 一样高、一样圆角、一样字号与图标 —— 并排时不再高低不齐。
+  static const double _h = kChipControlHeight;
+  static const double _r = 9;
+  static const double _icon = 14;
+  static const double _font = 11;
+
   Future<void> _toggle(BuildContext context) async {
     final r = await state.toggleAutoReport();
     if (!context.mounted) return;
@@ -780,14 +793,18 @@ class ReportActions extends StatelessWidget {
 
   void _reportNow(BuildContext context) {
     final s = S.of(context);
-    final ok = state.myPositionReportable;
+    final reportable = state.myPositionReportable;
+    final connected = state.connected;
     state.sendBeacon();
-    // 还没本轮定位时上报闸会挡住它，如实提示（别弹一个假的「已发送」）。
+    // 上报闸会挡住「还没本轮定位」的点；未连接时也只是本地点、不会真的发出去。
+    // 两种情况都如实提示 —— 别弹一个假的「已发送」让用户以为按钮没反应。
     _toast(
       context,
-      ok
-          ? s.positionBeaconDetail(state.myGrid, state.beaconAttachedDetail)
-          : s.beaconWaitingFix,
+      !reportable
+          ? s.beaconWaitingFix
+          : (!connected
+              ? s.beaconNotConnected
+              : s.positionBeaconDetail(state.myGrid, state.beaconAttachedDetail)),
     );
   }
 
@@ -830,6 +847,9 @@ class ReportActions extends StatelessWidget {
         : (onDark ? Colors.white.withValues(alpha: 0.16) : C.greyBg);
     final toggle = ClickCursor(
       child: GestureDetector(
+        // opaque + 更大的纵向留白：地图上的小胶囊不能只靠 13px 高那点命中区，
+        // 手指稍微一动就会被地图的缩放手势吃掉（表现为「点了没反应」）。
+        behavior: HitTestBehavior.opaque,
         onTap: () => _toggle(context),
         child: Tooltip(
           message: s.reportToggleHint,
@@ -837,10 +857,12 @@ class ReportActions extends StatelessWidget {
             button: true,
             label: on ? s.reportAutoStop : s.reportAutoStart,
             child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
+              height: _h,
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              alignment: Alignment.center,
               decoration: BoxDecoration(
                 color: toggleBg,
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular(_r),
                 border: Border.all(
                   color: on ? C.green : (onDark ? Colors.white30 : C.grey),
                 ),
@@ -852,13 +874,13 @@ class ReportActions extends StatelessWidget {
                     on
                         ? Icons.pause_circle_filled_rounded
                         : Icons.play_circle_fill_rounded,
-                    size: 13,
+                    size: _icon,
                     color: toggleFg,
                   ),
                   const SizedBox(width: 4),
                   Text(
                     on ? s.reportTagAuto : s.reportTagOnce,
-                    style: ts(10.5, c: toggleFg, w: FontWeight.w700),
+                    style: ts(_font, c: toggleFg, w: FontWeight.w700),
                   ),
                 ],
               ),
@@ -871,21 +893,24 @@ class ReportActions extends StatelessWidget {
     // 立即上报：始终可用（关自动上报时它就是唯一的上报方式）。
     final now = ClickCursor(
       child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
         onTap: () => _reportNow(context),
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
+          height: _h,
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          alignment: Alignment.center,
           decoration: BoxDecoration(
             color: onDark ? Colors.white : C.blue,
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(_r),
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
               Icon(Icons.send_rounded,
-                  size: 13, color: onDark ? C.blue : Colors.white),
+                  size: _icon, color: onDark ? C.blue : Colors.white),
               const SizedBox(width: 4),
               Text(s.reportNow,
-                  style: ts(10.5,
+                  style: ts(_font,
                       c: onDark ? C.blue : Colors.white, w: FontWeight.w700)),
             ],
           ),
@@ -899,25 +924,34 @@ class ReportActions extends StatelessWidget {
     final action = needsConfirm
         ? ClickCursor(
             child: FilledButton.icon(
-              onPressed: ready ? () => _startReporting(context) : null,
+              // 不要用 onPressed:null：按钮会**彻底没反应**，用户只能反复点。
+              // 没拿到本轮定位时也让它可点，点了如实说「等待定位」。
+              onPressed: () {
+                if (!ready) {
+                  _toast(context, s.beaconWaitingFix);
+                  return;
+                }
+                _startReporting(context);
+              },
               icon: Icon(
                 ready ? Icons.send_rounded : Icons.location_searching_rounded,
-                size: 14,
+                size: _icon,
               ),
               label: Text(
                 ready ? s.reportStartNow : s.beaconWaitingFix,
-                style: ts(11.5, w: FontWeight.w700, c: Colors.white),
+                style: ts(_font,
+                    w: FontWeight.w700, c: ready ? Colors.white : C.slate),
               ),
               style: FilledButton.styleFrom(
-                backgroundColor: C.green,
+                backgroundColor: ready ? C.green : C.greyBg,
+                foregroundColor: ready ? Colors.white : C.slate,
                 disabledBackgroundColor: C.greyBg,
                 disabledForegroundColor: C.slate,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                minimumSize: const Size(0, 0),
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                minimumSize: const Size(0, _h),
                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(9),
+                  borderRadius: BorderRadius.circular(_r),
                 ),
               ),
             ),

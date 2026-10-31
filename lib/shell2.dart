@@ -1315,7 +1315,7 @@ class _HomeShell2State extends State<HomeShell2>
         radius: 999,
         blurSigma: C.chipBlur,
         child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
         decoration: BoxDecoration(
           color: C.chipFill,
           borderRadius: BorderRadius.circular(999),
@@ -1450,8 +1450,8 @@ class _HomeShell2State extends State<HomeShell2>
       return Tooltip(
         message: s.connecting,
         child: Container(
-          width: 32,
-          height: 32,
+          width: kChipControlHeight,
+          height: kChipControlHeight,
           decoration: BoxDecoration(
             color: C.blue.withValues(alpha: 0.12),
             shape: BoxShape.circle,
@@ -1460,7 +1460,7 @@ class _HomeShell2State extends State<HomeShell2>
           // `const Padding(... color: C.blue)` 会报 invalid_constant ——
           // 仓库里别处也踩过同一个坑（station_detail.dart 有注释记着）。
           child: Padding(
-            padding: const EdgeInsets.all(8),
+            padding: const EdgeInsets.all(7),
             child: CircularProgressIndicator(strokeWidth: 2, color: C.blue),
           ),
         ),
@@ -1485,7 +1485,9 @@ class _HomeShell2State extends State<HomeShell2>
           onTap: st.toggleConnect,
           behavior: HitTestBehavior.opaque,
           child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+            height: kChipControlHeight,
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            alignment: Alignment.center,
             decoration: BoxDecoration(
               color: (up ? C.red : C.blue).withValues(alpha: 0.12),
               borderRadius: BorderRadius.circular(999),
@@ -1558,7 +1560,9 @@ class _HomeShell2State extends State<HomeShell2>
             MaterialPageRoute(builder: (_) => ConnectionSettingsPage(state: st)),
           ),
           child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+            height: kChipControlHeight,
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            alignment: Alignment.center,
             decoration: BoxDecoration(
               color: color.withValues(alpha: 0.14),
               borderRadius: BorderRadius.circular(999),
@@ -1648,13 +1652,13 @@ class _HomeShell2State extends State<HomeShell2>
         onTap: onTap,
         behavior: HitTestBehavior.opaque,
         child: Container(
-          width: 32,
-          height: 32,
+          width: kChipControlHeight,
+          height: kChipControlHeight,
           decoration: BoxDecoration(
             color: color.withValues(alpha: 0.12),
             shape: BoxShape.circle,
           ),
-          child: Icon(icon, size: 18, color: color),
+          child: Icon(icon, size: 17, color: color),
         ),
       ),
     );

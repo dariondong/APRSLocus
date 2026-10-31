@@ -351,6 +351,33 @@ class AudioManager(private val activity: Activity) {
         }
     }
 
+    /**
+     * 当前可用的**外接**输出设备（有线 / USB / 蓝牙耳机优先），没有就返回 null。
+     *
+     * 为什么显式选：个别 ROM 不会让本 App 的 AudioTrack 跟着耳机改道 —— 结果
+     * 只有本 App「插了耳机还是外放」。按系统已连接的输出设备列表兜底；没有
+     * 外接时返回 null = 保持系统默认（通常是扬声器）。
+     */
+    private fun preferredOutput(am: AndroidAudioManager): android.media.AudioDeviceInfo? {
+        val devices = try {
+            am.getDevices(AndroidAudioManager.GET_DEVICES_OUTPUTS)
+        } catch (_: Exception) {
+            return null
+        }
+        val order = intArrayOf(
+            android.media.AudioDeviceInfo.TYPE_USB_HEADSET,
+            android.media.AudioDeviceInfo.TYPE_USB_DEVICE,
+            android.media.AudioDeviceInfo.TYPE_WIRED_HEADSET,
+            android.media.AudioDeviceInfo.TYPE_WIRED_HEADPHONES,
+            android.media.AudioDeviceInfo.TYPE_BLUETOOTH_A2DP,
+            android.media.AudioDeviceInfo.TYPE_HEARING_AID,
+        )
+        for (type in order) {
+            devices.firstOrNull { it.type == type }?.let { return it }
+        }
+        return null
+    }
+
     // ─── 播放 ───
 
     fun play(data: ByteArray, sampleRate: Int): Boolean {
@@ -372,7 +399,10 @@ class AudioManager(private val activity: Activity) {
                 .setAudioAttributes(
                     AudioAttributes.Builder()
                         .setUsage(AudioAttributes.USAGE_MEDIA)
-                        .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                        // ⚠ 不要用 CONTENT_TYPE_SONIFICATION：部分 ROM 会把
+                        // 「提示音」直接送扬声器，插了耳机 / Type-C 也不改道
+                        //（用户报的「只有本 App 不跟耳机走」）。按媒体内容处理。
+                        .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
                         .build()
                 )
                 .setAudioFormat(
@@ -389,6 +419,18 @@ class AudioManager(private val activity: Activity) {
                 try { t.release() } catch (_: Exception) {}
                 emitError("AudioTrack 初始化失败")
                 return false
+            }
+            // 显式绑到当前已连接的外接输出（有线 / Type-C / 蓝牙）。
+            // 只靠系统默认路由时，个别 ROM 会让本 App 的 AudioTrack 留在扬声器上
+            //（其它 App 插上耳机就正常）—— 这里按系统设备列表兜底。
+            val am = activity.getSystemService(Context.AUDIO_SERVICE) as? AndroidAudioManager
+            val preferred = am?.let { preferredOutput(it) }
+            if (preferred != null) {
+                try {
+                    t.setPreferredDevice(preferred)
+                    Log.i(TAG, "播放输出 → ${preferred.productName} (type=${preferred.type})")
+                } catch (_: Exception) {
+                }
             }
             track = t
             emitState("playing")

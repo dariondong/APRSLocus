@@ -581,10 +581,12 @@ class WeatherBadge extends StatelessWidget {
         return GestureDetector(
           onTap: () => showWeatherPanel(context, state),
           child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+            height: kChipControlHeight,
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            alignment: Alignment.center,
             decoration: BoxDecoration(
               color: col.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(24),
+              borderRadius: BorderRadius.circular(999),
               border: Border.all(color: col.withValues(alpha: 0.35)),
             ),
             child: Row(mainAxisSize: MainAxisSize.min, children: [
@@ -600,7 +602,7 @@ class WeatherBadge extends StatelessWidget {
               if (label.isNotEmpty) ...[
                 const SizedBox(width: 4),
                 Text(label,
-                    style: ts(12, c: col, w: FontWeight.w800)),
+                    style: ts(11, c: col, w: FontWeight.w800)),
               ],
             ]),
           ),

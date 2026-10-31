@@ -419,6 +419,55 @@ CARDS = [
 # 只列「重点版本」：中间几十个纯修 bug 的版本归纳进文字说明，完整记录指向 Releases。
 CL = [
     {
+        'ver': 'v2.1.39', 'date': '2026-10-31',
+        'items': [
+            ('fix',
+             T('音频输出跟随耳机 / Type-C / 蓝牙：本 App 的播放原来被标成「提示音」内容类型，'
+               '部分 ROM 会直接送扬声器 —— 别的 App 插上耳机就转耳机，只有本 App 还在外放。'
+               '现在按媒体内容处理，并显式绑定到系统当前已连接的输出设备；没有外接时仍走系统默认。',
+               '音訊輸出跟隨耳機 / Type-C / 藍牙：本 App 的播放原本被標成「提示音」內容類型，'
+               '部分 ROM 會直接送揚聲器 —— 別的 App 插上耳機就轉耳機，只有本 App 還在外放。'
+               '現在按媒體內容處理，並顯式綁定到系統目前已連線的輸出裝置；沒有外接時仍走系統預設。',
+               'Audio output follows a plugged-in headset / Type-C / Bluetooth: playback was tagged '
+               'as sonification and some ROMs sent that straight to the speaker - other apps '
+               'switched to the headset while this one stayed on the loudspeaker. It is media now '
+               'and bound explicitly to the connected output device; with nothing plugged in the '
+               'system default is kept.')),
+            ('fix',
+             T('「位置上报」按钮更可靠：加大命中区并由按钮自己吃掉手势，地图底部横杠不再抢点击'
+               '（长按也不会误弹身份面板）；还没拿到本轮定位时给出「等待定位」提示而不是禁用，'
+               '未连接时明确说没发出去、不再显示「已发送」。',
+               '「位置回報」按鈕更可靠：加大命中區並由按鈕自己吃掉手勢，地圖底部橫條不再搶點擊'
+               '（長按也不會誤彈身分面板）；還沒取得本輪定位時給出「等待定位」提示而不是停用，'
+               '未連線時明確說沒送出去、不再顯示「已送出」。',
+               'More reliable "report now" button: bigger hit targets and the button claims its own '
+               'gesture, so the map bottom bar no longer steals the tap (a long press no longer '
+               'opens the identity sheet); before a fix exists it says "waiting for a fix" instead '
+               'of being disabled, and when disconnected it says so rather than claiming it was sent.')),
+            ('up',
+             T('顶栏与上报条的按钮尺寸统一：天气、连接状态、连接按钮、快捷按钮、上报动作组都是 30px 高，'
+               '圆角与字号也一致，并排时不再高低不齐。',
+               '頂欄與上報條的按鈕尺寸統一：天氣、連線狀態、連線按鈕、快捷按鈕、上報動作組都是 30px 高，'
+               '圓角與字號也一致，並排時不再高低不齊。',
+               'Top bar and report bar controls share one size: weather, link status, connect, quick '
+               'panel and the report actions are all 30px high with the same corner radius and text '
+               'size, so they no longer sit at different heights.')),
+            ('fix',
+             T('横屏地图操作控件不再被导航栏遮挡：横屏时系统导航栏 / 挖孔在屏幕右侧，'
+               '地图原来只让了底部安全区 —— 贴右的工具列、上报横杠、底部坐标条会被盖住。'
+               '现在右侧安全区一并计算，搜索与选点提示也相对可见地图区居中。',
+               '橫屏地圖操作控件不再被導航列遮擋：橫屏時系統導航列 / 挖孔在螢幕右側，'
+               '地圖原本只讓了底部安全區 —— 貼右的工具列、上報橫條、底部座標條會被蓋住。'
+               '現在右側安全區一併計算，搜尋與選點提示也相對可見地圖區居中。',
+               'Landscape map controls are no longer hidden behind the navigation bar: in '
+               'landscape the system bar / notch sits on the right, while the map only respected '
+               'the bottom inset - the right-hand toolbar, beacon bar and bottom coordinate bar '
+               'were covered. The right inset is applied now, and the search/pick hints centre '
+               'inside the visible map area.')),
+        ],
+    },
+
+    {
         'ver': 'v2.1.38', 'date': '2026-10-29',
         'items': [
             ('fix',

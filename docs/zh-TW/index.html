@@ -607,6 +607,18 @@ html{overflow-x:hidden}
 <!-- site-sync:changelog -->
     <div class="cl-version reveal">
       <div class="cl-head">
+        <span class="cl-tag">v2.1.39</span>
+        <span class="cl-date">2026-10-31</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot fix"></span>音訊輸出跟隨耳機 / Type-C / 藍牙：本 App 的播放原本被標成「提示音」內容類型，部分 ROM 會直接送揚聲器 —— 別的 App 插上耳機就轉耳機，只有本 App 還在外放。現在按媒體內容處理，並顯式綁定到系統目前已連線的輸出裝置；沒有外接時仍走系統預設。</div>
+        <div class="cl-item"><span class="cl-dot fix"></span>「位置回報」按鈕更可靠：加大命中區並由按鈕自己吃掉手勢，地圖底部橫條不再搶點擊（長按也不會誤彈身分面板）；還沒取得本輪定位時給出「等待定位」提示而不是停用，未連線時明確說沒送出去、不再顯示「已送出」。</div>
+        <div class="cl-item"><span class="cl-dot up"></span>頂欄與上報條的按鈕尺寸統一：天氣、連線狀態、連線按鈕、快捷按鈕、上報動作組都是 30px 高，圓角與字號也一致，並排時不再高低不齊。</div>
+        <div class="cl-item"><span class="cl-dot fix"></span>橫屏地圖操作控件不再被導航列遮擋：橫屏時系統導航列 / 挖孔在螢幕右側，地圖原本只讓了底部安全區 —— 貼右的工具列、上報橫條、底部座標條會被蓋住。現在右側安全區一併計算，搜尋與選點提示也相對可見地圖區居中。</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
         <span class="cl-tag">v2.1.38</span>
         <span class="cl-date">2026-10-29</span>
       </div>

@@ -356,6 +356,20 @@ def main() -> int:
             errors.append(f'切回写死阈值了（{magic}）—— 加一颗钮就漏判，'
                           '贴底控件与工具列会叠在一起')
 
+    # ⑧b 地图自己的贴右控件也要让开**右侧安全区**：横屏时系统导航栏 / 挖孔
+    # 在屏幕右边（竖屏才在底部），只加 padding.bottom 会让工具列、上报横杠、
+    # 底部坐标条被导航栏盖住（用户报的「横屏地图操作控件被遮挡」）。
+    if 'final double padRight = MediaQuery.of(context).padding.right;' not in map_code:
+        errors.append('MapPage 没有读右侧安全区（padding.right）—— 横屏时导航栏'
+                      '在右侧，工具列 / 上报横杠 / 底部坐标条会被它盖住')
+    for anchor, what in (
+        ('right: 14 + padRight,', '工具列 / 贴底控件'),
+        ('right: rightGutter + padRight,', '左上竖列'),
+    ):
+        if anchor not in map_code:
+            errors.append(f'{what}没有让开右侧安全区（缺 `{anchor}`）—— '
+                          '横屏时会被导航栏 / 挖孔遮挡')
+
     # ⑨ 换栏/降级不许按「朝向」判（2.0 横屏的面板只有 200~280 宽）
     if '!landscape && constraints.maxWidth < 720' in msgs:
         errors.append('消息页还在按「朝向」决定双栏 —— 2.0 横屏把消息页装进 ≤560 的'
