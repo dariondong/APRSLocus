@@ -437,7 +437,9 @@ class _TrackOverlayPageState extends State<TrackOverlayPage> {
       padding: EdgeInsets.fromLTRB(
         14, 10, 14, 10 + MediaQuery.of(context).viewPadding.bottom),
       decoration: BoxDecoration(
-        color: C.surfaceFillStrong,
+        // 这一条在**地图下面**，不压在任何内容上（Column 排下来），所以用卡片
+        // 那一档表面色就够：套 BackdropFilter 只是白多一层整屏 saveLayer。
+        color: C.surfaceFill,
         border: Border(top: BorderSide(color: C.border)),
       ),
       child: Column(
