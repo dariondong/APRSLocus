@@ -9,6 +9,7 @@ OSS 渠道由**四处**约定拼成，任何一处漏了都**不会报错**，�
 
   1. 客户端登记了渠道地址     —— `lib/state.dart` 的 `updateChannelBases['aliyun' / 'aliyun_hk']`
   2. 客户端选择器里有这个渠道 —— `lib/check_update_page.dart` 的 `setUpdateChannel('aliyun' / 'aliyun_hk')`
+     且副标题写着它真正读取的地址（用户看到的差别就是「从哪儿取」）
   3. 发版流水线真的上传了     —— `.github/workflows/build-release.yml` 的 `publish-oss`
      ① 把三个平台的安装包都传上去；② 生成并上传 GitHub 同格式的 releases 索引
   4. 索引生成器的形状对       —— `tool/oss_index.py`（跑它的 selftest）
@@ -86,9 +87,12 @@ def main() -> int:
             errors.append('%s 的 updateChannelLabels 里没有 `%s`（提示/无障碍标签会回退成裸 id）'
                           % (STATE, ch))
 
-        # ── ② 选择器里有这个渠道 + 费用提示条 ──
+        # ── ② 选择器里有这个渠道，副标题写着它真正读取的地址 ──
         if "setUpdateChannel('%s')" % ch not in page:
             errors.append('%s 的渠道选择器里没有 `%s` 选项' % (UPDATE_PAGE, ch))
+        if host not in page:
+            errors.append('%s 的 `%s` 渠道副标题没写真实地址 `%s`（用户看不出从哪儿取）'
+                          % (UPDATE_PAGE, ch, host))
 
         # ── ③ 流水线真的把安装包与索引传到该 bucket ──
         if not job:
@@ -133,10 +137,9 @@ def main() -> int:
         errors.append('%s 的 publish-oss 的自检没有真去下索引里的资产 —— '
                       '`.apk`/`.ipa` 的 400 会被漏掉' % WORKFLOW)
 
-    # ── 选择器与加载态：Aliyun 的 l10n 键 ──
-    if 'updateChannelAliyunHint' not in page:
-        errors.append('%s 没有用到「开发团队付费、请少量使用」的费用提示文案 '
-                      '（updateChannelAliyunHint）' % UPDATE_PAGE)
+    # ── 加载态：Aliyun 渠道自己的 l10n 键 ──
+    # 费用提示（updateChannelAliyunHint）已从页面上撤掉，渠道之间真正的差别是
+    # 「从哪儿取」，副标题现在写地址（见 ②）。键还留在 arb 里，但不再要求引用。
     if 'connectingAliyun' not in page:
         errors.append('%s 的加载状态行没处理 Aliyun 渠道（会退回 Qingling 的文案）'
                       % UPDATE_PAGE)
@@ -159,7 +162,7 @@ def main() -> int:
     # ── ⑤ l10n 键齐全 ──
     for rel in ARB_FILES:
         t = read(rel)
-        for k in ('updateChannelAliyunHint', 'connectingAliyun'):
+        for k in ('connectingAliyun',):
             if '"%s"' % k not in t:
                 errors.append('%s 缺 l10n 键 `%s`' % (rel, k))
 
