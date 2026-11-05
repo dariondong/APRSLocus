@@ -85,12 +85,19 @@
      `topInset` / `bottomInset` / 上报横杠都是一时一变的（横幅出现与收起、开始
      上报、内容面板开合各改一次），列数于是在 3↔4 之间跳，整排按钮跟着重排。
      判据现在是：
-       * 分几列只看**地图框尺寸**减两个**固定预留**（`_kToolbarTopReserve` /
-         `_kToolbarBottomReserve`）—— 同一块屏幕上永远同一个答案，只有旋转 /
-         改窗口大小才变；
-       * 贴底控件让不让位仍看**当帧** `availH`（那管的是「会不会真的压住」）；
+       * 分几列只看**窗口尺寸**减两个预留（`_kToolbarTopReserve` /
+         `_kToolbarBottomReserve` 是下限，真正的预留取「两道横幅全挂着时的
+         顶部锚点」与「上报横杠出现时的底部占用」的较大值）—— 同一块屏幕上
+         永远同一个答案，只有旋转 / 改窗口大小才变；
+       * 贴底控件让不让位看**当帧真实边缘**：工具列最后一颗的下沿 + 8 必须还在
+         它们上面（以前拿「要几列」当替代，答不了「会不会压住」）；
        * `availH` 不许出现在 `_toolbarColumns(...)` 的参数里，也不许再写回
-          `availH < _kToolbarColH + 54` 这类写死阈值。
+         `availH < _kToolbarColH + 54` 这类写死阈值。
+      2026-11-01 修（用户报的「浮层工具挡在一起了」）：底部原来只预留 70，
+      而上报横杠实际占到 62+38=100，再叠导航栏与安全区更多 —— 720 高的手机上
+      工具列一列 478 长，正好压在上报横杠上。现在预留按真实占用算，列数同时
+      封顶在 `_kToolbarMaxCols`（再矮也不无限加列，那会拉成一整排横贯地图的
+      按钮），真装不下时由贴底控件让位。
       2026-10-29 又抓到一条：给矮窗口留的那条兜底支路（`roomNoBottom`）算的
      也是 `availH`，而它含 `bottomInset` —— 一开 2.0 内容面板可用高度骤减，
      兜底反过来要求更**多**的列，整排按钮又重排一遍（用户报的「地图页的控件
@@ -327,13 +334,20 @@ def main() -> int:
             errors.append('_infoChip 的计数没有**全部**(≥3) 用 Flexible + ellipsis '
                           '兜底 —— 西语/日语的长文案（`120 en movimiento`）会溢出')
 
-    # ⑧ 分几列只看地图框尺寸（固定预留），贴底控件让位才看当帧可用高度
-    if ('final double availH =' not in map_code
-            or 'size.height - widget.topInset - widget.bottomInset' not in map_code):
-        errors.append('MapPage 没有算「这一帧顶栏之下还剩多少」(availH) —— '
-                      '贴底控件该不该让位就判不了')
+    # ⑧ 分几列只看窗口尺寸（最坏情况预留），贴底控件让位只看当帧真实几何
+    #
+    # 2026-11-01 改的判据（用户报的「浮层工具挡在一起了」）：列数仍然只跟窗口
+    # 尺寸走，但预留改成「两道横幅全挂着时的顶部锚点」与「上报横杠出现时的
+    # 底部占用」的较大值 —— 以前底部只预留 70，而它真的占到 62+38=100（再叠
+    # 导航栏与安全区就更多），720 高的手机上工具列一列 478 长，正好压在上报
+    # 横杠上。另外「贴底控件让不让位」不再用 `_toolbarColumns(roomWithBottom)
+    # <= 3` 判（那只回答「要几列」，答不了「会不会压住」），改成直接比两个
+    # 真实边缘：工具列最后一颗的下沿 + 8 必须还在贴底控件的上沿之上。
+    if 'final double topBase = 14 + widget.topInset;' not in map_code:
+        errors.append('MapPage 没有算顶部锚点（topBase）—— 工具列与贴底控件的'
+                      '几何都无从判断')
     if 'final int toolbarCols = _toolbarColumns(toolbarRoom);' not in map_code:
-        errors.append('工具列列数不是从「地图框尺寸 - 固定预留」(toolbarRoom) 算的 —— '
+        errors.append('工具列列数不是从「窗口尺寸 - 预留」(toolbarRoom) 算的 —— '
                       '拿当帧让位量算，横幅/上报横杠/面板一改列数就重排（控件排序被重排）')
     if 'roomNoBottom' in map_code:
         errors.append('又给矮窗口留了按当帧可用高度兜底的分栏支路 —— 那条里含 '
@@ -344,14 +358,25 @@ def main() -> int:
     if ('_kToolbarTopReserve' not in map_code
             or '_kToolbarBottomReserve' not in map_code):
         errors.append('没有 _kToolbarTopReserve / _kToolbarBottomReserve —— '
-                      '分栏的预留必须是常量，否则同一块屏幕上答案会飘')
-    if re.search(r'roomForBottom\s*=\s*_toolbarColumns\(roomWithBottom\)', map_code) is None:
-        errors.append('贴底控件让不让位不是按当帧可用高度判的 —— '
-                      '真实几何一变它就判错（要么压住工具列，要么白占一条）')
+                      '分栏的预留必须有下限，否则同一块屏幕上答案会飘')
+    for needle, why in (
+        ('final double toolbarBottom =',
+         '没算工具列最后一颗的下沿（toolbarBottom）—— 就不知道它压没压到贴底控件'),
+        ('final double barsTop =',
+         '没算贴底控件的上沿（barsTop）—— 那才是「会不会真压住」的判据'),
+        ('final bool roomForBottom = toolbarBottom + 8 <= barsTop;',
+         '贴底控件让不让位不是比两个真实边缘，而是拿「要几列」当替代 —— '
+         '矮屏上会叠在一起（用户报的「浮层工具挡在一起了」）'),
+    ):
+        if needle not in map_code:
+            errors.append(why)
     if '_toolbarColumns(availH' in map_code:
         errors.append('分栏又把 availH（当帧让位量）算进去了 —— 那几项一时一变，'
                       '列数会跟着横幅 / 上报横杠 / 面板重排')
-    for magic in ('availH < _kToolbarColH + 54', 'availH > 484'):
+    if 'roomWithBottom' in map_code:
+        errors.append('又用 `_toolbarColumns(roomWithBottom)` 判贴底控件让位 —— '
+                      '那只回答「要几列」，答不了「会不会压住」')
+    for magic in ('availH < _kToolbarColH + 54', 'availH > 484', 'availH < 600'):
         if magic in map_code:
             errors.append(f'切回写死阈值了（{magic}）—— 加一颗钮就漏判，'
                           '贴底控件与工具列会叠在一起')

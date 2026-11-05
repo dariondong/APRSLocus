@@ -182,19 +182,6 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
   static const int _kToolCount = 5;
   static const int _kZoomCount = 6;
 
-  /// 单列总高：5 颗工具 + 组间一道 gap + 6 颗缩放 = 478。
-  ///
-  /// 只用来判断「贴底控件（坐标条 / 上报横杠）还摆不摆得下」；工具列本身分
-  /// 几列是按地图框尺寸算的（见 [_toolbarColumns]）—— 以前这里写死
-  /// 390 去判「矮横屏」，加了「锁定中心」那颗之后就不再等于真实高度了，
-  /// 于是处在中间那一档的窗口（尤其桌面上的矮窗口）会漏判：工具列最下面
-  /// 那颗被裁掉、点不到（用户报的「操作控件最下面有概率被遮挡」）。
-  static const double _kToolbarColH = _kToolCount * _kToolBtn +
-      (_kToolCount - 1) * _kToolGap +
-      _kToolGap +
-      _kZoomCount * _kToolBtn +
-      (_kZoomCount - 1) * _kToolGap;
-
   /// 判工具列分栏时的上下固定预留（顶部：顶栏 + 最多一排横幅；底部：导航 +
   /// 贴底控件）。
   ///
@@ -209,6 +196,15 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
   /// 上报横杠）让位。
   static const int _kToolbarMaxCols = 3;
 
+  /// 顶部两道横幅（未连接提示 / 公告）同时挂着时，地图的顶部锚点还会往下
+  /// 多走多少。
+  ///
+  /// 分栏预留用这个**上限**而不是当帧的 `topInset`：横幅一出现工具列就往下
+  /// 长，若列数按当帧算就会当场重排；按上限算，横幅出现只是把工具列整个推下去
+  /// （位置变了但排序不变），而且已经预留过的高度够它用。数值 = 两道横幅
+  /// （各 36~40）+ 各自的间距，宁可多留。
+  static const double _kToolbarBannerSlack = 90;
+
   /// 工具列按钮总数
   static int get _kToolbarBtns => _kToolCount + _kZoomCount;
 
@@ -220,14 +216,18 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
 
   /// 装进 [room] 高最少要分几列。
   ///
-  /// 「矮横屏」不是看朝向或裸屏高，而是看这一块**地图框**有多大（减去固定的
-  /// 顶/底预留，见 [_kToolbarTopReserve]）—— 桌面上的矮窗口、手机横放，都会让
-  /// 同一块屏幕需要不同列数。
+  /// 「矮横屏」不是看朝向或裸屏高，而是看这一块**地图框**有多大（减去顶/底
+  /// 预留）—— 桌面上的矮窗口、手机横放，都会让同一块屏幕需要不同列数。
+  ///
+  /// 封顶在 [_kToolbarMaxCols]：再矮也不继续加列。无限加列会把工具列拉成
+  /// 一整排横贯地图的按钮（十一颗三列已经 126 宽，十一列就是 478 宽），
+  /// 那一排比「贴底控件让位」难看多了。真装不下时由 `roomForBottom` 让贴底
+  /// 控件消失，工具列自己永远装得下、也永远压不到别人。
   static int _toolbarColumns(double room) {
-    for (var c = 1; c <= _kToolbarBtns; c++) {
+    for (var c = 1; c <= _kToolbarMaxCols; c++) {
       if (_toolbarHeight(c) <= room) return c;
     }
-    return _kToolbarBtns;
+    return _kToolbarMaxCols;
   }
 
   /// 上报横杠（[_beaconBar]）自身的高度：一行 12 号字 + 上下各 8 内边距 + 描边。
@@ -694,12 +694,11 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
             final searched = widget.searchQuery.trim().isNotEmpty;
             // ── 右侧工具列多高、要分几列 ──
             //
-            // `availH` 是「顶栏之下这一帧真剩多少」：它只看**这一帧**的让位量，
-            // 所以只用来判断贴底控件（坐标条 / 上报横杠）还摆不摆得下 ——
-            // 那件事本质上是「会不会压住」，必须用真实几何。工具列分几列**不能**
-            // 用它，否则横幅出现/收起、开始上报、面板开合都会把整排按钮重排一遍。
-            final double availH =
-                size.height - widget.topInset - widget.bottomInset;
+            // 两件事分开算，这是这一版的核心：**列数**只跟窗口尺寸走（稳定、
+            // 不随横幅/面板/上报状态变），**贴底控件摆不摆**只看当帧真实几何
+            //（它管的是「会不会真压住」）。把两件事搅在一起的年代，只要有人
+            // 一改就是「控件重排」或者「控件叠在一起」。
+            //
             // 顶部锚点的基准：所有顶部浮层从 14 挪到「外壳顶栏之下」
             final double topBase = 14 + widget.topInset;
             final double padBottom = MediaQuery.of(context).padding.bottom;
@@ -707,15 +706,25 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
             // 让开，否则工具列、上报横杠、底部坐标条会被导航栏盖住
             //（用户报的「横屏地图操作控件被遮挡」）。
             final double padRight = MediaQuery.of(context).padding.right;
-            // ── 工具列分几列：只看**这块地图框有多大**，不问这一帧被谁占了多少 ──
+            // ── 工具列分几列：按**最坏情况**的顶/底占用算 ──
             //
-            // 以前这里用「当帧可用高度」（减去 topInset / bottomInset / 上报横杠）。
-            // 那几项都是一时的：未连接横幅、公告横幅、开始上报、内容面板开合
-            // 各自改一次，列数就在 3↔4 之间跳，整排按钮跟着重排一遍 —— 用户报的
-            // 「地图控件排序被重排」。现在只减两个**固定预留**（取那几件东西的
-            // 尺寸上限），同一块屏幕上永远同一个答案，只有旋转 / 改窗口大小才会变。
+            // 预留取「两道横幅都挂着时的顶部锚点」与「上报横杠出现时的底部占用」，
+            // 两者都是这台设备上的常数：横幅出现与收起、开始上报、2.0 内容面板
+            // 都不改它，于是同一块屏幕上按钮的位置永远不变（用户报的「地图控件
+            // 排序被重排」）。
+            //
+            // 为什么必须是**最坏**情况而不是「看起来够用」：底部原来只预留 70，
+            // 而上报横杠实际占到 62+38=100，再叠上导航栏与安全区就更多 —— 矮一点
+            // 的手机（720 高、无刘海）上工具列一列就有 478 长，正好压在上报横杠上
+            // （用户报的「浮层工具挡在一起了」）。按真实占用预留之后，工具列永远
+            // 长不到贴底控件那一块。
+            final double topReserve =
+                math.max(_kToolbarTopReserve, topBase + _kToolbarBannerSlack);
+            final double bottomReserve = math.max(
+                _kToolbarBottomReserve,
+                14 + _kBeaconBarH + 62 + padBottom + widget.bottomInset);
             final double toolbarRoom =
-                size.height - _kToolbarTopReserve - _kToolbarBottomReserve;
+                size.height - topReserve - bottomReserve;
             // 列数只由**窗口尺寸**决定：同一块屏幕、同一个方向，永远是同一个
             // 答案 —— 横幅、开始上报、2.0 内容面板都不参与。以前还给「矮窗口」
             // 留了一个按**当帧**可用高度兜底的支路（`roomNoBottom`），而那一项
@@ -723,20 +732,19 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
             // 要求更**多**的列，整排按钮于是重排一遍（用户报的「地图页的控件
             // 不应受 UI 2.0 其他页面底层的影响」）。那个支路已删。
             final int toolbarCols = _toolbarColumns(toolbarRoom);
-            // 贴底控件（坐标条 / 上报横杠）还摆不摆得下：这条得看**这一帧**，
-            // 它管的是「会不会真的压住」，与按钮怎么排无关。
-            //
-            // ⚠ `bottomInset` 只算一次（在 `availH` 里）：以前这里又把整份
-            // `bottomInset` 加进贴底占位，面板拉开一半时可用高度被扣两遍，
-            // 贴底控件会莫名其妙消失。
+            // 贴底控件（坐标条 / 上报横杠）还摆不摆得下：拿**这一帧**的真实
+            // 几何判 —— 工具列最后一颗按钮的下沿再留 8 像素，必须还在它们上面。
+            // 这是「会不会真压住」的唯一判据，所以它必须用当帧值，与列数怎么
+            // 算无关（列数是稳定的，这两件事早就该分开）。
             final double bottomBars = widget.state.connected &&
                     widget.state.myHasFix
                 ? 62 + _kBeaconBarH
                 : 14 + _kBottomCtrlH;
-            final double roomWithBottom =
-                availH - 14 - (bottomBars + padBottom + 8);
-            final bool roomForBottom =
-                _toolbarColumns(roomWithBottom) <= _kToolbarMaxCols;
+            final double toolbarBottom =
+                topBase + _toolbarHeight(toolbarCols);
+            final double barsTop =
+                size.height - (bottomBars + padBottom + widget.bottomInset);
+            final bool roomForBottom = toolbarBottom + 8 <= barsTop;
             // 左侧那一列浮层要让开工具列：它以前写死 `right: 74`（只够一列），
             // 工具列换成两列/三列后就会压在它的右端。
             final double rightGutter =
@@ -988,6 +996,22 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      // 两条**一次性**提示排在这一列的最前面（选点 / 搜索命中）。
+                      //
+                      // 它们以前各自 `Positioned` 在**同一个 top** 上居中，于是
+                      // 三个东西会同时占着地图顶端：左边的心率/计数、中间的提示、
+                      // 右边的工具列 —— 提示一长（搜索词长、西语漏译）就往两边长，
+                      // 正好糊在左右两排控件上（用户报的「浮层工具挡在一起」）。
+                      // 进同一列顺序排，结构上就压不到别人；宽度也被这一列的
+                      // `right`（让开工具列）挡住。
+                      if (_pickMode) ...[
+                        _pickBanner(),
+                        const SizedBox(height: 8),
+                      ],
+                      if (searched) ...[
+                        _searchHint(vis.length),
+                        const SizedBox(height: 8),
+                      ],
                       // 心率放**最上面**：它是用户运动时最想一眼看到的东西，
                       // 而台站计数是「背景信息」（需求原话：「让心率显示在主屏幕上面」）。
                       _hrChip(),
@@ -998,57 +1022,6 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                     ],
                   ),
                 ),
-                // 选点提示
-                if (_pickMode)
-                  Positioned(
-                    top: topBase,
-                    left: widget.leftInset,
-                    right: padRight,
-                    child: Center(
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 10,
-                        ),
-                        decoration: BoxDecoration(
-                          color: C.orange,
-                          borderRadius: BorderRadius.circular(12),
-                          boxShadow: elev3(),
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            const Icon(
-                              Icons.gps_fixed_rounded,
-                              color: Colors.white,
-                              size: 16,
-                            ),
-                            const SizedBox(width: 8),
-                            Text(
-                              S.of(context).mapPickDesc,
-                              style: ts(
-                                12,
-                                c: Colors.white,
-                                w: FontWeight.w700,
-                              ),
-                            ),
-                            const SizedBox(width: 8),
-                            GestureDetector(
-                              onTap: () {
-                                widget.state.finishPick();
-                                setState(() => _pickMode = false);
-                              },
-                              child: const Icon(
-                                Icons.close_rounded,
-                                color: Colors.white,
-                                size: 18,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
                 // 焦点标记：从策略地图「导航」过来的目标点。
                 // 策略点不在 stations 里（是远端构造的合成台站），台站标记里
                 // 找不到它 —— 缺了这枚标记，用户落图后看不到「刚才要导的那个点」，
@@ -1070,8 +1043,8 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                 // ⚠ 只包**这一簇**，不包整页：共享 key 的语义是「后一个表面采样的
                 // 是第一个表面**之前**的那张底」，也就是说两者之间画的内容不会出现
                 // 在它的模糊里 —— 所以只有「连续绘制、互不重叠」的一簇能合并。
-                // 台站标记（里面还套着选中信息窗）与搜索提示条都留在组外，
-                // 正是这个原因。
+                // 台站标记（里面还套着选中信息窗）与左上那一列（心率 / 计数 /
+                // 选点提示 / 搜索命中）都留在组外，正是这个原因。
                 Positioned.fill(
                   child: BackdropGroup(
                     child: Stack(
@@ -1124,41 +1097,6 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                     ),
                   ),
                 ),
-                // 搜索提示
-                if (searched)
-                  Positioned(
-                    top: topBase,
-                    // 横屏时左侧被竖条占着：居中要相对**可见的地图区**，
-                    // 否则提示条会偏向左侧、压到卡片边缘
-                    left: widget.leftInset,
-                    right: padRight,
-                    child: Center(
-                      child: MaterialSurface(
-                        radius: 12,
-                        blurSigma: C.chipBlur,
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 14,
-                            vertical: 8,
-                          ),
-                          decoration: BoxDecoration(
-                            color: C.chipFill,
-                            borderRadius: BorderRadius.circular(12),
-                            boxShadow: elev2(),
-                          ),
-                          child: Text(
-                            S
-                                .of(context)
-                                .foundStations(
-                                  vis.length,
-                                  widget.searchQuery.trim(),
-                                ),
-                            style: ts(12, w: FontWeight.w600),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
               ],
             );
           },
@@ -2094,6 +2032,85 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
   }
 
   // ─── 覆盖控件 ───
+  /// 选点提示（地图进入「点一下选位置」模式时那一行）。
+  ///
+  /// 以前是单独 `Positioned` 在地图顶端居中，与左边的心率/计数、右边的工具列
+  /// 同一个 top —— 宽了就往两边长，把控件糊掉。现在它是左上那一列的**第一项**
+  /// （见 build），与其它控件顺序排，结构上不会重叠。
+  Widget _pickBanner() {
+    final s = S.of(context);
+    return Container(
+      padding: const EdgeInsets.fromLTRB(12, 8, 8, 8),
+      decoration: BoxDecoration(
+        color: C.orange,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: elev3(),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Icon(Icons.gps_fixed_rounded, color: Colors.white, size: 16),
+          const SizedBox(width: 8),
+          Flexible(
+            child: Text(
+              s.mapPickDesc,
+              style: ts(12, c: Colors.white, w: FontWeight.w700),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+          const SizedBox(width: 6),
+          GestureDetector(
+            // 命中区给到 28×28：地图上那枚小叉原来只有 18，不好点
+            behavior: HitTestBehavior.opaque,
+            onTap: () {
+              widget.state.finishPick();
+              setState(() => _pickMode = false);
+            },
+            child: const SizedBox(
+              width: 28,
+              height: 28,
+              child: Icon(Icons.close_rounded, color: Colors.white, size: 18),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// 搜索命中提示（「找到 N 个 XX」）。同样进了左上一列，理由见 [_pickBanner]。
+  Widget _searchHint(int found) {
+    return MaterialSurface(
+      radius: 12,
+      blurSigma: C.chipBlur,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        decoration: BoxDecoration(
+          color: C.chipFill,
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: elev2(),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(Icons.search_rounded, size: 14, color: C.blue),
+            const SizedBox(width: 6),
+            Flexible(
+              child: Text(
+                S
+                    .of(context)
+                    .foundStations(found, widget.searchQuery.trim()),
+                style: ts(12, w: FontWeight.w600),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   /// 心率胶囊（主屏幕左上，最上面那一个）。
   ///
   /// **没有读数就整块不出现**（返回 `SizedBox.shrink()`，连 10px 间隙也由调用处
