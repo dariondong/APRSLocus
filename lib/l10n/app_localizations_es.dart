@@ -10326,4 +10326,25 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get oobeFeatureDesc => "Un módulo apagado desaparece de los ajustes. Puedes cambiarlo en Ajustes → Funciones.";
 
+  @override
+  String get historyOverlay => "Capas de rutas";
+
+  @override
+  String get historyOverlayShare => "Compartir imagen";
+
+  @override
+  String get historyOverlayExport => "Exportar imagen";
+
+  @override
+  String get historyOverlayExportFailed => "No se pudo exportar la imagen";
+
+  @override
+  String get historyOverlayEmpty => "Aún no hay rutas que superponer.";
+
+  @override
+  String get historyOverlayAll => "Mostrar todo";
+
+  @override
+  String historyOverlaySummary(String days, String total, String km) => "$days/$total días · $km";
+
 }

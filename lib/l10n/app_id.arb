@@ -4434,5 +4434,13 @@
   "advChannels": "Pengaturan kirim lanjutan",
   "codeContributionEncoding": "Encoding Tionghoa",
   "oobeFeatureTitle": "Fitur mana yang dipakai",
-  "oobeFeatureDesc": "Modul yang dimatikan hilang dari pengaturan. Ubah nanti di Pengaturan → Fitur"
+  "oobeFeatureDesc": "Modul yang dimatikan hilang dari pengaturan. Ubah nanti di Pengaturan → Fitur",
+  "historyOverlay": "Lapisan riwayat",
+  "historyOverlayShare": "Bagikan gambar",
+  "historyOverlayExport": "Ekspor gambar",
+  "historyOverlayExportFailed": "Gagal mengekspor gambar",
+  "historyOverlayEmpty": "Belum ada lintasan untuk dilapis.",
+  "historyOverlayAll": "Tampilkan semua",
+  "historyOverlaySummary": "{days}/{total} hari · {km}",
+  "@historyOverlaySummary": {"placeholders": {"days": {"type": "String"}, "total": {"type": "String"}, "km": {"type": "String"}}}
 }

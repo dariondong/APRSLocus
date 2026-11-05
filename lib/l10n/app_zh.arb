@@ -5113,5 +5113,13 @@
   "advChannels": "高级连接通道设置",
   "codeContributionEncoding": "中文编码兼容",
   "oobeFeatureTitle": "要哪些功能",
-  "oobeFeatureDesc": "关掉的模块不会出现在设置里。以后想改，设置 → 功能。"
+  "oobeFeatureDesc": "关掉的模块不会出现在设置里。以后想改，设置 → 功能。",
+  "historyOverlay": "历史叠层",
+  "historyOverlayShare": "分享图片",
+  "historyOverlayExport": "导出图片",
+  "historyOverlayExportFailed": "导出图片失败",
+  "historyOverlayEmpty": "还没有可叠加的轨迹。",
+  "historyOverlayAll": "全部显示",
+  "historyOverlaySummary": "{days}/{total} 天 · {km}",
+  "@historyOverlaySummary": {"placeholders": {"days": {"type": "String"}, "total": {"type": "String"}, "km": {"type": "String"}}}
 }

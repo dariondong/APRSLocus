@@ -213,6 +213,66 @@ Future<bool> shareTextFile(
 bool get shareToSystemSupported =>
     defaultTargetPlatform == TargetPlatform.android;
 
+/// 导出**图片**（PNG）：Android 走原生的「保存到下载目录」，桌面写下载目录。
+///
+/// 与 [saveBackupFile] 分开是因为二进制：文本那条按 UTF-8 写，PNG 直接
+/// 按字节落盘（原生侧是 `saveBytesToDownloads`，音频导出也在用它）。
+/// 返回用户可见的路径；失败返回 null。
+Future<String?> saveImageBytes(String filename, List<int> bytes) async {
+  if (defaultTargetPlatform == TargetPlatform.android) {
+    try {
+      return await _exportChannel.invokeMethod<String>(
+        'saveBytesToDownloads',
+        {
+          'filename': filename,
+          'base64': base64Encode(bytes),
+          'mimeType': 'image/png',
+        },
+      );
+    } catch (_) {
+      return null;
+    }
+  }
+  try {
+    final dir = await _downloadsDir();
+    final f = File('${dir.path}${Platform.pathSeparator}$filename');
+    await f.writeAsBytes(bytes, flush: true);
+    return f.path;
+  } catch (_) {
+    return null;
+  }
+}
+
+/// 桌面端的默认保存目录：优先系统「下载」，取不到再退到文档目录。
+Future<Directory> _downloadsDir() async {
+  try {
+    final d = await getDownloadsDirectory();
+    if (d != null) return d;
+  } catch (_) {}
+  return getApplicationDocumentsDirectory();
+}
+
+/// 把一段图片字节交给系统分享面板（只有 Android 有）。
+///
+/// 原生侧写进 cacheDir/share/ 再经 FileProvider 分享 —— 与文本版同一条路，
+/// 只是内容走 base64（PNG 不能当 UTF-8 字符串传）。
+bool get shareImageSupported =>
+    defaultTargetPlatform == TargetPlatform.android;
+
+Future<bool> shareImageBytes(String filename, List<int> bytes) async {
+  if (!shareImageSupported) return false;
+  try {
+    final r = await _exportChannel.invokeMethod<bool>('shareBytes', {
+      'filename': filename,
+      'base64': base64Encode(bytes),
+      'mimeType': 'image/png',
+    });
+    return r == true;
+  } catch (_) {
+    return false;
+  }
+}
+
 /// 读取本机全部历史轨迹（原始按天 JSON：`day → DayTrack.toJson()`），
 /// 供导出时拼入备份。存储未就绪（初始化失败）时返回空表，导出照常进行。
 Future<Map<String, Object?>> loadTrackDays() =>

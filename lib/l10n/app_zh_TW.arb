@@ -5022,5 +5022,13 @@
   "advChannels": "高階連線通道設定",
   "codeContributionEncoding": "中文編碼相容",
   "oobeFeatureTitle": "要哪些功能",
-  "oobeFeatureDesc": "關掉的模組不會出現在設定裡。以後想改，設定 → 功能。"
+  "oobeFeatureDesc": "關掉的模組不會出現在設定裡。以後想改，設定 → 功能。",
+  "historyOverlay": "歷史疊層",
+  "historyOverlayShare": "分享圖片",
+  "historyOverlayExport": "匯出圖片",
+  "historyOverlayExportFailed": "匯出圖片失敗",
+  "historyOverlayEmpty": "還沒有可疊加的軌跡。",
+  "historyOverlayAll": "全部顯示",
+  "historyOverlaySummary": "{days}/{total} 天 · {km}",
+  "@historyOverlaySummary": {"placeholders": {"days": {"type": "String"}, "total": {"type": "String"}, "km": {"type": "String"}}}
 }

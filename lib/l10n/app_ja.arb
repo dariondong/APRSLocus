@@ -4434,5 +4434,13 @@
   "advChannels": "送信先の詳細設定",
   "codeContributionEncoding": "中国語エンコード",
   "oobeFeatureTitle": "使う機能",
-  "oobeFeatureDesc": "オフにしたモジュールは設定に出てきません。あとから「設定 → 機能」で変えられます。"
+  "oobeFeatureDesc": "オフにしたモジュールは設定に出てきません。あとから「設定 → 機能」で変えられます。",
+  "historyOverlay": "履歴の重ね表示",
+  "historyOverlayShare": "画像を共有",
+  "historyOverlayExport": "画像を書き出す",
+  "historyOverlayExportFailed": "画像を書き出せませんでした",
+  "historyOverlayEmpty": "重ねて表示できる履歴がまだありません。",
+  "historyOverlayAll": "すべて表示",
+  "historyOverlaySummary": "{days}/{total} 日 · {km}",
+  "@historyOverlaySummary": {"placeholders": {"days": {"type": "String"}, "total": {"type": "String"}, "km": {"type": "String"}}}
 }

@@ -751,6 +751,23 @@ class MainActivity : FlutterActivity() {
                     val mime = call.argument<String>("mimeType") ?: "text/plain"
                     result.success(shareFileTo(filename, content, mime))
                 }
+                // 分享**二进制**（轨迹叠层导出的 PNG）：同一个分享面板，内容走
+                // base64 —— 图片按 UTF-8 写会被替换字符毁掉。
+                "shareBytes" -> {
+                    val filename = call.argument<String>("filename") ?: "image.png"
+                    val b64 = call.argument<String>("base64")
+                    val mime = call.argument<String>("mimeType") ?: "image/png"
+                    val bytes = try {
+                        if (b64 == null) null
+                        else android.util.Base64.decode(b64, android.util.Base64.DEFAULT)
+                    } catch (_: Exception) {
+                        null
+                    }
+                    result.success(
+                        if (bytes == null) false
+                        else shareBytesTo(filename, bytes, mime)
+                    )
+                }
                 // 备份导入：拉起系统文件选择器，返回 {name, content}
                 // 用户取消返回 null；文件过大 / 读失败走 error
                 "pickTextFile" -> pickTextFile(result)
@@ -1095,11 +1112,18 @@ class MainActivity : FlutterActivity() {
     /// 为什么不能直接分享 file://：Android 7 起应用向外发 file:// 会抛
     /// FileUriExposedException，应用当场崩溃。必须走 FileProvider。
     /// 返回是否真的拉起了分享面板（没有可用目标时回 false，让 UI 如实提示）。
-    private fun shareFileTo(filename: String, content: String, mime: String): Boolean = try {
+    private fun shareFileTo(filename: String, content: String, mime: String): Boolean =
+        shareBytesTo(filename, content.toByteArray(Charsets.UTF_8), mime)
+
+    /// 同一套分享逻辑的字节版（图片 / 音频这类二进制）。
+    ///
+    /// 写成一份而不是两份：FileProvider 授权、cacheDir/share 落点、无目标时回
+    /// false 这几件事必须一致，复制一遍就等着哪天只修了其中一处。
+    private fun shareBytesTo(filename: String, bytes: ByteArray, mime: String): Boolean = try {
         val safe = filename.replace('/', '_').replace('\\', '_')
         val dir = File(cacheDir, "share").apply { mkdirs() }
         val f = File(dir, safe)
-        f.writeBytes(content.toByteArray(Charsets.UTF_8))
+        f.writeBytes(bytes)
         val uri = FileProvider.getUriForFile(this, "$packageName.fileprovider", f)
         val send = Intent(Intent.ACTION_SEND).apply {
             type = mime

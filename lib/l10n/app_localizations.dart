@@ -18135,6 +18135,48 @@ abstract class AppLocalizations {
   /// **'关掉的模块不会出现在设置里。以后想改，设置 → 功能。'**
   String get oobeFeatureDesc;
 
+  /// No description provided for @historyOverlay.
+  ///
+  /// In zh, this message translates to:
+  /// **'历史叠层'**
+  String get historyOverlay;
+
+  /// No description provided for @historyOverlayShare.
+  ///
+  /// In zh, this message translates to:
+  /// **'分享图片'**
+  String get historyOverlayShare;
+
+  /// No description provided for @historyOverlayExport.
+  ///
+  /// In zh, this message translates to:
+  /// **'导出图片'**
+  String get historyOverlayExport;
+
+  /// No description provided for @historyOverlayExportFailed.
+  ///
+  /// In zh, this message translates to:
+  /// **'导出图片失败'**
+  String get historyOverlayExportFailed;
+
+  /// No description provided for @historyOverlayEmpty.
+  ///
+  /// In zh, this message translates to:
+  /// **'还没有可叠加的轨迹。'**
+  String get historyOverlayEmpty;
+
+  /// No description provided for @historyOverlayAll.
+  ///
+  /// In zh, this message translates to:
+  /// **'全部显示'**
+  String get historyOverlayAll;
+
+  /// No description provided for @historyOverlaySummary.
+  ///
+  /// In zh, this message translates to:
+  /// **'{days}/{total} 天 · {km}'**
+  String historyOverlaySummary(String days, String total, String km);
+
 }
 
 class _AppLocalizationsDelegate

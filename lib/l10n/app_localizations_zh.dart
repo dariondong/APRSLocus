@@ -9888,6 +9888,27 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String get oobeFeatureDesc => "关掉的模块不会出现在设置里。以后想改，设置 → 功能。";
 
+  @override
+  String get historyOverlay => "历史叠层";
+
+  @override
+  String get historyOverlayShare => "分享图片";
+
+  @override
+  String get historyOverlayExport => "导出图片";
+
+  @override
+  String get historyOverlayExportFailed => "导出图片失败";
+
+  @override
+  String get historyOverlayEmpty => "还没有可叠加的轨迹。";
+
+  @override
+  String get historyOverlayAll => "全部显示";
+
+  @override
+  String historyOverlaySummary(String days, String total, String km) => "$days/$total 天 · $km";
+
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
@@ -19772,5 +19793,26 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get oobeFeatureDesc => "關掉的模組不會出現在設定裡。以後想改，設定 → 功能。";
+
+  @override
+  String get historyOverlay => "歷史疊層";
+
+  @override
+  String get historyOverlayShare => "分享圖片";
+
+  @override
+  String get historyOverlayExport => "匯出圖片";
+
+  @override
+  String get historyOverlayExportFailed => "匯出圖片失敗";
+
+  @override
+  String get historyOverlayEmpty => "還沒有可疊加的軌跡。";
+
+  @override
+  String get historyOverlayAll => "全部顯示";
+
+  @override
+  String historyOverlaySummary(String days, String total, String km) => "$days/$total 天 · $km";
 
 }

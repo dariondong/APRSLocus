@@ -10267,4 +10267,25 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get oobeFeatureDesc => "A module you turn off leaves the settings page. Change it later in Settings → Features.";
 
+  @override
+  String get historyOverlay => "Track overlay";
+
+  @override
+  String get historyOverlayShare => "Share image";
+
+  @override
+  String get historyOverlayExport => "Export image";
+
+  @override
+  String get historyOverlayExportFailed => "Could not export the image";
+
+  @override
+  String get historyOverlayEmpty => "No tracks to overlay yet.";
+
+  @override
+  String get historyOverlayAll => "Show all";
+
+  @override
+  String historyOverlaySummary(String days, String total, String km) => "$days/$total days · $km";
+
 }

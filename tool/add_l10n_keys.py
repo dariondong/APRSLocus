@@ -36,6 +36,31 @@ CLASSES = {
 
 # ── 要加的键：key → (zh, zh_TW, en, ja, es, id) ──
 KEYS = {
+    # ── 历史轨迹叠层：所有天画在同一张图上，可导图 / 分享 ──
+    'historyOverlay': (
+        '历史叠层', '歷史疊層', 'Track overlay', '履歴の重ね表示',
+        'Capas de rutas', 'Lapisan riwayat'),
+    'historyOverlayShare': (
+        '分享图片', '分享圖片', 'Share image', '画像を共有',
+        'Compartir imagen', 'Bagikan gambar'),
+    'historyOverlayExport': (
+        '导出图片', '匯出圖片', 'Export image', '画像を書き出す',
+        'Exportar imagen', 'Ekspor gambar'),
+    'historyOverlayExportFailed': (
+        '导出图片失败', '匯出圖片失敗', 'Could not export the image',
+        '画像を書き出せませんでした', 'No se pudo exportar la imagen',
+        'Gagal mengekspor gambar'),
+    'historyOverlayEmpty': (
+        '还没有可叠加的轨迹。', '還沒有可疊加的軌跡。', 'No tracks to overlay yet.',
+        '重ねて表示できる履歴がまだありません。', 'Aún no hay rutas que superponer.',
+        'Belum ada lintasan untuk dilapis.'),
+    'historyOverlayAll': (
+        '全部显示', '全部顯示', 'Show all', 'すべて表示', 'Mostrar todo',
+        'Tampilkan semua'),
+    'historyOverlaySummary': (
+        '{days}/{total} 天 · {km}', '{days}/{total} 天 · {km}',
+        '{days}/{total} days · {km}', '{days}/{total} 日 · {km}',
+        '{days}/{total} días · {km}', '{days}/{total} hari · {km}'),
     # ── 设备面板：位置/消息逐条挑还是位置全发 ──
     'advChannels': (
         '高级连接通道设置', '高階連線通道設定', 'Per-link sending',
@@ -256,6 +281,8 @@ KEYS = {
 }
 
 META = {
+    'historyOverlaySummary':
+        '{"placeholders": {"days": {"type": "String"}, "total": {"type": "String"}, "km": {"type": "String"}}}',
     'oobeDoneConnectNote': '{"placeholders": {"link": {"type": "String"}}}',
     'notifLiveNearShort': '{"placeholders": {"n": {"type": "String"}}}',
     'acnServerRetention': '{"placeholders": {"hours": {"type": "String"}}}',

@@ -4434,5 +4434,13 @@
   "advChannels": "Envío por enlace",
   "codeContributionEncoding": "Codificación china",
   "oobeFeatureTitle": "Qué extras quieres",
-  "oobeFeatureDesc": "Un módulo apagado desaparece de los ajustes. Puedes cambiarlo en Ajustes → Funciones."
+  "oobeFeatureDesc": "Un módulo apagado desaparece de los ajustes. Puedes cambiarlo en Ajustes → Funciones.",
+  "historyOverlay": "Capas de rutas",
+  "historyOverlayShare": "Compartir imagen",
+  "historyOverlayExport": "Exportar imagen",
+  "historyOverlayExportFailed": "No se pudo exportar la imagen",
+  "historyOverlayEmpty": "Aún no hay rutas que superponer.",
+  "historyOverlayAll": "Mostrar todo",
+  "historyOverlaySummary": "{days}/{total} días · {km}",
+  "@historyOverlaySummary": {"placeholders": {"days": {"type": "String"}, "total": {"type": "String"}, "km": {"type": "String"}}}
 }

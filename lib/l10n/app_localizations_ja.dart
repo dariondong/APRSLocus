@@ -9988,4 +9988,25 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String get oobeFeatureDesc => "オフにしたモジュールは設定に出てきません。あとから「設定 → 機能」で変えられます。";
 
+  @override
+  String get historyOverlay => "履歴の重ね表示";
+
+  @override
+  String get historyOverlayShare => "画像を共有";
+
+  @override
+  String get historyOverlayExport => "画像を書き出す";
+
+  @override
+  String get historyOverlayExportFailed => "画像を書き出せませんでした";
+
+  @override
+  String get historyOverlayEmpty => "重ねて表示できる履歴がまだありません。";
+
+  @override
+  String get historyOverlayAll => "すべて表示";
+
+  @override
+  String historyOverlaySummary(String days, String total, String km) => "$days/$total 日 · $km";
+
 }

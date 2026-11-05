@@ -8,6 +8,7 @@ import 'state.dart';
 import 'theme.dart';
 import 'track_day_page.dart';
 import 'track_log.dart';
+import 'track_overlay_page.dart';
 import 'widgets.dart';
 
 /// ─── 历史轨迹页（设置 → 历史轨迹）───
@@ -51,6 +52,15 @@ class _TrackHistoryPageState extends State<TrackHistoryPage> {
     Navigator.of(context).push(
       MaterialPageRoute<void>(
         builder: (_) => TrackDayPage(day: d, state: widget.state),
+      ),
+    );
+  }
+
+  /// 打开「所有天叠在同一张图上」的页面（导图 / 分享也在那里）
+  void _openOverlay() {
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (_) => TrackOverlayPage(state: widget.state),
       ),
     );
   }
@@ -291,16 +301,38 @@ class _TrackHistoryPageState extends State<TrackHistoryPage> {
             const SizedBox(height: 10),
             // 导出放在摘要卡下面、天列表上面：天一多就要滚很久才能到底，
             // 把它和「清空全部」一起放在末尾的话，导出就变成「找不到的功能」。
-            OutlinedButton.icon(
-              onPressed: _exportGpx,
-              style: OutlinedButton.styleFrom(
-                foregroundColor: C.green,
-                side: BorderSide(color: C.green.withValues(alpha: 0.4)),
-                padding: const EdgeInsets.symmetric(vertical: 12),
-                textStyle: ts(13, w: FontWeight.w700),
-              ),
-              icon: const Icon(Icons.file_download_outlined, size: 17),
-              label: Text(S.of(context).historyExportGpx),
+            // 两颗并排：「一天一天的账」导 GPX，「全部叠起来那张图」进叠层页 ——
+            // 这是两件不同的事，各自一个入口。
+            Row(
+              children: [
+                Expanded(
+                  child: OutlinedButton.icon(
+                    onPressed: _exportGpx,
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: C.green,
+                      side: BorderSide(color: C.green.withValues(alpha: 0.4)),
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      textStyle: ts(13, w: FontWeight.w700),
+                    ),
+                    icon: const Icon(Icons.file_download_outlined, size: 17),
+                    label: Text(S.of(context).historyExportGpx),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: OutlinedButton.icon(
+                    onPressed: _openOverlay,
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: C.blue,
+                      side: BorderSide(color: C.blue.withValues(alpha: 0.4)),
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      textStyle: ts(13, w: FontWeight.w700),
+                    ),
+                    icon: const Icon(Icons.layers_rounded, size: 17),
+                    label: Text(S.of(context).historyOverlay),
+                  ),
+                ),
+              ],
             ),
             const SizedBox(height: 10),
             Row(

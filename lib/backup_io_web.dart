@@ -36,6 +36,14 @@ Future<String?> saveBackupFile(
 /// Web 上没有系统分享面板（也写不出文件），UI 据此隐藏分享按钮。
 bool get shareToSystemSupported => false;
 
+/// Web 变体：写不出「下载目录」，也拉不起系统分享面板。
+/// 图片导出与文本导出一样回 null / false，UI 据此如实提示。
+Future<String?> saveImageBytes(String filename, List<int> bytes) async => null;
+
+bool get shareImageSupported => false;
+
+Future<bool> shareImageBytes(String filename, List<int> bytes) async => false;
+
 /// Web 变体：无系统分享面板可用。
 Future<bool> shareTextFile(
   String filename,

@@ -10277,4 +10277,25 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get oobeFeatureDesc => "Modul yang dimatikan hilang dari pengaturan. Ubah nanti di Pengaturan → Fitur";
 
+  @override
+  String get historyOverlay => "Lapisan riwayat";
+
+  @override
+  String get historyOverlayShare => "Bagikan gambar";
+
+  @override
+  String get historyOverlayExport => "Ekspor gambar";
+
+  @override
+  String get historyOverlayExportFailed => "Gagal mengekspor gambar";
+
+  @override
+  String get historyOverlayEmpty => "Belum ada lintasan untuk dilapis.";
+
+  @override
+  String get historyOverlayAll => "Tampilkan semua";
+
+  @override
+  String historyOverlaySummary(String days, String total, String km) => "$days/$total hari · $km";
+
 }

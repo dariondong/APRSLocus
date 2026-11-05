@@ -4434,5 +4434,13 @@
   "advChannels": "Per-link sending",
   "codeContributionEncoding": "Chinese text encoding",
   "oobeFeatureTitle": "Which extras do you want",
-  "oobeFeatureDesc": "A module you turn off leaves the settings page. Change it later in Settings → Features."
+  "oobeFeatureDesc": "A module you turn off leaves the settings page. Change it later in Settings → Features.",
+  "historyOverlay": "Track overlay",
+  "historyOverlayShare": "Share image",
+  "historyOverlayExport": "Export image",
+  "historyOverlayExportFailed": "Could not export the image",
+  "historyOverlayEmpty": "No tracks to overlay yet.",
+  "historyOverlayAll": "Show all",
+  "historyOverlaySummary": "{days}/{total} days · {km}",
+  "@historyOverlaySummary": {"placeholders": {"days": {"type": "String"}, "total": {"type": "String"}, "km": {"type": "String"}}}
 }
