@@ -390,7 +390,7 @@ class _CheckUpdatePageState extends State<CheckUpdatePage>
                 // 客户端从 oss-cn-guangzhou 取（阿里云 CDN，国内可达性好）。
                 _channelOption(
                   'Aliyun OSS',
-                  S.of(context).updateChannelAliyunHint,
+                  'aprslocus.oss-cn-guangzhou.aliyuncs.com',
                   widget.state.updateChannel == 'aliyun',
                   () {
                     widget.state.setUpdateChannel('aliyun');
@@ -401,10 +401,11 @@ class _CheckUpdatePageState extends State<CheckUpdatePage>
                 const SizedBox(height: 8),
                 // Aliyun OSS（香港）：同一条 OSS 分发通道，落在**香港**区域，
                 // 走自定义域 aprslocushk.oss.theez.top，国内直连同样稳。
-                // 费用也只由开发团队承担，复用同一条「请少量使用」提示。
+                // 副标题写的是**实际地址**（与 GitCode 那一行同一个口径）：
+                // 渠道之间真正的差别是「从哪儿取」，不是谁掏钱。
                 _channelOption(
                   'Aliyun OSS（香港）',
-                  S.of(context).updateChannelAliyunHint,
+                  'aprslocushk.oss.theez.top',
                   widget.state.updateChannel == 'aliyun_hk',
                   () {
                     widget.state.setUpdateChannel('aliyun_hk');
@@ -827,13 +828,6 @@ class _CheckUpdatePageState extends State<CheckUpdatePage>
           16 + MediaQuery.of(context).viewPadding.bottom,
         ),
         children: [
-          // 阿里云 OSS（广州 / 香港）：**流量由开发团队付费**，进来就先说清楚、
-          // 请用户省着点用。只在这两条渠道下显示（其它渠道不花这份钱，没必要打扰）。
-          if (widget.state.updateChannel == 'aliyun' ||
-              widget.state.updateChannel == 'aliyun_hk') ...[
-            _aliyunCostBanner(),
-            const SizedBox(height: 16),
-          ],
           // 签名已固定（1.5.2 起 release 统一 keystore），不再提示“签名变更需卸载重装”
           _versionCard(isWin),
           const SizedBox(height: 16),
@@ -845,47 +839,6 @@ class _CheckUpdatePageState extends State<CheckUpdatePage>
             const SizedBox(height: 16),
             _moreVersionsCard(isWin),
           ],
-        ],
-      ),
-    );
-  }
-
-  /// 阿里云 OSS 渠道的「费用」提示条。
-  ///
-  /// 该渠道的流量费由**开发团队**承担（见 `AppState.updateChannelBases` 的说明），
-  /// 所以在更新页顶部常驻这样一条，请用户省着用。文案走 l10n（6 语言）。
-  Widget _aliyunCostBanner() {
-    final amber = const Color(0xFFB26A00);
-    final amberBg = const Color(0xFFFFF4E0);
-    final amberBorder = const Color(0xFFFFD9A0);
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-      decoration: BoxDecoration(
-        color: amberBg,
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: amberBorder),
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Icon(Icons.volunteer_activism_rounded, size: 20, color: amber),
-          const SizedBox(width: 10),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                    AppState.updateChannelLabels[widget.state.updateChannel] ??
-                        'Aliyun OSS',
-                    style: ts(13, w: FontWeight.w700, c: amber)),
-                const SizedBox(height: 2),
-                Text(
-                  S.of(context).updateChannelAliyunHint,
-                  style: ts(12, c: C.slate, h: 1.4),
-                ),
-              ],
-            ),
-          ),
         ],
       ),
     );

@@ -4418,8 +4418,8 @@ class AppState extends ChangeNotifier {
   // **Aliyun HK（阿里云 OSS · 香港）**：与上面同一条通道，只是落在**香港**区域，
   // 走 CNAME 自定义域 `aprslocushk.oss.theez.top`（`aprslocushk` bucket）。
   // 香港节点国内直连也比 GitHub 稳，且**不受**默认域名对 `.apk`/`.ipa` 的
-  // `ApkDownloadForbidden` 拦截（自定义域）。费用同样由开发团队承担（复用同一条
-  // 「请少量使用」提示）。发版流水线把同一份安装包与索引**同时**推向两个节点。
+  // `ApkDownloadForbidden` 拦截（自定义域）。发版流水线把同一份安装包与索引
+  // **同时**推向两个节点。
   String updateChannel = 'github';
 
   /// 各更新渠道的 **API 根地址**。
