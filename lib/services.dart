@@ -461,6 +461,21 @@ class LocService {
       return -1;
     }
   }
+
+  /// 现在是不是在充电（null = 本平台没说）。
+  ///
+  /// 单开一条通道方法（`getPower`）而不是把 `getBattery` 的返回值改成 map：
+  /// 那个方法有多个调用点（信标备注、盒子、胶囊读数），改形状就是把它们一起
+  /// 拉下水；低电量提醒只用这一个判断，多一间门窗代价小得多。
+  Future<bool?> chargingNow() async {
+    try {
+      final m = await _channel.invokeMapMethod<String, dynamic>('getPower');
+      final v = m?['charging'];
+      return v is bool ? v : null;
+    } catch (_) {
+      return null;
+    }
+  }
 }
 
 /// APRS 数据包格式化工具

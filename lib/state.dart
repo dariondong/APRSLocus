@@ -1453,9 +1453,28 @@ class AppState extends ChangeNotifier {
     try {
       final v = await loc.getBatteryLevel();
       if (v >= 0) _battery = v;
+      final ch = await loc.chargingNow();
+      if (ch != null) _charging = ch;
+      _checkLowBattery();
     } catch (_) {
       // 读不到就保持上一次的值（-1 = 未知），界面/盒子上会如实写 `--`
     }
+  }
+
+  /// 低电量提醒：20% / 10% / 5% 各提一次，满足任一条件就不提 ——
+  /// 在充电、已经开着省电模式、电量回到 25% 以上（阈值留 5 个点避开抖动）。
+  void _checkLowBattery() {
+    final level = _battery;
+    if (level < 0) return;
+    if (_charging == true || powerSave || level > 25) {
+      _lowBatteryWarned = -1;
+      return;
+    }
+    if (level > 20) return;
+    final band = level <= 5 ? 5 : (level <= 10 ? 10 : 20);
+    if (_lowBatteryWarned != -1 && band >= _lowBatteryWarned) return;
+    _lowBatteryWarned = band;
+    onLowBattery?.call(level);
   }
 
   /// 盒子的 APRS-IS passcode 是不是
@@ -1543,6 +1562,22 @@ class AppState extends ChangeNotifier {
   DateTime _lastMileageSave = DateTime.fromMillisecondsSinceEpoch(0);
 
   int _battery = -1; // 电量百分比（-1 未知）
+
+  /// 手机是不是在充电（null = 这个平台没说）。
+  ///
+  /// 只给低电量提醒用：「电量 18%」边充着电边弹提醒只会招烦。拿不到就不当
+  /// 作阻断条件（宁可多重提醒一次，也不要该提醒时不提醒）。
+  bool? _charging;
+
+  /// 低电量提醒的回调（外壳挂上来，用 ScaffoldMessenger 弹一条）。
+  ///
+  /// AppState 不碰 UI，所以这里只留口子。null = 没人要这个提醒（比如测验 / 无外壳）。
+  void Function(int level)? onLowBattery;
+
+  /// 已经提醒过的电量档（-1 = 这一轮还没提过）。
+  ///
+  /// 台阶是 20 / 10 / 5：一次掉一格才再提一次，否则电量在 19% 上下浮就会反复弹。
+  int _lowBatteryWarned = -1;
 
   /// 手机电量（%）；-1 = 未知（没权限 / 还没读到）。
   int get battery => _battery;
@@ -2898,6 +2933,14 @@ class AppState extends ChangeNotifier {
   void debugGrantConsent([Iterable<ConsentScope>? scopes]) {
     consent.debugGrant(scopes ?? ConsentScope.values);
     _notify();
+  }
+
+  /// 测试口子：电量与充电状态直接摆成指定值，并跑一遍低电量判断
+  /// （不碰平台通道）。
+  void debugBattery(int level, {bool? charging}) {
+    _battery = level;
+    _charging = charging;
+    _checkLowBattery();
   }
 
   /// ── 服务器地址没填 ──
@@ -4280,7 +4323,40 @@ class AppState extends ChangeNotifier {
     if (!gpsSampleChoices.contains(v)) return;
     gpsIntervalSec = v;
     // 服务在跑就立即生效；没在跑只记下来，下次 startService 带上。
-    unawaited(loc.setSampling(v * 1000));
+    unawaited(loc.setSampling(effectiveGpsIntervalSec * 1000));
+    persist();
+    _notify();
+  }
+
+  /// 省电模式的 GPS 采样间隔：不论用户原来选的多快，都压到不低于 30 秒。
+  ///
+  /// 30 秒是采样档位里最省的那一档（同一个下拉里的 30 秒），不再另造一档：
+  /// 多一档就多一个「档位与省电到底谁说了算」的解释。
+  static const int powerSaveGpsSec = 30;
+
+  /// 省电模式。
+  ///
+  /// 只做两件事，但都是真省：
+  ///   * GPS 采样拉长到 [powerSaveGpsSec] 秒（定位是整台应用最费电的一项）；
+  ///   * 地图上移动台站的脉冲动画停下（那是唯一的**每帧**重绘来源，停下后
+  ///     光栅化结果可以复用）。
+  ///
+  /// 都不动数据本身：台站照收、报文照发、轨迹照记，变的只是取点频率与画法。
+  /// 低电量时外壳会提示一次「要不要开省电模式」，开关本身在这里。
+  bool powerSave = false;
+
+  /// 实际生效的 GPS 采样间隔（省电模式下不低于 [powerSaveGpsSec]）。
+  int get effectiveGpsIntervalSec =>
+      powerSave && gpsIntervalSec < powerSaveGpsSec
+          ? powerSaveGpsSec
+          : gpsIntervalSec;
+
+  void setPowerSave(bool v) {
+    if (powerSave == v) return;
+    powerSave = v;
+    // 采样率立即生效（服务在跑就改请求频率；没在跑只记下来）
+    unawaited(loc.setSampling(effectiveGpsIntervalSec * 1000));
+    if (v) _lowBatteryWarned = -1; // 开了就不再提
     persist();
     _notify();
   }
@@ -4802,6 +4878,8 @@ class AppState extends ChangeNotifier {
     locationMode = 'gps_network';
     loc.mode = locationMode;
     gpsIntervalSec = 1;
+    powerSave = false;
+    _lowBatteryWarned = -1;
     loc.samplingMs = 1000;
     useSimLocation = false;
     filterLat = 39.9042;
@@ -5368,7 +5446,10 @@ class AppState extends ChangeNotifier {
       gpsIntervalSec = p.getInt('gpsIntervalSec') ?? gpsIntervalSec;
       // 认不出的档位夹回默认，并把值交给定位服务（启动时就要带上）。
       if (!gpsSampleChoices.contains(gpsIntervalSec)) gpsIntervalSec = 1;
-      loc.samplingMs = gpsIntervalSec * 1000;
+      // 省电模式必须在算采样间隔**之前**读回来，否则冷启那一瞬间会按
+      // 用户原来的档位去注册 GPS，下一次 tick 才纠正
+      powerSave = p.getBool('powerSave') ?? powerSave;
+      loc.samplingMs = effectiveGpsIntervalSec * 1000;
       useSimLocation = p.getBool('useSimLocation') ?? useSimLocation;
       filterLat = p.getDouble('filterLat') ?? filterLat;
       filterLng = p.getDouble('filterLng') ?? filterLng;
@@ -5759,6 +5840,7 @@ class AppState extends ChangeNotifier {
     await p.setBool('adifStripSsid', adifStripSsid);
     await p.setString('locationMode', locationMode);
     await p.setInt('gpsIntervalSec', gpsIntervalSec);
+    await p.setBool('powerSave', powerSave);
     await p.setBool('useSimLocation', useSimLocation);
     await p.setDouble('filterLat', filterLat);
     await p.setDouble('filterLng', filterLng);

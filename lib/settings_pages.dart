@@ -1583,6 +1583,23 @@ class _BeaconSettingsPageState extends State<BeaconSettingsPage> {
             ],
           ),
         ],
+        const SizedBox(height: 16),
+        // 省电模式：一张自己的卡，而不是塞进「定位模式」里面 —— 它管的不只是
+        // 定位（地图上的动画也会停），而且纯网络 / 模拟定位下这个开关同样
+        // 有意义（仍然会停动画）。
+        SettingsSectionCard(
+          title: S.of(context).powerSave,
+          icon: Icons.battery_saver_rounded,
+          color: C.green,
+          children: [
+            SettingsSwitch(S.of(context).powerSave,
+                value: st.powerSave,
+                color: C.green,
+                onChanged: st.setPowerSave),
+            SettingsHint(S.of(context).powerSaveTip),
+            SizedBox(height: 10),
+          ],
+        ),
         SizedBox(height: 16),
         SettingsSectionCard(
           title: S.of(context).beaconingSection,

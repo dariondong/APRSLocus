@@ -4442,5 +4442,9 @@
   "historyOverlayEmpty": "Aún no hay rutas que superponer.",
   "historyOverlayAll": "Mostrar todo",
   "historyOverlaySummary": "{days}/{total} días · {km}",
-  "@historyOverlaySummary": {"placeholders": {"days": {"type": "String"}, "total": {"type": "String"}, "km": {"type": "String"}}}
+  "@historyOverlaySummary": {"placeholders": {"days": {"type": "String"}, "total": {"type": "String"}, "km": {"type": "String"}}},
+  "powerSave": "Ahorro de energía",
+  "powerSaveTip": "El GPS toma una posición cada 30 s y las animaciones del mapa se detienen.",
+  "lowBatteryWarn": "Batería al {level}%. ¿Activar el ahorro de energía?",
+  "@lowBatteryWarn": {"placeholders": {"level": {"type": "String"}}}
 }

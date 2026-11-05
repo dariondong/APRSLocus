@@ -424,6 +424,11 @@ jobs:
       - name: Test GPS sampling interval
         run: flutter test test/gps_sampling_persist_test.dart
 
+      # 省电模式：开了就得真的把采样拉长、关掉就得回到用户那一档；
+      # 低电量提醒按 20/10/5 三档各提一次，充电中与已开省电时不提。
+      - name: Test power saving
+        run: flutter test test/power_save_test.dart
+
       # 历史轨迹导出 GPX（用户要求）：GPX 是**给别人读的文件**，时间少个 Z、
       # 海拔补个 0、断档不断段，在这里都不会报错 —— 只有导进 Strava / Garmin /
       # Google Earth 之后才看得见。所以把这几条意图逐字钉在 CI。

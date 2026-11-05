@@ -36,6 +36,23 @@ CLASSES = {
 
 # ── 要加的键：key → (zh, zh_TW, en, ja, es, id) ──
 KEYS = {
+    # ── 省电模式（GPS 采样拉长 + 地图动画停下）与低电量提醒 ──
+    'powerSave': (
+        '省电模式', '省電模式', 'Power saving', '省電力モード',
+        'Ahorro de energía', 'Hemat daya'),
+    'powerSaveTip': (
+        'GPS 每 30 秒取一次位置，地图上的台站动画停下。',
+        'GPS 每 30 秒取一次位置，地圖上的臺站動畫停下。',
+        'GPS updates every 30 seconds and station animations stop.',
+        'GPS は 30 秒ごと、地図上の局のアニメーションも停止します。',
+        'El GPS toma una posición cada 30 s y las animaciones del mapa se detienen.',
+        'GPS mengambil posisi tiap 30 detik dan animasi peta berhenti.'),
+    'lowBatteryWarn': (
+        '电量只剩 {level}%，开省电模式？', '電量只剩 {level}%，開省電模式？',
+        'Battery at {level}%. Turn on power saving?',
+        'バッテリー残量 {level}%。省電力モードにしますか？',
+        'Batería al {level}%. ¿Activar el ahorro de energía?',
+        'Baterai {level}%. Aktifkan hemat daya?'),
     # ── 历史轨迹叠层：所有天画在同一张图上，可导图 / 分享 ──
     'historyOverlay': (
         '历史叠层', '歷史疊層', 'Track overlay', '履歴の重ね表示',
@@ -281,6 +298,7 @@ KEYS = {
 }
 
 META = {
+    'lowBatteryWarn': '{"placeholders": {"level": {"type": "String"}}}',
     'historyOverlaySummary':
         '{"placeholders": {"days": {"type": "String"}, "total": {"type": "String"}, "km": {"type": "String"}}}',
     'oobeDoneConnectNote': '{"placeholders": {"link": {"type": "String"}}}',

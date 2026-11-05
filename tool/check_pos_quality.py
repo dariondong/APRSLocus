@@ -110,8 +110,15 @@ def main() -> int:
     # GPS 采样间隔（用户要求：「定位上报，用户可自调 GPS 采样率」）：
     # 这条链有三段 —— 偏好 → 定位服务 → 原生 requestLocationUpdates。
     # 少任何一段都变成「能选、但不生效」，而界面上完全看不出来。
-    need('lib/state.dart', 'loc.samplingMs = gpsIntervalSec * 1000;',
+    # 2026-11-01：省电模式会把间隔压到不低于 30 秒，所以这里落的是**生效值**
+    # （`effectiveGpsIntervalSec`），不再是用户自己选的那一档。判据仍钉着「偏好
+    # 里的采样间隔必须交给定位服务」这件事，只是现在多了一层省电换算。
+    need('lib/state.dart', 'loc.samplingMs = effectiveGpsIntervalSec * 1000;',
          '偏好里的采样间隔没交给定位服务（启动时仍是默认 1 秒）')
+    need('lib/state.dart', 'int get effectiveGpsIntervalSec =>',
+         '没有 effectiveGpsIntervalSec —— 省电模式对采样间隔的换算没有单一口径')
+    need('lib/state.dart', 'unawaited(loc.setSampling(effectiveGpsIntervalSec * 1000));',
+         '改采样档位时没有走生效值（省电模式下不生效）')
     need('lib/services.dart', "'intervalMs': samplingMs",
          'startService 没把采样间隔带上 —— 原生侧会退回写死的 1 秒')
     need('lib/services.dart', "'setSampling', {'intervalMs': ms}",

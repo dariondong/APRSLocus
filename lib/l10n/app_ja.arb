@@ -4442,5 +4442,9 @@
   "historyOverlayEmpty": "重ねて表示できる履歴がまだありません。",
   "historyOverlayAll": "すべて表示",
   "historyOverlaySummary": "{days}/{total} 日 · {km}",
-  "@historyOverlaySummary": {"placeholders": {"days": {"type": "String"}, "total": {"type": "String"}, "km": {"type": "String"}}}
+  "@historyOverlaySummary": {"placeholders": {"days": {"type": "String"}, "total": {"type": "String"}, "km": {"type": "String"}}},
+  "powerSave": "省電力モード",
+  "powerSaveTip": "GPS は 30 秒ごと、地図上の局のアニメーションも停止します。",
+  "lowBatteryWarn": "バッテリー残量 {level}%。省電力モードにしますか？",
+  "@lowBatteryWarn": {"placeholders": {"level": {"type": "String"}}}
 }

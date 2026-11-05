@@ -5030,5 +5030,9 @@
   "historyOverlayEmpty": "還沒有可疊加的軌跡。",
   "historyOverlayAll": "全部顯示",
   "historyOverlaySummary": "{days}/{total} 天 · {km}",
-  "@historyOverlaySummary": {"placeholders": {"days": {"type": "String"}, "total": {"type": "String"}, "km": {"type": "String"}}}
+  "@historyOverlaySummary": {"placeholders": {"days": {"type": "String"}, "total": {"type": "String"}, "km": {"type": "String"}}},
+  "powerSave": "省電模式",
+  "powerSaveTip": "GPS 每 30 秒取一次位置，地圖上的臺站動畫停下。",
+  "lowBatteryWarn": "電量只剩 {level}%，開省電模式？",
+  "@lowBatteryWarn": {"placeholders": {"level": {"type": "String"}}}
 }

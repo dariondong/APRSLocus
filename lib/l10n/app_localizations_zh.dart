@@ -9909,6 +9909,15 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String historyOverlaySummary(String days, String total, String km) => "$days/$total 天 · $km";
 
+  @override
+  String get powerSave => "省电模式";
+
+  @override
+  String get powerSaveTip => "GPS 每 30 秒取一次位置，地图上的台站动画停下。";
+
+  @override
+  String lowBatteryWarn(String level) => "电量只剩 $level%，开省电模式？";
+
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
@@ -19814,5 +19823,14 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String historyOverlaySummary(String days, String total, String km) => "$days/$total 天 · $km";
+
+  @override
+  String get powerSave => "省電模式";
+
+  @override
+  String get powerSaveTip => "GPS 每 30 秒取一次位置，地圖上的臺站動畫停下。";
+
+  @override
+  String lowBatteryWarn(String level) => "電量只剩 $level%，開省電模式？";
 
 }

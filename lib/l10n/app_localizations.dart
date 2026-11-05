@@ -18177,6 +18177,24 @@ abstract class AppLocalizations {
   /// **'{days}/{total} 天 · {km}'**
   String historyOverlaySummary(String days, String total, String km);
 
+  /// No description provided for @powerSave.
+  ///
+  /// In zh, this message translates to:
+  /// **'省电模式'**
+  String get powerSave;
+
+  /// No description provided for @powerSaveTip.
+  ///
+  /// In zh, this message translates to:
+  /// **'GPS 每 30 秒取一次位置，地图上的台站动画停下。'**
+  String get powerSaveTip;
+
+  /// No description provided for @lowBatteryWarn.
+  ///
+  /// In zh, this message translates to:
+  /// **'电量只剩 {level}%，开省电模式？'**
+  String lowBatteryWarn(String level);
+
 }
 
 class _AppLocalizationsDelegate

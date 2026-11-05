@@ -10009,4 +10009,13 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String historyOverlaySummary(String days, String total, String km) => "$days/$total 日 · $km";
 
+  @override
+  String get powerSave => "省電力モード";
+
+  @override
+  String get powerSaveTip => "GPS は 30 秒ごと、地図上の局のアニメーションも停止します。";
+
+  @override
+  String lowBatteryWarn(String level) => "バッテリー残量 $level%。省電力モードにしますか？";
+
 }

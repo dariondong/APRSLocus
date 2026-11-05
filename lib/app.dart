@@ -116,6 +116,9 @@ class _AppState extends State<App> {
     super.initState();
     // 仅在深色/主题色/语言/重载变化时重建 MaterialApp（避免数据洪峰期间反复重建整个导航栈）
     _state.addListener(_onThemeChange);
+    // 低电量提醒：扣在状态层（电量轮询 + 台阶判断都在那里），这里只负责
+    // 「怎么说、说完能干什么」—— AppState 不碰 UI。
+    _state.onLowBattery = _onLowBattery;
     // 启动后应用保存的主题（深色/自定义色）——_loadPrefs 完成后还会再应用一次
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _state.applySavedTheme();
@@ -257,6 +260,27 @@ class _AppState extends State<App> {
         ),
       ));
     });
+  }
+
+  /// 低电量提醒：弹一条 snackbar，带一个直接开省电模式的按钮。
+  ///
+  /// 用 ScaffoldMessenger 而不是弹窗：电量低不是错误，弹窗会拦住用户手上的
+  /// 事；而这条提示只要能看见、能一键开就行。语言取自 Navigator 之下的
+  /// context（本类的 context 在 MaterialApp 之上，取不到当前语言）。
+  void _onLowBattery(int level) {
+    final messenger = _msgKey.currentState;
+    final ctx = _navKey.currentContext;
+    if (messenger == null || ctx == null) return;
+    final l = AppLocalizations.of(ctx);
+    messenger.hideCurrentSnackBar();
+    messenger.showSnackBar(SnackBar(
+      content: Text(l.lowBatteryWarn('$level')),
+      behavior: SnackBarBehavior.floating,
+      action: SnackBarAction(
+        label: l.powerSave,
+        onPressed: () => _state.setPowerSave(true),
+      ),
+    ));
   }
 
   /// 权限体检：用户可能在系统设置里把权限关掉，而关掉之后**应用里什么都看不出来**，

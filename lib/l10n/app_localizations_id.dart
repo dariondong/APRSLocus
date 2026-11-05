@@ -10298,4 +10298,13 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String historyOverlaySummary(String days, String total, String km) => "$days/$total hari · $km";
 
+  @override
+  String get powerSave => "Hemat daya";
+
+  @override
+  String get powerSaveTip => "GPS mengambil posisi tiap 30 detik dan animasi peta berhenti.";
+
+  @override
+  String lowBatteryWarn(String level) => "Baterai $level%. Aktifkan hemat daya?";
+
 }

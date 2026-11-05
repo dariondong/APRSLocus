@@ -4442,5 +4442,9 @@
   "historyOverlayEmpty": "No tracks to overlay yet.",
   "historyOverlayAll": "Show all",
   "historyOverlaySummary": "{days}/{total} days · {km}",
-  "@historyOverlaySummary": {"placeholders": {"days": {"type": "String"}, "total": {"type": "String"}, "km": {"type": "String"}}}
+  "@historyOverlaySummary": {"placeholders": {"days": {"type": "String"}, "total": {"type": "String"}, "km": {"type": "String"}}},
+  "powerSave": "Power saving",
+  "powerSaveTip": "GPS updates every 30 seconds and station animations stop.",
+  "lowBatteryWarn": "Battery at {level}%. Turn on power saving?",
+  "@lowBatteryWarn": {"placeholders": {"level": {"type": "String"}}}
 }

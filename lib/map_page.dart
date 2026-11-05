@@ -275,6 +275,16 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
 
   /// 脉冲动画按需启停：没有移动/选中台站时停转，省掉每帧重建开销
   void _syncPulse() {
+    // 省电模式：脉冲动画一律不跑。它是地图上唯一的**每帧**重绘来源 —— 停下
+    // 之后地图那层 RepaintBoundary 的光栅化结果可以被复用，静止画面不再每帧
+    // 重画（省电模式下最值得省的正是这个）。
+    if (widget.state.powerSave) {
+      if (_pulse.isAnimating) {
+        _pulse.stop();
+        _forceMarkerRebuild = true; // 去掉标记里残留的脉冲圈
+      }
+      return;
+    }
     // 移动台站过多时（>12）停用脉冲动画，避免同一动画驱动大量实例每帧重绘卡顿
     final sel = _selected?.call;
     var moving = 0;

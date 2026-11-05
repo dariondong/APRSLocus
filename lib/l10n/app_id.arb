@@ -4442,5 +4442,9 @@
   "historyOverlayEmpty": "Belum ada lintasan untuk dilapis.",
   "historyOverlayAll": "Tampilkan semua",
   "historyOverlaySummary": "{days}/{total} hari · {km}",
-  "@historyOverlaySummary": {"placeholders": {"days": {"type": "String"}, "total": {"type": "String"}, "km": {"type": "String"}}}
+  "@historyOverlaySummary": {"placeholders": {"days": {"type": "String"}, "total": {"type": "String"}, "km": {"type": "String"}}},
+  "powerSave": "Hemat daya",
+  "powerSaveTip": "GPS mengambil posisi tiap 30 detik dan animasi peta berhenti.",
+  "lowBatteryWarn": "Baterai {level}%. Aktifkan hemat daya?",
+  "@lowBatteryWarn": {"placeholders": {"level": {"type": "String"}}}
 }

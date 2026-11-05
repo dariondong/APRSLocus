@@ -10288,4 +10288,13 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String historyOverlaySummary(String days, String total, String km) => "$days/$total days · $km";
 
+  @override
+  String get powerSave => "Power saving";
+
+  @override
+  String get powerSaveTip => "GPS updates every 30 seconds and station animations stop.";
+
+  @override
+  String lowBatteryWarn(String level) => "Battery at $level%. Turn on power saving?";
+
 }

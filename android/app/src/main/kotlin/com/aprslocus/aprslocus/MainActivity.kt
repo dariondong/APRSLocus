@@ -238,6 +238,23 @@ class MainActivity : FlutterActivity() {
                     val level = bm.getIntProperty(android.os.BatteryManager.BATTERY_PROPERTY_CAPACITY)
                     result.success(level)
                 }
+                // 电量 + 是否在充电（低电量提醒用）：`ACTION_BATTERY_CHANGED` 是
+                // sticky 广播，`registerReceiver(null, filter)` 能当场拿到最近一次的状态，
+                // 不必常驻一个 BroadcastReceiver。
+                "getPower" -> {
+                    val bm = getSystemService(BATTERY_SERVICE) as android.os.BatteryManager
+                    val level = bm.getIntProperty(android.os.BatteryManager.BATTERY_PROPERTY_CAPACITY)
+                    val sticky = registerReceiver(
+                        null,
+                        android.content.IntentFilter(Intent.ACTION_BATTERY_CHANGED)
+                    )
+                    val status = sticky?.getIntExtra(
+                        android.os.BatteryManager.EXTRA_STATUS, -1
+                    ) ?: -1
+                    val charging = status == android.os.BatteryManager.BATTERY_STATUS_CHARGING ||
+                        status == android.os.BatteryManager.BATTERY_STATUS_FULL
+                    result.success(mapOf("level" to level, "charging" to charging))
+                }
                 "checkPermissions" -> result.success(hasPermissions())
                 "requestPermissions" -> {
                     if (hasPermissions()) {
