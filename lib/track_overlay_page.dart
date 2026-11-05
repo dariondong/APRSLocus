@@ -107,8 +107,11 @@ class _TrackOverlayPageState extends State<TrackOverlayPage> {
 
   /// 每天一个颜色。取主题里的既有色板（不新造色相），按序号循环 ——
   /// 天一多必然有重复色，但相邻两天不会撞色，相邻的两条线才需要区分。
+  ///
+  /// 不能写成 `const` 列表：`C.blue` 这些是**可变**的静态字段（换主题 / 深色
+  /// 模式会改它们），常量列表编不过（CI 上就是这一行报的 constant evaluation）。
   static Color _colorOf(int i) {
-    const palette = <Color>[
+    final palette = <Color>[
       C.blue,
       C.green,
       C.orange,
