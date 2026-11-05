@@ -21,6 +21,11 @@ C.white 是 static 字段（非常量）」），但我写 2.0 的连接按钮�
 
 注意 `const EdgeInsets.all(8)` 这类**不含 C** 的写法不受影响。
 
+2026-11-01 补第二条判据：`const <Type>[...]` / `const {...}` 这类**常量集合**
+里同样不能放 `C.<字段>`。历史轨迹叠层页的日期色板就写成了
+`const palette = <Color>[C.blue, …]` —— 本机没有 analyze，只有 CI 的
+`flutter analyze` 与构建报出来，白跑一轮流水线。
+
 用法：python3 tool/check_const_colors.py
 退出码 0 = 没有；1 = 有（并列出文件与行号）。
 """
@@ -35,6 +40,50 @@ LIB = os.path.join(ROOT, 'lib')
 PAIRS = {'(': ')', '[': ']', '{': '}'}
 CLOSE = set(')]}')
 CONST_CALL = re.compile(r'\bconst\s+[A-Z][A-Za-z0-9_]*\s*\(')
+# 常量集合：`const <Color>[…]`、`const {…}`、`const palette = <Color>[…]`
+CONST_KW = re.compile(r'\bconst\b')
+
+
+def coll_start(text, i):
+    """从 `const` 之后找集合字面量的 `[` / `{` 下标（找不到返回 -1）。
+
+    要跳过的几种写法：`const <Color>[`、`const palette = <Color>[`、
+    `const {`。`const Icon(` 这类构造不是集合（那条判据由 CONST_CALL 管）。
+    """
+    n = len(text)
+    while i < n and text[i] in ' \t\r\n':
+        i += 1
+    # 变量名（`const x = …`）
+    j = i
+    while j < n and (text[j].isalnum() or text[j] in '_$'):
+        j += 1
+    if j > i:
+        i = j
+        while i < n and text[i] in ' \t\r\n':
+            i += 1
+        if i < n and text[i] == '=' and (i + 1 >= n or text[i + 1] != '='):
+            i += 1
+            while i < n and text[i] in ' \t\r\n':
+                i += 1
+        else:
+            return -1
+    # 类型参数（`<Color>`）
+    if i < n and text[i] == '<':
+        depth = 0
+        while i < n:
+            if text[i] == '<':
+                depth += 1
+            elif text[i] == '>':
+                depth -= 1
+                if depth == 0:
+                    i += 1
+                    break
+            i += 1
+        while i < n and text[i] in ' \t\r\n':
+            i += 1
+    if i < n and text[i] in '[{':
+        return i
+    return -1
 C_FIELD = re.compile(r'\bC\.[a-zA-Z_]\w*')
 
 
@@ -131,6 +180,18 @@ def main() -> int:
                 if end is None:
                     continue
                 hit = C_FIELD.search(masked[m.end():end])
+                if not hit:
+                    continue
+                ln = text.count('\n', 0, m.start()) + 1
+                problems.append((rel, ln, hit.group(0)))
+            for m in CONST_KW.finditer(masked):
+                lit = coll_start(masked, m.end())
+                if lit < 0:
+                    continue
+                end = scan(masked, lit)
+                if end is None:
+                    continue
+                hit = C_FIELD.search(masked[lit + 1:end])
                 if not hit:
                     continue
                 ln = text.count('\n', 0, m.start()) + 1
