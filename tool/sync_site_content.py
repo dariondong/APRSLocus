@@ -419,6 +419,59 @@ CARDS = [
 # 只列「重点版本」：中间几十个纯修 bug 的版本归纳进文字说明，完整记录指向 Releases。
 CL = [
     {
+        'ver': 'v2.1.40', 'date': '2026-11-05',
+        'items': [
+            ('new',
+             T('历史轨迹叠层：历史轨迹页多了一个入口，把台账里每一天画在同一张底图上。'
+               '一天一条线、一个颜色，底部一排日期片点一下就能藏起或放回那一天，'
+               '视野一次套到所有选中的点上。导出一张 PNG，Android 存到下载目录或直接拉起分享面板，'
+               '桌面写进下载目录。',
+               '歷史軌跡疊層：歷史軌跡頁多了一個入口，把記錄裡每一天畫在同一張底圖上。'
+               '一天一條線、一個顏色，底部一排日期片點一下就能藏起或放回那一天，'
+               '視野一次套到所有選取的點上。匯出一張 PNG，Android 存到下載目錄或直接拉起分享面板，'
+               '桌面寫進下載目錄。',
+               'Track overlay: a new entry on the history page draws every day from the log on one '
+               'map. One line and one colour per day, a row of date chips at the bottom to hide or '
+               'bring back a single day, and one tap fits the view to everything still shown. It '
+               'exports a PNG: the download folder or the share sheet on Android, the download '
+               'folder on desktop.')),
+            ('fix',
+             T('地图浮层不再互相压住：工具列的底部预留改成「两道横幅都挂着时的顶部锚点」与'
+               '「上报横杠出现时的底部占用」两者取大，列数仍然只跟窗口尺寸走并封顶三列；'
+               '顶端那两条一次性提示并进左上那一列，不再糊在信息条上。',
+               '地圖浮層不再互相壓住：工具列的底部預留改成「兩道橫幅都掛著時的頂端錨點」與'
+               '「上報橫條出現時的底部佔用」兩者取大，欄數仍然只跟視窗尺寸走並封頂三欄；'
+               '頂端那兩條一次性提示並進左上那一欄，不再糊在資訊條上。',
+               'Overlays no longer cover each other: the toolbar reserves the larger of the top '
+               'anchor with both banners up and the bottom space once the report bar appears, and '
+               'the column count still follows the window size only and is capped at three. The two '
+               'one-off hints at the top belong to the top-left column now instead of lying across '
+               'the info line.')),
+            ('new',
+             T('省电模式（设置 → 定位）：GPS 采样压到不低于 30 秒，自己选的那一档不被改掉，'
+               '关掉省电模式就回来；地图上移动台站的脉冲动画也停下。'
+               '低电量 20% / 10% / 5% 各提一次，充电中不提，电量回到 25% 以上重新计数，'
+               '提醒上带一个直接开启省电模式的按钮。',
+               '省電模式（設定 → 定位）：GPS 取樣壓到不低於 30 秒，自己選的那一檔不被改掉，'
+               '關掉省電模式就回來；地圖上移動臺站的脈衝動畫也停下。'
+               '低電量 20% / 10% / 5% 各提一次，充電中不提，電量回到 25% 以上重新計數，'
+               '提醒上帶一個直接開啟省電模式的按鈕。',
+               'Power saving (Settings → Location): GPS sampling is clamped to at least 30 seconds '
+               'without overwriting your own choice, and the pulse animation on moving stations '
+               'stops as well. One low battery reminder at 20% / 10% / 5%, skipped while charging, '
+               'with the count restarting above 25%. The reminder carries a button that switches '
+               'power saving on.')),
+            ('up',
+             T('更新渠道页去掉付费提示：顶部那条「阿里云 OSS 由开发团队付费」整条删掉，'
+               '两条阿里云渠道的副标题换成它们真正的地址，与 GitCode 那一行同一个口径。',
+               '更新通道頁去掉付費提示：頂部那條「阿里雲 OSS 由開發團隊付費」整條刪掉，'
+               '兩條阿里雲通道的副標題換成它們真正的位址，與 GitCode 那一行同一個口徑。',
+               'The update channel page drops the paid-usage note: the line saying Aliyun OSS is '
+               'paid for by the developer team is gone, and both Aliyun channels show their real '
+               'addresses in the subtitle, the same way the GitCode row does.')),
+        ],
+    },
+    {
         'ver': 'v2.1.39', 'date': '2026-10-31',
         'items': [
             ('fix',

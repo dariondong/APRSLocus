@@ -1,5 +1,70 @@
 # 更新日志
 
+## [2.1.40] - 2026-11-05
+
+### 历史轨迹
+
+- **历史轨迹叠层**：历史轨迹页多了一个入口，把台账里每一天画在同一张底图上。一天一条线、
+  一个颜色，底部一排日期片点一下就能藏起或放回那一天，视野一次套到所有选中的点上。
+  导出一张 PNG：Android 存到下载目录或直接拉起分享面板，桌面写进下载目录。
+
+### 地图
+
+- **浮层不再互相压住**：工具列的底部预留改成「两道横幅都挂着时的顶部锚点」与「上报横杠
+  出现时的底部占用」两者取大，列数仍然只跟窗口尺寸走并封顶三列，真装不下时由贴底控件
+  让位。顶端那两条一次性提示（选点提示、搜索命中）并进左上那一列，宽度让开工具列，
+  不再糊在信息条上。
+
+### 省电
+
+- **省电模式**（设置 → 定位）：GPS 采样压到不低于 30 秒，自己选的那一档不被改掉，关掉
+  省电模式就回来；地图上移动台站的脉冲动画也停下，它是地图唯一的每帧重绘来源。
+- **低电量提醒**：20% / 10% / 5% 三档各提一次，充电中不提，已经开着省电模式也不提，
+  电量回到 25% 以上重新计数。提醒上带一个直接开启省电模式的按钮。
+
+### 更新
+
+- **更新渠道页去掉付费提示**：顶部那条「阿里云 OSS 由开发团队付费」整条删掉，两条阿里云
+  渠道的副标题换成它们真正的地址，与 GitCode 那一行同一个口径。
+
+---
+
+## [2.1.40] - 2026-11-05 (English)
+
+### Track history
+
+- **Track overlay**: the history page has a new entry that draws every day from the log on one
+  map. One line and one colour per day, a row of date chips at the bottom to hide or bring back
+  a single day, and one tap fits the view to everything still shown. It exports a PNG: on
+  Android it goes to the download folder or straight into the share sheet, on desktop into the
+  download folder.
+
+### Map
+
+- **Overlays no longer sit on top of each other**: the toolbar reserves the larger of the top
+  anchor with both banners up and the bottom space once the report bar appears, the column count
+  still follows the window size only and is capped at three, and the bottom controls step aside
+  when it really does not fit. The two one-off hints at the top (pick hint, search hit) are now
+  the first rows of the top-left column and stop at the toolbar's edge instead of covering the
+  info line.
+
+### Power
+
+- **Power saving** (Settings → Location): GPS sampling is clamped to at least 30 seconds without
+  overwriting your own choice, and your interval comes back as soon as the mode is off; the pulse
+  animation on moving stations stops too, which was the map's only per-frame repaint.
+- **Low battery reminder**: one reminder at 20% / 10% / 5%, skipped while charging or when power
+  saving is already on, and the count restarts once the battery is back above 25%. The reminder
+  carries a button that switches power saving on.
+
+### Update
+
+- **The update channel page drops the paid-usage note**: the "Aliyun OSS is paid for by the
+  developer team" line at the top is gone, and the two Aliyun channels show their real addresses
+  in the subtitle, the same way the GitCode row does.
+
+---
+
 ## [2.1.39] - 2026-10-31
 
 ### 音频与上报
