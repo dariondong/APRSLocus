@@ -495,7 +495,12 @@ class _TrackOverlayPageState extends State<TrackOverlayPage> {
 
   Widget _dayChip(_DayLine l) {
     final on = !_off.contains(l.day.day);
-    final label = dayLabelText(context, l.day.day);
+    // 今天 / 昨天 用现成的说法；更早的只留 MM-DD（芯片里放年份太占地方）——
+    // 但**跨年**时保留完整日期，否则 12-31 和 10-31 哪个是今年就看不出。
+    final full = dayLabelText(context, l.day.day);
+    final oneYear = _lines.isNotEmpty &&
+        _lines.first.day.day.substring(0, 4) == l.day.day.substring(0, 4);
+    final label = oneYear && full.length >= 10 ? full.substring(5) : full;
     return GestureDetector(
       onTap: () => _toggleDay(l.day.day),
       child: Container(
