@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import 'acn_cards.dart';
 import 'settings_widgets.dart';
+import 'sync_cards.dart';
 import 'state.dart';
 import 'theme.dart';
 import 'widgets.dart';
@@ -38,6 +39,13 @@ class _AcnLinkPageState extends State<AcnLinkPage> {
       color: C.purple,
       body: Column(children: [
         AcnCards(state: widget.state, full: true),
+        // 云端同步的账号、数据与设备都挂在这一页：它们是这台服务器上的
+        // 东西，换一台服务器就要重新登录（见 dropSyncSessionIfMoved）。
+        // 模块在「设置 → 功能」里可以整块关掉，关掉后这里一行都不出现。
+        if (widget.state.cloudSyncOn) ...[
+          const SizedBox(height: 16),
+          CloudSyncCards(state: widget.state),
+        ],
         const SizedBox(height: 24),
       ]),
     );

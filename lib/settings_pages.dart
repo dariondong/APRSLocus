@@ -11,7 +11,6 @@ import 'models.dart';
 import 'coord_format.dart';
 import 'widgets.dart';
 import 'settings_widgets.dart';
-import 'sync_cards.dart';
 import 'garmin_page.dart';
 import 'hr_card.dart';
 import 'log_page.dart';
@@ -2545,10 +2544,8 @@ class _ConnectionSettingsPageState extends State<ConnectionSettingsPage> {
             // 登录」，谁也不挂在谁下面，所以在这里是并列的两个大选项。
             _linkEntries(),
             const SizedBox(height: 16),
-            // 云同步与两条链路挨着：数据存哪台、用谁的账号是一件事，
-            // 不再单独列成一页（用户：「不要把这些单独列成一页…统一管理」）。
-            CloudSyncCards(state: st),
-            const SizedBox(height: 16),
+            // 云同步不在这里：它跟着「APRSNETCN」那条链路走，卡在那一页里
+            // （见 acn_link_page.dart）。数据存在哪台机器上，就在哪台的页上配。
             _filterCard(),
             const SizedBox(height: 16),
             _storageCard(),
