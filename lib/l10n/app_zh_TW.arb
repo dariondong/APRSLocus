@@ -5047,7 +5047,7 @@
   "syncModeOff": "關閉",
   "syncModeManual": "手動",
   "syncModeAuto": "自動",
-  "syncModeAutoHint": "自動時啟動拉一次，之後每 5 分鐘一輪。",
+  "syncModeAutoHint": "自動那檔啟動時拉一次，之後按上面的間隔跑。",
   "syncMessages": "訊息",
   "syncTracks": "歷史軌跡",
   "syncNow": "立即同步",
@@ -5090,6 +5090,7 @@
   "syncDeviceRemoved": "這台裝置已移除，它下次同步要重新登入。",
   "syncBackups": "雲端備份",
   "syncBackupsCount": "共 {n} 份",
+  "syncDeviceHint": "列表裡是登入過這台伺服器的裝置。移除一台，它下次同步要重新登入。",
   "@syncEveryMin": {"placeholders": {"n": {"type": "String"}}},
   "@syncBackupsCount": {"placeholders": {"n": {"type": "String"}}}
 }

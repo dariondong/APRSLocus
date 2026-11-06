@@ -5138,7 +5138,7 @@
   "syncModeOff": "关闭",
   "syncModeManual": "手动",
   "syncModeAuto": "自动",
-  "syncModeAutoHint": "自动时启动拉一次，之后每 5 分钟一轮。",
+  "syncModeAutoHint": "自动那档启动时拉一次，之后按上面的间隔跑。",
   "syncMessages": "消息",
   "syncTracks": "历史轨迹",
   "syncNow": "立即同步",
@@ -5181,6 +5181,7 @@
   "syncDeviceRemoved": "这台设备已移除，它下次同步要重新登录。",
   "syncBackups": "云端备份",
   "syncBackupsCount": "共 {n} 份",
+  "syncDeviceHint": "列表里是登录过这台服务器的设备。移除一台，它下次同步要重新登录。",
   "@syncEveryMin": {"placeholders": {"n": {"type": "String"}}},
   "@syncBackupsCount": {"placeholders": {"n": {"type": "String"}}}
 }

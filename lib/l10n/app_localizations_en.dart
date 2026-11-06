@@ -10334,7 +10334,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get syncModeAuto => "Auto";
 
   @override
-  String get syncModeAutoHint => "Auto: once at startup, then every five minutes.";
+  String get syncModeAutoHint => "Auto pulls once at startup, then runs on the interval above.";
 
   @override
   String get syncMessages => "Messages";
@@ -10452,5 +10452,8 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String syncBackupsCount(String n) => "$n in total";
+
+  @override
+  String get syncDeviceHint => "These are the devices signed in to this server. Remove one and it has to sign in again on its next sync.";
 
 }

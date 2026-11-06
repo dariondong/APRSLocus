@@ -9955,7 +9955,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get syncModeAuto => "自动";
 
   @override
-  String get syncModeAutoHint => "自动时启动拉一次，之后每 5 分钟一轮。";
+  String get syncModeAutoHint => "自动那档启动时拉一次，之后按上面的间隔跑。";
 
   @override
   String get syncMessages => "消息";
@@ -10073,6 +10073,9 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String syncBackupsCount(String n) => "共 $n 份";
+
+  @override
+  String get syncDeviceHint => "列表里是登录过这台服务器的设备。移除一台，它下次同步要重新登录。";
 
 }
 
@@ -20144,5 +20147,8 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String syncBackupsCount(String n) => "共 $n 份";
+
+  @override
+  String get syncDeviceHint => "列表裡是登入過這台伺服器的裝置。移除一台，它下次同步要重新登入。";
 
 }

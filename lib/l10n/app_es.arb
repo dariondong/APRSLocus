@@ -4459,7 +4459,7 @@
   "syncModeOff": "Apagado",
   "syncModeManual": "Manual",
   "syncModeAuto": "Automático",
-  "syncModeAutoHint": "Automático: una vez al arrancar y luego cada cinco minutos.",
+  "syncModeAutoHint": "El modo automático trae una vez al arrancar y luego usa el intervalo de arriba.",
   "syncMessages": "Mensajes",
   "syncTracks": "Historial",
   "syncNow": "Sincronizar",
@@ -4502,6 +4502,7 @@
   "syncDeviceRemoved": "Eliminado. Ese dispositivo tendrá que iniciar sesión otra vez.",
   "syncBackups": "Copias en la nube",
   "syncBackupsCount": "{n} en total",
+  "syncDeviceHint": "Estos son los dispositivos con sesión en este servidor. Si quitas uno, tendrá que iniciar sesión otra vez.",
   "@syncEveryMin": {"placeholders": {"n": {"type": "String"}}},
   "@syncBackupsCount": {"placeholders": {"n": {"type": "String"}}}
 }

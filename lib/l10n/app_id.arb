@@ -4459,7 +4459,7 @@
   "syncModeOff": "Mati",
   "syncModeManual": "Manual",
   "syncModeAuto": "Otomatis",
-  "syncModeAutoHint": "Otomatis: sekali saat mulai, lalu tiap lima menit.",
+  "syncModeAutoHint": "Mode otomatis menarik sekali saat mulai, lalu mengikuti interval di atas.",
   "syncMessages": "Pesan",
   "syncTracks": "Riwayat",
   "syncNow": "Sinkron sekarang",
@@ -4502,6 +4502,7 @@
   "syncDeviceRemoved": "Dihapus. Perangkat itu perlu login lagi saat sinkron berikutnya.",
   "syncBackups": "Cadangan di awan",
   "syncBackupsCount": "{n} total",
+  "syncDeviceHint": "Ini perangkat yang login ke server ini. Kalau dihapus, perangkat itu perlu login lagi saat sinkron berikutnya.",
   "@syncEveryMin": {"placeholders": {"n": {"type": "String"}}},
   "@syncBackupsCount": {"placeholders": {"n": {"type": "String"}}}
 }

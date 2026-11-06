@@ -229,6 +229,8 @@ class _CloudSyncCardsState extends State<CloudSyncCards> {
       children: [
         // 地址跟着「APRSNETCN」链路走，写出来让人看得见数据发去了哪台
         SettingsRow2(s.syncServer, st.syncBase),
+        // 明文这一条必须留着：口令与报文都会经过网络，用户有权先知道
+        SettingsHint(s.syncPlainHint, color: C.orange),
         if (logged)
           SettingsRow2(
             s.syncAccount,
@@ -248,10 +250,12 @@ class _CloudSyncCardsState extends State<CloudSyncCards> {
         SettingsChoice<String>(
           s.syncMode,
           value: st.syncMode,
-          options: AppState.syncModes,
-          labelOf: (v) => v == 'auto'
-              ? s.syncModeAuto
-              : (v == 'manual' ? s.syncModeManual : s.syncModeOff),
+          options: const ['off', 'manual', 'auto'],
+          labelOf: (v) => switch (v) {
+            'auto' => s.syncModeAuto,
+            'manual' => s.syncModeManual,
+            _ => s.syncModeOff,
+          },
           onChanged: st.setSyncMode,
         ),
         if (st.syncMode == 'auto')
@@ -263,15 +267,6 @@ class _CloudSyncCardsState extends State<CloudSyncCards> {
             onChanged: st.setSyncAutoMinutes,
           ),
         SettingsHint(s.syncModeAutoHint),
-        // 同步哪些东西：写消息的人不想连轨迹一起传，就关掉那一个
-        SettingsSwitch(
-          s.syncContent,
-          value: st.syncMessagesOn || st.syncTracksOn,
-          onChanged: (v) {
-            st.setSyncMessagesOn(v);
-            st.setSyncTracksOn(v);
-          },
-        ),
         SettingsSwitch(
           s.syncMessages,
           value: st.syncMessagesOn,
@@ -283,8 +278,6 @@ class _CloudSyncCardsState extends State<CloudSyncCards> {
           onChanged: st.setSyncTracksOn,
         ),
         SettingsHint(s.syncContentHint),
-        // 明文这一条必须留着：口令与报文都会经过网络，用户有权先知道
-        SettingsHint(s.syncPlainHint, color: C.orange),
       ],
     );
   }
@@ -441,6 +434,7 @@ class _CloudSyncCardsState extends State<CloudSyncCards> {
       icon: Icons.devices_rounded,
       color: C.purple,
       children: [
+        SettingsHint(s.syncDeviceHint),
         for (final row in list)
           if (row is Map) _deviceRow(s, Map<String, dynamic>.from(row)),
       ],

@@ -483,6 +483,13 @@ KEYS = {
     'syncBackupsCount': (
         '共 {n} 份', '共 {n} 份', '{n} in total', '計 {n} 件', '{n} en total',
         '{n} total'),
+    'syncDeviceHint': (
+        '列表里是登录过这台服务器的设备。移除一台，它下次同步要重新登录。',
+        '列表裡是登入過這台伺服器的裝置。移除一台，它下次同步要重新登入。',
+        'These are the devices signed in to this server. Remove one and it has to sign in again on its next sync.',
+        'このサーバーにログインした端末の一覧です。削除した端末は次回の同期で再ログインが必要です。',
+        'Estos son los dispositivos con sesión en este servidor. Si quitas uno, tendrá que iniciar sesión otra vez.',
+        'Ini perangkat yang login ke server ini. Kalau dihapus, perangkat itu perlu login lagi saat sinkron berikutnya.'),
 }
 
 META = {

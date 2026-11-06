@@ -4459,7 +4459,7 @@
   "syncModeOff": "オフ",
   "syncModeManual": "手動",
   "syncModeAuto": "自動",
-  "syncModeAutoHint": "自動：起動時に一度、その後 5 分ごと。",
+  "syncModeAutoHint": "自動は起動時に一度、その後は上の間隔で動きます。",
   "syncMessages": "メッセージ",
   "syncTracks": "履歴",
   "syncNow": "今すぐ同期",
@@ -4502,6 +4502,7 @@
   "syncDeviceRemoved": "削除しました。次回の同期には再ログインが必要です。",
   "syncBackups": "クラウドのバックアップ",
   "syncBackupsCount": "計 {n} 件",
+  "syncDeviceHint": "このサーバーにログインした端末の一覧です。削除した端末は次回の同期で再ログインが必要です。",
   "@syncEveryMin": {"placeholders": {"n": {"type": "String"}}},
   "@syncBackupsCount": {"placeholders": {"n": {"type": "String"}}}
 }

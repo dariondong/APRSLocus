@@ -4459,7 +4459,7 @@
   "syncModeOff": "Off",
   "syncModeManual": "Manual",
   "syncModeAuto": "Auto",
-  "syncModeAutoHint": "Auto: once at startup, then every five minutes.",
+  "syncModeAutoHint": "Auto pulls once at startup, then runs on the interval above.",
   "syncMessages": "Messages",
   "syncTracks": "Track history",
   "syncNow": "Sync now",
@@ -4502,6 +4502,7 @@
   "syncDeviceRemoved": "Removed. That device has to sign in again on its next sync.",
   "syncBackups": "Cloud backups",
   "syncBackupsCount": "{n} in total",
+  "syncDeviceHint": "These are the devices signed in to this server. Remove one and it has to sign in again on its next sync.",
   "@syncEveryMin": {"placeholders": {"n": {"type": "String"}}},
   "@syncBackupsCount": {"placeholders": {"n": {"type": "String"}}}
 }

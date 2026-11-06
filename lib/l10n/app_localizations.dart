@@ -18507,6 +18507,8 @@ abstract class AppLocalizations {
   /// **'共 {n} 份'**
   String syncBackupsCount(String n);
 
+  String get syncDeviceHint;
+
 }
 
 class _AppLocalizationsDelegate
