@@ -217,11 +217,12 @@
   </section>
   <section class="chapter reveal" id="cloudsync">
     <h2 id="cloudsync">Cloud sync: messages and tracks on the server<a class="hdr-anchor" href="#cloudsync" aria-label="Permalink to this section" title="Permalink to this section">#</a></h2>
-<p>Cloud sync keeps messages and track history on the server. Sign in with the same account on another device and they come back.</p>
+<p>Cloud sync keeps messages and track history on the server. Sign in with the same account on another device and they come back. It sits on the APRSNETCN page, and the whole block can be turned off.</p>
 <ol class="m-steps">
-<li><b>Settings → Server → Cloud sync</b>: enter the account and password.</li>
+<li><b>Settings → Server → APRSNETCN SERVER</b>: the cloud cards are further down; start with the account and password.</li>
 <li>Tap sign in. The card then shows the account and three figures from the server.</li>
-<li>Pick a sync mode: <b>off</b> / <b>manual</b> / <b>auto</b>. Auto runs every five minutes.</li>
+<li>Pick a sync mode: <b>off</b> / <b>manual</b> / <b>auto</b>. Auto can run every 5, 15 or 60 minutes.</li>
+<li>Switch on what you want synced: messages and track history each have their own switch.</li>
 <li>Tap <b>Sync now</b> for a single run, or <b>Clear cloud data</b> to delete the server copy.</li>
 </ol>
 <ul>
@@ -229,7 +230,9 @@
 <li>The address follows the APRSNETCN link, so there is no second address here. Another server signs you out, and nothing moves over from the old one.</li>
 <li>Messages and per-day tracks sync. App settings and themes stay with Export &amp; Backup.</li>
 <li>Two devices recording the same day come back as one line. Points within 3 seconds and 50 metres count as one point.</li>
+<li>Signed-in devices lists every device that has logged in to this server; yours is marked. Remove one and it has to sign in again on its next sync.</li>
 <li>The connection is plain HTTP, so the password and the payload are not encrypted. The password is dropped after sign-in; the token stays on the device and is discarded on sign-out.</li>
+<li>Settings → Features can turn cloud sync off entirely. With it off the app makes no cloud requests and both links keep working.</li>
 </ul>
   </section>
   <section class="chapter reveal" id="extgps">

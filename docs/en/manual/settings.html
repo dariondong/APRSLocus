@@ -416,9 +416,12 @@
       <div class="m-sub">
         <p class="m-grp-sub">Messages and track history live on the server, ready when you change devices.</p>
         <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>Setting</th><th>Control</th><th>Default</th><th>Description</th></tr></thead><tbody>
-<tr><td><b>Server</b></td><td><span class="m-kind">Read-only</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>Server</b></td><td><span class="m-kind">Read-only</span></td><td class="m-def">—</td><td>The connection is plain HTTP, so passwords and content are not encrypted.</td></tr>
 <tr><td><b>Account</b> <code class="m-field">syncAccount</code></td><td><span class="m-kind">Text input</span></td><td class="m-def">(empty)</td><td>The account is the one on the server's access list, the same one the APRSNETCN link page uses.</td></tr>
-<tr><td><b>Mode</b> <code class="m-field">syncMode</code></td><td><span class="m-kind">Dropdown</span></td><td class="m-def"><code>off</code></td><td>The connection is plain HTTP, so passwords and content are not encrypted.</td></tr>
+<tr><td><b>Mode<span class="m-opts">Off · Manual · Auto</span></b> <code class="m-field">syncMode</code></td><td><span class="m-kind">Dropdown</span></td><td class="m-def">Off</td><td></td></tr>
+<tr><td><b>Auto sync every</b> <code class="m-field">syncAutoMinutes</code></td><td><span class="m-kind">Dropdown</span></td><td class="m-def"><code>5</code></td><td>Auto pulls once at startup, then runs on the interval above.</td></tr>
+<tr><td><b>Messages</b> <code class="m-field">syncMessagesOn</code></td><td><span class="m-kind">Switch</span></td><td class="m-def">on</td><td></td></tr>
+<tr><td><b>Track history</b> <code class="m-field">syncTracksOn</code></td><td><span class="m-kind">Switch</span></td><td class="m-def">on</td><td>Turn both off and sync only signs in. Nothing is sent or pulled.</td></tr>
 <tr><td><b>Password</b></td><td><span class="m-kind">Text input</span></td><td class="m-def">—</td><td></td></tr>
 <tr><td><b>Sign out</b></td><td><span class="m-kind">Button</span></td><td class="m-def">—</td><td></td></tr>
 </tbody></table></div>
@@ -428,9 +431,17 @@
         <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>Setting</th><th>Control</th><th>Default</th><th>Description</th></tr></thead><tbody>
 <tr><td><b>Messages</b></td><td><span class="m-kind">Read-only</span></td><td class="m-def">—</td><td></td></tr>
 <tr><td><b>Track history</b></td><td><span class="m-kind">Read-only</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>Cloud backups</b></td><td><span class="m-kind">Read-only</span></td><td class="m-def">—</td><td></td></tr>
 <tr><td><b>Last sync</b></td><td><span class="m-kind">Read-only</span></td><td class="m-def">—</td><td>Cloud backups are uploaded and restored from the backup page.</td></tr>
 <tr><td><b>Sync now</b></td><td><span class="m-kind">Button</span></td><td class="m-def">—</td><td></td></tr>
 <tr><td><b>Clear cloud data</b></td><td><span class="m-kind">Button</span></td><td class="m-def">—</td><td></td></tr>
+</tbody></table></div>
+      </div>
+      <div class="m-sub">
+        <h4>Signed-in devices</h4>
+        <div class="callout info"><span class="co-ic">ℹ️</span><div><p>These are the devices signed in to this server. Remove one and it has to sign in again on its next sync.</p></div></div>
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>Setting</th><th>Control</th><th>Default</th><th>Description</th></tr></thead><tbody>
+<tr><td><b>Remove</b></td><td><span class="m-kind">Button</span></td><td class="m-def">—</td><td></td></tr>
 </tbody></table></div>
       </div>
   </section>
@@ -449,7 +460,7 @@
 <tr><td><b>Minimize to tray on close</b> <code class="m-field">closeToTray</code></td><td><span class="m-kind">Switch</span></td><td class="m-def">on</td><td></td></tr>
 <tr><td><b>Unit</b></td><td><span class="m-kind">Read-only</span></td><td class="m-def">—</td><td></td></tr>
 <tr><td><b>Grid</b></td><td><span class="m-kind">Read-only</span></td><td class="m-def">—</td><td></td></tr>
-<tr><td><b>Coordinate format<span class="m-opts">Decimal · Deg-min · Deg-min-sec</span></b> <code class="m-field">coordFormat</code></td><td><span class="m-kind">Dropdown</span></td><td class="m-def">Decimal</td><td></td></tr>
+<tr><td><b>Coordinate format<span class="m-opts">Deg-min-sec · Decimal · Deg-min</span></b> <code class="m-field">coordFormat</code></td><td><span class="m-kind">Dropdown</span></td><td class="m-def">Deg-min-sec</td><td></td></tr>
 </tbody></table></div>
       </div>
       <div class="m-sub">
@@ -860,7 +871,8 @@
 <tr><td><b>Life guard</b></td><td><span class="m-kind">Control</span></td><td class="m-def">—</td><td></td></tr>
 <tr><td><b>Translation</b></td><td><span class="m-kind">Control</span></td><td class="m-def">—</td><td></td></tr>
 <tr><td><b>Track history</b></td><td><span class="m-kind">Control</span></td><td class="m-def">—</td><td></td></tr>
-<tr><td><b>Export ADIF</b></td><td><span class="m-kind">Control</span></td><td class="m-def">—</td><td>Modules stay off in lite mode. Turn it off to pick them.</td></tr>
+<tr><td><b>Export ADIF</b></td><td><span class="m-kind">Control</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>Cloud sync</b></td><td><span class="m-kind">Control</span></td><td class="m-def">—</td><td>Modules stay off in lite mode. Turn it off to pick them.</td></tr>
 </tbody></table></div>
       </div>
   </section>

@@ -416,9 +416,12 @@
       <div class="m-sub">
         <p class="m-grp-sub">訊息與歷史軌跡存到伺服器上，換裝置再拉回來。</p>
         <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>設定項</th><th>控件</th><th>預設值</th><th>說明</th></tr></thead><tbody>
-<tr><td><b>伺服器</b></td><td><span class="m-kind">唯讀狀態</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>伺服器</b></td><td><span class="m-kind">唯讀狀態</span></td><td class="m-def">—</td><td>連線是明文 HTTP，口令與內容不加密。</td></tr>
 <tr><td><b>帳號</b> <code class="m-field">syncAccount</code></td><td><span class="m-kind">輸入框</span></td><td class="m-def">（空）</td><td>帳號就是伺服器接入名單裡那條，與「APRSNETCN」鏈路頁填的是同一個。</td></tr>
-<tr><td><b>同步方式</b> <code class="m-field">syncMode</code></td><td><span class="m-kind">下拉選單</span></td><td class="m-def"><code>off</code></td><td>連線是明文 HTTP，口令與內容不加密。</td></tr>
+<tr><td><b>同步方式<span class="m-opts">關閉 · 手動 · 自動</span></b> <code class="m-field">syncMode</code></td><td><span class="m-kind">下拉選單</span></td><td class="m-def">關閉</td><td></td></tr>
+<tr><td><b>自動同步間隔</b> <code class="m-field">syncAutoMinutes</code></td><td><span class="m-kind">下拉選單</span></td><td class="m-def"><code>5</code></td><td>自動那檔啟動時拉一次，之後按上面的間隔跑。</td></tr>
+<tr><td><b>訊息</b> <code class="m-field">syncMessagesOn</code></td><td><span class="m-kind">開關</span></td><td class="m-def">開</td><td></td></tr>
+<tr><td><b>歷史軌跡</b> <code class="m-field">syncTracksOn</code></td><td><span class="m-kind">開關</span></td><td class="m-def">開</td><td>兩個都關掉就只登入，不傳也不收。</td></tr>
 <tr><td><b>口令</b></td><td><span class="m-kind">輸入框</span></td><td class="m-def">—</td><td></td></tr>
 <tr><td><b>登出</b></td><td><span class="m-kind">按鈕</span></td><td class="m-def">—</td><td></td></tr>
 </tbody></table></div>
@@ -428,9 +431,17 @@
         <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>設定項</th><th>控件</th><th>預設值</th><th>說明</th></tr></thead><tbody>
 <tr><td><b>訊息</b></td><td><span class="m-kind">唯讀狀態</span></td><td class="m-def">—</td><td></td></tr>
 <tr><td><b>歷史軌跡</b></td><td><span class="m-kind">唯讀狀態</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>雲端備份</b></td><td><span class="m-kind">唯讀狀態</span></td><td class="m-def">—</td><td></td></tr>
 <tr><td><b>上次同步</b></td><td><span class="m-kind">唯讀狀態</span></td><td class="m-def">—</td><td>雲端備份在「備份與還原」頁裡上傳與取回。</td></tr>
 <tr><td><b>立即同步</b></td><td><span class="m-kind">按鈕</span></td><td class="m-def">—</td><td></td></tr>
 <tr><td><b>清空雲端資料</b></td><td><span class="m-kind">按鈕</span></td><td class="m-def">—</td><td></td></tr>
+</tbody></table></div>
+      </div>
+      <div class="m-sub">
+        <h4>登入的裝置</h4>
+        <div class="callout info"><span class="co-ic">ℹ️</span><div><p>列表裡是登入過這台伺服器的裝置。移除一台，它下次同步要重新登入。</p></div></div>
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>設定項</th><th>控件</th><th>預設值</th><th>說明</th></tr></thead><tbody>
+<tr><td><b>移除</b></td><td><span class="m-kind">按鈕</span></td><td class="m-def">—</td><td></td></tr>
 </tbody></table></div>
       </div>
   </section>
@@ -449,7 +460,7 @@
 <tr><td><b>關閉視窗時最小化到系統匣</b> <code class="m-field">closeToTray</code></td><td><span class="m-kind">開關</span></td><td class="m-def">開</td><td></td></tr>
 <tr><td><b>單位</b></td><td><span class="m-kind">唯讀狀態</span></td><td class="m-def">—</td><td></td></tr>
 <tr><td><b>網格</b></td><td><span class="m-kind">唯讀狀態</span></td><td class="m-def">—</td><td></td></tr>
-<tr><td><b>經緯度格式<span class="m-opts">十進制度 · 度分 · 度分秒</span></b> <code class="m-field">coordFormat</code></td><td><span class="m-kind">下拉選單</span></td><td class="m-def">十進制度</td><td></td></tr>
+<tr><td><b>經緯度格式<span class="m-opts">度分秒 · 十進制度 · 度分</span></b> <code class="m-field">coordFormat</code></td><td><span class="m-kind">下拉選單</span></td><td class="m-def">度分秒</td><td></td></tr>
 </tbody></table></div>
       </div>
       <div class="m-sub">
@@ -860,7 +871,8 @@
 <tr><td><b>生命守護</b></td><td><span class="m-kind">控件</span></td><td class="m-def">—</td><td></td></tr>
 <tr><td><b>翻譯</b></td><td><span class="m-kind">控件</span></td><td class="m-def">—</td><td></td></tr>
 <tr><td><b>歷史軌跡</b></td><td><span class="m-kind">控件</span></td><td class="m-def">—</td><td></td></tr>
-<tr><td><b>匯出 ADIF</b></td><td><span class="m-kind">控件</span></td><td class="m-def">—</td><td>精簡模式下模組都關著，關掉精簡模式再選。</td></tr>
+<tr><td><b>匯出 ADIF</b></td><td><span class="m-kind">控件</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>雲端同步</b></td><td><span class="m-kind">控件</span></td><td class="m-def">—</td><td>精簡模式下模組都關著，關掉精簡模式再選。</td></tr>
 </tbody></table></div>
       </div>
   </section>

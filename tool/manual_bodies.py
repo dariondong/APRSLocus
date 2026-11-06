@@ -475,11 +475,12 @@ the scroll position should still be there.</p></div></div>
 </ul>
 '''),
     ('cloudsync', T('云同步：消息与轨迹存到服务器', '雲端同步：訊息與軌跡存到伺服器', 'Cloud sync: messages and tracks on the server'), '''
-<p>云同步把消息与历史轨迹存到服务器上。换一台设备，登录同一个账号就能拉回来。</p>
+<p>云同步把消息与历史轨迹存到服务器上。换一台设备，登录同一个账号就能拉回来。它挂在 APRSNETCN 那一页，整块可以关掉。</p>
 <ol class="m-steps">
-<li><b>设置 → 服务器 → 云同步</b>，填账号与口令。</li>
+<li><b>设置 → 服务器 → APRSNETCN SERVER</b>，往下就是云同步那几张卡，先填账号与口令。</li>
 <li>点登录。登录后卡片换成账号与云端的三行数字。</li>
-<li>同步方式选 <b>关闭</b> / <b>手动</b> / <b>自动</b>，自动那档每 5 分钟跑一次。</li>
+<li>同步方式选 <b>关闭</b> / <b>手动</b> / <b>自动</b>，自动那档可以选 5、15 或 60 分钟一轮。</li>
+<li>把想同步的那一类打开：消息、历史轨迹，各一个开关。</li>
 <li>要马上同步点「立即同步」，要清掉云端那份点「清空云端数据」。</li>
 </ol>
 <ul>
@@ -487,14 +488,17 @@ the scroll position should still be there.</p></div></div>
 <li>地址跟着 APRSNETCN 那条链路走，这里没有第二个地址。换服务器要重新登录，旧地址上的数据不搬。</li>
 <li>同步的是消息与按天的历史轨迹。应用设置与主题在「备份与恢复」页。</li>
 <li>两台设备同一天都记了轨迹，读回来是一条线。时间差 3 秒内、距离 50 米内算同一个点。</li>
+<li>「登录的设备」里是登录过这台服务器的设备，本机带标记。移除一台，它下次同步要重新登录。</li>
 <li>连接是明文 HTTP，口令与内容不加密。口令登录后从本机清掉，令牌留在本机，退出登录即丢弃。</li>
+<li>到「设置 → 功能」可以把云同步整块关掉。关掉之后不再联网，两条链路照旧。</li>
 </ul>
 ''', '''
-<p>雲端同步把訊息與歷史軌跡存到伺服器上。換一台裝置，登入同一個帳號就能拉回來。</p>
+<p>雲端同步把訊息與歷史軌跡存到伺服器上。換一台裝置，登入同一個帳號就能拉回來。它掛在 APRSNETCN 那一頁，整塊可以關掉。</p>
 <ol class="m-steps">
-<li><b>設定 → 伺服器 → 雲端同步</b>，填帳號與口令。</li>
+<li><b>設定 → 伺服器 → APRSNETCN SERVER</b>，往下就是雲端同步那幾張卡，先填帳號與口令。</li>
 <li>點登入。登入後卡片換成帳號與雲端的三行數字。</li>
-<li>同步方式選 <b>關閉</b> / <b>手動</b> / <b>自動</b>，自動那檔每 5 分鐘跑一次。</li>
+<li>同步方式選 <b>關閉</b> / <b>手動</b> / <b>自動</b>，自動那檔可以選 5、15 或 60 分鐘一輪。</li>
+<li>把想同步的那一類打開：訊息、歷史軌跡，各一個開關。</li>
 <li>要馬上同步點「立即同步」，要清掉雲端那份點「清空雲端資料」。</li>
 </ol>
 <ul>
@@ -502,14 +506,17 @@ the scroll position should still be there.</p></div></div>
 <li>位址跟著 APRSNETCN 那條鏈路走，這裡沒有第二個位址。換伺服器要重新登入，舊位址上的資料不搬。</li>
 <li>同步的是訊息與按天的歷史軌跡。應用設定與主題在「備份與還原」頁。</li>
 <li>兩台裝置同一天都記了軌跡，讀回來是一條線。時間差 3 秒內、距離 50 公尺內算同一個點。</li>
+<li>「登入的裝置」裡是登入過這台伺服器的裝置，本機帶標記。移除一台，它下次同步要重新登入。</li>
 <li>連線是明文 HTTP，口令與內容不加密。口令登入後從本機清掉，權杖留在本機，登出即丟棄。</li>
+<li>到「設定 → 功能」可以把雲端同步整塊關掉。關掉之後不再連網，兩條鏈路照舊。</li>
 </ul>
 ''', '''
-<p>Cloud sync keeps messages and track history on the server. Sign in with the same account on another device and they come back.</p>
+<p>Cloud sync keeps messages and track history on the server. Sign in with the same account on another device and they come back. It sits on the APRSNETCN page, and the whole block can be turned off.</p>
 <ol class="m-steps">
-<li><b>Settings → Server → Cloud sync</b>: enter the account and password.</li>
+<li><b>Settings → Server → APRSNETCN SERVER</b>: the cloud cards are further down; start with the account and password.</li>
 <li>Tap sign in. The card then shows the account and three figures from the server.</li>
-<li>Pick a sync mode: <b>off</b> / <b>manual</b> / <b>auto</b>. Auto runs every five minutes.</li>
+<li>Pick a sync mode: <b>off</b> / <b>manual</b> / <b>auto</b>. Auto can run every 5, 15 or 60 minutes.</li>
+<li>Switch on what you want synced: messages and track history each have their own switch.</li>
 <li>Tap <b>Sync now</b> for a single run, or <b>Clear cloud data</b> to delete the server copy.</li>
 </ol>
 <ul>
@@ -517,7 +524,9 @@ the scroll position should still be there.</p></div></div>
 <li>The address follows the APRSNETCN link, so there is no second address here. Another server signs you out, and nothing moves over from the old one.</li>
 <li>Messages and per-day tracks sync. App settings and themes stay with Export &amp; Backup.</li>
 <li>Two devices recording the same day come back as one line. Points within 3 seconds and 50 metres count as one point.</li>
+<li>Signed-in devices lists every device that has logged in to this server; yours is marked. Remove one and it has to sign in again on its next sync.</li>
 <li>The connection is plain HTTP, so the password and the payload are not encrypted. The password is dropped after sign-in; the token stays on the device and is discarded on sign-out.</li>
+<li>Settings → Features can turn cloud sync off entirely. With it off the app makes no cloud requests and both links keep working.</li>
 </ul>
 '''),
     ('extgps', T('外接 GPS 模块', '外接 GPS 模組', 'External GPS module'), '''

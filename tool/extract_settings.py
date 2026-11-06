@@ -374,28 +374,50 @@ def choice_opts(body):
     """SettingsChoice 的选项文案 → (arb 键列表, 选项字面量列表)。
 
     只认 `labelOf` 里那串 switch 分支；三元链与拿 $v 拼的文案不列选项 ——
-    宁可不列，也不把 `{v} 秒` 这种模板印进文档。标准写法是把 `_ =>` 放最后，
-    而它对应的是第一个选项，所以挪到最前。
+    宁可不列，也不把 `{v} 秒` 这种模板印进文档。
+
+    顺序按 `options` 里的字面量走（下拉里就是这个顺序）；`_ =>` 那一支通常
+    对应第一个选项，排在前面。字面量认不出来（`CoordFormat.dec => …`）时
+    退回源码顺序。
     """
     frag = arg_of(body, 'labelOf') or ''
     if 'switch' not in frag:
         return [], []
-    keys = []
-    for m in re.finditer(r'S\.of\(context\)\.(\w+)|\bs\.(\w+)', frag):
-        k = m.group(1) or m.group(2)
-        if k not in keys:
-            keys.append(k)
-    md = re.search(r'_\s*=>\s*([^,}]+)', frag)
-    dk = arb_key(md.group(1)) if md else None
-    if dk and dk in keys:
-        keys = [dk] + [k for k in keys if k != dk]
+    # `(v) => switch (v) { … }`：只看花括号里的分支，否则开头那个 `(v) =>`
+    # 会把整段吞掉，后面几个字面量就都认不出来了。
+    a, b = frag.find('{'), frag.rfind('}')
+    if 0 <= a < b:
+        frag = frag[a + 1:b]
+    keys, by_val, default_key = [], {}, None
+    for m in re.finditer(r'([^,{}=]+?)\s*=>\s*([^,}]+)', frag):
+        cond = m.group(1).strip()
+        key = arb_key(m.group(2))
+        if not key:
+            continue
+        mc = re.match(r"'([^']*)'$", cond)
+        lit = mc.group(1) if mc else (
+            cond if re.match(r'-?\d+$', cond) else None)
+        if key not in keys:
+            keys.append(key)
+        if lit is None:
+            default_key = key
+        else:
+            by_val[lit] = key
+    lits = re.findall(r"'([^']*)'|(-?\d+)", arg_of(body, 'options') or '')
+    values = [x or y for x, y in lits]
+    if values and by_val:
+        seq = [by_val[v] for v in values if v in by_val]
+        order = ([default_key] if default_key and default_key not in seq else [])
+        order += [k for k in seq if k not in order]
+    else:
+        head = [default_key] if default_key else []
+        order = head + [k for k in keys if k not in head]
     ok = []
-    for k in keys:
+    for k in order:
         v = ZH.get(k) or ''
         if v and '{' not in v and '$' not in v:
             ok.append(k)
-    lits = re.findall(r"'([^']*)'|(-?\d+)", arg_of(body, 'options') or '')
-    return ok, [a or b for a, b in lits]
+    return ok, values
 
 
 # ─────────────────────────── 控件扫描 ───────────────────────────
