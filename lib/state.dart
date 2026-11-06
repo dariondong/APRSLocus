@@ -4365,15 +4365,11 @@ class AppState extends ChangeNotifier {
   // ── 云同步（消息 / 云端备份 / 历史轨迹）──
   //
   // 一个呼号的三类本机数据存到 APRSNETCN SERVER 上，换设备或重装以后拉回来。
-  // 账号就是接入名单里那条（账号 + 口令），口令只用来换令牌，换完就不留。
+  // 服务器没有第二个地址：云端数据管理是那台服务器专属的，地址跟着「APRSNETCN」
+  // 链路走（见 [syncBase]）。账号就是接入名单里那条（账号 + 口令），
+  // 口令只用来换令牌，换完就不留。
   // 令牌与本机安装标识都不进备份：换台机器重新登录一次就行。
   static const syncModes = ['off', 'manual', 'auto'];
-
-  /// 同步服务器地址：空着就用项目自带的那台（[kAcnHttpBase]）。
-  ///
-  /// 这一项独立于「APRSNETCN」那条链路：同步只是一个 HTTP 接口，
-  /// 自己的服务器与 APRS 链路连哪台、连不连得上都是两件事。
-  String syncServer = '';
 
   /// 同步方式：`off` 关闭 / `manual` 手动 / `auto` 自动（每 5 分钟一轮）。
   String syncMode = 'off';
@@ -4401,31 +4397,32 @@ class AppState extends ChangeNotifier {
 
   bool get syncBusy => _syncBusy;
 
-  /// 同步接口的地址：这一页自己填的那台，空着就是项目自带的那台。
-  String get syncBase => SyncApi.baseFor(syncServer);
+  /// 同步接口的地址：跟着「APRSNETCN」链路的服务器地址走。
+  ///
+  /// 链路地址空着就是项目自带的 APRSNETCN SERVER（[kAcnHttpBase]）。
+  /// 云端数据与那条链路由同一台机器管，界面上把生效地址写出来。
+  String get syncBase => SyncApi.baseFor(acnServer);
 
   SyncApi get syncApi => SyncApi(base: syncBase, token: syncToken);
 
   bool get syncReady => syncMode != 'off' && syncToken.isNotEmpty;
 
-  /// 换服务器：地址真的换了就把这台设备的登录丢掉。
+  /// 链路换了服务器：云端那台也就换了，把这台设备的登录丢掉。
   ///
-  /// 令牌是原来那台服务器发的，带到另一台上只会一直 401；
-  /// 上次同步的时间、两份上传标记也属于原来那台，一起清掉。
-  void setSyncServer(String v) {
-    final next = v.trim();
-    final moved = SyncApi.baseFor(syncServer) != SyncApi.baseFor(next);
-    syncServer = next;
-    if (moved && syncToken.isNotEmpty) {
-      syncToken = '';
-      syncCall = '';
-      syncMsgAt = 0;
-      syncPullAt = 0;
-      syncTrackAt = 0;
-      syncTrackSig = '{}';
-      syncServerSig = '{}';
-      _notify();
-    }
+  /// 令牌是原来那台服务器发的，带到另一台上只会一直 401；上次同步的时间、
+  /// 两份上传标记也属于原来那台，一起清掉。云端上的数据不动。
+  /// [oldServer] 是改之前那条链路的地址，由改地址的地方传进来。
+  void dropSyncSessionIfMoved(String oldServer) {
+    if (syncToken.isEmpty && syncCall.isEmpty) return;
+    if (SyncApi.baseFor(oldServer) == syncBase) return;
+    syncToken = '';
+    syncCall = '';
+    syncMsgAt = 0;
+    syncPullAt = 0;
+    syncTrackAt = 0;
+    syncTrackSig = '{}';
+    syncServerSig = '{}';
+    _notify();
     persist();
   }
 
@@ -5268,7 +5265,6 @@ class AppState extends ChangeNotifier {
     gpsIntervalSec = 1;
     powerSave = false;
     // 云同步是这台设备自己的登录，出厂复位就断开；云端数据不跟着删
-    syncServer = '';
     syncMode = 'off';
     syncAccount = '';
     syncPassword = '';
@@ -5851,7 +5847,6 @@ class AppState extends ChangeNotifier {
       powerSave = p.getBool('powerSave') ?? powerSave;
       loc.samplingMs = effectiveGpsIntervalSec * 1000;
       // 云同步：开关、账号、令牌与三类数据的上次时间。令牌不进备份。
-      syncServer = p.getString('syncServer') ?? syncServer;
       syncMode = p.getString('syncMode') ?? syncMode;
       if (!syncModes.contains(syncMode)) syncMode = 'off';
       syncAccount = p.getString('syncAccount') ?? syncAccount;
@@ -6255,7 +6250,6 @@ class AppState extends ChangeNotifier {
     await p.setString('locationMode', locationMode);
     await p.setInt('gpsIntervalSec', gpsIntervalSec);
     await p.setBool('powerSave', powerSave);
-    await p.setString('syncServer', syncServer);
     await p.setString('syncMode', syncMode);
     await p.setString('syncAccount', syncAccount);
     await p.setString('syncPassword', syncPassword);

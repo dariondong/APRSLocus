@@ -195,6 +195,7 @@ class _AcnCardsState extends State<AcnCards> {
           _server,
           badge: missing ? s.serverMissing : null,
           onChanged: (x) {
+            st.dropSyncSessionIfMoved(_origServer);
             st.acnServer = x.trim();
             _touched();
           },

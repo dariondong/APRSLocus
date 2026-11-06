@@ -82,10 +82,9 @@ class SyncApi {
   final String base;
   String token;
 
-  /// 用哪个地址：云同步页自己填的那台，空着就用项目自带的那台。
-  ///
-  /// 地址跟着「APRSNETCN」链路走是一种看不见的耦合 —— 页面上没有地址框，
-  /// 用户既不知道数据发去了哪台机器，也没法换成自己架的那台。
+  /// 用哪个地址：`base` 由「APRSNETCN」链路的服务器地址算出来（见 AppState 的
+  /// `syncBase`），云端数据管理是那台服务器专属的，没有第二个地址可填。
+  /// 链路地址空着就是项目自带的 APRSNETCN SERVER（[kAcnHttpBase]）。
   ///
   /// 两种写法都收：带协议的（`https://sync.example.com`）原样用，不带协议的
   /// （`1.2.3.4`）补上 `http://` 与 8899，与「APRSNETCN」页那张卡同一口径。

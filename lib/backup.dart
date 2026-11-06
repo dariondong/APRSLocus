@@ -91,10 +91,10 @@ const List<BackupGroupSpec> kBackupGroups = [
     // 历史轨迹要不要记录：与显示偏好同类，用户既然开了就说明他要继续记，
     // 换机后回到「默认关」会让他以为新机上不再记录。
     'trackLogOn',
-    // 云同步：服务器地址、开关、账号、上次同步时间与上传标记：换机后应当接着同步，
-    // 所以随设置走。令牌与口令**不在**这里 —— 那是这台设备的登录，
+    // 云同步：开关、账号、上次同步时间与上传标记：换机后应当接着同步，
+    // 所以随设置走。服务器地址跟着「APRSNETCN」链路走，不单独存；
+    // 令牌与口令**不在**这里 —— 那是这台设备的登录，
     // 换台机器要重新登（见 tool/check_backup_keys.py 的 EXCLUDE）。
-    'syncServer',
     'syncMode', 'syncAccount', 'syncDeviceId', 'syncCall',
     'syncMsgAt', 'syncPullAt', 'syncTrackAt',
     'syncTrackSig', 'syncServerSig',

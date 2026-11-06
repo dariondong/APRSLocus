@@ -26,7 +26,6 @@ class CloudSyncCards extends StatefulWidget {
 class _CloudSyncCardsState extends State<CloudSyncCards> {
   final _account = TextEditingController();
   final _password = TextEditingController();
-  final _server = TextEditingController();
   bool _busy = false;
   String _err = '';
   Map<String, dynamic>? _remote;
@@ -37,7 +36,6 @@ class _CloudSyncCardsState extends State<CloudSyncCards> {
   void initState() {
     super.initState();
     _account.text = st.syncAccount;
-    _server.text = st.syncServer;
     if (st.syncToken.isNotEmpty) _refresh();
   }
 
@@ -45,7 +43,6 @@ class _CloudSyncCardsState extends State<CloudSyncCards> {
   void dispose() {
     _account.dispose();
     _password.dispose();
-    _server.dispose();
     super.dispose();
   }
 
@@ -193,14 +190,8 @@ class _CloudSyncCardsState extends State<CloudSyncCards> {
       icon: Icons.cloud_sync_rounded,
       color: C.blue,
       children: [
-        SettingsInput(
-          s.syncServer,
-          _server,
-          onChanged: st.setSyncServer,
-          hint: 'http://host:8899',
-        ),
-        // 生效地址写出来：空着的时候它就是项目自带那台，免得用户以为没配就没处去
-        SettingsRow2(s.syncServerNow, st.syncBase),
+        // 地址跟着「APRSNETCN」链路走，写出来让人看得见数据发去了哪台
+        SettingsRow2(s.syncServer, st.syncBase),
         if (logged)
           SettingsRow2(
             s.syncAccount,
