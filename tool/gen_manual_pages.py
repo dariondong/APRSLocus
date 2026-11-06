@@ -115,6 +115,7 @@ KIND = {
     'SettingsInput':   T('输入框', '輸入框', 'Text input'),
     'SettingsSwitch':  T('开关', '開關', 'Switch'),
     'SettingsMiniSwitch': T('小开关', '小開關', 'Small switch'),
+    'SettingsChoice':  T('下拉选择', '下拉選單', 'Dropdown'),
     'SettingsRow2':    T('只读状态', '唯讀狀態', 'Read-only'),
     'SettingsNavRow':  T('入口', '入口', 'Entry'),
     '_custom':         T('选项卡', '選項卡', 'Choice card'),
@@ -254,9 +255,13 @@ def build_settings(lang):
                         if it['sub']:
                             prev['subsub'].append('%s：%s' % (it['label'], it['sub']))
                     continue
-                row = dict(it, opts=[], subsub=[])
+                row = dict(it, opts=list(it.get('opts') or []), subsub=[])
                 seen[key] = row
                 rows.append(row)
+            editable_lbls = set(r['label'] for r in rows
+                                if r['kind'] != 'SettingsRow2' and r['label'])
+            rows = [r for r in rows if not (r['kind'] == 'SettingsRow2'
+                                            and r['label'] in editable_lbls)]
             if not sec['title'] and not rows and not sec['note']:
                 continue
             parts.append('      <div class="m-sub">')
@@ -278,11 +283,14 @@ def build_settings(lang):
                     kind = KIND.get(r['kind'], T('控件', '控件', 'Control'))[lang]
                     # 默认值：只有可编辑控件才显示（状态/计数显示默认值会误导）
                     editable = r['kind'] in ('SettingsInput', 'SettingsSwitch',
-                                             'SettingsMiniSwitch', '_custom', '_field')
+                                             'SettingsMiniSwitch', '_custom', '_field',
+                                             'SettingsChoice')
                     d = NO_DEFAULT[lang]
                     if editable and r['field']:
                         dv = r['default']
-                        if dv in ('true', 'false'):
+                        if r.get('def_key'):
+                            d = md_inline(esc(r['def_key']))
+                        elif dv in ('true', 'false'):
                             d = ONOFF[dv == 'true'][lang]
                         elif dv == '':
                             d = EMPTY_STR[lang]

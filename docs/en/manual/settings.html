@@ -165,20 +165,21 @@
         <a href="#g3">Servers</a>
         <a href="#g4">APRS-IS server</a>
         <a href="#g5">APRSNETCN SERVER</a>
-        <a href="#g6">Display</a>
-        <a href="#g7">Data</a>
-        <a href="#g8">Advanced</a>
-        <a href="#g9">Devices</a>
-        <a href="#g10">TNC device & parameters</a>
-        <a href="#g11">WLAN Radio Direct Link</a>
-        <a href="#g12">Audio (soundcard TNC)</a>
-        <a href="#g13">PKWDWPL device</a>
-        <a href="#g14">External GPS</a>
-        <a href="#g15">Features</a>
-        <a href="#g16">Translation settings</a>
-        <a href="#g17">Theme</a>
-        <a href="#g18">Backup & restore</a>
-        <a href="#g19">Offline maps</a>
+        <a href="#g6">Cloud sync</a>
+        <a href="#g7">Display</a>
+        <a href="#g8">Data</a>
+        <a href="#g9">Advanced</a>
+        <a href="#g10">Devices</a>
+        <a href="#g11">TNC device & parameters</a>
+        <a href="#g12">WLAN Radio Direct Link</a>
+        <a href="#g13">Audio (soundcard TNC)</a>
+        <a href="#g14">PKWDWPL device</a>
+        <a href="#g15">External GPS</a>
+        <a href="#g16">Features</a>
+        <a href="#g17">Translation settings</a>
+        <a href="#g18">Theme</a>
+        <a href="#g19">Backup & restore</a>
+        <a href="#g20">Offline maps</a>
     </nav>
     <div class="manual-body">
   <section class="chapter reveal" id="g0">
@@ -203,6 +204,7 @@
 <tr><td><b>Export ADIF</b></td><td><span class="m-kind">Direct entry</span></td><td class="m-def">—</td><td>Export chats as a log file</td></tr>
 <tr><td><b>Theme</b></td><td><span class="m-kind">Direct entry</span></td><td class="m-def">—</td><td>Custom colours, icons and text</td></tr>
 <tr><td><b>Track history</b></td><td><span class="m-kind">Direct entry</span></td><td class="m-def">—</td><td>Records your own speed and distance by day, saved on this device</td></tr>
+<tr><td><b>Subscriptions</b></td><td><span class="m-kind">Direct entry</span></td><td class="m-def">—</td><td>… hits</td></tr>
 <tr><td><b>Backup &amp; restore</b></td><td><span class="m-kind">Direct entry</span></td><td class="m-def">—</td><td></td></tr>
 <tr><td><b>Sponsors &amp; thanks</b></td><td><span class="m-kind">Direct entry</span></td><td class="m-def">—</td><td></td></tr>
 <tr><td><b>About</b></td><td><span class="m-kind">Direct entry</span></td><td class="m-def">—</td><td></td></tr>
@@ -241,6 +243,15 @@
 <tr><td><b>My location</b></td><td><span class="m-kind">Read-only</span></td><td class="m-def">—</td><td></td></tr>
 </tbody></table></div>
       </div>
+      <div class="m-sub">
+        <h4>Certificate</h4>
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>Setting</th><th>Control</th><th>Default</th><th>Description</th></tr></thead><tbody>
+<tr><td><b>Class</b></td><td><span class="m-kind">Read-only</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>Callsign</b></td><td><span class="m-kind">Read-only</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>Certificate no.</b></td><td><span class="m-kind">Read-only</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>Checked</b></td><td><span class="m-kind">Read-only</span></td><td class="m-def">—</td><td>Verification is voluntary. The app works the same without it.</td></tr>
+</tbody></table></div>
+      </div>
   </section>
   <section class="chapter reveal" id="g2">
     <h2 id="g2">Beaconing<a class="hdr-anchor" href="#g2" aria-label="Permalink to this section" title="Permalink to this section">#</a></h2>
@@ -261,8 +272,15 @@
         <p class="m-grp-sub">Choose location method</p>
         <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>Setting</th><th>Control</th><th>Default</th><th>Description</th></tr></thead><tbody>
 <tr><td><b>GPS only<span class="m-opts">GPS + Network · Network only</span></b> <code class="m-field">locationMode</code></td><td><span class="m-kind">Choice card</span></td><td class="m-def"><code>gps_network</code></td><td>Satellite only, saves battery / GPS + Network：Network is a fallback only (when GPS goes stale); coarse fixes are never written to the track / Network only：Cell / Wi-Fi only, accurate to a few hundred metres; most power-saving, for devices without GPS</td></tr>
+<tr><td><b>GPS sampling</b> <code class="m-field">gpsIntervalSec</code></td><td><span class="m-kind">Dropdown</span></td><td class="m-def"><code>1</code></td><td>Cell and Wi-Fi fixes can be hundreds of metres off. So that the "me" marker does not jump around, they are used only after GPS has been stale for 5 minutes; coarse fixes are never written to the track or history, and never trigger an automatic report.</td></tr>
 <tr><td><b>Station icon for network fixes</b></td><td><span class="m-kind">Entry</span></td><td class="m-def">—</td><td>Network fixes can be off by hundreds of metres to kilometres; a distinct icon makes it obvious that the position came from the network. Defaults to following your own symbol.</td></tr>
 <tr><td><b>Idle the phone GPS while an external GPS is active</b> <code class="m-field">extGpsStandby</code></td><td><span class="m-kind">Switch</span></td><td class="m-def">on</td><td>While an external GPS (Garmin LiveTrack) is feeding data, stop the phone location to save power; when it goes stale the phone GPS takes over automatically, and the status line and log say so. Turning this off cannot make the position wrong — the external source is already preferred.</td></tr>
+</tbody></table></div>
+      </div>
+      <div class="m-sub">
+        <h4>Power saving</h4>
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>Setting</th><th>Control</th><th>Default</th><th>Description</th></tr></thead><tbody>
+<tr><td><b>Power saving</b> <code class="m-field">powerSave</code></td><td><span class="m-kind">Switch</span></td><td class="m-def">off</td><td>GPS updates every 30 seconds and station animations stop.</td></tr>
 </tbody></table></div>
       </div>
       <div class="m-sub">
@@ -270,6 +288,8 @@
         <p class="m-grp-sub">Report switch, interval &amp; content</p>
         <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>Setting</th><th>Control</th><th>Default</th><th>Description</th></tr></thead><tbody>
 <tr><td><b>Auto-report</b> <code class="m-field">beaconEnabled</code></td><td><span class="m-kind">Switch</span></td><td class="m-def">on</td><td>Classic: one line (status + send now). Detailed: an extra line showing which tier is active, the seconds left, how many metres the distance trigger still needs, and how many degrees the turn trigger still needs — refreshed once a second.</td></tr>
+<tr><td><b>Location fuzz<span class="m-opts">Off · ~200 m · ~2 km · ~20 km</span></b> <code class="m-field">beaconAmbiguity</code></td><td><span class="m-kind">Dropdown</span></td><td class="m-def">Off</td><td></td></tr>
+<tr><td><b>When I open the app<span class="m-opts">Do nothing · Auto connect · Auto report</span></b> <code class="m-field">autoStartMode</code></td><td><span class="m-kind">Dropdown</span></td><td class="m-def">Do nothing</td><td></td></tr>
 <tr><td><b>Network-only interval (s)</b> <code class="m-field">beaconNetInterval</code></td><td><span class="m-kind">Text input</span></td><td class="m-def"><code>300</code></td><td>In network-only mode a fixed interval is used; cell/Wi-Fi fixes have no reliable speed, so smart beaconing (speed / distance / turn) is not used</td></tr>
 <tr><td><b>Beacon interval (sec)</b> <code class="m-field">beaconInterval</code></td><td><span class="m-kind">Text input</span></td><td class="m-def"><code>60</code></td><td>Position beacon interval, minimum 5 seconds</td></tr>
 <tr><td><b>SmartBeacon (by speed)</b> <code class="m-field">smartBeaconEnabled</code></td><td><span class="m-kind">Switch</span></td><td class="m-def">off</td><td></td></tr>
@@ -280,6 +300,7 @@
 <tr><td><b>Total distance</b> <code class="m-field">beaconIncludeTotalMileage</code></td><td><span class="m-kind">Small switch</span></td><td class="m-def">off</td><td></td></tr>
 <tr><td><b>Steps</b> <code class="m-field">beaconIncludeSteps</code></td><td><span class="m-kind">Small switch</span></td><td class="m-def">off</td><td></td></tr>
 <tr><td><b>Satellites</b> <code class="m-field">beaconIncludeSats</code></td><td><span class="m-kind">Small switch</span></td><td class="m-def">off</td><td></td></tr>
+<tr><td><b>PC CPU and memory load</b> <code class="m-field">beaconIncludeDeskLoad</code></td><td><span class="m-kind">Small switch</span></td><td class="m-def">off</td><td></td></tr>
 <tr><td><b>Today's steps</b></td><td><span class="m-kind">Read-only</span></td><td class="m-def">—</td><td></td></tr>
 <tr><td><b>Grant activity permission</b></td><td><span class="m-kind">Button</span></td><td class="m-def">—</td><td></td></tr>
 <tr><td><b>Satellites now</b></td><td><span class="m-kind">Read-only</span></td><td class="m-def">—</td><td>The current source does not provide a satellite count: network positioning (cell / Wi-Fi) has no satellites, and some Android devices or ROMs do not report the data.</td></tr>
@@ -297,6 +318,7 @@
         <div class="callout info"><span class="co-ic">ℹ️</span><div><p>No entries yet.</p></div></div>
         <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>Setting</th><th>Control</th><th>Default</th><th>Description</th></tr></thead><tbody>
 <tr><td><b>Clear the log</b></td><td><span class="m-kind">Button</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>Add speed tier</b></td><td><span class="m-kind">Button</span></td><td class="m-def">—</td><td></td></tr>
 </tbody></table></div>
       </div>
   </section>
@@ -389,8 +411,32 @@
       </div>
   </section>
   <section class="chapter reveal" id="g6">
-    <h2 id="g6">Display<a class="hdr-anchor" href="#g6" aria-label="Permalink to this section" title="Permalink to this section">#</a></h2>
-      <h3 id="g6">Display<a class="hdr-anchor" href="#g6" aria-label="Permalink to this section" title="Permalink to this section">#</a></h3>
+    <h2 id="g6">Cloud sync<a class="hdr-anchor" href="#g6" aria-label="Permalink to this section" title="Permalink to this section">#</a></h2>
+      <h3 id="g6">Cloud sync<a class="hdr-anchor" href="#g6" aria-label="Permalink to this section" title="Permalink to this section">#</a></h3>
+      <div class="m-sub">
+        <p class="m-grp-sub">Messages and track history live on the server, ready when you change devices.</p>
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>Setting</th><th>Control</th><th>Default</th><th>Description</th></tr></thead><tbody>
+<tr><td><b>Server</b></td><td><span class="m-kind">Read-only</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>Account</b> <code class="m-field">syncAccount</code></td><td><span class="m-kind">Text input</span></td><td class="m-def">(empty)</td><td>The account is the one on the server's access list, the same one the APRSNETCN link page uses.</td></tr>
+<tr><td><b>Mode</b> <code class="m-field">syncMode</code></td><td><span class="m-kind">Dropdown</span></td><td class="m-def"><code>off</code></td><td>The connection is plain HTTP, so passwords and content are not encrypted.</td></tr>
+<tr><td><b>Password</b></td><td><span class="m-kind">Text input</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>Sign out</b></td><td><span class="m-kind">Button</span></td><td class="m-def">—</td><td></td></tr>
+</tbody></table></div>
+      </div>
+      <div class="m-sub">
+        <h4>On the server</h4>
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>Setting</th><th>Control</th><th>Default</th><th>Description</th></tr></thead><tbody>
+<tr><td><b>Messages</b></td><td><span class="m-kind">Read-only</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>Track history</b></td><td><span class="m-kind">Read-only</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>Last sync</b></td><td><span class="m-kind">Read-only</span></td><td class="m-def">—</td><td>Cloud backups are uploaded and restored from the backup page.</td></tr>
+<tr><td><b>Sync now</b></td><td><span class="m-kind">Button</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>Clear cloud data</b></td><td><span class="m-kind">Button</span></td><td class="m-def">—</td><td></td></tr>
+</tbody></table></div>
+      </div>
+  </section>
+  <section class="chapter reveal" id="g7">
+    <h2 id="g7">Display<a class="hdr-anchor" href="#g7" aria-label="Permalink to this section" title="Permalink to this section">#</a></h2>
+      <h3 id="g7">Display<a class="hdr-anchor" href="#g7" aria-label="Permalink to this section" title="Permalink to this section">#</a></h3>
       <p class="m-grp-sub">Coords · Theme</p>
       <p>Dark mode, weather widget, units and grid live here; tile source and offline maps live in the map menu and their own sub-page. There is also an <b>announcement banner</b> toggle (on by default): the banner sits at the top of the home screen / map, its content comes from the website announcement section — publishing a notice needs no app release; offline it shows the last cached copy, and turning it off stops all network requests. To read it on demand, use the <b>Announcements</b> button at the very bottom of the settings home screen — it is always available and shows the same content.</p>
       <div class="m-sub">
@@ -400,22 +446,27 @@
 <tr><td><b>Dark mode</b> <code class="m-field">darkMode</code></td><td><span class="m-kind">Switch</span></td><td class="m-def">off</td><td></td></tr>
 <tr><td><b>Weather widget</b> <code class="m-field">weatherEnabled</code></td><td><span class="m-kind">Switch</span></td><td class="m-def">on</td><td></td></tr>
 <tr><td><b>Announcements</b> <code class="m-field">noticeBanner</code></td><td><span class="m-kind">Switch</span></td><td class="m-def">on</td><td>The active theme pins the primary colour — change it on the Theme page</td></tr>
+<tr><td><b>Minimize to tray on close</b> <code class="m-field">closeToTray</code></td><td><span class="m-kind">Switch</span></td><td class="m-def">on</td><td></td></tr>
 <tr><td><b>Unit</b></td><td><span class="m-kind">Read-only</span></td><td class="m-def">—</td><td></td></tr>
 <tr><td><b>Grid</b></td><td><span class="m-kind">Read-only</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>Coordinate format<span class="m-opts">Decimal · Deg-min · Deg-min-sec</span></b> <code class="m-field">coordFormat</code></td><td><span class="m-kind">Dropdown</span></td><td class="m-def">Decimal</td><td></td></tr>
 </tbody></table></div>
       </div>
       <div class="m-sub">
         <h4>Map</h4>
         <p class="m-grp-sub">Map type and display</p>
         <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>Setting</th><th>Control</th><th>Default</th><th>Description</th></tr></thead><tbody>
+<tr><td><b>Centre coordinates</b> <code class="m-field">mapCenterCoord</code></td><td><span class="m-kind">Switch</span></td><td class="m-def">off</td><td></td></tr>
 <tr><td><b>Always show map labels</b> <code class="m-field">mapLabelsAlways</code></td><td><span class="m-kind">Switch</span></td><td class="m-def">off</td><td>Show every station callsign label on the map regardless of station count or zoom.</td></tr>
 <tr><td><b>Offline maps</b></td><td><span class="m-kind">Entry</span></td><td class="m-def">—</td><td>This theme uses a background image, so the material adds no backdrop of its own and only frosts the bars and overlays. / Download map tiles ahead of time so the map works without a network</td></tr>
+<tr><td><b>Notification check</b></td><td><span class="m-kind">Button</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>Reload UI</b></td><td><span class="m-kind">Button</span></td><td class="m-def">—</td><td></td></tr>
 </tbody></table></div>
       </div>
   </section>
-  <section class="chapter reveal" id="g7">
-    <h2 id="g7">Data<a class="hdr-anchor" href="#g7" aria-label="Permalink to this section" title="Permalink to this section">#</a></h2>
-      <h3 id="g7">Data<a class="hdr-anchor" href="#g7" aria-label="Permalink to this section" title="Permalink to this section">#</a></h3>
+  <section class="chapter reveal" id="g8">
+    <h2 id="g8">Data<a class="hdr-anchor" href="#g8" aria-label="Permalink to this section" title="Permalink to this section">#</a></h2>
+      <h3 id="g8">Data<a class="hdr-anchor" href="#g8" aria-label="Permalink to this section" title="Permalink to this section">#</a></h3>
       <p class="m-grp-sub">Clear local data</p>
       <p>Read-only stats and destructive actions are kept apart: clearing the chat is its own button, and “clear all data” asks twice.</p>
       <div class="m-sub">
@@ -438,6 +489,8 @@
         <h4>Prune stale stations</h4>
         <p class="m-grp-sub">Remove stations not heard from in a while, keeping the useful ones</p>
         <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>Setting</th><th>Control</th><th>Default</th><th>Description</th></tr></thead><tbody>
+<tr><td><b>Station retention (days)</b> <code class="m-field">stationRetentionDays</code></td><td><span class="m-kind">Dropdown</span></td><td class="m-def"><code>0</code></td><td>Stations not heard from for longer than this are pruned automatically at startup. 0 = off (manual prune is still available). Favorites, manual contacts and your own station are never pruned.</td></tr>
+<tr><td><b>Prune stations older than</b></td><td><span class="m-kind">Dropdown</span></td><td class="m-def">—</td><td>Days used by manual pruning, <b>independent</b> of the auto-prune retention above — only ordinary stations not heard from for this many days are removed.</td></tr>
 <tr><td><b>Choose a number of days first</b></td><td><span class="m-kind">Button</span></td><td class="m-def">—</td><td></td></tr>
 </tbody></table></div>
       </div>
@@ -470,9 +523,9 @@
 </tbody></table></div>
       </div>
   </section>
-  <section class="chapter reveal" id="g8">
-    <h2 id="g8">Advanced<a class="hdr-anchor" href="#g8" aria-label="Permalink to this section" title="Permalink to this section">#</a></h2>
-      <h3 id="g8">Advanced<a class="hdr-anchor" href="#g8" aria-label="Permalink to this section" title="Permalink to this section">#</a></h3>
+  <section class="chapter reveal" id="g9">
+    <h2 id="g9">Advanced<a class="hdr-anchor" href="#g9" aria-label="Permalink to this section" title="Permalink to this section">#</a></h2>
+      <h3 id="g9">Advanced<a class="hdr-anchor" href="#g9" aria-label="Permalink to this section" title="Permalink to this section">#</a></h3>
       <p class="m-grp-sub">Lab · Developer</p>
       <p>Landscape toggle, demo data (fake stations/packets), RX/TX counters and re-running the wizard.</p>
       <div class="m-sub">
@@ -484,13 +537,14 @@
 <tr><td><b>RX / TX</b></td><td><span class="m-kind">Read-only</span></td><td class="m-def">—</td><td></td></tr>
 <tr><td><b>Stations</b></td><td><span class="m-kind">Read-only</span></td><td class="m-def">—</td><td></td></tr>
 <tr><td><b>Connection</b></td><td><span class="m-kind">Read-only</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>Licence check</b></td><td><span class="m-kind">Entry</span></td><td class="m-def">—</td><td></td></tr>
 </tbody></table></div>
       </div>
   </section>
-  <section class="chapter reveal" id="g9">
-    <h2 id="g9">Devices<a class="hdr-anchor" href="#g9" aria-label="Permalink to this section" title="Permalink to this section">#</a></h2>
-      <h3 id="g9">Devices<a class="hdr-anchor" href="#g9" aria-label="Permalink to this section" title="Permalink to this section">#</a></h3>
-      <p class="m-grp-sub">Data source, link status and self-test</p>
+  <section class="chapter reveal" id="g10">
+    <h2 id="g10">Devices<a class="hdr-anchor" href="#g10" aria-label="Permalink to this section" title="Permalink to this section">#</a></h2>
+      <h3 id="g10">Devices<a class="hdr-anchor" href="#g10" aria-label="Permalink to this section" title="Permalink to this section">#</a></h3>
+      <p class="m-grp-sub">Checks protocol, permissions and devices layer by layer</p>
       <p>Device overview = current link, gateway status, the four sub-pages (TNC / WLAN radio / audio / PKWDWPL) plus link self-test and logs.</p>
       <div class="m-sub">
         <h4>Gateway (iGate)</h4>
@@ -509,11 +563,9 @@
       </div>
       <div class="m-sub">
         <h4>Current link</h4>
-        <p class="m-grp-sub">Read-only summary — edit parameters in the sub-pages</p>
       </div>
       <div class="m-sub">
         <h4>Devices &amp; parameters</h4>
-        <p class="m-grp-sub">One sub-page per link, each with its own settings</p>
         <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>Setting</th><th>Control</th><th>Default</th><th>Description</th></tr></thead><tbody>
 <tr><td><b>TNC device &amp; parameters</b></td><td><span class="m-kind">Choice card</span></td><td class="m-def">—</td><td>Bluetooth/serial binding, init string, KISS parameters and TX self-test</td></tr>
 <tr><td><b>WLAN Radio Direct Link</b> <code class="m-field">source</code></td><td><span class="m-kind">Choice card</span></td><td class="m-def"><code>AudioSource.device</code></td><td>Connected</td></tr>
@@ -526,9 +578,9 @@
 </tbody></table></div>
       </div>
   </section>
-  <section class="chapter reveal" id="g10">
-    <h2 id="g10">TNC device &amp; parameters<a class="hdr-anchor" href="#g10" aria-label="Permalink to this section" title="Permalink to this section">#</a></h2>
-      <h3 id="g10">TNC device &amp; parameters<a class="hdr-anchor" href="#g10" aria-label="Permalink to this section" title="Permalink to this section">#</a></h3>
+  <section class="chapter reveal" id="g11">
+    <h2 id="g11">TNC device &amp; parameters<a class="hdr-anchor" href="#g11" aria-label="Permalink to this section" title="Permalink to this section">#</a></h2>
+      <h3 id="g11">TNC device &amp; parameters<a class="hdr-anchor" href="#g11" aria-label="Permalink to this section" title="Permalink to this section">#</a></h3>
       <p class="m-grp-sub">Bluetooth/serial binding, init string, KISS parameters and TX self-test</p>
       <p>Everything for a Bluetooth/USB TNC: binding, init string, baud, KISS timing, digipeat path and the TX self-test.</p>
       <div class="m-sub">
@@ -595,9 +647,9 @@
 </tbody></table></div>
       </div>
   </section>
-  <section class="chapter reveal" id="g11">
-    <h2 id="g11">WLAN Radio Direct Link<a class="hdr-anchor" href="#g11" aria-label="Permalink to this section" title="Permalink to this section">#</a></h2>
-      <h3 id="g11">WLAN Radio Direct Link<a class="hdr-anchor" href="#g11" aria-label="Permalink to this section" title="Permalink to this section">#</a></h3>
+  <section class="chapter reveal" id="g12">
+    <h2 id="g12">WLAN Radio Direct Link<a class="hdr-anchor" href="#g12" aria-label="Permalink to this section" title="Permalink to this section">#</a></h2>
+      <h3 id="g12">WLAN Radio Direct Link<a class="hdr-anchor" href="#g12" aria-label="Permalink to this section" title="Permalink to this section">#</a></h3>
       <p class="m-grp-sub">Direct Icom LAN radio (IC-705 / IC-9700 / IC-7610 / IC-905): 12 kHz PCM audio and CI-V control</p>
       <p>Direct LAN link to Icom radios (IC-705 / IC-9700 / IC-7610 / IC-905 etc.): radio IP/control port, Network User auth, CI-V address and TX Delay, RF digipeater path (e.g. WIDE1-1,WIDE2-1), 12 kHz PCM audio streaming.</p>
       <div class="m-sub">
@@ -626,6 +678,7 @@
         <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>Setting</th><th>Control</th><th>Default</th><th>Description</th></tr></thead><tbody>
 <tr><td><b>Allow RF beaconing</b> <code class="m-field">rfBeacon</code></td><td><span class="m-kind">Switch</span></td><td class="m-def">off</td><td>Allow the radio to beacon automatically over RF (half-duplex: listen is muted while transmitting).</td></tr>
 <tr><td><b>TX preamble delay (TX Delay, ms)</b> <code class="m-field">txDelayMs</code></td><td><span class="m-kind">Text input</span></td><td class="m-def"><code>300</code></td><td>KISS TXDELAY in 10 ms units — time for your PTT to settle before data</td></tr>
+<tr><td><b>Post-TX delay (ms)</b></td><td><span class="m-kind">Text input</span></td><td class="m-def">—</td><td></td></tr>
 <tr><td><b>Radio CI-V address (hex)</b></td><td><span class="m-kind">Text input</span></td><td class="m-def">—</td><td></td></tr>
 <tr><td><b>RF digipeater path</b> <code class="m-field">path</code></td><td><span class="m-kind">Text input</span></td><td class="m-def"><code>WIDE1-1,WIDE2-1</code></td><td>Digipeaters used on air, e.g. WIDE1-1,WIDE2-1; leave empty for none</td></tr>
 <tr><td><b>Controller address</b></td><td><span class="m-kind">Read-only</span></td><td class="m-def">—</td><td></td></tr>
@@ -642,9 +695,9 @@
 </tbody></table></div>
       </div>
   </section>
-  <section class="chapter reveal" id="g12">
-    <h2 id="g12">Audio (soundcard TNC)<a class="hdr-anchor" href="#g12" aria-label="Permalink to this section" title="Permalink to this section">#</a></h2>
-      <h3 id="g12">Audio (soundcard TNC)<a class="hdr-anchor" href="#g12" aria-label="Permalink to this section" title="Permalink to this section">#</a></h3>
+  <section class="chapter reveal" id="g13">
+    <h2 id="g13">Audio (soundcard TNC)<a class="hdr-anchor" href="#g13" aria-label="Permalink to this section" title="Permalink to this section">#</a></h2>
+      <h3 id="g13">Audio (soundcard TNC)<a class="hdr-anchor" href="#g13" aria-label="Permalink to this section" title="Permalink to this section">#</a></h3>
       <p class="m-grp-sub">Send and receive AFSK 1200 packets with your soundcard</p>
       <p>Use the sound card as a TNC: sample rate/baud/tone, TX level and CSMA wait, plus WAV file mode (decode a recording offline).</p>
       <div class="m-sub">
@@ -706,9 +759,9 @@
         <div class="callout info"><span class="co-ic">ℹ️</span><div><p>No log entries yet</p></div></div>
       </div>
   </section>
-  <section class="chapter reveal" id="g13">
-    <h2 id="g13">PKWDWPL device<a class="hdr-anchor" href="#g13" aria-label="Permalink to this section" title="Permalink to this section">#</a></h2>
-      <h3 id="g13">PKWDWPL device<a class="hdr-anchor" href="#g13" aria-label="Permalink to this section" title="Permalink to this section">#</a></h3>
+  <section class="chapter reveal" id="g14">
+    <h2 id="g14">PKWDWPL device<a class="hdr-anchor" href="#g14" aria-label="Permalink to this section" title="Permalink to this section">#</a></h2>
+      <h3 id="g14">PKWDWPL device<a class="hdr-anchor" href="#g14" aria-label="Permalink to this section" title="Permalink to this section">#</a></h3>
       <p class="m-grp-sub">Bind the radio port and check waypoint reception</p>
       <p>Read-only Kenwood waypoint link: binding and status, waypoint counters, strict checksum (off by default — mismatches are flagged, not dropped).</p>
       <div class="m-sub">
@@ -737,9 +790,9 @@
 </tbody></table></div>
       </div>
   </section>
-  <section class="chapter reveal" id="g14">
-    <h2 id="g14">External GPS<a class="hdr-anchor" href="#g14" aria-label="Permalink to this section" title="Permalink to this section">#</a></h2>
-      <h3 id="g14">External GPS<a class="hdr-anchor" href="#g14" aria-label="Permalink to this section" title="Permalink to this section">#</a></h3>
+  <section class="chapter reveal" id="g15">
+    <h2 id="g15">External GPS<a class="hdr-anchor" href="#g15" aria-label="Permalink to this section" title="Permalink to this section">#</a></h2>
+      <h3 id="g15">External GPS<a class="hdr-anchor" href="#g15" aria-label="Permalink to this section" title="Permalink to this section">#</a></h3>
       <p class="m-grp-sub">NMEA 0183 position source over Bluetooth SPP or serial</p>
       <p>An external GPS is a Bluetooth NMEA module. While it delivers fixes it takes priority and the phone GPS stands by; if the module drops out the phone takes over again.</p>
       <div class="m-sub">
@@ -786,9 +839,9 @@
 </tbody></table></div>
       </div>
   </section>
-  <section class="chapter reveal" id="g15">
-    <h2 id="g15">Features<a class="hdr-anchor" href="#g15" aria-label="Permalink to this section" title="Permalink to this section">#</a></h2>
-      <h3 id="g15">Features<a class="hdr-anchor" href="#g15" aria-label="Permalink to this section" title="Permalink to this section">#</a></h3>
+  <section class="chapter reveal" id="g16">
+    <h2 id="g16">Features<a class="hdr-anchor" href="#g16" aria-label="Permalink to this section" title="Permalink to this section">#</a></h2>
+      <h3 id="g16">Features<a class="hdr-anchor" href="#g16" aria-label="Permalink to this section" title="Permalink to this section">#</a></h3>
       <p class="m-grp-sub">Modules and lite mode</p>
       <p>Lite mode on top, module switches below. Lite mode only changes the shell; modules you switched off stay switched off. Turning a module off also removes its entry from Settings.</p>
       <div class="m-sub">
@@ -811,9 +864,9 @@
 </tbody></table></div>
       </div>
   </section>
-  <section class="chapter reveal" id="g16">
-    <h2 id="g16">Translation settings<a class="hdr-anchor" href="#g16" aria-label="Permalink to this section" title="Permalink to this section">#</a></h2>
-      <h3 id="g16">Translation settings<a class="hdr-anchor" href="#g16" aria-label="Permalink to this section" title="Permalink to this section">#</a></h3>
+  <section class="chapter reveal" id="g17">
+    <h2 id="g17">Translation settings<a class="hdr-anchor" href="#g17" aria-label="Permalink to this section" title="Permalink to this section">#</a></h2>
+      <h3 id="g17">Translation settings<a class="hdr-anchor" href="#g17" aria-label="Permalink to this section" title="Permalink to this section">#</a></h3>
       <p class="m-grp-sub">Provider, languages and auto-translate</p>
       <p>Target language, engine (auto, no key needed), per-engine keys and instance URLs, test translation.</p>
       <div class="m-sub">
@@ -851,9 +904,9 @@
 </tbody></table></div>
       </div>
   </section>
-  <section class="chapter reveal" id="g17">
-    <h2 id="g17">Theme<a class="hdr-anchor" href="#g17" aria-label="Permalink to this section" title="Permalink to this section">#</a></h2>
-      <h3 id="g17">Theme<a class="hdr-anchor" href="#g17" aria-label="Permalink to this section" title="Permalink to this section">#</a></h3>
+  <section class="chapter reveal" id="g18">
+    <h2 id="g18">Theme<a class="hdr-anchor" href="#g18" aria-label="Permalink to this section" title="Permalink to this section">#</a></h2>
+      <h3 id="g18">Theme<a class="hdr-anchor" href="#g18" aria-label="Permalink to this section" title="Permalink to this section">#</a></h3>
       <p class="m-grp-sub">Make the colours, icons and common labels your own</p>
       <p>Four blocks — colours, icons, text, background — exportable as JSON to share; preset skins switch in one tap.</p>
       <div class="m-sub">
@@ -939,9 +992,9 @@
         <div class="callout info"><span class="co-ic">ℹ️</span><div><p>Presets cannot be edited — copy one to your themes first</p></div></div>
       </div>
   </section>
-  <section class="chapter reveal" id="g18">
-    <h2 id="g18">Backup &amp; restore<a class="hdr-anchor" href="#g18" aria-label="Permalink to this section" title="Permalink to this section">#</a></h2>
-      <h3 id="g18">Backup &amp; restore<a class="hdr-anchor" href="#g18" aria-label="Permalink to this section" title="Permalink to this section">#</a></h3>
+  <section class="chapter reveal" id="g19">
+    <h2 id="g19">Backup &amp; restore<a class="hdr-anchor" href="#g19" aria-label="Permalink to this section" title="Permalink to this section">#</a></h2>
+      <h3 id="g19">Backup &amp; restore<a class="hdr-anchor" href="#g19" aria-label="Permalink to this section" title="Permalink to this section">#</a></h3>
       <p class="m-grp-sub">Export or import settings and data</p>
       <p>One JSON holds settings and data; whitelisted import stops a foreign file from rewriting your config; restart after importing.</p>
       <div class="m-sub">
@@ -969,10 +1022,20 @@
 <tr><td><b>Paste from clipboard</b></td><td><span class="m-kind">Button</span></td><td class="m-def">—</td><td></td></tr>
 </tbody></table></div>
       </div>
+      <div class="m-sub">
+        <h4>Cloud backup</h4>
+        <p class="m-grp-sub">Sign in first</p>
+        <div class="callout info"><span class="co-ic">ℹ️</span><div><p>Cloud backups leave out track history; tracks are kept by cloud sync.</p></div></div>
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>Setting</th><th>Control</th><th>Default</th><th>Description</th></tr></thead><tbody>
+<tr><td><b>Upload</b></td><td><span class="m-kind">Button</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>Restore from cloud</b></td><td><span class="m-kind">Button</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>Import selected</b></td><td><span class="m-kind">Button</span></td><td class="m-def">—</td><td></td></tr>
+</tbody></table></div>
+      </div>
   </section>
-  <section class="chapter reveal" id="g19">
-    <h2 id="g19">Offline maps<a class="hdr-anchor" href="#g19" aria-label="Permalink to this section" title="Permalink to this section">#</a></h2>
-      <h3 id="g19">Offline maps<a class="hdr-anchor" href="#g19" aria-label="Permalink to this section" title="Permalink to this section">#</a></h3>
+  <section class="chapter reveal" id="g20">
+    <h2 id="g20">Offline maps<a class="hdr-anchor" href="#g20" aria-label="Permalink to this section" title="Permalink to this section">#</a></h2>
+      <h3 id="g20">Offline maps<a class="hdr-anchor" href="#g20" aria-label="Permalink to this section" title="Permalink to this section">#</a></h3>
       <p class="m-grp-sub">Download map tiles ahead of time so the map works without a network</p>
       <p>Tile cache plus the “offline tiles only” switch; the download area is exactly what you see on screen, entered from the map menu.</p>
       <div class="m-sub">

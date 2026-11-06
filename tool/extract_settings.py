@@ -83,17 +83,20 @@ SINGLE_FILES = [
     'lib/theme_page.dart',             # 主题
     'lib/backup_page.dart',            # 备份与恢复
     'lib/offline_map_page.dart',       # 离线地图
+    'lib/sync_cards.dart',             # 服务器 · 云同步（两张卡，没有自己的一页）
 ]
 
 # 没有 SettingsPageShell 的卡片文件：标题 / 副标题直接给 arb 键
 SHELL_FALLBACK = {
     'lib/acn_cards.dart': (('key', 'acnCardTitle'), ('key', 'acnCardSubtitle')),
+    'lib/sync_cards.dart': (('key', 'syncTitle'), (None, None)),
 }
 
 # 单页插到哪个分组页之后：两条互联网链路紧跟「服务器」一级页
 INSERT_AFTER = {
     'lib/aprs_is_cards.dart': 'ConnectionSettingsPage',
     'lib/acn_cards.dart': 'lib/aprs_is_cards.dart',
+    'lib/sync_cards.dart': 'lib/acn_cards.dart',
 }
 
 # 只读常量所在的文件：表格里出现的 k 开头常量要换成真值
@@ -112,7 +115,7 @@ CONFIG_FILES = [
 KNOWN = {
     'SettingsInput', 'SettingsSwitch', 'SettingsMiniSwitch', 'SettingsRow2',
     'SettingsNavRow', 'SettingsHint', 'SettingsFold', 'SettingsSectionCard',
-    'SettingsPageShell', 'SettingsLinkEntry',
+    'SettingsPageShell', 'SettingsLinkEntry', 'SettingsChoice',
 }
 BUTTONS = ('FilledButton', 'TextButton', 'OutlinedButton', 'ElevatedButton')
 
@@ -367,6 +370,34 @@ def lookup_default(field):
     return ('', '')
 
 
+def choice_opts(body):
+    """SettingsChoice 的选项文案 → (arb 键列表, 选项字面量列表)。
+
+    只认 `labelOf` 里那串 switch 分支；三元链与拿 $v 拼的文案不列选项 ——
+    宁可不列，也不把 `{v} 秒` 这种模板印进文档。标准写法是把 `_ =>` 放最后，
+    而它对应的是第一个选项，所以挪到最前。
+    """
+    frag = arg_of(body, 'labelOf') or ''
+    if 'switch' not in frag:
+        return [], []
+    keys = []
+    for m in re.finditer(r'S\.of\(context\)\.(\w+)|\bs\.(\w+)', frag):
+        k = m.group(1) or m.group(2)
+        if k not in keys:
+            keys.append(k)
+    md = re.search(r'_\s*=>\s*([^,}]+)', frag)
+    dk = arb_key(md.group(1)) if md else None
+    if dk and dk in keys:
+        keys = [dk] + [k for k in keys if k != dk]
+    ok = []
+    for k in keys:
+        v = ZH.get(k) or ''
+        if v and '{' not in v and '$' not in v:
+            ok.append(k)
+    lits = re.findall(r"'([^']*)'|(-?\d+)", arg_of(body, 'options') or '')
+    return ok, [a or b for a, b in lits]
+
+
 # ─────────────────────────── 控件扫描 ───────────────────────────
 def scan(src):
     """按出现顺序扫控件 → items（含 section / fold / hint / 按钮 action）。"""
@@ -415,7 +446,7 @@ def scan(src):
                 return False
         return False
 
-    for m in re.finditer(r'\b(Settings[A-Za-z0-9]+)\s*\(', src):
+    for m in re.finditer(r'\b(Settings[A-Za-z0-9]+)\s*(?:<[^<>()]*>)?\s*\(', src):
         if m.group(1) not in KNOWN:
             continue
         i = src.index('(', m.end() - 1)
@@ -487,7 +518,7 @@ def scan(src):
 
     # 按钮（清空聊天记录 / 保存并应用 …）
     for m in re.finditer(r'\b(' + '|'.join(BUTTONS) + r')\.?(?:icon)?\s*\(', src):
-        if not in_card(m.start()):
+        if not (in_card(m.start()) or in_card_helper(m.start())):
             continue
         i = src.index('(', m.end() - 1)
         j = match_paren(src, i)
@@ -548,6 +579,15 @@ def scan(src):
             parts = split_top(body)
             entry['label'] = label_of(parts[0])
             entry['exprs'] = [parts[1] if len(parts) > 1 else '']
+        elif kind == 'SettingsChoice':
+            parts = split_top(body)
+            entry['label'] = label_of(parts[0])
+            entry['exprs'] = [arg_of(body, 'value') or '',
+                              arg_of(body, 'onChanged') or '']
+            t = arg_of(body, 'tip')
+            if t:
+                entry['tip'] = label_of(t)
+            entry['opts'], entry['opt_values'] = choice_opts(body)
         elif kind == 'SettingsNavRow':
             entry['label'] = label_of(arg_of(body, 'title'))
             entry['sub'] = label_of(arg_of(body, 'subtitle'))
@@ -710,6 +750,11 @@ def assemble(raw_items, ctls):
         if fld.startswith('feature.'):
             dft, typ = 'true', ''      # 自选模块默认全开
         it['default'], it['type'] = dft, typ
+        if it['kind'] == 'SettingsChoice' and it.get('opt_values'):
+            # 默认那一档的文案（选项序号对得上就对，对不上就照原样印值）
+            vals = it['opt_values']
+            if it['default'] in vals and len(vals) == len(it.get('opts') or []):
+                it['def_key'] = it['opts'][vals.index(it['default'])]
         lab = it.get('label') or (None, None)
         if lab[0] == 'lit' and '$' in (lab[1] or ''):
             continue   # 运行时拼接的标签（'$name$badge'）不进文档
@@ -793,12 +838,21 @@ def build():
 
 
 def clean(s):
-    """arb 占位符（{n} / $name）在文档里没有意义，替换成省略号。"""
+    """arb 占位符（{n} / $name）在文档里没有意义，替换成省略号。
+
+    只剩占位符、或者去掉占位符就剩一个量词的（`{n} 条`），干脆留空：
+    印成「… 条」比不印更让人看不懂。
+    """
     if not s:
         return ''
+    filled = len(re.findall(r'\{[^}]*\}|\$[A-Za-z_]\w*', s))
     s = re.sub(r'\{[^}]*\}', '…', s)
-    s = re.sub(r'\$[A-Za-z_]\w*', '', s)
-    return s.strip()
+    s = re.sub(r'\$[A-Za-z_]\w*', '', s).strip()
+    if not re.search(r'[^\s…·/、，（）()\-—]', s):
+        return ''
+    if filled and len(re.findall(r'[\u4e00-\u9fffA-Za-z0-9]', s)) < 3:
+        return ''
+    return s
 
 
 def render(pages, lang):
@@ -827,6 +881,8 @@ def render(pages, lang):
                     'default': it.get('default') or '',
                     'type': it.get('type') or '',
                     'fold': L(it.get('fold')['title']) if it.get('fold') else '',
+                    'opts': [L(('key', k)) for k in (it.get('opts') or [])],
+                    'def_key': L(('key', it['def_key'])) if it.get('def_key') else '',
                 })
             o['sections'].append(so)
         out.append(o)

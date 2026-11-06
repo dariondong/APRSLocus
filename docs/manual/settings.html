@@ -165,20 +165,21 @@
         <a href="#g3">服务器</a>
         <a href="#g4">APRS-IS 服务器</a>
         <a href="#g5">APRSNETCN SERVER</a>
-        <a href="#g6">显示</a>
-        <a href="#g7">数据</a>
-        <a href="#g8">高级</a>
-        <a href="#g9">设备</a>
-        <a href="#g10">TNC 设备与参数</a>
-        <a href="#g11">WLAN 电台直连</a>
-        <a href="#g12">音频（声卡 TNC）</a>
-        <a href="#g13">PKWDWPL 设备</a>
-        <a href="#g14">外接 GPS</a>
-        <a href="#g15">功能</a>
-        <a href="#g16">翻译设置</a>
-        <a href="#g17">主题</a>
-        <a href="#g18">备份与恢复</a>
-        <a href="#g19">离线地图</a>
+        <a href="#g6">云同步</a>
+        <a href="#g7">显示</a>
+        <a href="#g8">数据</a>
+        <a href="#g9">高级</a>
+        <a href="#g10">设备</a>
+        <a href="#g11">TNC 设备与参数</a>
+        <a href="#g12">WLAN 电台直连</a>
+        <a href="#g13">音频（声卡 TNC）</a>
+        <a href="#g14">PKWDWPL 设备</a>
+        <a href="#g15">外接 GPS</a>
+        <a href="#g16">功能</a>
+        <a href="#g17">翻译设置</a>
+        <a href="#g18">主题</a>
+        <a href="#g19">备份与恢复</a>
+        <a href="#g20">离线地图</a>
     </nav>
     <div class="manual-body">
   <section class="chapter reveal" id="g0">
@@ -203,6 +204,7 @@
 <tr><td><b>导出 ADIF</b></td><td><span class="m-kind">直达入口</span></td><td class="m-def">—</td><td>会话导出为日志文件</td></tr>
 <tr><td><b>主题</b></td><td><span class="m-kind">直达入口</span></td><td class="m-def">—</td><td>自定义颜色、图标与文字</td></tr>
 <tr><td><b>历史轨迹</b></td><td><span class="m-kind">直达入口</span></td><td class="m-def">—</td><td>按天记录自己的速度与里程，保存在本机</td></tr>
+<tr><td><b>订阅</b></td><td><span class="m-kind">直达入口</span></td><td class="m-def">—</td><td></td></tr>
 <tr><td><b>备份与恢复</b></td><td><span class="m-kind">直达入口</span></td><td class="m-def">—</td><td>打包配置与数据为 JSON 文件</td></tr>
 <tr><td><b>赞助与鸣谢</b></td><td><span class="m-kind">直达入口</span></td><td class="m-def">—</td><td>名单与赞助方式（服务器与地图流量都靠它）</td></tr>
 <tr><td><b>关于</b></td><td><span class="m-kind">直达入口</span></td><td class="m-def">—</td><td></td></tr>
@@ -241,6 +243,15 @@
 <tr><td><b>我的位置</b></td><td><span class="m-kind">只读状态</span></td><td class="m-def">—</td><td></td></tr>
 </tbody></table></div>
       </div>
+      <div class="m-sub">
+        <h4>认证信息</h4>
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>设置项</th><th>控件</th><th>默认值</th><th>说明</th></tr></thead><tbody>
+<tr><td><b>证书类别</b></td><td><span class="m-kind">只读状态</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>呼号</b></td><td><span class="m-kind">只读状态</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>证书编号</b></td><td><span class="m-kind">只读状态</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>查询时间</b></td><td><span class="m-kind">只读状态</span></td><td class="m-def">—</td><td>验证自愿，不验证也能照常用。</td></tr>
+</tbody></table></div>
+      </div>
   </section>
   <section class="chapter reveal" id="g2">
     <h2 id="g2">定位上报<a class="hdr-anchor" href="#g2" aria-label="本节永久链接" title="本节永久链接">#</a></h2>
@@ -261,8 +272,15 @@
         <p class="m-grp-sub">选择定位方式</p>
         <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>设置项</th><th>控件</th><th>默认值</th><th>说明</th></tr></thead><tbody>
 <tr><td><b>纯 GPS<span class="m-opts">GPS + 网络 · 纯网络</span></b> <code class="m-field">locationMode</code></td><td><span class="m-kind">选项卡</span></td><td class="m-def"><code>gps_network</code></td><td>仅卫星定位，更省电 / GPS + 网络：网络仅作兜底（GPS 停更时），粗定位不写轨迹 / 纯网络：仅基站 / Wi-Fi，误差百米级；最省电，适合没有 GPS 的设备</td></tr>
+<tr><td><b>GPS 采样间隔</b> <code class="m-field">gpsIntervalSec</code></td><td><span class="m-kind">下拉选择</span></td><td class="m-def"><code>1</code></td><td>网络/基站定位误差常在几百米。为免地图上的「我」来回跳，只有 GPS 停更 5 分钟后才用它兜底；粗定位点不写进轨迹与历史，也不会触发自动上报。</td></tr>
 <tr><td><b>网络定位时的台站图标</b></td><td><span class="m-kind">入口</span></td><td class="m-def">—</td><td>纯网络定位的点可能偏几百米到几公里，换一个图标能让别人一眼看出「这是网络标的位」。默认跟随「我的符号」。</td></tr>
 <tr><td><b>外置 GPS 优先时手机 GPS 待机</b> <code class="m-field">extGpsStandby</code></td><td><span class="m-kind">开关</span></td><td class="m-def">开</td><td>外置 GPS（佳明 LiveTrack）在推数据时，停掉手机的定位以省电；外置失效时会自动切回手机 GPS，并在状态栏与日志里说明。关掉它也不会让位置变错——位置优先级本来就是「外置优先」。</td></tr>
+</tbody></table></div>
+      </div>
+      <div class="m-sub">
+        <h4>省电模式</h4>
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>设置项</th><th>控件</th><th>默认值</th><th>说明</th></tr></thead><tbody>
+<tr><td><b>省电模式</b> <code class="m-field">powerSave</code></td><td><span class="m-kind">开关</span></td><td class="m-def">关</td><td>GPS 每 30 秒取一次位置，地图上的台站动画停下。</td></tr>
 </tbody></table></div>
       </div>
       <div class="m-sub">
@@ -270,6 +288,8 @@
         <p class="m-grp-sub">上报开关、间隔与内容</p>
         <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>设置项</th><th>控件</th><th>默认值</th><th>说明</th></tr></thead><tbody>
 <tr><td><b>自动上报</b> <code class="m-field">beaconEnabled</code></td><td><span class="m-kind">开关</span></td><td class="m-def">开</td><td>经典＝一行（状态 + 立即上报）；详细＝多一行判据：当前档位、还差多少秒、距离打点还差多少米、转弯还差多少度，并每秒刷新一次。</td></tr>
+<tr><td><b>定位模糊<span class="m-opts">关 · 约 200 米 · 约 2 公里 · 约 20 公里</span></b> <code class="m-field">beaconAmbiguity</code></td><td><span class="m-kind">下拉选择</span></td><td class="m-def">关</td><td></td></tr>
+<tr><td><b>打开软件时<span class="m-opts">不做操作 · 自动连接 · 自动上报</span></b> <code class="m-field">autoStartMode</code></td><td><span class="m-kind">下拉选择</span></td><td class="m-def">不做操作</td><td></td></tr>
 <tr><td><b>纯网络上报间隔（秒）</b> <code class="m-field">beaconNetInterval</code></td><td><span class="m-kind">输入框</span></td><td class="m-def"><code>300</code></td><td>纯网络模式使用固定间隔；网络定位没有可靠速度，不使用智能信标（按速度 / 距离 / 转弯）</td></tr>
 <tr><td><b>上报间隔(秒)</b> <code class="m-field">beaconInterval</code></td><td><span class="m-kind">输入框</span></td><td class="m-def"><code>60</code></td><td>位置信标的发送间隔，至少 5 秒</td></tr>
 <tr><td><b>智能信标(按速度分档)</b> <code class="m-field">smartBeaconEnabled</code></td><td><span class="m-kind">开关</span></td><td class="m-def">关</td><td></td></tr>
@@ -280,6 +300,7 @@
 <tr><td><b>累计里程</b> <code class="m-field">beaconIncludeTotalMileage</code></td><td><span class="m-kind">小开关</span></td><td class="m-def">关</td><td></td></tr>
 <tr><td><b>步数</b> <code class="m-field">beaconIncludeSteps</code></td><td><span class="m-kind">小开关</span></td><td class="m-def">关</td><td></td></tr>
 <tr><td><b>卫星数</b> <code class="m-field">beaconIncludeSats</code></td><td><span class="m-kind">小开关</span></td><td class="m-def">关</td><td></td></tr>
+<tr><td><b>电脑 CPU 与内存占用</b> <code class="m-field">beaconIncludeDeskLoad</code></td><td><span class="m-kind">小开关</span></td><td class="m-def">关</td><td></td></tr>
 <tr><td><b>今日步数</b></td><td><span class="m-kind">只读状态</span></td><td class="m-def">—</td><td></td></tr>
 <tr><td><b>授予「身体活动」权限</b></td><td><span class="m-kind">按钮</span></td><td class="m-def">—</td><td></td></tr>
 <tr><td><b>当前卫星数</b></td><td><span class="m-kind">只读状态</span></td><td class="m-def">—</td><td>当前来源未提供卫星数：网络定位（基站 / Wi-Fi）本身没有卫星，部分 Android 机型 / 系统也不返回该数据。</td></tr>
@@ -297,6 +318,7 @@
         <div class="callout info"><span class="co-ic">ℹ️</span><div><p>还没有记录。</p></div></div>
         <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>设置项</th><th>控件</th><th>默认值</th><th>说明</th></tr></thead><tbody>
 <tr><td><b>清除同意日志</b></td><td><span class="m-kind">按钮</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>添加速度档</b></td><td><span class="m-kind">按钮</span></td><td class="m-def">—</td><td></td></tr>
 </tbody></table></div>
       </div>
   </section>
@@ -389,8 +411,32 @@
       </div>
   </section>
   <section class="chapter reveal" id="g6">
-    <h2 id="g6">显示<a class="hdr-anchor" href="#g6" aria-label="本节永久链接" title="本节永久链接">#</a></h2>
-      <h3 id="g6">显示<a class="hdr-anchor" href="#g6" aria-label="本节永久链接" title="本节永久链接">#</a></h3>
+    <h2 id="g6">云同步<a class="hdr-anchor" href="#g6" aria-label="本节永久链接" title="本节永久链接">#</a></h2>
+      <h3 id="g6">云同步<a class="hdr-anchor" href="#g6" aria-label="本节永久链接" title="本节永久链接">#</a></h3>
+      <div class="m-sub">
+        <p class="m-grp-sub">消息与历史轨迹存到服务器上，换设备再拉回来。</p>
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>设置项</th><th>控件</th><th>默认值</th><th>说明</th></tr></thead><tbody>
+<tr><td><b>服务器</b></td><td><span class="m-kind">只读状态</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>账号</b> <code class="m-field">syncAccount</code></td><td><span class="m-kind">输入框</span></td><td class="m-def">（空）</td><td>账号就是服务器接入名单里那条，与「APRSNETCN」链路页填的是同一个。</td></tr>
+<tr><td><b>同步方式</b> <code class="m-field">syncMode</code></td><td><span class="m-kind">下拉选择</span></td><td class="m-def"><code>off</code></td><td>连接是明文 HTTP，口令与内容不加密。</td></tr>
+<tr><td><b>口令</b></td><td><span class="m-kind">输入框</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>退出登录</b></td><td><span class="m-kind">按钮</span></td><td class="m-def">—</td><td></td></tr>
+</tbody></table></div>
+      </div>
+      <div class="m-sub">
+        <h4>云端数据</h4>
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>设置项</th><th>控件</th><th>默认值</th><th>说明</th></tr></thead><tbody>
+<tr><td><b>消息</b></td><td><span class="m-kind">只读状态</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>历史轨迹</b></td><td><span class="m-kind">只读状态</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>上次同步</b></td><td><span class="m-kind">只读状态</span></td><td class="m-def">—</td><td>云端备份在「备份与恢复」页里上传与取回。</td></tr>
+<tr><td><b>立即同步</b></td><td><span class="m-kind">按钮</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>清空云端数据</b></td><td><span class="m-kind">按钮</span></td><td class="m-def">—</td><td></td></tr>
+</tbody></table></div>
+      </div>
+  </section>
+  <section class="chapter reveal" id="g7">
+    <h2 id="g7">显示<a class="hdr-anchor" href="#g7" aria-label="本节永久链接" title="本节永久链接">#</a></h2>
+      <h3 id="g7">显示<a class="hdr-anchor" href="#g7" aria-label="本节永久链接" title="本节永久链接">#</a></h3>
       <p class="m-grp-sub">坐标 · 主题</p>
       <p>深色模式、天气组件、单位与网格在这里；地图类型与离线地图在地图菜单与对应子页。另有一个<b>公告横幅</b>开关（默认开）：横幅显示在主页／地图的顶部，内容取自官网的公告区，改官网就能发通知、不用等新版；断网时显示上次缓存的那份，不想看到可以关掉（关掉后不再联网）。想主动查看时，用<b>设置主页最底部</b>的「公告」按钮 —— 它随时可点，读的是同一份内容。</p>
       <div class="m-sub">
@@ -400,22 +446,27 @@
 <tr><td><b>深色模式</b> <code class="m-field">darkMode</code></td><td><span class="m-kind">开关</span></td><td class="m-def">关</td><td></td></tr>
 <tr><td><b>天气组件</b> <code class="m-field">weatherEnabled</code></td><td><span class="m-kind">开关</span></td><td class="m-def">开</td><td></td></tr>
 <tr><td><b>公告</b> <code class="m-field">noticeBanner</code></td><td><span class="m-kind">开关</span></td><td class="m-def">开</td><td>当前主题已固定主色，请到「主题」页修改</td></tr>
+<tr><td><b>关闭窗口时最小化到托盘</b> <code class="m-field">closeToTray</code></td><td><span class="m-kind">开关</span></td><td class="m-def">开</td><td></td></tr>
 <tr><td><b>单位</b></td><td><span class="m-kind">只读状态</span></td><td class="m-def">—</td><td></td></tr>
 <tr><td><b>网格</b></td><td><span class="m-kind">只读状态</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>经纬度格式<span class="m-opts">十进制度 · 度分 · 度分秒</span></b> <code class="m-field">coordFormat</code></td><td><span class="m-kind">下拉选择</span></td><td class="m-def">十进制度</td><td></td></tr>
 </tbody></table></div>
       </div>
       <div class="m-sub">
         <h4>地图</h4>
         <p class="m-grp-sub">地图类型与显示</p>
         <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>设置项</th><th>控件</th><th>默认值</th><th>说明</th></tr></thead><tbody>
+<tr><td><b>中心经纬度</b> <code class="m-field">mapCenterCoord</code></td><td><span class="m-kind">开关</span></td><td class="m-def">关</td><td></td></tr>
 <tr><td><b>始终显示地图标签</b> <code class="m-field">mapLabelsAlways</code></td><td><span class="m-kind">开关</span></td><td class="m-def">关</td><td>无论台站多少、缩放多小，都在地图上显示每个台站的呼号标签。</td></tr>
 <tr><td><b>离线地图</b></td><td><span class="m-kind">入口</span></td><td class="m-def">—</td><td>当前主题用了背景图：材质不再另画底色，只把顶栏与浮层做成磨砂。 / 把地图瓦片预先下载到本机，没有网络时也能看地图</td></tr>
+<tr><td><b>通知诊断</b></td><td><span class="m-kind">按钮</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>重新加载界面</b></td><td><span class="m-kind">按钮</span></td><td class="m-def">—</td><td></td></tr>
 </tbody></table></div>
       </div>
   </section>
-  <section class="chapter reveal" id="g7">
-    <h2 id="g7">数据<a class="hdr-anchor" href="#g7" aria-label="本节永久链接" title="本节永久链接">#</a></h2>
-      <h3 id="g7">数据<a class="hdr-anchor" href="#g7" aria-label="本节永久链接" title="本节永久链接">#</a></h3>
+  <section class="chapter reveal" id="g8">
+    <h2 id="g8">数据<a class="hdr-anchor" href="#g8" aria-label="本节永久链接" title="本节永久链接">#</a></h2>
+      <h3 id="g8">数据<a class="hdr-anchor" href="#g8" aria-label="本节永久链接" title="本节永久链接">#</a></h3>
       <p class="m-grp-sub">清除本地数据</p>
       <p>只读统计与破坏性操作分开摆：清聊天记录是单独按钮，「清除所有数据」会二次确认。</p>
       <div class="m-sub">
@@ -438,6 +489,8 @@
         <h4>清理过时台站</h4>
         <p class="m-grp-sub">按天数清理长期没再听到的台站，只留下还有用的</p>
         <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>设置项</th><th>控件</th><th>默认值</th><th>说明</th></tr></thead><tbody>
+<tr><td><b>台站保留天数</b> <code class="m-field">stationRetentionDays</code></td><td><span class="m-kind">下拉选择</span></td><td class="m-def"><code>0</code></td><td>超过这个天数没再听到的台站，会在启动时自动清理。0 = 关闭自动清理（仍可手动清理）。收藏 / 手动添加 / 你自己的台站永不清理。</td></tr>
+<tr><td><b>清理多少天前的台站</b></td><td><span class="m-kind">下拉选择</span></td><td class="m-def">—</td><td>手动清理使用的天数，与上面的自动清理保留天数<b>相互独立</b> —— 选几天就只清掉「这么多天没再听到」的普通台站。</td></tr>
 <tr><td><b>请先选择天数</b></td><td><span class="m-kind">按钮</span></td><td class="m-def">—</td><td></td></tr>
 </tbody></table></div>
       </div>
@@ -470,9 +523,9 @@
 </tbody></table></div>
       </div>
   </section>
-  <section class="chapter reveal" id="g8">
-    <h2 id="g8">高级<a class="hdr-anchor" href="#g8" aria-label="本节永久链接" title="本节永久链接">#</a></h2>
-      <h3 id="g8">高级<a class="hdr-anchor" href="#g8" aria-label="本节永久链接" title="本节永久链接">#</a></h3>
+  <section class="chapter reveal" id="g9">
+    <h2 id="g9">高级<a class="hdr-anchor" href="#g9" aria-label="本节永久链接" title="本节永久链接">#</a></h2>
+      <h3 id="g9">高级<a class="hdr-anchor" href="#g9" aria-label="本节永久链接" title="本节永久链接">#</a></h3>
       <p class="m-grp-sub">实验室 · 开发者</p>
       <p>横屏开关、演示数据（模拟台站/数据包）、收发计数与重新运行向导都在这里。</p>
       <div class="m-sub">
@@ -484,13 +537,14 @@
 <tr><td><b>收包 / 发包</b></td><td><span class="m-kind">只读状态</span></td><td class="m-def">—</td><td></td></tr>
 <tr><td><b>台站数量</b></td><td><span class="m-kind">只读状态</span></td><td class="m-def">—</td><td></td></tr>
 <tr><td><b>连接</b></td><td><span class="m-kind">只读状态</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>操作证验证</b></td><td><span class="m-kind">入口</span></td><td class="m-def">—</td><td></td></tr>
 </tbody></table></div>
       </div>
   </section>
-  <section class="chapter reveal" id="g9">
-    <h2 id="g9">设备<a class="hdr-anchor" href="#g9" aria-label="本节永久链接" title="本节永久链接">#</a></h2>
-      <h3 id="g9">设备<a class="hdr-anchor" href="#g9" aria-label="本节永久链接" title="本节永久链接">#</a></h3>
-      <p class="m-grp-sub">数据来源、链路状态与自检</p>
+  <section class="chapter reveal" id="g10">
+    <h2 id="g10">设备<a class="hdr-anchor" href="#g10" aria-label="本节永久链接" title="本节永久链接">#</a></h2>
+      <h3 id="g10">设备<a class="hdr-anchor" href="#g10" aria-label="本节永久链接" title="本节永久链接">#</a></h3>
+      <p class="m-grp-sub">逐层确认协议、权限、设备到底哪一环有问题</p>
       <p>设备总览 = 当前链路 + 网关状态 + 四个子页入口（TNC / WLAN 电台 / 音频 / PKWDWPL）+ 链路自检与日志。</p>
       <div class="m-sub">
         <h4>网关（iGate）</h4>
@@ -509,11 +563,9 @@
       </div>
       <div class="m-sub">
         <h4>当前链路</h4>
-        <p class="m-grp-sub">只读摘要 · 改参数请进对应子页</p>
       </div>
       <div class="m-sub">
         <h4>设备与参数</h4>
-        <p class="m-grp-sub">每条链路一个子页，各管各的参数</p>
         <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>设置项</th><th>控件</th><th>默认值</th><th>说明</th></tr></thead><tbody>
 <tr><td><b>TNC 设备与参数</b></td><td><span class="m-kind">选项卡</span></td><td class="m-def">—</td><td>蓝牙/串口绑定、初始化串、KISS 参数与发射自检</td></tr>
 <tr><td><b>WLAN 电台直连</b> <code class="m-field">source</code></td><td><span class="m-kind">选项卡</span></td><td class="m-def"><code>AudioSource.device</code></td><td>已连接</td></tr>
@@ -526,9 +578,9 @@
 </tbody></table></div>
       </div>
   </section>
-  <section class="chapter reveal" id="g10">
-    <h2 id="g10">TNC 设备与参数<a class="hdr-anchor" href="#g10" aria-label="本节永久链接" title="本节永久链接">#</a></h2>
-      <h3 id="g10">TNC 设备与参数<a class="hdr-anchor" href="#g10" aria-label="本节永久链接" title="本节永久链接">#</a></h3>
+  <section class="chapter reveal" id="g11">
+    <h2 id="g11">TNC 设备与参数<a class="hdr-anchor" href="#g11" aria-label="本节永久链接" title="本节永久链接">#</a></h2>
+      <h3 id="g11">TNC 设备与参数<a class="hdr-anchor" href="#g11" aria-label="本节永久链接" title="本节永久链接">#</a></h3>
       <p class="m-grp-sub">蓝牙/串口绑定、初始化串、KISS 参数与发射自检</p>
       <p>接蓝牙/USB TNC 的全部参数：绑定、初始化串、线速、KISS 定时参数、中继路径、发射自检。</p>
       <div class="m-sub">
@@ -595,9 +647,9 @@
 </tbody></table></div>
       </div>
   </section>
-  <section class="chapter reveal" id="g11">
-    <h2 id="g11">WLAN 电台直连<a class="hdr-anchor" href="#g11" aria-label="本节永久链接" title="本节永久链接">#</a></h2>
-      <h3 id="g11">WLAN 电台直连<a class="hdr-anchor" href="#g11" aria-label="本节永久链接" title="本节永久链接">#</a></h3>
+  <section class="chapter reveal" id="g12">
+    <h2 id="g12">WLAN 电台直连<a class="hdr-anchor" href="#g12" aria-label="本节永久链接" title="本节永久链接">#</a></h2>
+      <h3 id="g12">WLAN 电台直连<a class="hdr-anchor" href="#g12" aria-label="本节永久链接" title="本节永久链接">#</a></h3>
       <p class="m-grp-sub">局域网直连 Icom 电台（IC-705 / IC-9700 / IC-7610 / IC-905），收发 12 kHz PCM 音频与 CI-V 控制</p>
       <p>局域网直连 Icom 电台（IC-705 / IC-9700 / IC-7610 / IC-905 等）：电台 IP/控制端口、Network User 认证、CI-V 地址与导前延时（TX Delay）、射频中继路径（如 WIDE1-1,WIDE2-1）、收发 12 kHz PCM 音频。</p>
       <div class="m-sub">
@@ -626,6 +678,7 @@
         <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>设置项</th><th>控件</th><th>默认值</th><th>说明</th></tr></thead><tbody>
 <tr><td><b>允许射频信标</b> <code class="m-field">rfBeacon</code></td><td><span class="m-kind">开关</span></td><td class="m-def">关</td><td>是否允许通过电台射频自动周期发射信标（半双工，发射时自动静默监听）。</td></tr>
 <tr><td><b>发射前导延迟 (TX Delay, ms)</b> <code class="m-field">txDelayMs</code></td><td><span class="m-kind">输入框</span></td><td class="m-def"><code>300</code></td><td>KISS TXDELAY，单位 10ms。发射前留给自己 PTT 建立的时间</td></tr>
+<tr><td><b>发射后置延迟 (Post TX Delay, ms)</b></td><td><span class="m-kind">输入框</span></td><td class="m-def">—</td><td></td></tr>
 <tr><td><b>电台 CI-V 地址 (十六进制)</b></td><td><span class="m-kind">输入框</span></td><td class="m-def">—</td><td></td></tr>
 <tr><td><b>射频中继路径</b> <code class="m-field">path</code></td><td><span class="m-kind">输入框</span></td><td class="m-def"><code>WIDE1-1,WIDE2-1</code></td><td>射频上使用的中继，如 WIDE1-1,WIDE2-1；留空则不指定</td></tr>
 <tr><td><b>控制器地址</b></td><td><span class="m-kind">只读状态</span></td><td class="m-def">—</td><td></td></tr>
@@ -642,9 +695,9 @@
 </tbody></table></div>
       </div>
   </section>
-  <section class="chapter reveal" id="g12">
-    <h2 id="g12">音频（声卡 TNC）<a class="hdr-anchor" href="#g12" aria-label="本节永久链接" title="本节永久链接">#</a></h2>
-      <h3 id="g12">音频（声卡 TNC）<a class="hdr-anchor" href="#g12" aria-label="本节永久链接" title="本节永久链接">#</a></h3>
+  <section class="chapter reveal" id="g13">
+    <h2 id="g13">音频（声卡 TNC）<a class="hdr-anchor" href="#g13" aria-label="本节永久链接" title="本节永久链接">#</a></h2>
+      <h3 id="g13">音频（声卡 TNC）<a class="hdr-anchor" href="#g13" aria-label="本节永久链接" title="本节永久链接">#</a></h3>
       <p class="m-grp-sub">用声卡收发 AFSK 1200 报文</p>
       <p>把声卡当 TNC：采样率/比特率/音调、发射电平与 CSMA 等待、WAV 文件模式（离线解码录音）。</p>
       <div class="m-sub">
@@ -660,7 +713,7 @@
 <tr><td><b>连接<span class="m-opts">停止采集 · 重启音频链路</span></b></td><td><span class="m-kind">只读状态</span></td><td class="m-def">—</td><td>已连接</td></tr>
 <tr><td><b>发射来源</b></td><td><span class="m-kind">只读状态</span></td><td class="m-def">—</td><td>音频链路已连上，但当前发射来源不是它 —— 消息与信标会从「…」发出。需要从音频发射时，去「设置 → 设备」把音频选为发射来源。</td></tr>
 <tr><td><b>解调锁定</b></td><td><span class="m-kind">只读状态</span></td><td class="m-def">—</td><td>解码中止 … 次（噪声/失步）</td></tr>
-<tr><td><b>收 … 帧</b></td><td><span class="m-kind">只读状态</span></td><td class="m-def">—</td><td>当前平台不支持实时音频（可用 WAV 文件模式）</td></tr>
+<tr><td><b></b></td><td><span class="m-kind">只读状态</span></td><td class="m-def">—</td><td>当前平台不支持实时音频（可用 WAV 文件模式）</td></tr>
 </tbody></table></div>
       </div>
       <div class="m-sub">
@@ -706,9 +759,9 @@
         <div class="callout info"><span class="co-ic">ℹ️</span><div><p>暂无日志</p></div></div>
       </div>
   </section>
-  <section class="chapter reveal" id="g13">
-    <h2 id="g13">PKWDWPL 设备<a class="hdr-anchor" href="#g13" aria-label="本节永久链接" title="本节永久链接">#</a></h2>
-      <h3 id="g13">PKWDWPL 设备<a class="hdr-anchor" href="#g13" aria-label="本节永久链接" title="本节永久链接">#</a></h3>
+  <section class="chapter reveal" id="g14">
+    <h2 id="g14">PKWDWPL 设备<a class="hdr-anchor" href="#g14" aria-label="本节永久链接" title="本节永久链接">#</a></h2>
+      <h3 id="g14">PKWDWPL 设备<a class="hdr-anchor" href="#g14" aria-label="本节永久链接" title="本节永久链接">#</a></h3>
       <p class="m-grp-sub">绑定电台端口 · 查看航点接收状态</p>
       <p>Kenwood 航点只读链路：绑定与状态、收到的航点计数、严格校验和（默认关，只标注不丢弃）。</p>
       <div class="m-sub">
@@ -737,9 +790,9 @@
 </tbody></table></div>
       </div>
   </section>
-  <section class="chapter reveal" id="g14">
-    <h2 id="g14">外接 GPS<a class="hdr-anchor" href="#g14" aria-label="本节永久链接" title="本节永久链接">#</a></h2>
-      <h3 id="g14">外接 GPS<a class="hdr-anchor" href="#g14" aria-label="本节永久链接" title="本节永久链接">#</a></h3>
+  <section class="chapter reveal" id="g15">
+    <h2 id="g15">外接 GPS<a class="hdr-anchor" href="#g15" aria-label="本节永久链接" title="本节永久链接">#</a></h2>
+      <h3 id="g15">外接 GPS<a class="hdr-anchor" href="#g15" aria-label="本节永久链接" title="本节永久链接">#</a></h3>
       <p class="m-grp-sub">蓝牙 SPP / 串口上的 NMEA 0183 位置来源</p>
       <p>外接 GPS 是一台蓝牙 NMEA 模块。它在上报位置时优先，手机定位可以待机省电；模块掉线会自动回到手机 GPS。</p>
       <div class="m-sub">
@@ -786,9 +839,9 @@
 </tbody></table></div>
       </div>
   </section>
-  <section class="chapter reveal" id="g15">
-    <h2 id="g15">功能<a class="hdr-anchor" href="#g15" aria-label="本节永久链接" title="本节永久链接">#</a></h2>
-      <h3 id="g15">功能<a class="hdr-anchor" href="#g15" aria-label="本节永久链接" title="本节永久链接">#</a></h3>
+  <section class="chapter reveal" id="g16">
+    <h2 id="g16">功能<a class="hdr-anchor" href="#g16" aria-label="本节永久链接" title="本节永久链接">#</a></h2>
+      <h3 id="g16">功能<a class="hdr-anchor" href="#g16" aria-label="本节永久链接" title="本节永久链接">#</a></h3>
       <p class="m-grp-sub">自选模块与精简模式</p>
       <p>上半是精简模式，下半是模块开关。精简模式只换界面，你关过的模块原样保留；关掉某个模块，它在设置里那个入口就不再出现。</p>
       <div class="m-sub">
@@ -811,9 +864,9 @@
 </tbody></table></div>
       </div>
   </section>
-  <section class="chapter reveal" id="g16">
-    <h2 id="g16">翻译设置<a class="hdr-anchor" href="#g16" aria-label="本节永久链接" title="本节永久链接">#</a></h2>
-      <h3 id="g16">翻译设置<a class="hdr-anchor" href="#g16" aria-label="本节永久链接" title="本节永久链接">#</a></h3>
+  <section class="chapter reveal" id="g17">
+    <h2 id="g17">翻译设置<a class="hdr-anchor" href="#g17" aria-label="本节永久链接" title="本节永久链接">#</a></h2>
+      <h3 id="g17">翻译设置<a class="hdr-anchor" href="#g17" aria-label="本节永久链接" title="本节永久链接">#</a></h3>
       <p class="m-grp-sub">翻译接口、语言与自动翻译</p>
       <p>目标语言、引擎（默认 auto 免密钥）、各引擎的密钥/实例地址、测试翻译。</p>
       <div class="m-sub">
@@ -851,9 +904,9 @@
 </tbody></table></div>
       </div>
   </section>
-  <section class="chapter reveal" id="g17">
-    <h2 id="g17">主题<a class="hdr-anchor" href="#g17" aria-label="本节永久链接" title="本节永久链接">#</a></h2>
-      <h3 id="g17">主题<a class="hdr-anchor" href="#g17" aria-label="本节永久链接" title="本节永久链接">#</a></h3>
+  <section class="chapter reveal" id="g18">
+    <h2 id="g18">主题<a class="hdr-anchor" href="#g18" aria-label="本节永久链接" title="本节永久链接">#</a></h2>
+      <h3 id="g18">主题<a class="hdr-anchor" href="#g18" aria-label="本节永久链接" title="本节永久链接">#</a></h3>
       <p class="m-grp-sub">把界面配色、图标与常用文案改成你自己的</p>
       <p>颜色 / 图标 / 文字 / 背景图四大块，改完可导出 JSON 分享；预设皮肤可一键切换。</p>
       <div class="m-sub">
@@ -939,9 +992,9 @@
         <div class="callout info"><span class="co-ic">ℹ️</span><div><p>预设主题不可修改，复制为我的主题后即可自由编辑</p></div></div>
       </div>
   </section>
-  <section class="chapter reveal" id="g18">
-    <h2 id="g18">备份与恢复<a class="hdr-anchor" href="#g18" aria-label="本节永久链接" title="本节永久链接">#</a></h2>
-      <h3 id="g18">备份与恢复<a class="hdr-anchor" href="#g18" aria-label="本节永久链接" title="本节永久链接">#</a></h3>
+  <section class="chapter reveal" id="g19">
+    <h2 id="g19">备份与恢复<a class="hdr-anchor" href="#g19" aria-label="本节永久链接" title="本节永久链接">#</a></h2>
+      <h3 id="g19">备份与恢复<a class="hdr-anchor" href="#g19" aria-label="本节永久链接" title="本节永久链接">#</a></h3>
       <p class="m-grp-sub">导出或导入配置与数据</p>
       <p>一个 JSON 装下设置与数据；白名单导入防来路不明的文件改配置；导入后需重启生效。</p>
       <div class="m-sub">
@@ -969,10 +1022,20 @@
 <tr><td><b>从剪贴板粘贴</b></td><td><span class="m-kind">按钮</span></td><td class="m-def">—</td><td></td></tr>
 </tbody></table></div>
       </div>
+      <div class="m-sub">
+        <h4>云端备份</h4>
+        <p class="m-grp-sub">先登录</p>
+        <div class="callout info"><span class="co-ic">ℹ️</span><div><p>云端备份不带历史轨迹，轨迹在「云同步」里单独存。</p></div></div>
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>设置项</th><th>控件</th><th>默认值</th><th>说明</th></tr></thead><tbody>
+<tr><td><b>存到云端</b></td><td><span class="m-kind">按钮</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>从云端取回</b></td><td><span class="m-kind">按钮</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>导入所选</b></td><td><span class="m-kind">按钮</span></td><td class="m-def">—</td><td></td></tr>
+</tbody></table></div>
+      </div>
   </section>
-  <section class="chapter reveal" id="g19">
-    <h2 id="g19">离线地图<a class="hdr-anchor" href="#g19" aria-label="本节永久链接" title="本节永久链接">#</a></h2>
-      <h3 id="g19">离线地图<a class="hdr-anchor" href="#g19" aria-label="本节永久链接" title="本节永久链接">#</a></h3>
+  <section class="chapter reveal" id="g20">
+    <h2 id="g20">离线地图<a class="hdr-anchor" href="#g20" aria-label="本节永久链接" title="本节永久链接">#</a></h2>
+      <h3 id="g20">离线地图<a class="hdr-anchor" href="#g20" aria-label="本节永久链接" title="本节永久链接">#</a></h3>
       <p class="m-grp-sub">把地图瓦片预先下载到本机，没有网络时也能看地图</p>
       <p>瓦片缓存与「仅使用离线瓦片」开关；下载范围 = 当前所见那一屏，入口在地图菜单。</p>
       <div class="m-sub">

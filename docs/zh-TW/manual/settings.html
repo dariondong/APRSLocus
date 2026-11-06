@@ -165,20 +165,21 @@
         <a href="#g3">伺服器</a>
         <a href="#g4">APRS-IS 伺服器</a>
         <a href="#g5">APRSNETCN SERVER</a>
-        <a href="#g6">顯示</a>
-        <a href="#g7">資料</a>
-        <a href="#g8">高階</a>
-        <a href="#g9">裝置</a>
-        <a href="#g10">TNC 裝置與參數</a>
-        <a href="#g11">WLAN 電台直連</a>
-        <a href="#g12">音訊（音效卡 TNC）</a>
-        <a href="#g13">PKWDWPL 裝置</a>
-        <a href="#g14">外接 GPS</a>
-        <a href="#g15">功能</a>
-        <a href="#g16">翻譯設定</a>
-        <a href="#g17">主題</a>
-        <a href="#g18">備份與還原</a>
-        <a href="#g19">離線地圖</a>
+        <a href="#g6">雲端同步</a>
+        <a href="#g7">顯示</a>
+        <a href="#g8">資料</a>
+        <a href="#g9">高階</a>
+        <a href="#g10">裝置</a>
+        <a href="#g11">TNC 裝置與參數</a>
+        <a href="#g12">WLAN 電台直連</a>
+        <a href="#g13">音訊（音效卡 TNC）</a>
+        <a href="#g14">PKWDWPL 裝置</a>
+        <a href="#g15">外接 GPS</a>
+        <a href="#g16">功能</a>
+        <a href="#g17">翻譯設定</a>
+        <a href="#g18">主題</a>
+        <a href="#g19">備份與還原</a>
+        <a href="#g20">離線地圖</a>
     </nav>
     <div class="manual-body">
   <section class="chapter reveal" id="g0">
@@ -203,6 +204,7 @@
 <tr><td><b>匯出 ADIF</b></td><td><span class="m-kind">直達入口</span></td><td class="m-def">—</td><td>會話匯出為日誌檔案</td></tr>
 <tr><td><b>主題</b></td><td><span class="m-kind">直達入口</span></td><td class="m-def">—</td><td>自訂顏色、圖示與文字</td></tr>
 <tr><td><b>歷史軌跡</b></td><td><span class="m-kind">直達入口</span></td><td class="m-def">—</td><td>按天記錄自己的速度與里程，儲存在本機</td></tr>
+<tr><td><b>訂閱</b></td><td><span class="m-kind">直達入口</span></td><td class="m-def">—</td><td></td></tr>
 <tr><td><b>備份與還原</b></td><td><span class="m-kind">直達入口</span></td><td class="m-def">—</td><td>打包設定與資料為 JSON 檔</td></tr>
 <tr><td><b>贊助與鳴謝</b></td><td><span class="m-kind">直達入口</span></td><td class="m-def">—</td><td>名單與贊助方式（伺服器與地圖流量都靠它）</td></tr>
 <tr><td><b>關於</b></td><td><span class="m-kind">直達入口</span></td><td class="m-def">—</td><td></td></tr>
@@ -241,6 +243,15 @@
 <tr><td><b>我的位置</b></td><td><span class="m-kind">唯讀狀態</span></td><td class="m-def">—</td><td></td></tr>
 </tbody></table></div>
       </div>
+      <div class="m-sub">
+        <h4>認證資訊</h4>
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>設定項</th><th>控件</th><th>預設值</th><th>說明</th></tr></thead><tbody>
+<tr><td><b>證書類別</b></td><td><span class="m-kind">唯讀狀態</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>呼號</b></td><td><span class="m-kind">唯讀狀態</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>證書編號</b></td><td><span class="m-kind">唯讀狀態</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>查詢時間</b></td><td><span class="m-kind">唯讀狀態</span></td><td class="m-def">—</td><td>驗證自願，不驗證也能照常用。</td></tr>
+</tbody></table></div>
+      </div>
   </section>
   <section class="chapter reveal" id="g2">
     <h2 id="g2">定位上報<a class="hdr-anchor" href="#g2" aria-label="本節永久連結" title="本節永久連結">#</a></h2>
@@ -261,8 +272,15 @@
         <p class="m-grp-sub">選擇定位方式</p>
         <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>設定項</th><th>控件</th><th>預設值</th><th>說明</th></tr></thead><tbody>
 <tr><td><b>純 GPS<span class="m-opts">GPS + 網路 · 純網路</span></b> <code class="m-field">locationMode</code></td><td><span class="m-kind">選項卡</span></td><td class="m-def"><code>gps_network</code></td><td>僅衛星定位，更省電 / GPS + 網路：網路僅作兜底（GPS 停更時），粗定位不寫軌跡 / 純網路：僅基地台 / Wi-Fi，誤差百公尺級；最省電，適合沒有 GPS 的裝置</td></tr>
+<tr><td><b>GPS 取樣間隔</b> <code class="m-field">gpsIntervalSec</code></td><td><span class="m-kind">下拉選單</span></td><td class="m-def"><code>1</code></td><td>網路/基地台定位誤差常在幾百公尺。為免地圖上的「我」來回跳，只有 GPS 停更 5 分鐘後才用它兜底；粗定位點不寫進軌跡與歷史，也不會觸發自動上報。</td></tr>
 <tr><td><b>網路定位時的臺站圖示</b></td><td><span class="m-kind">入口</span></td><td class="m-def">—</td><td>純網路定位的點可能偏幾百公尺到幾公里，換一個圖示能讓別人一眼看出「這是網路標的位」。預設跟隨「我的符號」。</td></tr>
 <tr><td><b>外接 GPS 優先時手機 GPS 待機</b> <code class="m-field">extGpsStandby</code></td><td><span class="m-kind">開關</span></td><td class="m-def">開</td><td>外接 GPS（Garmin LiveTrack）推送資料時，停掉手機的定位以省電；外接失效時會自動切回手機 GPS，並在狀態列與日誌中說明。關掉它也不會讓位置變錯——位置優先順序本來就是「外接優先」。</td></tr>
+</tbody></table></div>
+      </div>
+      <div class="m-sub">
+        <h4>省電模式</h4>
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>設定項</th><th>控件</th><th>預設值</th><th>說明</th></tr></thead><tbody>
+<tr><td><b>省電模式</b> <code class="m-field">powerSave</code></td><td><span class="m-kind">開關</span></td><td class="m-def">關</td><td>GPS 每 30 秒取一次位置，地圖上的臺站動畫停下。</td></tr>
 </tbody></table></div>
       </div>
       <div class="m-sub">
@@ -270,6 +288,8 @@
         <p class="m-grp-sub">上報開關、間隔與內容</p>
         <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>設定項</th><th>控件</th><th>預設值</th><th>說明</th></tr></thead><tbody>
 <tr><td><b>自動上報</b> <code class="m-field">beaconEnabled</code></td><td><span class="m-kind">開關</span></td><td class="m-def">開</td><td>經典＝一行（狀態 + 立即上報）；詳細＝多一行判據：目前檔位、還差多少秒、距離打點還差多少公尺、轉彎還差多少度，並每秒更新一次。</td></tr>
+<tr><td><b>定位模糊<span class="m-opts">關 · 約 200 公尺 · 約 2 公里 · 約 20 公里</span></b> <code class="m-field">beaconAmbiguity</code></td><td><span class="m-kind">下拉選單</span></td><td class="m-def">關</td><td></td></tr>
+<tr><td><b>打開軟體時<span class="m-opts">不做操作 · 自動連線 · 自動上報</span></b> <code class="m-field">autoStartMode</code></td><td><span class="m-kind">下拉選單</span></td><td class="m-def">不做操作</td><td></td></tr>
 <tr><td><b>純網路上報間隔（秒）</b> <code class="m-field">beaconNetInterval</code></td><td><span class="m-kind">輸入框</span></td><td class="m-def"><code>300</code></td><td>純網路模式使用固定間隔；網路定位沒有可靠速度，不使用智慧信標（依速度 / 距離 / 轉彎）</td></tr>
 <tr><td><b>上報間隔(秒)</b> <code class="m-field">beaconInterval</code></td><td><span class="m-kind">輸入框</span></td><td class="m-def"><code>60</code></td><td>位置信標的傳送間隔，至少 5 秒</td></tr>
 <tr><td><b>智慧信標(依速度分檔)</b> <code class="m-field">smartBeaconEnabled</code></td><td><span class="m-kind">開關</span></td><td class="m-def">關</td><td></td></tr>
@@ -280,6 +300,7 @@
 <tr><td><b>累計里程</b> <code class="m-field">beaconIncludeTotalMileage</code></td><td><span class="m-kind">小開關</span></td><td class="m-def">關</td><td></td></tr>
 <tr><td><b>步數</b> <code class="m-field">beaconIncludeSteps</code></td><td><span class="m-kind">小開關</span></td><td class="m-def">關</td><td></td></tr>
 <tr><td><b>衛星數</b> <code class="m-field">beaconIncludeSats</code></td><td><span class="m-kind">小開關</span></td><td class="m-def">關</td><td></td></tr>
+<tr><td><b>電腦 CPU 與記憶體佔用</b> <code class="m-field">beaconIncludeDeskLoad</code></td><td><span class="m-kind">小開關</span></td><td class="m-def">關</td><td></td></tr>
 <tr><td><b>今日步數</b></td><td><span class="m-kind">唯讀狀態</span></td><td class="m-def">—</td><td></td></tr>
 <tr><td><b>授予「身體活動」權限</b></td><td><span class="m-kind">按鈕</span></td><td class="m-def">—</td><td></td></tr>
 <tr><td><b>目前衛星數</b></td><td><span class="m-kind">唯讀狀態</span></td><td class="m-def">—</td><td>目前來源未提供衛星數：網路定位（基地台 / Wi-Fi）本身沒有衛星，部分 Android 機型 / 系統也不返回該資料。</td></tr>
@@ -297,6 +318,7 @@
         <div class="callout info"><span class="co-ic">ℹ️</span><div><p>還沒有記錄。</p></div></div>
         <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>設定項</th><th>控件</th><th>預設值</th><th>說明</th></tr></thead><tbody>
 <tr><td><b>清除同意日誌</b></td><td><span class="m-kind">按鈕</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>新增速度檔</b></td><td><span class="m-kind">按鈕</span></td><td class="m-def">—</td><td></td></tr>
 </tbody></table></div>
       </div>
   </section>
@@ -389,8 +411,32 @@
       </div>
   </section>
   <section class="chapter reveal" id="g6">
-    <h2 id="g6">顯示<a class="hdr-anchor" href="#g6" aria-label="本節永久連結" title="本節永久連結">#</a></h2>
-      <h3 id="g6">顯示<a class="hdr-anchor" href="#g6" aria-label="本節永久連結" title="本節永久連結">#</a></h3>
+    <h2 id="g6">雲端同步<a class="hdr-anchor" href="#g6" aria-label="本節永久連結" title="本節永久連結">#</a></h2>
+      <h3 id="g6">雲端同步<a class="hdr-anchor" href="#g6" aria-label="本節永久連結" title="本節永久連結">#</a></h3>
+      <div class="m-sub">
+        <p class="m-grp-sub">訊息與歷史軌跡存到伺服器上，換裝置再拉回來。</p>
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>設定項</th><th>控件</th><th>預設值</th><th>說明</th></tr></thead><tbody>
+<tr><td><b>伺服器</b></td><td><span class="m-kind">唯讀狀態</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>帳號</b> <code class="m-field">syncAccount</code></td><td><span class="m-kind">輸入框</span></td><td class="m-def">（空）</td><td>帳號就是伺服器接入名單裡那條，與「APRSNETCN」鏈路頁填的是同一個。</td></tr>
+<tr><td><b>同步方式</b> <code class="m-field">syncMode</code></td><td><span class="m-kind">下拉選單</span></td><td class="m-def"><code>off</code></td><td>連線是明文 HTTP，口令與內容不加密。</td></tr>
+<tr><td><b>口令</b></td><td><span class="m-kind">輸入框</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>登出</b></td><td><span class="m-kind">按鈕</span></td><td class="m-def">—</td><td></td></tr>
+</tbody></table></div>
+      </div>
+      <div class="m-sub">
+        <h4>雲端資料</h4>
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>設定項</th><th>控件</th><th>預設值</th><th>說明</th></tr></thead><tbody>
+<tr><td><b>訊息</b></td><td><span class="m-kind">唯讀狀態</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>歷史軌跡</b></td><td><span class="m-kind">唯讀狀態</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>上次同步</b></td><td><span class="m-kind">唯讀狀態</span></td><td class="m-def">—</td><td>雲端備份在「備份與還原」頁裡上傳與取回。</td></tr>
+<tr><td><b>立即同步</b></td><td><span class="m-kind">按鈕</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>清空雲端資料</b></td><td><span class="m-kind">按鈕</span></td><td class="m-def">—</td><td></td></tr>
+</tbody></table></div>
+      </div>
+  </section>
+  <section class="chapter reveal" id="g7">
+    <h2 id="g7">顯示<a class="hdr-anchor" href="#g7" aria-label="本節永久連結" title="本節永久連結">#</a></h2>
+      <h3 id="g7">顯示<a class="hdr-anchor" href="#g7" aria-label="本節永久連結" title="本節永久連結">#</a></h3>
       <p class="m-grp-sub">座標 · 主題</p>
       <p>深色模式、天氣小組件、單位與網格在這裡；地圖類型與離線地圖在地圖選單與對應子頁。另有一個<b>公告橫幅</b>開關（預設開）：橫幅顯示在首頁／地圖的頂部，內容取自官網的公告區，改官網就能發通知、不用等新版；斷網時顯示上次快取的那份，不想看到可以關掉（關掉後不再連網）。想主動查看時，用<b>設定首頁最底部</b>的「公告」按鈕 —— 它隨時可點，讀的是同一份內容。</p>
       <div class="m-sub">
@@ -400,22 +446,27 @@
 <tr><td><b>深色模式</b> <code class="m-field">darkMode</code></td><td><span class="m-kind">開關</span></td><td class="m-def">關</td><td></td></tr>
 <tr><td><b>天氣元件</b> <code class="m-field">weatherEnabled</code></td><td><span class="m-kind">開關</span></td><td class="m-def">開</td><td></td></tr>
 <tr><td><b>公告</b> <code class="m-field">noticeBanner</code></td><td><span class="m-kind">開關</span></td><td class="m-def">開</td><td>目前主題已固定主色，請到「主題」頁修改</td></tr>
+<tr><td><b>關閉視窗時最小化到系統匣</b> <code class="m-field">closeToTray</code></td><td><span class="m-kind">開關</span></td><td class="m-def">開</td><td></td></tr>
 <tr><td><b>單位</b></td><td><span class="m-kind">唯讀狀態</span></td><td class="m-def">—</td><td></td></tr>
 <tr><td><b>網格</b></td><td><span class="m-kind">唯讀狀態</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>經緯度格式<span class="m-opts">十進制度 · 度分 · 度分秒</span></b> <code class="m-field">coordFormat</code></td><td><span class="m-kind">下拉選單</span></td><td class="m-def">十進制度</td><td></td></tr>
 </tbody></table></div>
       </div>
       <div class="m-sub">
         <h4>地圖</h4>
         <p class="m-grp-sub">地圖類型與顯示</p>
         <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>設定項</th><th>控件</th><th>預設值</th><th>說明</th></tr></thead><tbody>
+<tr><td><b>中心經緯度</b> <code class="m-field">mapCenterCoord</code></td><td><span class="m-kind">開關</span></td><td class="m-def">關</td><td></td></tr>
 <tr><td><b>永遠顯示地圖標籤</b> <code class="m-field">mapLabelsAlways</code></td><td><span class="m-kind">開關</span></td><td class="m-def">關</td><td>無論台站多少、縮放多小，都在地圖上顯示每個台站的呼號標籤。</td></tr>
 <tr><td><b>離線地圖</b></td><td><span class="m-kind">入口</span></td><td class="m-def">—</td><td>目前主題用了背景圖：材質不再另畫底色，只把頂欄與浮層做成磨砂。 / 先把地圖圖磚下載到本機，沒有網路時也能看地圖</td></tr>
+<tr><td><b>通知診斷</b></td><td><span class="m-kind">按鈕</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>重新載入介面</b></td><td><span class="m-kind">按鈕</span></td><td class="m-def">—</td><td></td></tr>
 </tbody></table></div>
       </div>
   </section>
-  <section class="chapter reveal" id="g7">
-    <h2 id="g7">資料<a class="hdr-anchor" href="#g7" aria-label="本節永久連結" title="本節永久連結">#</a></h2>
-      <h3 id="g7">資料<a class="hdr-anchor" href="#g7" aria-label="本節永久連結" title="本節永久連結">#</a></h3>
+  <section class="chapter reveal" id="g8">
+    <h2 id="g8">資料<a class="hdr-anchor" href="#g8" aria-label="本節永久連結" title="本節永久連結">#</a></h2>
+      <h3 id="g8">資料<a class="hdr-anchor" href="#g8" aria-label="本節永久連結" title="本節永久連結">#</a></h3>
       <p class="m-grp-sub">清除本機資料</p>
       <p>唯讀統計與破壞性操作分開擺：清聊天記錄是單獨按鈕，「清除所有資料」會二次確認。</p>
       <div class="m-sub">
@@ -438,6 +489,8 @@
         <h4>清理過時台站</h4>
         <p class="m-grp-sub">依天數清理長期沒再聽到的台站，只留下還有用的</p>
         <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>設定項</th><th>控件</th><th>預設值</th><th>說明</th></tr></thead><tbody>
+<tr><td><b>台站保留天數</b> <code class="m-field">stationRetentionDays</code></td><td><span class="m-kind">下拉選單</span></td><td class="m-def"><code>0</code></td><td>超過這個天數沒再聽到的台站，會在啟動時自動清理。0 = 關閉自動清理（仍可手動清理）。收藏 / 手動新增 / 你自己的台站永不清理。</td></tr>
+<tr><td><b>清理多少天前的台站</b></td><td><span class="m-kind">下拉選單</span></td><td class="m-def">—</td><td>手動清理使用的天數，與上面的自動清理保留天數<b>相互獨立</b> —— 選幾天就只清掉「這麼多天沒再聽到」的一般台站。</td></tr>
 <tr><td><b>請先選擇天數</b></td><td><span class="m-kind">按鈕</span></td><td class="m-def">—</td><td></td></tr>
 </tbody></table></div>
       </div>
@@ -470,9 +523,9 @@
 </tbody></table></div>
       </div>
   </section>
-  <section class="chapter reveal" id="g8">
-    <h2 id="g8">高階<a class="hdr-anchor" href="#g8" aria-label="本節永久連結" title="本節永久連結">#</a></h2>
-      <h3 id="g8">高階<a class="hdr-anchor" href="#g8" aria-label="本節永久連結" title="本節永久連結">#</a></h3>
+  <section class="chapter reveal" id="g9">
+    <h2 id="g9">高階<a class="hdr-anchor" href="#g9" aria-label="本節永久連結" title="本節永久連結">#</a></h2>
+      <h3 id="g9">高階<a class="hdr-anchor" href="#g9" aria-label="本節永久連結" title="本節永久連結">#</a></h3>
       <p class="m-grp-sub">實驗室 · 開發者</p>
       <p>橫螢幕開關、示範資料（模擬臺站/封包）、收發計數與重新執行引導都在這裡。</p>
       <div class="m-sub">
@@ -484,13 +537,14 @@
 <tr><td><b>收包 / 發包</b></td><td><span class="m-kind">唯讀狀態</span></td><td class="m-def">—</td><td></td></tr>
 <tr><td><b>臺站數量</b></td><td><span class="m-kind">唯讀狀態</span></td><td class="m-def">—</td><td></td></tr>
 <tr><td><b>連線</b></td><td><span class="m-kind">唯讀狀態</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>操作證驗證</b></td><td><span class="m-kind">入口</span></td><td class="m-def">—</td><td></td></tr>
 </tbody></table></div>
       </div>
   </section>
-  <section class="chapter reveal" id="g9">
-    <h2 id="g9">裝置<a class="hdr-anchor" href="#g9" aria-label="本節永久連結" title="本節永久連結">#</a></h2>
-      <h3 id="g9">裝置<a class="hdr-anchor" href="#g9" aria-label="本節永久連結" title="本節永久連結">#</a></h3>
-      <p class="m-grp-sub">資料來源、鏈路狀態與自檢</p>
+  <section class="chapter reveal" id="g10">
+    <h2 id="g10">裝置<a class="hdr-anchor" href="#g10" aria-label="本節永久連結" title="本節永久連結">#</a></h2>
+      <h3 id="g10">裝置<a class="hdr-anchor" href="#g10" aria-label="本節永久連結" title="本節永久連結">#</a></h3>
+      <p class="m-grp-sub">逐層確認協定、權限、裝置到底哪一環有問題</p>
       <p>裝置總覽 = 當前鏈路 + 網關狀態 + 四個子頁入口（TNC / WLAN 電台 / 音訊 / PKWDWPL）+ 鏈路自檢與日誌。</p>
       <div class="m-sub">
         <h4>閘道（iGate）</h4>
@@ -509,11 +563,9 @@
       </div>
       <div class="m-sub">
         <h4>目前鏈路</h4>
-        <p class="m-grp-sub">唯讀摘要 · 改參數請進對應子頁</p>
       </div>
       <div class="m-sub">
         <h4>裝置與參數</h4>
-        <p class="m-grp-sub">每條鏈路一個子頁，各管各的參數</p>
         <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>設定項</th><th>控件</th><th>預設值</th><th>說明</th></tr></thead><tbody>
 <tr><td><b>TNC 裝置與參數</b></td><td><span class="m-kind">選項卡</span></td><td class="m-def">—</td><td>藍牙/序列綁定、初始化串、KISS 參數與發射自檢</td></tr>
 <tr><td><b>WLAN 電台直連</b> <code class="m-field">source</code></td><td><span class="m-kind">選項卡</span></td><td class="m-def"><code>AudioSource.device</code></td><td>已連線</td></tr>
@@ -526,9 +578,9 @@
 </tbody></table></div>
       </div>
   </section>
-  <section class="chapter reveal" id="g10">
-    <h2 id="g10">TNC 裝置與參數<a class="hdr-anchor" href="#g10" aria-label="本節永久連結" title="本節永久連結">#</a></h2>
-      <h3 id="g10">TNC 裝置與參數<a class="hdr-anchor" href="#g10" aria-label="本節永久連結" title="本節永久連結">#</a></h3>
+  <section class="chapter reveal" id="g11">
+    <h2 id="g11">TNC 裝置與參數<a class="hdr-anchor" href="#g11" aria-label="本節永久連結" title="本節永久連結">#</a></h2>
+      <h3 id="g11">TNC 裝置與參數<a class="hdr-anchor" href="#g11" aria-label="本節永久連結" title="本節永久連結">#</a></h3>
       <p class="m-grp-sub">藍牙/序列綁定、初始化串、KISS 參數與發射自檢</p>
       <p>接藍牙/USB TNC 的全部參數：綁定、初始化字串、線速、KISS 定時參數、中繼路徑、發射自檢。</p>
       <div class="m-sub">
@@ -595,9 +647,9 @@
 </tbody></table></div>
       </div>
   </section>
-  <section class="chapter reveal" id="g11">
-    <h2 id="g11">WLAN 電台直連<a class="hdr-anchor" href="#g11" aria-label="本節永久連結" title="本節永久連結">#</a></h2>
-      <h3 id="g11">WLAN 電台直連<a class="hdr-anchor" href="#g11" aria-label="本節永久連結" title="本節永久連結">#</a></h3>
+  <section class="chapter reveal" id="g12">
+    <h2 id="g12">WLAN 電台直連<a class="hdr-anchor" href="#g12" aria-label="本節永久連結" title="本節永久連結">#</a></h2>
+      <h3 id="g12">WLAN 電台直連<a class="hdr-anchor" href="#g12" aria-label="本節永久連結" title="本節永久連結">#</a></h3>
       <p class="m-grp-sub">區域網路直連 Icom 電台（IC-705 / IC-9700 / IC-7610 / IC-905），收發 12 kHz PCM 音訊與 CI-V 控制</p>
       <p>區域網路直連 Icom 電台（IC-705 / IC-9700 / IC-7610 / IC-905 等）：電台 IP/控制埠、Network User 認證、CI-V 位址與導前延時（TX Delay）、射頻中繼路徑（如 WIDE1-1,WIDE2-1）、收發 12 kHz PCM 音訊。</p>
       <div class="m-sub">
@@ -626,6 +678,7 @@
         <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>設定項</th><th>控件</th><th>預設值</th><th>說明</th></tr></thead><tbody>
 <tr><td><b>允許射頻信標</b> <code class="m-field">rfBeacon</code></td><td><span class="m-kind">開關</span></td><td class="m-def">關</td><td>是否允許透過電台射頻自動週期發射信標（半雙工，發射時自動靜默監聽）。</td></tr>
 <tr><td><b>發射前導延遲 (TX Delay, ms)</b> <code class="m-field">txDelayMs</code></td><td><span class="m-kind">輸入框</span></td><td class="m-def"><code>300</code></td><td>KISS TXDELAY，單位 10ms。發射前留給自己 PTT 建立的時間</td></tr>
+<tr><td><b>發射後置延遲 (Post TX Delay, ms)</b></td><td><span class="m-kind">輸入框</span></td><td class="m-def">—</td><td></td></tr>
 <tr><td><b>電台 CI-V 位址 (十六進位)</b></td><td><span class="m-kind">輸入框</span></td><td class="m-def">—</td><td></td></tr>
 <tr><td><b>射頻中繼路徑</b> <code class="m-field">path</code></td><td><span class="m-kind">輸入框</span></td><td class="m-def"><code>WIDE1-1,WIDE2-1</code></td><td>射頻上使用的中繼，如 WIDE1-1,WIDE2-1；留空則不指定</td></tr>
 <tr><td><b>控制器位址</b></td><td><span class="m-kind">唯讀狀態</span></td><td class="m-def">—</td><td></td></tr>
@@ -642,9 +695,9 @@
 </tbody></table></div>
       </div>
   </section>
-  <section class="chapter reveal" id="g12">
-    <h2 id="g12">音訊（音效卡 TNC）<a class="hdr-anchor" href="#g12" aria-label="本節永久連結" title="本節永久連結">#</a></h2>
-      <h3 id="g12">音訊（音效卡 TNC）<a class="hdr-anchor" href="#g12" aria-label="本節永久連結" title="本節永久連結">#</a></h3>
+  <section class="chapter reveal" id="g13">
+    <h2 id="g13">音訊（音效卡 TNC）<a class="hdr-anchor" href="#g13" aria-label="本節永久連結" title="本節永久連結">#</a></h2>
+      <h3 id="g13">音訊（音效卡 TNC）<a class="hdr-anchor" href="#g13" aria-label="本節永久連結" title="本節永久連結">#</a></h3>
       <p class="m-grp-sub">用音效卡收發 AFSK 1200 報文</p>
       <p>把音效卡當 TNC：取樣率/鮑率/音調、發射電平與 CSMA 等待、WAV 檔案模式（離線解碼錄音）。</p>
       <div class="m-sub">
@@ -660,7 +713,7 @@
 <tr><td><b>連線<span class="m-opts">停止擷取 · 重啟音訊鏈路</span></b></td><td><span class="m-kind">唯讀狀態</span></td><td class="m-def">—</td><td>已連線</td></tr>
 <tr><td><b>發射來源</b></td><td><span class="m-kind">唯讀狀態</span></td><td class="m-def">—</td><td>音訊鏈路已連上，但目前發射來源不是它 —— 訊息與信標會從「…」發出。需要從音訊發射時，去「設定 → 裝置」把音訊選為發射來源。</td></tr>
 <tr><td><b>解調鎖定</b></td><td><span class="m-kind">唯讀狀態</span></td><td class="m-def">—</td><td>解碼中止 … 次（雜訊/失步）</td></tr>
-<tr><td><b>收 … 幀</b></td><td><span class="m-kind">唯讀狀態</span></td><td class="m-def">—</td><td>目前平台不支援即時音訊（可用 WAV 檔案模式）</td></tr>
+<tr><td><b></b></td><td><span class="m-kind">唯讀狀態</span></td><td class="m-def">—</td><td>目前平台不支援即時音訊（可用 WAV 檔案模式）</td></tr>
 </tbody></table></div>
       </div>
       <div class="m-sub">
@@ -706,9 +759,9 @@
         <div class="callout info"><span class="co-ic">ℹ️</span><div><p>暫無日誌</p></div></div>
       </div>
   </section>
-  <section class="chapter reveal" id="g13">
-    <h2 id="g13">PKWDWPL 裝置<a class="hdr-anchor" href="#g13" aria-label="本節永久連結" title="本節永久連結">#</a></h2>
-      <h3 id="g13">PKWDWPL 裝置<a class="hdr-anchor" href="#g13" aria-label="本節永久連結" title="本節永久連結">#</a></h3>
+  <section class="chapter reveal" id="g14">
+    <h2 id="g14">PKWDWPL 裝置<a class="hdr-anchor" href="#g14" aria-label="本節永久連結" title="本節永久連結">#</a></h2>
+      <h3 id="g14">PKWDWPL 裝置<a class="hdr-anchor" href="#g14" aria-label="本節永久連結" title="本節永久連結">#</a></h3>
       <p class="m-grp-sub">綁定電台連接埠 · 檢視航點接收狀態</p>
       <p>Kenwood 航點唯讀鏈路：綁定與狀態、收到的航點計數、嚴格校驗和（預設關，只標註不丟棄）。</p>
       <div class="m-sub">
@@ -737,9 +790,9 @@
 </tbody></table></div>
       </div>
   </section>
-  <section class="chapter reveal" id="g14">
-    <h2 id="g14">外接 GPS<a class="hdr-anchor" href="#g14" aria-label="本節永久連結" title="本節永久連結">#</a></h2>
-      <h3 id="g14">外接 GPS<a class="hdr-anchor" href="#g14" aria-label="本節永久連結" title="本節永久連結">#</a></h3>
+  <section class="chapter reveal" id="g15">
+    <h2 id="g15">外接 GPS<a class="hdr-anchor" href="#g15" aria-label="本節永久連結" title="本節永久連結">#</a></h2>
+      <h3 id="g15">外接 GPS<a class="hdr-anchor" href="#g15" aria-label="本節永久連結" title="本節永久連結">#</a></h3>
       <p class="m-grp-sub">藍牙 SPP / 串列埠上的 NMEA 0183 位置來源</p>
       <p>外接 GPS 是一台藍牙 NMEA 模組。它在上報位置時優先，手機定位可以待機省電；模組掉線會自動回到手機 GPS。</p>
       <div class="m-sub">
@@ -786,9 +839,9 @@
 </tbody></table></div>
       </div>
   </section>
-  <section class="chapter reveal" id="g15">
-    <h2 id="g15">功能<a class="hdr-anchor" href="#g15" aria-label="本節永久連結" title="本節永久連結">#</a></h2>
-      <h3 id="g15">功能<a class="hdr-anchor" href="#g15" aria-label="本節永久連結" title="本節永久連結">#</a></h3>
+  <section class="chapter reveal" id="g16">
+    <h2 id="g16">功能<a class="hdr-anchor" href="#g16" aria-label="本節永久連結" title="本節永久連結">#</a></h2>
+      <h3 id="g16">功能<a class="hdr-anchor" href="#g16" aria-label="本節永久連結" title="本節永久連結">#</a></h3>
       <p class="m-grp-sub">自選模組與精簡模式</p>
       <p>上半是精簡模式，下半是模組開關。精簡模式只換介面，你關過的模組原樣保留；關掉某個模組，它在設定裡那個入口就不再出現。</p>
       <div class="m-sub">
@@ -811,9 +864,9 @@
 </tbody></table></div>
       </div>
   </section>
-  <section class="chapter reveal" id="g16">
-    <h2 id="g16">翻譯設定<a class="hdr-anchor" href="#g16" aria-label="本節永久連結" title="本節永久連結">#</a></h2>
-      <h3 id="g16">翻譯設定<a class="hdr-anchor" href="#g16" aria-label="本節永久連結" title="本節永久連結">#</a></h3>
+  <section class="chapter reveal" id="g17">
+    <h2 id="g17">翻譯設定<a class="hdr-anchor" href="#g17" aria-label="本節永久連結" title="本節永久連結">#</a></h2>
+      <h3 id="g17">翻譯設定<a class="hdr-anchor" href="#g17" aria-label="本節永久連結" title="本節永久連結">#</a></h3>
       <p class="m-grp-sub">翻譯介面、語言與自動翻譯</p>
       <p>目標語言、引擎（預設 auto 免金鑰）、各引擎的金鑰/實例位址、測試翻譯。</p>
       <div class="m-sub">
@@ -851,9 +904,9 @@
 </tbody></table></div>
       </div>
   </section>
-  <section class="chapter reveal" id="g17">
-    <h2 id="g17">主題<a class="hdr-anchor" href="#g17" aria-label="本節永久連結" title="本節永久連結">#</a></h2>
-      <h3 id="g17">主題<a class="hdr-anchor" href="#g17" aria-label="本節永久連結" title="本節永久連結">#</a></h3>
+  <section class="chapter reveal" id="g18">
+    <h2 id="g18">主題<a class="hdr-anchor" href="#g18" aria-label="本節永久連結" title="本節永久連結">#</a></h2>
+      <h3 id="g18">主題<a class="hdr-anchor" href="#g18" aria-label="本節永久連結" title="本節永久連結">#</a></h3>
       <p class="m-grp-sub">把介面配色、圖示與常用文案改成你自己的</p>
       <p>顏色 / 圖示 / 文字 / 背景圖四大塊，改完可匯出 JSON 分享；預設皮膚可一鍵切換。</p>
       <div class="m-sub">
@@ -939,9 +992,9 @@
         <div class="callout info"><span class="co-ic">ℹ️</span><div><p>預設主題不可修改，複製為我的主題後即可自由編輯</p></div></div>
       </div>
   </section>
-  <section class="chapter reveal" id="g18">
-    <h2 id="g18">備份與還原<a class="hdr-anchor" href="#g18" aria-label="本節永久連結" title="本節永久連結">#</a></h2>
-      <h3 id="g18">備份與還原<a class="hdr-anchor" href="#g18" aria-label="本節永久連結" title="本節永久連結">#</a></h3>
+  <section class="chapter reveal" id="g19">
+    <h2 id="g19">備份與還原<a class="hdr-anchor" href="#g19" aria-label="本節永久連結" title="本節永久連結">#</a></h2>
+      <h3 id="g19">備份與還原<a class="hdr-anchor" href="#g19" aria-label="本節永久連結" title="本節永久連結">#</a></h3>
       <p class="m-grp-sub">匯出或匯入設定與資料</p>
       <p>一個 JSON 裝下設定與資料；白名單匯入防來路不明的檔案改設定；匯入後需重啟生效。</p>
       <div class="m-sub">
@@ -969,10 +1022,20 @@
 <tr><td><b>從剪貼簿貼上</b></td><td><span class="m-kind">按鈕</span></td><td class="m-def">—</td><td></td></tr>
 </tbody></table></div>
       </div>
+      <div class="m-sub">
+        <h4>雲端備份</h4>
+        <p class="m-grp-sub">請先登入</p>
+        <div class="callout info"><span class="co-ic">ℹ️</span><div><p>雲端備份不帶歷史軌跡，軌跡在「雲端同步」裡單獨存。</p></div></div>
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>設定項</th><th>控件</th><th>預設值</th><th>說明</th></tr></thead><tbody>
+<tr><td><b>存到雲端</b></td><td><span class="m-kind">按鈕</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>從雲端取回</b></td><td><span class="m-kind">按鈕</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>匯入所選</b></td><td><span class="m-kind">按鈕</span></td><td class="m-def">—</td><td></td></tr>
+</tbody></table></div>
+      </div>
   </section>
-  <section class="chapter reveal" id="g19">
-    <h2 id="g19">離線地圖<a class="hdr-anchor" href="#g19" aria-label="本節永久連結" title="本節永久連結">#</a></h2>
-      <h3 id="g19">離線地圖<a class="hdr-anchor" href="#g19" aria-label="本節永久連結" title="本節永久連結">#</a></h3>
+  <section class="chapter reveal" id="g20">
+    <h2 id="g20">離線地圖<a class="hdr-anchor" href="#g20" aria-label="本節永久連結" title="本節永久連結">#</a></h2>
+      <h3 id="g20">離線地圖<a class="hdr-anchor" href="#g20" aria-label="本節永久連結" title="本節永久連結">#</a></h3>
       <p class="m-grp-sub">先把地圖圖磚下載到本機，沒有網路時也能看地圖</p>
       <p>圖磚快取與「僅使用離線圖磚」開關；下載範圍 = 當前所見那一螢，入口在地圖選單。</p>
       <div class="m-sub">
