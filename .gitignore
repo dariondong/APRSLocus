@@ -57,3 +57,6 @@ app.*.map.json
 
 # AI handover file (local only)
 HANDOVER.md
+
+# 手册设置抽取的中间产物（每次跑 tool/extract_settings.py 都会重写）
+tool/_settings_extract.json
