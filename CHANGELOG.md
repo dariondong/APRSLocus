@@ -1,5 +1,45 @@
 # 更新日志
 
+## [2.1.41] - 2026-11-06
+
+### 云同步
+
+- **消息与历史轨迹存到服务器**：登录一次之后，收发的消息按条并集上传，历史轨迹按天上传。
+  换一台设备登录同一个呼号，两者都会拉回来。令牌九十天有效，口令只在登录那一次用。
+- **多台设备的同一天合成一条**：两台手机都开着记录时，时间差三秒内、距离五十米内的点
+  算同一个点，只留一条。想只看某一台的点也可以。
+- **云端备份**：备份页多了一张卡片，当前勾选的几组可以存到云端，也可以从云端取回。
+  云端只留最新三份。取回仍然先出预览，确认之后才覆盖。
+- **同步方式三档**（设置 → 云同步）：关闭、手动、自动。自动是启动拉一次、之后每五分钟一轮。
+  这一页还写着这是明文 HTTP，口令与内容不加密。
+
+### 说明
+
+- 云同步要有一个 APRSNETCN 名单账号，账号与口令在设置里填一次。没登录的机器照旧是本机数据。
+- 服务端那一侧也改了：消息、轨迹、备份三张表，按天存、按设备存，每人轨迹留一年。
+
+## [2.1.41] - 2026-11-06 (English)
+
+### Cloud sync
+
+- **Messages and track history on the server**: after one sign-in, messages go up as a set
+  union and each day of track history is uploaded on its own. Sign in with the same callsign
+  on another device and both come back. The token lasts ninety days; the password is used once.
+- **One line per day across devices**: when two phones both record, points within three
+  seconds and fifty metres of each other count as one and only one is kept. Reading a single
+  device's points is still possible.
+- **Cloud backup**: the backup page gained a card that uploads the selected groups and
+  restores them from the cloud. Three backups are kept. A restore still shows a preview first.
+- **Three sync modes** (Settings → Cloud sync): off, manual, auto. Auto pulls once at startup
+  and then every five minutes. The page also states plainly that the connection is plain HTTP.
+
+### Notes
+
+- Cloud sync needs an APRSNETCN account, entered once in settings. Without a sign-in the app
+  keeps everything on the device as before.
+- The server side changed too: messages, tracks and backups in three tables, stored per day and
+  per device, with a year of tracks per person.
+
 ## [2.1.40] - 2026-11-05
 
 ### 历史轨迹
