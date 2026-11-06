@@ -446,6 +446,149 @@ class _BackupPageState extends State<BackupPage> {
     );
   }
 
+  // ─── 云端 ───
+
+  /// 把当前勾选的这几组传到云端。**不带历史轨迹**：轨迹在「云同步」里
+  /// 按天单独存，塞进备份会让一份文件变成几十兆，且两边删不干净。
+  Future<void> _cloudUpload() async {
+    final s = S.of(context);
+    if (!st.syncReady) {
+      _toast(s.syncNeedLogin);
+      return;
+    }
+    if (_expCats.isEmpty) {
+      _toast(s.backupNoSelection);
+      return;
+    }
+    setState(() => _busy = true);
+    String? json;
+    try {
+      await st.flushForBackup();
+      final p = await SharedPreferences.getInstance();
+      final snap = snapshotFromPrefs(p);
+      if (_withThemeImages && _expCats.contains(BackupCategory.theme)) {
+        final raw = snap[ThemeController.kPrefsKey];
+        if (raw is String && raw.isNotEmpty) {
+          final images = await ThemeController.instance.collectImagesForExport();
+          if (images.isNotEmpty) {
+            snap[ThemeController.kPrefsKey] = attachImages(raw, images);
+          }
+        }
+      }
+      json = buildBackupJson(
+        snapshot: snap,
+        categories: _expCats.toSet(),
+        appVersion: AppState.appVersion,
+        platform: defaultTargetPlatform.name,
+      );
+    } catch (_) {}
+    if (!mounted) return;
+    if (json == null) {
+      setState(() => _busy = false);
+      _toast(s.backupExportFailed);
+      return;
+    }
+    final code = await st.syncUploadBackup(json, defaultTargetPlatform.name);
+    if (!mounted) return;
+    setState(() => _busy = false);
+    _toast(code.isEmpty ? s.backupCloudDone : '${s.backupCloudFailed}（$code）');
+  }
+
+  /// 从云端取一份回来：与文件、剪贴板两条路一样，先出预览，确认后才覆盖。
+  Future<void> _cloudRestore() async {
+    final s = S.of(context);
+    if (!st.syncReady) {
+      _toast(s.syncNeedLogin);
+      return;
+    }
+    setState(() => _busy = true);
+    var list = const <Map<String, dynamic>>[];
+    try {
+      list = await st.syncApi.backups();
+    } catch (_) {}
+    if (!mounted) return;
+    setState(() => _busy = false);
+    if (list.isEmpty) {
+      _toast(s.backupCloudEmpty);
+      return;
+    }
+    final pick = await showModalBottomSheet<String>(
+      context: context,
+      // 面板自己给底色（不透明），别让材质开着时半透明地透出下面
+      backgroundColor: Colors.transparent,
+      builder: (ctx) => Container(
+        decoration: BoxDecoration(
+          color: C.white,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+        ),
+        child: SafeArea(
+          top: false,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 14, 16, 6),
+                child: Row(
+                  children: [
+                    Text(s.backupCloudRestore,
+                        style: ts(13, w: FontWeight.w700)),
+                  ],
+                ),
+              ),
+              for (final row in list)
+                ListTile(
+                  dense: true,
+                  leading: Icon(Icons.cloud_download_rounded,
+                      size: 18, color: C.purple),
+                  title: Text(
+                    _cloudLabel(row),
+                    style: ts(13, w: FontWeight.w600),
+                  ),
+                  subtitle: Text(
+                    _cloudSize(row),
+                    style: ts(11, c: C.slate),
+                  ),
+                  onTap: () => Navigator.pop(ctx, (row['id'] as String?) ?? ''),
+                ),
+              const SizedBox(height: 8),
+            ],
+          ),
+        ),
+      ),
+    );
+    if (!mounted || pick == null || pick.isEmpty) return;
+    setState(() => _busy = true);
+    final text = await st.syncDownloadBackup(pick);
+    if (!mounted) return;
+    setState(() => _busy = false);
+    if (text.startsWith('error:')) {
+      _toast('${s.backupCloudFailed}（${text.substring(6)}）');
+      return;
+    }
+    _loadPicked(s, 'cloud:$pick', text);
+  }
+
+  String _cloudLabel(Map<String, dynamic> row) {
+    final label = (row['label'] as String?) ?? '';
+    final created = (row['created'] as String?) ?? '';
+    final stamp = DateTime.tryParse(created)?.toLocal();
+    final when = stamp == null
+        ? created
+        : '${stamp.year}-${stamp.month.toString().padLeft(2, '0')}-'
+            '${stamp.day.toString().padLeft(2, '0')} '
+            '${stamp.hour.toString().padLeft(2, '0')}:'
+            '${stamp.minute.toString().padLeft(2, '0')}';
+    return label.isEmpty ? when : '$when · $label';
+  }
+
+  String _cloudSize(Map<String, dynamic> row) {
+    final size = (row['size'] as num?)?.toInt() ?? 0;
+    if (size <= 0) return '';
+    if (size < 1024) return '$size B';
+    if (size < 1024 * 1024) return '${(size / 1024).round()} KB';
+    return '${(size / 1024 / 1024).toStringAsFixed(1)} MB';
+  }
+
   @override
   Widget build(BuildContext context) {
     final s = S.of(context);
@@ -599,6 +742,54 @@ class _BackupPageState extends State<BackupPage> {
                 ),
               ),
               if (_data != null) ..._preview(s, _data!),
+            ],
+          ),
+          const SizedBox(height: 16),
+
+          // ─── 云端 ───
+          SettingsSectionCard(
+            title: s.backupCloud,
+            subtitle: st.syncReady ? null : s.syncNeedLogin,
+            icon: Icons.cloud_rounded,
+            color: C.blue,
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: FilledButton.icon(
+                        style: FilledButton.styleFrom(
+                          backgroundColor: C.blue,
+                          disabledBackgroundColor: C.greyBg,
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                        ),
+                        onPressed:
+                            (_busy || !st.syncReady) ? null : _cloudUpload,
+                        icon: const Icon(Icons.cloud_upload_rounded, size: 16),
+                        label: Text(s.backupCloudUpload, style: ts(12)),
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: OutlinedButton.icon(
+                        style: OutlinedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                          side: BorderSide(
+                              color: C.blue.withValues(alpha: 0.4)),
+                        ),
+                        onPressed:
+                            (_busy || !st.syncReady) ? null : _cloudRestore,
+                        icon: Icon(Icons.cloud_download_rounded,
+                            size: 16, color: C.blue),
+                        label: Text(s.backupCloudRestore,
+                            style: ts(12, c: C.blue)),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SettingsHint(s.backupCloudHint),
             ],
           ),
         ],

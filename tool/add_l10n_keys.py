@@ -36,6 +36,135 @@ CLASSES = {
 
 # ── 要加的键：key → (zh, zh_TW, en, ja, es, id) ──
 KEYS = {
+    # ── 云同步：消息 / 云端备份 / 历史轨迹（账号就是名单里那条）──
+    'syncTitle': (
+        '云同步', '雲端同步', 'Cloud sync', 'クラウド同期',
+        'Sincronización', 'Sinkron awan'),
+    'syncLead': (
+        '消息与历史轨迹存到服务器上，换设备再拉回来。',
+        '訊息與歷史軌跡存到伺服器上，換裝置再拉回來。',
+        'Messages and track history live on the server, ready when you change devices.',
+        'メッセージと履歴はサーバーに置かれ、端末を替えても戻せます。',
+        'Los mensajes y el historial se guardan en el servidor y vuelven al cambiar de equipo.',
+        'Pesan dan riwayat tersimpan di server dan kembali saat ganti perangkat.'),
+    'syncAccount': (
+        '账号', '帳號', 'Account', 'アカウント', 'Cuenta', 'Akun'),
+    'syncPassword': (
+        '口令', '口令', 'Password', 'パスワード', 'Contraseña', 'Kata sandi'),
+    'syncLogin': (
+        '登录', '登入', 'Sign in', 'ログイン', 'Entrar', 'Masuk'),
+    'syncLogout': (
+        '退出登录', '登出', 'Sign out', 'ログアウト', 'Salir', 'Keluar'),
+    'syncLoggedIn': (
+        '已登录 {call}', '已登入 {call}', 'Signed in as {call}',
+        '{call} でログイン中', 'Sesión de {call}', 'Masuk sebagai {call}'),
+    'syncNeedLogin': (
+        '先登录', '請先登入', 'Sign in first', '先にログイン',
+        'Inicia sesión primero', 'Masuk dulu'),
+    'syncMode': (
+        '同步方式', '同步方式', 'Mode', '同期方法', 'Modo', 'Mode'),
+    'syncModeOff': (
+        '关闭', '關閉', 'Off', 'オフ', 'Apagado', 'Mati'),
+    'syncModeManual': (
+        '手动', '手動', 'Manual', '手動', 'Manual', 'Manual'),
+    'syncModeAuto': (
+        '自动', '自動', 'Auto', '自動', 'Automático', 'Otomatis'),
+    'syncModeAutoHint': (
+        '自动：启动时拉一次，之后每 5 分钟一轮。',
+        '自動：啟動時拉一次，之後每 5 分鐘一輪。',
+        'Auto: once at startup, then every five minutes.',
+        '自動：起動時に一度、その後 5 分ごと。',
+        'Automático: una vez al arrancar y luego cada cinco minutos.',
+        'Otomatis: sekali saat mulai, lalu tiap lima menit.'),
+    'syncMessages': (
+        '消息', '訊息', 'Messages', 'メッセージ', 'Mensajes', 'Pesan'),
+    'syncTracks': (
+        '历史轨迹', '歷史軌跡', 'Track history', '履歴', 'Historial', 'Riwayat'),
+    'syncNow': (
+        '立即同步', '立即同步', 'Sync now', '今すぐ同期', 'Sincronizar',
+        'Sinkron sekarang'),
+    'syncRunDone': (
+        '同步完成', '同步完成', 'Synced', '同期しました', 'Sincronizado',
+        'Tersinkron'),
+    'syncClear': (
+        '清空云端数据', '清空雲端資料', 'Clear cloud data', 'クラウドのデータを消す',
+        'Borrar datos en la nube', 'Hapus data awan'),
+    'syncClearHint': (
+        '服务器上这个呼号的消息、轨迹、备份一起删掉，本机不动。',
+        '伺服器上這個呼號的訊息、軌跡、備份一起刪掉，本機不動。',
+        "Removes this callsign's messages, tracks and backups from the server. Nothing on this device changes.",
+        'サーバー上のこのコールサインのメッセージ・履歴・バックアップを消します。端末側は変わりません。',
+        'Borra del servidor los mensajes, el historial y las copias de este indicativo. En el equipo no cambia nada.',
+        'Menghapus pesan, riwayat, dan cadangan callsign ini di server. Di perangkat tidak berubah.'),
+    'syncClearAsk': (
+        '确认清空云端数据？', '確認清空雲端資料？', 'Clear the cloud data?',
+        'クラウドのデータを消しますか？', '¿Borrar los datos en la nube?',
+        'Hapus data awan?'),
+    'syncClearDone': (
+        '云端数据已清空', '雲端資料已清空', 'Cloud data cleared',
+        'クラウドのデータを消しました', 'Datos en la nube borrados',
+        'Data awan dihapus'),
+    'syncPlainHint': (
+        '连接是明文 HTTP，口令与内容不加密。',
+        '連線是明文 HTTP，口令與內容不加密。',
+        'The connection is plain HTTP, so passwords and content are not encrypted.',
+        '接続は平文 HTTP です。パスワードも内容も暗号化されません。',
+        'La conexión es HTTP sin cifrar; la contraseña y el contenido no van cifrados.',
+        'Koneksi memakai HTTP biasa, kata sandi dan isi tidak dienkripsi.'),
+    'syncLastAt': (
+        '上次同步', '上次同步', 'Last sync', '前回の同期', 'Última sincronización',
+        'Sinkron terakhir'),
+    'syncNever': (
+        '还没同步过', '還沒同步過', 'Never synced', 'まだ同期していません',
+        'Aún no se ha sincronizado', 'Belum pernah sinkron'),
+    'syncFailed': (
+        '同步失败', '同步失敗', 'Sync failed', '同期に失敗しました',
+        'Error de sincronización', 'Gagal sinkron'),
+    'syncTrackSummary': (
+        '{days} 天 · {points} 个点', '{days} 天 · {points} 個點',
+        '{days} days · {points} points', '{days} 日 · {points} 点',
+        '{days} días · {points} puntos', '{days} hari · {points} titik'),
+    'syncMsgSummary': (
+        '{n} 条', '{n} 條', '{n} messages', '{n} 件', '{n} mensajes', '{n} pesan'),
+    'syncBackupElsewhere': (
+        '云端备份在「备份与恢复」页里上传与取回。',
+        '雲端備份在「備份與還原」頁裡上傳與取回。',
+        'Cloud backups are uploaded and restored from the backup page.',
+        'クラウドバックアップは「バックアップと復元」ページで扱います。',
+        'Las copias en la nube se suben y se recuperan en la página de copias.',
+        'Cadangan awan diunggah dan dipulihkan dari halaman cadangan.'),
+    'syncNoWeb': (
+        '网页版不能用', '網頁版不能用', 'Not available on the web',
+        'ウェブ版では使えません', 'No disponible en la web', 'Tidak tersedia di web'),
+    'syncBusy': (
+        '正在同步', '正在同步', 'Syncing', '同期中', 'Sincronizando', 'Sedang sinkron'),
+    # ── 备份页的云端两格 ──
+    'backupCloud': (
+        '云端备份', '雲端備份', 'Cloud backup', 'クラウドバックアップ',
+        'Copia en la nube', 'Cadangan awan'),
+    'backupCloudUpload': (
+        '存到云端', '存到雲端', 'Upload', 'クラウドに保存', 'Subir', 'Unggah'),
+    'backupCloudRestore': (
+        '从云端取回', '從雲端取回', 'Restore from cloud', 'クラウドから戻す',
+        'Recuperar', 'Pulihkan'),
+    'backupCloudHint': (
+        '云端备份不带历史轨迹，轨迹在「云同步」里单独存。',
+        '雲端備份不帶歷史軌跡，軌跡在「雲端同步」裡單獨存。',
+        'Cloud backups leave out track history; tracks are kept by cloud sync.',
+        'クラウドバックアップに履歴は含みません。履歴はクラウド同期が別に保存します。',
+        'Las copias en la nube no incluyen el historial; la sincronización lo guarda aparte.',
+        'Cadangan awan tanpa riwayat; riwayat disimpan terpisah oleh sinkron awan.'),
+    'backupCloudDone': (
+        '已存到云端', '已存到雲端', 'Uploaded', 'クラウドに保存しました',
+        'Subido', 'Terunggah'),
+    'backupCloudEmpty': (
+        '云端还没有备份', '雲端還沒有備份', 'No backups in the cloud yet',
+        'クラウドにまだバックアップがありません', 'Aún no hay copias en la nube',
+        'Belum ada cadangan di awan'),
+    'backupCloudFailed': (
+        '云端操作失败', '雲端操作失敗', 'Cloud operation failed',
+        'クラウド操作に失敗しました', 'Error en la operación en la nube',
+        'Operasi awan gagal'),
     # ── 省电模式（GPS 采样拉长 + 地图动画停下）与低电量提醒 ──
     'powerSave': (
         '省电模式', '省電模式', 'Power saving', '省電力モード',
@@ -298,6 +427,10 @@ KEYS = {
 }
 
 META = {
+    'syncLoggedIn': '{"placeholders": {"call": {"type": "String"}}}',
+    'syncTrackSummary':
+        '{"placeholders": {"days": {"type": "String"}, "points": {"type": "String"}}}',
+    'syncMsgSummary': '{"placeholders": {"n": {"type": "String"}}}',
     'lowBatteryWarn': '{"placeholders": {"level": {"type": "String"}}}',
     'historyOverlaySummary':
         '{"placeholders": {"days": {"type": "String"}, "total": {"type": "String"}, "km": {"type": "String"}}}',

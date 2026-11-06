@@ -18195,6 +18195,228 @@ abstract class AppLocalizations {
   /// **'电量只剩 {level}%，开省电模式？'**
   String lowBatteryWarn(String level);
 
+  /// No description provided for @syncTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'云同步'**
+  String get syncTitle;
+
+  /// No description provided for @syncLead.
+  ///
+  /// In zh, this message translates to:
+  /// **'消息与历史轨迹存到服务器上，换设备再拉回来。'**
+  String get syncLead;
+
+  /// No description provided for @syncAccount.
+  ///
+  /// In zh, this message translates to:
+  /// **'账号'**
+  String get syncAccount;
+
+  /// No description provided for @syncPassword.
+  ///
+  /// In zh, this message translates to:
+  /// **'口令'**
+  String get syncPassword;
+
+  /// No description provided for @syncLogin.
+  ///
+  /// In zh, this message translates to:
+  /// **'登录'**
+  String get syncLogin;
+
+  /// No description provided for @syncLogout.
+  ///
+  /// In zh, this message translates to:
+  /// **'退出登录'**
+  String get syncLogout;
+
+  /// No description provided for @syncLoggedIn.
+  ///
+  /// In zh, this message translates to:
+  /// **'已登录 {call}'**
+  String syncLoggedIn(String call);
+
+  /// No description provided for @syncNeedLogin.
+  ///
+  /// In zh, this message translates to:
+  /// **'先登录'**
+  String get syncNeedLogin;
+
+  /// No description provided for @syncMode.
+  ///
+  /// In zh, this message translates to:
+  /// **'同步方式'**
+  String get syncMode;
+
+  /// No description provided for @syncModeOff.
+  ///
+  /// In zh, this message translates to:
+  /// **'关闭'**
+  String get syncModeOff;
+
+  /// No description provided for @syncModeManual.
+  ///
+  /// In zh, this message translates to:
+  /// **'手动'**
+  String get syncModeManual;
+
+  /// No description provided for @syncModeAuto.
+  ///
+  /// In zh, this message translates to:
+  /// **'自动'**
+  String get syncModeAuto;
+
+  /// No description provided for @syncModeAutoHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'自动：启动时拉一次，之后每 5 分钟一轮。'**
+  String get syncModeAutoHint;
+
+  /// No description provided for @syncMessages.
+  ///
+  /// In zh, this message translates to:
+  /// **'消息'**
+  String get syncMessages;
+
+  /// No description provided for @syncTracks.
+  ///
+  /// In zh, this message translates to:
+  /// **'历史轨迹'**
+  String get syncTracks;
+
+  /// No description provided for @syncNow.
+  ///
+  /// In zh, this message translates to:
+  /// **'立即同步'**
+  String get syncNow;
+
+  /// No description provided for @syncRunDone.
+  ///
+  /// In zh, this message translates to:
+  /// **'同步完成'**
+  String get syncRunDone;
+
+  /// No description provided for @syncClear.
+  ///
+  /// In zh, this message translates to:
+  /// **'清空云端数据'**
+  String get syncClear;
+
+  /// No description provided for @syncClearHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'服务器上这个呼号的消息、轨迹、备份一起删掉，本机不动。'**
+  String get syncClearHint;
+
+  /// No description provided for @syncClearAsk.
+  ///
+  /// In zh, this message translates to:
+  /// **'确认清空云端数据？'**
+  String get syncClearAsk;
+
+  /// No description provided for @syncClearDone.
+  ///
+  /// In zh, this message translates to:
+  /// **'云端数据已清空'**
+  String get syncClearDone;
+
+  /// No description provided for @syncPlainHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'连接是明文 HTTP，口令与内容不加密。'**
+  String get syncPlainHint;
+
+  /// No description provided for @syncLastAt.
+  ///
+  /// In zh, this message translates to:
+  /// **'上次同步'**
+  String get syncLastAt;
+
+  /// No description provided for @syncNever.
+  ///
+  /// In zh, this message translates to:
+  /// **'还没同步过'**
+  String get syncNever;
+
+  /// No description provided for @syncFailed.
+  ///
+  /// In zh, this message translates to:
+  /// **'同步失败'**
+  String get syncFailed;
+
+  /// No description provided for @syncTrackSummary.
+  ///
+  /// In zh, this message translates to:
+  /// **'{days} 天 · {points} 个点'**
+  String syncTrackSummary(String days, String points);
+
+  /// No description provided for @syncMsgSummary.
+  ///
+  /// In zh, this message translates to:
+  /// **'{n} 条'**
+  String syncMsgSummary(String n);
+
+  /// No description provided for @syncBackupElsewhere.
+  ///
+  /// In zh, this message translates to:
+  /// **'云端备份在「备份与恢复」页里上传与取回。'**
+  String get syncBackupElsewhere;
+
+  /// No description provided for @syncNoWeb.
+  ///
+  /// In zh, this message translates to:
+  /// **'网页版不能用'**
+  String get syncNoWeb;
+
+  /// No description provided for @syncBusy.
+  ///
+  /// In zh, this message translates to:
+  /// **'正在同步'**
+  String get syncBusy;
+
+  /// No description provided for @backupCloud.
+  ///
+  /// In zh, this message translates to:
+  /// **'云端备份'**
+  String get backupCloud;
+
+  /// No description provided for @backupCloudUpload.
+  ///
+  /// In zh, this message translates to:
+  /// **'存到云端'**
+  String get backupCloudUpload;
+
+  /// No description provided for @backupCloudRestore.
+  ///
+  /// In zh, this message translates to:
+  /// **'从云端取回'**
+  String get backupCloudRestore;
+
+  /// No description provided for @backupCloudHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'云端备份不带历史轨迹，轨迹在「云同步」里单独存。'**
+  String get backupCloudHint;
+
+  /// No description provided for @backupCloudDone.
+  ///
+  /// In zh, this message translates to:
+  /// **'已存到云端'**
+  String get backupCloudDone;
+
+  /// No description provided for @backupCloudEmpty.
+  ///
+  /// In zh, this message translates to:
+  /// **'云端还没有备份'**
+  String get backupCloudEmpty;
+
+  /// No description provided for @backupCloudFailed.
+  ///
+  /// In zh, this message translates to:
+  /// **'云端操作失败'**
+  String get backupCloudFailed;
+
 }
 
 class _AppLocalizationsDelegate

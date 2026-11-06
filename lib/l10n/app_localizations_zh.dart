@@ -9918,6 +9918,117 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String lowBatteryWarn(String level) => "电量只剩 $level%，开省电模式？";
 
+  @override
+  String get syncTitle => "云同步";
+
+  @override
+  String get syncLead => "消息与历史轨迹存到服务器上，换设备再拉回来。";
+
+  @override
+  String get syncAccount => "账号";
+
+  @override
+  String get syncPassword => "口令";
+
+  @override
+  String get syncLogin => "登录";
+
+  @override
+  String get syncLogout => "退出登录";
+
+  @override
+  String syncLoggedIn(String call) => "已登录 $call";
+
+  @override
+  String get syncNeedLogin => "先登录";
+
+  @override
+  String get syncMode => "同步方式";
+
+  @override
+  String get syncModeOff => "关闭";
+
+  @override
+  String get syncModeManual => "手动";
+
+  @override
+  String get syncModeAuto => "自动";
+
+  @override
+  String get syncModeAutoHint => "自动时启动拉一次，之后每 5 分钟一轮。";
+
+  @override
+  String get syncMessages => "消息";
+
+  @override
+  String get syncTracks => "历史轨迹";
+
+  @override
+  String get syncNow => "立即同步";
+
+  @override
+  String get syncRunDone => "同步完成";
+
+  @override
+  String get syncClear => "清空云端数据";
+
+  @override
+  String get syncClearHint => "服务器上这个呼号的消息、轨迹与备份全部删掉，本机不动。";
+
+  @override
+  String get syncClearAsk => "确认清空云端数据？";
+
+  @override
+  String get syncClearDone => "云端数据已清空";
+
+  @override
+  String get syncPlainHint => "连接是明文 HTTP，口令与内容不加密。";
+
+  @override
+  String get syncLastAt => "上次同步";
+
+  @override
+  String get syncNever => "还没同步过";
+
+  @override
+  String get syncFailed => "同步失败";
+
+  @override
+  String syncTrackSummary(String days, String points) => "$days 天 · $points 个点";
+
+  @override
+  String syncMsgSummary(String n) => "$n 条";
+
+  @override
+  String get syncBackupElsewhere => "云端备份在「备份与恢复」页里上传与取回。";
+
+  @override
+  String get syncNoWeb => "网页版不能用";
+
+  @override
+  String get syncBusy => "正在同步";
+
+  @override
+  String get backupCloud => "云端备份";
+
+  @override
+  String get backupCloudUpload => "存到云端";
+
+  @override
+  String get backupCloudRestore => "从云端取回";
+
+  @override
+  String get backupCloudHint => "云端备份不带历史轨迹，轨迹在「云同步」里单独存。";
+
+  @override
+  String get backupCloudDone => "已存到云端";
+
+  @override
+  String get backupCloudEmpty => "云端还没有备份";
+
+  @override
+  String get backupCloudFailed => "云端操作失败";
+
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
@@ -19832,5 +19943,116 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String lowBatteryWarn(String level) => "電量只剩 $level%，開省電模式？";
+
+  @override
+  String get syncTitle => "雲端同步";
+
+  @override
+  String get syncLead => "訊息與歷史軌跡存到伺服器上，換裝置再拉回來。";
+
+  @override
+  String get syncAccount => "帳號";
+
+  @override
+  String get syncPassword => "口令";
+
+  @override
+  String get syncLogin => "登入";
+
+  @override
+  String get syncLogout => "登出";
+
+  @override
+  String syncLoggedIn(String call) => "已登入 $call";
+
+  @override
+  String get syncNeedLogin => "請先登入";
+
+  @override
+  String get syncMode => "同步方式";
+
+  @override
+  String get syncModeOff => "關閉";
+
+  @override
+  String get syncModeManual => "手動";
+
+  @override
+  String get syncModeAuto => "自動";
+
+  @override
+  String get syncModeAutoHint => "自動時啟動拉一次，之後每 5 分鐘一輪。";
+
+  @override
+  String get syncMessages => "訊息";
+
+  @override
+  String get syncTracks => "歷史軌跡";
+
+  @override
+  String get syncNow => "立即同步";
+
+  @override
+  String get syncRunDone => "同步完成";
+
+  @override
+  String get syncClear => "清空雲端資料";
+
+  @override
+  String get syncClearHint => "伺服器上這個呼號的訊息、軌跡與備份全部刪掉，本機不動。";
+
+  @override
+  String get syncClearAsk => "確認清空雲端資料？";
+
+  @override
+  String get syncClearDone => "雲端資料已清空";
+
+  @override
+  String get syncPlainHint => "連線是明文 HTTP，口令與內容不加密。";
+
+  @override
+  String get syncLastAt => "上次同步";
+
+  @override
+  String get syncNever => "還沒同步過";
+
+  @override
+  String get syncFailed => "同步失敗";
+
+  @override
+  String syncTrackSummary(String days, String points) => "$days 天 · $points 個點";
+
+  @override
+  String syncMsgSummary(String n) => "$n 條";
+
+  @override
+  String get syncBackupElsewhere => "雲端備份在「備份與還原」頁裡上傳與取回。";
+
+  @override
+  String get syncNoWeb => "網頁版不能用";
+
+  @override
+  String get syncBusy => "正在同步";
+
+  @override
+  String get backupCloud => "雲端備份";
+
+  @override
+  String get backupCloudUpload => "存到雲端";
+
+  @override
+  String get backupCloudRestore => "從雲端取回";
+
+  @override
+  String get backupCloudHint => "雲端備份不帶歷史軌跡，軌跡在「雲端同步」裡單獨存。";
+
+  @override
+  String get backupCloudDone => "已存到雲端";
+
+  @override
+  String get backupCloudEmpty => "雲端還沒有備份";
+
+  @override
+  String get backupCloudFailed => "雲端操作失敗";
 
 }

@@ -10018,4 +10018,115 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String lowBatteryWarn(String level) => "バッテリー残量 $level%。省電力モードにしますか？";
 
+  @override
+  String get syncTitle => "クラウド同期";
+
+  @override
+  String get syncLead => "メッセージと履歴はサーバーに置かれ、端末を替えても戻せます。";
+
+  @override
+  String get syncAccount => "アカウント";
+
+  @override
+  String get syncPassword => "パスワード";
+
+  @override
+  String get syncLogin => "ログイン";
+
+  @override
+  String get syncLogout => "ログアウト";
+
+  @override
+  String syncLoggedIn(String call) => "$call でログイン中";
+
+  @override
+  String get syncNeedLogin => "先にログイン";
+
+  @override
+  String get syncMode => "同期方法";
+
+  @override
+  String get syncModeOff => "オフ";
+
+  @override
+  String get syncModeManual => "手動";
+
+  @override
+  String get syncModeAuto => "自動";
+
+  @override
+  String get syncModeAutoHint => "自動：起動時に一度、その後 5 分ごと。";
+
+  @override
+  String get syncMessages => "メッセージ";
+
+  @override
+  String get syncTracks => "履歴";
+
+  @override
+  String get syncNow => "今すぐ同期";
+
+  @override
+  String get syncRunDone => "同期しました";
+
+  @override
+  String get syncClear => "クラウドのデータを消す";
+
+  @override
+  String get syncClearHint => "サーバー上のこのコールサインのメッセージ・履歴・バックアップを消します。端末側は変わりません。";
+
+  @override
+  String get syncClearAsk => "クラウドのデータを消しますか？";
+
+  @override
+  String get syncClearDone => "クラウドのデータを消しました";
+
+  @override
+  String get syncPlainHint => "接続は平文 HTTP です。パスワードも内容も暗号化されません。";
+
+  @override
+  String get syncLastAt => "前回の同期";
+
+  @override
+  String get syncNever => "まだ同期していません";
+
+  @override
+  String get syncFailed => "同期に失敗しました";
+
+  @override
+  String syncTrackSummary(String days, String points) => "$days 日 · $points 点";
+
+  @override
+  String syncMsgSummary(String n) => "$n 件";
+
+  @override
+  String get syncBackupElsewhere => "クラウドバックアップは「バックアップと復元」ページで扱います。";
+
+  @override
+  String get syncNoWeb => "ウェブ版では使えません";
+
+  @override
+  String get syncBusy => "同期中";
+
+  @override
+  String get backupCloud => "クラウドバックアップ";
+
+  @override
+  String get backupCloudUpload => "クラウドに保存";
+
+  @override
+  String get backupCloudRestore => "クラウドから戻す";
+
+  @override
+  String get backupCloudHint => "クラウドバックアップに履歴は含みません。履歴はクラウド同期が別に保存します。";
+
+  @override
+  String get backupCloudDone => "クラウドに保存しました";
+
+  @override
+  String get backupCloudEmpty => "クラウドにまだバックアップがありません";
+
+  @override
+  String get backupCloudFailed => "クラウド操作に失敗しました";
+
 }

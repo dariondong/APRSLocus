@@ -10307,4 +10307,115 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String lowBatteryWarn(String level) => "Baterai $level%. Aktifkan hemat daya?";
 
+  @override
+  String get syncTitle => "Sinkron awan";
+
+  @override
+  String get syncLead => "Pesan dan riwayat tersimpan di server dan kembali saat ganti perangkat.";
+
+  @override
+  String get syncAccount => "Akun";
+
+  @override
+  String get syncPassword => "Kata sandi";
+
+  @override
+  String get syncLogin => "Masuk";
+
+  @override
+  String get syncLogout => "Keluar";
+
+  @override
+  String syncLoggedIn(String call) => "Masuk sebagai $call";
+
+  @override
+  String get syncNeedLogin => "Masuk dulu";
+
+  @override
+  String get syncMode => "Mode";
+
+  @override
+  String get syncModeOff => "Mati";
+
+  @override
+  String get syncModeManual => "Manual";
+
+  @override
+  String get syncModeAuto => "Otomatis";
+
+  @override
+  String get syncModeAutoHint => "Otomatis: sekali saat mulai, lalu tiap lima menit.";
+
+  @override
+  String get syncMessages => "Pesan";
+
+  @override
+  String get syncTracks => "Riwayat";
+
+  @override
+  String get syncNow => "Sinkron sekarang";
+
+  @override
+  String get syncRunDone => "Tersinkron";
+
+  @override
+  String get syncClear => "Hapus data awan";
+
+  @override
+  String get syncClearHint => "Menghapus pesan, riwayat, dan cadangan callsign ini di server. Di perangkat tidak berubah.";
+
+  @override
+  String get syncClearAsk => "Hapus data awan?";
+
+  @override
+  String get syncClearDone => "Data awan dihapus";
+
+  @override
+  String get syncPlainHint => "Koneksi memakai HTTP biasa, kata sandi dan isi tidak dienkripsi.";
+
+  @override
+  String get syncLastAt => "Sinkron terakhir";
+
+  @override
+  String get syncNever => "Belum pernah sinkron";
+
+  @override
+  String get syncFailed => "Gagal sinkron";
+
+  @override
+  String syncTrackSummary(String days, String points) => "$days hari · $points titik";
+
+  @override
+  String syncMsgSummary(String n) => "$n pesan";
+
+  @override
+  String get syncBackupElsewhere => "Cadangan awan diunggah dan dipulihkan dari halaman cadangan.";
+
+  @override
+  String get syncNoWeb => "Tidak tersedia di web";
+
+  @override
+  String get syncBusy => "Sedang sinkron";
+
+  @override
+  String get backupCloud => "Cadangan awan";
+
+  @override
+  String get backupCloudUpload => "Unggah";
+
+  @override
+  String get backupCloudRestore => "Pulihkan";
+
+  @override
+  String get backupCloudHint => "Cadangan awan tanpa riwayat; riwayat disimpan terpisah oleh sinkron awan.";
+
+  @override
+  String get backupCloudDone => "Terunggah";
+
+  @override
+  String get backupCloudEmpty => "Belum ada cadangan di awan";
+
+  @override
+  String get backupCloudFailed => "Operasi awan gagal";
+
 }

@@ -10356,4 +10356,115 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String lowBatteryWarn(String level) => "Batería al $level%. ¿Activar el ahorro de energía?";
 
+  @override
+  String get syncTitle => "Sincronización";
+
+  @override
+  String get syncLead => "Los mensajes y el historial se guardan en el servidor y vuelven al cambiar de equipo.";
+
+  @override
+  String get syncAccount => "Cuenta";
+
+  @override
+  String get syncPassword => "Contraseña";
+
+  @override
+  String get syncLogin => "Entrar";
+
+  @override
+  String get syncLogout => "Salir";
+
+  @override
+  String syncLoggedIn(String call) => "Sesión de $call";
+
+  @override
+  String get syncNeedLogin => "Inicia sesión primero";
+
+  @override
+  String get syncMode => "Modo";
+
+  @override
+  String get syncModeOff => "Apagado";
+
+  @override
+  String get syncModeManual => "Manual";
+
+  @override
+  String get syncModeAuto => "Automático";
+
+  @override
+  String get syncModeAutoHint => "Automático: una vez al arrancar y luego cada cinco minutos.";
+
+  @override
+  String get syncMessages => "Mensajes";
+
+  @override
+  String get syncTracks => "Historial";
+
+  @override
+  String get syncNow => "Sincronizar";
+
+  @override
+  String get syncRunDone => "Sincronizado";
+
+  @override
+  String get syncClear => "Borrar datos en la nube";
+
+  @override
+  String get syncClearHint => "Borra del servidor los mensajes, el historial y las copias de este indicativo. En el equipo no cambia nada.";
+
+  @override
+  String get syncClearAsk => "¿Borrar los datos en la nube?";
+
+  @override
+  String get syncClearDone => "Datos en la nube borrados";
+
+  @override
+  String get syncPlainHint => "La conexión es HTTP sin cifrar; la contraseña y el contenido no van cifrados.";
+
+  @override
+  String get syncLastAt => "Última sincronización";
+
+  @override
+  String get syncNever => "Aún no se ha sincronizado";
+
+  @override
+  String get syncFailed => "Error de sincronización";
+
+  @override
+  String syncTrackSummary(String days, String points) => "$days días · $points puntos";
+
+  @override
+  String syncMsgSummary(String n) => "$n mensajes";
+
+  @override
+  String get syncBackupElsewhere => "Las copias en la nube se suben y se recuperan en la página de copias.";
+
+  @override
+  String get syncNoWeb => "No disponible en la web";
+
+  @override
+  String get syncBusy => "Sincronizando";
+
+  @override
+  String get backupCloud => "Copia en la nube";
+
+  @override
+  String get backupCloudUpload => "Subir";
+
+  @override
+  String get backupCloudRestore => "Recuperar";
+
+  @override
+  String get backupCloudHint => "Las copias en la nube no incluyen el historial; la sincronización lo guarda aparte.";
+
+  @override
+  String get backupCloudDone => "Subido";
+
+  @override
+  String get backupCloudEmpty => "Aún no hay copias en la nube";
+
+  @override
+  String get backupCloudFailed => "Error en la operación en la nube";
+
 }

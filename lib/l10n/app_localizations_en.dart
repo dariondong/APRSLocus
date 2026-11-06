@@ -10297,4 +10297,115 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String lowBatteryWarn(String level) => "Battery at $level%. Turn on power saving?";
 
+  @override
+  String get syncTitle => "Cloud sync";
+
+  @override
+  String get syncLead => "Messages and track history live on the server, ready when you change devices.";
+
+  @override
+  String get syncAccount => "Account";
+
+  @override
+  String get syncPassword => "Password";
+
+  @override
+  String get syncLogin => "Sign in";
+
+  @override
+  String get syncLogout => "Sign out";
+
+  @override
+  String syncLoggedIn(String call) => "Signed in as $call";
+
+  @override
+  String get syncNeedLogin => "Sign in first";
+
+  @override
+  String get syncMode => "Mode";
+
+  @override
+  String get syncModeOff => "Off";
+
+  @override
+  String get syncModeManual => "Manual";
+
+  @override
+  String get syncModeAuto => "Auto";
+
+  @override
+  String get syncModeAutoHint => "Auto: once at startup, then every five minutes.";
+
+  @override
+  String get syncMessages => "Messages";
+
+  @override
+  String get syncTracks => "Track history";
+
+  @override
+  String get syncNow => "Sync now";
+
+  @override
+  String get syncRunDone => "Synced";
+
+  @override
+  String get syncClear => "Clear cloud data";
+
+  @override
+  String get syncClearHint => "Removes this callsign's messages, tracks and backups from the server. Nothing on this device changes.";
+
+  @override
+  String get syncClearAsk => "Clear the cloud data?";
+
+  @override
+  String get syncClearDone => "Cloud data cleared";
+
+  @override
+  String get syncPlainHint => "The connection is plain HTTP, so passwords and content are not encrypted.";
+
+  @override
+  String get syncLastAt => "Last sync";
+
+  @override
+  String get syncNever => "Never synced";
+
+  @override
+  String get syncFailed => "Sync failed";
+
+  @override
+  String syncTrackSummary(String days, String points) => "$days days · $points points";
+
+  @override
+  String syncMsgSummary(String n) => "$n messages";
+
+  @override
+  String get syncBackupElsewhere => "Cloud backups are uploaded and restored from the backup page.";
+
+  @override
+  String get syncNoWeb => "Not available on the web";
+
+  @override
+  String get syncBusy => "Syncing";
+
+  @override
+  String get backupCloud => "Cloud backup";
+
+  @override
+  String get backupCloudUpload => "Upload";
+
+  @override
+  String get backupCloudRestore => "Restore from cloud";
+
+  @override
+  String get backupCloudHint => "Cloud backups leave out track history; tracks are kept by cloud sync.";
+
+  @override
+  String get backupCloudDone => "Uploaded";
+
+  @override
+  String get backupCloudEmpty => "No backups in the cloud yet";
+
+  @override
+  String get backupCloudFailed => "Cloud operation failed";
+
 }
