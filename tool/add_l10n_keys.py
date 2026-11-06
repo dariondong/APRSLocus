@@ -447,9 +447,47 @@ KEYS = {
     'codeContributionEncoding': (
         '中文编码兼容', '中文編碼相容', 'Chinese text encoding',
         '中国語エンコード', 'Codificación china', 'Encoding Tionghoa'),
+    # ── 云同步：同步哪些东西、设备、云端备份 ──
+    'syncContent': (
+        '同步内容', '同步內容', 'What syncs', '同期する内容',
+        'Qué se sincroniza', 'Yang disinkronkan'),
+    'syncContentHint': (
+        '两个都关掉就只登录，不传也不收。',
+        '兩個都關掉就只登入，不傳也不收。',
+        'Turn both off and sync only signs in. Nothing is sent or pulled.',
+        '両方オフにするとログインだけになり、送受信しません。',
+        'Con ambos apagados solo se inicia sesión, sin enviar ni traer nada.',
+        'Kalau keduanya mati, sinkron hanya login, tanpa kirim atau tarik apa pun.'),
+    'syncAutoEvery': (
+        '自动同步间隔', '自動同步間隔', 'Auto sync every', '自動同期の間隔',
+        'Sincronizar cada', 'Sinkron otomatis tiap'),
+    'syncEveryMin': (
+        '{n} 分钟', '{n} 分鐘', '{n} min', '{n} 分', '{n} min', '{n} menit'),
+    'syncDevicesTitle': (
+        '登录的设备', '登入的裝置', 'Signed-in devices', 'ログイン中の端末',
+        'Dispositivos con sesión', 'Perangkat yang login'),
+    'syncDeviceThis': (
+        '本机', '本機', 'This device', 'この端末', 'Este dispositivo', 'Perangkat ini'),
+    'syncDeviceRemove': (
+        '移除', '移除', 'Remove', '削除', 'Quitar', 'Hapus'),
+    'syncDeviceRemoved': (
+        '这台设备已移除，它下次同步要重新登录。',
+        '這台裝置已移除，它下次同步要重新登入。',
+        'Removed. That device has to sign in again on its next sync.',
+        '削除しました。次回の同期には再ログインが必要です。',
+        'Eliminado. Ese dispositivo tendrá que iniciar sesión otra vez.',
+        'Dihapus. Perangkat itu perlu login lagi saat sinkron berikutnya.'),
+    'syncBackups': (
+        '云端备份', '雲端備份', 'Cloud backups', 'クラウドのバックアップ',
+        'Copias en la nube', 'Cadangan di awan'),
+    'syncBackupsCount': (
+        '共 {n} 份', '共 {n} 份', '{n} in total', '計 {n} 件', '{n} en total',
+        '{n} total'),
 }
 
 META = {
+    'syncEveryMin': '{"placeholders": {"n": {"type": "String"}}}',
+    'syncBackupsCount': '{"placeholders": {"n": {"type": "String"}}}',
     'syncLoggedIn': '{"placeholders": {"call": {"type": "String"}}}',
     'syncTrackSummary':
         '{"placeholders": {"days": {"type": "String"}, "points": {"type": "String"}}}',

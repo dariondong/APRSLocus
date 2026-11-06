@@ -440,6 +440,10 @@ jobs:
       - name: Test cloud sync
         run: flutter test test/cloud_sync_test.dart
 
+      # 云同步是可选模块：关掉之后一个请求都不发；同步内容与自动间隔也在这里钉住。
+      - name: Test cloud sync optional module
+        run: flutter test test/cloud_sync_optional_test.dart
+
       # 订阅：呼号省略 SSID / 通配前缀 / 中继路径 / 关键词四种判据，错了不会
       # 编译失败，只会表现成「订阅了却一条也不来」或「全世界的包都来」。
       - name: Test subscriptions

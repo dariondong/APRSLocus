@@ -18447,6 +18447,66 @@ abstract class AppLocalizations {
   /// **'账号就是服务器接入名单里那条，与「APRSNETCN」链路页填的是同一个。'**
   String get syncAccountHint;
 
+  /// No description provided for @syncContent.
+  ///
+  /// In zh, this message translates to:
+  /// **'同步内容'**
+  String get syncContent;
+
+  /// No description provided for @syncContentHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'两个都关掉就只登录，不传也不收。'**
+  String get syncContentHint;
+
+  /// No description provided for @syncAutoEvery.
+  ///
+  /// In zh, this message translates to:
+  /// **'自动同步间隔'**
+  String get syncAutoEvery;
+
+  /// No description provided for @syncEveryMin.
+  ///
+  /// In zh, this message translates to:
+  /// **'{n} 分钟'**
+  String syncEveryMin(String n);
+
+  /// No description provided for @syncDevicesTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'登录的设备'**
+  String get syncDevicesTitle;
+
+  /// No description provided for @syncDeviceThis.
+  ///
+  /// In zh, this message translates to:
+  /// **'本机'**
+  String get syncDeviceThis;
+
+  /// No description provided for @syncDeviceRemove.
+  ///
+  /// In zh, this message translates to:
+  /// **'移除'**
+  String get syncDeviceRemove;
+
+  /// No description provided for @syncDeviceRemoved.
+  ///
+  /// In zh, this message translates to:
+  /// **'这台设备已移除，它下次同步要重新登录。'**
+  String get syncDeviceRemoved;
+
+  /// No description provided for @syncBackups.
+  ///
+  /// In zh, this message translates to:
+  /// **'云端备份'**
+  String get syncBackups;
+
+  /// No description provided for @syncBackupsCount.
+  ///
+  /// In zh, this message translates to:
+  /// **'共 {n} 份'**
+  String syncBackupsCount(String n);
+
 }
 
 class _AppLocalizationsDelegate

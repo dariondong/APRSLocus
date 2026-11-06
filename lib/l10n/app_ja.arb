@@ -4491,5 +4491,17 @@
   "syncServerNow": "使用中のアドレス",
   "syncServerHint": "アドレスを変えると再ログインになります。前のサーバーのデータは移りません。",
   "syncCloudData": "サーバー上のデータ",
-  "syncAccountHint": "アカウントはサーバーの許可リストにあるもの。APRSNETCN リンクのページと同じです。"
+  "syncAccountHint": "アカウントはサーバーの許可リストにあるもの。APRSNETCN リンクのページと同じです。",
+  "syncContent": "同期する内容",
+  "syncContentHint": "両方オフにするとログインだけになり、送受信しません。",
+  "syncAutoEvery": "自動同期の間隔",
+  "syncEveryMin": "{n} 分",
+  "syncDevicesTitle": "ログイン中の端末",
+  "syncDeviceThis": "この端末",
+  "syncDeviceRemove": "削除",
+  "syncDeviceRemoved": "削除しました。次回の同期には再ログインが必要です。",
+  "syncBackups": "クラウドのバックアップ",
+  "syncBackupsCount": "計 {n} 件",
+  "@syncEveryMin": {"placeholders": {"n": {"type": "String"}}},
+  "@syncBackupsCount": {"placeholders": {"n": {"type": "String"}}}
 }

@@ -15,9 +15,9 @@ import 'widgets.dart';
 /// 这一组是可分离的：`AppFeature.cloudSync` 关掉之后整块不渲染，
 /// 定时同步与手动同步都不再发请求（见 AppState.cloudSyncOn）。
 ///
-/// 第一张管「连哪台、用谁的账号、怎么同步」，第二张管「云端现在有什么」。
-/// 云端备份不在这儿：上传与取回留在「备份与恢复」页，那页本来就管整份备份的
-/// 导出与预览，多一个入口只会让人分不清两份东西。
+/// 三张卡各管一件事：①用谁的账号、同步什么、多久一次；②云端现在有多少；
+/// ③哪些设备登录着。云端备份的上传与取回留在「备份与恢复」页 —— 那边管
+/// 整份备份的预览与覆盖，两份东西放一个页面里只会让人分不清。
 class CloudSyncCards extends StatefulWidget {
   final AppState state;
   const CloudSyncCards({super.key, required this.state});
@@ -73,6 +73,12 @@ class _CloudSyncCardsState extends State<CloudSyncCards> {
     }
     return '${at.month.toString().padLeft(2, '0')}-'
         '${at.day.toString().padLeft(2, '0')} $hm';
+  }
+
+  /// 服务端给的 ISO 时间（带偏移）→ `11-06 08:12` 这种短写法。
+  String _short(String? iso) {
+    if (iso == null || iso.length < 16) return '';
+    return '${iso.substring(5, 10)} ${iso.substring(11, 16)}';
   }
 
   Future<void> _refresh() async {
@@ -171,6 +177,30 @@ class _CloudSyncCardsState extends State<CloudSyncCards> {
     );
   }
 
+  /// 把某台设备踢掉：它下次同步就得重新登录。本机不在列表里给这个按钮。
+  Future<void> _removeDevice(S s, String id) async {
+    if (id.isEmpty) return;
+    setState(() => _busy = true);
+    try {
+      await st.syncApi.dropDevice(id);
+      if (!mounted) return;
+      setState(() => _busy = false);
+      await _refresh();
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+            content: Text(s.syncDeviceRemoved),
+            behavior: SnackBarBehavior.floating),
+      );
+    } catch (_) {
+      if (!mounted) return;
+      setState(() {
+        _busy = false;
+        _err = 'network';
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final s = S.of(context);
@@ -180,11 +210,15 @@ class _CloudSyncCardsState extends State<CloudSyncCards> {
         _syncCard(s),
         const SizedBox(height: 16),
         _dataCard(s),
+        if (st.syncToken.isNotEmpty) ...[
+          const SizedBox(height: 16),
+          _devicesCard(s),
+        ],
       ]),
     );
   }
 
-  /// ① 这一张：数据在哪台机器、用谁的账号、怎么同步。
+  /// ① 这一张：用谁的账号、同步什么、多久一次。
   Widget _syncCard(S s) {
     final logged = st.syncToken.isNotEmpty;
     return SettingsSectionCard(
@@ -220,7 +254,35 @@ class _CloudSyncCardsState extends State<CloudSyncCards> {
               : (v == 'manual' ? s.syncModeManual : s.syncModeOff),
           onChanged: st.setSyncMode,
         ),
+        if (st.syncMode == 'auto')
+          SettingsChoice<int>(
+            s.syncAutoEvery,
+            value: st.syncAutoMinutes,
+            options: AppState.syncAutoChoices,
+            labelOf: (v) => s.syncEveryMin('$v'),
+            onChanged: st.setSyncAutoMinutes,
+          ),
         SettingsHint(s.syncModeAutoHint),
+        // 同步哪些东西：写消息的人不想连轨迹一起传，就关掉那一个
+        SettingsSwitch(
+          s.syncContent,
+          value: st.syncMessagesOn || st.syncTracksOn,
+          onChanged: (v) {
+            st.setSyncMessagesOn(v);
+            st.setSyncTracksOn(v);
+          },
+        ),
+        SettingsSwitch(
+          s.syncMessages,
+          value: st.syncMessagesOn,
+          onChanged: st.setSyncMessagesOn,
+        ),
+        SettingsSwitch(
+          s.syncTracks,
+          value: st.syncTracksOn,
+          onChanged: st.setSyncTracksOn,
+        ),
+        SettingsHint(s.syncContentHint),
         // 明文这一条必须留着：口令与报文都会经过网络，用户有权先知道
         SettingsHint(s.syncPlainHint, color: C.orange),
       ],
@@ -298,6 +360,7 @@ class _CloudSyncCardsState extends State<CloudSyncCards> {
     final ready = st.syncToken.isNotEmpty;
     final msgs = (_remote?['messages'] as Map?) ?? const {};
     final tracks = (_remote?['tracks'] as Map?) ?? const {};
+    final backups = (_remote?['backups'] as List?) ?? const [];
     final msgCount = (msgs['count'] as num?)?.toInt() ?? 0;
     final days = (tracks['days'] as num?)?.toInt() ?? 0;
     final points = (tracks['points'] as num?)?.toInt() ?? 0;
@@ -313,6 +376,10 @@ class _CloudSyncCardsState extends State<CloudSyncCards> {
         SettingsRow2(
           s.syncTracks,
           ready ? s.syncTrackSummary('$days', '$points') : '—',
+        ),
+        SettingsRow2(
+          s.syncBackups,
+          ready ? s.syncBackupsCount('${backups.length}') : '—',
         ),
         SettingsRow2(s.syncLastAt, _lastText(s)),
         if (_err.isNotEmpty)
@@ -363,6 +430,57 @@ class _CloudSyncCardsState extends State<CloudSyncCards> {
         SettingsHint(s.syncClearHint),
         SettingsHint(s.syncBackupElsewhere),
       ],
+    );
+  }
+
+  /// ③ 这一张：哪些设备登录着。丢掉一台，它下次同步就得重新登录。
+  Widget _devicesCard(S s) {
+    final list = (_remote?['devices'] as List?) ?? const [];
+    return SettingsSectionCard(
+      title: s.syncDevicesTitle,
+      icon: Icons.devices_rounded,
+      color: C.purple,
+      children: [
+        for (final row in list)
+          if (row is Map) _deviceRow(s, Map<String, dynamic>.from(row)),
+      ],
+    );
+  }
+
+  Widget _deviceRow(S s, Map<String, dynamic> row) {
+    final id = (row['device'] as String?) ?? '';
+    final ver = (row['ver'] as String?) ?? '';
+    final plat = (row['platform'] as String?) ?? '';
+    final last = _short(row['last'] as String?);
+    final mine = id.isNotEmpty && id == st.syncDeviceId;
+    final bits = [plat, ver].where((x) => x.isNotEmpty).join(' ');
+    final title = mine
+        ? '${bits.isEmpty ? id : bits} · ${s.syncDeviceThis}'
+        : (bits.isEmpty ? id : bits);
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(14, 8, 14, 8),
+      child: Row(
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(title, style: ts(12, w: FontWeight.w600)),
+                if (last.isNotEmpty)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 2),
+                    child: Text(last, style: ts(11, c: C.slate)),
+                  ),
+              ],
+            ),
+          ),
+          if (!mine)
+            TextButton(
+              onPressed: _busy ? null : () => _removeDevice(s, id),
+              child: Text(s.syncDeviceRemove, style: ts(12, c: C.orange)),
+            ),
+        ],
+      ),
     );
   }
 }

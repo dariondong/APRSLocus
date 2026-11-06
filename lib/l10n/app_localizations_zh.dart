@@ -10044,6 +10044,36 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String get syncAccountHint => "账号就是服务器接入名单里那条，与「APRSNETCN」链路页填的是同一个。";
 
+  @override
+  String get syncContent => "同步内容";
+
+  @override
+  String get syncContentHint => "两个都关掉就只登录，不传也不收。";
+
+  @override
+  String get syncAutoEvery => "自动同步间隔";
+
+  @override
+  String syncEveryMin(String n) => "$n 分钟";
+
+  @override
+  String get syncDevicesTitle => "登录的设备";
+
+  @override
+  String get syncDeviceThis => "本机";
+
+  @override
+  String get syncDeviceRemove => "移除";
+
+  @override
+  String get syncDeviceRemoved => "这台设备已移除，它下次同步要重新登录。";
+
+  @override
+  String get syncBackups => "云端备份";
+
+  @override
+  String syncBackupsCount(String n) => "共 $n 份";
+
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
@@ -20084,5 +20114,35 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get syncAccountHint => "帳號就是伺服器接入名單裡那條，與「APRSNETCN」鏈路頁填的是同一個。";
+
+  @override
+  String get syncContent => "同步內容";
+
+  @override
+  String get syncContentHint => "兩個都關掉就只登入，不傳也不收。";
+
+  @override
+  String get syncAutoEvery => "自動同步間隔";
+
+  @override
+  String syncEveryMin(String n) => "$n 分鐘";
+
+  @override
+  String get syncDevicesTitle => "登入的裝置";
+
+  @override
+  String get syncDeviceThis => "本機";
+
+  @override
+  String get syncDeviceRemove => "移除";
+
+  @override
+  String get syncDeviceRemoved => "這台裝置已移除，它下次同步要重新登入。";
+
+  @override
+  String get syncBackups => "雲端備份";
+
+  @override
+  String syncBackupsCount(String n) => "共 $n 份";
 
 }

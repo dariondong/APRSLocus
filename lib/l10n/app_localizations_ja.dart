@@ -10144,4 +10144,34 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String get syncAccountHint => "アカウントはサーバーの許可リストにあるもの。APRSNETCN リンクのページと同じです。";
 
+  @override
+  String get syncContent => "同期する内容";
+
+  @override
+  String get syncContentHint => "両方オフにするとログインだけになり、送受信しません。";
+
+  @override
+  String get syncAutoEvery => "自動同期の間隔";
+
+  @override
+  String syncEveryMin(String n) => "$n 分";
+
+  @override
+  String get syncDevicesTitle => "ログイン中の端末";
+
+  @override
+  String get syncDeviceThis => "この端末";
+
+  @override
+  String get syncDeviceRemove => "削除";
+
+  @override
+  String get syncDeviceRemoved => "削除しました。次回の同期には再ログインが必要です。";
+
+  @override
+  String get syncBackups => "クラウドのバックアップ";
+
+  @override
+  String syncBackupsCount(String n) => "計 $n 件";
+
 }

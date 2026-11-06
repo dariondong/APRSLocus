@@ -98,6 +98,7 @@ const List<BackupGroupSpec> kBackupGroups = [
     'syncMode', 'syncAccount', 'syncDeviceId', 'syncCall',
     'syncMsgAt', 'syncPullAt', 'syncTrackAt',
     'syncTrackSig', 'syncServerSig',
+    'syncAutoMinutes', 'syncMessagesOn', 'syncTracksOn',
     // 纯网络定位时的台站符号 + 外置 GPS 待机 + 心率异常告警：三者都是
     // 「用户自己配的行为偏好」，换机后应当保留。
     'networkSymbol', 'extGpsStandby',

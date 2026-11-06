@@ -5170,5 +5170,17 @@
   "syncServerNow": "当前地址",
   "syncServerHint": "换地址要重新登录，旧地址上的数据不搬。",
   "syncCloudData": "云端数据",
-  "syncAccountHint": "账号就是服务器接入名单里那条，与「APRSNETCN」链路页填的是同一个。"
+  "syncAccountHint": "账号就是服务器接入名单里那条，与「APRSNETCN」链路页填的是同一个。",
+  "syncContent": "同步内容",
+  "syncContentHint": "两个都关掉就只登录，不传也不收。",
+  "syncAutoEvery": "自动同步间隔",
+  "syncEveryMin": "{n} 分钟",
+  "syncDevicesTitle": "登录的设备",
+  "syncDeviceThis": "本机",
+  "syncDeviceRemove": "移除",
+  "syncDeviceRemoved": "这台设备已移除，它下次同步要重新登录。",
+  "syncBackups": "云端备份",
+  "syncBackupsCount": "共 {n} 份",
+  "@syncEveryMin": {"placeholders": {"n": {"type": "String"}}},
+  "@syncBackupsCount": {"placeholders": {"n": {"type": "String"}}}
 }

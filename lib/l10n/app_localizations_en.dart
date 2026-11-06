@@ -10423,4 +10423,34 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get syncAccountHint => "The account is the one on the server's access list, the same one the APRSNETCN link page uses.";
 
+  @override
+  String get syncContent => "What syncs";
+
+  @override
+  String get syncContentHint => "Turn both off and sync only signs in. Nothing is sent or pulled.";
+
+  @override
+  String get syncAutoEvery => "Auto sync every";
+
+  @override
+  String syncEveryMin(String n) => "$n min";
+
+  @override
+  String get syncDevicesTitle => "Signed-in devices";
+
+  @override
+  String get syncDeviceThis => "This device";
+
+  @override
+  String get syncDeviceRemove => "Remove";
+
+  @override
+  String get syncDeviceRemoved => "Removed. That device has to sign in again on its next sync.";
+
+  @override
+  String get syncBackups => "Cloud backups";
+
+  @override
+  String syncBackupsCount(String n) => "$n in total";
+
 }

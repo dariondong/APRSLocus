@@ -4491,5 +4491,17 @@
   "syncServerNow": "Dirección en uso",
   "syncServerHint": "Cambiar la dirección cierra la sesión. Los datos del servidor anterior no se mueven.",
   "syncCloudData": "Datos en el servidor",
-  "syncAccountHint": "La cuenta es la de la lista de acceso del servidor, la misma que usa la página de la conexión APRSNETCN."
+  "syncAccountHint": "La cuenta es la de la lista de acceso del servidor, la misma que usa la página de la conexión APRSNETCN.",
+  "syncContent": "Qué se sincroniza",
+  "syncContentHint": "Con ambos apagados solo se inicia sesión, sin enviar ni traer nada.",
+  "syncAutoEvery": "Sincronizar cada",
+  "syncEveryMin": "{n} min",
+  "syncDevicesTitle": "Dispositivos con sesión",
+  "syncDeviceThis": "Este dispositivo",
+  "syncDeviceRemove": "Quitar",
+  "syncDeviceRemoved": "Eliminado. Ese dispositivo tendrá que iniciar sesión otra vez.",
+  "syncBackups": "Copias en la nube",
+  "syncBackupsCount": "{n} en total",
+  "@syncEveryMin": {"placeholders": {"n": {"type": "String"}}},
+  "@syncBackupsCount": {"placeholders": {"n": {"type": "String"}}}
 }

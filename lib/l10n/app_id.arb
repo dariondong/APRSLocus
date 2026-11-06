@@ -4491,5 +4491,17 @@
   "syncServerNow": "Alamat terpakai",
   "syncServerHint": "Ganti alamat berarti login ulang. Data di server lama tidak ikut pindah.",
   "syncCloudData": "Data di server",
-  "syncAccountHint": "Akun adalah yang ada di daftar akses server, sama dengan yang dipakai halaman tautan APRSNETCN."
+  "syncAccountHint": "Akun adalah yang ada di daftar akses server, sama dengan yang dipakai halaman tautan APRSNETCN.",
+  "syncContent": "Yang disinkronkan",
+  "syncContentHint": "Kalau keduanya mati, sinkron hanya login, tanpa kirim atau tarik apa pun.",
+  "syncAutoEvery": "Sinkron otomatis tiap",
+  "syncEveryMin": "{n} menit",
+  "syncDevicesTitle": "Perangkat yang login",
+  "syncDeviceThis": "Perangkat ini",
+  "syncDeviceRemove": "Hapus",
+  "syncDeviceRemoved": "Dihapus. Perangkat itu perlu login lagi saat sinkron berikutnya.",
+  "syncBackups": "Cadangan di awan",
+  "syncBackupsCount": "{n} total",
+  "@syncEveryMin": {"placeholders": {"n": {"type": "String"}}},
+  "@syncBackupsCount": {"placeholders": {"n": {"type": "String"}}}
 }

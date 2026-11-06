@@ -10433,4 +10433,34 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get syncAccountHint => "Akun adalah yang ada di daftar akses server, sama dengan yang dipakai halaman tautan APRSNETCN.";
 
+  @override
+  String get syncContent => "Yang disinkronkan";
+
+  @override
+  String get syncContentHint => "Kalau keduanya mati, sinkron hanya login, tanpa kirim atau tarik apa pun.";
+
+  @override
+  String get syncAutoEvery => "Sinkron otomatis tiap";
+
+  @override
+  String syncEveryMin(String n) => "$n menit";
+
+  @override
+  String get syncDevicesTitle => "Perangkat yang login";
+
+  @override
+  String get syncDeviceThis => "Perangkat ini";
+
+  @override
+  String get syncDeviceRemove => "Hapus";
+
+  @override
+  String get syncDeviceRemoved => "Dihapus. Perangkat itu perlu login lagi saat sinkron berikutnya.";
+
+  @override
+  String get syncBackups => "Cadangan di awan";
+
+  @override
+  String syncBackupsCount(String n) => "$n total";
+
 }

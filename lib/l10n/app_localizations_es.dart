@@ -10482,4 +10482,34 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get syncAccountHint => "La cuenta es la de la lista de acceso del servidor, la misma que usa la página de la conexión APRSNETCN.";
 
+  @override
+  String get syncContent => "Qué se sincroniza";
+
+  @override
+  String get syncContentHint => "Con ambos apagados solo se inicia sesión, sin enviar ni traer nada.";
+
+  @override
+  String get syncAutoEvery => "Sincronizar cada";
+
+  @override
+  String syncEveryMin(String n) => "$n min";
+
+  @override
+  String get syncDevicesTitle => "Dispositivos con sesión";
+
+  @override
+  String get syncDeviceThis => "Este dispositivo";
+
+  @override
+  String get syncDeviceRemove => "Quitar";
+
+  @override
+  String get syncDeviceRemoved => "Eliminado. Ese dispositivo tendrá que iniciar sesión otra vez.";
+
+  @override
+  String get syncBackups => "Copias en la nube";
+
+  @override
+  String syncBackupsCount(String n) => "$n en total";
+
 }

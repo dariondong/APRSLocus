@@ -4491,5 +4491,17 @@
   "syncServerNow": "Address in use",
   "syncServerHint": "Changing it signs you out. Nothing moves over from the old server.",
   "syncCloudData": "On the server",
-  "syncAccountHint": "The account is the one on the server's access list, the same one the APRSNETCN link page uses."
+  "syncAccountHint": "The account is the one on the server's access list, the same one the APRSNETCN link page uses.",
+  "syncContent": "What syncs",
+  "syncContentHint": "Turn both off and sync only signs in. Nothing is sent or pulled.",
+  "syncAutoEvery": "Auto sync every",
+  "syncEveryMin": "{n} min",
+  "syncDevicesTitle": "Signed-in devices",
+  "syncDeviceThis": "This device",
+  "syncDeviceRemove": "Remove",
+  "syncDeviceRemoved": "Removed. That device has to sign in again on its next sync.",
+  "syncBackups": "Cloud backups",
+  "syncBackupsCount": "{n} in total",
+  "@syncEveryMin": {"placeholders": {"n": {"type": "String"}}},
+  "@syncBackupsCount": {"placeholders": {"n": {"type": "String"}}}
 }

@@ -4377,6 +4377,10 @@ class AppState extends ChangeNotifier {
   // 令牌与本机安装标识都不进备份：换台机器重新登录一次就行。
   static const syncModes = ['off', 'manual', 'auto'];
 
+  /// 自动那一档隔多久跑一轮（分钟）。手机上太勤会一直亮着前台服务。
+  static const syncAutoChoices = [5, 15, 60];
+  int syncAutoMinutes = 5;
+
   /// 同步方式：`off` 关闭 / `manual` 手动 / `auto` 自动（每 5 分钟一轮）。
   String syncMode = 'off';
   String syncAccount = '';
@@ -4386,6 +4390,10 @@ class AppState extends ChangeNotifier {
   String syncToken = '';
   String syncDeviceId = '';
   String syncCall = '';
+
+  /// 同步哪些东西。两个都关掉就只登录，不传也不收。
+  bool syncMessagesOn = true;
+  bool syncTracksOn = true;
 
   /// 三类数据各自上次成功的时间（毫秒）。
   int syncMsgAt = 0;
@@ -4435,6 +4443,28 @@ class AppState extends ChangeNotifier {
   void setSyncMode(String v) {
     if (!syncModes.contains(v)) return;
     syncMode = v;
+    persist();
+    _notify();
+  }
+
+  void setSyncAutoMinutes(int v) {
+    if (!syncAutoChoices.contains(v)) return;
+    syncAutoMinutes = v;
+    _syncNextAt = DateTime.fromMillisecondsSinceEpoch(0);
+    persist();
+    _notify();
+  }
+
+  void setSyncMessagesOn(bool v) {
+    if (syncMessagesOn == v) return;
+    syncMessagesOn = v;
+    persist();
+    _notify();
+  }
+
+  void setSyncTracksOn(bool v) {
+    if (syncTracksOn == v) return;
+    syncTracksOn = v;
     persist();
     _notify();
   }
@@ -4500,6 +4530,7 @@ class AppState extends ChangeNotifier {
 
   /// 把本地消息推到云端。[all] = 整批重传（第一次登录时用）。
   Future<String> syncPushMessages({bool all = false}) async {
+    if (!syncMessagesOn) return '';
     if (syncToken.isEmpty) return 'need-login';
     final since = all ? 0 : syncMsgAt;
     final pending = <Map<String, dynamic>>[];
@@ -4529,6 +4560,7 @@ class AppState extends ChangeNotifier {
 
   /// 把云端比本地多的消息拉回来。同一条（同一个 mid）不重复，已确认状态只往上推。
   Future<String> syncPullMessages() async {
+    if (!syncMessagesOn) return '';
     if (syncToken.isEmpty) return 'need-login';
     try {
       final rows = await syncApi.pullMessages(syncPullAt);
@@ -4586,6 +4618,7 @@ class AppState extends ChangeNotifier {
 
   /// 把本地轨迹推上去：只传变过的天（今天每次都会变）。
   Future<String> syncPushTracks({bool all = false}) async {
+    if (!syncTracksOn) return '';
     if (syncToken.isEmpty) return 'need-login';
     final store = TrackLogStore.instance;
     if (!store.available) return 'no-tracks';
@@ -4618,6 +4651,7 @@ class AppState extends ChangeNotifier {
 
   /// 拉云端比本地多的天（多设备已经在服务端合成一条）。
   Future<String> syncPullTracks() async {
+    if (!syncTracksOn) return '';
     if (syncToken.isEmpty) return 'need-login';
     final store = TrackLogStore.instance;
     if (!store.available) return 'no-tracks';
@@ -4675,13 +4709,13 @@ class AppState extends ChangeNotifier {
     }
   }
 
-  /// 自动档：每 5 分钟一轮，安静地跑，失败不弹东西。
+  /// 自动档：按 [syncAutoMinutes] 跑一轮，安静地跑，失败不弹东西。
   void _syncAutoTick() {
     if (!cloudSyncOn) return;          // 模块关掉就不碰网络
     if (syncMode != 'auto' || syncToken.isEmpty || _syncBusy) return;
     final now = DateTime.now();
     if (now.isBefore(_syncNextAt)) return;
-    _syncNextAt = now.add(const Duration(minutes: 5));
+    _syncNextAt = now.add(Duration(minutes: syncAutoMinutes));
     unawaited(syncNow());
   }
 
@@ -5278,6 +5312,9 @@ class AppState extends ChangeNotifier {
     syncMode = 'off';
     syncAccount = '';
     syncPassword = '';
+    syncAutoMinutes = 5;
+    syncMessagesOn = true;
+    syncTracksOn = true;
     syncToken = '';
     syncCall = '';
     syncMsgAt = 0;
@@ -5869,6 +5906,10 @@ class AppState extends ChangeNotifier {
       syncTrackAt = p.getInt('syncTrackAt') ?? syncTrackAt;
       syncTrackSig = p.getString('syncTrackSig') ?? syncTrackSig;
       syncServerSig = p.getString('syncServerSig') ?? syncServerSig;
+      syncAutoMinutes = p.getInt('syncAutoMinutes') ?? syncAutoMinutes;
+      if (!syncAutoChoices.contains(syncAutoMinutes)) syncAutoMinutes = 5;
+      syncMessagesOn = p.getBool('syncMessagesOn') ?? syncMessagesOn;
+      syncTracksOn = p.getBool('syncTracksOn') ?? syncTracksOn;
       useSimLocation = p.getBool('useSimLocation') ?? useSimLocation;
       filterLat = p.getDouble('filterLat') ?? filterLat;
       filterLng = p.getDouble('filterLng') ?? filterLng;
@@ -6271,6 +6312,9 @@ class AppState extends ChangeNotifier {
     await p.setInt('syncTrackAt', syncTrackAt);
     await p.setString('syncTrackSig', syncTrackSig);
     await p.setString('syncServerSig', syncServerSig);
+    await p.setInt('syncAutoMinutes', syncAutoMinutes);
+    await p.setBool('syncMessagesOn', syncMessagesOn);
+    await p.setBool('syncTracksOn', syncTracksOn);
     await p.setBool('useSimLocation', useSimLocation);
     await p.setDouble('filterLat', filterLat);
     await p.setDouble('filterLng', filterLng);
