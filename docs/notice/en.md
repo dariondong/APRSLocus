@@ -227,14 +227,13 @@ The fault was ours. Sorry for the trouble.
 
 ---
 
-## 🔔 What is new: 2.1.36
+## 🔔 What is new: 2.1.43
 
-- Dragging the map one way no longer makes the longitude climb without end; drag back and you land where you started.
-- A centre mark and a coordinate readout sit in the middle of the map. Settings → Display → Map can hide it.
-- The buttons on the right split into columns by the height actually left, so the bottom one is no longer buried under the report bar.
-- Latitude and longitude can read as degrees-minutes or degrees-minutes-seconds. The map readout, my position and station details follow it. Choose it in Settings → Display. Display only, what goes on air does not change.
-- A subscription match raises a system notification titled with the watched value, carrying the callsign and the packet text. One rule counts once per 30 seconds. Settings → Subscriptions can turn it off.
-- The cards on the settings page rise in one after another.
+- Cloud sync uses the address of the APRSNETCN SERVER link, and only connects once an address is filled in.
+- With the address blank, the sync card shows Empty in that row instead of falling back to a server of its own.
+- Tapping sync without an address asks you to fill in the APRSNETCN server address above first.
+- Messages others send you and messages you send others are both kept on the server.
+- The first sync pulls the whole message history back, so it survives a reinstall.
 
 ---
 
@@ -252,9 +251,9 @@ Look up APALOC in the official TOCALL table and you will find it.
 
 The 2.2.0 build published on the Qingling (清零) channel by mistake has been taken down, and the channel works normally again.
 
-Checking for updates now returns the latest stable version, 2.1.36. If you installed 2.2.0, uninstall it first, then install 2.1.36.
+Checking for updates now returns the latest stable version, 2.1.43. If you installed 2.2.0, uninstall it first, then install 2.1.43.
 
-**[Download 2.1.36](https://github.com/dariondong/APRSLocus/releases/download/v2.1.36/APRSLocus_2.1.36.apk)**
+**[Download 2.1.43](https://github.com/dariondong/APRSLocus/releases/download/v2.1.43/APRSLocus_2.1.43.apk)**
 
 ---
 
