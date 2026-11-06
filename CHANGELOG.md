@@ -1,5 +1,23 @@
 # 更新日志
 
+## [2.1.43] - 2026-11-06
+
+### 云同步
+
+- 云同步的地址跟着「APRSNETCN SERVER」那条链路走，地址填了才连。
+- 服务器地址空着时，同步卡那一行写「未填」，不再自己找一台服务器。
+- 没填地址就点同步，会提示先在上面填 APRSNETCN 服务器地址。
+
+## [2.1.43] - 2026-11-06 (English)
+
+### Cloud sync
+
+- Cloud sync uses the address of the APRSNETCN SERVER link and only calls it once an address is
+  filled in.
+- With the address blank, the sync card shows Empty in that row instead of falling back to a server
+  of its own.
+- Tapping sync without an address asks you to fill in the APRSNETCN server address above first.
+
 ## [2.1.42] - 2026-11-06
 
 ### 云同步

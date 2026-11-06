@@ -419,6 +419,26 @@ CARDS = [
 # 只列「重点版本」：中间几十个纯修 bug 的版本归纳进文字说明，完整记录指向 Releases。
 CL = [
     {
+        'ver': 'v2.1.43', 'date': '2026-11-06',
+        'items': [
+            ('fix',
+             T('云同步的地址跟着「APRSNETCN SERVER」那条链路走，地址填了才连。',
+               '雲端同步的地址跟著「APRSNETCN SERVER」那條鏈路走，地址填了才連。',
+               'Cloud sync uses the address of the APRSNETCN SERVER link, and only calls it '
+               'once an address is filled in.')),
+            ('fix',
+             T('服务器地址空着时，同步卡那一行写「未填」，不再自己找一台服务器。',
+               '伺服器地址空著時，同步卡那一行寫「未填」，不再自己找一台伺服器。',
+               'With the address blank, the sync card shows Empty in that row instead of '
+               'falling back to a server of its own.')),
+            ('fix',
+             T('没填地址就点同步，会提示先在上面填 APRSNETCN 服务器地址。',
+               '沒填地址就點同步，會提示先在上面填 APRSNETCN 伺服器地址。',
+               'Tapping sync without an address asks you to fill in the APRSNETCN server '
+               'address above first.')),
+        ],
+    },
+    {
         'ver': 'v2.1.42', 'date': '2026-11-06',
         'items': [
             ('up',
