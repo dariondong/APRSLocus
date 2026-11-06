@@ -1,5 +1,28 @@
 # 更新日志
 
+## [2.1.42] - 2026-11-06
+
+### 云同步
+
+- 云同步搬到「设置 → 服务器 → APRSNETCN SERVER」那一页，跟那条链路在一起配。
+- 「设置 → 功能」里多了一个云同步开关。关掉之后不再联网，两条链路照旧收发。
+- 同步内容可以分开选：消息、历史轨迹各一个开关。
+- 自动同步的间隔可以选五分钟、十五分钟或一小时。
+- 云端数据里多了云端备份的份数，「登录的设备」里能看到哪几台设备登录过，别的设备可以移出。
+
+## [2.1.42] - 2026-11-06 (English)
+
+### Cloud sync
+
+- Cloud sync moved to Settings -> Server -> APRSNETCN SERVER, so it is configured on the page of
+  the server that holds the data.
+- Settings -> Features gained a cloud sync switch. Turn it off and the app makes no cloud
+  requests; both links keep working.
+- What syncs is now a choice: messages and track history each have their own switch.
+- Auto sync can run every five minutes, fifteen minutes or an hour.
+- On the server figures gained the number of cloud backups, and Signed-in devices shows which
+  devices have logged in, with the others removable.
+
 ## [2.1.41] - 2026-11-06
 
 ### 云同步

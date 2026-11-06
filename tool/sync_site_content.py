@@ -419,6 +419,34 @@ CARDS = [
 # 只列「重点版本」：中间几十个纯修 bug 的版本归纳进文字说明，完整记录指向 Releases。
 CL = [
     {
+        'ver': 'v2.1.42', 'date': '2026-11-06',
+        'items': [
+            ('up',
+             T('云同步搬到了「设置 → 服务器 → APRSNETCN SERVER」，跟那条链路在同一页配。',
+               '雲端同步搬到「設定 → 伺服器 → APRSNETCN SERVER」，跟那條鏈路在同一頁配。',
+               'Cloud sync moved to Settings -> Server -> APRSNETCN SERVER, on the page of the '
+               'link that holds the data.')),
+            ('new',
+             T('「设置 → 功能」多了一个云同步开关。关掉之后不再联网，两条链路照旧收发。',
+               '「設定 → 功能」多了一個雲端同步開關。關掉之後不再連網，兩條鏈路照舊收發。',
+               'Settings -> Features gained a cloud sync switch. Turn it off and no cloud '
+               'requests are made; both links keep working.')),
+            ('new',
+             T('同步内容可以分开选：消息、历史轨迹各一个开关。',
+               '同步內容可以分開選：訊息、歷史軌跡各一個開關。',
+               'What syncs is a choice: messages and track history each have their own switch.')),
+            ('new',
+             T('自动同步的间隔可以选五分钟、十五分钟或一小时。',
+               '自動同步的間隔可以選五分鐘、十五分鐘或一小時。',
+               'Auto sync can run every five minutes, fifteen minutes or an hour.')),
+            ('new',
+             T('云端数据里多了备份份数，还能看到哪几台设备登录过，别的设备可以移出。',
+               '雲端資料裡多了備份份數，還能看到哪幾台裝置登入過，別的裝置可以移出。',
+               'The server figures gained the number of cloud backups, and signed-in devices can '
+               'be listed with the others removed.')),
+        ],
+    },
+{
         'ver': 'v2.1.41', 'date': '2026-11-06',
         'items': [
             ('new',
