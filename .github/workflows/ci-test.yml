@@ -435,6 +435,11 @@ jobs:
       - name: Test GPX export
         run: flutter test test/gpx_test.dart
 
+      # 云同步：消息的云端 id（两台设备要对得上，否则同步一次每条变两条）、
+      # 上传字段名（与服务端的列一一对应）与同步地址的拼接。
+      - name: Test cloud sync
+        run: flutter test test/cloud_sync_test.dart
+
       # 订阅：呼号省略 SSID / 通配前缀 / 中继路径 / 关键词四种判据，错了不会
       # 编译失败，只会表现成「订阅了却一条也不来」或「全世界的包都来」。
       - name: Test subscriptions
