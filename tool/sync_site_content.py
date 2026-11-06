@@ -436,6 +436,16 @@ CL = [
                '沒填地址就點同步，會提示先在上面填 APRSNETCN 伺服器地址。',
                'Tapping sync without an address asks you to fill in the APRSNETCN server '
                'address above first.')),
+            ('new',
+             T('别人发给你的、你发给别人的消息，服务器看到了都记一份。',
+               '別人發給你的、你發給別人的訊息，伺服器看到了都記一份。',
+               'Messages others send you and messages you send others are both kept on the '
+               'server.')),
+            ('new',
+             T('第一次同步把云端的消息整份拉回来，重装以后记录还在。',
+               '第一次同步把雲端的訊息整份拉回來，重裝以後記錄還在。',
+               'The first sync pulls the whole message history back, so it survives a '
+               'reinstall.')),
         ],
     },
     {

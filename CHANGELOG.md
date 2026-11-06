@@ -7,6 +7,8 @@
 - 云同步的地址跟着「APRSNETCN SERVER」那条链路走，地址填了才连。
 - 服务器地址空着时，同步卡那一行写「未填」，不再自己找一台服务器。
 - 没填地址就点同步，会提示先在上面填 APRSNETCN 服务器地址。
+- 别人发给你的、你发给别人的消息，服务器看到了都记一份。
+- 第一次同步把云端的消息整份拉回来，重装以后记录还在。
 
 ## [2.1.43] - 2026-11-06 (English)
 
@@ -17,6 +19,8 @@
 - With the address blank, the sync card shows Empty in that row instead of falling back to a server
   of its own.
 - Tapping sync without an address asks you to fill in the APRSNETCN server address above first.
+- Messages others send you and messages you send others are both kept on the server.
+- The first sync pulls the whole message history back, so it survives a reinstall.
 
 ## [2.1.42] - 2026-11-06
 
