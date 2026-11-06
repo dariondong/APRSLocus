@@ -4,8 +4,8 @@
 /// APRS-IS 的超集：标准登录行照旧可用，另外多认一对「名单账号 + 口令」
 /// （`auth <账号> <口令>`，排在 `filter` 之前）和一套 HTTP 接口。
 ///
-/// 地址写死在这里是因为它现在只有一个公网入口，没有域名；将来上了域名，
-/// 改这三个常量就行，界面里引用的是 `kAcnServerHost` 而不是字面量。
+/// 一个地址都不预填：界面里的服务器地址留空，用户自己填。这里只留旧版本
+/// 预填过的那台机器 —— 更新时认出老地址，把账号与口令带到新的链路设置里。
 library;
 
 import 'dart:convert';
@@ -18,16 +18,13 @@ const String kAcnServerHost = '8.138.199.11';
 /// APRS-IS 兼容的 TCP 端口
 const int kAcnServerPort = 14580;
 
-/// HTTP 接口入口（`/api/v1/...`，见服务器仓库的 docs/API.md）
-const String kAcnHttpBase = 'http://8.138.199.11:8899';
-
 /// 界面里填的 APRS 地址 → HTTP 接口入口。
 ///
 /// 那台机器上 APRS 端口（14580）与 HTTP 端口（8899）是分开的两个设置，界面
 /// 只让人填 APRS 那一个，所以这里补上 8899。
 ///
-/// 地址空着就返回空串：不拿 [kAcnHttpBase] 当兜底 —— 用户没填地址时，软件
-/// 不该自己去连一台服务器（调用方据此跳过 HTTP 请求）。
+/// 地址空着就返回空串：一个地址都不预填，也不拿任何内置地址当兜底（
+/// 用户没填地址时，软件不该自己去连一台服务器，调用方据此跳过 HTTP 请求）。
 String acnHttpBaseHost(String host) {
   final h = host.trim();
   return h.isEmpty ? '' : 'http://$h:8899';
@@ -180,9 +177,11 @@ class AcnSyncResult {
 /// token 只放在内存里：换一台机器、重启一次就要重新用账号口令换一个，这本来
 /// 就是一两百毫秒的事，落盘一份 token 反而要在备份里处理它。
 class AcnClient {
-  AcnClient({this.base = kAcnHttpBase});
+  AcnClient({required this.base});
 
   /// 接口入口。换一台服务器就是换这个值。
+  ///
+  /// 没有默认值：一个地址都不预填，地址空着就不该构造出客户端。
   final String base;
   String _token = '';
   String _tokenFor = '';
