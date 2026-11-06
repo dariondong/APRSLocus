@@ -4490,5 +4490,6 @@
   "syncServer": "Server",
   "syncServerNow": "Alamat terpakai",
   "syncServerHint": "Ganti alamat berarti login ulang. Data di server lama tidak ikut pindah.",
-  "syncCloudData": "Data di server"
+  "syncCloudData": "Data di server",
+  "syncAccountHint": "Akun adalah yang ada di daftar akses server, sama dengan yang dipakai halaman tautan APRSNETCN."
 }

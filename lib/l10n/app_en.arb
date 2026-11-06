@@ -4490,5 +4490,6 @@
   "syncServer": "Server",
   "syncServerNow": "Address in use",
   "syncServerHint": "Changing it signs you out. Nothing moves over from the old server.",
-  "syncCloudData": "On the server"
+  "syncCloudData": "On the server",
+  "syncAccountHint": "The account is the one on the server's access list, the same one the APRSNETCN link page uses."
 }

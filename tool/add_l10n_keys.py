@@ -52,6 +52,13 @@ KEYS = {
     'syncCloudData': (
         '云端数据', '雲端資料', 'On the server', 'サーバー上のデータ',
         'Datos en el servidor', 'Data di server'),
+    'syncAccountHint': (
+        '账号就是服务器接入名单里那条，与「APRSNETCN」链路页填的是同一个。',
+        '帳號就是伺服器接入名單裡那條，與「APRSNETCN」鏈路頁填的是同一個。',
+        "The account is the one on the server's access list, the same one the APRSNETCN link page uses.",
+        'アカウントはサーバーの許可リストにあるもの。APRSNETCN リンクのページと同じです。',
+        'La cuenta es la de la lista de acceso del servidor, la misma que usa la página de la conexión APRSNETCN.',
+        'Akun adalah yang ada di daftar akses server, sama dengan yang dipakai halaman tautan APRSNETCN.'),
     # ── 云同步：消息 / 云端备份 / 历史轨迹（账号就是名单里那条）──
     'syncTitle': (
         '云同步', '雲端同步', 'Cloud sync', 'クラウド同期',

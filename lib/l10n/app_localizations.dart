@@ -18441,6 +18441,12 @@ abstract class AppLocalizations {
   /// **'云端数据'**
   String get syncCloudData;
 
+  /// No description provided for @syncAccountHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'账号就是服务器接入名单里那条，与「APRSNETCN」链路页填的是同一个。'**
+  String get syncAccountHint;
+
 }
 
 class _AppLocalizationsDelegate

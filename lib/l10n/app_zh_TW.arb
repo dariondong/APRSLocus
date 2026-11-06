@@ -5078,5 +5078,6 @@
   "syncServer": "伺服器",
   "syncServerNow": "目前位址",
   "syncServerHint": "換位址要重新登入，舊位址上的資料不搬。",
-  "syncCloudData": "雲端資料"
+  "syncCloudData": "雲端資料",
+  "syncAccountHint": "帳號就是伺服器接入名單裡那條，與「APRSNETCN」鏈路頁填的是同一個。"
 }

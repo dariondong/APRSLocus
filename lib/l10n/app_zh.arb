@@ -5169,5 +5169,6 @@
   "syncServer": "服务器",
   "syncServerNow": "当前地址",
   "syncServerHint": "换地址要重新登录，旧地址上的数据不搬。",
-  "syncCloudData": "云端数据"
+  "syncCloudData": "云端数据",
+  "syncAccountHint": "账号就是服务器接入名单里那条，与「APRSNETCN」链路页填的是同一个。"
 }

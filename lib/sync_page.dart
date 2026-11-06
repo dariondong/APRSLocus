@@ -259,6 +259,7 @@ class _SyncPageState extends State<SyncPage> {
             ],
           ),
         ),
+        SettingsHint(s.syncAccountHint),
       ],
     );
   }

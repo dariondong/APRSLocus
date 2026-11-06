@@ -10041,6 +10041,9 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String get syncCloudData => "云端数据";
 
+  @override
+  String get syncAccountHint => "账号就是服务器接入名单里那条，与「APRSNETCN」链路页填的是同一个。";
+
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
@@ -20078,5 +20081,8 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get syncCloudData => "雲端資料";
+
+  @override
+  String get syncAccountHint => "帳號就是伺服器接入名單裡那條，與「APRSNETCN」鏈路頁填的是同一個。";
 
 }

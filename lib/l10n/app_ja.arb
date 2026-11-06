@@ -4490,5 +4490,6 @@
   "syncServer": "サーバー",
   "syncServerNow": "使用中のアドレス",
   "syncServerHint": "アドレスを変えると再ログインになります。前のサーバーのデータは移りません。",
-  "syncCloudData": "サーバー上のデータ"
+  "syncCloudData": "サーバー上のデータ",
+  "syncAccountHint": "アカウントはサーバーの許可リストにあるもの。APRSNETCN リンクのページと同じです。"
 }
