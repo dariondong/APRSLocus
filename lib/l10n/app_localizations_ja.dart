@@ -10129,4 +10129,16 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String get backupCloudFailed => "クラウド操作に失敗しました";
 
+  @override
+  String get syncServer => "サーバー";
+
+  @override
+  String get syncServerNow => "使用中のアドレス";
+
+  @override
+  String get syncServerHint => "アドレスを変えると再ログインになります。前のサーバーのデータは移りません。";
+
+  @override
+  String get syncCloudData => "サーバー上のデータ";
+
 }

@@ -18417,6 +18417,30 @@ abstract class AppLocalizations {
   /// **'云端操作失败'**
   String get backupCloudFailed;
 
+  /// No description provided for @syncServer.
+  ///
+  /// In zh, this message translates to:
+  /// **'服务器'**
+  String get syncServer;
+
+  /// No description provided for @syncServerNow.
+  ///
+  /// In zh, this message translates to:
+  /// **'当前地址'**
+  String get syncServerNow;
+
+  /// No description provided for @syncServerHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'换地址要重新登录，旧地址上的数据不搬。'**
+  String get syncServerHint;
+
+  /// No description provided for @syncCloudData.
+  ///
+  /// In zh, this message translates to:
+  /// **'云端数据'**
+  String get syncCloudData;
+
 }
 
 class _AppLocalizationsDelegate

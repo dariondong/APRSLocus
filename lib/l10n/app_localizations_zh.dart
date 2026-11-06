@@ -10029,6 +10029,18 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String get backupCloudFailed => "云端操作失败";
 
+  @override
+  String get syncServer => "服务器";
+
+  @override
+  String get syncServerNow => "当前地址";
+
+  @override
+  String get syncServerHint => "换地址要重新登录，旧地址上的数据不搬。";
+
+  @override
+  String get syncCloudData => "云端数据";
+
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
@@ -20054,5 +20066,17 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get backupCloudFailed => "雲端操作失敗";
+
+  @override
+  String get syncServer => "伺服器";
+
+  @override
+  String get syncServerNow => "目前位址";
+
+  @override
+  String get syncServerHint => "換位址要重新登入，舊位址上的資料不搬。";
+
+  @override
+  String get syncCloudData => "雲端資料";
 
 }

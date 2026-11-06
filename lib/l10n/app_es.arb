@@ -4486,5 +4486,9 @@
   "backupCloudFailed": "Error en la operación en la nube",
   "@syncLoggedIn": {"placeholders": {"call": {"type": "String"}}},
   "@syncTrackSummary": {"placeholders": {"days": {"type": "String"}, "points": {"type": "String"}}},
-  "@syncMsgSummary": {"placeholders": {"n": {"type": "String"}}}
+  "@syncMsgSummary": {"placeholders": {"n": {"type": "String"}}},
+  "syncServer": "Servidor",
+  "syncServerNow": "Dirección en uso",
+  "syncServerHint": "Cambiar la dirección cierra la sesión. Los datos del servidor anterior no se mueven.",
+  "syncCloudData": "Datos en el servidor"
 }

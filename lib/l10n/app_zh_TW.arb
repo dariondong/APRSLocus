@@ -5074,5 +5074,9 @@
   "backupCloudFailed": "雲端操作失敗",
   "@syncLoggedIn": {"placeholders": {"call": {"type": "String"}}},
   "@syncTrackSummary": {"placeholders": {"days": {"type": "String"}, "points": {"type": "String"}}},
-  "@syncMsgSummary": {"placeholders": {"n": {"type": "String"}}}
+  "@syncMsgSummary": {"placeholders": {"n": {"type": "String"}}},
+  "syncServer": "伺服器",
+  "syncServerNow": "目前位址",
+  "syncServerHint": "換位址要重新登入，舊位址上的資料不搬。",
+  "syncCloudData": "雲端資料"
 }

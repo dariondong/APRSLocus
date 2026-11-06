@@ -9,12 +9,12 @@ import 'widgets.dart';
 
 /// ─── 云同步页 ───
 ///
-/// 三件事挤在这一页：登录（账号就是接入名单里那条）、同步方式、
-/// 以及云端现在有什么。云端备份不在这儿 —— 上传与取回都在「备份与恢复」页，
-/// 那页本来就负责整份备份的导出与预览，多一个入口只会让人分不清两份东西。
+/// 四张卡按「连哪台 → 用谁的账号 → 怎么同步 → 云端现在有什么」排：
+/// 地址在第一张，空着就是项目自带的那台；账号第二张；同步方式第三张；
+/// 云端条数与两个按钮在最后一张。
 ///
-/// 地址跟着「APRSNETCN」那条链路填的服务器走（见 `AppState.syncBase`），
-/// 这一页刻意没有地址框：设置里已经有一个，再放一个就没人知道该填哪个。
+/// 云端备份不在这儿 —— 上传与取回都在「备份与恢复」页，
+/// 那页本来就负责整份备份的导出与预览，多一个入口只会让人分不清两份东西。
 class SyncPage extends StatefulWidget {
   final AppState state;
   const SyncPage({super.key, required this.state});
@@ -26,6 +26,7 @@ class SyncPage extends StatefulWidget {
 class _SyncPageState extends State<SyncPage> {
   final _account = TextEditingController();
   final _password = TextEditingController();
+  final _server = TextEditingController();
   bool _busy = false;
   String _err = '';
   Map<String, dynamic>? _remote;
@@ -36,6 +37,7 @@ class _SyncPageState extends State<SyncPage> {
   void initState() {
     super.initState();
     _account.text = st.syncAccount;
+    _server.text = st.syncServer;
     if (st.syncToken.isNotEmpty) _refresh();
   }
 
@@ -43,6 +45,7 @@ class _SyncPageState extends State<SyncPage> {
   void dispose() {
     _account.dispose();
     _password.dispose();
+    _server.dispose();
     super.dispose();
   }
 
@@ -180,6 +183,8 @@ class _SyncPageState extends State<SyncPage> {
         color: C.blue,
         body: Column(
           children: [
+            _serverCard(s),
+            const SizedBox(height: 16),
             _accountCard(s),
             const SizedBox(height: 16),
             _modeCard(s),
@@ -189,6 +194,29 @@ class _SyncPageState extends State<SyncPage> {
           ],
         ),
       ),
+    );
+  }
+
+  /// 地址这一张排在最上面：数据存到哪台机器，得先看得见、能改。
+  ///
+  /// 「当前地址」那一行把生效的地址写出来，空着的时候写的就是项目自带那台，
+  /// 免得用户以为自己没配、数据就没地方去。
+  Widget _serverCard(S s) {
+    return SettingsSectionCard(
+      title: s.syncServer,
+      icon: Icons.dns_rounded,
+      color: C.cyan,
+      children: [
+        SettingsInput(
+          s.syncServer,
+          _server,
+          onChanged: st.setSyncServer,
+          hint: 'http://host:8899',
+        ),
+        SettingsRow2(s.syncServerNow, st.syncBase),
+        SettingsHint(s.syncServerHint),
+        SettingsHint(s.syncPlainHint),
+      ],
     );
   }
 
@@ -231,7 +259,6 @@ class _SyncPageState extends State<SyncPage> {
             ],
           ),
         ),
-        SettingsHint(s.syncPlainHint),
       ],
     );
   }
@@ -307,7 +334,7 @@ class _SyncPageState extends State<SyncPage> {
     final days = (tracks['days'] as num?)?.toInt() ?? 0;
     final points = (tracks['points'] as num?)?.toInt() ?? 0;
     return SettingsSectionCard(
-      title: s.syncTitle,
+      title: s.syncCloudData,
       icon: Icons.cloud_done_rounded,
       color: C.blue,
       children: [

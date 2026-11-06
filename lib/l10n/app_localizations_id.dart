@@ -10418,4 +10418,16 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get backupCloudFailed => "Operasi awan gagal";
 
+  @override
+  String get syncServer => "Server";
+
+  @override
+  String get syncServerNow => "Alamat terpakai";
+
+  @override
+  String get syncServerHint => "Ganti alamat berarti login ulang. Data di server lama tidak ikut pindah.";
+
+  @override
+  String get syncCloudData => "Data di server";
+
 }

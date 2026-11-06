@@ -82,13 +82,23 @@ class SyncApi {
   final String base;
   String token;
 
-  /// 用哪个地址：跟着 APRSNETCN 链路填的地址走，没填就用项目自己的那台。
+  /// 用哪个地址：云同步页自己填的那台，空着就用项目自带的那台。
   ///
-  /// 这里刻意不新增一个「同步服务器」输入框 —— 现有设置里已经有一个地址，
-  /// 再放一个只会让人不知道该填哪个。
-  static String baseFor(String acnServer) {
-    final host = acnServer.trim();
-    return host.isEmpty ? kAcnHttpBase : acnHttpBaseHost(host);
+  /// 地址跟着「APRSNETCN」链路走是一种看不见的耦合 —— 页面上没有地址框，
+  /// 用户既不知道数据发去了哪台机器，也没法换成自己架的那台。
+  ///
+  /// 两种写法都收：带协议的（`https://sync.example.com`）原样用，不带协议的
+  /// （`1.2.3.4`）补上 `http://` 与 8899，与「APRSNETCN」页那张卡同一口径。
+  /// 末尾的斜杠先去掉，否则拼出来就是 `…8899//api/v1/…`。
+  static String baseFor(String server) {
+    var host = server.trim();
+    if (host.isEmpty) return kAcnHttpBase;
+    while (host.endsWith('/')) {
+      host = host.substring(0, host.length - 1);
+    }
+    if (host.contains('://')) return host;
+    final hasPort = RegExp(r':\d+$').hasMatch(host);
+    return 'http://$host${hasPort ? '' : ':8899'}';
   }
 
   Map<String, String> get _headers => {

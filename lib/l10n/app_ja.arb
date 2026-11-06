@@ -4486,5 +4486,9 @@
   "backupCloudFailed": "クラウド操作に失敗しました",
   "@syncLoggedIn": {"placeholders": {"call": {"type": "String"}}},
   "@syncTrackSummary": {"placeholders": {"days": {"type": "String"}, "points": {"type": "String"}}},
-  "@syncMsgSummary": {"placeholders": {"n": {"type": "String"}}}
+  "@syncMsgSummary": {"placeholders": {"n": {"type": "String"}}},
+  "syncServer": "サーバー",
+  "syncServerNow": "使用中のアドレス",
+  "syncServerHint": "アドレスを変えると再ログインになります。前のサーバーのデータは移りません。",
+  "syncCloudData": "サーバー上のデータ"
 }

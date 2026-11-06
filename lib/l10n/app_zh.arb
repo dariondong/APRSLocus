@@ -5165,5 +5165,9 @@
   "backupCloudFailed": "云端操作失败",
   "@syncLoggedIn": {"placeholders": {"call": {"type": "String"}}},
   "@syncTrackSummary": {"placeholders": {"days": {"type": "String"}, "points": {"type": "String"}}},
-  "@syncMsgSummary": {"placeholders": {"n": {"type": "String"}}}
+  "@syncMsgSummary": {"placeholders": {"n": {"type": "String"}}},
+  "syncServer": "服务器",
+  "syncServerNow": "当前地址",
+  "syncServerHint": "换地址要重新登录，旧地址上的数据不搬。",
+  "syncCloudData": "云端数据"
 }

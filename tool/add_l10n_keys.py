@@ -36,6 +36,22 @@ CLASSES = {
 
 # ── 要加的键：key → (zh, zh_TW, en, ja, es, id) ──
 KEYS = {
+    # ── 云同步：服务器地址（空着用项目自带那台）──
+    'syncServer': (
+        '服务器', '伺服器', 'Server', 'サーバー', 'Servidor', 'Server'),
+    'syncServerNow': (
+        '当前地址', '目前位址', 'Address in use', '使用中のアドレス',
+        'Dirección en uso', 'Alamat terpakai'),
+    'syncServerHint': (
+        '换地址要重新登录，旧地址上的数据不搬。',
+        '換位址要重新登入，舊位址上的資料不搬。',
+        'Changing it signs you out. Nothing moves over from the old server.',
+        'アドレスを変えると再ログインになります。前のサーバーのデータは移りません。',
+        'Cambiar la dirección cierra la sesión. Los datos del servidor anterior no se mueven.',
+        'Ganti alamat berarti login ulang. Data di server lama tidak ikut pindah.'),
+    'syncCloudData': (
+        '云端数据', '雲端資料', 'On the server', 'サーバー上のデータ',
+        'Datos en el servidor', 'Data di server'),
     # ── 云同步：消息 / 云端备份 / 历史轨迹（账号就是名单里那条）──
     'syncTitle': (
         '云同步', '雲端同步', 'Cloud sync', 'クラウド同期',

@@ -10408,4 +10408,16 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get backupCloudFailed => "Cloud operation failed";
 
+  @override
+  String get syncServer => "Server";
+
+  @override
+  String get syncServerNow => "Address in use";
+
+  @override
+  String get syncServerHint => "Changing it signs you out. Nothing moves over from the old server.";
+
+  @override
+  String get syncCloudData => "On the server";
+
 }

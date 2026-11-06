@@ -10467,4 +10467,16 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get backupCloudFailed => "Error en la operación en la nube";
 
+  @override
+  String get syncServer => "Servidor";
+
+  @override
+  String get syncServerNow => "Dirección en uso";
+
+  @override
+  String get syncServerHint => "Cambiar la dirección cierra la sesión. Los datos del servidor anterior no se mueven.";
+
+  @override
+  String get syncCloudData => "Datos en el servidor";
+
 }

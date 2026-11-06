@@ -4486,5 +4486,9 @@
   "backupCloudFailed": "Cloud operation failed",
   "@syncLoggedIn": {"placeholders": {"call": {"type": "String"}}},
   "@syncTrackSummary": {"placeholders": {"days": {"type": "String"}, "points": {"type": "String"}}},
-  "@syncMsgSummary": {"placeholders": {"n": {"type": "String"}}}
+  "@syncMsgSummary": {"placeholders": {"n": {"type": "String"}}},
+  "syncServer": "Server",
+  "syncServerNow": "Address in use",
+  "syncServerHint": "Changing it signs you out. Nothing moves over from the old server.",
+  "syncCloudData": "On the server"
 }
