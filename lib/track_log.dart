@@ -466,6 +466,93 @@ class TrackLogStore {
     return written;
   }
 
+  /// 读某一天（没有就返回空的那一天）。
+  Future<DayTrack?> loadDay(String day) async {
+    if (!_dayRe.hasMatch(day)) return null;
+    await flush();
+    if (_today?.day == day) return _today;
+    final f = _fileFor(day);
+    if (f == null) return null;
+    try {
+      if (!await f.exists()) return null;
+      return DayTrack.fromJson(jsonDecode(await f.readAsString()));
+    } catch (_) {
+      return null;
+    }
+  }
+
+  /// 云同步拉回来的那一天：与本地那一天**并集**，谁也不覆盖谁。
+  ///
+  /// 与 [importRawDays] 的区别：备份导入是「整档覆盖」（那是一份完整快照），
+  /// 云同步是两台设备各记了一半，任何一边都不该被抹掉。
+  ///
+  /// 同一位置的点（3 秒内且 50 米内）只留一个：两台手机同时记录同一趟路时，
+  /// 不这样会画成两条重叠的线。留下的那条优先带心率的。
+  /// 返回真正新增的点数。
+  Future<int> mergeDayPoints(
+      String day, List<Map<String, dynamic>> incoming) async {
+    if (!available || !_dayRe.hasMatch(day) || incoming.isEmpty) return 0;
+    final local = (await loadDay(day))?.points ?? const <TrackLogPoint>[];
+    final fresh = <TrackLogPoint>[];
+    for (final raw in incoming) {
+      final point = TrackLogPoint.fromJson(raw);
+      if (point != null) fresh.add(point);
+    }
+    if (fresh.isEmpty) return 0;
+    fresh.sort((a, b) => a.time.compareTo(b.time));
+
+    final out = <TrackLogPoint>[];
+    var added = 0;
+    void take(TrackLogPoint point, bool fromCloud) {
+      if (out.isNotEmpty && _sameSpot(out.last, point)) {
+        // 同一位置：本地没有心率而云端有，就换成云端那条
+        if (fromCloud && out.last.hr == null && point.hr != null) {
+          out[out.length - 1] = point;
+        }
+        return;
+      }
+      out.add(point);
+      if (fromCloud) added++;
+    }
+
+    var i = 0;
+    var j = 0;
+    while (i < local.length && j < fresh.length) {
+      if (!local[i].time.isAfter(fresh[j].time)) {
+        take(local[i++], false);
+      } else {
+        take(fresh[j++], true);
+      }
+    }
+    while (i < local.length) {
+      take(local[i++], false);
+    }
+    while (j < fresh.length) {
+      take(fresh[j++], true);
+    }
+    if (added == 0) return 0;
+
+    final merged = DayTrack(day, out);
+    final f = _fileFor(day);
+    if (f == null) return 0;
+    try {
+      final tmp = File('${f.path}.synctmp');
+      await tmp.writeAsString(jsonEncode(merged.toJson()), flush: true);
+      await tmp.rename(f.path);
+    } catch (_) {
+      return 0;
+    }
+    // 内存里的今天也要接上新点，否则下一次 flush 又把它写回旧值。
+    if (_today?.day == day) _today = merged;
+    return added;
+  }
+
+  /// 两台设备里同一次定位的判据：3 秒内且 50 米内（与服务端合并口径一致）。
+  static bool _sameSpot(TrackLogPoint a, TrackLogPoint b) {
+    if (a.time.difference(b.time).inMilliseconds.abs() > 3000) return false;
+    return haversine(a.lat, a.lng, b.lat, b.lng) * 1000 <= 50;
+  }
+
   static String _basename(String path) {
     var s = path.replaceAll('\\', '/');
     final i = s.lastIndexOf('/');

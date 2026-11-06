@@ -9,6 +9,7 @@ import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'models.dart';
+import 'cloud_sync.dart';
 import 'coord_format.dart';
 import 'features.dart';
 import 'mock_data.dart';
@@ -4361,6 +4362,366 @@ class AppState extends ChangeNotifier {
     _notify();
   }
 
+  // ── 云同步（消息 / 云端备份 / 历史轨迹）──
+  //
+  // 一个呼号的三类本机数据存到 APRSNETCN SERVER 上，换设备或重装以后拉回来。
+  // 账号就是接入名单里那条（账号 + 口令），口令只用来换令牌，换完就不留。
+  // 令牌与本机安装标识都不进备份：换台机器重新登录一次就行。
+  static const syncModes = ['off', 'manual', 'auto'];
+
+  /// 同步方式：`off` 关闭 / `manual` 手动 / `auto` 自动（每 5 分钟一轮）。
+  String syncMode = 'off';
+  String syncAccount = '';
+  String syncPassword = '';
+
+  /// 登录换来的长期令牌（90 天）与这台设备的安装标识。
+  String syncToken = '';
+  String syncDeviceId = '';
+  String syncCall = '';
+
+  /// 三类数据各自上次成功的时间（毫秒）。
+  int syncMsgAt = 0;
+  int syncPullAt = 0;
+  int syncTrackAt = 0;
+
+  /// 已经传上去的 `day → 点数`：哪天变了就传哪天，没变的不重复上传。
+  String syncTrackSig = '{}';
+
+  /// 上次从云端拉到的那一天的**服务端点数**，用来判断还要不要重拉。
+  String syncServerSig = '{}';
+
+  bool _syncBusy = false;
+  DateTime _syncNextAt = DateTime.fromMillisecondsSinceEpoch(0);
+
+  bool get syncBusy => _syncBusy;
+
+  /// 同步接口的路子：跟着 APRSNETCN 链路填的地址走，没填就是项目自己那台。
+  String get syncBase => SyncApi.baseFor(acnServer);
+
+  SyncApi get syncApi => SyncApi(base: syncBase, token: syncToken);
+
+  bool get syncReady => syncMode != 'off' && syncToken.isNotEmpty;
+
+  void setSyncMode(String v) {
+    if (!syncModes.contains(v)) return;
+    syncMode = v;
+    persist();
+    _notify();
+  }
+
+  void setSyncAccount(String v) {
+    syncAccount = v.trim();
+    persist();
+  }
+
+  void setSyncPassword(String v) {
+    syncPassword = v;
+    persist();
+  }
+
+  /// 登录换令牌。返回空串就是成功，否则是原因码（界面按它选文案）。
+  Future<String> syncLogin() async {
+    if (syncAccount.isEmpty || syncPassword.isEmpty) return 'missing-account';
+    if (!await isHttpAvailable()) return 'no-http';
+    final device =
+        syncDeviceId.isNotEmpty ? syncDeviceId : await Blacklist.deviceId();
+    syncDeviceId = device;
+    try {
+      final result = await SyncApi(base: syncBase).login(
+        account: syncAccount.toLowerCase(),
+        password: syncPassword,
+        device: device,
+        ver: appVersion,
+        platform: _platformName(),
+      );
+      syncToken = result.token;
+      syncCall = result.call;
+      // 口令只用来换令牌，换完就不再留着
+      syncPassword = '';
+      persist();
+      _notify();
+      return '';
+    } on SyncException catch (error) {
+      return error.code;
+    } catch (_) {
+      return 'network';
+    }
+  }
+
+  Future<void> syncLogout() async {
+    if (syncToken.isNotEmpty) {
+      try {
+        await syncApi.logout();
+      } catch (_) {}
+    }
+    syncToken = '';
+    syncCall = '';
+    persist();
+    _notify();
+  }
+
+  /// 云端现状（设备、消息条数、轨迹天数、备份列表）。
+  Future<Map<String, dynamic>> syncState() async {
+    if (syncToken.isEmpty) throw const SyncException('need-login');
+    return syncApi.state();
+  }
+
+  /// 把本地消息推到云端。[all] = 整批重传（第一次登录时用）。
+  Future<String> syncPushMessages({bool all = false}) async {
+    if (syncToken.isEmpty) return 'need-login';
+    final since = all ? 0 : syncMsgAt;
+    final pending = <Map<String, dynamic>>[];
+    for (final m in messages) {
+      if (m.system) continue;
+      if (!all && m.time.millisecondsSinceEpoch <= since) continue;
+      pending.add(syncMessagePayload(m));
+    }
+    if (pending.isEmpty) return '';
+    pending.sort((a, b) => (a['ts'] as int).compareTo(b['ts'] as int));
+    try {
+      final api = syncApi;
+      for (var i = 0; i < pending.length; i += 400) {
+        final end = math.min(i + 400, pending.length);
+        final batch = pending.sublist(i, end);
+        await api.pushMessages(batch);
+        syncMsgAt = batch.last['ts'] as int;
+        persist();
+      }
+      return '';
+    } on SyncException catch (error) {
+      return error.code;
+    } catch (_) {
+      return 'network';
+    }
+  }
+
+  /// 把云端比本地多的消息拉回来。同一条（同一个 mid）不重复，已确认状态只往上推。
+  Future<String> syncPullMessages() async {
+    if (syncToken.isEmpty) return 'need-login';
+    try {
+      final rows = await syncApi.pullMessages(syncPullAt);
+      if (rows.isEmpty) return '';
+      final seen = {for (final m in messages) syncMessageId(m)};
+      var newest = syncPullAt;
+      var touched = false;
+      for (final row in rows) {
+        final stamp = (row['ts'] as num?)?.toInt() ?? 0;
+        if (stamp > newest) newest = stamp;
+        final mid = (row['mid'] as String?) ?? '';
+        if (mid.isEmpty) continue;
+        if (seen.contains(mid)) {
+          final at = messages.indexWhere((m) => syncMessageId(m) == mid);
+          if (at >= 0 && row['acked'] == true && !messages[at].acked) {
+            messages[at].acked = true;
+            touched = true;
+          }
+          continue;
+        }
+        seen.add(mid);
+        final sent = (row['dir'] as String?) == 'out';
+        final peer = (row['peer'] as String?) ?? '';
+        messages.add(AprsMsg(
+          sent ? myBaseCall : peer,
+          sent ? peer : myFullCall,
+          (row['text'] as String?) ?? '',
+          DateTime.fromMillisecondsSinceEpoch(stamp),
+          sent: sent,
+          acked: row['acked'] == true,
+          groupId: ((row['grp'] as String?) ?? '').isEmpty
+              ? null
+              : row['grp'] as String,
+        ));
+        touched = true;
+      }
+      syncPullAt = newest;
+      persist();
+      if (touched) {
+        // 本地按「新的在前」排，插入的是旧的可能落在中间，排一次最省事
+        messages.sort((a, b) => b.time.compareTo(a.time));
+        if (messages.length > 500) {
+          messages.removeRange(500, messages.length);
+        }
+        await _saveMessagesNow();
+        _notify();
+      }
+      return '';
+    } on SyncException catch (error) {
+      return error.code;
+    } catch (_) {
+      return 'network';
+    }
+  }
+
+  /// 把本地轨迹推上去：只传变过的天（今天每次都会变）。
+  Future<String> syncPushTracks({bool all = false}) async {
+    if (syncToken.isEmpty) return 'need-login';
+    final store = TrackLogStore.instance;
+    if (!store.available) return 'no-tracks';
+    final days = await store.loadAll();
+    if (days.isEmpty) return '';
+    final sig = _jsonMap(syncTrackSig);
+    final today = TrackLogStore.dayKey(DateTime.now());
+    final api = syncApi;
+    try {
+      for (final day in days) {
+        final count = day.points.length;
+        if (count == 0) continue;
+        if (!all && day.day != today && sig[day.day] == count) continue;
+        await api.pushTrack(
+          day.day,
+          [for (final point in day.points) point.toJson()],
+        );
+        sig[day.day] = count;
+      }
+      syncTrackSig = jsonEncode(sig);
+      syncTrackAt = DateTime.now().millisecondsSinceEpoch;
+      persist();
+      return '';
+    } on SyncException catch (error) {
+      return error.code;
+    } catch (_) {
+      return 'network';
+    }
+  }
+
+  /// 拉云端比本地多的天（多设备已经在服务端合成一条）。
+  Future<String> syncPullTracks() async {
+    if (syncToken.isEmpty) return 'need-login';
+    final store = TrackLogStore.instance;
+    if (!store.available) return 'no-tracks';
+    try {
+      final remote = await syncApi.trackDays();
+      final sig = _jsonMap(syncServerSig);
+      final api = syncApi;
+      for (final row in remote) {
+        final day = (row['day'] as String?) ?? '';
+        if (day.isEmpty) continue;
+        final count = (row['points'] as num?)?.toInt() ?? 0;
+        if (count == 0) continue;
+        if (sig[day] == count) continue; // 服务端没变，不用重拉
+        final local = await store.loadDay(day);
+        if ((local?.points.length ?? 0) >= count) {
+          sig[day] = count;
+          continue;
+        }
+        final points = await api.pullTrack(day);
+        if (points.isEmpty) continue;
+        await store.mergeDayPoints(day, points);
+        sig[day] = count;
+      }
+      syncServerSig = jsonEncode(sig);
+      persist();
+      return '';
+    } on SyncException catch (error) {
+      return error.code;
+    } catch (_) {
+      return 'network';
+    }
+  }
+
+  /// 手动跑一轮（三类一起）。返回第一个出错的原因码，全对就是空串。
+  Future<String> syncNow() async {
+    if (_syncBusy) return 'busy';
+    _syncBusy = true;
+    _notify();
+    try {
+      final steps = <Future<String> Function()>[
+        syncPushMessages,
+        syncPullMessages,
+        syncPushTracks,
+        syncPullTracks,
+      ];
+      for (final step in steps) {
+        final code = await step();
+        if (code.isNotEmpty) return code;
+      }
+      return '';
+    } finally {
+      _syncBusy = false;
+      _notify();
+    }
+  }
+
+  /// 自动档：每 5 分钟一轮，安静地跑，失败不弹东西。
+  void _syncAutoTick() {
+    if (syncMode != 'auto' || syncToken.isEmpty || _syncBusy) return;
+    final now = DateTime.now();
+    if (now.isBefore(_syncNextAt)) return;
+    _syncNextAt = now.add(const Duration(minutes: 5));
+    unawaited(syncNow());
+  }
+
+  /// 备份上传 / 下载 / 清空云端：界面直接调这三条。
+  Future<String> syncUploadBackup(String text, String label) async {
+    if (syncToken.isEmpty) return 'need-login';
+    try {
+      final id = await syncApi.pushBackup(text, label);
+      return id.isEmpty ? 'bad-response' : '';
+    } on SyncException catch (error) {
+      return error.code;
+    } catch (_) {
+      return 'network';
+    }
+  }
+
+  Future<String> syncDownloadBackup(String id) async {
+    if (syncToken.isEmpty) return 'need-login';
+    try {
+      final doc = await syncApi.pullBackup(id);
+      return jsonEncode(doc);
+    } on SyncException catch (error) {
+      return 'error:${error.code}';
+    } catch (_) {
+      return 'error:network';
+    }
+  }
+
+  Future<String> syncClearCloud() async {
+    if (syncToken.isEmpty) return 'need-login';
+    try {
+      await syncApi.clearAll();
+      syncMsgAt = 0;
+      syncPullAt = 0;
+      syncTrackSig = '{}';
+      syncServerSig = '{}';
+      persist();
+      _notify();
+      return '';
+    } on SyncException catch (error) {
+      return error.code;
+    } catch (_) {
+      return 'network';
+    }
+  }
+
+  Map<String, int> _jsonMap(String raw) {
+    try {
+      final data = jsonDecode(raw);
+      if (data is Map) {
+        return {
+          for (final entry in data.entries)
+            if (entry.value is num)
+              '${entry.key}': (entry.value as num).toInt(),
+        };
+      }
+    } catch (_) {}
+    return <String, int>{};
+  }
+
+  String _platformName() {
+    // 用查表而不是 switch：switch 在枚举上要求穷举，将来 Flutter 加一个平台
+    // 就会变成编译错，而这个名字只是给服务器记一笔用的。
+    const names = <TargetPlatform, String>{
+      TargetPlatform.android: 'android',
+      TargetPlatform.iOS: 'ios',
+      TargetPlatform.windows: 'windows',
+      TargetPlatform.macOS: 'macos',
+      TargetPlatform.linux: 'linux',
+      TargetPlatform.fuchsia: 'fuchsia',
+    };
+    return names[defaultTargetPlatform] ?? 'other';
+  }
+
   void setLocationMode(String v) {
     if (v != 'gps' && v != 'gps_network' && v != 'network') return;
     locationMode = v;
@@ -4879,6 +5240,17 @@ class AppState extends ChangeNotifier {
     loc.mode = locationMode;
     gpsIntervalSec = 1;
     powerSave = false;
+    // 云同步是这台设备自己的登录，出厂复位就断开；云端数据不跟着删
+    syncMode = 'off';
+    syncAccount = '';
+    syncPassword = '';
+    syncToken = '';
+    syncCall = '';
+    syncMsgAt = 0;
+    syncPullAt = 0;
+    syncTrackAt = 0;
+    syncTrackSig = '{}';
+    syncServerSig = '{}';
     _lowBatteryWarned = -1;
     loc.samplingMs = 1000;
     useSimLocation = false;
@@ -5450,6 +5822,19 @@ class AppState extends ChangeNotifier {
       // 用户原来的档位去注册 GPS，下一次 tick 才纠正
       powerSave = p.getBool('powerSave') ?? powerSave;
       loc.samplingMs = effectiveGpsIntervalSec * 1000;
+      // 云同步：开关、账号、令牌与三类数据的上次时间。令牌不进备份。
+      syncMode = p.getString('syncMode') ?? syncMode;
+      if (!syncModes.contains(syncMode)) syncMode = 'off';
+      syncAccount = p.getString('syncAccount') ?? syncAccount;
+      syncPassword = p.getString('syncPassword') ?? syncPassword;
+      syncToken = p.getString('syncToken') ?? syncToken;
+      syncDeviceId = p.getString('syncDeviceId') ?? syncDeviceId;
+      syncCall = p.getString('syncCall') ?? syncCall;
+      syncMsgAt = p.getInt('syncMsgAt') ?? syncMsgAt;
+      syncPullAt = p.getInt('syncPullAt') ?? syncPullAt;
+      syncTrackAt = p.getInt('syncTrackAt') ?? syncTrackAt;
+      syncTrackSig = p.getString('syncTrackSig') ?? syncTrackSig;
+      syncServerSig = p.getString('syncServerSig') ?? syncServerSig;
       useSimLocation = p.getBool('useSimLocation') ?? useSimLocation;
       filterLat = p.getDouble('filterLat') ?? filterLat;
       filterLng = p.getDouble('filterLng') ?? filterLng;
@@ -5841,6 +6226,17 @@ class AppState extends ChangeNotifier {
     await p.setString('locationMode', locationMode);
     await p.setInt('gpsIntervalSec', gpsIntervalSec);
     await p.setBool('powerSave', powerSave);
+    await p.setString('syncMode', syncMode);
+    await p.setString('syncAccount', syncAccount);
+    await p.setString('syncPassword', syncPassword);
+    await p.setString('syncToken', syncToken);
+    await p.setString('syncDeviceId', syncDeviceId);
+    await p.setString('syncCall', syncCall);
+    await p.setInt('syncMsgAt', syncMsgAt);
+    await p.setInt('syncPullAt', syncPullAt);
+    await p.setInt('syncTrackAt', syncTrackAt);
+    await p.setString('syncTrackSig', syncTrackSig);
+    await p.setString('syncServerSig', syncServerSig);
     await p.setBool('useSimLocation', useSimLocation);
     await p.setDouble('filterLat', filterLat);
     await p.setDouble('filterLng', filterLng);
@@ -6203,6 +6599,8 @@ class AppState extends ChangeNotifier {
         unawaited(
             DesktopMetrics.refresh(minGap: const Duration(seconds: 60)));
       }
+      // 云同步（自动档）：每 5 分钟一轮，跑在秒 tick 上而不是另起定时器
+      _syncAutoTick();
       // 每秒刷新：只通知“秒级 UI”（信标倒计时/收包速率），
       // 不再全量 _notify() 重建整个页面树
       tick.value++;
