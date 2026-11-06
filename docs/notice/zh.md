@@ -37,6 +37,12 @@ APRSNETCN OA 是由 APRSNET.CN 发起的每周 APRS 报文点名活动。
 - 可以附带一句话，不影响参与是否有效。
 - 发射用本人呼号与有效执照，频率和路径按当地规定执行。
 
+## 六、一首歌
+
+星游记的新歌《真正相信奇迹的家伙，本身就和奇迹一样了不起！》。
+
+@video https://player.bilibili.com/player.html?isOutside=true&aid=117568270504061&bvid=BV1UB4v67Exr&cid=43375264631&p=1
+
 活动页：**[打开活动页](https://oa.aprsnet.cn)**
 
 11 月 7 日（周六），发一条 CQ，收一个 ACK，回一个 U。

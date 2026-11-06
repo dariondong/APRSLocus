@@ -37,6 +37,12 @@ APRSNETCN OA 是由 APRSNET.CN 發起的每週 APRS 報文點名活動。
 - 可以附帶一句話，不影響參與是否有效。
 - 發射用本人呼號與有效執照，頻率和路徑按當地規定執行。
 
+## 六、一首歌
+
+星遊記的新歌《真正相信奇蹟的傢伙，本身就和奇蹟一樣了不起！》。
+
+@video https://player.bilibili.com/player.html?isOutside=true&aid=117568270504061&bvid=BV1UB4v67Exr&cid=43375264631&p=1
+
 活動頁：**[打開活動頁](https://oa.aprsnet.cn)**
 
 11 月 7 日（週六），發一條 CQ，收一個 ACK，回一個 U。

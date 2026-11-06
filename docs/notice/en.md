@@ -37,6 +37,12 @@ Both count. RF counts more.
 - An extra sentence does not change whether the check-in counts.
 - Transmit under your own call and licence, on the frequency and path your local rules allow.
 
+## 6. A song
+
+A new song from 星游记, the Chinese animation series. 真正相信奇迹的家伙，本身就和奇迹一样了不起！
+
+@video https://player.bilibili.com/player.html?isOutside=true&aid=117568270504061&bvid=BV1UB4v67Exr&cid=43375264631&p=1
+
 Activity page: **[Open the activity page](https://oa.aprsnet.cn)**
 
 Saturday, 7 November: one CQ out, one ACK in, one U back.
