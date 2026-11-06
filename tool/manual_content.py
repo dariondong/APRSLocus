@@ -65,6 +65,7 @@ PAGE_META = {
         sections=[('sources', T('六条链路：两条在互联网，四条接电台', '六條鏈路：兩條在網際網路，四條接電臺', 'Six links: two on the internet, four into a radio')),
                   ('aprsis', T('接上 APRS-IS', '接上 APRS-IS', 'Connect APRS-IS')),
                   ('acn', T('第二条链路：APRSNETCN', '第二條鏈路：APRSNETCN', 'The second link: APRSNETCN')),
+                  ('cloudsync', T('云同步：消息与轨迹存到服务器', '雲端同步：訊息與軌跡存到伺服器', 'Cloud sync: messages and tracks on the server')),
                   ('extgps', T('外接 GPS 模块', '外接 GPS 模組', 'External GPS module')),
                   ('rf', T('接电台：TNC / 音频 / PKWDWPL / Icom', '接電臺：TNC / 音訊 / PKWDWPL / Icom', 'Into a radio: TNC / audio / PKWDWPL / Icom')),
                   ('igate', T('网关 iGate', '閘道 iGate', 'iGate')),

@@ -162,6 +162,7 @@
         <a href="#sources">六條鏈路：兩條在網際網路，四條接電臺</a>
         <a href="#aprsis">接上 APRS-IS</a>
         <a href="#acn">第二條鏈路：APRSNETCN</a>
+        <a href="#cloudsync">雲端同步：訊息與軌跡存到伺服器</a>
         <a href="#extgps">外接 GPS 模組</a>
         <a href="#rf">接電臺：TNC / 音訊 / PKWDWPL / Icom</a>
         <a href="#igate">閘道 iGate</a>
@@ -212,6 +213,23 @@
 <li><b>登入結果</b>單獨一行。口令錯了鏈路會連上又斷開，原因只寫在這裡。</li>
 <li>兩台同時在線時同一則封包<b>只記一次</b>，兩邊各收一份也不會重複計數。</li>
 <li>換了位址或口令後點卡片裡的<b>重連</b>，新參數才生效。</li>
+</ul>
+  </section>
+  <section class="chapter reveal" id="cloudsync">
+    <h2 id="cloudsync">雲端同步：訊息與軌跡存到伺服器<a class="hdr-anchor" href="#cloudsync" aria-label="本節永久連結" title="本節永久連結">#</a></h2>
+<p>雲端同步把訊息與歷史軌跡存到伺服器上。換一台裝置，登入同一個帳號就能拉回來。</p>
+<ol class="m-steps">
+<li><b>設定 → 伺服器 → 雲端同步</b>，填帳號與口令。</li>
+<li>點登入。登入後卡片換成帳號與雲端的三行數字。</li>
+<li>同步方式選 <b>關閉</b> / <b>手動</b> / <b>自動</b>，自動那檔每 5 分鐘跑一次。</li>
+<li>要馬上同步點「立即同步」，要清掉雲端那份點「清空雲端資料」。</li>
+</ol>
+<ul>
+<li>帳號就是伺服器接入名單裡那條，與 APRSNETCN 鏈路頁填的是同一個。</li>
+<li>位址跟著 APRSNETCN 那條鏈路走，這裡沒有第二個位址。換伺服器要重新登入，舊位址上的資料不搬。</li>
+<li>同步的是訊息與按天的歷史軌跡。應用設定與主題在「備份與還原」頁。</li>
+<li>兩台裝置同一天都記了軌跡，讀回來是一條線。時間差 3 秒內、距離 50 公尺內算同一個點。</li>
+<li>連線是明文 HTTP，口令與內容不加密。口令登入後從本機清掉，權杖留在本機，登出即丟棄。</li>
 </ul>
   </section>
   <section class="chapter reveal" id="extgps">

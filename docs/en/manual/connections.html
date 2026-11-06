@@ -162,6 +162,7 @@
         <a href="#sources">Six links: two on the internet, four into a radio</a>
         <a href="#aprsis">Connect APRS-IS</a>
         <a href="#acn">The second link: APRSNETCN</a>
+        <a href="#cloudsync">Cloud sync: messages and tracks on the server</a>
         <a href="#extgps">External GPS module</a>
         <a href="#rf">Into a radio: TNC / audio / PKWDWPL / Icom</a>
         <a href="#igate">iGate</a>
@@ -212,6 +213,23 @@
 <li><b>The login result</b> has a row of its own. A wrong password makes the link connect and drop, and this row is the only place that says why.</li>
 <li>With both servers online the same packet is <b>counted once</b>, so two copies do not inflate the totals.</li>
 <li>After changing the address or password, tap <b>reconnect</b> in the card so the new values take effect.</li>
+</ul>
+  </section>
+  <section class="chapter reveal" id="cloudsync">
+    <h2 id="cloudsync">Cloud sync: messages and tracks on the server<a class="hdr-anchor" href="#cloudsync" aria-label="Permalink to this section" title="Permalink to this section">#</a></h2>
+<p>Cloud sync keeps messages and track history on the server. Sign in with the same account on another device and they come back.</p>
+<ol class="m-steps">
+<li><b>Settings → Server → Cloud sync</b>: enter the account and password.</li>
+<li>Tap sign in. The card then shows the account and three figures from the server.</li>
+<li>Pick a sync mode: <b>off</b> / <b>manual</b> / <b>auto</b>. Auto runs every five minutes.</li>
+<li>Tap <b>Sync now</b> for a single run, or <b>Clear cloud data</b> to delete the server copy.</li>
+</ol>
+<ul>
+<li>The account is the one on the server access list, the same one the APRSNETCN link page uses.</li>
+<li>The address follows the APRSNETCN link, so there is no second address here. Another server signs you out, and nothing moves over from the old one.</li>
+<li>Messages and per-day tracks sync. App settings and themes stay with Export &amp; Backup.</li>
+<li>Two devices recording the same day come back as one line. Points within 3 seconds and 50 metres count as one point.</li>
+<li>The connection is plain HTTP, so the password and the payload are not encrypted. The password is dropped after sign-in; the token stays on the device and is discarded on sign-out.</li>
 </ul>
   </section>
   <section class="chapter reveal" id="extgps">

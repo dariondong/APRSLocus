@@ -474,6 +474,52 @@ the scroll position should still be there.</p></div></div>
 <li>After changing the address or password, tap <b>reconnect</b> in the card so the new values take effect.</li>
 </ul>
 '''),
+    ('cloudsync', T('云同步：消息与轨迹存到服务器', '雲端同步：訊息與軌跡存到伺服器', 'Cloud sync: messages and tracks on the server'), '''
+<p>云同步把消息与历史轨迹存到服务器上。换一台设备，登录同一个账号就能拉回来。</p>
+<ol class="m-steps">
+<li><b>设置 → 服务器 → 云同步</b>，填账号与口令。</li>
+<li>点登录。登录后卡片换成账号与云端的三行数字。</li>
+<li>同步方式选 <b>关闭</b> / <b>手动</b> / <b>自动</b>，自动那档每 5 分钟跑一次。</li>
+<li>要马上同步点「立即同步」，要清掉云端那份点「清空云端数据」。</li>
+</ol>
+<ul>
+<li>账号就是服务器接入名单里那一条，与 APRSNETCN 链路页填的是同一个。</li>
+<li>地址跟着 APRSNETCN 那条链路走，这里没有第二个地址。换服务器要重新登录，旧地址上的数据不搬。</li>
+<li>同步的是消息与按天的历史轨迹。应用设置与主题在「备份与恢复」页。</li>
+<li>两台设备同一天都记了轨迹，读回来是一条线。时间差 3 秒内、距离 50 米内算同一个点。</li>
+<li>连接是明文 HTTP，口令与内容不加密。口令登录后从本机清掉，令牌留在本机，退出登录即丢弃。</li>
+</ul>
+''', '''
+<p>雲端同步把訊息與歷史軌跡存到伺服器上。換一台裝置，登入同一個帳號就能拉回來。</p>
+<ol class="m-steps">
+<li><b>設定 → 伺服器 → 雲端同步</b>，填帳號與口令。</li>
+<li>點登入。登入後卡片換成帳號與雲端的三行數字。</li>
+<li>同步方式選 <b>關閉</b> / <b>手動</b> / <b>自動</b>，自動那檔每 5 分鐘跑一次。</li>
+<li>要馬上同步點「立即同步」，要清掉雲端那份點「清空雲端資料」。</li>
+</ol>
+<ul>
+<li>帳號就是伺服器接入名單裡那條，與 APRSNETCN 鏈路頁填的是同一個。</li>
+<li>位址跟著 APRSNETCN 那條鏈路走，這裡沒有第二個位址。換伺服器要重新登入，舊位址上的資料不搬。</li>
+<li>同步的是訊息與按天的歷史軌跡。應用設定與主題在「備份與還原」頁。</li>
+<li>兩台裝置同一天都記了軌跡，讀回來是一條線。時間差 3 秒內、距離 50 公尺內算同一個點。</li>
+<li>連線是明文 HTTP，口令與內容不加密。口令登入後從本機清掉，權杖留在本機，登出即丟棄。</li>
+</ul>
+''', '''
+<p>Cloud sync keeps messages and track history on the server. Sign in with the same account on another device and they come back.</p>
+<ol class="m-steps">
+<li><b>Settings → Server → Cloud sync</b>: enter the account and password.</li>
+<li>Tap sign in. The card then shows the account and three figures from the server.</li>
+<li>Pick a sync mode: <b>off</b> / <b>manual</b> / <b>auto</b>. Auto runs every five minutes.</li>
+<li>Tap <b>Sync now</b> for a single run, or <b>Clear cloud data</b> to delete the server copy.</li>
+</ol>
+<ul>
+<li>The account is the one on the server access list, the same one the APRSNETCN link page uses.</li>
+<li>The address follows the APRSNETCN link, so there is no second address here. Another server signs you out, and nothing moves over from the old one.</li>
+<li>Messages and per-day tracks sync. App settings and themes stay with Export &amp; Backup.</li>
+<li>Two devices recording the same day come back as one line. Points within 3 seconds and 50 metres count as one point.</li>
+<li>The connection is plain HTTP, so the password and the payload are not encrypted. The password is dropped after sign-in; the token stays on the device and is discarded on sign-out.</li>
+</ul>
+'''),
     ('extgps', T('外接 GPS 模块', '外接 GPS 模組', 'External GPS module'), '''
 <p>外接 GPS 是一台蓝牙 NMEA 模块，接上以后由它供位置。它的定位比手机稳，也省手机的电。它不是一条 APRS 链路，只负责告诉应用你在哪。</p>
 <ol class="m-steps">

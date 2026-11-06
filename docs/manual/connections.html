@@ -162,6 +162,7 @@
         <a href="#sources">六条链路：两条在互联网，四条接电台</a>
         <a href="#aprsis">接上 APRS-IS</a>
         <a href="#acn">第二条链路：APRSNETCN</a>
+        <a href="#cloudsync">云同步：消息与轨迹存到服务器</a>
         <a href="#extgps">外接 GPS 模块</a>
         <a href="#rf">接电台：TNC / 音频 / PKWDWPL / Icom</a>
         <a href="#igate">网关 iGate</a>
@@ -212,6 +213,23 @@
 <li><b>登录结果</b>单独一行。口令错了链路会连上又断开，原因只写在这里。</li>
 <li>两台同时在线时同一条报文<b>只记一次</b>，两边各收一份也不会重复计数。</li>
 <li>换了地址或口令后点卡片里的<b>重连</b>，新参数才生效。</li>
+</ul>
+  </section>
+  <section class="chapter reveal" id="cloudsync">
+    <h2 id="cloudsync">云同步：消息与轨迹存到服务器<a class="hdr-anchor" href="#cloudsync" aria-label="本节永久链接" title="本节永久链接">#</a></h2>
+<p>云同步把消息与历史轨迹存到服务器上。换一台设备，登录同一个账号就能拉回来。</p>
+<ol class="m-steps">
+<li><b>设置 → 服务器 → 云同步</b>，填账号与口令。</li>
+<li>点登录。登录后卡片换成账号与云端的三行数字。</li>
+<li>同步方式选 <b>关闭</b> / <b>手动</b> / <b>自动</b>，自动那档每 5 分钟跑一次。</li>
+<li>要马上同步点「立即同步」，要清掉云端那份点「清空云端数据」。</li>
+</ol>
+<ul>
+<li>账号就是服务器接入名单里那一条，与 APRSNETCN 链路页填的是同一个。</li>
+<li>地址跟着 APRSNETCN 那条链路走，这里没有第二个地址。换服务器要重新登录，旧地址上的数据不搬。</li>
+<li>同步的是消息与按天的历史轨迹。应用设置与主题在「备份与恢复」页。</li>
+<li>两台设备同一天都记了轨迹，读回来是一条线。时间差 3 秒内、距离 50 米内算同一个点。</li>
+<li>连接是明文 HTTP，口令与内容不加密。口令登录后从本机清掉，令牌留在本机，退出登录即丢弃。</li>
 </ul>
   </section>
   <section class="chapter reveal" id="extgps">
