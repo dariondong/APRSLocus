@@ -74,21 +74,21 @@ PAGES = [
 HEAD = {
     'zh': {
         'kicker': '📡 周六空中签到',
-        'title': 'APRSNETCN OA · #261031',
-        'en': 'APRSNETCN OA · #261031',
-        'sub': '北京时间周六一整天，这一周由轮值呼号 BG7OSL-6 值守。',
+        'title': 'APRSNETCN OA · #261107',
+        'en': 'APRSNETCN OA · #261107',
+        'sub': '北京时间周六一整天，这一周由轮值呼号 BD3QID-6 值守。',
     },
     'zh_TW': {
         'kicker': '📡 週六空中簽到',
-        'title': 'APRSNETCN OA · #261031',
-        'en': 'APRSNETCN OA · #261031',
-        'sub': '北京時間週六一整天，這一週由輪值呼號 BG7OSL-6 值守。',
+        'title': 'APRSNETCN OA · #261107',
+        'en': 'APRSNETCN OA · #261107',
+        'sub': '北京時間週六一整天，這一週由輪值呼號 BD3QID-6 值守。',
     },
     'en': {
         'kicker': '📡 Saturday check-in',
-        'title': 'APRSNETCN OA · #261031',
+        'title': 'APRSNETCN OA · #261107',
         'en': 'Every Saturday, on air',
-        'sub': 'A whole Saturday, Beijing time, with BG7OSL-6 on duty this week.',
+        'sub': 'A whole Saturday, Beijing time, with BD3QID-6 on duty this week.',
     },
 }
 

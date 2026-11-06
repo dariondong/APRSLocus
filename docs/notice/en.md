@@ -1,17 +1,16 @@
-
-# APRSNETCN OA · #261031
+# APRSNETCN OA · #261107
 
 APRSNETCN OA is a weekly APRS message roll call run by APRSNET.CN.
 
 ## 1. When
 
-Saturday, 31 October 2026, 00:00–23:59 Beijing time (UTC+8).
+Saturday, 7 November 2026, 00:00–23:59 Beijing time (UTC+8).
 
-Other zones: UTC 16:00 on 30 October to 15:59 on 31 October; Japan (UTC+9) 01:00 on 31 October to 00:59 on 1 November; India (UTC+5:30) 21:30 on 30 October to 21:29 on 31 October; US Eastern (EDT, UTC-4) 12:00 on 30 October to 11:59 on 31 October.
+Other zones: UTC 16:00 on 6 November to 15:59 on 7 November; Japan (UTC+9) 01:00 on 7 November to 00:59 on 8 November; India (UTC+5:30) 21:30 on 6 November to 21:29 on 7 November; US Eastern (EST, UTC-5) 11:00 on 6 November to 10:59 on 7 November.
 
 ## 2. Duty callsign
 
-**BG7OSL-6** (ZhangZhanRui).
+**BD3QID-6** (无锡焊铅丝).
 
 The duty callsign changes every week. The site's page for the current week is the one to read.
 
@@ -19,8 +18,8 @@ The duty callsign changes every week. The site's page for the current week is th
 
 ## 3. How to check in
 
-- Send an APRS message to **BG7OSL-6** with the body **CQ CNNET**, your own call and your own grid, for example **CQ CNNET BG7XXX OL62**. A grid of 4 or 6 characters both work, and the call in the body is your own.
-- When the ACK arrives, send a new message to **BG7OSL-6** with **U CNNET** alone.
+- Send an APRS message to **BD3QID-6** with the body **CQ CNNET**, your own call and your own grid, for example **CQ CNNET BG7XXX OL62**. A grid of 4 or 6 characters both work, and the call in the body is your own.
+- When the ACK arrives, send a new message to **BD3QID-6** with **U CNNET** alone.
 - Optional: add a sentence after the grid, for example **CQ CNNET BG7XXX OL62 weekend on the hill**. The roster gains a message row.
 
 ## 4. Two ways in
@@ -31,6 +30,51 @@ The duty callsign changes every week. The site's page for the current week is th
 Both count. RF counts more.
 
 ## 5. Worth knowing
+
+- The message recipient is **BD3QID-6**, and the call in the body is your own. Do not mix the two up.
+- After the ACK, send a separate **U CNNET**. Do not reply on top of the ACK.
+- One send that day is enough. Sending again adds no row.
+- An extra sentence does not change whether the check-in counts.
+- Transmit under your own call and licence, on the frequency and path your local rules allow.
+
+Activity page: **[Open the activity page](https://oa.aprsnet.cn)**
+
+Saturday, 7 November: one CQ out, one ACK in, one U back.
+
+**APRSNET.CN**
+
+---
+
+## APRSNETCN OA · #261031
+
+APRSNETCN OA is a weekly APRS message roll call run by APRSNET.CN.
+
+### 1. When
+
+Saturday, 31 October 2026, 00:00–23:59 Beijing time (UTC+8).
+
+Other zones: UTC 16:00 on 30 October to 15:59 on 31 October; Japan (UTC+9) 01:00 on 31 October to 00:59 on 1 November; India (UTC+5:30) 21:30 on 30 October to 21:29 on 31 October; US Eastern (EDT, UTC-4) 12:00 on 30 October to 11:59 on 31 October.
+
+### 2. Duty callsign
+
+**BG7OSL-6** (ZhangZhanRui).
+
+The duty callsign changes every week. The site's page for the current week is the one to read.
+
+### 3. How to check in
+
+- Send an APRS message to **BG7OSL-6** with the body **CQ CNNET**, your own call and your own grid, for example **CQ CNNET BG7XXX OL62**. A grid of 4 or 6 characters both work, and the call in the body is your own.
+- When the ACK arrives, send a new message to **BG7OSL-6** with **U CNNET** alone.
+- Optional: add a sentence after the grid, for example **CQ CNNET BG7XXX OL62 weekend on the hill**. The roster gains a message row.
+
+### 4. Two ways in
+
+- Over the network (APRS-IS): connect a phone or a computer to a server and send.
+- Over the air (RF): send from a handheld or a mobile rig, and a nearby gateway carries it into the network.
+
+Both count. RF counts more.
+
+### 5. Worth knowing
 
 - The message recipient is **BG7OSL-6**, and the call in the body is your own. Do not mix the two up.
 - After the ACK, send a separate **U CNNET**. Do not reply on top of the ACK.
@@ -43,8 +87,6 @@ Activity page: **[Open the activity page](https://oa.aprsnet.cn)**
 Saturday, 31 October: one CQ out, one ACK in, one U back.
 
 **APRSNET.CN**
-
----
 
 ## APRSNETCN OA · #261024 Half a Cat Bed
 
