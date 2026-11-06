@@ -422,32 +422,23 @@ CL = [
         'ver': 'v2.1.41', 'date': '2026-11-06',
         'items': [
             ('new',
-             T('云同步：登录 APRSNETCN 账号之后，收发的消息与每天的历史轨迹会存到服务器上，'
+             T('云同步：登录 APRSNETCN 账号之后，收发的消息与每天的历史轨迹存到服务器上，'
                '换一台设备登录同一个呼号就都回来了。',
-               '雲端同步：登入 APRSNETCN 帳號之後，收發的訊息與每天的歷史軌跡會存到伺服器上，'
+               '雲端同步：登入 APRSNETCN 帳號之後，收發的訊息與每天的歷史軌跡存到伺服器上，'
                '換一台裝置登入同一個呼號就都回來了。',
-               'Cloud sync: after signing in with an APRSNETCN account, messages and each day\'s '
-               'track history go to the server. Sign in with the same callsign on another device '
-               'and both come back.')),
+               'Cloud sync: sign in with an APRSNETCN account and messages plus each day\'s track '
+               'history go to the server. Sign in with the same callsign on another device and '
+               'both come back.')),
             ('new',
-             T('两台设备同一天都记了轨迹时，时间差三秒、距离五十米以内的点算同一个点，'
-               '地图上不会出现两条重叠的线。',
-               '兩台裝置同一天都記了軌跡時，時間差三秒、距離五十公尺以內的點算同一個點，'
-               '地圖上不會出現兩條重疊的線。',
-               'When two devices both record the same day, points within three seconds and fifty '
-               'metres count as one, so the map never shows two overlapping lines.')),
-            ('new',
-             T('云端备份：备份页可以把当前勾选的几组存到云端，也可以从云端取回，云端留最新三份。',
-               '雲端備份：備份頁可以把目前勾選的幾組存到雲端，也可以從雲端取回，雲端留最新三份。',
-               'Cloud backup: the backup page uploads the selected groups to the cloud and restores '
-               'them from there. The three newest are kept.')),
+             T('云端备份：备份页可以把勾选的几组存到云端，也能从云端取回，云端留最新三份。',
+               '雲端備份：備份頁可以把勾選的幾組存到雲端，也能從雲端取回，雲端留最新三份。',
+               'Cloud backup: the backup page uploads the selected groups to the cloud and '
+               'restores them from there. The three newest are kept.')),
             ('up',
-             T('设置里多了一页「云同步」：账号登录、三档同步方式、云端有多少、立即同步与清空。'
-               '这一页也写明连接是明文 HTTP。',
-               '設定裡多了一頁「雲端同步」：帳號登入、三檔同步方式、雲端有多少、立即同步與清空。'
-               '這一頁也寫明連線是明文 HTTP。',
-               'Settings gained a Cloud sync page: account sign-in, three modes, what the cloud '
-               'holds, sync now and clear. It also says plainly that the connection is plain HTTP.')),
+             T('云同步在「设置 → 服务器」里，跟两条互联网链路挨着。服务器地址跟着 APRSNETCN 链路走。',
+               '雲端同步在「設定 → 伺服器」裡，跟兩條網際網路鏈路挨著。伺服器位址跟著 APRSNETCN 鏈路走。',
+               'Cloud sync sits in Settings -> Server, next to the two internet links. The '
+               'server address follows the APRSNETCN link.')),
         ],
     },
     {
