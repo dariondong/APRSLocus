@@ -1279,6 +1279,8 @@ class _OobePageState extends State<OobePage> {
         return s.historyTracks;
       case AppFeature.adif:
         return s.exportAdif;
+      case AppFeature.cloudSync:
+        return s.syncTitle;
     }
   }
 
