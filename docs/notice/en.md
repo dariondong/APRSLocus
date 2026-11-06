@@ -39,7 +39,7 @@ Both count. RF counts more.
 
 ## 6. A song
 
-A new song from 星游记, the Chinese animation series. 真正相信奇迹的家伙，本身就和奇迹一样了不起！
+A new song from 星游记, the Chinese animation series. The song is 《再飞行！》, and a line from it runs 真正相信奇迹的家伙，本身就和奇迹一样了不起。
 
 @video https://player.bilibili.com/player.html?isOutside=true&aid=117568270504061&bvid=BV1UB4v67Exr&cid=43375264631&p=1
 

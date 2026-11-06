@@ -39,7 +39,7 @@ APRSNETCN OA 是由 APRSNET.CN 發起的每週 APRS 報文點名活動。
 
 ## 六、一首歌
 
-星遊記的新歌《真正相信奇蹟的傢伙，本身就和奇蹟一樣了不起！》。
+星遊記的新歌《再飛行！》。真正相信奇蹟的傢伙，本身就和奇蹟一樣了不起。
 
 @video https://player.bilibili.com/player.html?isOutside=true&aid=117568270504061&bvid=BV1UB4v67Exr&cid=43375264631&p=1
 

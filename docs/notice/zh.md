@@ -39,7 +39,7 @@ APRSNETCN OA 是由 APRSNET.CN 发起的每周 APRS 报文点名活动。
 
 ## 六、一首歌
 
-星游记的新歌《真正相信奇迹的家伙，本身就和奇迹一样了不起！》。
+星游记的新歌《再飞行！》。真正相信奇迹的家伙，本身就和奇迹一样了不起。
 
 @video https://player.bilibili.com/player.html?isOutside=true&aid=117568270504061&bvid=BV1UB4v67Exr&cid=43375264631&p=1
 
