@@ -205,10 +205,11 @@ class SyncApi {
 
   /// 拉 [since] 毫秒之后的消息，一页一页拉到不满一页为止。
   Future<List<Map<String, dynamic>>> pullMessages(int since) async {
-    const page = 500;
+    const page = 1000;
+    const most = 20000;
     final out = <Map<String, dynamic>>[];
     var offset = 0;
-    while (offset < 10000) {
+    while (offset < most) {
       final data = await _call('GET', '/api/v1/sync/messages', query: {
         'since': '$since',
         'limit': '$page',

@@ -12,6 +12,9 @@
 ///     这里钉住 `baseFor` 的几种输入 —— 拼错了只会表现为「登录失败」。
 library;
 
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:aprslocus/cloud_sync.dart';
 import 'package:aprslocus/models.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -113,6 +116,40 @@ void main() {
       expect(SyncApi.baseFor('https://sync.example.com'),
           'https://sync.example.com');
       expect(SyncApi.baseFor('http://1.2.3.4:8899/'), 'http://1.2.3.4:8899');
+    });
+  });
+
+  group('拉消息翻页', () {
+    test('一页一页拉到不满一页为止，整份历史都拿到', () async {
+      final asks = <int>[];
+      final server = await HttpServer.bind(InternetAddress.loopbackIPv4, 0);
+      server.listen((request) async {
+        final query = request.uri.queryParameters;
+        final offset = int.parse(query['offset'] ?? '0');
+        final limit = int.parse(query['limit'] ?? '500');
+        asks.add(offset);
+        const total = 2500;
+        final rows = <Map<String, dynamic>>[];
+        for (var i = offset; i < total && i < offset + limit; i++) {
+          rows.add({'mid': 'm$i', 'ts': i, 'dir': 'in', 'text': 't$i'});
+        }
+        request.response.headers.contentType = ContentType.json;
+        request.response.write(jsonEncode({
+          'ok': true,
+          'count': rows.length,
+          'total': total,
+          'more': offset + rows.length < total,
+          'messages': rows,
+        }));
+        await request.response.close();
+      });
+      final api = SyncApi(
+          base: 'http://127.0.0.1:${server.port}', token: 'probe');
+      final rows = await api.pullMessages(0);
+      await server.close(force: true);
+      expect(rows.length, 2500);
+      expect(asks, [0, 1000, 2000]);
+      expect(rows.last['mid'], 'm2499');
     });
   });
 }

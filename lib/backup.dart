@@ -96,7 +96,7 @@ const List<BackupGroupSpec> kBackupGroups = [
     // 令牌与口令**不在**这里 —— 那是这台设备的登录，
     // 换台机器要重新登（见 tool/check_backup_keys.py 的 EXCLUDE）。
     'syncMode', 'syncAccount', 'syncDeviceId', 'syncCall',
-    'syncMsgAt', 'syncPullAt', 'syncTrackAt',
+    'syncMsgAt', 'syncPullAt', 'syncTrackAt', 'syncMsgAllDone',
     'syncTrackSig', 'syncServerSig',
     'syncAutoMinutes', 'syncMessagesOn', 'syncTracksOn',
     // 纯网络定位时的台站符号 + 外置 GPS 待机 + 心率异常告警：三者都是

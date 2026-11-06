@@ -4400,6 +4400,12 @@ class AppState extends ChangeNotifier {
   int syncPullAt = 0;
   int syncTrackAt = 0;
 
+  /// 云端的历史消息整份拉回来过没有。
+  ///
+  /// 服务器会把它自己看到的消息也存进这个呼号（手机没开机那段），所以第一次同步、
+  /// 以及重装之后要先从最早一条拉一遍，之后只拉新的。
+  bool syncMsgAllDone = false;
+
   /// 已经传上去的 `day → 点数`：哪天变了就传哪天，没变的不重复上传。
   String syncTrackSig = '{}';
 
@@ -4435,6 +4441,7 @@ class AppState extends ChangeNotifier {
     syncMsgAt = 0;
     syncPullAt = 0;
     syncTrackAt = 0;
+    syncMsgAllDone = false;
     syncTrackSig = '{}';
     syncServerSig = '{}';
     _notify();
@@ -4519,6 +4526,10 @@ class AppState extends ChangeNotifier {
     }
     syncToken = '';
     syncCall = '';
+    // 下一个人登上来时要从最早一条重新拉：云端那份与这台机器无关
+    syncMsgAt = 0;
+    syncPullAt = 0;
+    syncMsgAllDone = false;
     persist();
     _notify();
   }
@@ -4561,12 +4572,21 @@ class AppState extends ChangeNotifier {
   }
 
   /// 把云端比本地多的消息拉回来。同一条（同一个 mid）不重复，已确认状态只往上推。
-  Future<String> syncPullMessages() async {
+  ///
+  /// [all] 是从最早一条开始拉：服务器自己也存了一份它看到的消息，手机没开机那段
+  /// 就在里面，所以第一次同步先整份拉一遍。
+  Future<String> syncPullMessages({bool all = false}) async {
     if (!syncMessagesOn) return '';
     if (syncToken.isEmpty) return 'need-login';
     try {
-      final rows = await syncApi.pullMessages(syncPullAt);
-      if (rows.isEmpty) return '';
+      final rows = await syncApi.pullMessages(all ? 0 : syncPullAt);
+      if (rows.isEmpty) {
+        if (all && !syncMsgAllDone) {
+          syncMsgAllDone = true;
+          persist();
+        }
+        return '';
+      }
       final seen = {for (final m in messages) syncMessageId(m)};
       var newest = syncPullAt;
       var touched = false;
@@ -4600,6 +4620,7 @@ class AppState extends ChangeNotifier {
         touched = true;
       }
       syncPullAt = newest;
+      if (all) syncMsgAllDone = true;
       persist();
       if (touched) {
         // 本地按「新的在前」排，插入的是旧的可能落在中间，排一次最省事
@@ -4697,7 +4718,7 @@ class AppState extends ChangeNotifier {
     try {
       final steps = <Future<String> Function()>[
         syncPushMessages,
-        syncPullMessages,
+        () => syncPullMessages(all: !syncMsgAllDone),
         syncPushTracks,
         syncPullTracks,
       ];
@@ -4753,6 +4774,7 @@ class AppState extends ChangeNotifier {
       await syncApi.clearAll();
       syncMsgAt = 0;
       syncPullAt = 0;
+      syncMsgAllDone = false;
       syncTrackSig = '{}';
       syncServerSig = '{}';
       persist();
@@ -5323,6 +5345,7 @@ class AppState extends ChangeNotifier {
     syncMsgAt = 0;
     syncPullAt = 0;
     syncTrackAt = 0;
+    syncMsgAllDone = false;
     syncTrackSig = '{}';
     syncServerSig = '{}';
     _lowBatteryWarned = -1;
@@ -5907,6 +5930,7 @@ class AppState extends ChangeNotifier {
       syncMsgAt = p.getInt('syncMsgAt') ?? syncMsgAt;
       syncPullAt = p.getInt('syncPullAt') ?? syncPullAt;
       syncTrackAt = p.getInt('syncTrackAt') ?? syncTrackAt;
+      syncMsgAllDone = p.getBool('syncMsgAllDone') ?? syncMsgAllDone;
       syncTrackSig = p.getString('syncTrackSig') ?? syncTrackSig;
       syncServerSig = p.getString('syncServerSig') ?? syncServerSig;
       syncAutoMinutes = p.getInt('syncAutoMinutes') ?? syncAutoMinutes;
@@ -6313,6 +6337,7 @@ class AppState extends ChangeNotifier {
     await p.setInt('syncMsgAt', syncMsgAt);
     await p.setInt('syncPullAt', syncPullAt);
     await p.setInt('syncTrackAt', syncTrackAt);
+    await p.setBool('syncMsgAllDone', syncMsgAllDone);
     await p.setString('syncTrackSig', syncTrackSig);
     await p.setString('syncServerSig', syncServerSig);
     await p.setInt('syncAutoMinutes', syncAutoMinutes);
