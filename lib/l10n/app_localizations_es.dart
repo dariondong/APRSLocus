@@ -10479,4 +10479,7 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get syncCloudData => "Datos en el servidor";
 
+  @override
+  String get syncAccountHint => "La cuenta es la de la lista de acceso del servidor, la misma que usa la página de la conexión APRSNETCN.";
+
 }

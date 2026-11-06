@@ -10141,4 +10141,7 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String get syncCloudData => "サーバー上のデータ";
 
+  @override
+  String get syncAccountHint => "アカウントはサーバーの許可リストにあるもの。APRSNETCN リンクのページと同じです。";
+
 }

@@ -10430,4 +10430,7 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get syncCloudData => "Data di server";
 
+  @override
+  String get syncAccountHint => "Akun adalah yang ada di daftar akses server, sama dengan yang dipakai halaman tautan APRSNETCN.";
+
 }

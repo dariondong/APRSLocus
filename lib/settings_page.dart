@@ -29,7 +29,6 @@ import 'life_guard_page.dart';
 import 'translate_page.dart';
 import 'export_adif_page.dart';
 import 'backup_page.dart';
-import 'sync_page.dart';
 import 'track_history_page.dart';
 import 'theme_page.dart';
 import 'theme_store.dart';
@@ -294,17 +293,6 @@ class _SettingsPageState extends State<SettingsPage> {
                       ? S.of(context).subsHitsCount('${st.subUnread}')
                       : null,
                   onTap: () => _push(SubscriptionsPage(state: st)),
-                ),
-                SizedBox(height: 12),
-                // 云同步（消息与历史轨迹存在服务器上，换设备再拉回来）
-                SettingsEntryTile(
-                  icon: Icons.cloud_sync_rounded,
-                  fallback: const [Color(0xFF2563EB), Color(0xFF1D4ED8)],
-                  title: S.of(context).syncTitle,
-                  desc: st.syncMode == 'off' || st.syncCall.isEmpty
-                      ? null
-                      : st.syncCall,
-                  onTap: () => _push(SyncPage(state: st)),
                 ),
                 SizedBox(height: 12),
                 // 备份与恢复（与 ADIF 导出并列的数据出入口）

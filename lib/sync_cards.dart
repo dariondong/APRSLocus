@@ -1,29 +1,29 @@
 import 'package:flutter/material.dart';
 
 import 'cloud_sync.dart';
-import 'l10n/app_localizations.dart';
 import 'settings_widgets.dart';
 import 'state.dart';
 import 'theme.dart';
 import 'widgets.dart';
 
-/// ─── 云同步页 ───
+/// ─── 云同步的两张卡（长在「服务器」页上，没有自己的一页）───
 ///
-/// 四张卡按「连哪台 → 用谁的账号 → 怎么同步 → 云端现在有什么」排：
-/// 地址在第一张，空着就是项目自带的那台；账号第二张；同步方式第三张；
-/// 云端条数与两个按钮在最后一张。
+/// 用户：「不要把这些单独列成一页…归入服务器页，统一管理」。地址、账号、同步方式
+/// 与云端数据都排在「服务器」页互联网链接那一簇里，与两条链路挨着 ——
+/// 「数据存在哪台机器、用谁的账号」本来就是一回事，分成两页反而要来回跳。
 ///
-/// 云端备份不在这儿 —— 上传与取回都在「备份与恢复」页，
-/// 那页本来就负责整份备份的导出与预览，多一个入口只会让人分不清两份东西。
-class SyncPage extends StatefulWidget {
+/// 第一张管「连哪台、用谁的账号、怎么同步」，第二张管「云端现在有什么」。
+/// 云端备份不在这儿：上传与取回留在「备份与恢复」页，那页本来就管整份备份的
+/// 导出与预览，多一个入口只会让人分不清两份东西。
+class CloudSyncCards extends StatefulWidget {
   final AppState state;
-  const SyncPage({super.key, required this.state});
+  const CloudSyncCards({super.key, required this.state});
 
   @override
-  State<SyncPage> createState() => _SyncPageState();
+  State<CloudSyncCards> createState() => _CloudSyncCardsState();
 }
 
-class _SyncPageState extends State<SyncPage> {
+class _CloudSyncCardsState extends State<CloudSyncCards> {
   final _account = TextEditingController();
   final _password = TextEditingController();
   final _server = TextEditingController();
@@ -176,36 +176,22 @@ class _SyncPageState extends State<SyncPage> {
     final s = S.of(context);
     return ListenableBuilder(
       listenable: st,
-      builder: (context, _) => SettingsPageShell(
-        title: s.syncTitle,
-        subtitle: s.syncLead,
-        icon: Icons.cloud_sync_rounded,
-        color: C.blue,
-        body: Column(
-          children: [
-            _serverCard(s),
-            const SizedBox(height: 16),
-            _accountCard(s),
-            const SizedBox(height: 16),
-            _modeCard(s),
-            const SizedBox(height: 16),
-            _cloudCard(s),
-            const SizedBox(height: 24),
-          ],
-        ),
-      ),
+      builder: (context, _) => Column(children: [
+        _syncCard(s),
+        const SizedBox(height: 16),
+        _dataCard(s),
+      ]),
     );
   }
 
-  /// 地址这一张排在最上面：数据存到哪台机器，得先看得见、能改。
-  ///
-  /// 「当前地址」那一行把生效的地址写出来，空着的时候写的就是项目自带那台，
-  /// 免得用户以为自己没配、数据就没地方去。
-  Widget _serverCard(S s) {
+  /// ① 这一张：数据在哪台机器、用谁的账号、怎么同步。
+  Widget _syncCard(S s) {
+    final logged = st.syncToken.isNotEmpty;
     return SettingsSectionCard(
-      title: s.syncServer,
-      icon: Icons.dns_rounded,
-      color: C.cyan,
+      title: s.syncTitle,
+      subtitle: s.syncLead,
+      icon: Icons.cloud_sync_rounded,
+      color: C.blue,
       children: [
         SettingsInput(
           s.syncServer,
@@ -213,20 +199,8 @@ class _SyncPageState extends State<SyncPage> {
           onChanged: st.setSyncServer,
           hint: 'http://host:8899',
         ),
+        // 生效地址写出来：空着的时候它就是项目自带那台，免得用户以为没配就没处去
         SettingsRow2(s.syncServerNow, st.syncBase),
-        SettingsHint(s.syncServerHint),
-        SettingsHint(s.syncPlainHint),
-      ],
-    );
-  }
-
-  Widget _accountCard(S s) {
-    final logged = st.syncToken.isNotEmpty;
-    return SettingsSectionCard(
-      title: s.syncAccount,
-      icon: Icons.person_rounded,
-      color: C.slate,
-      children: [
         if (logged)
           SettingsRow2(
             s.syncAccount,
@@ -240,26 +214,21 @@ class _SyncPageState extends State<SyncPage> {
             hint: s.syncAccount,
           ),
           _passwordRow(s),
+          SettingsHint(s.syncAccountHint),
         ],
-        Padding(
-          padding: const EdgeInsets.fromLTRB(14, 12, 14, 4),
-          child: Row(
-            children: [
-              Expanded(
-                child: FilledButton(
-                  style: FilledButton.styleFrom(
-                    backgroundColor: logged ? C.slate : C.blue,
-                    disabledBackgroundColor: C.greyBg,
-                    padding: const EdgeInsets.symmetric(vertical: 11),
-                  ),
-                  onPressed: _busy ? null : (logged ? _logout : _login),
-                  child: Text(logged ? s.syncLogout : s.syncLogin, style: ts(13)),
-                ),
-              ),
-            ],
-          ),
+        _loginRow(s, logged: logged),
+        SettingsChoice<String>(
+          s.syncMode,
+          value: st.syncMode,
+          options: AppState.syncModes,
+          labelOf: (v) => v == 'auto'
+              ? s.syncModeAuto
+              : (v == 'manual' ? s.syncModeManual : s.syncModeOff),
+          onChanged: st.setSyncMode,
         ),
-        SettingsHint(s.syncAccountHint),
+        SettingsHint(s.syncModeAutoHint),
+        // 明文这一条必须留着：口令与报文都会经过网络，用户有权先知道
+        SettingsHint(s.syncPlainHint, color: C.orange),
       ],
     );
   }
@@ -278,6 +247,8 @@ class _SyncPageState extends State<SyncPage> {
               child: TextField(
                 controller: _password,
                 obscureText: true,
+                autocorrect: false,
+                enableSuggestions: false,
                 textAlign: TextAlign.right,
                 style: ts(13, w: FontWeight.w600),
                 decoration: InputDecoration(
@@ -287,7 +258,7 @@ class _SyncPageState extends State<SyncPage> {
                   hintText: '••••••',
                   hintStyle: ts(12, c: C.greyLight, w: FontWeight.w400),
                   filled: true,
-                  fillColor: C.greyBg,
+                  fillColor: C.bgSoft,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8),
                     borderSide: BorderSide(color: C.border, width: 0.4),
@@ -307,27 +278,29 @@ class _SyncPageState extends State<SyncPage> {
         ),
       );
 
-  Widget _modeCard(S s) {
-    return SettingsSectionCard(
-      title: s.syncMode,
-      icon: Icons.schedule_rounded,
-      color: C.purple,
-      children: [
-        SettingsChoice<String>(
-          s.syncMode,
-          value: st.syncMode,
-          options: AppState.syncModes,
-          labelOf: (v) => v == 'auto'
-              ? s.syncModeAuto
-              : (v == 'manual' ? s.syncModeManual : s.syncModeOff),
-          onChanged: st.setSyncMode,
-        ),
-        SettingsHint(s.syncModeAutoHint),
-      ],
+  Widget _loginRow(S s, {required bool logged}) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(14, 12, 14, 6),
+      child: Row(
+        children: [
+          Expanded(
+            child: FilledButton(
+              style: FilledButton.styleFrom(
+                backgroundColor: logged ? C.slate : C.blue,
+                disabledBackgroundColor: C.greyBg,
+                padding: const EdgeInsets.symmetric(vertical: 11),
+              ),
+              onPressed: _busy ? null : (logged ? _logout : _login),
+              child: Text(logged ? s.syncLogout : s.syncLogin, style: ts(13)),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
-  Widget _cloudCard(S s) {
+  /// ② 这一张：云端现在有什么，两个动手的按钮。
+  Widget _dataCard(S s) {
     final ready = st.syncToken.isNotEmpty;
     final msgs = (_remote?['messages'] as Map?) ?? const {};
     final tracks = (_remote?['tracks'] as Map?) ?? const {};
