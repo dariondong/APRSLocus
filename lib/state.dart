@@ -4133,6 +4133,12 @@ class AppState extends ChangeNotifier {
 
   bool featureEnabled(AppFeature f) => featureOn(f.id);
 
+  /// 云同步要不要在这个设备上存在。
+  ///
+  /// 它不是 APRS 收发的必需品：关掉之后「APRSNETCN」页里那些卡不出现，
+  /// 定时同步与手动同步也一律不发请求。链路本身不受影响。
+  bool get cloudSyncOn => featureEnabled(AppFeature.cloudSync);
+
   /// 打开 / 关掉一个模块。认不出的 id 直接忽略（脏偏好不该造出幽灵开关）。
   void setFeature(String id, bool on) {
     if (appFeatureById(id) == null) return;
@@ -4445,6 +4451,7 @@ class AppState extends ChangeNotifier {
 
   /// 登录换令牌。返回空串就是成功，否则是原因码（界面按它选文案）。
   Future<String> syncLogin() async {
+    if (!cloudSyncOn) return 'disabled';
     if (syncAccount.isEmpty || syncPassword.isEmpty) return 'missing-account';
     if (!await isHttpAvailable()) return 'no-http';
     final device =
@@ -4486,6 +4493,7 @@ class AppState extends ChangeNotifier {
 
   /// 云端现状（设备、消息条数、轨迹天数、备份列表）。
   Future<Map<String, dynamic>> syncState() async {
+    if (!cloudSyncOn) throw const SyncException('disabled');
     if (syncToken.isEmpty) throw const SyncException('need-login');
     return syncApi.state();
   }
@@ -4645,6 +4653,7 @@ class AppState extends ChangeNotifier {
 
   /// 手动跑一轮（三类一起）。返回第一个出错的原因码，全对就是空串。
   Future<String> syncNow() async {
+    if (!cloudSyncOn) return 'disabled';
     if (_syncBusy) return 'busy';
     _syncBusy = true;
     _notify();
@@ -4668,6 +4677,7 @@ class AppState extends ChangeNotifier {
 
   /// 自动档：每 5 分钟一轮，安静地跑，失败不弹东西。
   void _syncAutoTick() {
+    if (!cloudSyncOn) return;          // 模块关掉就不碰网络
     if (syncMode != 'auto' || syncToken.isEmpty || _syncBusy) return;
     final now = DateTime.now();
     if (now.isBefore(_syncNextAt)) return;

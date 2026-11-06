@@ -21,7 +21,8 @@ enum AppFeature {
   lifeGuard('lifeGuard'),
   translate('translate'),
   tracks('tracks'),
-  adif('adif');
+  adif('adif'),
+  cloudSync('cloudSync');
 
   const AppFeature(this.id);
   final String id;

@@ -88,6 +88,7 @@ class FeaturePage extends StatelessWidget {
         row(AppFeature.translate, s.featureTranslate),
         row(AppFeature.tracks, s.historyTracks),
         row(AppFeature.adif, s.exportAdif),
+        row(AppFeature.cloudSync, s.syncTitle),
         if (lite) SettingsHint(s.featureLiteBlocks),
       ],
     );
