@@ -284,11 +284,14 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           body: ${{ steps.notes.outputs.notes }}
-          # 同一个 tag 再跑一次 = **更新**这个 Release（同名资产直接覆盖）。
-          # 为什么需要：发出去的版本如果马上发现 bug，把修复并回同一版号重跑即可，
+          # 同一个 tag 再跑一次 = **只更新资产**（`overwrite_files` 默认开着，同名资产直接覆盖）；
+          # Release 的正文不会跟着变：这个版本的动作没有更新正文的入参
+          # （旧注释写的 `allow_updates` 根本不存在，只会被当成未知输入忽略并打一条 warning）。
+          # 要改已发出版本的正文，只能自己 PATCH `/repos/{repo}/releases/{id}`。
+          # 为什么需要重跑：发出去的版本如果马上发现 bug，把修复合回同一版号重跑即可，
           # 不必为一次打包失误多占一个版本号；没有它，第二次跑会直接失败
           # （"Release already exists"），用户那边则停在旧的包上。
-          allow_updates: true
+          overwrite_files: true
           # 只挂 .ipa。**.app 是目录，action-gh-release 会静默跳过** ——
           # v1.6.175~177 的 Release 页因此一个 iOS 资产都没有，而流水线全绿。
           files: |
