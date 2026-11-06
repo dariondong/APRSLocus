@@ -4413,7 +4413,8 @@ class AppState extends ChangeNotifier {
 
   /// 同步接口的地址：跟着「APRSNETCN」链路的服务器地址走。
   ///
-  /// 链路地址空着就是项目自带的 APRSNETCN SERVER（[kAcnHttpBase]）。
+  /// 地址空着就是没配：返回空串，同步一律不发请求（`no-server`）。一个地址都
+  /// 不预填，也不拿任何内置地址当兜底。
   /// 云端数据与那条链路由同一台机器管，界面上把生效地址写出来。
   String get syncBase => SyncApi.baseFor(acnServer);
 
@@ -4482,6 +4483,7 @@ class AppState extends ChangeNotifier {
   /// 登录换令牌。返回空串就是成功，否则是原因码（界面按它选文案）。
   Future<String> syncLogin() async {
     if (!cloudSyncOn) return 'disabled';
+    if (syncBase.isEmpty) return 'no-server';
     if (syncAccount.isEmpty || syncPassword.isEmpty) return 'missing-account';
     if (!await isHttpAvailable()) return 'no-http';
     final device =
@@ -4688,6 +4690,7 @@ class AppState extends ChangeNotifier {
   /// 手动跑一轮（三类一起）。返回第一个出错的原因码，全对就是空串。
   Future<String> syncNow() async {
     if (!cloudSyncOn) return 'disabled';
+    if (syncBase.isEmpty) return 'no-server';
     if (_syncBusy) return 'busy';
     _syncBusy = true;
     _notify();

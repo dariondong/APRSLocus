@@ -4504,5 +4504,6 @@
   "syncBackupsCount": "{n} en total",
   "syncDeviceHint": "Estos son los dispositivos con sesión en este servidor. Si quitas uno, tendrá que iniciar sesión otra vez.",
   "@syncEveryMin": {"placeholders": {"n": {"type": "String"}}},
-  "@syncBackupsCount": {"placeholders": {"n": {"type": "String"}}}
+  "@syncBackupsCount": {"placeholders": {"n": {"type": "String"}}},
+  "syncNoServer": "Primero rellena arriba la dirección del servidor APRSNETCN."
 }

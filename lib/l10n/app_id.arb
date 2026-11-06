@@ -4504,5 +4504,6 @@
   "syncBackupsCount": "{n} total",
   "syncDeviceHint": "Ini perangkat yang login ke server ini. Kalau dihapus, perangkat itu perlu login lagi saat sinkron berikutnya.",
   "@syncEveryMin": {"placeholders": {"n": {"type": "String"}}},
-  "@syncBackupsCount": {"placeholders": {"n": {"type": "String"}}}
+  "@syncBackupsCount": {"placeholders": {"n": {"type": "String"}}},
+  "syncNoServer": "Isi dulu alamat server APRSNETCN di atas."
 }

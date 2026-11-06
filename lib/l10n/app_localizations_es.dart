@@ -10515,4 +10515,7 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get syncDeviceHint => "Estos son los dispositivos con sesión en este servidor. Si quitas uno, tendrá que iniciar sesión otra vez.";
 
+  @override
+  String get syncNoServer => "Primero rellena arriba la dirección del servidor APRSNETCN.";
+
 }

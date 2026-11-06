@@ -53,6 +53,7 @@ class _CloudSyncCardsState extends State<CloudSyncCards> {
   String _errText(S s, String code) {
     if (code == 'need-login') return s.syncNeedLogin;
     if (code == 'no-http') return s.syncNoWeb;
+    if (code == 'no-server') return s.syncNoServer;
     if (code == 'busy') return s.syncBusy;
     if (code == 'missing-account') return '${s.syncAccount} / ${s.syncPassword}';
     return '${s.syncFailed}（$code）';
@@ -227,8 +228,12 @@ class _CloudSyncCardsState extends State<CloudSyncCards> {
       icon: Icons.cloud_sync_rounded,
       color: C.blue,
       children: [
-        // 地址跟着「APRSNETCN」链路走，写出来让人看得见数据发去了哪台
-        SettingsRow2(s.syncServer, st.syncBase),
+        // 地址跟着「APRSNETCN」链路走，写出来让人看得见数据发去了哪台。
+        // 链路页没填地址就写「未填」，不拿任何内置地址顶上去。
+        SettingsRow2(
+          s.syncServer,
+          st.syncBase.isEmpty ? s.oobeDoneUnset : st.syncBase,
+        ),
         // 明文这一条必须留着：口令与报文都会经过网络，用户有权先知道
         SettingsHint(s.syncPlainHint, color: C.orange),
         if (logged)

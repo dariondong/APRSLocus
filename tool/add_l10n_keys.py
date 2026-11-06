@@ -490,6 +490,13 @@ KEYS = {
         'このサーバーにログインした端末の一覧です。削除した端末は次回の同期で再ログインが必要です。',
         'Estos son los dispositivos con sesión en este servidor. Si quitas uno, tendrá que iniciar sesión otra vez.',
         'Ini perangkat yang login ke server ini. Kalau dihapus, perangkat itu perlu login lagi saat sinkron berikutnya.'),
+    'syncNoServer': (
+        '先在上面填 APRSNETCN 服务器地址。',
+        '先在上面填 APRSNETCN 伺服器位址。',
+        'Fill in the APRSNETCN server address above first.',
+        '先に上の APRSNETCN サーバーのアドレスを入れてください。',
+        'Primero rellena arriba la dirección del servidor APRSNETCN.',
+        'Isi dulu alamat server APRSNETCN di atas.'),
 }
 
 META = {

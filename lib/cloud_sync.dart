@@ -13,7 +13,6 @@ library;
 
 import 'dart:convert';
 
-import 'aprsnetcn.dart';
 import 'models.dart';
 import 'net/http_send.dart';
 
@@ -84,14 +83,15 @@ class SyncApi {
 
   /// 用哪个地址：`base` 由「APRSNETCN」链路的服务器地址算出来（见 AppState 的
   /// `syncBase`），云端数据管理是那台服务器专属的，没有第二个地址可填。
-  /// 链路地址空着就是项目自带的 APRSNETCN SERVER（[kAcnHttpBase]）。
+  /// 链路地址空着就返回空串：软件不自己去连一台服务器，一个地址都不预填。
+  /// 空地址发不出请求，[SyncApi._call] 直接报 `no-server`。
   ///
   /// 两种写法都收：带协议的（`https://sync.example.com`）原样用，不带协议的
   /// （`1.2.3.4`）补上 `http://` 与 8899，与「APRSNETCN」页那张卡同一口径。
   /// 末尾的斜杠先去掉，否则拼出来就是 `…8899//api/v1/…`。
   static String baseFor(String server) {
     var host = server.trim();
-    if (host.isEmpty) return kAcnHttpBase;
+    if (host.isEmpty) return '';
     while (host.endsWith('/')) {
       host = host.substring(0, host.length - 1);
     }
@@ -119,6 +119,8 @@ class SyncApi {
     Map<String, String>? query,
     Duration timeout = const Duration(seconds: 30),
   }) async {
+    // 地址空着就是没配服务器：不发请求，也别拼出个 `/api/v1/...` 这种去连本机。
+    if (base.isEmpty) throw const SyncException('no-server');
     String text;
     try {
       text = await httpSend(

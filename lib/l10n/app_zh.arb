@@ -5183,5 +5183,6 @@
   "syncBackupsCount": "共 {n} 份",
   "syncDeviceHint": "列表里是登录过这台服务器的设备。移除一台，它下次同步要重新登录。",
   "@syncEveryMin": {"placeholders": {"n": {"type": "String"}}},
-  "@syncBackupsCount": {"placeholders": {"n": {"type": "String"}}}
+  "@syncBackupsCount": {"placeholders": {"n": {"type": "String"}}},
+  "syncNoServer": "先在上面填 APRSNETCN 服务器地址。"
 }

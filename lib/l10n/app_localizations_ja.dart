@@ -10177,4 +10177,7 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String get syncDeviceHint => "このサーバーにログインした端末の一覧です。削除した端末は次回の同期で再ログインが必要です。";
 
+  @override
+  String get syncNoServer => "先に上の APRSNETCN サーバーのアドレスを入れてください。";
+
 }

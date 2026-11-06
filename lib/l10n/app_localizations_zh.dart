@@ -10077,6 +10077,9 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String get syncDeviceHint => "列表里是登录过这台服务器的设备。移除一台，它下次同步要重新登录。";
 
+  @override
+  String get syncNoServer => "先在上面填 APRSNETCN 服务器地址。";
+
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
@@ -20150,5 +20153,8 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get syncDeviceHint => "列表裡是登入過這台伺服器的裝置。移除一台，它下次同步要重新登入。";
+
+  @override
+  String get syncNoServer => "先在上面填 APRSNETCN 伺服器位址。";
 
 }

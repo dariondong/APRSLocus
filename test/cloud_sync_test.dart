@@ -7,12 +7,11 @@
 ///     每条都成了两条」。
 ///   * 上传字段名与服务端的列一一对应，写错一个（`peer` 写成 `to`）不会报错，
 ///     只会安静地存成一列空值。
-///   * 地址是云同步页自己那一格：空着就用项目自带那台，填了主机就补上 8899
-///     （APRS 端口与 HTTP 端口是分开的），带协议的写法原样用。
+///   * 地址跟着「APRSNETCN」链路那一格走：空着就是没配，不发请求；填了主机
+///     就补上 8899（APRS 端口与 HTTP 端口是分开的），带协议的写法原样用。
 ///     这里钉住 `baseFor` 的几种输入 —— 拼错了只会表现为「登录失败」。
 library;
 
-import 'package:aprslocus/aprsnetcn.dart';
 import 'package:aprslocus/cloud_sync.dart';
 import 'package:aprslocus/models.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -96,9 +95,9 @@ void main() {
   });
 
   group('同步地址', () {
-    test('地址空着就用项目自带那台', () {
-      expect(SyncApi.baseFor(''), kAcnHttpBase);
-      expect(SyncApi.baseFor('   '), kAcnHttpBase);
+    test('地址空着就是没配，不发请求', () {
+      expect(SyncApi.baseFor(''), '');
+      expect(SyncApi.baseFor('   '), '');
     });
 
     test('只填主机就补上 http 与 8899', () {

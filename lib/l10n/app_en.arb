@@ -4504,5 +4504,6 @@
   "syncBackupsCount": "{n} in total",
   "syncDeviceHint": "These are the devices signed in to this server. Remove one and it has to sign in again on its next sync.",
   "@syncEveryMin": {"placeholders": {"n": {"type": "String"}}},
-  "@syncBackupsCount": {"placeholders": {"n": {"type": "String"}}}
+  "@syncBackupsCount": {"placeholders": {"n": {"type": "String"}}},
+  "syncNoServer": "Fill in the APRSNETCN server address above first."
 }

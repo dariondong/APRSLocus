@@ -4504,5 +4504,6 @@
   "syncBackupsCount": "計 {n} 件",
   "syncDeviceHint": "このサーバーにログインした端末の一覧です。削除した端末は次回の同期で再ログインが必要です。",
   "@syncEveryMin": {"placeholders": {"n": {"type": "String"}}},
-  "@syncBackupsCount": {"placeholders": {"n": {"type": "String"}}}
+  "@syncBackupsCount": {"placeholders": {"n": {"type": "String"}}},
+  "syncNoServer": "先に上の APRSNETCN サーバーのアドレスを入れてください。"
 }

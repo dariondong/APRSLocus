@@ -10456,4 +10456,7 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get syncDeviceHint => "These are the devices signed in to this server. Remove one and it has to sign in again on its next sync.";
 
+  @override
+  String get syncNoServer => "Fill in the APRSNETCN server address above first.";
+
 }

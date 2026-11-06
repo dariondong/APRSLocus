@@ -18509,6 +18509,12 @@ abstract class AppLocalizations {
 
   String get syncDeviceHint;
 
+  /// No description provided for @syncNoServer.
+  ///
+  /// In zh, this message translates to:
+  /// **'先在上面填 APRSNETCN 服务器地址。'**
+  String get syncNoServer;
+
 }
 
 class _AppLocalizationsDelegate

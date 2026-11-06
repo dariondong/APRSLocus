@@ -10466,4 +10466,7 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get syncDeviceHint => "Ini perangkat yang login ke server ini. Kalau dihapus, perangkat itu perlu login lagi saat sinkron berikutnya.";
 
+  @override
+  String get syncNoServer => "Isi dulu alamat server APRSNETCN di atas.";
+
 }
