@@ -443,6 +443,7 @@ void _seedDefaults() {
     'BG2GNI': ['jadeGift'],
     'BG5AON': ['jadeGift'],
     'BG5WRY': ['jadeGift'],
+    'BI2RPW': ['earlyMember'],
   };
   _primariesCache = {
     'BG7LZQ': 'kaishan',
@@ -468,6 +469,7 @@ void _seedDefaults() {
     'BG2GNI': 'jadeGift',
     'BG5AON': 'jadeGift',
     'BG5WRY': 'jadeGift',
+    'BI2RPW': 'earlyMember',
   };
 }
 

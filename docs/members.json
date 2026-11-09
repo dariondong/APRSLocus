@@ -1,6 +1,6 @@
 {
-  "version": 70,
-  "updated": "2026-10-26",
+  "version": 71,
+  "updated": "2026-11-09",
   "developers": [
     {
       "call": "BG7LZQ",
@@ -2153,6 +2153,51 @@
         "jadeGift"
       ],
       "primary": "jadeGift"
+    },
+    {
+      "call": "BI2RPW",
+      "who": {
+        "zh": "BI2RPW",
+        "zh-TW": "BI2RPW",
+        "en": "BI2RPW"
+      },
+      "role": {
+        "zh": "早期成员",
+        "zh-TW": "早期成員",
+        "en": "Early member"
+      },
+      "brief": {
+        "zh": "早期公测时就在频率上，一直陪着它走到现在。",
+        "zh-TW": "早期公測時就在頻率上，一直陪著它走到現在。",
+        "en": "Was on frequency from the early betas, and has stayed with it since."
+      },
+      "contrib": {
+        "zh": "参与早期公测，在真实电波里试过定位和报文收发。",
+        "zh-TW": "參與早期公測，在真實電波裡試過定位和報文收發。",
+        "en": "Took part in the early public beta, testing positioning and packet traffic over real radio."
+      },
+      "quote": {
+        "zh": "呼号在，回响就在。",
+        "zh-TW": "呼號在，迴響就在。",
+        "en": "The callsign stays, so the echo stays."
+      },
+      "tags": {
+        "zh": [
+          "早期公测"
+        ],
+        "zh-TW": [
+          "早期公測"
+        ],
+        "en": [
+          "Early beta"
+        ]
+      },
+      "honors": [
+        "earlyMember"
+      ],
+      "primary": "earlyMember",
+      "grp": "test",
+      "c": "#B08A34"
     }
   ],
   "groups": [
