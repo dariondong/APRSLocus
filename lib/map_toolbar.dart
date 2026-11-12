@@ -1,5 +1,3 @@
-import 'dart:math' as math;
-
 /// 右侧工具列的尺寸与分列算式（纯逻辑，无 Widget）。
 ///
 /// ── 为什么单独一份 ──
@@ -16,6 +14,8 @@ import 'dart:math' as math;
 /// 排序被重排」的根因）。**贴底控件摆不摆**只看当帧的真实几何：它管的是
 /// 「会不会真压住」，所以必须用当前的真值。
 library;
+
+import 'dart:math' as math;
 
 /// 这一帧地图浮层的几何。字段全是算好的结果，调用方不该再自己乘一遍。
 class MapToolbarLayout {
@@ -148,7 +148,7 @@ class MapToolbar {
       cols: cols,
       room: room,
       topBase: topBase,
-      bottom: topBase + height(cols),
+      bottom: topBase + MapToolbar.height(cols),
       barsTop: height - (barsOwn + padBottom + bottomInset),
       barsBlock: barsOwn + padBottom + bottomInset,
       // 左侧那一列浮层要让开工具列（以前写死 74，只够一列）。
