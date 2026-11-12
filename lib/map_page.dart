@@ -173,71 +173,6 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
   Station? _selected;
   final ValueNotifier<Offset?> _hover = ValueNotifier(null);
 
-  /// 右侧工具列的按钮尺寸与间距 —— 列高是由它们**算**出来的，不是写死的。
-  static const double _kToolBtn = 38;
-  static const double _kToolGap = 6;
-
-  /// 工具列两组按钮的颗数：5 颗工具（图层 / 轨迹组 / 策略 / 底图 / 中心经纬度）
-  /// + 6 颗缩放（放大 / 缩小 / 轨迹 / 热力图 / 定位 / 锁定中心）。
-  static const int _kToolCount = 5;
-  static const int _kZoomCount = 6;
-
-  /// 判工具列分栏时的上下固定预留（顶部：顶栏 + 最多一排横幅；底部：导航 +
-  /// 贴底控件）。
-  ///
-  /// 用常量而不是当帧的 `topInset` / `bottomInset`：那两项一时一变（横幅出现与
-  /// 收起、开始上报、内容面板开合），扣它们会让列数在同一块屏幕上跳，整排按钮
-  /// 跟着重排。数值取那几件东西的尺寸上限 —— 宁可多分一列，也不让最下面那颗
-  /// 按钮被 Stack 裁掉（那正是这条分栏机制当初要解决的事）。
-  static const double _kToolbarTopReserve = 100;
-  static const double _kToolbarBottomReserve = 70;
-
-  /// 工具列最多分几列：再多就挤到地图中间去了，不如让贴底控件（坐标条 /
-  /// 上报横杠）让位。
-  static const int _kToolbarMaxCols = 3;
-
-  /// 顶部两道横幅（未连接提示 / 公告）同时挂着时，地图的顶部锚点还会往下
-  /// 多走多少。
-  ///
-  /// 分栏预留用这个**上限**而不是当帧的 `topInset`：横幅一出现工具列就往下
-  /// 长，若列数按当帧算就会当场重排；按上限算，横幅出现只是把工具列整个推下去
-  /// （位置变了但排序不变），而且已经预留过的高度够它用。数值 = 两道横幅
-  /// （各 36~40）+ 各自的间距，宁可多留。
-  static const double _kToolbarBannerSlack = 90;
-
-  /// 工具列按钮总数
-  static int get _kToolbarBtns => _kToolCount + _kZoomCount;
-
-  /// 分 [cols] 列时，一列的高度（n 颗钮 + n-1 道间距）
-  static double _toolbarHeight(int cols) {
-    final per = (_kToolbarBtns + cols - 1) ~/ cols;
-    return per * _kToolBtn + (per - 1) * _kToolGap;
-  }
-
-  /// 装进 [room] 高最少要分几列。
-  ///
-  /// 「矮横屏」不是看朝向或裸屏高，而是看这一块**地图框**有多大（减去顶/底
-  /// 预留）—— 桌面上的矮窗口、手机横放，都会让同一块屏幕需要不同列数。
-  ///
-  /// 封顶在 [_kToolbarMaxCols]：再矮也不继续加列。无限加列会把工具列拉成
-  /// 一整排横贯地图的按钮（十一颗三列已经 126 宽，十一列就是 478 宽），
-  /// 那一排比「贴底控件让位」难看多了。真装不下时由 `roomForBottom` 让贴底
-  /// 控件消失，工具列自己永远装得下、也永远压不到别人。
-  static int _toolbarColumns(double room) {
-    for (var c = 1; c <= _kToolbarMaxCols; c++) {
-      if (_toolbarHeight(c) <= room) return c;
-    }
-    return _kToolbarMaxCols;
-  }
-
-  /// 上报横杠（[_beaconBar]）自身的高度：一行 12 号字 + 上下各 8 内边距 + 描边。
-  ///
-  /// 只给「地图画出来的那几层」的裁剪线用（见 `_ovClip`），不参与任何布局 ——
-  /// 那个 `Positioned` 仍然是按内容撑开的，这里只是估一个「它大概有多高」。
-  static const double _kBeaconBarH = 38;
-
-  /// 底部坐标条（[_bottomControls]）自身的高度：13 号图标 + 上下各 7 内边距 + 描边。
-  static const double _kBottomCtrlH = 30;
 
   // 脉冲动画（移动/选中标记）
   late final AnimationController _pulse;
@@ -702,63 +637,29 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
             _syncRot();
             final vis = _visible;
             final searched = widget.searchQuery.trim().isNotEmpty;
-            // ── 右侧工具列多高、要分几列 ──
+            // ── 浮层几何：顶部锚点、工具列分几列、贴底控件还摆不摆 ──
             //
-            // 两件事分开算，这是这一版的核心：**列数**只跟窗口尺寸走（稳定、
-            // 不随横幅/面板/上报状态变），**贴底控件摆不摆**只看当帧真实几何
-            //（它管的是「会不会真压住」）。把两件事搅在一起的年代，只要有人
-            // 一改就是「控件重排」或者「控件叠在一起」。
-            //
-            // 顶部锚点的基准：所有顶部浮层从 14 挪到「外壳顶栏之下」
-            final double topBase = 14 + widget.topInset;
+            // 算式都在 `lib/map_toolbar.dart`（纯函数、有单测）。这里只递几个
+            // 当帧的实数进去：**列数**按窗口尺寸与固定预留算，同一块屏幕上
+            // 永远是同一个答案（横幅、开始上报、外壳内容面板都不参与，那几项
+            // 以前是「地图控件排序被重排」的根因）；**贴底控件摆不摆**用当帧
+            // 几何判，它管的是「会不会真压住」。
             final double padBottom = MediaQuery.of(context).padding.bottom;
             // 横屏时系统导航栏 / 挖孔在**右**侧（竖屏才在底部）—— 贴右控件必须
             // 让开，否则工具列、上报横杠、底部坐标条会被导航栏盖住
             //（用户报的「横屏地图操作控件被遮挡」）。
             final double padRight = MediaQuery.of(context).padding.right;
-            // ── 工具列分几列：按**最坏情况**的顶/底占用算 ──
-            //
-            // 预留取「两道横幅都挂着时的顶部锚点」与「上报横杠出现时的底部占用」，
-            // 两者都是这台设备上的常数：横幅出现与收起、开始上报、2.0 内容面板
-            // 都不改它，于是同一块屏幕上按钮的位置永远不变（用户报的「地图控件
-            // 排序被重排」）。
-            //
-            // 为什么必须是**最坏**情况而不是「看起来够用」：底部原来只预留 70，
-            // 而上报横杠实际占到 62+38=100，再叠上导航栏与安全区就更多 —— 矮一点
-            // 的手机（720 高、无刘海）上工具列一列就有 478 长，正好压在上报横杠上
-            // （用户报的「浮层工具挡在一起了」）。按真实占用预留之后，工具列永远
-            // 长不到贴底控件那一块。
-            final double topReserve =
-                math.max(_kToolbarTopReserve, topBase + _kToolbarBannerSlack);
-            final double bottomReserve = math.max(
-                _kToolbarBottomReserve,
-                14 + _kBeaconBarH + 62 + padBottom + widget.bottomInset);
-            final double toolbarRoom =
-                size.height - topReserve - bottomReserve;
-            // 列数只由**窗口尺寸**决定：同一块屏幕、同一个方向，永远是同一个
-            // 答案 —— 横幅、开始上报、2.0 内容面板都不参与。以前还给「矮窗口」
-            // 留了一个按**当帧**可用高度兜底的支路（`roomNoBottom`），而那一项
-            // 里含 `bottomInset`：一开内容面板可用高度就骤减，兜底支路反过来
-            // 要求更**多**的列，整排按钮于是重排一遍（用户报的「地图页的控件
-            // 不应受 UI 2.0 其他页面底层的影响」）。那个支路已删。
-            final int toolbarCols = _toolbarColumns(toolbarRoom);
-            // 贴底控件（坐标条 / 上报横杠）还摆不摆得下：拿**这一帧**的真实
-            // 几何判 —— 工具列最后一颗按钮的下沿再留 8 像素，必须还在它们上面。
-            // 这是「会不会真压住」的唯一判据，所以它必须用当帧值，与列数怎么
-            // 算无关（列数是稳定的，这两件事早就该分开）。
-            final double bottomBars = widget.state.connected &&
-                    widget.state.myHasFix
-                ? 62 + _kBeaconBarH
-                : 14 + _kBottomCtrlH;
-            final double toolbarBottom =
-                topBase + _toolbarHeight(toolbarCols);
-            final double barsTop =
-                size.height - (bottomBars + padBottom + widget.bottomInset);
-            final bool roomForBottom = toolbarBottom + 8 <= barsTop;
-            // 左侧那一列浮层要让开工具列：它以前写死 `right: 74`（只够一列），
-            // 工具列换成两列/三列后就会压在它的右端。
-            final double rightGutter =
-                14 + toolbarCols * _kToolBtn + (toolbarCols - 1) * _kToolGap + 12;
+            final MapToolbarLayout tools = MapToolbar.layout(
+              height: size.height,
+              topInset: widget.topInset,
+              bottomInset: widget.bottomInset,
+              padBottom: padBottom,
+              beaconOn: widget.state.connected && widget.state.myHasFix,
+            );
+            final double topBase = tools.topBase;
+            final int toolbarCols = tools.cols;
+            final bool roomForBottom = tools.roomForBottom;
+            final double rightGutter = tools.rightGutter;
             // ── 地图**画出来的**那几层也要让开外壳占用的区域 ──
             //
             // 与贴左控件同一个口径（见 [leftInset] 与 [bottomInset]）：2.0 外壳的
@@ -775,11 +676,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
               top: widget.topInset,
               // 贴底浮层（上报横杠 / 底部坐标条）的底边距与自身高度必须与下面那两个
               // `Positioned` 一致，否则裁剪线会落在横杠里面（线上还会剩一截露在杠下）。
-              bottom: !roomForBottom
-                  ? 0
-                  : (widget.state.connected && widget.state.myHasFix
-                      ? 62 + padBottom + widget.bottomInset + _kBeaconBarH
-                      : 14 + padBottom + widget.bottomInset + _kBottomCtrlH),
+              bottom: tools.clipBottom,
             );
             if (widget.frozen) {
               // 冻结：停掉脉冲动画。它是地图这边**唯一的每帧**重绘来源
@@ -2354,9 +2251,9 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
   }
 
   /// 右侧工具列：按钮摊平成一串，再按 [cols] 分列（[cols] 由可用高度算，见
-  /// [_toolbarColumns]）。
+  /// [MapToolbar.columns]）。
   ///
-  /// 为什么摊平：按钮的**颗数**与**尺寸**是唯一真相（[_kToolBtn] / [_kToolGap]），
+  /// 为什么摊平：按钮的**颗数**与**尺寸**是唯一真相（[MapToolbar.btn] / [MapToolbar.gap]），
   /// 列高由它们算出来。以前是「单列固定多高 + 一个朝向判据」，每加一颗钮就得
   /// 重新猜阈值，猜漏了的表现就是最下面那颗被裁掉、点不到。
   Widget _rightToolbar(int cols) {
@@ -2431,17 +2328,17 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         for (var i = 0; i < columns.length; i++) ...[
-          if (i > 0) const SizedBox(width: _kToolGap),
+          if (i > 0) const SizedBox(width: MapToolbar.gap),
           columns[i],
         ],
       ],
     );
   }
 
-  /// 按钮之间插 [_kToolGap] 的竖间距（[_toolbarHeight] 的算式与它一一对应）
+  /// 按钮之间插 [MapToolbar.gap] 的竖间距（[MapToolbar.height] 的算式与它一一对应）
   static List<Widget> _spaced(List<Widget> btns) => [
         for (var i = 0; i < btns.length; i++) ...[
-          if (i > 0) const SizedBox(height: _kToolGap),
+          if (i > 0) const SizedBox(height: MapToolbar.gap),
           btns[i],
         ],
       ];

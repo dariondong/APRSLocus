@@ -366,6 +366,11 @@ jobs:
       - name: Test coordinate format
         run: flutter test test/coord_format_test.dart
 
+      # 地图右侧工具列的分列算式（列数、封顶、贴底控件让位、裁剪下边距）：
+      # 用户报过两次「控件被重排 / 浮层挡在一起」，那种错编译与 analyze 都看不见。
+      - name: Test map toolbar layout
+        run: flutter test test/map_toolbar_test.dart
+
       # 「高级连接通道设置」开关（用户要求「位置默认全部都发、消息保留勾选」）：
       # 关着时位置发给所有已启用且连上的可发射链路、消息那条链路不动。
       # 三条错都编译能过、analyze 全绿：

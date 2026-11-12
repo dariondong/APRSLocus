@@ -27,8 +27,9 @@
      只有 300px 出头；`Stack` 默认 `Clip.hardEdge`，于是**最下面那颗被剪掉且点不到**。
      历史上这里先是写死「单列 390」去判「要不要换两列」，加了「锁定中心」那颗之后
      阈值就不再等于真实高度 —— 手算出来的常数迟早会漂。
-     判据：按钮尺寸（`_kToolBtn` / `_kToolGap`）是唯一真相，列高由它们算，列数由
-     **当帧可用高度**（`_toolbarColumns(room)`）算；多列必须 `Row(` + `start` 对齐，
+     判据：按钮尺寸与间距（`MapToolbar.btn` / `MapToolbar.gap`，在
+     `lib/map_toolbar.dart`）是唯一真相，列高由它们算，列数由「窗口尺寸 − 预留」
+     （`MapToolbar.columns(room)`）算；多列必须 `Row(` + `start` 对齐，
      按钮之间的间距必须统一（否则 n-1 道 gap 的算式对不上），列高不许写死。
 
   3. **底部让位量把安全区算了两遍**。
@@ -145,8 +146,10 @@ def main() -> int:
     errors = []
     shell = read('lib/shell2.dart')
     map_page = read('lib/map_page.dart')
+    toolbar = read('lib/map_toolbar.dart')
     shell_code = code_only(shell)
     map_code = code_only(map_page)
+    toolbar_code = code_only(toolbar)
 
     # ① 竖条/面板不许压住地图贴左控件
     if 'final double leftInset;' not in map_page:
@@ -192,12 +195,17 @@ def main() -> int:
             errors.append('_rightToolbar 没给按钮加统一间距 —— 列高算式的 n-1 道 gap '
                           '就对不上了，最后一颗仍可能被裁')
 
-    # ②b 列高的算式必须真的从按钮尺寸来（以前是写死的 390 / 一个 484 阈值）
-    if 'per * _kToolBtn + (per - 1) * _kToolGap' not in map_code:
-        errors.append('工具列列高不是由 _kToolBtn / _kToolGap 算出来的 —— '
+    # ②b 列高与列数只在 `lib/map_toolbar.dart` 里算（2026-11-12 抽出去的：
+    # 同一套算式以前在 build 里出现两遍，裁剪线那份漏改就只剩眼睛能发现）
+    if 'per * btn + (per - 1) * gap' not in toolbar_code:
+        errors.append('工具列列高不是由按钮尺寸与间距（btn / gap）算出来的 —— '
                       '写死的高度只要加一颗钮就漏判，表现为最下面那颗被遮挡')
-    if 'static int _toolbarColumns(double room)' not in map_code:
-        errors.append('没有 _toolbarColumns(room) —— 分几列必须看当帧可用高度')
+    if 'static int columns(double room)' not in toolbar_code:
+        errors.append('map_toolbar.dart 里没有 columns(room) —— 分几列必须由'
+                      '「窗口尺寸 - 预留」算出来')
+    if 'MapToolbar.layout(' not in map_code:
+        errors.append('MapPage 没走 MapToolbar.layout(...) —— 浮层几何自己算一遍，'
+                      '就等于第二份真相（裁剪线那份以前就是这么漂的）')
 
     # ③ 底部让位量不许重复计入安全区
     if 'bottomInset: _kGutter,' not in shell:
@@ -343,33 +351,43 @@ def main() -> int:
     # 横杠上。另外「贴底控件让不让位」不再用 `_toolbarColumns(roomWithBottom)
     # <= 3` 判（那只回答「要几列」，答不了「会不会压住」），改成直接比两个
     # 真实边缘：工具列最后一颗的下沿 + 8 必须还在贴底控件的上沿之上。
-    if 'final double topBase = 14 + widget.topInset;' not in map_code:
-        errors.append('MapPage 没有算顶部锚点（topBase）—— 工具列与贴底控件的'
-                      '几何都无从判断')
-    if 'final int toolbarCols = _toolbarColumns(toolbarRoom);' not in map_code:
-        errors.append('工具列列数不是从「窗口尺寸 - 预留」(toolbarRoom) 算的 —— '
-                      '拿当帧让位量算，横幅/上报横杠/面板一改列数就重排（控件排序被重排）')
+    if 'static const double topBasePad = 14;' not in toolbar_code:
+        errors.append('map_toolbar.dart 里的顶部锚点没了（topBasePad）—— '
+                      '工具列与贴底控件的几何都无从判断')
+    if 'final int toolbarCols = tools.cols;' not in map_code:
+        errors.append('工具列列数不是拿 MapToolbar.layout 的结果（tools.cols）—— '
+                      '自己算就会带进当帧让位量，横幅/上报横杠/面板一改列数就重排'
+                      '（控件排序被重排）')
+    if 'final MapToolbarLayout tools = MapToolbar.layout(' not in map_code:
+        errors.append('MapPage 没有那次 `MapToolbar.layout(` 调用')
     if 'roomNoBottom' in map_code:
         errors.append('又给矮窗口留了按当帧可用高度兜底的分栏支路 —— 那条里含 '
                       'bottomInset，一开 2.0 内容面板列数就变，整排按钮跟着重排')
     if 'bottomInset: navSpace - pad.bottom,' not in shell:
         errors.append('2.0 竖屏传给地图的 bottomInset 又含了内容面板 —— '
                       '一开面板地图自己的控件就被顶上去、重排（控件只该跟窗口尺寸走）')
-    if ('_kToolbarTopReserve' not in map_code
-            or '_kToolbarBottomReserve' not in map_code):
-        errors.append('没有 _kToolbarTopReserve / _kToolbarBottomReserve —— '
+    if ('static const double topReserve = 100;' not in toolbar_code
+            or 'static const double bottomReserve = 70;' not in toolbar_code):
+        errors.append('map_toolbar.dart 里的 topReserve / bottomReserve 没了 —— '
                       '分栏的预留必须有下限，否则同一块屏幕上答案会飘')
     for needle, why in (
-        ('final double toolbarBottom =',
-         '没算工具列最后一颗的下沿（toolbarBottom）—— 就不知道它压没压到贴底控件'),
-        ('final double barsTop =',
+        ('bottom: topBase + height(cols),',
+         '没算工具列最后一颗的下沿（bottom）—— 就不知道它压没压到贴底控件'),
+        ('barsTop: height - (',
          '没算贴底控件的上沿（barsTop）—— 那才是「会不会真压住」的判据'),
-        ('final bool roomForBottom = toolbarBottom + 8 <= barsTop;',
+        ('bool get roomForBottom => bottom + 8 <= barsTop;',
          '贴底控件让不让位不是比两个真实边缘，而是拿「要几列」当替代 —— '
          '矮屏上会叠在一起（用户报的「浮层工具挡在一起了」）'),
     ):
-        if needle not in map_code:
+        if needle not in toolbar_code:
             errors.append(why)
+    # 裁剪下边距只能从 tools 取：以前在 build 里另抄了一遍横杠/坐标条的高度
+    if 'bottom: tools.clipBottom,' not in map_code:
+        errors.append('地图浮层的裁剪下边距不是取 tools.clipBottom —— '
+                      '另抄一份表达式，横杠高度一改就会落在横杠里面')
+    if 'get clipBottom =>' not in toolbar_code:
+        errors.append('map_toolbar.dart 里没有 clipBottom —— 贴底控件让位后'
+                      '画上去的线会露在屏幕最底下')
     if '_toolbarColumns(availH' in map_code:
         errors.append('分栏又把 availH（当帧让位量）算进去了 —— 那几项一时一变，'
                       '列数会跟着横幅 / 上报横杠 / 面板重排')
