@@ -1,5 +1,24 @@
 # 更新日志
 
+## [2.2.2] - 2026-11-12
+
+### 更新
+
+- 下载的安装包放在手机的「下载」文件夹里，文件管理器里能直接找到。
+- 下载完会核对安装包的签名，对不上的包不会留下来。
+- 装上新版第一次打开时问一句要不要删掉安装包，勾过「以后也这样」就不再问。
+
+## [2.2.2] - 2026-11-12 (English)
+
+### Update
+
+- The downloaded update package goes into the phone's Downloads folder, where the file
+  manager can find it.
+- The package signature is checked after the download; a package that does not match is
+  removed.
+- The first start after updating asks whether to delete the package. Tick "do this from
+  now on" and it stops asking.
+
 ## [2.2.1] - 2026-11-12
 
 ### 服务器

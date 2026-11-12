@@ -419,6 +419,24 @@ CARDS = [
 # 只列「重点版本」：中间几十个纯修 bug 的版本归纳进文字说明，完整记录指向 Releases。
 CL = [
     {
+        'ver': 'v2.2.2', 'date': '2026-11-12',
+        'items': [
+            ('up',
+             T('下载的安装包放在手机的「下载」文件夹里。',
+               '下載的安裝包放在手機的「下載」資料夾裡。',
+               'The downloaded update package goes into the phone Downloads folder.')),
+            ('new',
+             T('下载完会核对签名，对不上的包不会留下来。',
+               '下載完會核對簽名，對不上的包不會留下來。',
+               'The package signature is checked, and a package that does not match is '
+               'removed.')),
+            ('new',
+             T('装上新版第一次打开时问一句要不要删掉安装包。',
+               '裝上新版第一次打開時問一句要不要刪掉安裝包。',
+               'The first start after updating asks whether to delete the package.')),
+        ],
+    },
+    {
         'ver': 'v2.2.1', 'date': '2026-11-12',
         'items': [
             ('new',
