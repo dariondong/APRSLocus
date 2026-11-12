@@ -73,22 +73,22 @@ PAGES = [
 # ⚠ 换一期公告时这里必须一起改，否则会出现「正文是新的、标题还是上一期」。
 HEAD = {
     'zh': {
-        'kicker': '🚨 安全公告',
-        'title': '紧急：暂停更新与下载',
-        'en': 'Security notice · 12 Nov 2026',
-        'sub': '构建流程被改动，审计完成前请暂停更新与下载。',
+        'kicker': '✅ 安全公告',
+        'title': '审计完成：恢复更新（v2.2.0）',
+        'en': 'Audit complete · 12 Nov 2026',
+        'sub': '注入的构建流程从未执行，密钥未被读取。v2.2.0 已用新签名证书重建，可恢复更新；因签名变更需卸载重装。',
     },
     'zh_TW': {
-        'kicker': '🚨 安全公告',
-        'title': '緊急：暫停更新與下載',
-        'en': 'Security notice · 12 Nov 2026',
-        'sub': '建置流程被改動，稽核完成前請暫停更新與下載。',
+        'kicker': '✅ 安全公告',
+        'title': '稽核完成：恢復更新（v2.2.0）',
+        'en': 'Audit complete · 12 Nov 2026',
+        'sub': '注入的建置流程從未執行，金鑰未被讀取。v2.2.0 已用新簽章憑證重建，可恢復更新；因簽章變更需解除安裝重裝。',
     },
     'en': {
-        'kicker': '🚨 Security notice',
-        'title': 'Stop updating and downloading',
+        'kicker': '✅ Security notice',
+        'title': 'Audit complete: updates resumed (v2.2.0)',
         'en': '12 Nov 2026',
-        'sub': 'The build pipeline was altered. Hold off on updates and downloads until the audit is done.',
+        'sub': 'The injected pipeline never ran and no secret was read. v2.2.0 is rebuilt with a new signing certificate; a clean install is required because the signature changed.',
     },
 }
 
