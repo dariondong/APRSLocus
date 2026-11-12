@@ -10240,4 +10240,7 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String get updatePkgSigUnchecked => "署名を読み取れません";
 
+  @override
+  String connectingChannel(String name) => "$name に接続しています";
+
 }

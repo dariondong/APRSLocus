@@ -10,6 +10,7 @@ import 'package:path_provider/path_provider.dart';
 import 'device_abi.dart';
 import 'pinned_http.dart';
 import 'theme.dart';
+import 'update_channels.dart';
 import 'update_download.dart';
 import 'update_install.dart';
 import 'update_packages.dart';
@@ -189,10 +190,9 @@ class _CheckUpdatePageState extends State<CheckUpdatePage>
 
   /// 当前更新渠道对应的 API 地址。
   ///
-  /// 已集中到 `AppState.updateBaseFor` —— 这里与 update_prompt.dart 原本各写
-  /// 一份相同的三元表达式，新增渠道时极易只改一处（两处不一致的表现是
-  /// 「更新页能查到新版、启动提示查不到」这种很难复现的问题）。
-  String get _apiBase => AppState.updateBaseFor(widget.state.updateChannel);
+  /// 渠道清单由官网下发（`lib/update_channels.dart`），这里只问状态层要
+  /// 「这一条渠道现在的地址」—— 地址改了不必发版。
+  String get _apiBase => widget.state.updateChannelBase;
 
   bool _checking = false;
   bool _hasError = false;
@@ -264,6 +264,8 @@ class _CheckUpdatePageState extends State<CheckUpdatePage>
     )..repeat();
     _check();
     unawaited(_scanPackages());
+    // 渠道清单由官网下发：进这一页顺手刷一次（6 小时节流，这里不阻塞）。
+    unawaited(widget.state.refreshUpdateChannels());
     // 后台下载（issue #22-5）：任务归单例，页面订阅它 —— 离开页面下载照跑，
     // 回到页面从这里接着显示。
     _dl.bind(widget.state);
@@ -401,8 +403,10 @@ class _CheckUpdatePageState extends State<CheckUpdatePage>
     return Directory('${tmp.path}/update_dl');
   }
 
-  /// 切换更新渠道（GitHub / GitCode / Qingling / Aliyun OSS / Aliyun OSS 香港）
+  /// 更新渠道选择器。**条目来自官网那份清单**，这里不写死任何一个渠道。
   void _switchChannel() {
+    final st = widget.state;
+    final channels = st.updateChannels.channels;
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
@@ -416,83 +420,54 @@ class _CheckUpdatePageState extends State<CheckUpdatePage>
           ),
           padding: const EdgeInsets.all(20),
           child: SafeArea(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  S.of(context).updateChannel,
-                  style: ts(16, w: FontWeight.w800),
-                ),
-                const SizedBox(height: 14),
-                _channelOption(
-                  'GitHub',
-                  'api.github.com',
-                  widget.state.updateChannel == 'github',
-                  () {
-                    widget.state.setUpdateChannel('github');
-                    Navigator.pop(context);
-                    _check();
-                  },
-                ),
-                const SizedBox(height: 8),
-                _channelOption(
-                  'GitCode',
-                  'api.gitcode.com',
-                  widget.state.updateChannel == 'gitcode',
-                  () {
-                    widget.state.setUpdateChannel('gitcode');
-                    Navigator.pop(context);
-                    _check();
-                  },
-                ),
-                const SizedBox(height: 8),
-                // Qingling（清零）：自建镜像通道。国内直连 GitHub 常失败，
-                // 本通道由镜像服务器代取发行版，客户端只访问镜像地址。
-                _channelOption(
-                  'Qingling',
-                  S.of(context).updateChannelQinglingHint,
-                  widget.state.updateChannel == 'qingling',
-                  () {
-                    widget.state.setUpdateChannel('qingling');
-                    Navigator.pop(context);
-                    _check();
-                  },
-                ),
-                const SizedBox(height: 8),
-                // Aliyun OSS：官方 CDN 分发通道。发版流水线把安装包与
-                // GitHub 同格式的 releases 索引一起传到公开读的 OSS bucket，
-                // 客户端从 oss-cn-guangzhou 取（阿里云 CDN，国内可达性好）。
-                _channelOption(
-                  'Aliyun OSS',
-                  'aprslocus.oss-cn-guangzhou.aliyuncs.com',
-                  widget.state.updateChannel == 'aliyun',
-                  () {
-                    widget.state.setUpdateChannel('aliyun');
-                    Navigator.pop(context);
-                    _check();
-                  },
-                ),
-                const SizedBox(height: 8),
-                // Aliyun OSS（香港）：同一条 OSS 分发通道，落在**香港**区域，
-                // 走自定义域 aprslocushk.oss.theez.top，国内直连同样稳。
-                // 副标题写的是**实际地址**（与 GitCode 那一行同一个口径）：
-                // 渠道之间真正的差别是「从哪儿取」，不是谁掏钱。
-                _channelOption(
-                  'Aliyun OSS（香港）',
-                  'aprslocushk.oss.theez.top',
-                  widget.state.updateChannel == 'aliyun_hk',
-                  () {
-                    widget.state.setUpdateChannel('aliyun_hk');
-                    Navigator.pop(context);
-                    _check();
-                  },
-                ),
-              ],
+            // 清单里渠道多了会超出屏幕：自己能滚，按钮不会跑没。
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    S.of(context).updateChannel,
+                    style: ts(16, w: FontWeight.w800),
+                  ),
+                  const SizedBox(height: 14),
+                  for (var i = 0; i < channels.length; i++) ...[
+                    if (i > 0) const SizedBox(height: 8),
+                    _channelOption(
+                      channels[i].name,
+                      _channelSub(channels[i]),
+                      st.updateChannelId == channels[i].id,
+                      () {
+                        st.setUpdateChannel(channels[i].id);
+                        Navigator.pop(context);
+                        _check();
+                      },
+                    ),
+                  ],
+                ],
+              ),
             ),
           ),
         ),
       ),
     );
+  }
+
+  /// 渠道图标。官网清单只给名字（`public` / `cloud` / `cloud_done` / `server`），
+  /// 认不出的用服务器图标 —— 清单能加渠道，加不了新图标。
+  static IconData _channelIcon(String name) => switch (name) {
+        'public' => Icons.public_rounded,
+        'cloud' => Icons.cloud_rounded,
+        'cloud_done' => Icons.cloud_done_rounded,
+        _ => Icons.dns_rounded,
+      };
+
+  /// 选择器第二行：有本地化说明就写说明，否则写它真正读取的地址。
+  String _channelSub(UpdateChannel c) {
+    final hint = switch (c.hint) {
+      'qingling' => S.of(context).updateChannelQinglingHint,
+      _ => '',
+    };
+    return hint.isEmpty ? c.displayHost : hint;
   }
 
   Widget _channelOption(
@@ -904,17 +879,10 @@ class _CheckUpdatePageState extends State<CheckUpdatePage>
               ),
             ),
             IconButton(
-              tooltip: AppState.updateChannelLabels[widget.state.updateChannel] ??
-                  widget.state.updateChannel,
+              tooltip: widget.state.updateChannelName,
               onPressed: _switchChannel,
               icon: Icon(
-                switch (widget.state.updateChannel) {
-                  'github' => Icons.public_rounded,
-                  'gitcode' => Icons.cloud_rounded,
-                  'aliyun' => Icons.cloud_done_rounded, // 阿里云 CDN（广州）
-                  'aliyun_hk' => Icons.cloud_done_rounded, // 阿里云 CDN（香港）
-                  _ => Icons.dns_rounded, // Qingling 等自建镜像：用服务器图标
-                },
+                _channelIcon(widget.state.updateChannelNow?.icon ?? ''),
                 color: C.blue,
               ),
             ),
@@ -1293,12 +1261,12 @@ class _CheckUpdatePageState extends State<CheckUpdatePage>
               // 而这里一直写死「GitCode」，用户看到的就是「描述一直是 gitcode」）。
               // 新增渠道时必须一并处理，否则又会退回「写死某一个渠道」的老问题。
               Text(
-                switch (widget.state.updateChannel) {
+                switch (widget.state.updateChannelId) {
                   'github' => S.of(context).connectingGitHub,
                   'gitcode' => S.of(context).connectingGitCode,
-                  'aliyun' => S.of(context).connectingAliyun,
-                  'aliyun_hk' => S.of(context).connectingAliyun,
-                  _ => S.of(context).updateChannelQinglingHint,
+                  'aliyun' || 'aliyun_hk' => S.of(context).connectingAliyun,
+                  _ => S.of(context)
+                      .connectingChannel(widget.state.updateChannelName),
                 },
                 style: TextStyle(fontSize: 11, color: C.greyLight),
               ),

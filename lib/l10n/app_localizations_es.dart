@@ -10578,4 +10578,7 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get updatePkgSigUnchecked => "No se pudo leer la firma";
 
+  @override
+  String connectingChannel(String name) => "Conectando con $name";
+
 }

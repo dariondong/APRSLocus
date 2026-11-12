@@ -371,6 +371,11 @@ jobs:
       - name: Test map toolbar layout
         run: flutter test test/map_toolbar_test.dart
 
+      # 官网下发的更新渠道清单：坏数据要退回内置那份，且内置那份必须与官网
+      # docs/assets/update_channels.json 逐条对齐（对不上时拉不到官网就没渠道）。
+      - name: Test update channels
+        run: flutter test test/update_channels_test.dart
+
       # 「高级连接通道设置」开关（用户要求「位置默认全部都发、消息保留勾选」）：
       # 关着时位置发给所有已启用且连上的可发射链路、消息那条链路不动。
       # 三条错都编译能过、analyze 全绿：

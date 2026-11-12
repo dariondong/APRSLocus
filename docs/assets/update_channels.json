@@ -1,0 +1,43 @@
+{
+  "_comment": "APRSLocus 的更新渠道清单：客户端拉这一份决定「有哪些渠道、地址、默认哪个、顺序」。id 一旦发布不能改（用户设置里存的就是它），下线一条就从这里删掉。地址跟着客户端拼 <base>/DarionDong/APRSLocus/releases。qingling 那台是自签证书，证书内置在客户端里：换地址等于让客户端连不上，必须同时发版换证书。",
+  "updated": "2026-11-12",
+  "default": "github",
+  "channels": [
+    {
+      "id": "github",
+      "name": "GitHub",
+      "base": "https://api.github.com/repos",
+      "host": "api.github.com",
+      "icon": "public"
+    },
+    {
+      "id": "gitcode",
+      "name": "GitCode",
+      "base": "https://api.gitcode.com/api/v5/repos",
+      "host": "api.gitcode.com",
+      "icon": "cloud"
+    },
+    {
+      "id": "qingling",
+      "name": "Qingling",
+      "base": "https://47.104.251.69/v1/repos",
+      "host": "47.104.251.69",
+      "icon": "server",
+      "hint": "qingling"
+    },
+    {
+      "id": "aliyun",
+      "name": "Aliyun OSS",
+      "base": "https://aprslocus.oss-cn-guangzhou.aliyuncs.com",
+      "host": "aprslocus.oss-cn-guangzhou.aliyuncs.com",
+      "icon": "cloud_done"
+    },
+    {
+      "id": "aliyun_hk",
+      "name": "Aliyun OSS（香港）",
+      "base": "https://aprslocushk.oss.theez.top",
+      "host": "aprslocushk.oss.theez.top",
+      "icon": "cloud_done"
+    }
+  ]
+}

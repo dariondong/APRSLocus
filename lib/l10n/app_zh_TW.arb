@@ -5114,5 +5114,7 @@
   "@updatePkgWelcomeTitle": {"placeholders": {"v": {"type": "String"}}},
   "updatePkgSigChecking": "正在校驗簽名",
   "updatePkgSigMismatch": "簽名與本機不一致",
-  "updatePkgSigUnchecked": "讀不出簽名"
+  "updatePkgSigUnchecked": "讀不出簽名",
+  "connectingChannel": "正在連 {name}",
+  "@connectingChannel": {"placeholders": {"name": {"type": "String"}}}
 }

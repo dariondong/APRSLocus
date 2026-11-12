@@ -10529,4 +10529,7 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get updatePkgSigUnchecked => "Tanda tangan tidak terbaca";
 
+  @override
+  String connectingChannel(String name) => "Menghubungkan ke $name";
+
 }

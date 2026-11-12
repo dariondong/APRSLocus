@@ -25,7 +25,7 @@ Future<void> maybePromptUpdate({
   required AppState state,
 }) async {
   try {
-    final latest = await _fetchLatestTag(state.updateChannel);
+    final latest = await _fetchLatestTag(state.updateChannelBase);
     if (latest == null) return;
     if (compareVersions(latest, AppState.appVersion) <= 0) return;
 
@@ -40,11 +40,9 @@ Future<void> maybePromptUpdate({
   }
 }
 
-Future<String?> _fetchLatestTag(String channel) async {
-  // 渠道 → API 根地址统一由 AppState 提供。
-  // 这里原本另写了一份与 check_update_page.dart 相同的三元表达式，
-  // 新增渠道时只改一处就会导致「更新页能查到、启动提示查不到」的诡异差异。
-  final base = AppState.updateBaseFor(channel);
+Future<String?> _fetchLatestTag(String base) async {
+  // 渠道清单与地址都由官网下发（`lib/update_channels.dart`），这里只拿
+  // 「当前这条渠道的 API 根」拼地址 —— 地址改了不必发版。
   final url = '$base/DarionDong/APRSLocus/releases';
   // 与更新页同一套规则：目标是自建服务器才用钉扎证书，其余用默认行为。
   final client = HttpClient(context: pinnedContextFor(url))

@@ -7,9 +7,9 @@
 OSS 渠道由**四处**约定拼成，任何一处漏了都**不会报错**，只会表现成
 「更新页少了这个渠道」或「选了这个渠道却 403 —— 看起来像客户端 bug」：
 
-  1. 客户端登记了渠道地址     —— `lib/state.dart` 的 `updateChannelBases['aliyun' / 'aliyun_hk']`
-  2. 客户端选择器里有这个渠道 —— `lib/check_update_page.dart` 的 `setUpdateChannel('aliyun' / 'aliyun_hk')`
-     且副标题写着它真正读取的地址（用户看到的差别就是「从哪儿取」）
+  1. 官网那份渠道清单里有它   —— `docs/assets/update_channels.json`（客户端拉这份）
+  2. 客户端的内置兜底与清单一致 —— `lib/update_channels.dart` 的 `kFallbackChannels`
+     （拉不到官网时用的就是它），且更新页的渠道选择器按清单渲染、不写死任何一条
   3. 发版流水线真的上传了     —— `.github/workflows/build-release.yml` 的 `publish-oss`
      ① 把三个平台的安装包都传上去；② 生成并上传 GitHub 同格式的 releases 索引
   4. 索引生成器的形状对       —— `tool/oss_index.py`（跑它的 selftest）
@@ -26,6 +26,7 @@ OSS 渠道由**四处**约定拼成，任何一处漏了都**不会报错**，�
 退出码 0 = 接线正确；1 = 有问题（并说明哪一条）。
 """
 import io
+import json
 import os
 import re
 import subprocess
@@ -34,6 +35,8 @@ import sys
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 STATE = 'lib/state.dart'
+CHANNELS_JSON = 'docs/assets/update_channels.json'
+CHANNELS_DART = 'lib/update_channels.dart'
 UPDATE_PAGE = 'lib/check_update_page.dart'
 WORKFLOW = '.github/workflows/build-release.yml'
 OSS_TOOL = 'tool/oss_index.py'
@@ -65,34 +68,44 @@ def read(rel):
 def main() -> int:
     errors = []
     state = read(STATE)
+    dart = read(CHANNELS_DART)
+    cfg_text = read(CHANNELS_JSON)
     page = read(UPDATE_PAGE)
     yml = read(WORKFLOW)
+    try:
+        cfg = json.loads(cfg_text)
+        cfg_channels = cfg.get('channels') or []
+    except Exception as e:
+        print('%s 不是合法 JSON：%s' % (CHANNELS_JSON, e))
+        return 1
 
     job = yml[yml.find('publish-oss:'):] if 'publish-oss:' in yml else ''
 
     for ch, (_bucket, host, envpfx) in CHANNELS.items():
-        # ── ① 客户端登记了渠道地址，且 host 与流水线一致 ──
-        m = None
-        for line in state.split('\n'):
-            if "'%s':" % ch in line and 'https://' in line:
-                m = line
+        # ── ① 官网清单里有这条渠道，host 与流水线一致 ──
+        entry = None
+        for c in cfg_channels:
+            if c.get('id') == ch:
+                entry = c
                 break
-        if not m:
-            errors.append('%s 的 updateChannelBases 里没有 `%s` 渠道' % (STATE, ch))
-        elif host not in m:
-            errors.append('%s 里 %s 的地址不是 %s（与流水线/自定义域对不上）'
-                          % (STATE, ch, host))
-        lbl = state[state.find('updateChannelLabels'):]
-        if "'%s':" % ch not in lbl[:lbl.find('}')]:
-            errors.append('%s 的 updateChannelLabels 里没有 `%s`（提示/无障碍标签会回退成裸 id）'
-                          % (STATE, ch))
+        if entry is None:
+            errors.append('%s 里没有 `%s` 渠道 —— 客户端拉不到它，更新页就少一条'
+                          % (CHANNELS_JSON, ch))
+        else:
+            shown = entry.get('host') or entry.get('base', '')
+            if host not in shown:
+                errors.append('%s 里 %s 的地址不是 %s（与流水线/自定义域对不上）'
+                              % (CHANNELS_JSON, ch, host))
 
-        # ── ② 选择器里有这个渠道，副标题写着它真正读取的地址 ──
-        if "setUpdateChannel('%s')" % ch not in page:
-            errors.append('%s 的渠道选择器里没有 `%s` 选项' % (UPDATE_PAGE, ch))
-        if host not in page:
-            errors.append('%s 的 `%s` 渠道副标题没写真实地址 `%s`（用户看不出从哪儿取）'
-                          % (UPDATE_PAGE, ch, host))
+        # ── ② 客户端的内置兜底与清单一致；更新页按清单渲染 ──
+        seg = dart[dart.find('kFallbackChannels'):]
+        seg = seg[:seg.find('];')]
+        if "'%s'" % ch not in seg:
+            errors.append('%s 的 kFallbackChannels 里没有 `%s` —— 官网清单拉不到时'
+                          '客户端就没有这条渠道' % (CHANNELS_DART, ch))
+        elif host not in seg:
+            errors.append('%s 的 kFallbackChannels 里 %s 的地址不是 %s'
+                          % (CHANNELS_DART, ch, host))
 
         # ── ③ 流水线真的把安装包与索引传到该 bucket ──
         if not job:

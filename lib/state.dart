@@ -11,6 +11,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'models.dart';
 import 'cloud_sync.dart';
 import 'coord_format.dart';
+import 'update_channels.dart';
 import 'features.dart';
 import 'mock_data.dart';
 import 'services.dart';
@@ -4873,67 +4874,69 @@ class AppState extends ChangeNotifier {
     _notify();
   }
 
-  // 更新渠道：'github' / 'gitcode' / 'qingling' / 'aliyun' / 'aliyun_hk'
+  // 更新渠道：**清单由官网下发**（见 lib/update_channels.dart）
   //
-  // 默认 **GitHub**：GitCode 的 release API 在境外/部分网络下不稳定，而且
-  // 镜像站可能滞后或缺少资产 —— 默认指向「官方发布的地方」更不容易出现
-  // 「检查更新永远失败/永远没有新版」。想用镜像的用户仍可在更新页一键切换
-  // （选择会写进 prefs，不会被这里的默认值覆盖）。
+  // 这里只存「用户选了哪一条」这个 id。有哪些渠道、地址、默认哪个、什么顺序
+  // 都来自官网那份 JSON（`docs/assets/update_channels.json`），拉不到就用内置
+  // 的那份 [kFallbackChannels]（与旧硬编码逐字一致）。
   //
-  // **Qingling（清零）**：自建镜像通道。国内直连 GitHub 常常失败，
-  // Qingling 由我们自己的服务器先把发行版镜像下来，再以 GitHub 同格式的接口
-  // 提供给客户端 —— 客户端不直连 GitHub，可达性由镜像服务保证。
-  // 服务端实现见 APRSlocusLINK 项目的 docs/tech/UPSTREAM-MIRROR.md。
-  //
-  // **Aliyun（阿里云 OSS）**：官方 CDN 分发通道。发版流水线把安装包与一份
-  // GitHub 同格式的 `releases` 索引**同时**上传到公开读的 OSS bucket，客户端
-  // 从 `aprslocus.oss-cn-guangzhou.aliyuncs.com` 取（阿里云 CDN，国内可达性
-  // 好、用公开 CA、无需证书钉扎）。⚠ bucket 必须**公共读**，否则客户端拿到 403；
-  // 发版流水线写入后会做一次匿名 GET 自检，不通过会告警（见 build-release.yml）。
-  //
-  // **Aliyun HK（阿里云 OSS · 香港）**：与上面同一条通道，只是落在**香港**区域，
-  // 走 CNAME 自定义域 `aprslocushk.oss.theez.top`（`aprslocushk` bucket）。
-  // 香港节点国内直连也比 GitHub 稳，且**不受**默认域名对 `.apk`/`.ipa` 的
-  // `ApkDownloadForbidden` 拦截（自定义域）。发版流水线把同一份安装包与索引
-  // **同时**推向两个节点。
-  String updateChannel = 'github';
+  // 用户选过的 id 不在新清单里（那条被下线了）时，自动回落到官网指定的默认。
+  String updateChannel = kFallbackChannelId;
 
-  /// 各更新渠道的 **API 根地址**。
+  /// 官网那份渠道清单的原始文本（缓存）与拉取时间。
   ///
-  /// 两个渠道的响应格式不同（GitHub / GitCode 风格），但都按
-  /// `<base>/<owner>/<repo>/releases` 取，因此这里只登记 base。
-  ///
-  /// Qingling 的地址指向自建镜像的 **兼容接口**（`/v1/repos/...`）——
-  /// 该接口刻意输出 GitHub 同格式的数组，所以调用方无需区分渠道分支。
-  ///
-  /// ⚠ Qingling 用 **https**，而服务器用的是**自签证书** —— 因此请求该主机时必须
-  ///   走 `lib/pinned_http.dart` 提供的钉扎 context（只信任内置的那张证书），
-  ///   否则 Dart 的 `HttpClient` 会抛 CERTIFICATE_VERIFY_FAILED。
-  ///   三处发请求的地方（更新页 / 启动提示 / 下载器）都已改为
-  ///   `HttpClient(context: pinnedContextFor(url))`；漏改任何一处都会在该路径上失败。
-  ///   证书有效期 10 年；换证书必须同步发新版 App。
-  static const Map<String, String> updateChannelBases = {
-    'github': 'https://api.github.com/repos',
-    'gitcode': 'https://api.gitcode.com/api/v5/repos',
-    'qingling': 'https://47.104.251.69/v1/repos',
-    'aliyun': 'https://aprslocus.oss-cn-guangzhou.aliyuncs.com',
-    // 香港节点走自定义 CNAME 域（`aprslocushk` bucket，香港区域）：
-    // 客户端从 `aprslocushk.oss.theez.top` 取，索引 key 与广州一致。
-    'aliyun_hk': 'https://aprslocushk.oss.theez.top',
-  };
+  /// 不进备份：它是官网配置的本地副本，换机后重新拉就是了。
+  String updateChannelsJson = '';
+  int updateChannelsAt = 0;
 
-  /// 取某渠道的 API 根地址；未知渠道回退 GitHub，避免旧配置写坏后无法检查更新。
-  static String updateBaseFor(String channel) =>
-      updateChannelBases[channel] ?? updateChannelBases['github']!;
+  /// 多久重新拉一次官网的渠道清单。
+  static const int updateChannelsTtlMs = 6 * 60 * 60 * 1000;
 
-  /// 渠道显示名（用于提示与无障碍标签）。
-  static const Map<String, String> updateChannelLabels = {
-    'github': 'GitHub',
-    'gitcode': 'GitCode',
-    'qingling': 'Qingling（清零）',
-    'aliyun': 'Aliyun OSS',
-    'aliyun_hk': 'Aliyun OSS（香港）',
-  };
+  UpdateChannelConfig? _channelCfg;
+
+  UpdateChannelConfig get updateChannels =>
+      _channelCfg ??= UpdateChannelConfig.parse(updateChannelsJson);
+
+  /// 实际生效的渠道 id：用户选的还在清单里就用它，否则用官网的默认。
+  String get updateChannelId {
+    final cfg = updateChannels;
+    return cfg.byId(updateChannel) != null ? updateChannel : cfg.resolvedDefault;
+  }
+
+  UpdateChannel? get updateChannelNow => updateChannels.byId(updateChannelId);
+
+  /// 当前渠道的 API 根地址。
+  String get updateChannelBase =>
+      updateChannelNow?.base ?? kFallbackChannels.first.base;
+
+  /// 当前渠道的显示名（提示与无障碍标签用）。
+  String get updateChannelName => updateChannelNow?.name ?? updateChannelId;
+
+  /// 拉一次官网的渠道清单。
+  ///
+  /// 失败什么都不做：缓存与内置清单各挡一层，更新这条路不该因为拉配置而断。
+  Future<void> refreshUpdateChannels({bool force = false}) async {
+    final now = DateTime.now().millisecondsSinceEpoch;
+    if (!force && updateChannelsAt > 0 &&
+        now - updateChannelsAt < updateChannelsTtlMs) {
+      return;
+    }
+    final text = await fetchUpdateChannelsJson(
+      userAgent: 'APRSlocus/$appVersion',
+    );
+    if (text == null || text.trim().isEmpty) return;
+    // 只收「解析得出清单」的那份：官网写崩了不该把用户手里的好清单盖掉。
+    if (UpdateChannelConfig.parse(text).channels.isEmpty) return;
+    updateChannelsAt = now;
+    if (updateChannelsJson == text) {
+      persist();
+      return;
+    }
+    updateChannelsJson = text;
+    _channelCfg = null;
+    persist();
+    _notify();
+  }
 
   void setUpdateChannel(String c) {
     updateChannel = c;
@@ -5416,7 +5419,10 @@ class AppState extends ChangeNotifier {
     mapType = 'gaode';
     tileCacheOn = true;
     offlineOnly = false;
-    updateChannel = 'github';
+    updateChannel = kFallbackChannelId;
+    updateChannelsJson = '';
+    updateChannelsAt = 0;
+    _channelCfg = null;
     updatePkgAction = 'ask';
     updatePkgJson = '';
     updatePkgAsked = '';
@@ -6005,6 +6011,9 @@ class AppState extends ChangeNotifier {
       tileCacheOn = p.getBool('tileCacheOn') ?? tileCacheOn;
       offlineOnly = p.getBool('offlineOnly') ?? offlineOnly;
       updateChannel = p.getString('updateChannel') ?? updateChannel;
+      updateChannelsJson = p.getString('updateChannelsJson') ?? updateChannelsJson;
+      updateChannelsAt = p.getInt('updateChannelsAt') ?? updateChannelsAt;
+      _channelCfg = null;
       updatePkgAction = p.getString('updatePkgAction') ?? updatePkgAction;
       if (!updatePkgActions.contains(updatePkgAction)) updatePkgAction = 'ask';
       updatePkgJson = p.getString('updatePkgJson') ?? updatePkgJson;
@@ -6192,6 +6201,10 @@ class AppState extends ChangeNotifier {
           .timeout(const Duration(milliseconds: 400), onTimeout: () {});
       // 智能体授权名单：同样启动就查一次，也用 400ms 上限（联网请求会后台跑完）。
       await recheckAgentAllow()
+          .timeout(const Duration(milliseconds: 400), onTimeout: () {});
+      // 更新渠道清单（官网下发）：6 小时一次。拉不到就用缓存/内置那份，
+      // 更新这条路不受影响，所以同样只等 400ms。
+      await refreshUpdateChannels()
           .timeout(const Duration(milliseconds: 400), onTimeout: () {});
       final savedLat = p.getDouble('myLat');
       final savedLng = p.getDouble('myLng');
@@ -6426,6 +6439,8 @@ class AppState extends ChangeNotifier {
     await p.setBool('tileCacheOn', tileCacheOn);
     await p.setBool('offlineOnly', offlineOnly);
     await p.setString('updateChannel', updateChannel);
+    await p.setString('updateChannelsJson', updateChannelsJson);
+    await p.setInt('updateChannelsAt', updateChannelsAt);
     await p.setString('updatePkgAction', updatePkgAction);
     await p.setString('updatePkgJson', updatePkgJson);
     await p.setString('updatePkgAsked', updatePkgAsked);

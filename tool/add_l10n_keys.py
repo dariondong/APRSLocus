@@ -502,6 +502,9 @@ KEYS = {
         'Primero rellena arriba la dirección del servidor APRSNETCN.',
         'Isi dulu alamat server APRSNETCN di atas.'),
     # ── 更新包：校签名 / 放「下载」/ 装完问一句 ──
+    'connectingChannel': (
+        '正在连 {name}', '正在連 {name}', 'Connecting to {name}',
+        '{name} に接続しています', 'Conectando con {name}', 'Menghubungkan ke {name}'),
     'updatePkgWelcomeTitle': (
         '欢迎更新到 {v}', '歡迎更新到 {v}', 'Welcome to {v}',
         'バージョン {v} へようこそ', 'Bienvenido a {v}', 'Selamat datang di {v}'),
@@ -582,6 +585,7 @@ KEYS = {
 }
 
 META = {
+    'connectingChannel': '{"placeholders": {"name": {"type": "String"}}}',
     'updatePkgWelcomeTitle': '{"placeholders": {"v": {"type": "String"}}}',
     'syncEveryMin': '{"placeholders": {"n": {"type": "String"}}}',
     'syncBackupsCount': '{"placeholders": {"n": {"type": "String"}}}',

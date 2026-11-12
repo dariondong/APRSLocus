@@ -18635,6 +18635,12 @@ abstract class AppLocalizations {
   /// **'读不出签名'**
   String get updatePkgSigUnchecked;
 
+  /// No description provided for @connectingChannel.
+  ///
+  /// In zh, this message translates to:
+  /// **'正在连 {name}'**
+  String connectingChannel(String name);
+
 }
 
 class _AppLocalizationsDelegate

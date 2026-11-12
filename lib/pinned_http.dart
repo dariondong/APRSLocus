@@ -3,7 +3,7 @@
 // 背景
 // ----
 // 项目的更新通道里有一条 `qingling`（清零），指向自建的镜像/交付服务器
-// （见 `AppState.updateChannelBases`）。那台服务器用的是**自签名证书**，
+// （见 `lib/update_channels.dart` 的渠道清单）。那台服务器用的是**自签名证书**，
 // 而 Dart 的 `HttpClient` 默认只信任系统 CA —— 直接走 https 会抛
 // `HandshakeException: CERTIFICATE_VERIFY_FAILED`。
 //
@@ -80,6 +80,10 @@ bool isPinnedHost(String url) {
 ///
 /// * 目标是自建服务器 → 返回钉扎 context（只信任内置的那张证书）；
 /// * 其它（GitHub / GitCode）→ 返回 `null`，让 `HttpClient` 用默认行为。
+///
+/// 判据只看**主机名**：内置证书 CN/SAN 写的就是那台机器的 IP，把它换个地址
+/// 用不了（证书对不上），所以官网那份渠道清单能改别的渠道的地址，改这条等于
+/// 让客户端连不上 —— 换它必须同时发版换证书。
 ///
 /// 用法：`HttpClient(context: pinnedContextFor(url))`。
 SecurityContext? pinnedContextFor(String url) => isPinnedHost(url) ? _pinned : null;

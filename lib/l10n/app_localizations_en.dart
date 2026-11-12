@@ -10519,4 +10519,7 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get updatePkgSigUnchecked => "Could not read the signature";
 
+  @override
+  String connectingChannel(String name) => "Connecting to $name";
+
 }

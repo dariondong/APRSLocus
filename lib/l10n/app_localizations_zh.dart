@@ -10140,6 +10140,9 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String get updatePkgSigUnchecked => "读不出签名";
 
+  @override
+  String connectingChannel(String name) => "正在连 $name";
+
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
@@ -20276,5 +20279,8 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get updatePkgSigUnchecked => "讀不出簽名";
+
+  @override
+  String connectingChannel(String name) => "正在連 $name";
 
 }

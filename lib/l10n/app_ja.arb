@@ -4526,5 +4526,7 @@
   "@updatePkgWelcomeTitle": {"placeholders": {"v": {"type": "String"}}},
   "updatePkgSigChecking": "署名を確認しています",
   "updatePkgSigMismatch": "署名がこの端末と一致しません",
-  "updatePkgSigUnchecked": "署名を読み取れません"
+  "updatePkgSigUnchecked": "署名を読み取れません",
+  "connectingChannel": "{name} に接続しています",
+  "@connectingChannel": {"placeholders": {"name": {"type": "String"}}}
 }

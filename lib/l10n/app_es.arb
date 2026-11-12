@@ -4526,5 +4526,7 @@
   "@updatePkgWelcomeTitle": {"placeholders": {"v": {"type": "String"}}},
   "updatePkgSigChecking": "Comprobando la firma",
   "updatePkgSigMismatch": "La firma no coincide con este dispositivo",
-  "updatePkgSigUnchecked": "No se pudo leer la firma"
+  "updatePkgSigUnchecked": "No se pudo leer la firma",
+  "connectingChannel": "Conectando con {name}",
+  "@connectingChannel": {"placeholders": {"name": {"type": "String"}}}
 }
