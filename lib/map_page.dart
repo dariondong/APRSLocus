@@ -19,6 +19,7 @@ import 'strategy_map_page.dart';
 import 'track_groups_sheet.dart';
 import 'coord.dart';
 import 'coord_format.dart';
+import 'map_toolbar.dart';
 import 'material.dart';
 
 class MapPage extends StatefulWidget {
