@@ -229,14 +229,14 @@ html{overflow-x:hidden}
       </header>
 
       <div class="announce-body">
-        <p>The unauthorised commits of 12 November 2026 have been fully audited. Result: the injected build pipeline never executed, and no build-time secret was ever read. v2.1.44 has been rebuilt with a <b>new signing certificate</b>, and updates can resume.</p>
+        <p>The unauthorised commits of 12 November 2026 have been fully audited. Result: the injected build pipeline never executed, and no build-time secret was ever read. v2.2.0 has been rebuilt with a <b>new signing certificate</b>, and updates can resume.</p>
         <p><b>Severity: resolved · Last updated 12 November 2026, 18:20 (UTC+8)</b></p>
         <p><b>1. Audit result</b></p>
         <ul class="announce-list"><li>The injected pipeline was triggered by v* tags. Each injection existed for only about 48 seconds before a ci: restore commit reverted it, and no build was ever triggered by it.</li><li>Build-time secrets (the signing certificate and the object-storage keys) were therefore never read. The earlier statement that the signing keys had been exposed was incorrect.</li><li>The unauthorised commits and decoy pull requests are gone; no leftover files remain, and the workflows are byte-identical to their pre-incident state.</li></ul>
         <p><b>2. This build requires a clean install</b></p>
-        <ul class="announce-list"><li>Out of caution the signing certificate is still treated as potentially compromised, so it has been replaced and reissued.</li><li><b>The signature changed, so this build cannot be installed over an older one.</b> Export a backup, uninstall the old version, then install v2.1.44.</li><li>The new certificate's SHA-1 and SHA-256 are listed below for you to verify.</li></ul>
+        <ul class="announce-list"><li>Out of caution the signing certificate is still treated as potentially compromised, so it has been replaced and reissued.</li><li><b>The signature changed, so this build cannot be installed over an older one.</b> Export a backup, uninstall the old version, then install v2.2.0.</li><li>The new certificate's SHA-1 and SHA-256 are listed below for you to verify.</li></ul>
         <p><b>3. Releases and verification</b></p>
-        <ul class="announce-list"><li>v2.1.44 and later are signed with the new certificate.</li><li>Use only the SHA-256 values published on the official site and GitHub Releases.</li></ul>
+        <ul class="announce-list"><li>v2.2.0 and later are signed with the new certificate.</li><li>Use only the SHA-256 values published on the official site and GitHub Releases.</li></ul>
         <p><b>New signing certificate fingerprints</b></p>
         <p>SHA-1:   BE:7C:EC:BA:1C:8F:9B:78:64:9A:2E:03:5C:D7:62:9E:BA:B1:4A:0C</p>
         <p>SHA-256: 0F:2C:52:7A:9C:D6:6A:43:A8:71:F3:51:92:C7:5C:B7:5F:C1:B8:5B:6F:63:BA:45:8C:B5:A9:82:0A:2E:38:8A</p>

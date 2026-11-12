@@ -1,6 +1,6 @@
-# Audit complete: updates resumed (v2.1.44)
+# Audit complete: updates resumed (v2.2.0)
 
-The unauthorised commits of 12 November 2026 have been fully audited. Result: the injected build pipeline never executed, and no build-time secret was ever read. v2.1.44 has been rebuilt with a **new signing certificate**, and updates can resume.
+The unauthorised commits of 12 November 2026 have been fully audited. Result: the injected build pipeline never executed, and no build-time secret was ever read. v2.2.0 has been rebuilt with a **new signing certificate**, and updates can resume.
 
 **Severity: resolved · Last updated 12 November 2026, 18:20 (UTC+8)**
 
@@ -13,12 +13,12 @@ The unauthorised commits of 12 November 2026 have been fully audited. Result: th
 ## 2. This build requires a clean install
 
 - Out of caution the signing certificate is still treated as potentially compromised, so it has been replaced and reissued.
-- **The signature changed, so this build cannot be installed over an older one.** Export a backup, uninstall the old version, then install v2.1.44.
+- **The signature changed, so this build cannot be installed over an older one.** Export a backup, uninstall the old version, then install v2.2.0.
 - The new certificate's SHA-1 and SHA-256 are listed below for you to verify.
 
 ## 3. Releases and verification
 
-- v2.1.44 and later are signed with the new certificate.
+- v2.2.0 and later are signed with the new certificate.
 - Use only the SHA-256 values published on the official site and GitHub Releases.
 **New signing certificate fingerprints**
 

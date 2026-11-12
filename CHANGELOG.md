@@ -1,6 +1,6 @@
 # 更新日志
 
-## [2.1.44] - 2026-11-12
+## [2.2.0] - 2026-11-12
 
 ### 安全
 
@@ -8,7 +8,11 @@
 - 已更换 Android 签名证书并重新构建，旧签名作废。
 - **签名换了，旧版本不能覆盖安装，需要先卸载再装这一版。** 卸载前请先导出备份。
 
-## [2.1.44] - 2026-11-12 (English)
+### 构建
+
+- 构建流程锁定 Flutter 3.47.9，不再跟随 stable 自动漂移（Flutter 3.50.0 要求 Gradle 插件 9.1.1，会直接构建失败）。
+
+## [2.2.0] - 2026-11-12 (English)
 
 ### Security
 
@@ -18,6 +22,11 @@
   retired.
 - **Because the signing key changed, this build cannot be installed over an older one. Uninstall the
   old version first - export a backup before you do.**
+
+### Build
+
+- The build pipeline is pinned to Flutter 3.47.9 instead of floating on the stable channel
+  (Flutter 3.50.0 requires Android Gradle Plugin 9.1.1 and fails the build outright).
 
 ## [2.1.43] - 2026-11-06
 
