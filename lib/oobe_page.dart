@@ -32,8 +32,13 @@ class _OobePageState extends State<OobePage> {
   static const int _total = 9;
 
   int _step = 0;
-  // 页面切换动画进行中标记：防止快速连点导致 PageView 与 _step 失步（偶发卡死）
+  /// 页面切换动画进行中标记：防止快速连点导致 PageView 与 _step 失步（偶发卡死）
   bool _busy = false;
+
+  /// 从备份恢复是不是正在进行。与翻页动画的 [_busy] 分开：两件事本来互不相干，
+  /// 共用一个标志时按钮会在翻页动画期间被构建成禁用、动画结束后没人重建它，
+  /// 于是「从备份恢复」一直是灰的、点不动。
+  bool _restoring = false;
   final PageController _pc = PageController();
   late final TextEditingController _call;
   late final TextEditingController _server;
@@ -178,11 +183,20 @@ class _OobePageState extends State<OobePage> {
     _goTo(target);
   }
 
+  /// 改 [_busy] 必须走这里：`onPressed: _busy ? null : …` 是在 build 时求值的，
+  /// 静默改字段会让控件永远停在上一次构建的样子（动画结束时 `_busy` 变回
+  /// false 却没人重建，按钮就一直禁用）。
+  void _setBusy(bool v) {
+    if (_busy == v) return;
+    _busy = v;
+    if (mounted) setState(() {});
+  }
+
   /// 页面切换：以 _step 为唯一事实来源，动画到显式目标页。
   /// 双保险：① animateToPage 抛异常则退化为瞬时跳转；② 兜底定时器确保
   /// _busy 不会因 Future 异常/不完成而永远卡住（否则界面会“卡死”）。
   void _goTo(int target) {
-    _busy = true;
+    _setBusy(true);
     try {
       _pc
           .animateToPage(
@@ -190,14 +204,14 @@ class _OobePageState extends State<OobePage> {
             duration: const Duration(milliseconds: 260),
             curve: Curves.easeOutCubic,
           )
-          .whenComplete(() => _busy = false);
+          .whenComplete(() => _setBusy(false));
     } catch (_) {
       try {
         _pc.jumpToPage(target);
       } catch (_) {}
-      _busy = false;
+      _setBusy(false);
     }
-    Timer(const Duration(milliseconds: 500), () => _busy = false);
+    Timer(const Duration(milliseconds: 500), () => _setBusy(false));
   }
 
   void _back() {
@@ -335,12 +349,12 @@ class _OobePageState extends State<OobePage> {
   /// `oobeDone`（见 lib/backup.dart），恢复成功后 App 层（app.dart）会按它
   /// 直接切到主界面，这一页随即被替换掉。
   Future<void> _restoreFromBackup() async {
-    if (_busy) return;
+    if (_restoring) return;
     final s = S.of(context);
-    setState(() => _busy = true);
+    setState(() => _restoring = true);
     final content = await _pickBackupText(s);
     if (!mounted) return;
-    setState(() => _busy = false);
+    setState(() => _restoring = false);
     if (content == null) return; // 取消或出错，提示已经在里面发过了
     BackupData data;
     try {
@@ -357,7 +371,7 @@ class _OobePageState extends State<OobePage> {
       _toast(s.backupErrEmpty);
       return;
     }
-    setState(() => _busy = true);
+    setState(() => _restoring = true);
     BackupApplyResult? res;
     var days = 0;
     try {
@@ -371,7 +385,7 @@ class _OobePageState extends State<OobePage> {
       if (res.applied > 0 || days > 0) await widget.state.reloadFromPrefs();
     } catch (_) {}
     if (!mounted) return;
-    setState(() => _busy = false);
+    setState(() => _restoring = false);
     if (res == null) {
       _toast(s.backupErrRead);
       return;
@@ -839,8 +853,8 @@ class _OobePageState extends State<OobePage> {
           SizedBox(height: 4),
           // 恢复入口只放在欢迎页：重装或换机的人到这里就能整份搬回来。
           TextButton.icon(
-            onPressed: _busy ? null : _restoreFromBackup,
-            icon: Icon(Icons.settings_backup_restore_rounded, size: 16),
+            onPressed: _restoring ? null : _restoreFromBackup,
+            icon: const Icon(Icons.settings_backup_restore_rounded, size: 16),
             label: Text(
               S.of(context).oobeRestore,
               style: ts(12, w: FontWeight.w600),
