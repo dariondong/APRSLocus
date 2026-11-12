@@ -4682,13 +4682,17 @@ class AppState extends ChangeNotifier {
     try {
       final remote = await syncApi.trackDays();
       final sig = _jsonMap(syncServerSig);
+      // 本机有哪些天（只看档名）。同步记号会说「这天拉过了」，但它随备份搬家，
+      // 换台机器后云端的轨迹就再也下不来 —— 记号必须和本地这一天的文件对上，
+      // 才准许跳过。缺了这一天就照常拉，云端有多少天就补多少天。
+      final mine = await store.dayKeys();
       final api = syncApi;
       for (final row in remote) {
         final day = (row['day'] as String?) ?? '';
         if (day.isEmpty) continue;
         final count = (row['points'] as num?)?.toInt() ?? 0;
         if (count == 0) continue;
-        if (sig[day] == count) continue; // 服务端没变，不用重拉
+        if (sig[day] == count && mine.contains(day)) continue; // 拉过且还在
         final local = await store.loadDay(day);
         if ((local?.points.length ?? 0) >= count) {
           sig[day] = count;

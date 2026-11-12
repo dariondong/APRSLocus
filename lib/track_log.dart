@@ -383,6 +383,28 @@ class TrackLogStore {
     return out;
   }
 
+  /// 本机有哪些天 —— 只看档名，不读内容。
+  ///
+  /// 云同步用它回答「这一天到底在不在本地」：同步记号（`syncServerSig`）会随备份
+  /// 搬家，换台机器后它可能说「已经拉过了」而本地一天都没有，那时靠读文件才有真相。
+  /// 目录里列一遍比逐天 `loadDay` 便宜得多（一天一个文件，不是一天一次解码）。
+  Future<Set<String>> dayKeys() async {
+    final out = <String>{};
+    final today = _today;
+    if (today != null && !today.isEmpty) out.add(today.day);
+    final d = _dir;
+    if (d == null) return out;
+    try {
+      if (!await d.exists()) return out;
+      await for (final e in d.list()) {
+        if (e is! File || !e.path.endsWith('.json')) continue;
+        final day = _basename(e.path);
+        if (_dayRe.hasMatch(day)) out.add(day);
+      }
+    } catch (_) {}
+    return out;
+  }
+
   /// 删除某一天
   Future<void> deleteDay(String day) async {
     if (_today?.day == day) _today = null;
