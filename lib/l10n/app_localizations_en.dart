@@ -10462,4 +10462,52 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get acnHttpPort => "HTTP port";
 
+  @override
+  String updatePkgWelcomeTitle(String v) => "Welcome to $v";
+
+  @override
+  String get updatePkgWelcomeBody => "The new version is installed. The package is still in your Downloads folder. Keep it to install on another device, or delete it to free the space.";
+
+  @override
+  String get updatePkgInDownloads => "In Downloads";
+
+  @override
+  String get updatePkgRemember => "Do this from now on";
+
+  @override
+  String get updatePkgDelete => "Delete the package";
+
+  @override
+  String get updatePkgKeep => "Keep it";
+
+  @override
+  String get updatePkgKept => "The package stays in Downloads";
+
+  @override
+  String get updatePkgSigOk => "Signature verified";
+
+  @override
+  String get updatePkgSigBad => "The package is signed with a different key, so it was deleted. Download it again from an official channel.";
+
+  @override
+  String get updatePkgSigUnknown => "The package signature could not be read, so it was deleted. Download it again.";
+
+  @override
+  String get updatePkgNoFile => "That package is not in Downloads any more. Download it again.";
+
+  @override
+  String get updatePkgAction => "Update package";
+
+  @override
+  String get updatePkgAfterUpdate => "After updating";
+
+  @override
+  String get updatePkgActionAsk => "Ask each time";
+
+  @override
+  String get updatePkgActionDelete => "Delete it";
+
+  @override
+  String get updatePkgActionKeep => "Always keep";
+
 }

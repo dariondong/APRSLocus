@@ -4506,5 +4506,22 @@
   "@syncEveryMin": {"placeholders": {"n": {"type": "String"}}},
   "@syncBackupsCount": {"placeholders": {"n": {"type": "String"}}},
   "syncNoServer": "Primero rellena arriba la dirección del servidor APRSNETCN.",
-  "acnHttpPort": "Puerto HTTP"
+  "acnHttpPort": "Puerto HTTP",
+  "updatePkgWelcomeTitle": "Bienvenido a {v}",
+  "updatePkgWelcomeBody": "La nueva versión ya está instalada. El paquete sigue en la carpeta Descargas. Consérvalo para otro dispositivo o bórralo para liberar espacio.",
+  "updatePkgInDownloads": "En Descargas",
+  "updatePkgRemember": "Hacerlo siempre así",
+  "updatePkgDelete": "Borrar el paquete",
+  "updatePkgKeep": "Conservarlo",
+  "updatePkgKept": "El paquete queda en Descargas",
+  "updatePkgSigOk": "Firma verificada",
+  "updatePkgSigBad": "La firma del paquete no coincide con la de este dispositivo, así que se borró. Descárgalo otra vez desde un canal oficial.",
+  "updatePkgSigUnknown": "No se pudo leer la firma del paquete, así que se borró. Vuelve a descargarlo.",
+  "updatePkgNoFile": "Ese paquete ya no está en Descargas. Descárgalo otra vez.",
+  "updatePkgAction": "Paquete de actualización",
+  "updatePkgAfterUpdate": "Tras actualizar",
+  "updatePkgActionAsk": "Preguntar cada vez",
+  "updatePkgActionDelete": "Borrarlo",
+  "updatePkgActionKeep": "Conservar siempre",
+  "@updatePkgWelcomeTitle": {"placeholders": {"v": {"type": "String"}}}
 }

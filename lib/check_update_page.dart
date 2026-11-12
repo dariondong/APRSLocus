@@ -5,17 +5,38 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart'
     show defaultTargetPlatform, TargetPlatform;
-import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 
 import 'device_abi.dart';
 import 'pinned_http.dart';
 import 'theme.dart';
 import 'update_download.dart';
+import 'update_install.dart';
 import 'update_packages.dart';
+import 'settings_widgets.dart';
 import 'state.dart';
+import 'version_compare.dart';
 import 'widgets.dart';
 import 'material.dart';
+
+/// 一个已经下载好的安装包。
+///
+/// 安卓 10 起应用拿不到公共「下载」目录里的文件路径（scoped storage），
+/// 一条 MediaStore 记录就是「文件名 + 大小」；删除与安装都按名字走原生。
+/// 桌面端仍有真实路径，[path] 就是它（也是唯一的一份）。
+class _Pkg {
+  final String name;
+  final int size;
+  final String? path;
+
+  const _Pkg(this.name, this.size, [this.path]);
+
+  /// 从文件名里抠版本号：`APRSLocus_2.2.2.apk` → `2.2.2`。
+  String get tag {
+    final m = RegExp(r'[Vv]?(\d[\d._a-z]*)').firstMatch(name);
+    return m?.group(1) ?? '';
+  }
+}
 
 /// GitCode Release 数据模型
 class _ReleaseInfo {
@@ -161,7 +182,6 @@ class _CheckUpdatePageState extends State<CheckUpdatePage>
     with SingleTickerProviderStateMixin {
   static const _repoOwner = 'DarionDong';
   static const _repoName = 'APRSLocus';
-  static const _installerChannel = MethodChannel('com.aprslocus/installer');
 
   /// 顶部英雄卡上的「扫光」动画（一条柔光带循环掠过）。
   /// 纯装饰，只为「更高级」的观感，不参与任何逻辑。
@@ -195,19 +215,20 @@ class _CheckUpdatePageState extends State<CheckUpdatePage>
   String get _dlStatus => _dl.statusText;
   bool get _dlError => _dl.error != null;
 
-  /// 已下载到本地的安装包（页面自己扫出来的那份）
-  String? _downloadedPath;
-  String? _downloadedTag; // 实际下载成功的版本
+  /// 已下载到本地的安装包（系统「下载」目录里最新的那一个）
+  _Pkg? _pkg;
 
   /// 已经弹过「下载完成」对话框的序号（见 UpdateDownloader.doneSeq）
   int _doneSeqSeen = 0;
 
   // 本地已下载的全部安装包（按版本会累积多个，用于"删除全部"）
-  List<File> _localPackages = [];
+  List<_Pkg> _localPackages = [];
+
+  String? get _downloadedTag => _pkg?.tag;
 
   /// 两个 tag 是否指向**同一版本**（比较时忽略开头的 `v`）。
   ///
-  /// 为什么不能直接比字符串：下载卡片里的 `_downloadedTag` 是从**文件名**
+  /// 为什么不能直接比字符串：下载卡片里的 tag 是从**文件名**
   /// 里抠出来的（`APRSLocus_2.0.5.apk` → `2.0.5`），而 API 给的
   /// `_latest.tagName` 是 `v2.0.5` —— 直接比永远不相等，于是「已下载」
   /// 判断永远不成立、下载按钮永远不消（issue #13）。
@@ -222,7 +243,7 @@ class _CheckUpdatePageState extends State<CheckUpdatePage>
   /// 再点也只是下载同一个包，而下面那张「已下载」卡片已经给了安装/重新
   /// 下载/删除的入口。
   bool get _alreadyDownloadedLatest =>
-      _downloadedPath != null &&
+      _pkg != null &&
       _downloadingTag == null &&
       _sameVersion(_downloadedTag, _latest?.tagName);
 
@@ -234,14 +255,14 @@ class _CheckUpdatePageState extends State<CheckUpdatePage>
       duration: const Duration(milliseconds: 2600),
     )..repeat();
     _check();
-    _findLocalApk();
+    unawaited(_scanPackages());
     // 后台下载（issue #22-5）：任务归单例，页面订阅它 —— 离开页面下载照跑，
     // 回到页面从这里接着显示。
     _dl.bind(widget.state);
     _doneSeqSeen = _dl.doneSeq;
     _dl.addListener(_onDownloadTick);
     // 之前那次「下载完成」的通知已经看过了（用户进这一页了），清掉它。
-    if (_dl.path != null) _dl.clearDoneNotice();
+    if (_dl.doneTag != null) _dl.clearDoneNotice();
   }
 
   @override
@@ -260,60 +281,76 @@ class _CheckUpdatePageState extends State<CheckUpdatePage>
     final done = _dl.doneSeq;
     if (done != _doneSeqSeen) {
       _doneSeqSeen = done;
-      final p = _dl.path;
-      if (p != null) {
-        setState(() {
-          _downloadedPath = p;
-          _downloadedTag = _dl.doneTag ?? _downloadedTag;
-          if (!_localPackages.any((f) => f.path == p)) {
-            _localPackages.add(File(p));
-          }
-        });
-        // 弹安装对话框只在**页面还开着**时做；页面不在时靠通知栏那条
-        // 「更新包已下载」告诉用户（见 UpdateDownloader._notifyBar）。
-        if (defaultTargetPlatform == TargetPlatform.windows) {
-          _showWinDialog(p);
-        } else {
-          _showInstallDialog(p);
-        }
-      }
+      // 签名不对时下载器会把包删掉并写 error：扫不出新包，也不弹安装
+      // （错误行已经在页面上写清楚了）。
+      unawaited(_afterDownload());
       return;
     }
     setState(() {});
   }
 
-  /// 查找已下载的安装包（按平台对应格式）
-  Future<void> _findLocalApk() async {
-    try {
-      final isWin = defaultTargetPlatform == TargetPlatform.windows;
-      final dir = await _downloadDir();
-      final ext = isWin ? '.exe' : '.apk';
-      final files = dir
-          .listSync()
-          .whereType<File>()
-          .where((f) => f.path.toLowerCase().endsWith(ext))
-          .toList()
-        ..sort((a, b) => b.path.compareTo(a.path));
-      _localPackages = files;
-      // 优先找带版本号的最新文件（APRSLocus_1.2.5.apk），其次通用名
-      for (final f in files) {
-        final base = f.uri.pathSegments.last;
-        final m = RegExp(r'[Vv]?(\d[\d._a-z]*)').firstMatch(base);
-        if (m != null) {
-          _downloadedPath = f.path;
-          _downloadedTag = m.group(1);
-          if (mounted) setState(() {});
-          return;
-        }
-      }
-      // 兜底：无版本号匹配则取最新的一个
-      if (files.isNotEmpty) {
-        _downloadedPath = files.first.path;
-        if (mounted) setState(() {});
-      }
-    } catch (_) {}
+  /// 一次下载真的完成之后：重新扫一遍「下载」目录，再弹安装。
+  Future<void> _afterDownload() async {
+    await _scanPackages();
+    if (!mounted) return;
+    final p = _pkg;
+    if (p == null) return;
+    // 弹安装对话框只在**页面还开着**时做；页面不在时靠通知栏那条
+    // 「更新包已下载」告诉用户（见 UpdateDownloader._notifyBar）。
+    if (defaultTargetPlatform == TargetPlatform.windows) {
+      _showWinDialog(p);
+    } else {
+      _showInstallDialog(p);
+    }
   }
 
+  /// 扫出已经下载好的安装包。
+  ///
+  /// 安卓：系统「下载」目录里的 `APRSLocus_*.apk`（走 MediaStore，只拿名字与大小），
+  /// 外加记录里那份「复制没成功、还落在应用自己目录」的兼底文件。
+  /// 桌面：系统「下载」目录里按版本号排好的本地文件。
+  Future<void> _scanPackages() async {
+    final list = <_Pkg>[];
+    try {
+      if (UpdateInstaller.isAndroid) {
+        for (final r in await UpdateInstaller.packages()) {
+          list.add(_Pkg(r.key, r.value));
+        }
+        final p = widget.state.updatePkgPath;
+        if (p.isNotEmpty) {
+          final f = File(p);
+          if (f.existsSync() &&
+              !list.any((x) => x.name == f.uri.pathSegments.last)) {
+            list.add(_Pkg(f.uri.pathSegments.last, f.lengthSync(), p));
+          }
+        }
+      } else {
+        final dir = await _downloadDir();
+        for (final f in dir.listSync().whereType<File>()) {
+          final n = f.uri.pathSegments.last;
+          if (n.toLowerCase().endsWith('.exe') && n.startsWith('APRSLocus')) {
+            list.add(_Pkg(n, f.lengthSync(), f.path));
+          }
+        }
+      }
+    } catch (_) {}
+    // 新的在前：先按版本号比，拿不到版本号的排到最后
+    list.sort((a, b) {
+      if (a.tag.isEmpty && b.tag.isEmpty) return b.name.compareTo(a.name);
+      if (a.tag.isEmpty) return 1;
+      if (b.tag.isEmpty) return -1;
+      return compareVersions(b.tag, a.tag);
+    });
+    _localPackages = list;
+    _pkg = list.isEmpty ? null : list.first;
+    if (mounted) setState(() {});
+  }
+
+  /// 下载器落盘的目录。
+  ///
+  /// 安卓：**临时目录**，因为下完、校完签名就会把它复制进系统「下载」目录，
+  /// 私有那份随即删掉（以前一直堆在 Android/data 里，用户根本翻不到）。
+  /// 桌面：系统「下载」目录，下完就是一个可以直接运行的 exe。
   Future<Directory> _downloadDir() async {
     if (defaultTargetPlatform == TargetPlatform.windows) {
       final docs = await getDownloadsDirectory();
@@ -321,10 +358,8 @@ class _CheckUpdatePageState extends State<CheckUpdatePage>
       final tmp = await getTemporaryDirectory();
       return tmp;
     }
-    final d = await getExternalStorageDirectory();
-    if (d != null) return d;
     final tmp = await getTemporaryDirectory();
-    return tmp;
+    return Directory('${tmp.path}/update_dl');
   }
 
   /// 切换更新渠道（GitHub / GitCode / Qingling / Aliyun OSS / Aliyun OSS 香港）
@@ -620,14 +655,14 @@ class _CheckUpdatePageState extends State<CheckUpdatePage>
   }
 
   /// 弹出安装确认
-  void _showInstallDialog(String path) {
+  void _showInstallDialog(_Pkg p) {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: C.white,
         title: Text(S.of(context).installApk),
         content: Text(
-          S.of(context).androidInstallHelp(path),
+          S.of(context).androidInstallHelp(_shownPath(p)),
           style: ts(13, h: 1.5),
         ),
         actions: [
@@ -639,7 +674,7 @@ class _CheckUpdatePageState extends State<CheckUpdatePage>
             style: FilledButton.styleFrom(backgroundColor: C.blue),
             onPressed: () async {
               Navigator.pop(ctx);
-              await _openApk(path);
+              await _installPkg(p);
             },
             child: Text(S.of(context).install),
           ),
@@ -648,8 +683,20 @@ class _CheckUpdatePageState extends State<CheckUpdatePage>
     );
   }
 
+  /// 用户在文件管理器里看到的路径。
+  ///
+  /// 安卓：包就在系统「下载」目录里，写成 `Download/APRSLocus_2.2.2.apk`；
+  /// 只有当复制进「下载」失败、包还落在应用自己目录里时才用真实路径。
+  String _shownPath(_Pkg p) {
+    final path = p.path;
+    if (path != null) return path;
+    return 'Download/${p.name}';
+  }
+
   /// Windows 下载完成：运行 exe 或打开所在目录
-  void _showWinDialog(String path) {
+  void _showWinDialog(_Pkg p) {
+    final path = p.path;
+    if (path == null) return;
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
@@ -689,31 +736,54 @@ class _CheckUpdatePageState extends State<CheckUpdatePage>
     }
   }
 
-  /// 打开 APK 触发系统安装（Android 用 FileProvider + ACTION_VIEW）
-  Future<void> _openApk(String path) async {
+  /// 交给系统安装（安卓）。
+  ///
+  /// 两点和以前不一样：
+  ///   * 包在系统「下载」里时按**文件名**走原生（scoped storage 下拿不到路径），
+  ///     原生侧会复制一份到缓存、**再校一次签名**才交给安装器；
+  ///   * 复制没成功、包还留在应用自己目录里的那一份，这里先自己校一遍签名。
+  Future<void> _installPkg(_Pkg p) async {
+    if (defaultTargetPlatform != TargetPlatform.android) {
+      final path = p.path;
+      if (path != null) _runExe(path);
+      return;
+    }
     try {
-      if (defaultTargetPlatform == TargetPlatform.android) {
-        // 检查是否允许安装未知来源
-        bool canInstall = false;
-        try {
-          canInstall =
-              await _installerChannel.invokeMethod<bool>('canRequestInstall') ??
-              false;
-        } catch (_) {}
-        if (!canInstall) {
-          _showInstallPermissionDialog();
+      final can = await UpdateInstaller.canRequestInstall();
+      if (!mounted) return;
+      if (!can) {
+        _showInstallPermissionDialog();
+        return;
+      }
+      final path = p.path;
+      if (path != null) {
+        final trust = await UpdateInstaller.verify(path);
+        if (!mounted) return;
+        if (trust != ApkTrust.ok) {
+          _showSnack(S.of(context).updatePkgSigBad);
           return;
         }
-        final ok = await _installerChannel.invokeMethod<bool>('installApk', {
-          'path': path,
-        });
-        if (ok != true) {
+        final ok = await UpdateInstaller.installPath(path);
+        if (!mounted) return;
+        if (!ok) _showSnack(S.of(context).cannotLaunchInstaller);
+        return;
+      }
+      final r = await UpdateInstaller.installFromDownloads(p.name);
+      if (!mounted) return;
+      switch (r) {
+        case 'ok':
+          return;
+        case 'sig-mismatch':
+          _showSnack(S.of(context).updatePkgSigBad);
+          break;
+        case 'no-file':
+          _showSnack(S.of(context).updatePkgNoFile);
+          break;
+        default:
           _showSnack(S.of(context).cannotLaunchInstaller);
-        }
-      } else {
-        _showSnack(S.of(context).openPackageManually);
       }
     } catch (e) {
+      if (!mounted) return;
       _showSnack(S.of(context).cannotOpenPackage(e.toString()));
     }
   }
@@ -750,7 +820,7 @@ class _CheckUpdatePageState extends State<CheckUpdatePage>
   /// 打开系统"允许安装未知应用"设置页
   void _openInstallSettings() {
     try {
-      _installerChannel.invokeMethod('openInstallSettings');
+      unawaited(UpdateInstaller.openInstallSettings());
     } catch (_) {}
   }
 
@@ -833,14 +903,42 @@ class _CheckUpdatePageState extends State<CheckUpdatePage>
           const SizedBox(height: 16),
           ..._buildStatusArea(isWin),
           const SizedBox(height: 16),
-          if (_downloadedPath != null && _downloadingTag == null)
+          if (_pkg != null && _downloadingTag == null)
             _downloadedCard(isWin),
           if (_allReleases.length > 1) ...[
             const SizedBox(height: 16),
             _moreVersionsCard(isWin),
           ],
+          const SizedBox(height: 16),
+          _packagePrefsCard(),
         ],
       ),
+    );
+  }
+
+  /// 装上新版以后，那个安装包怎么处理（问 / 删 / 留）。
+  ///
+  /// 这是「刚更新完第一次打开」那张欢迎卡的记忆：那里选过「以后也这样」，
+  /// 以后就照做、不再问；想改回每次问就来这里。
+  Widget _packagePrefsCard() {
+    final st = widget.state;
+    return SettingsSectionCard(
+      title: S.of(context).updatePkgAction,
+      icon: Icons.inventory_2_outlined,
+      color: C.blue,
+      children: [
+        SettingsChoice<String>(
+          S.of(context).updatePkgAfterUpdate,
+          value: st.updatePkgAction,
+          options: AppState.updatePkgActions,
+          labelOf: (v) => switch (v) {
+            'delete' => S.of(context).updatePkgActionDelete,
+            'keep' => S.of(context).updatePkgActionKeep,
+            _ => S.of(context).updatePkgActionAsk,
+          },
+          onChanged: (v) => setState(() => st.setUpdatePkgAction(v)),
+        ),
+      ],
     );
   }
 
@@ -959,12 +1057,13 @@ class _CheckUpdatePageState extends State<CheckUpdatePage>
                           ),
                         ),
                         onPressed: () {
-                          final p = _downloadedPath;
+                          final p = _pkg;
                           if (p == null) return;
                           if (isWin) {
-                            _runExe(p);
+                            final path = p.path;
+                            if (path != null) _runExe(path);
                           } else {
-                            unawaited(_openApk(p));
+                            unawaited(_installPkg(p));
                           }
                         },
                         icon: const Icon(Icons.install_mobile_rounded, size: 19),
@@ -1303,7 +1402,7 @@ class _CheckUpdatePageState extends State<CheckUpdatePage>
                 _progressCard()
               else if (_dlError)
                 _retryDownloadCard()
-              else if (_downloadedPath == null && !_latestHasAsset)
+              else if (_pkg == null && !_latestHasAsset)
                 Container(
                   width: double.infinity,
                   padding: const EdgeInsets.all(12),
@@ -1319,7 +1418,7 @@ class _CheckUpdatePageState extends State<CheckUpdatePage>
                     style: ts(12, c: C.grey),
                   ),
                 )
-              else if (_downloadedPath == null)
+              else if (_pkg == null)
                 SizedBox(
                   width: double.infinity,
                   height: 46,
@@ -1450,7 +1549,7 @@ class _CheckUpdatePageState extends State<CheckUpdatePage>
               _progressCard()
             else if (_dlError)
               _retryDownloadCard()
-            else if (_downloadedPath == null && !_latestHasAsset)
+            else if (_pkg == null && !_latestHasAsset)
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.all(12),
@@ -1575,7 +1674,7 @@ class _CheckUpdatePageState extends State<CheckUpdatePage>
   }
 
   Widget _downloadedCard(bool isWin) {
-    final path = _downloadedPath!;
+    final p = _pkg!;
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: cardDeco(),
@@ -1598,16 +1697,21 @@ class _CheckUpdatePageState extends State<CheckUpdatePage>
                 ),
               ),
               SizedBox(width: 10),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    S.of(context).alreadyDownloaded,
-                    style: ts(13, w: FontWeight.w700),
-                  ),
-                  SizedBox(height: 2),
-                  Text('v${_downloadedTag ?? ''}', style: ts(11, c: C.grey)),
-                ],
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      S.of(context).alreadyDownloaded,
+                      style: ts(13, w: FontWeight.w700),
+                    ),
+                    SizedBox(height: 2),
+                    Text(
+                      'v${p.tag} · ${_fmtSize(p.size)}',
+                      style: ts(11, c: C.grey),
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
@@ -1620,12 +1724,24 @@ class _CheckUpdatePageState extends State<CheckUpdatePage>
               borderRadius: BorderRadius.circular(12),
             ),
             child: Text(
-              path,
+              _shownPath(p),
               style: ts(11, c: C.grey),
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
             ),
           ),
+          // 安卓的包在下载时就校过签名（见 lib/update_install.dart）：
+          // 这一行是**结果**，不是提示 —— 校验没过的包不会留在这里。
+          if (!isWin) ...[
+            SizedBox(height: 8),
+            Row(
+              children: [
+                Icon(Icons.verified_user_outlined, size: 13, color: C.green),
+                SizedBox(width: 4),
+                Text(S.of(context).updatePkgSigOk, style: ts(11, c: C.green)),
+              ],
+            ),
+          ],
           SizedBox(height: 12),
           if (!isWin)
             Row(
@@ -1636,7 +1752,7 @@ class _CheckUpdatePageState extends State<CheckUpdatePage>
                       backgroundColor: C.blue,
                       padding: const EdgeInsets.symmetric(vertical: 12),
                     ),
-                    onPressed: () => _openApk(path),
+                    onPressed: () => _installPkg(p),
                     icon: const Icon(Icons.android_rounded, size: 18),
                     label: Text(S.of(context).installNow),
                   ),
@@ -1652,7 +1768,10 @@ class _CheckUpdatePageState extends State<CheckUpdatePage>
                       backgroundColor: C.blue,
                       padding: const EdgeInsets.symmetric(vertical: 12),
                     ),
-                    onPressed: () => _runExe(path),
+                    onPressed: () {
+                      final path = p.path;
+                      if (path != null) _runExe(path);
+                    },
                     icon: const Icon(Icons.play_arrow_rounded, size: 18),
                     label: Text(S.of(context).runInstaller),
                   ),
@@ -1666,7 +1785,10 @@ class _CheckUpdatePageState extends State<CheckUpdatePage>
               height: 44,
               child: OutlinedButton.icon(
                 style: OutlinedButton.styleFrom(foregroundColor: C.blue),
-                onPressed: () => _openFolder(path),
+                onPressed: () {
+                  final path = p.path;
+                  if (path != null) _openFolder(path);
+                },
                 icon: const Icon(Icons.folder_open_rounded, size: 18),
                 label: Text(S.of(context).openContainingFolder),
               ),
@@ -1692,7 +1814,7 @@ class _CheckUpdatePageState extends State<CheckUpdatePage>
             height: 44,
             child: OutlinedButton.icon(
               style: OutlinedButton.styleFrom(foregroundColor: C.red),
-              onPressed: () => _deleteDownloaded(path),
+              onPressed: () => _deletePkg(p),
               icon: const Icon(Icons.delete_outline_rounded, size: 18),
               label: Text(
                 S.of(context).deletePackage,
@@ -1724,20 +1846,36 @@ class _CheckUpdatePageState extends State<CheckUpdatePage>
     );
   }
 
-  /// 删除已下载的安装包（带确认）
-  void _deleteDownloaded(String path) {
-    final name = path.split(Platform.pathSeparator).last;
+  /// 删掉一个已下载的安装包（带确认）。
+  ///
+  /// 安卓按文件名走原生删 MediaStore 记录；桌面直接删文件。
+  /// 删的就是「记录里那一个」时，顺带把记录也清掉（否则装完以后还会拿旧的
+  /// 文件名去问「删不删」）。
+  void _deletePkg(_Pkg p) {
     _confirmDelete(
       title: S.of(context).deletePackage,
-      message: S.of(context).deletePackageConfirm(name),
-      onConfirm: () {
-        try {
-          final f = File(path);
-          if (f.existsSync()) f.deleteSync();
-        } catch (_) {}
-        _localPackages.removeWhere((x) => x.path == path);
-        _findLocalApk(); // 重新确定“最新已下载”，无残留则收起下载卡片
-        _showSnack(S.of(context).packageDeleted);
+      message: S.of(context).deletePackageConfirm(p.name),
+      onConfirm: () async {
+        var ok = false;
+        if (UpdateInstaller.isAndroid) {
+          ok = await UpdateInstaller.remove(p.name);
+        }
+        final path = p.path;
+        if (path != null) {
+          try {
+            final f = File(path);
+            if (f.existsSync()) {
+              f.deleteSync();
+              ok = true;
+            }
+          } catch (_) {}
+        }
+        if (widget.state.updatePkgName == p.name ||
+            (path != null && widget.state.updatePkgPath == path)) {
+          widget.state.forgetUpdatePackage();
+        }
+        await _scanPackages(); // 重新确定「最新已下载」，无残留则收起下载卡片
+        if (mounted) _showSnack(S.of(context).packageDeleted);
       },
     );
   }
@@ -1746,10 +1884,8 @@ class _CheckUpdatePageState extends State<CheckUpdatePage>
   void _deleteAllPackages() {
     if (_localPackages.isEmpty) return;
     var total = 0;
-    for (final f in _localPackages) {
-      try {
-        total += f.lengthSync();
-      } catch (_) {}
+    for (final p in _localPackages) {
+      total += p.size;
     }
     _confirmDelete(
       title: S.of(context).deleteAllPackages,
@@ -1757,18 +1893,25 @@ class _CheckUpdatePageState extends State<CheckUpdatePage>
         _localPackages.length,
         _fmtSize(total),
       ),
-      onConfirm: () {
-        for (final f in _localPackages) {
-          try {
-            if (f.existsSync()) f.deleteSync();
-          } catch (_) {}
+      onConfirm: () async {
+        for (final p in _localPackages) {
+          if (UpdateInstaller.isAndroid) {
+            await UpdateInstaller.remove(p.name);
+          }
+          final path = p.path;
+          if (path != null) {
+            try {
+              final f = File(path);
+              if (f.existsSync()) f.deleteSync();
+            } catch (_) {}
+          }
         }
+        widget.state.forgetUpdatePackage();
         setState(() {
           _localPackages = [];
-          _downloadedPath = null;
-          _downloadedTag = null;
+          _pkg = null;
         });
-        _showSnack(S.of(context).packageDeleted);
+        if (mounted) _showSnack(S.of(context).packageDeleted);
       },
     );
   }

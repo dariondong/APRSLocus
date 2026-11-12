@@ -10521,4 +10521,52 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get acnHttpPort => "Puerto HTTP";
 
+  @override
+  String updatePkgWelcomeTitle(String v) => "Bienvenido a $v";
+
+  @override
+  String get updatePkgWelcomeBody => "La nueva versión ya está instalada. El paquete sigue en la carpeta Descargas. Consérvalo para otro dispositivo o bórralo para liberar espacio.";
+
+  @override
+  String get updatePkgInDownloads => "En Descargas";
+
+  @override
+  String get updatePkgRemember => "Hacerlo siempre así";
+
+  @override
+  String get updatePkgDelete => "Borrar el paquete";
+
+  @override
+  String get updatePkgKeep => "Conservarlo";
+
+  @override
+  String get updatePkgKept => "El paquete queda en Descargas";
+
+  @override
+  String get updatePkgSigOk => "Firma verificada";
+
+  @override
+  String get updatePkgSigBad => "La firma del paquete no coincide con la de este dispositivo, así que se borró. Descárgalo otra vez desde un canal oficial.";
+
+  @override
+  String get updatePkgSigUnknown => "No se pudo leer la firma del paquete, así que se borró. Vuelve a descargarlo.";
+
+  @override
+  String get updatePkgNoFile => "Ese paquete ya no está en Descargas. Descárgalo otra vez.";
+
+  @override
+  String get updatePkgAction => "Paquete de actualización";
+
+  @override
+  String get updatePkgAfterUpdate => "Tras actualizar";
+
+  @override
+  String get updatePkgActionAsk => "Preguntar cada vez";
+
+  @override
+  String get updatePkgActionDelete => "Borrarlo";
+
+  @override
+  String get updatePkgActionKeep => "Conservar siempre";
+
 }

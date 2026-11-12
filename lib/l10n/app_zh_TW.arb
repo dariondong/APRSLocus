@@ -5094,5 +5094,22 @@
   "@syncEveryMin": {"placeholders": {"n": {"type": "String"}}},
   "@syncBackupsCount": {"placeholders": {"n": {"type": "String"}}},
   "syncNoServer": "先在上面填 APRSNETCN 伺服器位址。",
-  "acnHttpPort": "HTTP 埠"
+  "acnHttpPort": "HTTP 埠",
+  "updatePkgWelcomeTitle": "歡迎更新到 {v}",
+  "updatePkgWelcomeBody": "新版本已經裝好了。這次下載的安裝包還在「下載」資料夾裡，留著可以裝到別的裝置，刪掉能騰出空間。",
+  "updatePkgInDownloads": "在「下載」資料夾",
+  "updatePkgRemember": "以後也這樣處理，不再詢問",
+  "updatePkgDelete": "刪除安裝包",
+  "updatePkgKeep": "保留安裝包",
+  "updatePkgKept": "安裝包留在「下載」資料夾",
+  "updatePkgSigOk": "簽名已校驗",
+  "updatePkgSigBad": "安裝包簽名與本機不一致，已經刪掉。請從官方管道重新下載。",
+  "updatePkgSigUnknown": "讀不出安裝包的簽名，已經刪掉。請重新下載。",
+  "updatePkgNoFile": "「下載」裡找不到這個安裝包，請重新下載。",
+  "updatePkgAction": "安裝包處理",
+  "updatePkgAfterUpdate": "裝上新版後",
+  "updatePkgActionAsk": "每次詢問",
+  "updatePkgActionDelete": "自動刪除",
+  "updatePkgActionKeep": "一直保留",
+  "@updatePkgWelcomeTitle": {"placeholders": {"v": {"type": "String"}}}
 }

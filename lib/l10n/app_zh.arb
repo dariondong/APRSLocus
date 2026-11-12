@@ -5185,5 +5185,22 @@
   "@syncEveryMin": {"placeholders": {"n": {"type": "String"}}},
   "@syncBackupsCount": {"placeholders": {"n": {"type": "String"}}},
   "syncNoServer": "先在上面填 APRSNETCN 服务器地址。",
-  "acnHttpPort": "HTTP 端口"
+  "acnHttpPort": "HTTP 端口",
+  "updatePkgWelcomeTitle": "欢迎更新到 {v}",
+  "updatePkgWelcomeBody": "新版本已经装好了。这次下载的安装包还在「下载」文件夹里，留着可以装到别的设备，删掉能腾出空间。",
+  "updatePkgInDownloads": "在「下载」文件夹",
+  "updatePkgRemember": "以后也这样处理，不再询问",
+  "updatePkgDelete": "删除安装包",
+  "updatePkgKeep": "保留安装包",
+  "updatePkgKept": "安装包留在「下载」文件夹",
+  "updatePkgSigOk": "签名已校验",
+  "updatePkgSigBad": "安装包签名与本机不一致，已经删掉。请从官方渠道重新下载。",
+  "updatePkgSigUnknown": "读不出安装包的签名，已经删掉。请重新下载。",
+  "updatePkgNoFile": "「下载」里找不到这个安装包，请重新下载。",
+  "updatePkgAction": "安装包处理",
+  "updatePkgAfterUpdate": "装上新版后",
+  "updatePkgActionAsk": "每次询问",
+  "updatePkgActionDelete": "自动删除",
+  "updatePkgActionKeep": "一直保留",
+  "@updatePkgWelcomeTitle": {"placeholders": {"v": {"type": "String"}}}
 }

@@ -4506,5 +4506,22 @@
   "@syncEveryMin": {"placeholders": {"n": {"type": "String"}}},
   "@syncBackupsCount": {"placeholders": {"n": {"type": "String"}}},
   "syncNoServer": "Isi dulu alamat server APRSNETCN di atas.",
-  "acnHttpPort": "Port HTTP"
+  "acnHttpPort": "Port HTTP",
+  "updatePkgWelcomeTitle": "Selamat datang di {v}",
+  "updatePkgWelcomeBody": "Versi baru sudah terpasang. Paketnya masih ada di folder Unduhan. Simpan untuk perangkat lain, atau hapus untuk mengosongkan ruang.",
+  "updatePkgInDownloads": "Di folder Unduhan",
+  "updatePkgRemember": "Selalu begitu",
+  "updatePkgDelete": "Hapus paket",
+  "updatePkgKeep": "Simpan",
+  "updatePkgKept": "Paket tetap di folder Unduhan",
+  "updatePkgSigOk": "Tanda tangan terverifikasi",
+  "updatePkgSigBad": "Tanda tangan paket tidak cocok dengan perangkat ini, jadi paketnya dihapus. Unduh lagi dari saluran resmi.",
+  "updatePkgSigUnknown": "Tanda tangan paket tidak terbaca, jadi paketnya dihapus. Unduh ulang.",
+  "updatePkgNoFile": "Paket itu tidak ada lagi di folder Unduhan. Unduh ulang.",
+  "updatePkgAction": "Paket pembaruan",
+  "updatePkgAfterUpdate": "Setelah update",
+  "updatePkgActionAsk": "Tanya tiap kali",
+  "updatePkgActionDelete": "Hapus otomatis",
+  "updatePkgActionKeep": "Selalu simpan",
+  "@updatePkgWelcomeTitle": {"placeholders": {"v": {"type": "String"}}}
 }

@@ -4506,5 +4506,22 @@
   "@syncEveryMin": {"placeholders": {"n": {"type": "String"}}},
   "@syncBackupsCount": {"placeholders": {"n": {"type": "String"}}},
   "syncNoServer": "先に上の APRSNETCN サーバーのアドレスを入れてください。",
-  "acnHttpPort": "HTTP ポート"
+  "acnHttpPort": "HTTP ポート",
+  "updatePkgWelcomeTitle": "バージョン {v} へようこそ",
+  "updatePkgWelcomeBody": "新しいバージョンをインストールしました。今回のパッケージは「ダウンロード」に残っています。別の端末に入れるなら残し、容量を空けるなら削除してください。",
+  "updatePkgInDownloads": "ダウンロード内",
+  "updatePkgRemember": "次回から同じように処理する",
+  "updatePkgDelete": "パッケージを削除",
+  "updatePkgKeep": "残しておく",
+  "updatePkgKept": "パッケージは「ダウンロード」に残しました",
+  "updatePkgSigOk": "署名を確認済み",
+  "updatePkgSigBad": "パッケージの署名がこの端末と一致しないため削除しました。公式の経路から取り直してください。",
+  "updatePkgSigUnknown": "パッケージの署名を読めなかったため削除しました。もう一度ダウンロードしてください。",
+  "updatePkgNoFile": "「ダウンロード」にこのパッケージが見つかりません。もう一度ダウンロードしてください。",
+  "updatePkgAction": "更新パッケージ",
+  "updatePkgAfterUpdate": "更新したあと",
+  "updatePkgActionAsk": "毎回たずねる",
+  "updatePkgActionDelete": "自動で削除",
+  "updatePkgActionKeep": "常に残す",
+  "@updatePkgWelcomeTitle": {"placeholders": {"v": {"type": "String"}}}
 }

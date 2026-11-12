@@ -10472,4 +10472,52 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get acnHttpPort => "Port HTTP";
 
+  @override
+  String updatePkgWelcomeTitle(String v) => "Selamat datang di $v";
+
+  @override
+  String get updatePkgWelcomeBody => "Versi baru sudah terpasang. Paketnya masih ada di folder Unduhan. Simpan untuk perangkat lain, atau hapus untuk mengosongkan ruang.";
+
+  @override
+  String get updatePkgInDownloads => "Di folder Unduhan";
+
+  @override
+  String get updatePkgRemember => "Selalu begitu";
+
+  @override
+  String get updatePkgDelete => "Hapus paket";
+
+  @override
+  String get updatePkgKeep => "Simpan";
+
+  @override
+  String get updatePkgKept => "Paket tetap di folder Unduhan";
+
+  @override
+  String get updatePkgSigOk => "Tanda tangan terverifikasi";
+
+  @override
+  String get updatePkgSigBad => "Tanda tangan paket tidak cocok dengan perangkat ini, jadi paketnya dihapus. Unduh lagi dari saluran resmi.";
+
+  @override
+  String get updatePkgSigUnknown => "Tanda tangan paket tidak terbaca, jadi paketnya dihapus. Unduh ulang.";
+
+  @override
+  String get updatePkgNoFile => "Paket itu tidak ada lagi di folder Unduhan. Unduh ulang.";
+
+  @override
+  String get updatePkgAction => "Paket pembaruan";
+
+  @override
+  String get updatePkgAfterUpdate => "Setelah update";
+
+  @override
+  String get updatePkgActionAsk => "Tanya tiap kali";
+
+  @override
+  String get updatePkgActionDelete => "Hapus otomatis";
+
+  @override
+  String get updatePkgActionKeep => "Selalu simpan";
+
 }

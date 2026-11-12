@@ -4506,5 +4506,22 @@
   "@syncEveryMin": {"placeholders": {"n": {"type": "String"}}},
   "@syncBackupsCount": {"placeholders": {"n": {"type": "String"}}},
   "syncNoServer": "Fill in the APRSNETCN server address above first.",
-  "acnHttpPort": "HTTP port"
+  "acnHttpPort": "HTTP port",
+  "updatePkgWelcomeTitle": "Welcome to {v}",
+  "updatePkgWelcomeBody": "The new version is installed. The package is still in your Downloads folder. Keep it to install on another device, or delete it to free the space.",
+  "updatePkgInDownloads": "In Downloads",
+  "updatePkgRemember": "Do this from now on",
+  "updatePkgDelete": "Delete the package",
+  "updatePkgKeep": "Keep it",
+  "updatePkgKept": "The package stays in Downloads",
+  "updatePkgSigOk": "Signature verified",
+  "updatePkgSigBad": "The package is signed with a different key, so it was deleted. Download it again from an official channel.",
+  "updatePkgSigUnknown": "The package signature could not be read, so it was deleted. Download it again.",
+  "updatePkgNoFile": "That package is not in Downloads any more. Download it again.",
+  "updatePkgAction": "Update package",
+  "updatePkgAfterUpdate": "After updating",
+  "updatePkgActionAsk": "Ask each time",
+  "updatePkgActionDelete": "Delete it",
+  "updatePkgActionKeep": "Always keep",
+  "@updatePkgWelcomeTitle": {"placeholders": {"v": {"type": "String"}}}
 }

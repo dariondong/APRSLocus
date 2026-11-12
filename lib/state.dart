@@ -4941,6 +4941,77 @@ class AppState extends ChangeNotifier {
     _notify();
   }
 
+  // ─── 更新安装包：放在哪、装完问不问 ───
+  //
+  // 下载好的包会复制一份到系统「下载」目录（用户自己翻得到），装上新版以后
+  // 再问一次「要不要删掉这个包」。三处状态：
+  //   * [updatePkgJson]：**这一个**包的记录（版本 / 文件名 / 下载时落盘的路径 / 大小），
+  //     换机恢复没有意义（文件名与路径都是本机的），不进备份；
+  //   * [updatePkgAction]：用户选过的做法（问 / 删 / 留）；
+  //   * [updatePkgAsked]：同一个版本只问一次。
+  static const updatePkgActions = ['ask', 'delete', 'keep'];
+
+  String updatePkgAction = 'ask';
+  String updatePkgJson = '';
+  String updatePkgAsked = '';
+
+  Map<String, dynamic> get updatePkg {
+    if (updatePkgJson.isEmpty) return const {};
+    try {
+      final j = jsonDecode(updatePkgJson);
+      if (j is Map) return j.map((k, v) => MapEntry(k.toString(), v));
+    } catch (_) {}
+    return const {};
+  }
+
+  String get updatePkgTag => (updatePkg['tag'] ?? '').toString();
+  String get updatePkgName => (updatePkg['name'] ?? '').toString();
+  String get updatePkgPath => (updatePkg['path'] ?? '').toString();
+  int get updatePkgSize => ((updatePkg['size'] as num?) ?? 0).toInt();
+
+  /// 记下一个刚下载好、并且已经复制进「下载」的安装包。
+  ///
+  /// [name] 是用户在文件管理器里看到的文件名，[path] 是下载时落在应用自己
+  /// 目录里的那一份（桌面端两者是同一个文件）。
+  void rememberUpdatePackage({
+    required String tag,
+    required String name,
+    required String path,
+    int size = 0,
+  }) {
+    updatePkgJson = jsonEncode({
+      'tag': tag,
+      'name': name,
+      'path': path,
+      'size': size,
+    });
+    persist();
+    _notify();
+  }
+
+  /// 这一个包已经处理完了（删了 / 用户明确留着并且问过了）。
+  void forgetUpdatePackage() {
+    if (updatePkgJson.isEmpty) return;
+    updatePkgJson = '';
+    persist();
+    _notify();
+  }
+
+  /// 记住「这个版本已经问过删不删」。
+  void markUpdatePkgAsked(String tag) {
+    if (tag.isEmpty || updatePkgAsked == tag) return;
+    updatePkgAsked = tag;
+    persist();
+    _notify();
+  }
+
+  void setUpdatePkgAction(String v) {
+    if (!updatePkgActions.contains(v) || updatePkgAction == v) return;
+    updatePkgAction = v;
+    persist();
+    _notify();
+  }
+
   // ─── 公告横幅：关闭的是哪一条（issue #21-5）───
   //
   // 用户要的是：**公告更新了，横幅要重新出现**。
@@ -5346,6 +5417,9 @@ class AppState extends ChangeNotifier {
     tileCacheOn = true;
     offlineOnly = false;
     updateChannel = 'github';
+    updatePkgAction = 'ask';
+    updatePkgJson = '';
+    updatePkgAsked = '';
     adifMode = 'PKT';
     adifSubMode = true;
     adifBand = '';
@@ -5931,6 +6005,10 @@ class AppState extends ChangeNotifier {
       tileCacheOn = p.getBool('tileCacheOn') ?? tileCacheOn;
       offlineOnly = p.getBool('offlineOnly') ?? offlineOnly;
       updateChannel = p.getString('updateChannel') ?? updateChannel;
+      updatePkgAction = p.getString('updatePkgAction') ?? updatePkgAction;
+      if (!updatePkgActions.contains(updatePkgAction)) updatePkgAction = 'ask';
+      updatePkgJson = p.getString('updatePkgJson') ?? updatePkgJson;
+      updatePkgAsked = p.getString('updatePkgAsked') ?? updatePkgAsked;
       adifMode = p.getString('adifMode') ?? adifMode;
       adifSubMode = p.getBool('adifSubMode') ?? adifSubMode;
       adifBand = p.getString('adifBand') ?? adifBand;
@@ -6348,6 +6426,9 @@ class AppState extends ChangeNotifier {
     await p.setBool('tileCacheOn', tileCacheOn);
     await p.setBool('offlineOnly', offlineOnly);
     await p.setString('updateChannel', updateChannel);
+    await p.setString('updatePkgAction', updatePkgAction);
+    await p.setString('updatePkgJson', updatePkgJson);
+    await p.setString('updatePkgAsked', updatePkgAsked);
     await p.setString('adifMode', adifMode);
     await p.setBool('adifSubMode', adifSubMode);
     await p.setString('adifBand', adifBand);

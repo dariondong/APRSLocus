@@ -1,9 +1,12 @@
 package com.aprslocus.aprslocus
 
 import android.Manifest
+import android.content.ContentUris
 import android.content.ContentValues
 import android.content.Intent
+import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
+import android.content.pm.Signature
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -18,6 +21,7 @@ import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodChannel
 import java.io.ByteArrayOutputStream
 import java.io.File
+import java.security.MessageDigest
 
 class MainActivity : FlutterActivity() {
     private val CHANNEL = "com.aprslocus/location"
@@ -64,12 +68,18 @@ class MainActivity : FlutterActivity() {
         val filename: String,
         val mime: String,
         val content: String?,
-        val bytes: ByteArray?
+        val bytes: ByteArray?,
+        // 已经在磁盘上的文件（更新安装包）——直接流式复制进「下载」，
+        // 不走 Base64：34 MB 的包编成字符串会白白多占一倍内存。
+        val sourcePath: String? = null
     )
 
     private companion object {
         const val REQ_PICK_BACKUP = 4711
         const val EXPORT_PERM_CODE = 4712
+
+        /// 安卓安装包的 MIME：写「下载」条目与交给安装器都要用它。
+        const val APK_MIME = "application/vnd.android.package-archive"
 
         // 备份文本上限：读进来要整体转成 String 传给 Dart，
         // 不设上限的话一个误选的几个 G 的文件就能把应用 OOM 掉。
@@ -646,6 +656,79 @@ class MainActivity : FlutterActivity() {
                         result.success(ok)
                     }
                 }
+                // 安装包的身份：包名 / 版本号 / 签名摘要。不安装，只读。
+                "apkInfo" -> {
+                    val path = call.argument<String>("path")
+                    if (path == null) {
+                        result.error("NO_PATH", "缺少安装包路径", null)
+                    } else {
+                        Thread {
+                            val info = apkInfoOf(path)
+                            runOnUiThread { result.success(info) }
+                        }.start()
+                    }
+                }
+                // 本应用自己的身份（包名 / 版本号 / 签名摘要）：校验下载包时拿它比。
+                "ownSignature" -> result.success(ownInfo())
+                // 把下载好的包复制进系统「下载」目录（用户要求能自己找到）。
+                "copyToDownloads" -> {
+                    val path = call.argument<String>("path")
+                    val filename = call.argument<String>("filename")
+                    if (path == null || filename == null) {
+                        result.error("NO_PATH", "缺少路径或文件名", null)
+                    } else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+                        // 旧系统写公共目录要存储权限：走导出那条「先要权限再写」的路。
+                        startExport(PendingExport(result, filename, APK_MIME, null, null, path))
+                    } else {
+                        Thread {
+                            val r = copyFileToDownloads(filename, path, APK_MIME)
+                            runOnUiThread { result.success(r) }
+                        }.start()
+                    }
+                }
+                // 列出「下载」里已经有的安装包（更新页的「已下载」靠它）。
+                "listDownloads" -> {
+                    val prefix = call.argument<String>("prefix") ?: ""
+                    Thread {
+                        val rows = listDownloads(prefix)
+                        runOnUiThread { result.success(rows) }
+                    }.start()
+                }
+                "deleteDownloads" -> {
+                    val name = call.argument<String>("name")
+                    if (name == null) {
+                        result.error("NO_NAME", "缺少安装包名", null)
+                    } else {
+                        result.success(deleteDownload(name))
+                    }
+                }
+                // 从「下载」里取包未安装：先校签名，再交给系统安装器。
+                "installApkFromDownloads" -> {
+                    val name = call.argument<String>("name")
+                    if (name == null) {
+                        result.error("NO_NAME", "缺少安装包名", null)
+                    } else {
+                        Thread {
+                            val prep = prepareDownloadsApk(name)
+                            runOnUiThread {
+                                val f = prep.file
+                                if (f == null) {
+                                    result.success(prep.error ?: "failed")
+                                } else {
+                                    result.success(if (launchInstall(f)) "ok" else "failed")
+                                }
+                            }
+                        }.start()
+                    }
+                }
+                // 安装完重启后清掉安装时的临时副本（cacheDir/update）。
+                "cleanUpdateCache" -> {
+                    try {
+                        File(cacheDir, "update").listFiles()?.forEach { it.delete() }
+                    } catch (_: Exception) {
+                    }
+                    result.success(true)
+                }
                 "canRequestInstall" -> result.success(canRequestPackageInstalls())
                 "openInstallSettings" -> {
                     openInstallSettings()
@@ -968,10 +1051,11 @@ class MainActivity : FlutterActivity() {
     /// 把一次导出落盘并回给 Dart（权限到手 / 不需要权限时都走这里）。
     private fun finishExport(job: PendingExport) {
         val bin = job.bytes
-        val path = if (bin != null) {
-            saveBytesToDownloads(job.filename, bin, job.mime)
-        } else {
-            saveToDownloads(job.filename, job.content ?: "", job.mime)
+        val src = job.sourcePath
+        val path = when {
+            src != null -> copyFileToDownloads(job.filename, src, job.mime)
+            bin != null -> saveBytesToDownloads(job.filename, bin, job.mime)
+            else -> saveToDownloads(job.filename, job.content ?: "", job.mime)
         }
         if (path == null) {
             job.result.error("SAVE_FAILED", "保存失败", null)
@@ -998,6 +1082,23 @@ class MainActivity : FlutterActivity() {
         bytes: ByteArray,
         mime: String = "audio/wav"
     ): String? = saveToDownloads(filename, mime) { it.write(bytes) }
+
+    /// 把一个已经落盘的文件（更新安装包）复制进「下载」目录。
+    ///
+    /// 为什么不读成 Base64 传给 `saveBytesToDownloads`：安装包三十多 MB，
+    /// 编成字符串在 Dart 与 Kotlin 两头都要再占一份内存，低端机会直接被杀。
+    /// 这里逐块拷（默认 8 KB 缓冲），内存占用与包大小无关。
+    private fun copyFileToDownloads(
+        filename: String,
+        source: String,
+        mime: String
+    ): String? {
+        val f = File(source)
+        if (!f.exists()) return null
+        return saveToDownloads(filename, mime) { out ->
+            f.inputStream().use { input -> input.copyTo(out) }
+        }
+    }
 
     /// 写入「下载」目录的公共实现：插入 MediaStore 条目（或落到应用外部目录）
     /// → 交给 [write] 写内容 → 把文件名改成我们要求的那个。
@@ -1508,18 +1609,24 @@ class MainActivity : FlutterActivity() {
     }
 
     private fun installApk(path: String): Boolean {
+        val file = File(path)
+        if (!file.exists()) return false
+        return launchInstall(file)
+    }
+
+    /// 把一个本地文件交给系统安装器（FileProvider 的 content:// URI）。
+    ///
+    /// 为什么不能直接分享 file://：Android 7 起应用向外发 file:// 会抛
+    /// FileUriExposedException。安装器虽然是系统应用，也照样得走 content://。
+    private fun launchInstall(file: File): Boolean {
         return try {
-            val file = File(path)
-            if (!file.exists()) {
-                return false
-            }
             val uri: Uri = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 FileProvider.getUriForFile(this, "$packageName.fileprovider", file)
             } else {
                 Uri.fromFile(file)
             }
             val intent = Intent(Intent.ACTION_VIEW).apply {
-                setDataAndType(uri, "application/vnd.android.package-archive")
+                setDataAndType(uri, APK_MIME)
                 addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             }
@@ -1527,6 +1634,225 @@ class MainActivity : FlutterActivity() {
             true
         } catch (_: Exception) {
             false
+        }
+    }
+
+    /// 一次「从下载目录取包」的准备结果：要么给出可直接安装的本地文件，
+    /// 要么给出失败原因（`no-file` / `sig-mismatch` / `failed`）。
+    private class ApkPrep(val file: File?, val error: String?)
+
+    /// 从系统「下载」目录取一个安装包：复制到 cacheDir/update（应用自己可读）
+    /// → 校验证书与本机一致 → 交给系统安装器。
+    ///
+    /// 为什么不在下载目录里直接装：Android 10 起应用拿不到公共下载目录的
+    /// 文件路径（scoped storage），FileProvider 也就读不到它；而从 MediaStore
+    /// 的 content:// 直接交给安装器又依赖对外的 URI 授权，各系统实现不一致。
+    /// 复制一份到 cache 是最稳的一条路，二十几 MB 拷一次不到一秒。
+    private fun prepareDownloadsApk(name: String): ApkPrep {
+        val safe = name.replace('/', '_').replace('\\', '_')
+        val mine = ownSignature() ?: return ApkPrep(null, "failed")
+        val dir = File(cacheDir, "update")
+        if (!dir.exists() && !dir.mkdirs()) return ApkPrep(null, "failed")
+        // 只留一份：上一次没装完的副本在这里清掉
+        dir.listFiles()?.forEach { if (it.isFile) it.delete() }
+        val target = File(dir, safe)
+        if (!copyDownloadsTo(safe, target)) return ApkPrep(null, "no-file")
+        val info = apkInfoOf(target.absolutePath)
+        if (info == null) {
+            target.delete()
+            return ApkPrep(null, "failed")
+        }
+        val sig = info["sig"] as? String
+        val pkg = info["package"] as? String
+        if (sig == null || sig != mine || pkg != packageName) {
+            target.delete()
+            return ApkPrep(null, "sig-mismatch")
+        }
+        return ApkPrep(target, null)
+    }
+
+    /// 把「下载」里叫 [name] 的那一份复制到 [target]。
+    private fun copyDownloadsTo(name: String, target: File): Boolean {
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                val uri = MediaStore.Downloads.EXTERNAL_CONTENT_URI
+                val id = contentResolver.query(
+                    uri,
+                    arrayOf(MediaStore.MediaColumns._ID),
+                    "${MediaStore.MediaColumns.DISPLAY_NAME}=?",
+                    arrayOf(name),
+                    "${MediaStore.MediaColumns.DATE_MODIFIED} DESC"
+                )?.use { c -> if (c.moveToFirst()) c.getLong(0) else -1L } ?: -1L
+                if (id < 0L) return false
+                val row = ContentUris.withAppendedId(uri, id)
+                val input = contentResolver.openInputStream(row) ?: return false
+                input.use { ins -> target.outputStream().use { out -> ins.copyTo(out) } }
+                return true
+            }
+            val pub = Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_DOWNLOADS
+            )
+            val f = File(pub, name)
+            if (!f.exists()) return false
+            f.inputStream().use { ins -> target.outputStream().use { out -> ins.copyTo(out) } }
+            return true
+        } catch (_: Exception) {
+            return false
+        }
+    }
+
+    /// 列出「下载」目录里以 [prefix] 开头的文件（更新页的「已下载」用）。
+    private fun listDownloads(prefix: String): List<Map<String, Any?>> {
+        val out = ArrayList<Map<String, Any?>>()
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                val uri = MediaStore.Downloads.EXTERNAL_CONTENT_URI
+                contentResolver.query(
+                    uri,
+                    arrayOf(
+                        MediaStore.MediaColumns.DISPLAY_NAME,
+                        MediaStore.MediaColumns.SIZE
+                    ),
+                    "${MediaStore.MediaColumns.DISPLAY_NAME} LIKE ?",
+                    arrayOf("$prefix%"),
+                    "${MediaStore.MediaColumns.DATE_MODIFIED} DESC"
+                )?.use { c ->
+                    while (c.moveToNext()) {
+                        val n = c.getString(0) ?: continue
+                        out.add(mapOf("name" to n, "size" to c.getLong(1)))
+                    }
+                }
+            } else {
+                val pub = Environment.getExternalStoragePublicDirectory(
+                    Environment.DIRECTORY_DOWNLOADS
+                )
+                pub.listFiles()
+                    ?.sortedByDescending { it.lastModified() }
+                    ?.forEach { f ->
+                        if (f.isFile && f.name.startsWith(prefix)) {
+                            out.add(mapOf("name" to f.name, "size" to f.length()))
+                        }
+                    }
+            }
+        } catch (_: Exception) {
+        }
+        return out
+    }
+
+    /// 删掉「下载」目录里叫 [name] 的那一份。返回是否真的删掉了东西。
+    private fun deleteDownload(name: String): Boolean {
+        val safe = name.replace('/', '_').replace('\\', '_')
+        var ok = false
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                // 先记下 id 再删：在游标未关时删同一张表，部分实现会报错。
+                val uri = MediaStore.Downloads.EXTERNAL_CONTENT_URI
+                val ids = ArrayList<Long>()
+                contentResolver.query(
+                    uri,
+                    arrayOf(MediaStore.MediaColumns._ID),
+                    "${MediaStore.MediaColumns.DISPLAY_NAME}=?",
+                    arrayOf(safe),
+                    null
+                )?.use { c ->
+                    while (c.moveToNext()) ids.add(c.getLong(0))
+                }
+                for (id in ids) {
+                    try {
+                        val row = ContentUris.withAppendedId(uri, id)
+                        if (contentResolver.delete(row, null, null) > 0) ok = true
+                    } catch (_: Exception) {
+                    }
+                }
+            } else {
+                val pub = Environment.getExternalStoragePublicDirectory(
+                    Environment.DIRECTORY_DOWNLOADS
+                )
+                val f = File(pub, safe)
+                if (f.exists()) ok = f.delete()
+            }
+        } catch (_: Exception) {
+        }
+        return ok
+    }
+
+    /// 本应用的签名摘要（SHA-256，多个签名按字典序用逗号连）。
+    private fun ownSignature(): String? = ownInfo()?.get("sig") as? String
+
+    /// 本应用的包名 / 版本号 / 签名摘要。
+    @Suppress("DEPRECATION")
+    private fun ownInfo(): Map<String, Any?>? {
+        return try {
+            val info = packageManager.getPackageInfo(packageName, signatureFlags())
+            val code = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                info.longVersionCode
+            } else {
+                info.versionCode.toLong()
+            }
+            mapOf(
+                "sig" to signatureDigestOf(info),
+                "package" to info.packageName,
+                "versionCode" to code
+            )
+        } catch (_: Exception) {
+            null
+        }
+    }
+
+    private fun signatureFlags(): Int =
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            PackageManager.GET_SIGNING_CERTIFICATES
+        } else {
+            @Suppress("DEPRECATION")
+            PackageManager.GET_SIGNATURES
+        }
+
+    /// 一个包（已安装的、或磁盘上的 apk）到底用哪张证书签的。
+    @Suppress("DEPRECATION")
+    private fun signatureDigestOf(info: PackageInfo): String? {
+        val sigs: List<Signature> = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            val si = info.signingInfo ?: return null
+            si.apkContentsSigners?.toList() ?: return null
+        } else {
+            info.signatures?.toList() ?: return null
+        }
+        if (sigs.isEmpty()) return null
+        return sigs.map { sha256Hex(it.toByteArray()) }.sorted().joinToString(",")
+    }
+
+    private fun sha256Hex(data: ByteArray): String {
+        val d = MessageDigest.getInstance("SHA-256").digest(data)
+        val sb = StringBuilder(d.size * 2)
+        for (b in d) {
+            val v = b.toInt() and 0xFF
+            if (v < 16) sb.append('0')
+            sb.append(Integer.toHexString(v))
+        }
+        return sb.toString()
+    }
+
+    /// 读一个 apk 的包名 / 版本号 / 签名摘要（不安装）。
+    @Suppress("DEPRECATION")
+    private fun apkInfoOf(path: String): Map<String, Any?>? {
+        return try {
+            val f = File(path)
+            if (!f.exists()) return null
+            val info = packageManager.getPackageArchiveInfo(f.absolutePath, signatureFlags())
+                ?: return null
+            val code = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                info.longVersionCode
+            } else {
+                info.versionCode.toLong()
+            }
+            mapOf(
+                "sig" to signatureDigestOf(info),
+                "package" to info.packageName,
+                "versionCode" to code,
+                "versionName" to info.versionName,
+                "size" to f.length()
+            )
+        } catch (_: Exception) {
+            null
         }
     }
 

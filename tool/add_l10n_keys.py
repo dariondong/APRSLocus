@@ -501,9 +501,76 @@ KEYS = {
         '先に上の APRSNETCN サーバーのアドレスを入れてください。',
         'Primero rellena arriba la dirección del servidor APRSNETCN.',
         'Isi dulu alamat server APRSNETCN di atas.'),
+    # ── 更新包：校签名 / 放「下载」/ 装完问一句 ──
+    'updatePkgWelcomeTitle': (
+        '欢迎更新到 {v}', '歡迎更新到 {v}', 'Welcome to {v}',
+        'バージョン {v} へようこそ', 'Bienvenido a {v}', 'Selamat datang di {v}'),
+    'updatePkgWelcomeBody': (
+        '新版本已经装好了。这次下载的安装包还在「下载」文件夹里，留着可以装到别的设备，删掉能腾出空间。',
+        '新版本已經裝好了。這次下載的安裝包還在「下載」資料夾裡，留著可以裝到別的裝置，刪掉能騰出空間。',
+        'The new version is installed. The package is still in your Downloads folder. Keep it to install on another device, or delete it to free the space.',
+        '新しいバージョンをインストールしました。今回のパッケージは「ダウンロード」に残っています。別の端末に入れるなら残し、容量を空けるなら削除してください。',
+        'La nueva versión ya está instalada. El paquete sigue en la carpeta Descargas. Consérvalo para otro dispositivo o bórralo para liberar espacio.',
+        'Versi baru sudah terpasang. Paketnya masih ada di folder Unduhan. Simpan untuk perangkat lain, atau hapus untuk mengosongkan ruang.'),
+    'updatePkgInDownloads': (
+        '在「下载」文件夹', '在「下載」資料夾', 'In Downloads', 'ダウンロード内',
+        'En Descargas', 'Di folder Unduhan'),
+    'updatePkgRemember': (
+        '以后也这样处理，不再询问', '以後也這樣處理，不再詢問',
+        'Do this from now on', '次回から同じように処理する',
+        'Hacerlo siempre así', 'Selalu begitu'),
+    'updatePkgDelete': (
+        '删除安装包', '刪除安裝包', 'Delete the package',
+        'パッケージを削除', 'Borrar el paquete', 'Hapus paket'),
+    'updatePkgKeep': (
+        '保留安装包', '保留安裝包', 'Keep it', '残しておく', 'Conservarlo', 'Simpan'),
+    'updatePkgKept': (
+        '安装包留在「下载」文件夹', '安裝包留在「下載」資料夾',
+        'The package stays in Downloads', 'パッケージは「ダウンロード」に残しました',
+        'El paquete queda en Descargas', 'Paket tetap di folder Unduhan'),
+    'updatePkgSigOk': (
+        '签名已校验', '簽名已校驗', 'Signature verified', '署名を確認済み',
+        'Firma verificada', 'Tanda tangan terverifikasi'),
+    'updatePkgSigBad': (
+        '安装包签名与本机不一致，已经删掉。请从官方渠道重新下载。',
+        '安裝包簽名與本機不一致，已經刪掉。請從官方管道重新下載。',
+        'The package is signed with a different key, so it was deleted. Download it again from an official channel.',
+        'パッケージの署名がこの端末と一致しないため削除しました。公式の経路から取り直してください。',
+        'La firma del paquete no coincide con la de este dispositivo, así que se borró. Descárgalo otra vez desde un canal oficial.',
+        'Tanda tangan paket tidak cocok dengan perangkat ini, jadi paketnya dihapus. Unduh lagi dari saluran resmi.'),
+    'updatePkgSigUnknown': (
+        '读不出安装包的签名，已经删掉。请重新下载。',
+        '讀不出安裝包的簽名，已經刪掉。請重新下載。',
+        'The package signature could not be read, so it was deleted. Download it again.',
+        'パッケージの署名を読めなかったため削除しました。もう一度ダウンロードしてください。',
+        'No se pudo leer la firma del paquete, así que se borró. Vuelve a descargarlo.',
+        'Tanda tangan paket tidak terbaca, jadi paketnya dihapus. Unduh ulang.'),
+    'updatePkgNoFile': (
+        '「下载」里找不到这个安装包，请重新下载。',
+        '「下載」裡找不到這個安裝包，請重新下載。',
+        'That package is not in Downloads any more. Download it again.',
+        '「ダウンロード」にこのパッケージが見つかりません。もう一度ダウンロードしてください。',
+        'Ese paquete ya no está en Descargas. Descárgalo otra vez.',
+        'Paket itu tidak ada lagi di folder Unduhan. Unduh ulang.'),
+    'updatePkgAction': (
+        '安装包处理', '安裝包處理', 'Update package',
+        '更新パッケージ', 'Paquete de actualización', 'Paket pembaruan'),
+    'updatePkgAfterUpdate': (
+        '装上新版后', '裝上新版後', 'After updating',
+        '更新したあと', 'Tras actualizar', 'Setelah update'),
+    'updatePkgActionAsk': (
+        '每次询问', '每次詢問', 'Ask each time',
+        '毎回たずねる', 'Preguntar cada vez', 'Tanya tiap kali'),
+    'updatePkgActionDelete': (
+        '自动删除', '自動刪除', 'Delete it',
+        '自動で削除', 'Borrarlo', 'Hapus otomatis'),
+    'updatePkgActionKeep': (
+        '一直保留', '一直保留', 'Always keep',
+        '常に残す', 'Conservar siempre', 'Selalu simpan'),
 }
 
 META = {
+    'updatePkgWelcomeTitle': '{"placeholders": {"v": {"type": "String"}}}',
     'syncEveryMin': '{"placeholders": {"n": {"type": "String"}}}',
     'syncBackupsCount': '{"placeholders": {"n": {"type": "String"}}}',
     'syncLoggedIn': '{"placeholders": {"call": {"type": "String"}}}',

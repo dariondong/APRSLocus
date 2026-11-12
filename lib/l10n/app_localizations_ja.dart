@@ -10183,4 +10183,52 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String get acnHttpPort => "HTTP ポート";
 
+  @override
+  String updatePkgWelcomeTitle(String v) => "バージョン $v へようこそ";
+
+  @override
+  String get updatePkgWelcomeBody => "新しいバージョンをインストールしました。今回のパッケージは「ダウンロード」に残っています。別の端末に入れるなら残し、容量を空けるなら削除してください。";
+
+  @override
+  String get updatePkgInDownloads => "ダウンロード内";
+
+  @override
+  String get updatePkgRemember => "次回から同じように処理する";
+
+  @override
+  String get updatePkgDelete => "パッケージを削除";
+
+  @override
+  String get updatePkgKeep => "残しておく";
+
+  @override
+  String get updatePkgKept => "パッケージは「ダウンロード」に残しました";
+
+  @override
+  String get updatePkgSigOk => "署名を確認済み";
+
+  @override
+  String get updatePkgSigBad => "パッケージの署名がこの端末と一致しないため削除しました。公式の経路から取り直してください。";
+
+  @override
+  String get updatePkgSigUnknown => "パッケージの署名を読めなかったため削除しました。もう一度ダウンロードしてください。";
+
+  @override
+  String get updatePkgNoFile => "「ダウンロード」にこのパッケージが見つかりません。もう一度ダウンロードしてください。";
+
+  @override
+  String get updatePkgAction => "更新パッケージ";
+
+  @override
+  String get updatePkgAfterUpdate => "更新したあと";
+
+  @override
+  String get updatePkgActionAsk => "毎回たずねる";
+
+  @override
+  String get updatePkgActionDelete => "自動で削除";
+
+  @override
+  String get updatePkgActionKeep => "常に残す";
+
 }

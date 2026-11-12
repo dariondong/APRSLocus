@@ -170,6 +170,9 @@ const List<BackupGroupSpec> kBackupGroups = [
     // 用户在旧机上把这一档关了，新机上不该又被拦着关不掉窗口。
     'closeToTray',
     'uiScale', 'mapType', 'updateChannel', 'heatLevel',
+    // 装上新版以后那个安装包怎么处理（问 / 删 / 留）：用户自己的偏好，
+    // 换机后回到「每次询问」不算错，但他选过「自动删除」就该继续照做。
+    'updatePkgAction',
     // 地图标签：与热力图档位同属**地图显示偏好** —— 换机后不该被静默关掉。
     'mapLabelsAlways',
     // 台站列表的排序方式：与上面那些一样是用户自己选的显示偏好，

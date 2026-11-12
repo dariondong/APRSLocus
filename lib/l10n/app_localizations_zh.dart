@@ -10083,6 +10083,54 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String get acnHttpPort => "HTTP 端口";
 
+  @override
+  String updatePkgWelcomeTitle(String v) => "欢迎更新到 $v";
+
+  @override
+  String get updatePkgWelcomeBody => "新版本已经装好了。这次下载的安装包还在「下载」文件夹里，留着可以装到别的设备，删掉能腾出空间。";
+
+  @override
+  String get updatePkgInDownloads => "在「下载」文件夹";
+
+  @override
+  String get updatePkgRemember => "以后也这样处理，不再询问";
+
+  @override
+  String get updatePkgDelete => "删除安装包";
+
+  @override
+  String get updatePkgKeep => "保留安装包";
+
+  @override
+  String get updatePkgKept => "安装包留在「下载」文件夹";
+
+  @override
+  String get updatePkgSigOk => "签名已校验";
+
+  @override
+  String get updatePkgSigBad => "安装包签名与本机不一致，已经删掉。请从官方渠道重新下载。";
+
+  @override
+  String get updatePkgSigUnknown => "读不出安装包的签名，已经删掉。请重新下载。";
+
+  @override
+  String get updatePkgNoFile => "「下载」里找不到这个安装包，请重新下载。";
+
+  @override
+  String get updatePkgAction => "安装包处理";
+
+  @override
+  String get updatePkgAfterUpdate => "装上新版后";
+
+  @override
+  String get updatePkgActionAsk => "每次询问";
+
+  @override
+  String get updatePkgActionDelete => "自动删除";
+
+  @override
+  String get updatePkgActionKeep => "一直保留";
+
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
@@ -20162,5 +20210,53 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get acnHttpPort => "HTTP 埠";
+
+  @override
+  String updatePkgWelcomeTitle(String v) => "歡迎更新到 $v";
+
+  @override
+  String get updatePkgWelcomeBody => "新版本已經裝好了。這次下載的安裝包還在「下載」資料夾裡，留著可以裝到別的裝置，刪掉能騰出空間。";
+
+  @override
+  String get updatePkgInDownloads => "在「下載」資料夾";
+
+  @override
+  String get updatePkgRemember => "以後也這樣處理，不再詢問";
+
+  @override
+  String get updatePkgDelete => "刪除安裝包";
+
+  @override
+  String get updatePkgKeep => "保留安裝包";
+
+  @override
+  String get updatePkgKept => "安裝包留在「下載」資料夾";
+
+  @override
+  String get updatePkgSigOk => "簽名已校驗";
+
+  @override
+  String get updatePkgSigBad => "安裝包簽名與本機不一致，已經刪掉。請從官方管道重新下載。";
+
+  @override
+  String get updatePkgSigUnknown => "讀不出安裝包的簽名，已經刪掉。請重新下載。";
+
+  @override
+  String get updatePkgNoFile => "「下載」裡找不到這個安裝包，請重新下載。";
+
+  @override
+  String get updatePkgAction => "安裝包處理";
+
+  @override
+  String get updatePkgAfterUpdate => "裝上新版後";
+
+  @override
+  String get updatePkgActionAsk => "每次詢問";
+
+  @override
+  String get updatePkgActionDelete => "自動刪除";
+
+  @override
+  String get updatePkgActionKeep => "一直保留";
 
 }

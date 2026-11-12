@@ -18521,6 +18521,102 @@ abstract class AppLocalizations {
   /// **'HTTP 端口'**
   String get acnHttpPort;
 
+  /// No description provided for @updatePkgWelcomeTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'欢迎更新到 {v}'**
+  String updatePkgWelcomeTitle(String v);
+
+  /// No description provided for @updatePkgWelcomeBody.
+  ///
+  /// In zh, this message translates to:
+  /// **'新版本已经装好了。这次下载的安装包还在「下载」文件夹里，留着可以装到别的设备，删掉能腾出空间。'**
+  String get updatePkgWelcomeBody;
+
+  /// No description provided for @updatePkgInDownloads.
+  ///
+  /// In zh, this message translates to:
+  /// **'在「下载」文件夹'**
+  String get updatePkgInDownloads;
+
+  /// No description provided for @updatePkgRemember.
+  ///
+  /// In zh, this message translates to:
+  /// **'以后也这样处理，不再询问'**
+  String get updatePkgRemember;
+
+  /// No description provided for @updatePkgDelete.
+  ///
+  /// In zh, this message translates to:
+  /// **'删除安装包'**
+  String get updatePkgDelete;
+
+  /// No description provided for @updatePkgKeep.
+  ///
+  /// In zh, this message translates to:
+  /// **'保留安装包'**
+  String get updatePkgKeep;
+
+  /// No description provided for @updatePkgKept.
+  ///
+  /// In zh, this message translates to:
+  /// **'安装包留在「下载」文件夹'**
+  String get updatePkgKept;
+
+  /// No description provided for @updatePkgSigOk.
+  ///
+  /// In zh, this message translates to:
+  /// **'签名已校验'**
+  String get updatePkgSigOk;
+
+  /// No description provided for @updatePkgSigBad.
+  ///
+  /// In zh, this message translates to:
+  /// **'安装包签名与本机不一致，已经删掉。请从官方渠道重新下载。'**
+  String get updatePkgSigBad;
+
+  /// No description provided for @updatePkgSigUnknown.
+  ///
+  /// In zh, this message translates to:
+  /// **'读不出安装包的签名，已经删掉。请重新下载。'**
+  String get updatePkgSigUnknown;
+
+  /// No description provided for @updatePkgNoFile.
+  ///
+  /// In zh, this message translates to:
+  /// **'「下载」里找不到这个安装包，请重新下载。'**
+  String get updatePkgNoFile;
+
+  /// No description provided for @updatePkgAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'安装包处理'**
+  String get updatePkgAction;
+
+  /// No description provided for @updatePkgAfterUpdate.
+  ///
+  /// In zh, this message translates to:
+  /// **'装上新版后'**
+  String get updatePkgAfterUpdate;
+
+  /// No description provided for @updatePkgActionAsk.
+  ///
+  /// In zh, this message translates to:
+  /// **'每次询问'**
+  String get updatePkgActionAsk;
+
+  /// No description provided for @updatePkgActionDelete.
+  ///
+  /// In zh, this message translates to:
+  /// **'自动删除'**
+  String get updatePkgActionDelete;
+
+  /// No description provided for @updatePkgActionKeep.
+  ///
+  /// In zh, this message translates to:
+  /// **'一直保留'**
+  String get updatePkgActionKeep;
+
 }
 
 class _AppLocalizationsDelegate
