@@ -4640,7 +4640,12 @@ class AppState extends ChangeNotifier {
     }
   }
 
-  /// 把本地轨迹推上去：只传变过的天（今天每次都会变）。
+  /// 把本地轨迹推上去：云端缺哪天补哪天，今天每轮都传。
+  ///
+  /// 判断「要不要传」不能只看本机的同步记号：记号只是这台机器「上次传过」的
+  /// 记忆，而云端可能被另一台设备清空过，这台也可能刚从一份带记号的备份恢复
+  /// 过来。只信记号的结果就是「本机 27 天，云端只有今天这一天」。所以先问一句
+  /// 云端有哪些天、各多少点，缺的、少的都补上去。
   Future<String> syncPushTracks({bool all = false}) async {
     if (!syncTracksOn) return '';
     if (syncToken.isEmpty) return 'need-login';
@@ -4652,10 +4657,22 @@ class AppState extends ChangeNotifier {
     final today = TrackLogStore.dayKey(DateTime.now());
     final api = syncApi;
     try {
+      final remote = <String, int>{};
+      for (final row in await api.trackDays()) {
+        final day = (row['day'] as String?) ?? '';
+        if (day.isNotEmpty) {
+          remote[day] = (row['points'] as num?)?.toInt() ?? 0;
+        }
+      }
       for (final day in days) {
         final count = day.points.length;
         if (count == 0) continue;
-        if (!all && day.day != today && sig[day.day] == count) continue;
+        if (!all &&
+            day.day != today &&
+            sig[day.day] == count &&
+            (remote[day.day] ?? 0) >= count) {
+          continue;
+        }
         await api.pushTrack(
           day.day,
           [for (final point in day.points) point.toJson()],
