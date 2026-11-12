@@ -1,5 +1,21 @@
 # 更新日志
 
+## [2.2.3] - 2026-11-12
+
+### 更新
+
+- 更新页会显示这个安装包的签名到底校没校：正在校验 / 已校验 / 与本机不一致。
+- 更新渠道的那份清单改由官网下发，渠道地址变了不用等新版。
+
+## [2.2.3] - 2026-11-12 (English)
+
+### Update
+
+- The update page says whether this package's signature was checked: checking, verified,
+  or not matching this device.
+- The list of update channels now comes from the official site, so an address change does
+  not wait for a new version.
+
 ## [2.2.2] - 2026-11-12
 
 ### 更新

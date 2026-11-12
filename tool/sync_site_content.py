@@ -419,6 +419,20 @@ CARDS = [
 # 只列「重点版本」：中间几十个纯修 bug 的版本归纳进文字说明，完整记录指向 Releases。
 CL = [
     {
+        'ver': 'v2.2.3', 'date': '2026-11-12',
+        'items': [
+            ('up',
+             T('更新页会显示这个安装包的签名校没校。',
+               '更新頁會顯示這個安裝包的簽名校沒校。',
+               "The update page shows whether the package's signature was checked.")),
+            ('new',
+             T('更新渠道的清单改由官网下发，渠道地址变了不用等新版。',
+               '更新渠道的清單改由官網下發，渠道位址變了不用等新版。',
+               'The channel list comes from the official site, so an address change does '
+               'not wait for a new version.')),
+        ],
+    },
+    {
         'ver': 'v2.2.2', 'date': '2026-11-12',
         'items': [
             ('up',
