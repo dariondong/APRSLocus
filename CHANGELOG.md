@@ -11,6 +11,7 @@
 
 - 云端把历史轨迹全部留下，不再只留一年。
 - 换一台机器登录后，云端每一天的轨迹都会拉回来。
+- 本机有、云端缺的那几天，同步时补传上去。
 
 ### 引导
 
@@ -28,6 +29,7 @@
 
 - The cloud keeps every day of track history, not just the last year.
 - After signing in on another device, every cloud day of track history is pulled back.
+- Days the cloud is missing are uploaded on the next sync.
 
 ### Setup
 
