@@ -26,6 +26,7 @@ import 'l10n/app_localizations.dart';
 import 'permission_check.dart';
 import 'settings_pages.dart';
 import 'update_prompt.dart';
+import 'update_welcome.dart';
 import 'desktop_tray.dart';
 import 'agent_ui.dart';
 
@@ -514,8 +515,13 @@ class _AppState extends State<App> {
           // （showDialog 需要它）。
           if (!_updatePromptScheduled) {
             _updatePromptScheduled = true;
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              if (mounted) maybePromptUpdate(context: context, state: _state);
+            WidgetsBinding.instance.addPostFrameCallback((_) async {
+              if (!mounted) return;
+              // 先问「刚装好的那个安装包还要不要」，再查有没有更新的版本。
+              // 两个都要弹窗，所以排成一队，一次只弹一个。
+              await maybePromptUpdateWelcome(context: context, state: _state);
+              if (!mounted) return;
+              await maybePromptUpdate(context: context, state: _state);
             });
           }
           // 新荣誉庆祝：进入主页后初始化检测（用当前呼号做一次基线），
