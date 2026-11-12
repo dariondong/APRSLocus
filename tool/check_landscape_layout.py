@@ -371,7 +371,7 @@ def main() -> int:
         errors.append('map_toolbar.dart 里的 topReserve / bottomReserve 没了 —— '
                       '分栏的预留必须有下限，否则同一块屏幕上答案会飘')
     for needle, why in (
-        ('bottom: topBase + height(cols),',
+        ('bottom: topBase + MapToolbar.height(cols),',
          '没算工具列最后一颗的下沿（bottom）—— 就不知道它压没压到贴底控件'),
         ('barsTop: height - (',
          '没算贴底控件的上沿（barsTop）—— 那才是「会不会真压住」的判据'),
