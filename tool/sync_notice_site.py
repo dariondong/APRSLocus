@@ -73,22 +73,22 @@ PAGES = [
 # ⚠ 换一期公告时这里必须一起改，否则会出现「正文是新的、标题还是上一期」。
 HEAD = {
     'zh': {
-        'kicker': '📡 周六空中签到',
-        'title': 'APRSNETCN OA · #261107',
-        'en': 'APRSNETCN OA · #261107',
-        'sub': '北京时间周六一整天，这一周由轮值呼号 BD3QID-6 值守。',
+        'kicker': '🚨 安全公告',
+        'title': '紧急：暂停更新与下载',
+        'en': 'Security notice · 12 Nov 2026',
+        'sub': '构建流程被改动，审计完成前请暂停更新与下载。',
     },
     'zh_TW': {
-        'kicker': '📡 週六空中簽到',
-        'title': 'APRSNETCN OA · #261107',
-        'en': 'APRSNETCN OA · #261107',
-        'sub': '北京時間週六一整天，這一週由輪值呼號 BD3QID-6 值守。',
+        'kicker': '🚨 安全公告',
+        'title': '緊急：暫停更新與下載',
+        'en': 'Security notice · 12 Nov 2026',
+        'sub': '建置流程被改動，稽核完成前請暫停更新與下載。',
     },
     'en': {
-        'kicker': '📡 Saturday check-in',
-        'title': 'APRSNETCN OA · #261107',
-        'en': 'Every Saturday, on air',
-        'sub': 'A whole Saturday, Beijing time, with BD3QID-6 on duty this week.',
+        'kicker': '🚨 Security notice',
+        'title': 'Stop updating and downloading',
+        'en': '12 Nov 2026',
+        'sub': 'The build pipeline was altered. Hold off on updates and downloads until the audit is done.',
     },
 }
 

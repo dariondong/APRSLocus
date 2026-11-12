@@ -1,14 +1,54 @@
-# APRSNETCN OA · #261107
+# Security notice: stop updating and downloading
+
+On 12 November 2026 an unauthorised commit landed in the APRSLocus GitHub repository and rewrote the build pipeline. Please stop updating, downloading and installing until the audit is finished and a trusted build is published.
+
+**Severity: urgent · Last updated 12 November 2026, 14:50 (UTC+8)**
+
+## 1. What happened
+
+- At 05:58 UTC on 12 November 2026 a commit from an unfamiliar identity replaced the build workflow with a program that sends data out.
+- The same handiwork reached the carbide-shell repository.
+- The change ran inside CI, so the keys used at build time are treated as leaked.
+
+## 2. Do this now
+
+- Stop updating. Do not update to any new APRSLocus version.
+- Stop downloading. Do not take new packages from GitHub, mirrors, file hosts or group chats.
+- A package you downloaded but did not install: do not run it, delete it or isolate it.
+- On an installed device, back up important data and run a full scan with trusted security software. Cut the network if you can.
+- Do not install third-party patches. Unofficial APKs, EXEs and archives are out of the question.
+- If you see an odd process or odd traffic, keep the logs and report it in Issues.
+
+## 3. What we know so far
+
+- Existing packages were built before these commits; no release was built after the injection.
+- The build and signing keys were exposed, so a package claiming to be APRSLocus could be forged later.
+- Until the audit is done, no new version is treated as trusted.
+
+## 4. What we will never do
+
+- We will not ask for your password or verification code on any channel.
+- We will not ask you to hand over remote control of your device.
+
+## 5. Where to look
+
+- Site: [aprslocus.theez.top](https://aprslocus.theez.top)
+- Report: [GitHub Issues](https://github.com/dariondong/APRSLocus/issues)
+- Trusted versions and checksums come from official channels only. Do not forward unverified packages or patches.
+
+---
+
+## APRSNETCN OA · #261107
 
 APRSNETCN OA is a weekly APRS message roll call run by APRSNET.CN.
 
-## 1. When
+### 1. When
 
 Saturday, 7 November 2026, 00:00–23:59 Beijing time (UTC+8).
 
 Other zones: UTC 16:00 on 6 November to 15:59 on 7 November; Japan (UTC+9) 01:00 on 7 November to 00:59 on 8 November; India (UTC+5:30) 21:30 on 6 November to 21:29 on 7 November; US Eastern (EST, UTC-5) 11:00 on 6 November to 10:59 on 7 November.
 
-## 2. Duty callsign
+### 2. Duty callsign
 
 **BD3QID-6** (无锡焊铅丝).
 
@@ -16,20 +56,20 @@ The duty callsign changes every week. The site's page for the current week is th
 
 @video https://aprsnet.cn/oa/en/embed.html
 
-## 3. How to check in
+### 3. How to check in
 
 - Send an APRS message to **BD3QID-6** with the body **CQ CNNET**, your own call and your own grid, for example **CQ CNNET BG7XXX OL62**. A grid of 4 or 6 characters both work, and the call in the body is your own.
 - When the ACK arrives, send a new message to **BD3QID-6** with **U CNNET** alone.
 - Optional: add a sentence after the grid, for example **CQ CNNET BG7XXX OL62 weekend on the hill**. The roster gains a message row.
 
-## 4. Two ways in
+### 4. Two ways in
 
 - Over the network (APRS-IS): connect a phone or a computer to a server and send.
 - Over the air (RF): send from a handheld or a mobile rig, and a nearby gateway carries it into the network.
 
 Both count. RF counts more.
 
-## 5. Worth knowing
+### 5. Worth knowing
 
 - The message recipient is **BD3QID-6**, and the call in the body is your own. Do not mix the two up.
 - After the ACK, send a separate **U CNNET**. Do not reply on top of the ACK.
@@ -37,7 +77,7 @@ Both count. RF counts more.
 - An extra sentence does not change whether the check-in counts.
 - Transmit under your own call and licence, on the frequency and path your local rules allow.
 
-## 6. A song
+### 6. A song
 
 A new song from 星游记, the Chinese animation series. The song is 《再飞行！》, and a line from it runs 真正相信奇迹的家伙，本身就和奇迹一样了不起。
 

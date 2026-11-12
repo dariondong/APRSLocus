@@ -225,49 +225,32 @@ html{overflow-x:hidden}
       <div class="announce-ribbon"><span class="ar-dot"></span>公告 · Announcement</div>
 
       <header class="announce-head">
-        <p class="announce-kicker">📡 周六空中签到</p>
-        <h2 class="announce-title">APRSNETCN OA · #261107<span class="announce-en">APRSNETCN OA · #261107</span></h2>
-        <p class="announce-sub">北京时间周六一整天，这一周由轮值呼号 BD3QID-6 值守。</p>
+        <p class="announce-kicker">🚨 安全公告</p>
+        <h2 class="announce-title">紧急：暂停更新与下载<span class="announce-en">Security notice · 12 Nov 2026</span></h2>
+        <p class="announce-sub">构建流程被改动，审计完成前请暂停更新与下载。</p>
       </header>
 
       <div class="announce-body">
-        <p>APRSNETCN OA 是由 APRSNET.CN 发起的每周 APRS 报文点名活动。</p>
-        <p><b>一、活动时间</b></p>
-        <p>2026 年 11 月 7 日（周六）00:00—23:59（北京时间）。</p>
-        <p>其他时区：UTC 11 月 6 日 16:00 到 11 月 7 日 15:59；日本 UTC+9 11 月 7 日 01:00 到 11 月 8 日 00:59；印度 UTC+5:30 11 月 6 日 21:30 到 11 月 7 日 21:29；美东时间 UTC-5 11 月 6 日 11:00 到 11 月 7 日 10:59。</p>
-        <p><b>二、本轮轮值呼号</b></p>
-        <p><b>BD3QID-6</b>（无锡焊铅丝）。</p>
-        <p>轮值呼号每周更换，以官网当周页面为准。</p>
-        <div style="width:100%;margin:6px 0">
-        <iframe class="oa-embed" src="https://aprsnet.cn/oa/embed.html" title="APRSNETCN OA" scrolling="no" border="0" frameborder="no" framespacing="0" loading="lazy" style="display:block;width:100%;height:148px;border:0;border-radius:14px;background:#f2f0ea"></iframe>
-        </div>
-        <p><b>三、参与步骤</b></p>
-        <ul class="announce-list"><li>向 <b>BD3QID-6</b> 发一条 APRS 报文，正文写 <b>CQ CNNET 呼号 网格</b>，例如 <b>CQ CNNET BG7XXX OL62</b>。网格 4 位或 6 位都认，正文里的呼号写本人的合法呼号。</li><li>收到 ACK 后，另发一条新报文给 <b>BD3QID-6</b>，正文只写 <b>U CNNET</b>。</li><li>可选：在网格后附一句话，例如 <b>CQ CNNET BG7XXX OL62 周末在山上</b>，名单里会多一条消息记录。</li></ul>
-        <p><b>四、参与方式</b></p>
-        <ul class="announce-list"><li>网络侧（APRS-IS）：手机或电脑连上服务器就能发。</li><li>空中侧（射频）：手台或车台发出，经附近网关进入网络。</li></ul>
-        <p>两种方式都算，射频方式更佳。</p>
-        <p><b>五、注意事项</b></p>
-        <ul class="announce-list"><li>报文的收件人填 <b>BD3QID-6</b>，正文里的呼号写本人合法呼号，两者不要混淆。</li><li>收到 ACK 后另发一条 <b>U CNNET</b>，不要在 ACK 上直接回复。</li><li>当天发一次就够，重复发送不会增加名单行数。</li><li>可以附带一句话，不影响参与是否有效。</li><li>发射用本人呼号与有效执照，频率和路径按当地规定执行。</li></ul>
-        <p><b>六、一首歌</b></p>
-        <p>星游记的新歌《再飞行！》。真正相信奇迹的家伙，本身就和奇迹一样了不起。</p>
-        <div style="position:relative;width:100%;max-width:760px;margin:6px auto;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000">
-        <iframe src="https://player.bilibili.com/player.html?isOutside=true&amp;aid=117568270504061&amp;bvid=BV1UB4v67Exr&amp;cid=43375264631&amp;p=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true" style="position:absolute;inset:0;width:100%;height:100%"></iframe>
-        </div>
-        <p>活动页：<b><a href="https://oa.aprsnet.cn" target="_blank" rel="noopener">打开活动页</a></b></p>
-        <p>11 月 7 日（周六），发一条 CQ，收一个 ACK，回一个 U。</p>
-        <p><b>APRSNET.CN</b></p>
+        <p>2026 年 11 月 12 日，APRSLocus 的 GitHub 仓库出现异常提交，构建流程被整体改写。审计完成并重新发布可信版本之前，请暂停更新、下载与安装。</p>
+        <p><b>公告级别：紧急 · 最后更新 2026 年 11 月 12 日 14:50</b></p>
+        <p><b>一、发生了什么</b></p>
+        <ul class="announce-list"><li>2026 年 11 月 12 日 05:58（UTC），仓库出现一条署名陌生的提交，把构建流程换成对外回传数据的程序。</li><li>同样一手也进了 carbide-shell 仓库。</li><li>这类改动落在 CI 上，构建时注入的密钥按已泄露处理。</li></ul>
+        <p><b>二、请立即做到</b></p>
+        <ul class="announce-list"><li>停止更新，不要更新 APRSLocus 的任何新版本。</li><li>停止下载，GitHub、镜像站、网盘、群文件都不要再取新的安装包。</li><li>已下载但未安装的安装包不要运行，删除或隔离。</li><li>已安装的设备先备份重要数据，再用可信的安全软件全盘扫描，有条件就断网隔离。</li><li>不要安装第三方补丁，非官方转发的 APK、EXE、压缩包一律不要。</li><li>发现异常进程或异常联网，保留日志，到 Issues 反馈。</li></ul>
+        <p><b>三、当前范围</b></p>
+        <ul class="announce-list"><li>现有发布包都在这些提交之前构建，注入之后没有构建过新的发布包。</li><li>构建与签名用的密钥已经暴露，日后出现冒名安装包是可能的。</li><li>审计完成前，任何新版本都不按可信处理。</li></ul>
+        <p><b>四、官方不会做的事</b></p>
+        <ul class="announce-list"><li>不会通过任何渠道索要密码、验证码。</li><li>不会要求远程控制你的设备。</li></ul>
+        <p><b>五、渠道</b></p>
+        <ul class="announce-list"><li>网站：<a href="https://aprslocus.theez.top" target="_blank" rel="noopener">aprslocus.theez.top</a></li><li>反馈与举报：<a href="https://github.com/dariondong/APRSLocus/issues" target="_blank" rel="noopener">GitHub Issues</a></li><li>可信版本与校验值只以官方渠道为准，未经证实的安装包与补丁不要转发。</li></ul>
       </div>
 
       <div class="announce-actions">
-        <a class="btn btn-primary" href="https://github.com/dariondong/APRSLocus/releases/tag/v2.1.43" target="_blank" rel="noopener">
-          <i class="fa-solid fa-download" aria-hidden="true"></i>
-          下载 2.1.43
-        </a>
         <a class="btn btn-ghost" href="https://github.com/dariondong/APRSLocus/blob/main/CHANGELOG.md" target="_blank" rel="noopener">
           <i class="fa-solid fa-list-check" aria-hidden="true"></i>
           查看完整更新日志
         </a>
-        <a class="btn btn-text" href="https://github.com/dariondong/APRSLocus/issues" target="_blank" rel="noopener">
+        <a class="btn btn-primary" href="https://github.com/dariondong/APRSLocus/issues" target="_blank" rel="noopener">
           <i class="fa-solid fa-comment-dots" aria-hidden="true"></i>
           反馈与建议
         </a>

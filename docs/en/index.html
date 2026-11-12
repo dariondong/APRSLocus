@@ -223,49 +223,32 @@ html{overflow-x:hidden}
       <div class="announce-ribbon"><span class="ar-dot"></span>Announcement</div>
 
       <header class="announce-head">
-        <p class="announce-kicker">📡 Saturday check-in</p>
-        <h2 class="announce-title">APRSNETCN OA · #261107<span class="announce-en">Every Saturday, on air</span></h2>
-        <p class="announce-sub">A whole Saturday, Beijing time, with BD3QID-6 on duty this week.</p>
+        <p class="announce-kicker">🚨 Security notice</p>
+        <h2 class="announce-title">Stop updating and downloading<span class="announce-en">12 Nov 2026</span></h2>
+        <p class="announce-sub">The build pipeline was altered. Hold off on updates and downloads until the audit is done.</p>
       </header>
 
       <div class="announce-body">
-        <p>APRSNETCN OA is a weekly APRS message roll call run by APRSNET.CN.</p>
-        <p><b>1. When</b></p>
-        <p>Saturday, 7 November 2026, 00:00–23:59 Beijing time (UTC+8).</p>
-        <p>Other zones: UTC 16:00 on 6 November to 15:59 on 7 November; Japan (UTC+9) 01:00 on 7 November to 00:59 on 8 November; India (UTC+5:30) 21:30 on 6 November to 21:29 on 7 November; US Eastern (EST, UTC-5) 11:00 on 6 November to 10:59 on 7 November.</p>
-        <p><b>2. Duty callsign</b></p>
-        <p><b>BD3QID-6</b> (无锡焊铅丝).</p>
-        <p>The duty callsign changes every week. The site's page for the current week is the one to read.</p>
-        <div style="width:100%;margin:6px 0">
-        <iframe class="oa-embed" src="https://aprsnet.cn/oa/en/embed.html" title="APRSNETCN OA" scrolling="no" border="0" frameborder="no" framespacing="0" loading="lazy" style="display:block;width:100%;height:148px;border:0;border-radius:14px;background:#f2f0ea"></iframe>
-        </div>
-        <p><b>3. How to check in</b></p>
-        <ul class="announce-list"><li>Send an APRS message to <b>BD3QID-6</b> with the body <b>CQ CNNET</b>, your own call and your own grid, for example <b>CQ CNNET BG7XXX OL62</b>. A grid of 4 or 6 characters both work, and the call in the body is your own.</li><li>When the ACK arrives, send a new message to <b>BD3QID-6</b> with <b>U CNNET</b> alone.</li><li>Optional: add a sentence after the grid, for example <b>CQ CNNET BG7XXX OL62 weekend on the hill</b>. The roster gains a message row.</li></ul>
-        <p><b>4. Two ways in</b></p>
-        <ul class="announce-list"><li>Over the network (APRS-IS): connect a phone or a computer to a server and send.</li><li>Over the air (RF): send from a handheld or a mobile rig, and a nearby gateway carries it into the network.</li></ul>
-        <p>Both count. RF counts more.</p>
-        <p><b>5. Worth knowing</b></p>
-        <ul class="announce-list"><li>The message recipient is <b>BD3QID-6</b>, and the call in the body is your own. Do not mix the two up.</li><li>After the ACK, send a separate <b>U CNNET</b>. Do not reply on top of the ACK.</li><li>One send that day is enough. Sending again adds no row.</li><li>An extra sentence does not change whether the check-in counts.</li><li>Transmit under your own call and licence, on the frequency and path your local rules allow.</li></ul>
-        <p><b>6. A song</b></p>
-        <p>A new song from 星游记, the Chinese animation series. The song is 《再飞行！》, and a line from it runs 真正相信奇迹的家伙，本身就和奇迹一样了不起。</p>
-        <div style="position:relative;width:100%;max-width:760px;margin:6px auto;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000">
-        <iframe src="https://player.bilibili.com/player.html?isOutside=true&amp;aid=117568270504061&amp;bvid=BV1UB4v67Exr&amp;cid=43375264631&amp;p=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true" style="position:absolute;inset:0;width:100%;height:100%"></iframe>
-        </div>
-        <p>Activity page: <b><a href="https://oa.aprsnet.cn" target="_blank" rel="noopener">Open the activity page</a></b></p>
-        <p>Saturday, 7 November: one CQ out, one ACK in, one U back.</p>
-        <p><b>APRSNET.CN</b></p>
+        <p>On 12 November 2026 an unauthorised commit landed in the APRSLocus GitHub repository and rewrote the build pipeline. Please stop updating, downloading and installing until the audit is finished and a trusted build is published.</p>
+        <p><b>Severity: urgent · Last updated 12 November 2026, 14:50 (UTC+8)</b></p>
+        <p><b>1. What happened</b></p>
+        <ul class="announce-list"><li>At 05:58 UTC on 12 November 2026 a commit from an unfamiliar identity replaced the build workflow with a program that sends data out.</li><li>The same handiwork reached the carbide-shell repository.</li><li>The change ran inside CI, so the keys used at build time are treated as leaked.</li></ul>
+        <p><b>2. Do this now</b></p>
+        <ul class="announce-list"><li>Stop updating. Do not update to any new APRSLocus version.</li><li>Stop downloading. Do not take new packages from GitHub, mirrors, file hosts or group chats.</li><li>A package you downloaded but did not install: do not run it, delete it or isolate it.</li><li>On an installed device, back up important data and run a full scan with trusted security software. Cut the network if you can.</li><li>Do not install third-party patches. Unofficial APKs, EXEs and archives are out of the question.</li><li>If you see an odd process or odd traffic, keep the logs and report it in Issues.</li></ul>
+        <p><b>3. What we know so far</b></p>
+        <ul class="announce-list"><li>Existing packages were built before these commits; no release was built after the injection.</li><li>The build and signing keys were exposed, so a package claiming to be APRSLocus could be forged later.</li><li>Until the audit is done, no new version is treated as trusted.</li></ul>
+        <p><b>4. What we will never do</b></p>
+        <ul class="announce-list"><li>We will not ask for your password or verification code on any channel.</li><li>We will not ask you to hand over remote control of your device.</li></ul>
+        <p><b>5. Where to look</b></p>
+        <ul class="announce-list"><li>Site: <a href="https://aprslocus.theez.top" target="_blank" rel="noopener">aprslocus.theez.top</a></li><li>Report: <a href="https://github.com/dariondong/APRSLocus/issues" target="_blank" rel="noopener">GitHub Issues</a></li><li>Trusted versions and checksums come from official channels only. Do not forward unverified packages or patches.</li></ul>
       </div>
 
       <div class="announce-actions">
-        <a class="btn btn-primary" href="https://github.com/dariondong/APRSLocus/releases/tag/v2.1.43" target="_blank" rel="noopener">
-          <i class="fa-solid fa-download" aria-hidden="true"></i>
-          Download 2.1.43
-        </a>
         <a class="btn btn-ghost" href="https://github.com/dariondong/APRSLocus/blob/main/CHANGELOG.md" target="_blank" rel="noopener">
           <i class="fa-solid fa-list-check" aria-hidden="true"></i>
           View full changelog
         </a>
-        <a class="btn btn-text" href="https://github.com/dariondong/APRSLocus/issues" target="_blank" rel="noopener">
+        <a class="btn btn-primary" href="https://github.com/dariondong/APRSLocus/issues" target="_blank" rel="noopener">
           <i class="fa-solid fa-comment-dots" aria-hidden="true"></i>
           Feedback &amp; Suggestions
         </a>
