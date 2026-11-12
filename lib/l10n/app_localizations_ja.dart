@@ -10180,4 +10180,7 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String get syncNoServer => "先に上の APRSNETCN サーバーのアドレスを入れてください。";
 
+  @override
+  String get acnHttpPort => "HTTP ポート";
+
 }

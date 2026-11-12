@@ -10518,4 +10518,7 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get syncNoServer => "Primero rellena arriba la dirección del servidor APRSNETCN.";
 
+  @override
+  String get acnHttpPort => "Puerto HTTP";
+
 }

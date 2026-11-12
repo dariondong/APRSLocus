@@ -216,6 +216,7 @@ const List<BackupGroupSpec> kBackupGroups = [
     // APRSNETCN 那条互联网链路自己的账号口令与开关：它和 APRS-IS 是两条
     // 并列的连接，换机后两个服务器都得重新填，所以一起进备份。
     'acnAccount', 'acnPassword', 'acnPasscode', 'acnOn', 'acnServer', 'acnPort',
+    'acnHttpPort',
     'igateEnabled', 'igateTwoWay',
     'myLat', 'myLng',
     // 链路配置（TNC / 声卡 TNC / PKWDWPL / 小盒子 / 外接 GPS）与各自上次选的设备。

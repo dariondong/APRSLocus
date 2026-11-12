@@ -36,6 +36,10 @@ CLASSES = {
 
 # ── 要加的键：key → (zh, zh_TW, en, ja, es, id) ──
 KEYS = {
+    # ── APRSNETCN 服务器：HTTP 端口（24 小时台站与云同步走它）──
+    'acnHttpPort': (
+        'HTTP 端口', 'HTTP 埠', 'HTTP port', 'HTTP ポート',
+        'Puerto HTTP', 'Port HTTP'),
     # ── 云同步：服务器地址（空着用项目自带那台）──
     'syncServer': (
         '服务器', '伺服器', 'Server', 'サーバー', 'Servidor', 'Server'),

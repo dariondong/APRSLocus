@@ -10080,6 +10080,9 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String get syncNoServer => "先在上面填 APRSNETCN 服务器地址。";
 
+  @override
+  String get acnHttpPort => "HTTP 端口";
+
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
@@ -20156,5 +20159,8 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get syncNoServer => "先在上面填 APRSNETCN 伺服器位址。";
+
+  @override
+  String get acnHttpPort => "HTTP 埠";
 
 }

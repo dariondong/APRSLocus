@@ -5093,5 +5093,6 @@
   "syncDeviceHint": "列表裡是登入過這台伺服器的裝置。移除一台，它下次同步要重新登入。",
   "@syncEveryMin": {"placeholders": {"n": {"type": "String"}}},
   "@syncBackupsCount": {"placeholders": {"n": {"type": "String"}}},
-  "syncNoServer": "先在上面填 APRSNETCN 伺服器位址。"
+  "syncNoServer": "先在上面填 APRSNETCN 伺服器位址。",
+  "acnHttpPort": "HTTP 埠"
 }

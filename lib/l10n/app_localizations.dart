@@ -18515,6 +18515,12 @@ abstract class AppLocalizations {
   /// **'先在上面填 APRSNETCN 服务器地址。'**
   String get syncNoServer;
 
+  /// No description provided for @acnHttpPort.
+  ///
+  /// In zh, this message translates to:
+  /// **'HTTP 端口'**
+  String get acnHttpPort;
+
 }
 
 class _AppLocalizationsDelegate

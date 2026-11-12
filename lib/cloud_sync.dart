@@ -87,9 +87,9 @@ class SyncApi {
   /// 空地址发不出请求，[SyncApi._call] 直接报 `no-server`。
   ///
   /// 两种写法都收：带协议的（`https://sync.example.com`）原样用，不带协议的
-  /// （`1.2.3.4`）补上 `http://` 与 8899，与「APRSNETCN」页那张卡同一口径。
+  /// （`1.2.3.4`）补上 `http://` 与 [port]，与「APRSNETCN」页那张卡同一口径。
   /// 末尾的斜杠先去掉，否则拼出来就是 `…8899//api/v1/…`。
-  static String baseFor(String server) {
+  static String baseFor(String server, int port) {
     var host = server.trim();
     if (host.isEmpty) return '';
     while (host.endsWith('/')) {
@@ -97,7 +97,7 @@ class SyncApi {
     }
     if (host.contains('://')) return host;
     final hasPort = RegExp(r':\d+$').hasMatch(host);
-    return 'http://$host${hasPort ? '' : ':8899'}';
+    return 'http://$host${hasPort ? '' : ':$port'}';
   }
 
   Map<String, String> get _headers => {

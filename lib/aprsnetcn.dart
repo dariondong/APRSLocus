@@ -18,16 +18,20 @@ const String kAcnServerHost = '8.138.199.11';
 /// APRS-IS 兼容的 TCP 端口
 const int kAcnServerPort = 14580;
 
-/// 界面里填的 APRS 地址 → HTTP 接口入口。
+/// 那台服务器上 HTTP 接口的默认端口（24 小时台站、云同步、注册都在上面）。
+const int kAcnHttpPort = 8899;
+
+/// 界面里填的 APRS 地址与 HTTP 端口 → HTTP 接口入口。
 ///
-/// 那台机器上 APRS 端口（14580）与 HTTP 端口（8899）是分开的两个设置，界面
-/// 只让人填 APRS 那一个，所以这里补上 8899。
+/// 一台机器上 APRS 端口与 HTTP 端口是两个设置，界面里各占一格：有人的 HTTP
+/// 开在别的端口上，写死一个数就连不上那台机器。
 ///
 /// 地址空着就返回空串：一个地址都不预填，也不拿任何内置地址当兜底（
 /// 用户没填地址时，软件不该自己去连一台服务器，调用方据此跳过 HTTP 请求）。
-String acnHttpBaseHost(String host) {
+String acnHttpBaseHost(String host, int port) {
   final h = host.trim();
-  return h.isEmpty ? '' : 'http://$h:8899';
+  if (h.isEmpty) return '';
+  return 'http://$h:$port';
 }
 
 /// 一台台站在服务器那侧的 24 小时概况（= 该呼号最后一次位置 + 收到几帧）。

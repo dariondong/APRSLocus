@@ -99,23 +99,28 @@ void main() {
 
   group('同步地址', () {
     test('地址空着就是没配，不发请求', () {
-      expect(SyncApi.baseFor(''), '');
-      expect(SyncApi.baseFor('   '), '');
+      expect(SyncApi.baseFor('', 8899), '');
+      expect(SyncApi.baseFor('   ', 8899), '');
     });
 
-    test('只填主机就补上 http 与 8899', () {
-      expect(SyncApi.baseFor('1.2.3.4'), 'http://1.2.3.4:8899');
-      expect(SyncApi.baseFor(' 1.2.3.4 '), 'http://1.2.3.4:8899');
+    test('只填主机就补上 http 与端口', () {
+      expect(SyncApi.baseFor('1.2.3.4', 8899), 'http://1.2.3.4:8899');
+      expect(SyncApi.baseFor(' 1.2.3.4 ', 8899), 'http://1.2.3.4:8899');
+    });
+
+    test('端口用服务器页填的那个', () {
+      expect(SyncApi.baseFor('1.2.3.4', 8898), 'http://1.2.3.4:8898');
     });
 
     test('自己带了端口就不再补', () {
-      expect(SyncApi.baseFor('1.2.3.4:9000'), 'http://1.2.3.4:9000');
+      expect(SyncApi.baseFor('1.2.3.4:9000', 8899), 'http://1.2.3.4:9000');
     });
 
     test('带协议的写法原样用', () {
-      expect(SyncApi.baseFor('https://sync.example.com'),
+      expect(SyncApi.baseFor('https://sync.example.com', 8899),
           'https://sync.example.com');
-      expect(SyncApi.baseFor('http://1.2.3.4:8899/'), 'http://1.2.3.4:8899');
+      expect(SyncApi.baseFor('http://1.2.3.4:8899/', 8899),
+          'http://1.2.3.4:8899');
     });
   });
 

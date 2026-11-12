@@ -4422,7 +4422,7 @@ class AppState extends ChangeNotifier {
   /// 地址空着就是没配：返回空串，同步一律不发请求（`no-server`）。一个地址都
   /// 不预填，也不拿任何内置地址当兜底。
   /// 云端数据与那条链路由同一台机器管，界面上把生效地址写出来。
-  String get syncBase => SyncApi.baseFor(acnServer);
+  String get syncBase => SyncApi.baseFor(acnServer, acnHttpPort);
 
   SyncApi get syncApi => SyncApi(base: syncBase, token: syncToken);
 
@@ -4432,10 +4432,11 @@ class AppState extends ChangeNotifier {
   ///
   /// 令牌是原来那台服务器发的，带到另一台上只会一直 401；上次同步的时间、
   /// 两份上传标记也属于原来那台，一起清掉。云端上的数据不动。
-  /// [oldServer] 是改之前那条链路的地址，由改地址的地方传进来。
-  void dropSyncSessionIfMoved(String oldServer) {
+  /// [oldServer] 是改之前那条链路的地址，[oldPort] 是改之前的 HTTP 端口，
+  /// 都由改设置的地方传进来。
+  void dropSyncSessionIfMoved(String oldServer, [int? oldPort]) {
     if (syncToken.isEmpty && syncCall.isEmpty) return;
-    if (SyncApi.baseFor(oldServer) == syncBase) return;
+    if (SyncApi.baseFor(oldServer, oldPort ?? acnHttpPort) == syncBase) return;
     syncToken = '';
     syncCall = '';
     syncMsgAt = 0;
@@ -5383,6 +5384,7 @@ class AppState extends ChangeNotifier {
     aprs.password = '';
     acnServer = '';
     acnPort = kAcnServerPort;
+    acnHttpPort = kAcnHttpPort;
     acnPasscode = '';
     _acnConfWarned = false;
     acnAccount = '';
@@ -5615,7 +5617,7 @@ class AppState extends ChangeNotifier {
   /// 那一台的接口。token 只在内存里，不进备份。
   AcnClient? _acnHttp;
   AcnClient get acn {
-    final base = acnHttpBaseHost(acnServer);
+    final base = acnHttpBaseHost(acnServer, acnHttpPort);
     final client = _acnHttp;
     if (client != null && client.base == base) return client;
     final fresh = AcnClient(base: base);
@@ -5658,13 +5660,16 @@ class AppState extends ChangeNotifier {
   /// [enabledSources]、可以是发射来源、断了照样重连。只连这一条也成立。
   bool get acnOn => enabledSources.contains(srcAcn);
 
-  /// 副链路的服务器地址与端口。
+  /// 副链路的服务器地址、APRS 端口与 HTTP 端口。
   ///
-  /// 默认值是预置的那一台，用户可以改成别的。协议是同一套，地址不该写死在
-  /// 连接里：服务器换机器、走反代、或者自己搭一台试用，都只改这两格。
+  /// 不给默认地址：地址由用户自己填（服务器页空了就显示「未配置」）。协议是
+  /// 同一套，地址不该写死在连接里：服务器换机器、走反代、或者自己搭一台试用，
+  /// 都只改这几格。[acnPort] 是收报文的 TCP 口，[acnHttpPort] 是那台机器上
+  /// HTTP 接口的口，24 小时台站与云同步都走它。
   // 不给默认地址：地址由用户自己填（服务器页空了就显示「未配置」）。
   String acnServer = '';
   int acnPort = kAcnServerPort;
+  int acnHttpPort = kAcnHttpPort;
 
   bool get acnConnected => isUp(srcAcn);
 
@@ -6017,6 +6022,8 @@ class AppState extends ChangeNotifier {
       final legacyAcnOn = p.getBool('acnOn') ?? false;
       acnServer = p.getString('acnServer') ?? acnServer;
       acnPort = p.getInt('acnPort') ?? acnPort;
+      final httpPort = p.getInt('acnHttpPort') ?? acnHttpPort;
+      if (httpPort > 0 && httpPort <= 65535) acnHttpPort = httpPort;
       acnPasscode = p.getString('acnPasscode') ?? acnPasscode;
       acnAccount = p.getString('acnAccount') ??
           (aprs.server.trim() == kAcnServerHost ? aprs.account : '');
@@ -6381,6 +6388,7 @@ class AppState extends ChangeNotifier {
     await p.setString('acnPasscode', acnPasscode);
     await p.setString('acnServer', acnServer);
     await p.setInt('acnPort', acnPort);
+    await p.setInt('acnHttpPort', acnHttpPort);
     await p.setString('acnAccount', acnAccount);
     await p.setString('acnPassword', acnPassword);
     await p.setString('dataSource', dataSource);

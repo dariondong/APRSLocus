@@ -10459,4 +10459,7 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get syncNoServer => "Fill in the APRSNETCN server address above first.";
 
+  @override
+  String get acnHttpPort => "HTTP port";
+
 }

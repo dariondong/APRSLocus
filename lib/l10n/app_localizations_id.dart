@@ -10469,4 +10469,7 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get syncNoServer => "Isi dulu alamat server APRSNETCN di atas.";
 
+  @override
+  String get acnHttpPort => "Port HTTP";
+
 }

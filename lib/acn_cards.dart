@@ -33,6 +33,7 @@ class AcnCards extends StatefulWidget {
 class _AcnCardsState extends State<AcnCards> {
   late final TextEditingController _server;
   late final TextEditingController _port;
+  late final TextEditingController _httpPort;
   late final TextEditingController _passcode;
   late final TextEditingController _account;
   late final TextEditingController _password;
@@ -41,6 +42,7 @@ class _AcnCardsState extends State<AcnCards> {
   /// 保存进页面时的值：只用来判断「改过了、要重连」，不参与连接
   late final String _origServer;
   late final int _origPort;
+  late final int _origHttpPort;
   late final String _origPasscode;
   late final String _origAccount;
   late final String _origPassword;
@@ -53,11 +55,13 @@ class _AcnCardsState extends State<AcnCards> {
     super.initState();
     _server = TextEditingController(text: st.acnServer);
     _port = TextEditingController(text: '${st.acnPort}');
+    _httpPort = TextEditingController(text: '${st.acnHttpPort}');
     _passcode = TextEditingController(text: st.acnPasscode);
     _account = TextEditingController(text: st.acnAccount);
     _password = TextEditingController(text: st.acnPassword);
     _origServer = st.acnServer;
     _origPort = st.acnPort;
+    _origHttpPort = st.acnHttpPort;
     _origPasscode = st.acnPasscode;
     _origAccount = st.acnAccount;
     _origPassword = st.acnPassword;
@@ -69,6 +73,7 @@ class _AcnCardsState extends State<AcnCards> {
   void dispose() {
     _server.dispose();
     _port.dispose();
+    _httpPort.dispose();
     _passcode.dispose();
     _account.dispose();
     _password.dispose();
@@ -150,6 +155,16 @@ class _AcnCardsState extends State<AcnCards> {
           final n = int.tryParse(v.trim());
           if (n != null && n > 0 && n <= 65535) st.acnPort = n;
           _touched();
+        }),
+        // HTTP 端口：24 小时台站与云同步走它，和上面那格 TCP 口是两个设置。
+        // 改它不影响这条链路，只让云端登录重来一遍。
+        SettingsInput(s.acnHttpPort, _httpPort,
+            onChanged: (v) {
+          final n = int.tryParse(v.trim());
+          if (n == null || n <= 0 || n > 65535) return;
+          st.acnHttpPort = n;
+          st.dropSyncSessionIfMoved(st.acnServer, _origHttpPort);
+          st.persist();
         }),
         SettingsInput(s.passcode, _passcode,
             hint: s.acnPasscodeHint,
