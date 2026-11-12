@@ -1,5 +1,20 @@
 # 更新日志
 
+## [2.2.1] - 2026-11-12
+
+### 服务器
+
+- 「设置 → 服务器 → APRSNETCN」多了 HTTP 端口一格，默认 8899。
+- 24 小时台站与云同步按这一格连，服务器把 HTTP 开在别的端口上也能用。
+
+## [2.2.1] - 2026-11-12 (English)
+
+### Server
+
+- Settings → Server → APRSNETCN has an HTTP port field, 8899 by default.
+- The 24-hour station list and cloud sync connect on that port, so a server that runs HTTP
+  somewhere else works too.
+
 ## [2.2.0] - 2026-11-12
 
 ### 安全

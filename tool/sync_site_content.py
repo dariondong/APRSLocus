@@ -419,6 +419,19 @@ CARDS = [
 # 只列「重点版本」：中间几十个纯修 bug 的版本归纳进文字说明，完整记录指向 Releases。
 CL = [
     {
+        'ver': 'v2.2.1', 'date': '2026-11-12',
+        'items': [
+            ('new',
+             T('「设置 → 服务器 → APRSNETCN」多了 HTTP 端口一格，默认 8899。',
+               '「設定 → 伺服器 → APRSNETCN」多了 HTTP 埤一格，預設 8899。',
+               'Settings → Server → APRSNETCN has an HTTP port field, 8899 by default.')),
+            ('new',
+             T('24 小时台站与云同步按这一格连。',
+               '24 小時台站與雲端同步按這一格連。',
+               'The 24-hour station list and cloud sync connect on that port.')),
+        ],
+    },
+    {
         'ver': 'v2.1.43', 'date': '2026-11-06',
         'items': [
             ('fix',
