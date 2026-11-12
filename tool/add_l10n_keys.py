@@ -538,6 +538,18 @@ KEYS = {
         'パッケージの署名がこの端末と一致しないため削除しました。公式の経路から取り直してください。',
         'La firma del paquete no coincide con la de este dispositivo, así que se borró. Descárgalo otra vez desde un canal oficial.',
         'Tanda tangan paket tidak cocok dengan perangkat ini, jadi paketnya dihapus. Unduh lagi dari saluran resmi.'),
+    'updatePkgSigChecking': (
+        '正在校验签名', '正在校驗簽名', 'Checking the signature',
+        '署名を確認しています', 'Comprobando la firma', 'Memeriksa tanda tangan'),
+    'updatePkgSigMismatch': (
+        '签名与本机不一致', '簽名與本機不一致',
+        'The signature does not match this device',
+        '署名がこの端末と一致しません',
+        'La firma no coincide con este dispositivo',
+        'Tanda tangan tidak cocok dengan perangkat ini'),
+    'updatePkgSigUnchecked': (
+        '读不出签名', '讀不出簽名', 'Could not read the signature',
+        '署名を読み取れません', 'No se pudo leer la firma', 'Tanda tangan tidak terbaca'),
     'updatePkgSigUnknown': (
         '读不出安装包的签名，已经删掉。请重新下载。',
         '讀不出安裝包的簽名，已經刪掉。請重新下載。',

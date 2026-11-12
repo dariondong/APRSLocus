@@ -4523,5 +4523,8 @@
   "updatePkgActionAsk": "Preguntar cada vez",
   "updatePkgActionDelete": "Borrarlo",
   "updatePkgActionKeep": "Conservar siempre",
-  "@updatePkgWelcomeTitle": {"placeholders": {"v": {"type": "String"}}}
+  "@updatePkgWelcomeTitle": {"placeholders": {"v": {"type": "String"}}},
+  "updatePkgSigChecking": "Comprobando la firma",
+  "updatePkgSigMismatch": "La firma no coincide con este dispositivo",
+  "updatePkgSigUnchecked": "No se pudo leer la firma"
 }

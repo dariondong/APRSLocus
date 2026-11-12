@@ -5202,5 +5202,8 @@
   "updatePkgActionAsk": "每次询问",
   "updatePkgActionDelete": "自动删除",
   "updatePkgActionKeep": "一直保留",
-  "@updatePkgWelcomeTitle": {"placeholders": {"v": {"type": "String"}}}
+  "@updatePkgWelcomeTitle": {"placeholders": {"v": {"type": "String"}}},
+  "updatePkgSigChecking": "正在校验签名",
+  "updatePkgSigMismatch": "签名与本机不一致",
+  "updatePkgSigUnchecked": "读不出签名"
 }

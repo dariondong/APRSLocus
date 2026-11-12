@@ -10231,4 +10231,13 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String get updatePkgActionKeep => "常に残す";
 
+  @override
+  String get updatePkgSigChecking => "署名を確認しています";
+
+  @override
+  String get updatePkgSigMismatch => "署名がこの端末と一致しません";
+
+  @override
+  String get updatePkgSigUnchecked => "署名を読み取れません";
+
 }

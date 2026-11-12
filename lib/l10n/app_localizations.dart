@@ -18617,6 +18617,24 @@ abstract class AppLocalizations {
   /// **'一直保留'**
   String get updatePkgActionKeep;
 
+  /// No description provided for @updatePkgSigChecking.
+  ///
+  /// In zh, this message translates to:
+  /// **'正在校验签名'**
+  String get updatePkgSigChecking;
+
+  /// No description provided for @updatePkgSigMismatch.
+  ///
+  /// In zh, this message translates to:
+  /// **'签名与本机不一致'**
+  String get updatePkgSigMismatch;
+
+  /// No description provided for @updatePkgSigUnchecked.
+  ///
+  /// In zh, this message translates to:
+  /// **'读不出签名'**
+  String get updatePkgSigUnchecked;
+
 }
 
 class _AppLocalizationsDelegate

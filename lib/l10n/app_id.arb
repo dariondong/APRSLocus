@@ -4523,5 +4523,8 @@
   "updatePkgActionAsk": "Tanya tiap kali",
   "updatePkgActionDelete": "Hapus otomatis",
   "updatePkgActionKeep": "Selalu simpan",
-  "@updatePkgWelcomeTitle": {"placeholders": {"v": {"type": "String"}}}
+  "@updatePkgWelcomeTitle": {"placeholders": {"v": {"type": "String"}}},
+  "updatePkgSigChecking": "Memeriksa tanda tangan",
+  "updatePkgSigMismatch": "Tanda tangan tidak cocok dengan perangkat ini",
+  "updatePkgSigUnchecked": "Tanda tangan tidak terbaca"
 }

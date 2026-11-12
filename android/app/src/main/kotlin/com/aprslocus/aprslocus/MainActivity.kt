@@ -721,6 +721,26 @@ class MainActivity : FlutterActivity() {
                         }.start()
                     }
                 }
+                // 校一下「下载」里那个包的签名（不安装、不留副本）。
+                "verifyDownloads" -> {
+                    val name = call.argument<String>("name")
+                    if (name == null) {
+                        result.error("NO_NAME", "缺少安装包名", null)
+                    } else {
+                        Thread {
+                            val prep = prepareDownloadsApk(name)
+                            val f = prep.file
+                            val status = if (f == null) {
+                                prep.error ?: "failed"
+                            } else {
+                                // 只是看一眼：临时副本立刻删掉
+                                if (!f.delete()) f.deleteOnExit()
+                                "ok"
+                            }
+                            runOnUiThread { result.success(status) }
+                        }.start()
+                    }
+                }
                 // 安装完重启后清掉安装时的临时副本（cacheDir/update）。
                 "cleanUpdateCache" -> {
                     try {

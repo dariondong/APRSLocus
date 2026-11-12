@@ -4523,5 +4523,8 @@
   "updatePkgActionAsk": "Ask each time",
   "updatePkgActionDelete": "Delete it",
   "updatePkgActionKeep": "Always keep",
-  "@updatePkgWelcomeTitle": {"placeholders": {"v": {"type": "String"}}}
+  "@updatePkgWelcomeTitle": {"placeholders": {"v": {"type": "String"}}},
+  "updatePkgSigChecking": "Checking the signature",
+  "updatePkgSigMismatch": "The signature does not match this device",
+  "updatePkgSigUnchecked": "Could not read the signature"
 }

@@ -10520,4 +10520,13 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get updatePkgActionKeep => "Selalu simpan";
 
+  @override
+  String get updatePkgSigChecking => "Memeriksa tanda tangan";
+
+  @override
+  String get updatePkgSigMismatch => "Tanda tangan tidak cocok dengan perangkat ini";
+
+  @override
+  String get updatePkgSigUnchecked => "Tanda tangan tidak terbaca";
+
 }

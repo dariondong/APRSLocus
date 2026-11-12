@@ -10510,4 +10510,13 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get updatePkgActionKeep => "Always keep";
 
+  @override
+  String get updatePkgSigChecking => "Checking the signature";
+
+  @override
+  String get updatePkgSigMismatch => "The signature does not match this device";
+
+  @override
+  String get updatePkgSigUnchecked => "Could not read the signature";
+
 }

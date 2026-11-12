@@ -141,13 +141,28 @@ class UpdateInstaller {
     }
   }
 
-  /// 从「下载」里点安装：原生侧会复制一份到缓存、再校一次签名，然后交给安装器。
+  /// 从「下载」里取包去装：原生侧会复制一份到缓存、再校一次签名，然后交给安装器。
   ///
   /// 返回 `ok` / `no-file` / `sig-mismatch` / `failed`。
   static Future<String> installFromDownloads(String fileName) async {
     if (!isAndroid) return 'failed';
     try {
       final r = await _ch.invokeMethod<String>('installApkFromDownloads', {
+        'name': fileName,
+      });
+      return r ?? 'failed';
+    } catch (_) {
+      return 'failed';
+    }
+  }
+
+  /// 校一下「下载」里那个包的签名（不安装、不留副本）。
+  ///
+  /// 返回 `ok` / `sig-mismatch` / `no-file` / `failed`。
+  static Future<String> verifyDownloads(String fileName) async {
+    if (!isAndroid) return 'failed';
+    try {
+      final r = await _ch.invokeMethod<String>('verifyDownloads', {
         'name': fileName,
       });
       return r ?? 'failed';

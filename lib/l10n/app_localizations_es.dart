@@ -10569,4 +10569,13 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get updatePkgActionKeep => "Conservar siempre";
 
+  @override
+  String get updatePkgSigChecking => "Comprobando la firma";
+
+  @override
+  String get updatePkgSigMismatch => "La firma no coincide con este dispositivo";
+
+  @override
+  String get updatePkgSigUnchecked => "No se pudo leer la firma";
+
 }

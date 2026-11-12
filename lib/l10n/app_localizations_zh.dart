@@ -10131,6 +10131,15 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String get updatePkgActionKeep => "一直保留";
 
+  @override
+  String get updatePkgSigChecking => "正在校验签名";
+
+  @override
+  String get updatePkgSigMismatch => "签名与本机不一致";
+
+  @override
+  String get updatePkgSigUnchecked => "读不出签名";
+
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
@@ -20258,5 +20267,14 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get updatePkgActionKeep => "一直保留";
+
+  @override
+  String get updatePkgSigChecking => "正在校驗簽名";
+
+  @override
+  String get updatePkgSigMismatch => "簽名與本機不一致";
+
+  @override
+  String get updatePkgSigUnchecked => "讀不出簽名";
 
 }

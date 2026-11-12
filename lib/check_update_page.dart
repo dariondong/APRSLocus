@@ -226,6 +226,14 @@ class _CheckUpdatePageState extends State<CheckUpdatePage>
 
   String? get _downloadedTag => _pkg?.tag;
 
+  /// 已下载那个包的签名校验结果：`checking` / `ok` / `sig-mismatch` /
+  /// `no-file` / `failed`。null = 还没查（桌面端没有可校验的签名）。
+  String? _sigState;
+
+  /// [_sigState] 是哪个包的结论（同名包在一页里只查一次，
+  /// 安卓每查一次要把包复制到缓存再读证书，别每帧都来一遍）。
+  String? _sigFor;
+
   /// 两个 tag 是否指向**同一版本**（比较时忽略开头的 `v`）。
   ///
   /// 为什么不能直接比字符串：下载卡片里的 tag 是从**文件名**
@@ -344,6 +352,37 @@ class _CheckUpdatePageState extends State<CheckUpdatePage>
     _localPackages = list;
     _pkg = list.isEmpty ? null : list.first;
     if (mounted) setState(() {});
+    unawaited(_checkSignature());
+  }
+
+  /// 查一次已下载那个包的签名。
+  ///
+  /// 安卓拿不到公共「下载」目录里的文件路径（scoped storage），所以这一步由原生
+  /// 复制一份到缓存、读证书、再删掉副本；桌面上没有可校验的签名，直接留空。
+  Future<void> _checkSignature() async {
+    final p = _pkg;
+    if (p == null) {
+      if (mounted && _sigState != null) setState(() => _sigState = null);
+      return;
+    }
+    if (!UpdateInstaller.isAndroid) {
+      if (mounted && _sigState != null) setState(() => _sigState = null);
+      return;
+    }
+    if (_sigFor == p.name && _sigState != null && _sigState != 'checking') return;
+    final name = p.name;
+    _sigFor = name;
+    if (mounted) setState(() => _sigState = 'checking');
+    String r;
+    final path = p.path;
+    if (path != null) {
+      final t = await UpdateInstaller.verify(path);
+      r = t == ApkTrust.ok ? 'ok' : (t == ApkTrust.mismatch ? 'sig-mismatch' : 'failed');
+    } else {
+      r = await UpdateInstaller.verifyDownloads(name);
+    }
+    if (!mounted || _pkg?.name != name) return;
+    setState(() => _sigState = r);
   }
 
   /// 下载器落盘的目录。
@@ -1673,6 +1712,27 @@ class _CheckUpdatePageState extends State<CheckUpdatePage>
     );
   }
 
+  IconData get _sigIcon => switch (_sigState) {
+        'ok' => Icons.verified_user_outlined,
+        'sig-mismatch' => Icons.gpp_bad_outlined,
+        'checking' => Icons.hourglass_empty_rounded,
+        _ => Icons.help_outline_rounded,
+      };
+
+  Color get _sigColor => switch (_sigState) {
+        'ok' => C.green,
+        'sig-mismatch' => C.red,
+        'checking' => C.grey,
+        _ => C.grey,
+      };
+
+  String get _sigLabel => switch (_sigState) {
+        'ok' => S.of(context).updatePkgSigOk,
+        'sig-mismatch' => S.of(context).updatePkgSigMismatch,
+        'checking' => S.of(context).updatePkgSigChecking,
+        _ => S.of(context).updatePkgSigUnchecked,
+      };
+
   Widget _downloadedCard(bool isWin) {
     final p = _pkg!;
     return Container(
@@ -1730,15 +1790,23 @@ class _CheckUpdatePageState extends State<CheckUpdatePage>
               overflow: TextOverflow.ellipsis,
             ),
           ),
-          // 安卓的包在下载时就校过签名（见 lib/update_install.dart）：
-          // 这一行是**结果**，不是提示 —— 校验没过的包不会留在这里。
+          // 签名校验：这一行是**这一页自己查出来的结果**，不是一句固定话。
+          // 下载时会查一次（对不上直接删），这里再查是为了「从别处放进来的包」
+          // 也能看出真假 —— 装的时候原生侧还会照这张证书再校一遍。
           if (!isWin) ...[
             SizedBox(height: 8),
             Row(
               children: [
-                Icon(Icons.verified_user_outlined, size: 13, color: C.green),
-                SizedBox(width: 4),
-                Text(S.of(context).updatePkgSigOk, style: ts(11, c: C.green)),
+                if (_sigState == 'checking')
+                  const SizedBox(
+                    width: 12,
+                    height: 12,
+                    child: CircularProgressIndicator(strokeWidth: 1.6),
+                  )
+                else
+                  Icon(_sigIcon, size: 13, color: _sigColor),
+                const SizedBox(width: 4),
+                Text(_sigLabel, style: ts(11, c: _sigColor)),
               ],
             ),
           ],
