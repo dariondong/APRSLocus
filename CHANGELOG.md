@@ -1,5 +1,24 @@
 # 更新日志
 
+## [2.1.44] - 2026-11-12
+
+### 安全
+
+- 供应链事件已审计完成：注入的构建流程一次也没有执行过，构建阶段注入的密钥没有被读取。
+- 已更换 Android 签名证书并重新构建，旧签名作废。
+- **签名换了，旧版本不能覆盖安装，需要先卸载再装这一版。** 卸载前请先导出备份。
+
+## [2.1.44] - 2026-11-12 (English)
+
+### Security
+
+- The supply-chain incident has been fully audited: the injected build pipeline never executed, and
+  no build-time secret was ever read.
+- The Android signing certificate has been replaced and the app rebuilt; the old signature is
+  retired.
+- **Because the signing key changed, this build cannot be installed over an older one. Uninstall the
+  old version first - export a backup before you do.**
+
 ## [2.1.43] - 2026-11-06
 
 ### 云同步

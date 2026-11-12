@@ -231,18 +231,22 @@ html{overflow-x:hidden}
       </header>
 
       <div class="announce-body">
-        <p>2026 年 11 月 12 日，APRSLocus 的 GitHub 倉庫出現異常提交，建置流程被整體改寫。稽核完成並重新發布可信版本之前，請暫停更新、下載與安裝。</p>
-        <p><b>公告級別：緊急 · 最後更新 2026 年 11 月 12 日 14:50</b></p>
-        <p><b>一、發生了什麼</b></p>
-        <ul class="announce-list"><li>2026 年 11 月 12 日 05:58（UTC），倉庫出現一條署名陌生的提交，把建置流程換成對外回傳資料的程式。</li><li>同樣一手也進了 carbide-shell 倉庫。</li><li>這類改動落在 CI 上，建置時注入的金鑰按已洩漏處理。</li></ul>
-        <p><b>二、請立即做到</b></p>
-        <ul class="announce-list"><li>停止更新，不要更新 APRSLocus 的任何新版本。</li><li>停止下載，GitHub、鏡像站、網盤、群檔案都不要再取新的安裝包。</li><li>已下載但未安裝的安裝包不要執行，刪除或隔離。</li><li>已安裝的裝置先備份重要資料，再用可信的安全軟體全機掃描，有條件就斷網隔離。</li><li>不要安裝第三方補丁，非官方轉發的 APK、EXE、壓縮檔一律不要。</li><li>發現異常程序或異常連網，保留紀錄，到 Issues 回報。</li></ul>
-        <p><b>三、目前範圍</b></p>
-        <ul class="announce-list"><li>現有發佈包都在這些提交之前建置，注入之後沒有建置過新的發佈包。</li><li>建置與簽章用的金鑰已經暴露，日後出現冒名安裝包是可能的。</li><li>稽核完成前，任何新版本都不按可信處理。</li></ul>
+        <p>2026 年 11 月 12 日的異常提交已稽核完畢。結論是：被注入的建置流程一次也沒有執行，建置階段注入的金鑰沒有被讀取。v2.1.44 已用<b>全新簽章憑證</b>重新建置，可以恢復更新。</p>
+        <p><b>公告級別：已解除 · 最後更新 2026 年 11 月 12 日 18:20</b></p>
+        <p><b>一、稽核結論</b></p>
+        <ul class="announce-list"><li>注入的建置流程由 v* 標籤觸發。兩次注入各只存在約 48 秒即被一條 ci: restore 撤回，期間沒有任何一次建置被它觸發。</li><li>因此建置階段注入的金鑰（含簽章憑證、物件儲存金鑰）從未被讀取，先前公告中「金鑰已暴露」的判斷不成立。</li><li>異常提交與誘餌 PR 現均已清除，倉庫內無殘留檔案，工作流程與注入前逐位元組一致。</li></ul>
+        <p><b>二、這一版必須解除安裝重裝</b></p>
+        <ul class="announce-list"><li>出於謹慎，簽章憑證仍按「可能已洩露」處理，已整體更換並重新簽發。</li><li><b>簽章換了，安裝包不能覆蓋安裝。</b> 請先匯出備份，再解除安裝舊版，然後安裝 v2.1.44。</li><li>新簽章的 SHA-1 與 SHA-256 見下方，可自行核對。</li></ul>
+        <p><b>三、發布包與校驗</b></p>
+        <ul class="announce-list"><li>v2.1.44 及以後的安裝包都由新憑證簽章。</li><li>官網與 GitHub Releases 上的 SHA-256 請以官方管道為準。</li></ul>
+        <p><b>新簽章憑證指紋</b></p>
+        <p>SHA-1:   BE:7C:EC:BA:1C:8F:9B:78:64:9A:2E:03:5C:D7:62:9E:BA:B1:4A:0C</p>
+        <p>SHA-256: 0F:2C:52:7A:9C:D6:6A:43:A8:71:F3:51:92:C7:5C:B7:5F:C1:B8:5B:6F:63:BA:45:8C:B5:A9:82:0A:2E:38:8A</p>
+        <ul class="announce-list"><li>舊版本（v2.1.43 及更早）的簽章已作廢，日後出現舊簽章的「新版本」一律視為偽造。</li></ul>
         <p><b>四、官方不會做的事</b></p>
         <ul class="announce-list"><li>不會透過任何管道索取密碼、驗證碼。</li><li>不會要求遠端控制你的裝置。</li></ul>
         <p><b>五、管道</b></p>
-        <ul class="announce-list"><li>網站：<a href="https://aprslocus.theez.top" target="_blank" rel="noopener">aprslocus.theez.top</a></li><li>回報與檢舉：<a href="https://github.com/dariondong/APRSLocus/issues" target="_blank" rel="noopener">GitHub Issues</a></li><li>可信版本與校驗值只以官方管道為準，未經證實的安裝包與補丁不要轉發。</li></ul>
+        <ul class="announce-list"><li>網站：<a href="https://aprslocus.theez.top" target="_blank" rel="noopener">aprslocus.theez.top</a></li><li>回饋與檢舉：<a href="https://github.com/dariondong/APRSLocus/issues" target="_blank" rel="noopener">GitHub Issues</a></li><li>可信版本與校驗值只以官方管道為準，未經證實的安裝包與補丁不要轉發。</li></ul>
       </div>
 
       <div class="announce-actions">

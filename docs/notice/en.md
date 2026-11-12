@@ -1,40 +1,42 @@
-# Security notice: stop updating and downloading
+# Audit complete: updates resumed (v2.1.44)
 
-On 12 November 2026 an unauthorised commit landed in the APRSLocus GitHub repository and rewrote the build pipeline. Please stop updating, downloading and installing until the audit is finished and a trusted build is published.
+The unauthorised commits of 12 November 2026 have been fully audited. Result: the injected build pipeline never executed, and no build-time secret was ever read. v2.1.44 has been rebuilt with a **new signing certificate**, and updates can resume.
 
-**Severity: urgent · Last updated 12 November 2026, 14:50 (UTC+8)**
+**Severity: resolved · Last updated 12 November 2026, 18:20 (UTC+8)**
 
-## 1. What happened
+## 1. Audit result
 
-- At 05:58 UTC on 12 November 2026 a commit from an unfamiliar identity replaced the build workflow with a program that sends data out.
-- The same handiwork reached the carbide-shell repository.
-- The change ran inside CI, so the keys used at build time are treated as leaked.
+- The injected pipeline was triggered by v* tags. Each injection existed for only about 48 seconds before a ci: restore commit reverted it, and no build was ever triggered by it.
+- Build-time secrets (the signing certificate and the object-storage keys) were therefore never read. The earlier statement that the signing keys had been exposed was incorrect.
+- The unauthorised commits and decoy pull requests are gone; no leftover files remain, and the workflows are byte-identical to their pre-incident state.
 
-## 2. Do this now
+## 2. This build requires a clean install
 
-- Stop updating. Do not update to any new APRSLocus version.
-- Stop downloading. Do not take new packages from GitHub, mirrors, file hosts or group chats.
-- A package you downloaded but did not install: do not run it, delete it or isolate it.
-- On an installed device, back up important data and run a full scan with trusted security software. Cut the network if you can.
-- Do not install third-party patches. Unofficial APKs, EXEs and archives are out of the question.
-- If you see an odd process or odd traffic, keep the logs and report it in Issues.
+- Out of caution the signing certificate is still treated as potentially compromised, so it has been replaced and reissued.
+- **The signature changed, so this build cannot be installed over an older one.** Export a backup, uninstall the old version, then install v2.1.44.
+- The new certificate's SHA-1 and SHA-256 are listed below for you to verify.
 
-## 3. What we know so far
+## 3. Releases and verification
 
-- Existing packages were built before these commits; no release was built after the injection.
-- The build and signing keys were exposed, so a package claiming to be APRSLocus could be forged later.
-- Until the audit is done, no new version is treated as trusted.
+- v2.1.44 and later are signed with the new certificate.
+- Use only the SHA-256 values published on the official site and GitHub Releases.
+**New signing certificate fingerprints**
+
+SHA-1:   BE:7C:EC:BA:1C:8F:9B:78:64:9A:2E:03:5C:D7:62:9E:BA:B1:4A:0C
+SHA-256: 0F:2C:52:7A:9C:D6:6A:43:A8:71:F3:51:92:C7:5C:B7:5F:C1:B8:5B:6F:63:BA:45:8C:B5:A9:82:0A:2E:38:8A
+
+- The old signature (v2.1.43 and earlier) is retired. Any future "new version" carrying the old signature should be treated as forged.
 
 ## 4. What we will never do
 
-- We will not ask for your password or verification code on any channel.
-- We will not ask you to hand over remote control of your device.
+- We will never ask for your password or verification code through any channel.
+- We will never ask to remotely control your device.
 
-## 5. Where to look
+## 5. Channels
 
-- Site: [aprslocus.theez.top](https://aprslocus.theez.top)
-- Report: [GitHub Issues](https://github.com/dariondong/APRSLocus/issues)
-- Trusted versions and checksums come from official channels only. Do not forward unverified packages or patches.
+- Website: [aprslocus.theez.top](https://aprslocus.theez.top)
+- Feedback and reports: [GitHub Issues](https://github.com/dariondong/APRSLocus/issues)
+- Trusted builds and checksums come from official channels only. Do not forward unverified packages or patches.
 
 ---
 

@@ -229,18 +229,22 @@ html{overflow-x:hidden}
       </header>
 
       <div class="announce-body">
-        <p>On 12 November 2026 an unauthorised commit landed in the APRSLocus GitHub repository and rewrote the build pipeline. Please stop updating, downloading and installing until the audit is finished and a trusted build is published.</p>
-        <p><b>Severity: urgent · Last updated 12 November 2026, 14:50 (UTC+8)</b></p>
-        <p><b>1. What happened</b></p>
-        <ul class="announce-list"><li>At 05:58 UTC on 12 November 2026 a commit from an unfamiliar identity replaced the build workflow with a program that sends data out.</li><li>The same handiwork reached the carbide-shell repository.</li><li>The change ran inside CI, so the keys used at build time are treated as leaked.</li></ul>
-        <p><b>2. Do this now</b></p>
-        <ul class="announce-list"><li>Stop updating. Do not update to any new APRSLocus version.</li><li>Stop downloading. Do not take new packages from GitHub, mirrors, file hosts or group chats.</li><li>A package you downloaded but did not install: do not run it, delete it or isolate it.</li><li>On an installed device, back up important data and run a full scan with trusted security software. Cut the network if you can.</li><li>Do not install third-party patches. Unofficial APKs, EXEs and archives are out of the question.</li><li>If you see an odd process or odd traffic, keep the logs and report it in Issues.</li></ul>
-        <p><b>3. What we know so far</b></p>
-        <ul class="announce-list"><li>Existing packages were built before these commits; no release was built after the injection.</li><li>The build and signing keys were exposed, so a package claiming to be APRSLocus could be forged later.</li><li>Until the audit is done, no new version is treated as trusted.</li></ul>
+        <p>The unauthorised commits of 12 November 2026 have been fully audited. Result: the injected build pipeline never executed, and no build-time secret was ever read. v2.1.44 has been rebuilt with a <b>new signing certificate</b>, and updates can resume.</p>
+        <p><b>Severity: resolved · Last updated 12 November 2026, 18:20 (UTC+8)</b></p>
+        <p><b>1. Audit result</b></p>
+        <ul class="announce-list"><li>The injected pipeline was triggered by v* tags. Each injection existed for only about 48 seconds before a ci: restore commit reverted it, and no build was ever triggered by it.</li><li>Build-time secrets (the signing certificate and the object-storage keys) were therefore never read. The earlier statement that the signing keys had been exposed was incorrect.</li><li>The unauthorised commits and decoy pull requests are gone; no leftover files remain, and the workflows are byte-identical to their pre-incident state.</li></ul>
+        <p><b>2. This build requires a clean install</b></p>
+        <ul class="announce-list"><li>Out of caution the signing certificate is still treated as potentially compromised, so it has been replaced and reissued.</li><li><b>The signature changed, so this build cannot be installed over an older one.</b> Export a backup, uninstall the old version, then install v2.1.44.</li><li>The new certificate's SHA-1 and SHA-256 are listed below for you to verify.</li></ul>
+        <p><b>3. Releases and verification</b></p>
+        <ul class="announce-list"><li>v2.1.44 and later are signed with the new certificate.</li><li>Use only the SHA-256 values published on the official site and GitHub Releases.</li></ul>
+        <p><b>New signing certificate fingerprints</b></p>
+        <p>SHA-1:   BE:7C:EC:BA:1C:8F:9B:78:64:9A:2E:03:5C:D7:62:9E:BA:B1:4A:0C</p>
+        <p>SHA-256: 0F:2C:52:7A:9C:D6:6A:43:A8:71:F3:51:92:C7:5C:B7:5F:C1:B8:5B:6F:63:BA:45:8C:B5:A9:82:0A:2E:38:8A</p>
+        <ul class="announce-list"><li>The old signature (v2.1.43 and earlier) is retired. Any future "new version" carrying the old signature should be treated as forged.</li></ul>
         <p><b>4. What we will never do</b></p>
-        <ul class="announce-list"><li>We will not ask for your password or verification code on any channel.</li><li>We will not ask you to hand over remote control of your device.</li></ul>
-        <p><b>5. Where to look</b></p>
-        <ul class="announce-list"><li>Site: <a href="https://aprslocus.theez.top" target="_blank" rel="noopener">aprslocus.theez.top</a></li><li>Report: <a href="https://github.com/dariondong/APRSLocus/issues" target="_blank" rel="noopener">GitHub Issues</a></li><li>Trusted versions and checksums come from official channels only. Do not forward unverified packages or patches.</li></ul>
+        <ul class="announce-list"><li>We will never ask for your password or verification code through any channel.</li><li>We will never ask to remotely control your device.</li></ul>
+        <p><b>5. Channels</b></p>
+        <ul class="announce-list"><li>Website: <a href="https://aprslocus.theez.top" target="_blank" rel="noopener">aprslocus.theez.top</a></li><li>Feedback and reports: <a href="https://github.com/dariondong/APRSLocus/issues" target="_blank" rel="noopener">GitHub Issues</a></li><li>Trusted builds and checksums come from official channels only. Do not forward unverified packages or patches.</li></ul>
       </div>
 
       <div class="announce-actions">
