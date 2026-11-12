@@ -7,6 +7,15 @@
 - 「设置 → 服务器 → APRSNETCN」多了 HTTP 端口一格，默认 8899。
 - 24 小时台站与云同步按这一格连，服务器把 HTTP 开在别的端口上也能用。
 
+### 同步
+
+- 云端把历史轨迹全部留下，不再只留一年。
+- 换一台机器登录后，云端每一天的轨迹都会拉回来。
+
+### 引导
+
+- 首次引导第 3 步的「从备份恢复」按钮点不动，现在能用了。
+
 ## [2.2.1] - 2026-11-12 (English)
 
 ### Server
@@ -14,6 +23,15 @@
 - Settings → Server → APRSNETCN has an HTTP port field, 8899 by default.
 - The 24-hour station list and cloud sync connect on that port, so a server that runs HTTP
   somewhere else works too.
+
+### Sync
+
+- The cloud keeps every day of track history, not just the last year.
+- After signing in on another device, every cloud day of track history is pulled back.
+
+### Setup
+
+- The "restore from backup" button on step 3 of the first-run guide was dead; it works now.
 
 ## [2.2.0] - 2026-11-12
 

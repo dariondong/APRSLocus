@@ -429,6 +429,16 @@ CL = [
              T('24 小时台站与云同步按这一格连。',
                '24 小時台站與雲端同步按這一格連。',
                'The 24-hour station list and cloud sync connect on that port.')),
+            ('fix',
+             T('云端把历史轨迹全部留下，换一台机器登录后能拉回每一天。',
+               '雲端把歷史軌跡全部留下，換一台機器登入後能拉回每一天。',
+               'The cloud keeps every day of track history, and another device pulls '
+               'all of it back.')),
+            ('fix',
+             T('首次引导第 3 步的「从备份恢复」按钮点不动，现在能用了。',
+               '首次引導第 3 步的「從備份恢復」按鈕點不動，現在能用了。',
+               'The restore-from-backup button on step 3 of the first-run guide was dead; '
+               'it works now.')),
         ],
     },
     {
