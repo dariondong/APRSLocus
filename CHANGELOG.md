@@ -11,12 +11,14 @@
 
 - 数据上限搬到 设置 → 数据 的最上面。
 - 装上新版的第一屏会列出这一版改了什么。
+- 欢迎与「安装包要不要留」分成两步问，各自只问一次。
 
 ### 修复
 
 - 更新页会联网核对安装包：版本号、仓库里那份的摘要、签名，三道都对上才算通过。
 - 没联网时更新页写「没有联网，无法校验版本号是否一致」。
 - 这条渠道本来就没有摘要可查时，更新页说的是查不到，不再当成没联网。
+- 无法校验（没联网或查不到摘要）时，安装前要你再确认一次。
 
 ## [2.2.5] - 2026-11-13 (English)
 
@@ -31,6 +33,7 @@
 
 - Data limits now sit at the top of Settings → Data.
 - The first screen after an update lists what changed in this version.
+- The welcome step and the "keep the installer?" question are separate, each asked once.
 
 ### Fixed
 
@@ -39,40 +42,7 @@
 - Offline, the update page says it cannot verify the version.
 - When the channel has no digest at all, the page says it cannot find it instead of blaming the
   network.
-
-## [2.2.4] - 2026-11-12
-
-### 新增
-
-- 设置 → 服务器 的过滤范围多了一个按钮，点一下就把过滤中心设成你现在的位置。
-
-### 调整
-
-- 数据上限搬到 设置 → 数据 的最上面。
-- 装上新版的第一屏会列出这一版改了什么。
-
-### 修复
-
-- 更新页会联网核对安装包：版本号、仓库里那份的摘要、签名，三道都对上才算通过。
-- 没联网时更新页写「没有联网，无法校验版本号是否一致」。
-
-## [2.2.4] - 2026-11-12 (English)
-
-### Added
-
-- The receive range on Settings → Server has a button that puts the filter centre on where you
-  are now.
-
-### Changed
-
-- Data limits now sit at the top of Settings → Data.
-- The first screen after an update lists what changed in this version.
-
-### Fixed
-
-- The update page checks the package online: version, the digest published with the release, and
-  the signature — all three must match.
-- Offline, the update page says it cannot verify the version.
+- When the package cannot be verified, installing asks you to confirm first.
 
 ## [2.2.3] - 2026-11-12
 

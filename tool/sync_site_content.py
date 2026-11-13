@@ -421,6 +421,14 @@ CL = [
     {
         'ver': 'v2.2.5', 'date': '2026-11-13',
         'items': [
+            ('up',
+             T('欢迎与「安装包要不要留」分成两步问。',
+               '歡迎與「安裝包要不要留」分成兩步問。',
+               'The welcome step and the installer question are separate.')),
+            ('fix',
+             T('无法校验安装包时，安装前要你再确认一次。',
+               '無法校驗安裝包時，安裝前要你再確認一次。',
+               'When the package cannot be verified, installing asks you to confirm first.')),
             ('new',
              T('打开应用时可能整页弹出一条强提醒，内容由官网下发。',
                '打開應用時可能整頁彈出一條強提醒，內容由官網下發。',
