@@ -589,6 +589,9 @@ jobs:
       - name: Test install mark
         run: flutter test test/install_mark_test.dart
 
+      - name: Test embed box
+        run: flutter test test/embed_box_test.dart
+
       - name: Analyze (tolerate known vector_map false positive)
         shell: bash
         run: |

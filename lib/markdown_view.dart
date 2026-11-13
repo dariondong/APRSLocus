@@ -487,36 +487,58 @@ Future<void> openExternal(BuildContext context, String url) async {
 ///
 /// 所以这里先认「它是什么形状」，再按真实宽度等比缩。宽度有上限、高度有上下限：
 /// 手机竖屏拿到的是贴着屏宽的一块，平板 / 横屏不会被拉成巨幕，也不会缩成一条缝。
+/// 内嵌块的尺寸规则（纯计算，`test/embed_box_test.dart` 钉着）。
+///
+/// 三种块各有自己的形状，套进同一个框里就难看：
+/// * 视频（B 站等）是 16:9；
+/// * 网易云外链播放器本来就是 330×86 的一条；
+/// * OA 活动小件（`aprsnet.cn/oa/embed.html`）是**高度驱动**的一条横条，
+///   148 是它设计好的单带高度，套进 16:9 会变成一块带黑边的空屏。
+class EmbedSize {
+  final double width;
+  final double height;
+  const EmbedSize(this.width, this.height);
+}
+
+/// 视频宽高比
+const double kEmbedVideoW = 16, kEmbedVideoH = 9;
+
+/// 网易云外链播放器
+const double kEmbedAudioW = 330, kEmbedAudioH = 86;
+
+/// OA 活动小件的单带高度
+const double kEmbedOaH = 148;
+
+/// 最宽铺到多少。超过就是一块巨幕了（横屏 / 平板）
+const double kEmbedMaxW = 560;
+
+EmbedSize embedSize(String url, double avail) {
+  final u = url.toLowerCase();
+  final width = math.min(avail, kEmbedMaxW);
+  // OA 小件：宽度照常铺，高度按它自己的设计给固定值
+  if (u.contains('aprsnet.cn/oa/embed')) return EmbedSize(width, kEmbedOaH);
+  final audio = u.contains('music.163.com/outchain/player');
+  final rw = audio ? kEmbedAudioW : kEmbedVideoW;
+  final rh = audio ? kEmbedAudioH : kEmbedVideoH;
+  // 下限 72：横条在窄屏上不会被压成两条线
+  return EmbedSize(width, (width * rh / rw).clamp(72.0, 420.0));
+}
+
 class _Embed extends StatelessWidget {
   final String url;
   const _Embed(this.url);
 
-  /// 视频（B 站等）：16:9
-  static const double _videoW = 16, _videoH = 9;
-
-  /// 网易云外链播放器：330×86
-  static const double _audioW = 330, _audioH = 86;
-
-  /// 最宽铺到多少。超过就是一块巨幕了（横屏 / 平板）
-  static const double _maxW = 560;
-
   @override
   Widget build(BuildContext context) {
-    final u = url.toLowerCase();
-    final audio = u.contains('music.163.com/outchain/player');
-    final rw = audio ? _audioW : _videoW;
-    final rh = audio ? _audioH : _videoH;
     return LayoutBuilder(builder: (context, c) {
       // 宽度拿不到（无约束的 Column 里）时按手机常见的屏宽先算
       final avail = c.maxWidth.isFinite && c.maxWidth > 0 ? c.maxWidth : 320.0;
-      final width = math.min(avail, _maxW);
-      // 下限 72：横条在窄屏上不会被压成两条线
-      final height = (width * rh / rw).clamp(72.0, 420.0);
+      final s = embedSize(url, avail);
       return Align(
         alignment: Alignment.centerLeft,
         child: SizedBox(
-          width: width,
-          child: WebEmbed(url: url, height: height),
+          width: s.width,
+          child: WebEmbed(url: url, height: s.height),
         ),
       );
     });
