@@ -269,14 +269,13 @@ The fault was ours. Sorry for the trouble.
 
 ---
 
-## 🔔 What is new: 2.2.7
+## 🔔 What is new: 2.2.8
 
-- A strong notice can fill the screen when you open the app; its text comes from the official site, so a wording change needs no new version.
-- The receive range on Settings → Server has a button that puts the filter centre on where you are now.
-- Data limits now sit at the top of Settings → Data.
-- The update page checks a package online: version, the digest published with the release and the signature, all three must match.
-- When that check cannot be done, installing asks you to confirm first, and offline it says so plainly.
-- The first screen after an update lists what changed; the installer question is asked separately.
+- The online check no longer looks only at the selected channel: when a mirror has no digest, the official repository is asked, so it no longer always fails.
+- Release notes now list the SHA-256 of every package, so mirror channels can be checked too.
+- On a digest mismatch the row shows the first characters of both digests.
+- When the package cannot be read, the row says so instead of blaming the signature.
+- The result goes into the log, so you can see which step failed.
 
 ---
 
@@ -294,9 +293,9 @@ Look up APALOC in the official TOCALL table and you will find it.
 
 The 2.2.0 build published on the Qingling (清零) channel by mistake has been taken down, and the channel works normally again.
 
-Checking for updates now returns the latest stable version, 2.2.7. If you installed 2.2.0, uninstall it first, then install 2.2.7.
+Checking for updates now returns the latest stable version, 2.2.8. If you installed 2.2.0, uninstall it first, then install 2.2.8.
 
-**[Download 2.2.7](https://github.com/dariondong/APRSLocus/releases/download/v2.2.7/APRSLocus_2.2.7.apk)**
+**[Download 2.2.8](https://github.com/dariondong/APRSLocus/releases/download/v2.2.8/APRSLocus_2.2.8.apk)**
 
 ---
 
