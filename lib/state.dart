@@ -4957,7 +4957,10 @@ class AppState extends ChangeNotifier {
   String strongNoticeSeen = '';
   bool _strongNoticeFetched = false;
 
-  static const int strongNoticeTtlMs = 6 * 60 * 60 * 1000;
+  /// 同一会话里重拉的间隔。以前是 6 小时 —— 改一句话要等到第二天才生效，
+  /// 用户反馈「只在安装时弹一次，内容更新了不触发」。这份文件只有几 KB，
+  /// 10 分钟一档不贵；冷启动那一次不管多久都重拉（见 refreshStrongNotice）。
+  static const int strongNoticeTtlMs = 10 * 60 * 1000;
 
   Set<String> get strongNoticeSeenIds => strongNoticeSeen.isEmpty
       ? const <String>{}
@@ -4974,17 +4977,17 @@ class AppState extends ChangeNotifier {
     if (n == null) return null;
     // 本次已弹过：`every` 的意思是「每次打开弹一次」，
     // 不是「每一次重建都弹」。
-    if (_strongNoticeShownNow.contains(n.id)) return null;
+    if (_strongNoticeShownNow.contains(n.key)) return null;
     return n;
   }
 
   /// 用户关掉了这一条：记下来，默认同一条不再弹（`every` 除外）。
   void dismissStrongNotice(StrongNotice n) {
     if (n.id.isEmpty) return;
-    _strongNoticeShownNow.add(n.id);
+    _strongNoticeShownNow.add(n.key);
     final ids = strongNoticeSeenIds.toList();
-    if (!ids.contains(n.id)) {
-      ids.add(n.id);
+    if (!ids.contains(n.key)) {
+      ids.add(n.key);
       while (ids.length > 20) {
         ids.removeAt(0);
       }
@@ -5000,7 +5003,10 @@ class AppState extends ChangeNotifier {
   /// 上次那份好的—— 官网写崩了不该把用户手里那份好的盖掉。
   Future<void> refreshStrongNotice({bool force = false}) async {
     final now = DateTime.now().millisecondsSinceEpoch;
+    // 每次冷启动必拉一次（这一会话还没拉过），否则上一次的时间戳会把
+    // 新内容挡在门外—— 旧版就是这一条把「每次打开都拉」变成了「六小时拉一次」。
     if (!force &&
+        _strongNoticeFetched &&
         strongNoticeAt > 0 &&
         now - strongNoticeAt < strongNoticeTtlMs) {
       return;

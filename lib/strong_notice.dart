@@ -75,11 +75,25 @@ class StrongNotice {
   /// 多久重新拉一次（同一会话内节流；换一次启动必拉）。
   static const Duration refresh = Duration(hours: 6);
 
+  /// 弹过没弹过看的是这个键：**id + 正文指纹**。
+  ///
+  /// 只用 id 做键的毛病：同一条改了两句话（还是同一个 id），已经弹过的人
+  /// 就永远看不到新内容了 —— 用户反馈「内容更新了不触发」就是这个。
+  /// 现在正文一改，键就变，当成一条新的弹一次。
+  String get key {
+    final raw = '$id\u0001$title\u0001$subtitle\u0001$body';
+    var h = 0;
+    for (final c in raw.codeUnits) {
+      h = (h * 31 + c) & 0x7FFFFFFF;
+    }
+    return '$id@${h.toRadixString(16).padLeft(8, '0')}';
+  }
+
   /// 这次该不该弹：过期的不弹，弹过的不弹（`every` 除外）。
   bool worthShowing(Set<String> seen, {DateTime? now}) {
     if (id.isEmpty || title.trim().isEmpty || body.trim().isEmpty) return false;
     if (_expired(now ?? DateTime.now())) return false;
-    if (!every && seen.contains(id)) return false;
+    if (!every && seen.contains(key)) return false;
     return true;
   }
 

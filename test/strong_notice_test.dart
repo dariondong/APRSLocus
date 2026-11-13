@@ -78,10 +78,26 @@ void main() {
 
   test('弹过的不再弹，every 的那条每次都弹', () {
     final now = DateTime.utc(2026, 11, 20, 4); // 北京时间 12:00
+    final a = StrongNotice.parseAll(_json, 'zh').first;
+    final b = StrongNotice.parseAll(_json, 'zh').last;
     expect(StrongNotice.pick(_json, 'zh', {}, now: now)?.id, 'a');
-    expect(StrongNotice.pick(_json, 'zh', {'a'}, now: now)?.id, 'b');
+    expect(StrongNotice.pick(_json, 'zh', {a.key}, now: now)?.id, 'b');
     // b 是 every：弹过也照弹
-    expect(StrongNotice.pick(_json, 'zh', {'a', 'b'}, now: now)?.id, 'b');
+    expect(StrongNotice.pick(_json, 'zh', {a.key, b.key}, now: now)?.id, 'b');
+  });
+
+  test('同一个 id 改了正文，就算新的一条（用户反馈「内容更新了不触发」）', () {
+    StrongNotice one(String body) => StrongNotice.parseAll(
+          '{"items":[{"id":"x","title":"恢复更新","body":"$body"}]}',
+          'zh',
+        ).single;
+    final before = one('审计完毕。');
+    final after = one('审计完毕。可以恢复更新。');
+    expect(before.key == after.key, isFalse);
+    // 看过旧那份的人，新那份会再弹一次
+    expect(after.worthShowing({before.key}), isTrue);
+    // 完全不变的话不弹
+    expect(after.worthShowing({after.key}), isFalse);
   });
 
   test('过了 until 那天就不再弹（按北京时间）', () {

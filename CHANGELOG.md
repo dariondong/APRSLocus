@@ -6,12 +6,23 @@
 
 - 强提醒的正文有了小标题与条目，证书指纹用等宽字排，能一个字符一个字符对着核。
 
+### 修复
+
+- 强提醒每次打开应用都重新去官网拉一次，内容改了下一次打开就生效（以前要等六小时）。
+- 同一条改了文字会重新弹一次，不会因为「弹过」就再也看不到新内容。
+
 ## [2.2.7] - 2026-11-13 (English)
 
 ### Changed
 
 - A strong notice body now has headings and list rows, and certificate fingerprints are set in a
   monospaced block so they can be checked character by character.
+
+### Fixed
+
+- The notice is fetched again on every launch, so an edited file takes effect next time the app
+  opens instead of after six hours.
+- Editing the text of a notice makes it pop once more instead of being suppressed as seen.
 
 ## [2.2.6] - 2026-11-13
 
