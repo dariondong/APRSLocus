@@ -1,5 +1,29 @@
 # 更新日志
 
+## [2.2.10] - 2026-11-13
+
+### 新增
+
+- 消息底下走着倒计时的时候，点一下这条消息就取消重发。
+- 第一次连上服务器时，状态报文里带一次本机安装标识。
+
+### 调整
+
+- 更新包下载后只看本地签名，不再联网核对摘要。
+- 公告里嵌的 APRSNETCN OA 小件按一条横排放。
+
+## [2.2.10] - 2026-11-13 (English)
+
+### Added
+
+- While the countdown under a message is running, tapping that message cancels the resend.
+- The first time the app connects to a server, the status frame carries this device's install mark once.
+
+### Changed
+
+- A downloaded update package is checked against the local signature only, with no online digest lookup.
+- The APRSNETCN OA card inside the announcement is laid out as one horizontal band.
+
 ## [2.2.9] - 2026-11-13
 
 ### 新增

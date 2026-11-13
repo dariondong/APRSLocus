@@ -419,6 +419,27 @@ CARDS = [
 # 只列「重点版本」：中间几十个纯修 bug 的版本归纳进文字说明，完整记录指向 Releases。
 CL = [
     {
+        'ver': 'v2.2.10', 'date': '2026-11-13',
+        'items': [
+            ('new',
+             T('第一次连上服务器时，状态报文里带一次本机安装标识。',
+               '第一次連上伺服器時，狀態報文裡帶一次本機安裝標識。',
+               'The first connection to a server carries the device install mark in the status frame once.')),
+            ('new',
+             T('消息底下走着倒计时的时候，点一下这条消息就取消重发。',
+               '訊息底下走著倒數的時候，點一下這條訊息就取消重發。',
+               'While the countdown runs under a message, tapping that message cancels the resend.')),
+            ('up',
+             T('更新包下载后只看本地签名，不再联网核对摘要。',
+               '更新包下載後只看本機簽章，不再連網核對摘要。',
+               'A downloaded package is checked against the local signature only, no online digest lookup.')),
+            ('up',
+             T('公告里嵌的 APRSNETCN OA 小件按一条横排放。',
+               '公告裡嵌的 APRSNETCN OA 小件按一條橫排放。',
+               'The APRSNETCN OA card in the announcement is laid out as one horizontal band.')),
+        ],
+    },
+    {
         'ver': 'v2.2.9', 'date': '2026-11-13',
         'items': [
             ('new',
