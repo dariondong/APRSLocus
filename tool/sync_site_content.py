@@ -422,9 +422,9 @@ CL = [
         'ver': 'v2.2.10', 'date': '2026-11-13',
         'items': [
             ('new',
-             T('第一次连上服务器时，状态报文里带一次本机安装标识。',
-               '第一次連上伺服器時，狀態報文裡帶一次本機安裝標識。',
-               'The first connection to a server carries the device install mark in the status frame once.')),
+             T('第一次连上服务器时，第一帧状态报文里带一次本机安装标识。',
+               '第一次連上伺服器時，第一幀狀態報文裡帶一次本機安裝標識。',
+               'The first connection to a server carries the device install mark in the first status frame once.')),
             ('new',
              T('消息底下走着倒计时的时候，点一下这条消息就取消重发。',
                '訊息底下走著倒數的時候，點一下這條訊息就取消重發。',

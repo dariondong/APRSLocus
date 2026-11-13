@@ -5,7 +5,7 @@
 ### 新增
 
 - 消息底下走着倒计时的时候，点一下这条消息就取消重发。
-- 第一次连上服务器时，状态报文里带一次本机安装标识。
+- 第一次连上服务器时，第一帧状态报文里带一次本机安装标识。
 
 ### 调整
 
@@ -17,7 +17,7 @@
 ### Added
 
 - While the countdown under a message is running, tapping that message cancels the resend.
-- The first time the app connects to a server, the status frame carries this device's install mark once.
+- The first time the app connects to a server, the first status frame carries this device's install mark once.
 
 ### Changed
 
