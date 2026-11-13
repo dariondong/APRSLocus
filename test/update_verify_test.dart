@@ -281,6 +281,51 @@ void main() {
       expect(digestFromBody('', 'a.apk'), isEmpty);
     });
 
+    test('镜像没有 /tags 路由时，从 /releases 列表里挑这一版（Qingling 就是这样）', () async {
+      final mirror = await HttpServer.bind(InternetAddress.loopbackIPv4, 0);
+      mirror.listen((req) {
+        req.response.headers.contentType = ContentType.json;
+        if (req.uri.path.endsWith('/releases')) {
+          // 列表：没有 digest 字段，但正文里有 sha256 那一行
+          req.response.write(jsonEncode([
+            {
+              'tag_name': 'v2.2.8',
+              'assets': [
+                {'name': 'APRSLocus_2.2.8.apk', 'size': 1},
+              ],
+              'body': '### 安装包 SHA-256\n\n'
+                  '- APRSLocus_2.2.8.apk sha256: '
+                  'abc1230000000000000000000000000000000000000000000000000000000abc\n',
+            },
+          ]));
+        } else {
+          req.response.statusCode = 404;
+        }
+        req.response.close();
+      });
+      final report = await verifyUpdatePackageOnline(
+        apiBase: 'http://127.0.0.1:${mirror.port}/repos',
+        // 官方仓库也指到死端口：这条用例只许靠镜像自己那份
+        officialBase: 'http://127.0.0.1:1/repos',
+        owner: 'dariondong',
+        repo: 'APRSLocus',
+        tag: '2.2.8',
+        assetName: 'APRSLocus_2.2.8.apk',
+        local: {
+          'package': 'com.aprslocus.aprslocus',
+          'versionName': '2.2.8',
+          'sig': 'SIG',
+          'sha256': 'abc1230000000000000000000000000000000000000000000000000000000abc',
+        },
+        ownSignature: 'SIG',
+        packageName: 'com.aprslocus.aprslocus',
+        userAgent: 'APRSlocus/test',
+        timeout: const Duration(seconds: 2),
+      );
+      await mirror.close(force: true);
+      expect(report.state, UpdateVerifyState.ok);
+    });
+
     test('读不出包时直接 unknown，不去联网', () async {
       final report = await verifyUpdatePackageOnline(
         apiBase: 'http://127.0.0.1:1/repos',

@@ -169,6 +169,27 @@ Future<ReleaseFetch> fetchRelease({
       // 网络层失败：继续试下一个写法（两种都失败就是没网）
     }
   }
+  // 有的镜像没有 `/releases/tags/{tag}` 这个路径（Qingling 就是这样），
+  // 但 `/releases` 列表是好的（更新页就是用它）。列表里自己挑这一版。
+  try {
+    final listUrl = '$apiBase/$owner/$repo/releases';
+    final got = await _getJson(listUrl, userAgent, timeout);
+    if (got.status > 0) reachable = true;
+    final data = got.list ?? got.json?['items'];
+    if (data is List) {
+      for (final e in data) {
+        if (e is! Map) continue;
+        final t = normalizeVersionTag((e['tag_name'] ?? '').toString());
+        if (t == want) {
+          return ReleaseFetch(
+              e.map((k, v) => MapEntry(k.toString(), v)),
+              reachable: true);
+        }
+      }
+    }
+  } catch (_) {
+    // 列表也拿不到：按「查不到」处理，外面的 reachable 会决定说不说没网
+  }
   return ReleaseFetch(null, reachable: reachable);
 }
 
@@ -196,8 +217,9 @@ class _JsonGot {
   /// 0 = 连不上（抛异常的那条路）。
   final int status;
   final Map<String, dynamic>? json;
+  final List<dynamic>? list;
 
-  const _JsonGot(this.status, this.json);
+  const _JsonGot(this.status, this.json, [this.list]);
 }
 
 Future<_JsonGot> _getJson(
@@ -217,6 +239,8 @@ Future<_JsonGot> _getJson(
       return _JsonGot(resp.statusCode,
           data.map((k, v) => MapEntry(k.toString(), v)));
     }
+    // 列表接口（`/releases`）直接返回数组，不能当成“解不出”丢掉。
+    if (data is List) return _JsonGot(resp.statusCode, null, data);
     return _JsonGot(resp.statusCode, null);
   } finally {
     client.close(force: true);
