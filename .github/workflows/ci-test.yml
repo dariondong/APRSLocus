@@ -103,6 +103,11 @@ jobs:
       - name: Check min version
         run: python3 tool/check_min_version.py
 
+      # 强提醒：也是手写 JSON，写坏在应用里**不报错**，只是「该弹不弹」或「旧公告
+      # 一直糊在人脸上」。格式、语言文案、截止日期与应用取址一起核对。
+      - name: Check strong notice
+        run: python3 tool/check_strong_notice.py
+
       # 智能体授权名单（白名单）与限制名单对称、方向相反：写坏的后果是**授权过的人
       # 被挡在门外**，或 `call` 手滑成 `*` 把智能体对**所有人**开放。这两种在应用里
       # 都不会报错，所以同样钉在这里，连"应用从哪取这份文件 / 申请邮箱"一起核对。
@@ -380,6 +385,10 @@ jobs:
       # 装完欢迎卡要用的「这一版改了什么」摘要。
       - name: Test update package verify
         run: flutter test test/update_verify_test.dart
+
+      # 强提醒的解析与「这一次该不该弹」（语言退化 / 过期 / 已弹过 / every）。
+      - name: Test strong notice
+        run: flutter test test/strong_notice_test.dart
 
       # 「高级连接通道设置」开关（用户要求「位置默认全部都发、消息保留勾选」）：
       # 关着时位置发给所有已启用且连上的可发射链路、消息那条链路不动。

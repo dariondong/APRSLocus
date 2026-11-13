@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'theme.dart';
 import 'theme_store.dart';
+import 'strong_notice_page.dart';
 import 'state.dart';
 import 'home_page.dart';
 import 'hr_alarm.dart';
@@ -505,6 +506,10 @@ class _AppState extends State<App> {
       // 智能体不对普通用户开放：签完告知还不够，本机呼号要**在官网授权名单里**。
       // 未授权时弹授权/申请页（承诺书邮寄到 AgentAllow.kApplyEmail）。
       if (_state.pendingAgentAuth) return AgentAuthPage(state: _state);
+      // 强提醒（内容由官网下发）：打开应用就整页盖住主界面，读完那一条才
+      // 放人进去。拉不到、过期、已经弹过都是 null，那就安静进主界面。
+      final sn = _state.strongNoticeNow;
+      if (sn != null) return StrongNoticePage(state: _state, notice: sn);
       // 「服务器地址没填」：点连接被拦下（见 AppState.connectBlockedNoServer）时
       // 弹一句说明 + 一键去设置（用户要求：同 Passcode 填 -1 的验证提示一样）。
       _maybePromptNoServer();

@@ -66,6 +66,7 @@ import 'theme_store.dart';
 import 'tile_cache.dart';
 import 'ble_hr.dart';
 import 'blacklist.dart';
+import 'strong_notice.dart';
 import 'min_version.dart';
 import 'agent_allow.dart';
 import 'garmin.dart';
@@ -4944,6 +4945,71 @@ class AppState extends ChangeNotifier {
     _notify();
   }
 
+  // ─── 强提醒：打开应用时整页弹一张（内容由官网下发）──
+  //
+  // 与限制名单 / 最低版本同一套自律：**拉不到就什么都不弹**（没联网、
+  // 文件坏了、一条都不合格）。整页拦人是重型手段，不能因为一次网络抖动把
+  // 所有人挡在门外。
+  String strongNoticeJson = '';
+  int strongNoticeAt = 0;
+
+  /// 已经弹过的 id（逗号分隔，只留最近 20 条）。
+  String strongNoticeSeen = '';
+  bool _strongNoticeFetched = false;
+
+  static const int strongNoticeTtlMs = 6 * 60 * 60 * 1000;
+
+  Set<String> get strongNoticeSeenIds => strongNoticeSeen.isEmpty
+      ? const <String>{}
+      : strongNoticeSeen.split(',').where((e) => e.isNotEmpty).toSet();
+
+  /// 这一次该弹哪一条（null = 不弹）。
+  StrongNotice? get strongNoticeNow =>
+      StrongNotice.pick(strongNoticeJson, locale, strongNoticeSeenIds);
+
+  /// 用户关掉了这一条：记下来，默认同一条不再弹（`every` 除外）。
+  void dismissStrongNotice(StrongNotice n) {
+    if (n.id.isEmpty) return;
+    final ids = strongNoticeSeenIds.toList();
+    if (!ids.contains(n.id)) {
+      ids.add(n.id);
+      while (ids.length > 20) {
+        ids.removeAt(0);
+      }
+      strongNoticeSeen = ids.join(',');
+      persist();
+    }
+    _notify();
+  }
+
+  /// 拉一次官网那份强提醒文件。
+  ///
+  /// 拉不到就什么都不做（沿用缓存里那份）；拉到了但一条都不合格就不覆盖
+  /// 上次那份好的—— 官网写崩了不该把用户手里那份好的盖掉。
+  Future<void> refreshStrongNotice({bool force = false}) async {
+    final now = DateTime.now().millisecondsSinceEpoch;
+    if (!force &&
+        strongNoticeAt > 0 &&
+        now - strongNoticeAt < strongNoticeTtlMs) {
+      return;
+    }
+    final text = await fetchStrongNoticeJson(
+      userAgent: 'APRSlocus/$appVersion',
+    );
+    if (text == null || text.trim().isEmpty) return;
+    strongNoticeAt = now;
+    _strongNoticeFetched = true;
+    if (strongNoticeJson == text) {
+      persist();
+      return;
+    }
+    // 一条可用都解不出来：只更新时间戳，不动正文
+    if (StrongNotice.parseAll(text, locale).isEmpty) return;
+    strongNoticeJson = text;
+    persist();
+    _notify();
+  }
+
   // ─── 更新安装包：放在哪、装完问不问 ───
   //
   // 下载好的包会复制一份到系统「下载」目录（用户自己翻得到），装上新版以后
@@ -5437,6 +5503,9 @@ class AppState extends ChangeNotifier {
     updatePkgAction = 'ask';
     updatePkgJson = '';
     updatePkgAsked = '';
+    strongNoticeJson = '';
+    strongNoticeAt = 0;
+    strongNoticeSeen = '';
     adifMode = 'PKT';
     adifSubMode = true;
     adifBand = '';
@@ -6029,6 +6098,9 @@ class AppState extends ChangeNotifier {
       if (!updatePkgActions.contains(updatePkgAction)) updatePkgAction = 'ask';
       updatePkgJson = p.getString('updatePkgJson') ?? updatePkgJson;
       updatePkgAsked = p.getString('updatePkgAsked') ?? updatePkgAsked;
+      strongNoticeJson = p.getString('strongNoticeJson') ?? strongNoticeJson;
+      strongNoticeAt = p.getInt('strongNoticeAt') ?? strongNoticeAt;
+      strongNoticeSeen = p.getString('strongNoticeSeen') ?? strongNoticeSeen;
       adifMode = p.getString('adifMode') ?? adifMode;
       adifSubMode = p.getBool('adifSubMode') ?? adifSubMode;
       adifBand = p.getString('adifBand') ?? adifBand;
@@ -6216,6 +6288,9 @@ class AppState extends ChangeNotifier {
       // 更新渠道清单（官网下发）：6 小时一次。拉不到就用缓存/内置那份，
       // 更新这条路不受影响，所以同样只等 400ms。
       await refreshUpdateChannels()
+          .timeout(const Duration(milliseconds: 400), onTimeout: () {});
+      // 强提醒（官网下发）：同样启动就查一次、同样只等 400ms。
+      await refreshStrongNotice()
           .timeout(const Duration(milliseconds: 400), onTimeout: () {});
       final savedLat = p.getDouble('myLat');
       final savedLng = p.getDouble('myLng');
@@ -6455,6 +6530,9 @@ class AppState extends ChangeNotifier {
     await p.setString('updatePkgAction', updatePkgAction);
     await p.setString('updatePkgJson', updatePkgJson);
     await p.setString('updatePkgAsked', updatePkgAsked);
+    await p.setString('strongNoticeJson', strongNoticeJson);
+    await p.setInt('strongNoticeAt', strongNoticeAt);
+    await p.setString('strongNoticeSeen', strongNoticeSeen);
     await p.setString('adifMode', adifMode);
     await p.setBool('adifSubMode', adifSubMode);
     await p.setString('adifBand', adifBand);

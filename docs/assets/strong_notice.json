@@ -1,0 +1,5 @@
+{
+  "updated": "2026-11-13",
+  "note": "强提醒：打开应用时整页盖住主界面，用户点「知道了」才进主界面。内容只从这份文件读，改这里不用发版。字段：updated（本文件更新日期，YYYY-MM-DD）；items（数组，空数组 = 什么都不弹）。每条：id（换 id = 当成一条新提醒，必填且不重复）、level（info / warn / critical，决定那道颜色）、title 与 body（纯字符串，或按语言分开的对象 {\"zh\":\"…\",\"en\":\"…\"}，认 zh_TW/zh 再退 en；body 里用 \\n 分段）、actions（可选，[{label, url}]，url 留空 = 点了就关）、hard（默认 true，只能点按钮关掉，返回键不关）、every（默认 false，同一条只弹一次）、until（可选 YYYY-MM-DD，过完那天不再弹）。拉不到、文件坏了、一条都不合格，一律不弹。",
+  "items": []
+}
