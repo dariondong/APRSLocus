@@ -48,15 +48,17 @@ void main() {
       final st = AppState();
       final preview = await st.debugInstallMarkPreview();
       expect(preview, isNotNull);
-      expect(preview!.contains('ID:'), isTrue);
-      expect(st.installAnnounced, isFalse,
+      expect(preview, startsWith('APRSlocus ID:'),
+          reason: '注册帧的正文只有应用名与安装标识，不跟别的报文混在一起');
+      expect(preview!.length <= AppState.statusMaxLen, isTrue);
+      expect(st.installMarkSent, isFalse,
           reason: '连接失败的那一次不能把标识用掉，下次连上还要报');
 
       expect(await st.debugInstallMarkPreview(), preview,
           reason: '同一个安装标识算出来是同一帧');
 
       expect(await st.debugInstallMarkText(), preview);
-      expect(st.installAnnounced, isTrue);
+      expect(st.installMarkSent, isTrue);
       expect(await st.debugInstallMarkPreview(), isNull);
       st.dispose();
     });
@@ -68,14 +70,14 @@ void main() {
       expect(first!.contains('ID:'), isTrue);
       expect(first.length <= AppState.statusMaxLen, isTrue,
           reason: '状态信息字段按 APRS101 限 60 个字符');
-      expect(st.installAnnounced, isTrue);
+      expect(st.installMarkSent, isTrue);
 
       expect(await st.debugInstallMarkText(), isNull,
-          reason: '之后的每次上线只报在线，不再带标识');
+          reason: '只有装好后那一次发注册帧，之后上线不再发');
 
       // 恢复出厂 = 这台机器上的一次新安装：标识也该重新报一遍
       await st.factoryReset();
-      expect(st.installAnnounced, isFalse);
+      expect(st.installMarkSent, isFalse);
       expect(await st.debugInstallMarkText(), isNotNull);
       st.dispose();
     });

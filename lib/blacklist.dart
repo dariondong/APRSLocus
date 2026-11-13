@@ -213,7 +213,7 @@ class Blacklist {
   ///   * **云同步**：登录后把它当作「这是哪台设备」报给你自己的账号
   ///     （见 `lib/cloud_sync.dart`），那是发去你自己账号的数据，不是名单；
   ///   * **第一次连上 APRS 服务器**：随线上那帧状态报文报一次前 12 位
-  ///     （见 `lib/install_mark.dart` 与 `AppState.installAnnounced`），
+  ///     （见 `lib/install_mark.dart` 与 `AppState.installMarkSent`），
   ///     之后不再重复，也不再跟着保活帧跑。
   static Future<String> deviceId() async {
     try {

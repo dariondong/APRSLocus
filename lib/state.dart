@@ -233,7 +233,7 @@ class AppState extends ChangeNotifier {
   /// 它跟着**这一次安装**走：重装/清数据会重新变成 false（见 [factoryReset]），
   /// 而换手机恢复备份**不**带它 —— 新机是新的安装，该报自己那一条
   /// （见 tool/check_backup_keys.py 的 EXCLUDE）。
-  bool installAnnounced = false;
+  bool installMarkSent = false;
 
   /// 在线判定时长（分钟）：台站最后上报距今超过该值即视为离线。
   /// 原先是写死的 5 分钟，现改为用户可配置（步进见设置页）。
@@ -5568,7 +5568,7 @@ class AppState extends ChangeNotifier {
     msgResendTimes = 2;
     _msgResend.clear();
     _msgResendStopped.clear();
-    installAnnounced = false;
+    installMarkSent = false;
     subsNotify = true;
     beaconAmbiguity = 0;
     notifStyle = 'plain';
@@ -6169,7 +6169,7 @@ class AppState extends ChangeNotifier {
           p.getBool('acceptOtherSsidMsgs') ?? acceptOtherSsidMsgs;
       msgResend = p.getBool('msgResend') ?? msgResend;
       msgResendGapSec = p.getInt('msgResendGapSec') ?? msgResendGapSec;
-      installAnnounced = p.getBool('installAnnounced') ?? installAnnounced;
+      installMarkSent = p.getBool('installMarkSent') ?? installMarkSent;
       if (!msgResendGapChoices.contains(msgResendGapSec)) msgResendGapSec = 30;
       msgResendTimes = p.getInt('msgResendTimes') ?? msgResendTimes;
       if (!msgResendTimesChoices.contains(msgResendTimes)) msgResendTimes = 2;
@@ -6626,7 +6626,7 @@ class AppState extends ChangeNotifier {
     await p.setInt('beaconAmbiguity', beaconAmbiguity);
     await p.setString('notifStyle', notifStyle);
     await p.setString('notifLiveText', notifLiveText);
-    await p.setBool('installAnnounced', installAnnounced);
+    await p.setBool('installMarkSent', installMarkSent);
     await p.setInt('stepsBaseline', _stepsBaseline);
     await p.setString('stepsDayKey', _stepsDayKey);
     await p.setInt('stepsCarry', _stepsCarry);
@@ -7979,7 +7979,7 @@ class AppState extends ChangeNotifier {
     acnLink.password = acnPassword;
     // 与 APRS-IS 同一套过滤规则（用户：「netcn 的过滤规则与 aprsis 共同」）。
     acnLink.filter = filterString;
-    // 与 APRS-IS 一样，安装标识先算好，连上就立刻发（这条链路的第一帧）。
+    // 与 APRS-IS 一样：注册帧的正文先算好，连上就立刻发（这条链路上它是单独一帧）。
     final markText = await _installMarkPreview();
     final ok = await acnLink.connect();
     _acnConnecting = false;
@@ -7988,8 +7988,8 @@ class AppState extends ChangeNotifier {
       _acnAttempt = 0;
       _acnRetryAt = null;
       _log(LogLevel.info, 'APRSNETCN', '第二条链路已连接');
-      // 装好后第一次连上 APRSNETCN 也算「第一次连到 APRS 服务器」：安装标识随
-      // 这一帧状态报文报出去。这条链路平时不发 CONNECT 帧，就只报这一次。
+      // 装好后第一次连上 APRSNETCN 也算「第一次连到 APRS 服务器」：单独发一帧
+      // 注册帧。这条链路平时不发 CONNECT 帧，注册帧就是这条链路上唯一的那一帧。
       if (markText != null &&
           acnLink.send('$myFullCall>APALOC,TCPIP*:>$markText')) {
         _commitInstallMark(markText);
@@ -8071,8 +8071,8 @@ class AppState extends ChangeNotifier {
     _updateNotification();
     aprs.callsign = myFullCall;
     aprs.filter = filterString;
-    // 安装标识连接前先算好（见 [_installMarkPreview]）：连上之后它要进**第一帧**，
-    // 中间不能再停下来等偏好读完。
+    // 注册帧的正文连接前先算好（见 [_installMarkPreview]）：连上之后要立刻单独发
+    // 一帧，中间不能再停下来等偏好读完。
     final markText = await _installMarkPreview();
     final ok = await aprs.connect();
     connecting = false;
@@ -8085,18 +8085,17 @@ class AppState extends ChangeNotifier {
       _lastFilter = aprs.filter; // 记录本次连接的过滤器
       setConnStatus(ConnPhase.online, arg: myCall);
       _log(LogLevel.info, '连接', '已连接 · $myCall 在线 (过滤: $filterString)');
-      // 连上服务器的**第一帧**就是身份状态帧（APRS 惯例：上报在线/客户端标识）：
-      // 装好后第一次上线时，这一帧的正文后面还带上本机安装标识；之后再连只报在线
-      // （见 [_installMarkPreview]）。它排在任何补发之前 —— 用户要的就是「第一帧
-      // 送出安装标识」，攒着的消息要等它之后才发。
-      var markedSent = false;
-      if (markText != null) {
-        markedSent = _sendAprs('$myFullCall>APALOC,TCPIP*:>$markText');
+      // ① 装好后第一次上线：单独发一帧注册帧，正文只有本机安装标识
+      // （用户 2026-11-13：「直接改成发送单独注册一帧」）。它排在身份状态帧之前，
+      // 所以 aprs.fi 上「台站状态」留的还是后面那帧。
+      if (markText != null &&
+          _sendAprs('$myFullCall>APALOC,TCPIP*:>$markText')) {
         // 真发出去了才记账：socket 刚建好就抖动的那一次，留给下次上线重报。
-        if (markedSent) _commitInstallMark(markText);
+        _commitInstallMark(markText);
       }
-      if (!markedSent) _sendAprs(_defaultStatusFrame());
-      // 第一帧之后，再把断线期间攒下的消息补发出去。
+      // ② 身份状态帧（APRS 惯例：上报在线/客户端标识）。
+      _sendAprs(_defaultStatusFrame());
+      // ③ 再把断线期间攒下的消息补发出去。
       _flushPendingTx();
       // 这是 CONNECT 帧唯一的自动发送点：保活帧只在没填自定义文本时才用它兜底。
       // 紧接着补一帧自定义状态（issue #31）：上面那帧会把 aprs.fi 上「台站状态」
@@ -8534,16 +8533,17 @@ class AppState extends ChangeNotifier {
   String _defaultStatusFrame() =>
       '$myFullCall>APALOC,TCPIP*:>$_defaultStatusText';
 
-  /// 算好「首次上线要报的安装标识」那帧的正文，但**不**记账。
+  /// 算好「首次上线那帧注册帧」的正文，但**不**记账。
   ///
-  /// 连接前就把它算好：连上之后要一帧立刻发出去，中间不能停在那里等偏好读完 ——
-  /// 那是异步的，等待期间别的报文会插到前面（用户 2026-11-13：「连接服务器在第一帧
-  /// 送出安装标识」）。已经报过 / 取不到安装标识时返回 null。
+  /// 连接前就把它算好：连上之后要立刻发出去，中间不能停在那里等偏好读完 —— 那是
+  /// 异步的，等待期间别的报文会插到前面。正文只有应用名与安装标识
+  /// （`APRSlocus ID:xxxxxxxxxxxx`），不塞进任何别的报文里（用户 2026-11-13：
+  /// 「直接改成发送单独注册一帧」）。已经报过 / 取不到安装标识时返回 null。
   Future<String?> _installMarkPreview() async {
-    if (installAnnounced) return null;
+    if (installMarkSent) return null;
     final mark = InstallMark.of(await Blacklist.deviceId());
     if (mark == null) return null;
-    return InstallMark.text(_defaultStatusText, mark, max: statusMaxLen);
+    return InstallMark.text('APRSlocus', mark, max: statusMaxLen);
   }
 
   /// 记账：这一帧真的发出去了才算报过。
@@ -8551,17 +8551,17 @@ class AppState extends ChangeNotifier {
   /// 先占位再返回，两条链路同时上线也只有一个能记账（另一个的下一次预览读不到）；
   /// 连接失败、或发送失败没发出去的都不记账，下次连上重算。
   bool _commitInstallMark(String text) {
-    if (installAnnounced) return false;
-    installAnnounced = true;
+    if (installMarkSent) return false;
+    installMarkSent = true;
     persist();
-    _log(LogLevel.info, '连接', '首次上线：状态报文里带上安装标识 $text');
+    _log(LogLevel.info, '连接', '首次上线：单独发一帧注册帧 $text');
     return true;
   }
 
-  /// 首次上线那帧状态报文的**正文**（带安装标识）；已经报过 / 取不到时为 null。
+  /// 首次上线那帧注册帧的**正文**；已经报过 / 取不到时为 null。
   ///
-  /// 标识走状态报文（DTI `>`）而不是位置报文的备注，两者不是一回事：备注是
-  /// 跟着位置发的那句人话，状态报文是独立一帧（用户对这两者的区分很在意）。
+  /// 注册帧是独立的一帧状态报文（DTI `>`），不是位置报文的备注，也不挂在身份
+  /// 状态帧上：备注是跟着位置发的那句人话，状态报文另算（用户对这两者的区分很在意）。
   Future<String?> _installMarkStatusText() async {
     final text = await _installMarkPreview();
     if (text == null) return null;
