@@ -6,10 +6,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 /// 安装标识的空中宣告（用户 2026-11-13 的要求）。
 ///
-/// 要钉住四件事，任何一件破了都会让这条宣告变成「要么没报、要么每 15 秒报」：
+/// 要钉住五件事，任何一件破了都会让这条宣告变成「要么没报、要么每 15 秒报」：
 ///   * 标记只取前 12 位十六进制，前面带 `ID:`（取不到标识就不报，不留空壳）；
 ///   * 正文不超过状态信息字段 60 个字符的上限，超长先砍基础文本、标记留着；
 ///   * 装好后只报**一次**：第二次上线返回 null；
+///   * 连上之前只「预览」、发出去才算报过（连接失败的那一次不能把标识用掉）；
 ///   * 恢复出厂（等于一次新的安装）之后会重新报。
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -41,6 +42,23 @@ void main() {
       // 基础文本一点都放不下时，正文就是标记本身（不能切出半截标记）
       final tight = InstallMark.text('abcdefghij', mark, max: mark.length);
       expect(tight, mark);
+    });
+
+    test('预览不记账：算得出正文，还没发出去就仍算没报过', () async {
+      final st = AppState();
+      final preview = await st.debugInstallMarkPreview();
+      expect(preview, isNotNull);
+      expect(preview!.contains('ID:'), isTrue);
+      expect(st.installAnnounced, isFalse,
+          reason: '连接失败的那一次不能把标识用掉，下次连上还要报');
+
+      expect(await st.debugInstallMarkPreview(), preview,
+          reason: '同一个安装标识算出来是同一帧');
+
+      expect(await st.debugInstallMarkText(), preview);
+      expect(st.installAnnounced, isTrue);
+      expect(await st.debugInstallMarkPreview(), isNull);
+      st.dispose();
     });
 
     test('只报一次；恢复出厂后再报一次', () async {

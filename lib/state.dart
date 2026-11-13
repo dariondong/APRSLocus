@@ -7979,6 +7979,8 @@ class AppState extends ChangeNotifier {
     acnLink.password = acnPassword;
     // 与 APRS-IS 同一套过滤规则（用户：「netcn 的过滤规则与 aprsis 共同」）。
     acnLink.filter = filterString;
+    // 与 APRS-IS 一样，安装标识先算好，连上就立刻发（这条链路的第一帧）。
+    final markText = await _installMarkPreview();
     final ok = await acnLink.connect();
     _acnConnecting = false;
     _setLinkUp(srcAcn, ok);
@@ -7986,11 +7988,11 @@ class AppState extends ChangeNotifier {
       _acnAttempt = 0;
       _acnRetryAt = null;
       _log(LogLevel.info, 'APRSNETCN', '第二条链路已连接');
-      // 装好后第一次连上 APRSNETCN 也算「第一次连到 APRS 服务器」：同样把安装
-      // 标识随一帧状态报文报出去。这条链路平时不发 CONNECT 帧，就只报这一次。
-      final markText = await _installMarkStatusText();
-      if (markText != null) {
-        acnLink.send('$myFullCall>APALOC,TCPIP*:>$markText');
+      // 装好后第一次连上 APRSNETCN 也算「第一次连到 APRS 服务器」：安装标识随
+      // 这一帧状态报文报出去。这条链路平时不发 CONNECT 帧，就只报这一次。
+      if (markText != null &&
+          acnLink.send('$myFullCall>APALOC,TCPIP*:>$markText')) {
+        _commitInstallMark(markText);
       }
       // 24 小时台站不在连上时拉：那要再发一次 HTTP 请求，还要把账号口令再发
       // 一遍，等用户点了设置页的「立即同步」才做这件事。
@@ -8069,6 +8071,9 @@ class AppState extends ChangeNotifier {
     _updateNotification();
     aprs.callsign = myFullCall;
     aprs.filter = filterString;
+    // 安装标识连接前先算好（见 [_installMarkPreview]）：连上之后它要进**第一帧**，
+    // 中间不能再停下来等偏好读完。
+    final markText = await _installMarkPreview();
     final ok = await aprs.connect();
     connecting = false;
     _setLinkUp(srcAprsIs, ok);
@@ -8080,14 +8085,19 @@ class AppState extends ChangeNotifier {
       _lastFilter = aprs.filter; // 记录本次连接的过滤器
       setConnStatus(ConnPhase.online, arg: myCall);
       _log(LogLevel.info, '连接', '已连接 · $myCall 在线 (过滤: $filterString)');
+      // 连上服务器的**第一帧**就是身份状态帧（APRS 惯例：上报在线/客户端标识）：
+      // 装好后第一次上线时，这一帧的正文后面还带上本机安装标识；之后再连只报在线
+      // （见 [_installMarkPreview]）。它排在任何补发之前 —— 用户要的就是「第一帧
+      // 送出安装标识」，攒着的消息要等它之后才发。
+      var markedSent = false;
+      if (markText != null) {
+        markedSent = _sendAprs('$myFullCall>APALOC,TCPIP*:>$markText');
+        // 真发出去了才记账：socket 刚建好就抖动的那一次，留给下次上线重报。
+        if (markedSent) _commitInstallMark(markText);
+      }
+      if (!markedSent) _sendAprs(_defaultStatusFrame());
+      // 第一帧之后，再把断线期间攒下的消息补发出去。
       _flushPendingTx();
-      // 连接成功即发一次身份状态帧（APRS 惯例：上报在线/客户端标识）。
-      // 装好后**第一次**连上服务器时，这帧里还带上本机安装标识；之后再连
-      // 只报在线（见 [_installMarkStatusText]）。
-      final markText = await _installMarkStatusText();
-      _sendAprs(markText == null
-          ? _defaultStatusFrame()
-          : '$myFullCall>APALOC,TCPIP*:>$markText');
       // 这是 CONNECT 帧唯一的自动发送点：保活帧只在没填自定义文本时才用它兜底。
       // 紧接着补一帧自定义状态（issue #31）：上面那帧会把 aprs.fi 上「台站状态」
       // 改写成 CONNECT 文本，不补就等于「一连上服务器，用户自己设的状态立刻被
@@ -8524,22 +8534,28 @@ class AppState extends ChangeNotifier {
   String _defaultStatusFrame() =>
       '$myFullCall>APALOC,TCPIP*:>$_defaultStatusText';
 
-  /// 取走「首次上线要报的安装标识」（`ID:xxxxxxxxxxxx`）。
+  /// 算好「首次上线要报的安装标识」那帧的正文，但**不**记账。
   ///
-  /// 取用即记账：两条链路同时上线也只会报一次。取不到标识（连偏好都存不进去）
-  /// 时返回 null 且**不**记账，下一次上线再试。
-  Future<String?> _takeInstallMark() async {
+  /// 连接前就把它算好：连上之后要一帧立刻发出去，中间不能停在那里等偏好读完 ——
+  /// 那是异步的，等待期间别的报文会插到前面（用户 2026-11-13：「连接服务器在第一帧
+  /// 送出安装标识」）。已经报过 / 取不到安装标识时返回 null。
+  Future<String?> _installMarkPreview() async {
     if (installAnnounced) return null;
-    installAnnounced = true; // 先占位：并发的第二个调用者拿不到
-    final id = await Blacklist.deviceId();
-    final mark = InstallMark.of(id);
-    if (mark == null) {
-      installAnnounced = false;
-      return null;
-    }
+    final mark = InstallMark.of(await Blacklist.deviceId());
+    if (mark == null) return null;
+    return InstallMark.text(_defaultStatusText, mark, max: statusMaxLen);
+  }
+
+  /// 记账：这一帧真的发出去了才算报过。
+  ///
+  /// 先占位再返回，两条链路同时上线也只有一个能记账（另一个的下一次预览读不到）；
+  /// 连接失败、或发送失败没发出去的都不记账，下次连上重算。
+  bool _commitInstallMark(String text) {
+    if (installAnnounced) return false;
+    installAnnounced = true;
     persist();
-    _log(LogLevel.info, '连接', '首次上线：状态报文里带上安装标识 $mark');
-    return mark;
+    _log(LogLevel.info, '连接', '首次上线：状态报文里带上安装标识 $text');
+    return true;
   }
 
   /// 首次上线那帧状态报文的**正文**（带安装标识）；已经报过 / 取不到时为 null。
@@ -8547,12 +8563,16 @@ class AppState extends ChangeNotifier {
   /// 标识走状态报文（DTI `>`）而不是位置报文的备注，两者不是一回事：备注是
   /// 跟着位置发的那句人话，状态报文是独立一帧（用户对这两者的区分很在意）。
   Future<String?> _installMarkStatusText() async {
-    final mark = await _takeInstallMark();
-    if (mark == null) return null;
-    return InstallMark.text(_defaultStatusText, mark, max: statusMaxLen);
+    final text = await _installMarkPreview();
+    if (text == null) return null;
+    return _commitInstallMark(text) ? text : null;
   }
 
-  /// 测试用：跑一次「首次上线要报的标识」判定（不碰网络）。
+  /// 测试用：跑一次「首次上线要报的标识」判定（不碰网络，也不记账）。
+  @visibleForTesting
+  Future<String?> debugInstallMarkPreview() => _installMarkPreview();
+
+  /// 测试用：跑一次完整的「首次上线要报的标识」判定（不碰网络，会记账）。
   @visibleForTesting
   Future<String?> debugInstallMarkText() => _installMarkStatusText();
 
