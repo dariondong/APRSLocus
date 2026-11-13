@@ -266,7 +266,11 @@ Future<UpdateVerifyReport> verifyUpdatePackageOnline({
     reachable = reachable || got.reachable;
     final r = got.release;
     if (r == null) continue;
-    final d = assetDigestOf(r, assetName);
+    var d = assetDigestOf(r, assetName);
+    // 资产上没有 digest（Gitea 系镜像就是这样）时，看发布说明里有没有写。
+    // 流水线从 2.2.8 起会在正文末尾列一遍每个包的 sha256 —— 镜像会把正文
+    // 一起带过去，于是「渠道没有摘要接口」这件事就不再挡路了。
+    if (d.isEmpty) d = digestFromBody((r['body'] ?? '').toString(), assetName);
     if (d.isEmpty) continue;
     release = r;
     digest = d;
@@ -317,4 +321,21 @@ String assetDigestOf(Map<String, dynamic> release, String assetName) {
   if (hit == null) return '';
   final d = (hit['digest'] ?? '').toString();
   return _digestOf(d).isEmpty ? '' : d;
+}
+
+/// 从发布说明正文里找某个安装包的 sha256。
+///
+/// 认的是一行里既有资产名、又有一个 64 位十六进制数（流水线写的是
+/// `- APRSLocus_2.2.8.apk sha256: ecbd…`）。`sha256:` 前缀可有可无，
+/// 大小写不敏感 —— 这样手写上去一行也能用。
+String digestFromBody(String body, String assetName) {
+  if (body.isEmpty || assetName.isEmpty) return '';
+  final base = assetName.split(RegExp(r'[/\\]')).last;
+  final hex = RegExp(r'[0-9A-Fa-f]{64}');
+  for (final line in body.split('\n')) {
+    if (!line.contains(base)) continue;
+    final m = hex.firstMatch(line);
+    if (m != null) return 'sha256:${m.group(0)!.toLowerCase()}';
+  }
+  return '';
 }

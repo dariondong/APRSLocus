@@ -257,6 +257,30 @@ void main() {
       expect(r.detail, 'ffffffff… / abc123');
     });
 
+    test('资产没有 digest 时，从发布说明里读 sha256', () {
+      const body = '''
+## [2.2.8] - 2026-11-13
+
+### 修复
+
+- 一条普通说明。
+
+### 安装包 SHA-256
+
+- APRSLocus_2.2.8.apk sha256: ECBDCC8CD1A9C0A1B2C3D4E5F60718293A4B5C6D7E8F90A1B2C3D4E5F6071829
+- APRSLocus_Setup_2.2.8.exe sha256: 1111111111111111111111111111111111111111111111111111111111111111
+''';
+      expect(
+        digestFromBody(body, 'APRSLocus_2.2.8.apk'),
+        'sha256:ecbdcc8cd1a9c0a1b2c3d4e5f60718293a4b5c6d7e8f90a1b2c3d4e5f6071829',
+      );
+      expect(digestFromBody(body, '/tmp/APRSLocus_Setup_2.2.8.exe'),
+          'sha256:1111111111111111111111111111111111111111111111111111111111111111');
+      // 说明里没提到这个包 → 空
+      expect(digestFromBody(body, 'APRSLocus_9.9.9.apk'), isEmpty);
+      expect(digestFromBody('', 'a.apk'), isEmpty);
+    });
+
     test('读不出包时直接 unknown，不去联网', () async {
       final report = await verifyUpdatePackageOnline(
         apiBase: 'http://127.0.0.1:1/repos',

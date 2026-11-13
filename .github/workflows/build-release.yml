@@ -280,10 +280,36 @@ jobs:
             echo "EOF"
           } >> "$GITHUB_OUTPUT"
 
+      # 把每个安装包的 SHA-256 写进发布说明。
+      #
+      # 为什么非要有这一段：只有 GitHub 会给资产算 digest，镜像与 OSS 渠道
+      # 都没有 —— 客户端「联网校验」在那些渠道上就一直拿不到摘要（用户反馈
+      # 「一直是无法校验」）。正文会跟着镜像一起过去，于是任何渠道都能核对。
+      - name: Append package digests
+        id: digests
+        shell: bash
+        run: |
+          {
+            echo "block<<EOF"
+            echo ""
+            echo "### 安装包 SHA-256"
+            echo ""
+            find APRSLocus-Android APRSLocus-Windows APRSLocus-iOS -type f 2>/dev/null \
+              | sort | while read -r f; do
+                  case "$f" in
+                    *.apk|*.exe|*.ipa) ;;
+                    *) continue ;;
+                  esac
+                  [ -s "$f" ] || continue
+                  echo "- $(basename "$f") sha256: $(sha256sum "$f" | cut -d' ' -f1)"
+                done
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
-          body: ${{ steps.notes.outputs.notes }}
+          body: ${{ steps.notes.outputs.notes }}${{ steps.digests.outputs.block }}
           # 同一个 tag 再跑一次 = **只更新资产**（`overwrite_files` 默认开着，同名资产直接覆盖）；
           # Release 的正文不会跟着变：这个版本的动作没有更新正文的入参
           # （旧注释写的 `allow_updates` 根本不存在，只会被当成未知输入忽略并打一条 warning）。

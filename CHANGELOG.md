@@ -5,6 +5,7 @@
 ### 修复
 
 - 联网校验不再只看当前渠道：镜像或 OSS 渠道没有摘要时，会去官方仓库查，不再一律说无法校验。
+- 发布说明里带上了每个安装包的 SHA-256，镜像渠道也能照着核对。
 - 摘要对不上时，那一行把本地与仓库两个摘要的前几位都写出来。
 - 读不出安装包时写明读不出这个安装包，不再说「读不出签名」。
 - 校验结果写进日志，卡在哪一步能自己看。
@@ -15,6 +16,7 @@
 
 - The online check no longer looks only at the selected channel: when a mirror or OSS channel has
   no digest, the official repository is asked, so it no longer always says it cannot verify.
+- Release notes now list the SHA-256 of every package, so mirror channels can be checked too.
 - On a digest mismatch the row shows the first characters of both digests.
 - When the package cannot be read at all, the row says so instead of blaming the signature.
 - The result is written to the log so you can see which step failed.
