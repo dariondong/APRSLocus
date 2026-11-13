@@ -1,5 +1,39 @@
 # 更新日志
 
+## [2.2.4] - 2026-11-12
+
+### 新增
+
+- 设置 → 服务器 的过滤范围多了一个按钮，点一下就把过滤中心设成你现在的位置。
+
+### 调整
+
+- 数据上限搬到 设置 → 数据 的最上面。
+- 装上新版的第一屏会列出这一版改了什么。
+
+### 修复
+
+- 更新页会联网核对安装包：版本号、仓库里那份的摘要、签名，三道都对上才算通过。
+- 没联网时更新页写「没有联网，无法校验版本号是否一致」。
+
+## [2.2.4] - 2026-11-12 (English)
+
+### Added
+
+- The receive range on Settings → Server has a button that puts the filter centre on where you
+  are now.
+
+### Changed
+
+- Data limits now sit at the top of Settings → Data.
+- The first screen after an update lists what changed in this version.
+
+### Fixed
+
+- The update page checks the package online: version, the digest published with the release, and
+  the signature — all three must match.
+- Offline, the update page says it cannot verify the version.
+
 ## [2.2.3] - 2026-11-12
 
 ### 更新

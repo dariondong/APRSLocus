@@ -419,6 +419,31 @@ CARDS = [
 # 只列「重点版本」：中间几十个纯修 bug 的版本归纳进文字说明，完整记录指向 Releases。
 CL = [
     {
+        'ver': 'v2.2.4', 'date': '2026-11-12',
+        'items': [
+            ('new',
+             T('过滤范围多了一个按钮，点一下就把过滤中心设成你现在的位置。',
+               '過濾範圍多了一個按鈕，點一下就把過濾中心設成你現在的位置。',
+               'The receive range has a button that puts the filter centre on where you are now.')),
+            ('up',
+             T('数据上限搬到数据页的最上面。',
+               '資料上限搬到資料頁的最上面。',
+               'Data limits now sit at the top of the data page.')),
+            ('up',
+             T('更新页会联网核对安装包的版本号、仓库里那份的摘要和签名。',
+               '更新頁會連網核對安裝包的版本號、倉庫裡那份的摘要和簽章。',
+               'The update page checks the package online: version, digest and signature.')),
+            ('new',
+             T('没联网时更新页会说明无法校验版本号。',
+               '沒連網時更新頁會說明無法校驗版本號。',
+               'Offline, the update page says it cannot verify the version.')),
+            ('new',
+             T('装上新版的第一屏列出这一版改了什么。',
+               '裝上新版的第一屏列出這一版改了什麼。',
+               'The first screen after an update lists what changed.')),
+        ],
+    },
+    {
         'ver': 'v2.2.3', 'date': '2026-11-12',
         'items': [
             ('up',
