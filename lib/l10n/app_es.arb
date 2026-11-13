@@ -4553,5 +4553,6 @@
   "@msgResendOk": {"placeholders": {"times": {"type": "String"}}},
   "lowBatteryAsk": "Preguntar con batería baja",
   "msgResendTapRetry": "toca para reenviar",
-  "msgResendNoLink": "Ahora no hay enlace disponible, así que no puede salir."
+  "msgResendNoLink": "Ahora no hay enlace disponible, así que no puede salir.",
+  "msgResendStopped": "Reenvío cancelado"
 }

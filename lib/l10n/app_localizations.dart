@@ -18765,6 +18765,12 @@ abstract class AppLocalizations {
   /// **'现在没有可用的链路，发不出去。'**
   String get msgResendNoLink;
 
+  /// No description provided for @msgResendStopped.
+  ///
+  /// In zh, this message translates to:
+  /// **'已取消重发'**
+  String get msgResendStopped;
+
 }
 
 class _AppLocalizationsDelegate

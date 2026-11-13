@@ -2600,8 +2600,15 @@ class _MessagesPageState extends State<MessagesPage> {
     final id = identityHashCode(m);
     Widget body = _bubbleBody(m,
         groupSender: groupSender, onSenderTap: onSenderTap);
-    // 发了几轮都没回执：点一下这条消息就再发一轮（用户要的「重新激活发送」）。
-    if (widget.state.msgResendGaveUp(m)) {
+    // 正在倒计时：点一下这条就取消这一轮重发（用户要的「选择该消息取消重发」）。
+    if (widget.state.msgResendCounting(m)) {
+      body = GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: () => _cancelResend(m),
+        child: body,
+      );
+    } else if (widget.state.msgResendGaveUp(m)) {
+      // 发了几轮都没回执：点一下这条消息就再发一轮（用户要的「重新激活发送」）。
       body = GestureDetector(
         behavior: HitTestBehavior.opaque,
         onTap: () => _retrySend(m),
@@ -2615,6 +2622,14 @@ class _MessagesPageState extends State<MessagesPage> {
       play: _shownBubbles.add(id),
       child: body,
     );
+  }
+
+  /// 点一条正在倒计时的消息：取消这一轮重发。
+  ///
+  /// 不弹任何东西：气泡底下那行立刻从「N 秒后重发」变成「已取消重发」，
+  /// 点同一条又能再发一轮，比一个盖在聊天上的浮层更清楚。
+  void _cancelResend(AprsMsg m) {
+    widget.state.cancelMsgResend(m);
   }
 
   /// 点一条没送达的消息：再发一轮。发不出去（没链路）时如实说一声。
@@ -2846,6 +2861,10 @@ class _MessagesPageState extends State<MessagesPage> {
       final left = st.msgResendInSec(m.id) ?? 0;
       text = s.msgResendWaiting('$left', '${m.tries}', '${st.msgResendTimes}');
       c = C.orange;
+    } else if (st.msgResendCancelled(m)) {
+      // 自己按停的那一轮：如实写「已取消重发」，并提示点一下能再发。
+      text = '${s.msgResendStopped} · ${s.msgResendTapRetry}';
+      c = C.grey;
     } else if (m.tries > 0) {
       // 上一轮重发已经用完：写明结果，并提示点一下能再发一轮。
       text = '${s.msgResendFailed('${m.tries}')} · ${s.msgResendTapRetry}';

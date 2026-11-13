@@ -5557,6 +5557,7 @@ class AppState extends ChangeNotifier {
     msgResendGapSec = 30;
     msgResendTimes = 2;
     _msgResend.clear();
+    _msgResendStopped.clear();
     subsNotify = true;
     beaconAmbiguity = 0;
     notifStyle = 'plain';
@@ -9851,6 +9852,7 @@ class AppState extends ChangeNotifier {
       }
       // 回执到了：这条不再重发。
       _msgResend.remove(ackedId);
+      _msgResendStopped.remove(ackedId);
       // 策略帧的 ack：确认至少有一个队友收到（射频下这才是「送达」凭据），
       // 顺带把这条帧从待确认表里摘掉并记日志，便于排查射频丢包。
       final sf = _strategyAckWait.remove(ackedId);
@@ -11603,12 +11605,21 @@ class AppState extends ChangeNotifier {
   /// [AprsMsg.tries]，那是历史（这条消息当时确实重发过）。
   final Map<String, MsgResend> _msgResend = {};
 
+  /// 用户在倒计时里点了「别发了」的那几条（只在内存里）。
+  ///
+  /// 冷启后本来就没有倒计时，所以这条记性也不必跟着磁盘走；它只负责让
+  /// 气泡底下写一句「已取消重发」，并让那一条还能点一下再发。
+  final Set<String> _msgResendStopped = {};
+
   void setMsgResend(bool v) {
     if (msgResend == v) return;
     msgResend = v;
     // 关掉就是「不要再替我发」：手上排着的也一起取消，否则关了之后还会
     // 冒出几次重发，比不关更让人糊涂。
-    if (!v) _msgResend.clear();
+    if (!v) {
+      _msgResend.clear();
+      _msgResendStopped.clear();
+    }
     persist();
     _notify();
   }
@@ -11641,9 +11652,41 @@ class AppState extends ChangeNotifier {
     return left < 0 ? 0 : left;
   }
 
+  /// 这条正在倒计时吗（气泡上点一下就是取消这一轮重发）。
+  bool msgResendCounting(AprsMsg m) => msgResendOf(m.id) != null;
+
+  /// 取消这一条手上的重发（用户 2026-11-13：「如果消息在重发倒计时过程中，
+  /// 可以选择该消息取消重发」）。
+  ///
+  /// 只摘掉还没走完的那一轮：**已经发出去的那几包收不回来**，消息上留着的
+  /// [AprsMsg.tries] 是历史，不改。之后想再试就再点一下（[resendMessage]）。
+  /// 返回 true = 真有一条在等着，被取消了。
+  bool cancelMsgResend(AprsMsg m) {
+    final id = m.id;
+    if (id == null || id.isEmpty) return false;
+    final had = _msgResend.remove(id) != null;
+    _msgResendStopped.add(id);
+    if (had) {
+      _log(LogLevel.info, '消息', '取消发给 ${m.to} 的重发（编号 $id）');
+    }
+    _notify();
+    return had;
+  }
+
+  /// 这条的重发被用户取消了（气泡底下写一句，点一下能再发一轮）。
+  bool msgResendCancelled(AprsMsg m) =>
+      m.sent &&
+      !m.acked &&
+      m.groupId == null &&
+      m.id != null &&
+      _msgResendStopped.contains(m.id) &&
+      _msgResend[m.id] == null;
+
   /// 把一条刚发出的私聊排上重发。链路没连上就不排（那一包根本没发出去）。
   void _armMsgResend(String id, String raw, String to) {
     if (!msgResend) return;
+    // 重新排上就是「又开始等着了」：之前取消过的那句说明要撤掉。
+    _msgResendStopped.remove(id);
     _msgResend[id] = MsgResend(
       id,
       raw,
@@ -11756,6 +11799,7 @@ class AppState extends ChangeNotifier {
     if (raw == null) return false;
     _sendRawMsg(raw);
     m.tries = 0;
+    _msgResendStopped.remove(m.id);
     if (msgResend && m.id != null) {
       _msgResend[m.id!] = MsgResend(
         m.id!,

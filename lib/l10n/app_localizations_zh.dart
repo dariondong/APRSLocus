@@ -10220,6 +10220,9 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String get msgResendNoLink => "现在没有可用的链路，发不出去。";
 
+  @override
+  String get msgResendStopped => "已取消重发";
+
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
@@ -20436,5 +20439,8 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get msgResendNoLink => "現在沒有可用的鏈路，發不出去。";
+
+  @override
+  String get msgResendStopped => "已取消重發";
 
 }

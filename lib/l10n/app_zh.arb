@@ -5232,5 +5232,6 @@
   "@msgResendOk": {"placeholders": {"times": {"type": "String"}}},
   "lowBatteryAsk": "电量低时提示开启",
   "msgResendTapRetry": "点一下再发",
-  "msgResendNoLink": "现在没有可用的链路，发不出去。"
+  "msgResendNoLink": "现在没有可用的链路，发不出去。",
+  "msgResendStopped": "已取消重发"
 }

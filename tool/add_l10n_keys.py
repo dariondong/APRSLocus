@@ -676,6 +676,9 @@ KEYS = {
         '使える回線がないため送れません。',
         'Ahora no hay enlace disponible, así que no puede salir.',
         'Tidak ada tautan aktif, jadi tidak bisa terkirim.'),
+    'msgResendStopped': (
+        '已取消重发', '已取消重發', 'Resend cancelled', '再送を中止',
+        'Reenvío cancelado', 'Kirim ulang dibatalkan'),
 }
 
 META = {

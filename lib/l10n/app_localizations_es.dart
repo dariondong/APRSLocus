@@ -10658,4 +10658,7 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get msgResendNoLink => "Ahora no hay enlace disponible, así que no puede salir.";
 
+  @override
+  String get msgResendStopped => "Reenvío cancelado";
+
 }

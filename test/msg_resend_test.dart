@@ -193,5 +193,76 @@ void main() {
       expect(st.msgResendOf(m.id), isNull);
       st.dispose();
     });
+
+    test('倒计时里点一下这条：取消这一轮，到点也不再发', () {
+      final st = online();
+      st.setMsgResendGap(15);
+      st.setMsgResendTimes(2);
+      st.sendMessage('BG0TST-9', '先别发了');
+      final m = firstSent(st);
+      final id = m.id!;
+      expect(st.msgResendCounting(m), isTrue);
+
+      final before = st.packets.where((p) => p.raw.contains('{$id')).length;
+      expect(st.cancelMsgResend(m), isTrue);
+      expect(st.msgResendOf(id), isNull, reason: '取消了就不该再排队');
+      expect(st.msgResendCounting(m), isFalse);
+      expect(st.msgResendCancelled(m), isTrue,
+          reason: '气泡底下要能写一句「已取消重发」');
+      expect(m.tries, 0, reason: '取消只摘掉还没走完的一轮，不动历史次数');
+
+      st.debugTickMsgResend(DateTime.now().add(const Duration(seconds: 16)));
+      st.debugTickMsgResend(DateTime.now().add(const Duration(seconds: 60)));
+      expect(st.packets.where((p) => p.raw.contains('{$id')).length, before,
+          reason: '取消之后一包都不该再发');
+      expect(m.tries, 0);
+      st.dispose();
+    });
+
+    test('重发过一次再取消：次数留着，点一下开新的一轮（编号不变）', () {
+      final st = online();
+      st.setMsgResendGap(15);
+      st.sendMessage('BG0TST-9', '再试最后一回');
+      final m = firstSent(st);
+      final id = m.id!;
+
+      st.debugTickMsgResend(DateTime.now().add(const Duration(seconds: 16)));
+      expect(m.tries, 1);
+      expect(st.cancelMsgResend(m), isTrue);
+      expect(st.msgResendCancelled(m), isTrue);
+      expect(m.tries, 1, reason: '取消不改「已重发几次」这笔历史');
+
+      expect(st.resendMessage(m), isTrue);
+      expect(m.tries, 0, reason: '再点一下是开新的一轮');
+      expect(st.msgResendOf(id), isNotNull);
+      expect(st.msgResendCancelled(m), isFalse,
+          reason: '重新排上之后那句「已取消」要收走');
+      expect(st.msgResendOf(id)!.raw.contains('{$id'), isTrue);
+      st.dispose();
+    });
+
+    test('取消之后收到回执：不再显示「已取消」，也不再重发', () {
+      final st = online();
+      st.sendMessage('BG0TST-9', '取消了也算到了');
+      final m = firstSent(st);
+      final id = m.id!;
+      st.cancelMsgResend(m);
+      st.debugFeedLine('BG0TST-9>APRS::BG7LZQ-7 :ack$id');
+      expect(m.acked, isTrue);
+      expect(st.msgResendCancelled(m), isFalse,
+          reason: '回执到了就只说回执，别提取消');
+      st.dispose();
+    });
+
+    test('关掉重发开关时，取消的那句说明也一并收走', () {
+      final st = online();
+      st.sendMessage('BG0TST-9', '整项关掉');
+      final m = firstSent(st);
+      st.cancelMsgResend(m);
+      expect(st.msgResendCancelled(m), isTrue);
+      st.setMsgResend(false);
+      expect(st.msgResendCancelled(m), isFalse);
+      st.dispose();
+    });
   });
 }

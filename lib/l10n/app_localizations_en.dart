@@ -10599,4 +10599,7 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get msgResendNoLink => "No link is up right now, so it cannot go out.";
 
+  @override
+  String get msgResendStopped => "Resend cancelled";
+
 }

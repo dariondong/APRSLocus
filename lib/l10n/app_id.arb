@@ -4553,5 +4553,6 @@
   "@msgResendOk": {"placeholders": {"times": {"type": "String"}}},
   "lowBatteryAsk": "Tanya saat baterai lemah",
   "msgResendTapRetry": "ketuk untuk kirim lagi",
-  "msgResendNoLink": "Tidak ada tautan aktif, jadi tidak bisa terkirim."
+  "msgResendNoLink": "Tidak ada tautan aktif, jadi tidak bisa terkirim.",
+  "msgResendStopped": "Kirim ulang dibatalkan"
 }

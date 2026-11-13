@@ -10609,4 +10609,7 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get msgResendNoLink => "Tidak ada tautan aktif, jadi tidak bisa terkirim.";
 
+  @override
+  String get msgResendStopped => "Kirim ulang dibatalkan";
+
 }

@@ -4553,5 +4553,6 @@
   "@msgResendOk": {"placeholders": {"times": {"type": "String"}}},
   "lowBatteryAsk": "バッテリー低下時に確認",
   "msgResendTapRetry": "タップで再送",
-  "msgResendNoLink": "使える回線がないため送れません。"
+  "msgResendNoLink": "使える回線がないため送れません。",
+  "msgResendStopped": "再送を中止"
 }

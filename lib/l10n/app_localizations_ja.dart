@@ -10320,4 +10320,7 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String get msgResendNoLink => "使える回線がないため送れません。";
 
+  @override
+  String get msgResendStopped => "再送を中止";
+
 }

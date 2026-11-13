@@ -4553,5 +4553,6 @@
   "@msgResendOk": {"placeholders": {"times": {"type": "String"}}},
   "lowBatteryAsk": "Ask when the battery is low",
   "msgResendTapRetry": "tap to send again",
-  "msgResendNoLink": "No link is up right now, so it cannot go out."
+  "msgResendNoLink": "No link is up right now, so it cannot go out.",
+  "msgResendStopped": "Resend cancelled"
 }
