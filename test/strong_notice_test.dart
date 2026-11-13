@@ -44,8 +44,14 @@ void main() {
       StrongNotice.parseAll(_json, 'en').first.title,
       'Maintenance tonight',
     );
-    // 日文没有这一条：退到 zh
-    expect(StrongNotice.parseAll(_json, 'ja').first.title, '今晚维护');
+    // 非中文界面退到 en（这一条有 en）；没 en 才用第一个非空值
+    expect(StrongNotice.parseAll(_json, 'ja').first.title, 'Maintenance tonight');
+    expect(
+      StrongNotice.parseAll('{"items":[{"id":"x","title":{"zh":"只有中文"},"body":{"zh":"b"}}]}', 'ja')
+          .single
+          .title,
+      '只有中文',
+    );
     // 纯字符串不受语言影响
     expect(StrongNotice.parseAll(_json, 'en')[1].title, '一句话标题');
   });

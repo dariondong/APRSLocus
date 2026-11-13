@@ -70,7 +70,7 @@ def main() -> int:
         errors.append('缺 `items` 数组（没有提醒也要显式写空数组）')
         items = []
 
-    today = datetime.datetime.utcnow().date()
+    today = datetime.datetime.now(datetime.timezone.utc).date()
     ids = set()
     for i, it in enumerate(items):
         where = 'items[%d]' % i
