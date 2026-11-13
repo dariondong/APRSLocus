@@ -419,6 +419,15 @@ CARDS = [
 # 只列「重点版本」：中间几十个纯修 bug 的版本归纳进文字说明，完整记录指向 Releases。
 CL = [
     {
+        'ver': 'v2.2.7', 'date': '2026-11-13',
+        'items': [
+            ('up',
+             T('强提醒的正文有了小标题与条目，证书指纹用等宽字排。',
+               '強提醒的正文有了小標題與條目，憑證指紋用等寬字排。',
+               'A strong notice body has headings and rows, with fingerprints in a monospaced block.')),
+        ],
+    },
+    {
         'ver': 'v2.2.6', 'date': '2026-11-13',
         'items': [
             ('fix',

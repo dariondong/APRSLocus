@@ -1,5 +1,18 @@
 # 更新日志
 
+## [2.2.7] - 2026-11-13
+
+### 调整
+
+- 强提醒的正文有了小标题与条目，证书指纹用等宽字排，能一个字符一个字符对着核。
+
+## [2.2.7] - 2026-11-13 (English)
+
+### Changed
+
+- A strong notice body now has headings and list rows, and certificate fingerprints are set in a
+  monospaced block so they can be checked character by character.
+
 ## [2.2.6] - 2026-11-13
 
 ### 修复
