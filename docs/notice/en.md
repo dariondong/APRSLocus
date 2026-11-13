@@ -40,6 +40,53 @@ SHA-256: 0F:2C:52:7A:9C:D6:6A:43:A8:71:F3:51:92:C7:5C:B7:5F:C1:B8:5B:6F:63:BA:45
 
 ---
 
+## APRSNETCN OA · #261113
+
+APRSNETCN OA is a weekly APRS message roll call run by APRSNET.CN.
+
+### 1. When
+
+13 November 2026, 00:00–23:59 Beijing time (UTC+8).
+
+Other zones: UTC 16:00 on 12 November to 15:59 on 13 November; Japan (UTC+9) 01:00 on 13 November to 00:59 on 14 November; India (UTC+5:30) 21:30 on 12 November to 21:29 on 13 November; US Eastern (EST, UTC-5) 11:00 on 12 November to 10:59 on 13 November.
+
+### 2. Duty callsign
+
+**BG7LMW-6** (ChenJiaMing).
+
+The duty callsign changes every week. The site's page for the current week is the one to read.
+
+@video https://aprsnet.cn/oa/en/embed.html
+
+### 3. How to check in
+
+- Send an APRS message to **BG7LMW-6** with the body **CQ CNNET**, your own call and your own grid, for example **CQ CNNET BG7XXX OL62**. A grid of 4 or 6 characters both work, and the call in the body is your own.
+- When the ACK arrives, send a new message to **BG7LMW-6** with **U CNNET** alone.
+- Optional: add a sentence after the grid, for example **CQ CNNET BG7XXX OL62 weekend on the hill**. The roster gains a message row.
+
+### 4. Two ways in
+
+- Over the network (APRS-IS): connect a phone or a computer to a server and send.
+- Over the air (RF): send from a handheld or a mobile rig, and a nearby gateway carries it into the network.
+
+Both count. RF counts more.
+
+### 5. Worth knowing
+
+- The message recipient is **BG7LMW-6**, and the call in the body is your own. Do not mix the two up.
+- After the ACK, send a separate **U CNNET**. Do not reply on top of the ACK.
+- One send that day is enough. Sending again adds no row.
+- An extra sentence does not change whether the check-in counts.
+- Transmit under your own call and licence, on the frequency and path your local rules allow.
+
+Activity page: **[Open the activity page](https://oa.aprsnet.cn)**
+
+13 November: one CQ out, one ACK in, one U back.
+
+**APRSNET.CN**
+
+---
+
 ## APRSNETCN OA · #261107
 
 APRSNETCN OA is a weekly APRS message roll call run by APRSNET.CN.
