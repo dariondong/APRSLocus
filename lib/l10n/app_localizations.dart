@@ -18719,6 +18719,84 @@ abstract class AppLocalizations {
   /// **'读不出这个安装包'**
   String get updatePkgUnreadable;
 
+  /// No description provided for @powerSaveOn.
+  ///
+  /// In zh, this message translates to:
+  /// **'省电模式已开启'**
+  String get powerSaveOn;
+
+  /// No description provided for @powerSaveTurnOff.
+  ///
+  /// In zh, this message translates to:
+  /// **'关掉省电模式'**
+  String get powerSaveTurnOff;
+
+  /// No description provided for @powerSaveNotice.
+  ///
+  /// In zh, this message translates to:
+  /// **'在界面上提示'**
+  String get powerSaveNotice;
+
+  /// No description provided for @msgResend.
+  ///
+  /// In zh, this message translates to:
+  /// **'消息重发'**
+  String get msgResend;
+
+  /// No description provided for @msgResendTip.
+  ///
+  /// In zh, this message translates to:
+  /// **'对方没回执时按下面的间隔重发。'**
+  String get msgResendTip;
+
+  /// No description provided for @msgResendGap.
+  ///
+  /// In zh, this message translates to:
+  /// **'重发间隔'**
+  String get msgResendGap;
+
+  /// No description provided for @msgResendTimes.
+  ///
+  /// In zh, this message translates to:
+  /// **'重发次数'**
+  String get msgResendTimes;
+
+  /// No description provided for @msgResendSeconds.
+  ///
+  /// In zh, this message translates to:
+  /// **'每 {n} 秒'**
+  String msgResendSeconds(String n);
+
+  /// No description provided for @msgResendCount.
+  ///
+  /// In zh, this message translates to:
+  /// **'{n} 次'**
+  String msgResendCount(String n);
+
+  /// No description provided for @msgResendPlan.
+  ///
+  /// In zh, this message translates to:
+  /// **'每 {gap} 秒重发 · 最多 {max} 次'**
+  String msgResendPlan(String gap, String max);
+
+  /// No description provided for @msgResendWaiting.
+  ///
+  /// In zh, this message translates to:
+  /// **'{s} 秒后重发 · 已重发 {done}/{max} 次'**
+  String msgResendWaiting(String s, String done, String max);
+
+  /// No description provided for @msgResendFailed.
+  ///
+  /// In zh, this message translates to:
+  /// **'已重发 {max} 次，未收到回执'**
+  String msgResendFailed(String max);
+
+  /// No description provided for @msgResendOk.
+  ///
+  /// In zh, this message translates to:
+  /// **'重发 {times} 次后收到回执'**
+  String msgResendOk(String times);
+
 }
 
 class _AppLocalizationsDelegate

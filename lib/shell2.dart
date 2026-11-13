@@ -1330,6 +1330,7 @@ class _HomeShell2State extends State<HomeShell2>
             WeatherBadge(state: st),
             const SizedBox(width: 6),
           ],
+          PowerSaveHint(state: st, dense: true),
           _statusPill(st),
           const SizedBox(width: 6),
           // 一键连接 / 断开。

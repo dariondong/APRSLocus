@@ -10620,4 +10620,43 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get updatePkgUnreadable => "No se puede leer este paquete";
 
+  @override
+  String get powerSaveOn => "El ahorro de energía está activo";
+
+  @override
+  String get powerSaveTurnOff => "Desactivar el ahorro";
+
+  @override
+  String get powerSaveNotice => "Mostrarlo en pantalla";
+
+  @override
+  String get msgResend => "Reenviar mensajes";
+
+  @override
+  String get msgResendTip => "Se reenvía si no llega acuse.";
+
+  @override
+  String get msgResendGap => "Reenviar cada";
+
+  @override
+  String get msgResendTimes => "Intentos";
+
+  @override
+  String msgResendSeconds(String n) => "Cada $n s";
+
+  @override
+  String msgResendCount(String n) => "$n veces";
+
+  @override
+  String msgResendPlan(String gap, String max) => "Se reenvía cada $gap s · máx. $max";
+
+  @override
+  String msgResendWaiting(String s, String done, String max) => "Reenvía en $s s · $done/$max hechos";
+
+  @override
+  String msgResendFailed(String max) => "Reenviado $max veces sin acuse";
+
+  @override
+  String msgResendOk(String times) => "Acuse tras $times reenvío(s)";
+
 }

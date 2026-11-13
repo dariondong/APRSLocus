@@ -10561,4 +10561,43 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get updatePkgUnreadable => "Cannot read this package";
 
+  @override
+  String get powerSaveOn => "Power saver is on";
+
+  @override
+  String get powerSaveTurnOff => "Turn off power saver";
+
+  @override
+  String get powerSaveNotice => "Show it on screen";
+
+  @override
+  String get msgResend => "Resend messages";
+
+  @override
+  String get msgResendTip => "It goes again if no receipt comes back.";
+
+  @override
+  String get msgResendGap => "Resend every";
+
+  @override
+  String get msgResendTimes => "Resend attempts";
+
+  @override
+  String msgResendSeconds(String n) => "Every $n s";
+
+  @override
+  String msgResendCount(String n) => "$n×";
+
+  @override
+  String msgResendPlan(String gap, String max) => "Resent every $gap s · up to $max×";
+
+  @override
+  String msgResendWaiting(String s, String done, String max) => "Resends in $s s · $done/$max sent";
+
+  @override
+  String msgResendFailed(String max) => "Resent $max× and still no receipt";
+
+  @override
+  String msgResendOk(String times) => "Receipt came after $times× resend";
+
 }

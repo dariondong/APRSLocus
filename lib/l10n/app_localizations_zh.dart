@@ -10182,6 +10182,45 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String get updatePkgUnreadable => "读不出这个安装包";
 
+  @override
+  String get powerSaveOn => "省电模式已开启";
+
+  @override
+  String get powerSaveTurnOff => "关掉省电模式";
+
+  @override
+  String get powerSaveNotice => "在界面上提示";
+
+  @override
+  String get msgResend => "消息重发";
+
+  @override
+  String get msgResendTip => "对方没回执时按下面的间隔重发。";
+
+  @override
+  String get msgResendGap => "重发间隔";
+
+  @override
+  String get msgResendTimes => "重发次数";
+
+  @override
+  String msgResendSeconds(String n) => "每 $n 秒";
+
+  @override
+  String msgResendCount(String n) => "$n 次";
+
+  @override
+  String msgResendPlan(String gap, String max) => "每 $gap 秒重发 · 最多 $max 次";
+
+  @override
+  String msgResendWaiting(String s, String done, String max) => "$s 秒后重发 · 已重发 $done/$max 次";
+
+  @override
+  String msgResendFailed(String max) => "已重发 $max 次，未收到回执";
+
+  @override
+  String msgResendOk(String times) => "重发 $times 次后收到回执";
+
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
@@ -20360,5 +20399,44 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get updatePkgUnreadable => "讀不出這個安裝包";
+
+  @override
+  String get powerSaveOn => "省電模式已開啟";
+
+  @override
+  String get powerSaveTurnOff => "關掉省電模式";
+
+  @override
+  String get powerSaveNotice => "在介面上提示";
+
+  @override
+  String get msgResend => "訊息重發";
+
+  @override
+  String get msgResendTip => "對方沒回執時按下面的間隔重發。";
+
+  @override
+  String get msgResendGap => "重發間隔";
+
+  @override
+  String get msgResendTimes => "重發次數";
+
+  @override
+  String msgResendSeconds(String n) => "每 $n 秒";
+
+  @override
+  String msgResendCount(String n) => "$n 次";
+
+  @override
+  String msgResendPlan(String gap, String max) => "每 $gap 秒重發 · 最多 $max 次";
+
+  @override
+  String msgResendWaiting(String s, String done, String max) => "$s 秒後重發 · 已重發 $done/$max 次";
+
+  @override
+  String msgResendFailed(String max) => "已重發 $max 次，未收到回執";
+
+  @override
+  String msgResendOk(String times) => "重發 $times 次後收到回執";
 
 }

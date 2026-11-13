@@ -4354,6 +4354,19 @@ class AppState extends ChangeNotifier {
   /// 低电量时外壳会提示一次「要不要开省电模式」，开关本身在这里。
   bool powerSave = false;
 
+  /// 省电模式在界面上提示（用户要求：「省电模式可禁用提示」）。
+  ///
+  /// 开着省电模式时，三套外壳的顶栏会有一颗小胶囊写着它；把这颗关掉，
+  /// 界面就回到干净的样子，省电本身照旧生效。
+  bool powerSaveNotice = true;
+
+  void setPowerSaveNotice(bool v) {
+    if (powerSaveNotice == v) return;
+    powerSaveNotice = v;
+    persist();
+    _notify();
+  }
+
   /// 实际生效的 GPS 采样间隔（省电模式下不低于 [powerSaveGpsSec]）。
   int get effectiveGpsIntervalSec =>
       powerSave && gpsIntervalSec < powerSaveGpsSec
@@ -5548,6 +5561,7 @@ class AppState extends ChangeNotifier {
     loc.mode = locationMode;
     gpsIntervalSec = 1;
     powerSave = false;
+    powerSaveNotice = true;
     // 云同步是这台设备自己的登录，出厂复位就断开；云端数据不跟着删
     syncMode = 'off';
     syncAccount = '';
@@ -6156,6 +6170,7 @@ class AppState extends ChangeNotifier {
       // 省电模式必须在算采样间隔**之前**读回来，否则冷启那一瞬间会按
       // 用户原来的档位去注册 GPS，下一次 tick 才纠正
       powerSave = p.getBool('powerSave') ?? powerSave;
+      powerSaveNotice = p.getBool('powerSaveNotice') ?? powerSaveNotice;
       loc.samplingMs = effectiveGpsIntervalSec * 1000;
       // 云同步：开关、账号、令牌与三类数据的上次时间。令牌不进备份。
       syncMode = p.getString('syncMode') ?? syncMode;
@@ -6584,6 +6599,7 @@ class AppState extends ChangeNotifier {
     await p.setString('locationMode', locationMode);
     await p.setInt('gpsIntervalSec', gpsIntervalSec);
     await p.setBool('powerSave', powerSave);
+    await p.setBool('powerSaveNotice', powerSaveNotice);
     await p.setString('syncMode', syncMode);
     await p.setString('syncAccount', syncAccount);
     await p.setString('syncPassword', syncPassword);

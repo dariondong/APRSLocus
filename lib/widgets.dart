@@ -1335,3 +1335,151 @@ class AprsSymbolImage extends StatelessWidget {
     );
   }
 }
+
+/// ─── 省电模式的界面提示 ───
+///
+/// 用户要求「开启了省电模式，界面上要有相应的提示」：省电会**悄悄**改掉两件
+/// 事（GPS 采样拉长到 30 秒、地图上的脉冲动画停掉），不提示的话表现就是
+/// 「定位怎么半天不动」「台站怎么不闪了」，像是坏了。
+///
+/// 三套外壳的顶栏都摆这一颗小胶囊。点一下弹一层说明，顺手给出「关掉省电模式」
+/// 与「在界面上提示」两个开关 —— 后者就是用户说的「省电模式可禁用提示」：
+/// 关掉之后省电照旧生效，只是不再占着一行。
+class PowerSaveHint extends StatelessWidget {
+  final AppState state;
+
+  /// 精简模式用的小号（那一行本来就矮）。
+  final bool dense;
+
+  const PowerSaveHint({super.key, required this.state, this.dense = false});
+
+  @override
+  Widget build(BuildContext context) {
+    return ListenableBuilder(
+      listenable: state,
+      builder: (context, _) {
+        if (!state.powerSave || !state.powerSaveNotice) {
+          return const SizedBox.shrink();
+        }
+        final s = S.of(context);
+        return Padding(
+          padding: const EdgeInsets.only(right: 6),
+          child: ClickCursor(
+            child: GestureDetector(
+              onTap: () => showPowerSaveSheet(context, state),
+              behavior: HitTestBehavior.opaque,
+              child: Container(
+                height: dense ? 24 : 26,
+                padding: EdgeInsets.symmetric(horizontal: dense ? 7 : 8),
+                decoration: BoxDecoration(
+                  color: C.green.withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(999),
+                  border: Border.all(color: C.green.withValues(alpha: 0.22)),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.battery_saver_rounded,
+                        size: dense ? 12 : 13, color: C.green),
+                    const SizedBox(width: 4),
+                    Text(
+                      s.powerSave,
+                      style: ts(dense ? 10 : 10.5,
+                          c: C.green, w: FontWeight.w700),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+/// 省电模式那颗胶囊点开之后的一层说明。
+///
+/// 两个开关都在这儿：关掉省电本身，或者只关掉「在界面上提示」
+/// （用户的「省电模式可禁用提示」）。文案简短，只说用户能看见的差别。
+void showPowerSaveSheet(BuildContext context, AppState state) {
+  final s = S.of(context);
+  showModalBottomSheet<void>(
+    context: context,
+    backgroundColor: Colors.transparent,
+    builder: (ctx) => MaterialSurface(
+      radius: 24,
+      topOnly: true,
+      child: Container(
+        decoration: BoxDecoration(
+          color: C.sheetFill,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+        ),
+        padding: const EdgeInsets.fromLTRB(18, 16, 18, 20),
+        child: SafeArea(
+          child: ListenableBuilder(
+            listenable: state,
+            builder: (ctx, _) {
+              final l = S.of(ctx);
+              return Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Icon(Icons.battery_saver_rounded,
+                          size: 18, color: C.green),
+                      const SizedBox(width: 8),
+                      Text(l.powerSaveOn,
+                          style: ts(16, w: FontWeight.w800)),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  Text(l.powerSaveTip, style: ts(12.5, c: C.slate, h: 1.5)),
+                  const SizedBox(height: 14),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(l.powerSaveNotice, style: ts(13)),
+                      ),
+                      Switch(
+                        value: state.powerSaveNotice,
+                        activeThumbColor: C.green,
+                        onChanged: state.setPowerSaveNotice,
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  SizedBox(
+                    width: double.infinity,
+                    child: FilledButton(
+                      style: FilledButton.styleFrom(
+                        backgroundColor: C.green,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(C.fieldRadius),
+                        ),
+                      ),
+                      onPressed: () {
+                        state.setPowerSave(false);
+                        Navigator.of(ctx).pop();
+                      },
+                      child: Text(l.powerSaveTurnOff),
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: TextButton(
+                      onPressed: () => Navigator.of(ctx).pop(),
+                      child: Text(s.close),
+                    ),
+                  ),
+                ],
+              );
+            },
+          ),
+        ),
+      ),
+    ),
+  );
+}

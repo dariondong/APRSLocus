@@ -198,6 +198,8 @@ const List<BackupGroupSpec> kBackupGroups = [
     // 省电模式：它改的是 GPS 采样与地图动画，跟 `gpsIntervalSec` 是同一件事
     // 的两种说法，换机后静默关掉会让用户以为「省电设置不管用」。
     'powerSave',
+    // 省电模式在界面上提示：同属显示偏好（有人不想顶栏多一颗胶囊）。
+    'powerSaveNotice',
     'filterLat', 'filterLng', 'filterRadius', 'maxStations', 'maxPackets',
     'onlineWindowMin', 'maxTrackPts', 'filterFollow',
     // 台站保留天数（数据维护）：与 maxTrackPts 同属「本地保留多少数据」的设置，

@@ -1597,6 +1597,12 @@ class _BeaconSettingsPageState extends State<BeaconSettingsPage> {
                 color: C.green,
                 onChanged: st.setPowerSave),
             SettingsHint(S.of(context).powerSaveTip),
+            // 用户要的「省电模式可禁用提示」：关掉后省电照旧生效，只是顶栏
+            // 不再冒出那颗胶囊。
+            SettingsSwitch(S.of(context).powerSaveNotice,
+                value: st.powerSaveNotice,
+                color: C.green,
+                onChanged: st.setPowerSaveNotice),
             SizedBox(height: 10),
           ],
         ),

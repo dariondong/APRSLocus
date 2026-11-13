@@ -740,6 +740,8 @@ class _HomePageState extends State<HomePage> {
                   packets: wide && showPackets,
                 ),
                 const SizedBox(width: _kTopGap),
+                // 省电模式开着时多一颗小胶囊（它自己判断显不显示）
+                PowerSaveHint(state: st),
                 // 设备快捷面板：APRS-IS / APRSNETCN / TNC / 音频一屏切换。
                 // 与 2.0 顶栏那颗同一个入口、同一个面板（[showLinkSheet]）。
                 _quickPanelBtn(),

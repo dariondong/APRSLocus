@@ -10282,4 +10282,43 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String get updatePkgUnreadable => "このパッケージを読み取れません";
 
+  @override
+  String get powerSaveOn => "省電モードがオンです";
+
+  @override
+  String get powerSaveTurnOff => "省電モードをオフ";
+
+  @override
+  String get powerSaveNotice => "画面に表示する";
+
+  @override
+  String get msgResend => "メッセージの再送";
+
+  @override
+  String get msgResendTip => "相手から受領通知が来ないときに再送します。";
+
+  @override
+  String get msgResendGap => "再送の間隔";
+
+  @override
+  String get msgResendTimes => "再送の回数";
+
+  @override
+  String msgResendSeconds(String n) => "$n 秒ごと";
+
+  @override
+  String msgResendCount(String n) => "$n 回";
+
+  @override
+  String msgResendPlan(String gap, String max) => "$gap 秒ごとに再送 · 最大 $max 回";
+
+  @override
+  String msgResendWaiting(String s, String done, String max) => "$s 秒後に再送 · 再送済み $done/$max";
+
+  @override
+  String msgResendFailed(String max) => "$max 回再送したが受領通知なし";
+
+  @override
+  String msgResendOk(String times) => "$times 回の再送で受領通知";
+
 }

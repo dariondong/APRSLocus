@@ -666,6 +666,68 @@ KEYS = {
         "What's new in this version",
         'このバージョンの変更点',
         'Novedades de esta versión', 'Yang berubah di versi ini'),
+    # ── 省电模式在界面上的提示（可以关掉）──
+    'powerSaveOn': (
+        '省电模式已开启', '省電模式已開啟', 'Power saver is on',
+        '省電モードがオンです', 'El ahorro de energía está activo',
+        'Hemat daya aktif'),
+    'powerSaveTurnOff': (
+        '关掉省电模式', '關掉省電模式', 'Turn off power saver',
+        '省電モードをオフ', 'Desactivar el ahorro', 'Matikan hemat daya'),
+    'powerSaveNotice': (
+        '在界面上提示', '在介面上提示', 'Show it on screen',
+        '画面に表示する', 'Mostrarlo en pantalla', 'Tampilkan di layar'),
+    # ── 消息重发（没收到回执时按设定重试）──
+    'msgResend': (
+        '消息重发', '訊息重發', 'Resend messages',
+        'メッセージの再送', 'Reenviar mensajes', 'Kirim ulang pesan'),
+    'msgResendTip': (
+        '对方没回执时按下面的间隔重发。',
+        '對方沒回執時按下面的間隔重發。',
+        'It goes again if no receipt comes back.',
+        '相手から受領通知が来ないときに再送します。',
+        'Se reenvía si no llega acuse.',
+        'Dikirim ulang bila tidak ada konfirmasi.'),
+    'msgResendGap': (
+        '重发间隔', '重發間隔', 'Resend every',
+        '再送の間隔', 'Reenviar cada', 'Kirim ulang tiap'),
+    'msgResendTimes': (
+        '重发次数', '重發次數', 'Resend attempts',
+        '再送の回数', 'Intentos', 'Jumlah kirim ulang'),
+    'msgResendSeconds': (
+        '每 {n} 秒', '每 {n} 秒', 'Every {n} s',
+        '{n} 秒ごと', 'Cada {n} s', 'Tiap {n} dtk'),
+    'msgResendCount': (
+        '{n} 次', '{n} 次', '{n}×',
+        '{n} 回', '{n} veces', '{n} kali'),
+    'msgResendPlan': (
+        '每 {gap} 秒重发 · 最多 {max} 次',
+        '每 {gap} 秒重發 · 最多 {max} 次',
+        'Resent every {gap} s · up to {max}×',
+        '{gap} 秒ごとに再送 · 最大 {max} 回',
+        'Se reenvía cada {gap} s · máx. {max}',
+        'Dikirim ulang tiap {gap} dtk · maks {max}'),
+    'msgResendWaiting': (
+        '{s} 秒后重发 · 已重发 {done}/{max} 次',
+        '{s} 秒後重發 · 已重發 {done}/{max} 次',
+        'Resends in {s} s · {done}/{max} sent',
+        '{s} 秒後に再送 · 再送済み {done}/{max}',
+        'Reenvía en {s} s · {done}/{max} hechos',
+        'Kirim ulang dalam {s} dtk · {done}/{max}'),
+    'msgResendFailed': (
+        '已重发 {max} 次，未收到回执',
+        '已重發 {max} 次，未收到回執',
+        'Resent {max}× and still no receipt',
+        '{max} 回再送したが受領通知なし',
+        'Reenviado {max} veces sin acuse',
+        'Sudah {max}× kirim ulang, belum ada konfirmasi'),
+    'msgResendOk': (
+        '重发 {times} 次后收到回执',
+        '重發 {times} 次後收到回執',
+        'Receipt came after {times}× resend',
+        '{times} 回の再送で受領通知',
+        'Acuse tras {times} reenvío(s)',
+        'Konfirmasi masuk setelah {times}× kirim ulang'),
 }
 
 META = {
@@ -709,6 +771,12 @@ META = {
     'locationPageInfo':
         '{"placeholders": {"n": {"type": "String"}, "m": {"type": "String"}}}',
     'shareStationSent': '{"placeholders": {"call": {"type": "String"}}}',
+    'msgResendSeconds': '{"placeholders": {"n": {"type": "String"}}}',
+    'msgResendCount': '{"placeholders": {"n": {"type": "String"}}}',
+    'msgResendPlan': '{"placeholders": {"gap": {"type": "String"}, "max": {"type": "String"}}}',
+    'msgResendWaiting': '{"placeholders": {"s": {"type": "String"}, "done": {"type": "String"}, "max": {"type": "String"}}}',
+    'msgResendFailed': '{"placeholders": {"max": {"type": "String"}}}',
+    'msgResendOk': '{"placeholders": {"times": {"type": "String"}}}',
 }
 
 

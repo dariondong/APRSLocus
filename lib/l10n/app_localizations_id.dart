@@ -10571,4 +10571,43 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get updatePkgUnreadable => "Paket ini tidak dapat dibaca";
 
+  @override
+  String get powerSaveOn => "Hemat daya aktif";
+
+  @override
+  String get powerSaveTurnOff => "Matikan hemat daya";
+
+  @override
+  String get powerSaveNotice => "Tampilkan di layar";
+
+  @override
+  String get msgResend => "Kirim ulang pesan";
+
+  @override
+  String get msgResendTip => "Dikirim ulang bila tidak ada konfirmasi.";
+
+  @override
+  String get msgResendGap => "Kirim ulang tiap";
+
+  @override
+  String get msgResendTimes => "Jumlah kirim ulang";
+
+  @override
+  String msgResendSeconds(String n) => "Tiap $n dtk";
+
+  @override
+  String msgResendCount(String n) => "$n kali";
+
+  @override
+  String msgResendPlan(String gap, String max) => "Dikirim ulang tiap $gap dtk · maks $max";
+
+  @override
+  String msgResendWaiting(String s, String done, String max) => "Kirim ulang dalam $s dtk · $done/$max";
+
+  @override
+  String msgResendFailed(String max) => "Sudah $max× kirim ulang, belum ada konfirmasi";
+
+  @override
+  String msgResendOk(String times) => "Konfirmasi masuk setelah $times× kirim ulang";
+
 }

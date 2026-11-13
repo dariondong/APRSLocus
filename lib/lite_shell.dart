@@ -141,6 +141,8 @@ class _LiteShellState extends State<LiteShell> {
                   ),
                 ),
               ),
+              // 省电模式开着时：一行小胶囊，点开能直接关掉它。
+              PowerSaveHint(state: st, dense: true),
               const Spacer(),
               // 秒数不在这里——它归下面那条上报状态条（同一件事只说一遍）。
             ],
