@@ -419,8 +419,13 @@ CARDS = [
 # 只列「重点版本」：中间几十个纯修 bug 的版本归纳进文字说明，完整记录指向 Releases。
 CL = [
     {
-        'ver': 'v2.2.4', 'date': '2026-11-12',
+        'ver': 'v2.2.5', 'date': '2026-11-13',
         'items': [
+            ('new',
+             T('打开应用时可能整页弹出一条强提醒，内容由官网下发。',
+               '打開應用時可能整頁彈出一條強提醒，內容由官網下發。',
+               'A strong notice can fill the screen when you open the app; its text comes from '
+               'the official site.')),
             ('new',
              T('过滤范围多了一个按钮，点一下就把过滤中心设成你现在的位置。',
                '過濾範圍多了一個按鈕，點一下就把過濾中心設成你現在的位置。',
