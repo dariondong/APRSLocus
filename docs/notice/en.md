@@ -44,6 +44,8 @@ SHA-256: 0F:2C:52:7A:9C:D6:6A:43:A8:71:F3:51:92:C7:5C:B7:5F:C1:B8:5B:6F:63:BA:45
 
 APRSNETCN OA is a weekly APRS message roll call run by APRSNET.CN.
 
+@video https://aprsnet.cn/oa/embed.html
+
 ### 1. When
 
 13 November 2026, 00:00–23:59 Beijing time (UTC+8).

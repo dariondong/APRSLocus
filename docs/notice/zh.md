@@ -44,6 +44,8 @@ SHA-256: 0F:2C:52:7A:9C:D6:6A:43:A8:71:F3:51:92:C7:5C:B7:5F:C1:B8:5B:6F:63:BA:45
 
 APRSNETCN OA 是由 APRSNET.CN 发起的每周 APRS 报文点名活动。
 
+@video https://aprsnet.cn/oa/embed.html
+
 ### 一、活动时间
 
 2026 年 11 月 13 日 00:00—23:59（北京时间）。
