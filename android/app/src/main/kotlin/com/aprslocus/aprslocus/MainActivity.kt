@@ -741,6 +741,18 @@ class MainActivity : FlutterActivity() {
                         }.start()
                     }
                 }
+                // 「下载」里那个包的完整身份（含文件 SHA-256）：联网校验用它比仓库那份。
+                "apkInfoFromDownloads" -> {
+                    val name = call.argument<String>("name")
+                    if (name == null) {
+                        result.error("NO_NAME", "缺少安装包名", null)
+                    } else {
+                        Thread {
+                            val info = infoOfDownloads(name)
+                            runOnUiThread { result.success(info) }
+                        }.start()
+                    }
+                }
                 // 安装完重启后清掉安装时的临时副本（cacheDir/update）。
                 "cleanUpdateCache" -> {
                     try {
@@ -1691,6 +1703,24 @@ class MainActivity : FlutterActivity() {
         return ApkPrep(target, null)
     }
 
+    /// 「下载」里那个包的完整身份：复制到缓存读一遍，读完就删。
+    ///
+    /// 与 [prepareDownloadsApk] 的区别：这里**不判**签名对不对——校验结果要
+    /// 原样交回 Dart 去显示（签名不对也要让用户看见是哪一道不对），不在这里
+    /// 一删了之。失败时返回 `{"error": "no-file" | "failed"}`。
+    private fun infoOfDownloads(name: String): Map<String, Any?> {
+        val safe = name.replace('/', '_').replace('\\', '_')
+        val dir = File(cacheDir, "update")
+        if (!dir.exists() && !dir.mkdirs()) return mapOf("error" to "failed")
+        // 只留这一份：上一次没读完的副本在这里清掉
+        dir.listFiles()?.forEach { if (it.isFile) it.delete() }
+        val target = File(dir, "info_$safe")
+        if (!copyDownloadsTo(safe, target)) return mapOf("error" to "no-file")
+        val info = apkInfoOf(target.absolutePath) ?: mapOf("error" to "failed")
+        target.delete()
+        return info
+    }
+
     /// 把「下载」里叫 [name] 的那一份复制到 [target]。
     private fun copyDownloadsTo(name: String, target: File): Boolean {
         try {
@@ -1841,7 +1871,10 @@ class MainActivity : FlutterActivity() {
     }
 
     private fun sha256Hex(data: ByteArray): String {
-        val d = MessageDigest.getInstance("SHA-256").digest(data)
+        return hex(MessageDigest.getInstance("SHA-256").digest(data))
+    }
+
+    private fun hex(d: ByteArray): String {
         val sb = StringBuilder(d.size * 2)
         for (b in d) {
             val v = b.toInt() and 0xFF
@@ -1849,6 +1882,25 @@ class MainActivity : FlutterActivity() {
             sb.append(Integer.toHexString(v))
         }
         return sb.toString()
+    }
+
+    /// 一个文件的 SHA-256。联网校验拿它跟仓库里那份资产的 digest 比——
+    /// 签名只说明「同一个证书签的」，摘要才说明「就是这一次发布的那个文件」。
+    private fun sha256OfFile(f: File): String? {
+        return try {
+            val md = MessageDigest.getInstance("SHA-256")
+            f.inputStream().use { ins ->
+                val buf = ByteArray(1 shl 16)
+                while (true) {
+                    val n = ins.read(buf)
+                    if (n <= 0) break
+                    md.update(buf, 0, n)
+                }
+            }
+            hex(md.digest())
+        } catch (_: Exception) {
+            null
+        }
     }
 
     /// 读一个 apk 的包名 / 版本号 / 签名摘要（不安装）。
@@ -1869,7 +1921,8 @@ class MainActivity : FlutterActivity() {
                 "package" to info.packageName,
                 "versionCode" to code,
                 "versionName" to info.versionName,
-                "size" to f.length()
+                "size" to f.length(),
+                "sha256" to sha256OfFile(f)
             )
         } catch (_: Exception) {
             null

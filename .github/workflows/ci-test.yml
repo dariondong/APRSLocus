@@ -376,6 +376,11 @@ jobs:
       - name: Test update channels
         run: flutter test test/update_channels_test.dart
 
+      # 安装包的联网校验（版本号 / 仓库里那份的 sha256 / 签名）与
+      # 装完欢迎卡要用的「这一版改了什么」摘要。
+      - name: Test update package verify
+        run: flutter test test/update_verify_test.dart
+
       # 「高级连接通道设置」开关（用户要求「位置默认全部都发、消息保留勾选」）：
       # 关着时位置发给所有已启用且连上的可发射链路、消息那条链路不动。
       # 三条错都编译能过、analyze 全绿：

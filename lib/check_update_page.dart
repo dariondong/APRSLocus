@@ -15,6 +15,7 @@ import 'update_download.dart';
 import 'update_install.dart';
 import 'update_notes.dart';
 import 'update_packages.dart';
+import 'update_verify.dart';
 import 'settings_widgets.dart';
 import 'state.dart';
 import 'version_compare.dart';
@@ -227,13 +228,13 @@ class _CheckUpdatePageState extends State<CheckUpdatePage>
 
   String? get _downloadedTag => _pkg?.tag;
 
-  /// 已下载那个包的签名校验结果：`checking` / `ok` / `sig-mismatch` /
-  /// `no-file` / `failed`。null = 还没查（桌面端没有可校验的签名）。
-  String? _sigState;
+  /// 已下载那个包的**联网**校验结果：版本号、仓库里那份的 sha256、签名。
+  /// null = 还没查（桌面端没有可校验的签名）。
+  UpdateVerifyReport? _verify;
 
-  /// [_sigState] 是哪个包的结论（同名包在一页里只查一次，
-  /// 安卓每查一次要把包复制到缓存再读证书，别每帧都来一遍）。
-  String? _sigFor;
+  /// [_verify] 是哪个包的结论（同名包在一页里只查一次 —— 安卓每查一次都要
+  /// 把包复制到缓存读一遍摘要，几十兆的包别每帧来一遍）。
+  String? _verifyFor;
 
   /// 两个 tag 是否指向**同一版本**（比较时忽略开头的 `v`）。
   ///
@@ -355,37 +356,55 @@ class _CheckUpdatePageState extends State<CheckUpdatePage>
     _localPackages = list;
     _pkg = list.isEmpty ? null : list.first;
     if (mounted) setState(() {});
-    unawaited(_checkSignature());
+    unawaited(_verifyPackage());
   }
 
-  /// 查一次已下载那个包的签名。
+  /// 联网校验已下载的那个包。
   ///
-  /// 安卓拿不到公共「下载」目录里的文件路径（scoped storage），所以这一步由原生
-  /// 复制一份到缓存、读证书、再删掉副本；桌面上没有可校验的签名，直接留空。
-  Future<void> _checkSignature() async {
+  /// 三道一起看（见 `lib/update_verify.dart`）：
+  ///   * 包里的版本号 == 仓库这一版的 tag；
+  ///   * 这个文件的 SHA-256 == 仓库那份资产的 `digest`；
+  ///   * 签名证书 == 本机这一份的证书。
+  ///
+  /// 没联网就说没联网 —— 只校签名就写「通过」的话，用户会以为「这次发布的就是它」，
+  /// 而签名只说明是同一个人签的。安卓拿不到公共「下载」目录里的路径，读包这件事
+  /// 交给原生（复制到缓存、读完即删）；桌面端没有可校验的签名，直接留空。
+  Future<void> _verifyPackage() async {
     final p = _pkg;
     if (p == null) {
-      if (mounted && _sigState != null) setState(() => _sigState = null);
+      if (mounted && _verify != null) setState(() => _verify = null);
       return;
     }
     if (!UpdateInstaller.isAndroid) {
-      if (mounted && _sigState != null) setState(() => _sigState = null);
+      if (mounted && _verify != null) setState(() => _verify = null);
       return;
     }
-    if (_sigFor == p.name && _sigState != null && _sigState != 'checking') return;
-    final name = p.name;
-    _sigFor = name;
-    if (mounted) setState(() => _sigState = 'checking');
-    String r;
-    final path = p.path;
-    if (path != null) {
-      final t = await UpdateInstaller.verify(path);
-      r = t == ApkTrust.ok ? 'ok' : (t == ApkTrust.mismatch ? 'sig-mismatch' : 'failed');
-    } else {
-      r = await UpdateInstaller.verifyDownloads(name);
+    if (_verifyFor == p.name &&
+        _verify != null &&
+        _verify!.state != UpdateVerifyState.checking) {
+      return;
     }
+    final name = p.name;
+    _verifyFor = name;
+    if (mounted) setState(() => _verify = UpdateVerifyReport.checking);
+    final path = p.path;
+    final local = (path != null && path.isNotEmpty)
+        ? await UpdateInstaller.info(path)
+        : await UpdateInstaller.infoFromDownloads(name);
+    final mine = await UpdateInstaller.own();
+    final report = await verifyUpdatePackageOnline(
+      apiBase: widget.state.updateChannelBase,
+      owner: _repoOwner,
+      repo: _repoName,
+      tag: p.tag,
+      assetName: name,
+      local: local,
+      ownSignature: (mine?['sig'] ?? '').toString(),
+      packageName: (mine?['package'] ?? '').toString(),
+      userAgent: 'APRSLocus/${AppState.appVersion}',
+    );
     if (!mounted || _pkg?.name != name) return;
-    setState(() => _sigState = r);
+    setState(() => _verify = report);
   }
 
   /// 下载器落盘的目录。
@@ -766,6 +785,12 @@ class _CheckUpdatePageState extends State<CheckUpdatePage>
       return;
     }
     try {
+      if (_verifyBlocksInstall) {
+        // 摘要或版本号与仓库那份不一致：这已经不是「是不是我们签的」的问题，
+        // 而是「它根本不是这一次发布的那个文件」，不往下走。
+        _showSnack(_verifyLabel);
+        return;
+      }
       final can = await UpdateInstaller.canRequestInstall();
       if (!mounted) return;
       if (!can) {
@@ -1683,26 +1708,47 @@ class _CheckUpdatePageState extends State<CheckUpdatePage>
     );
   }
 
-  IconData get _sigIcon => switch (_sigState) {
-        'ok' => Icons.verified_user_outlined,
-        'sig-mismatch' => Icons.gpp_bad_outlined,
-        'checking' => Icons.hourglass_empty_rounded,
-        _ => Icons.help_outline_rounded,
+  UpdateVerifyState get _verifyState =>
+      _verify?.state ?? UpdateVerifyState.unknown;
+
+  IconData get _verifyIcon => switch (_verifyState) {
+        UpdateVerifyState.ok => Icons.verified_user_outlined,
+        UpdateVerifyState.checking => Icons.hourglass_empty_rounded,
+        UpdateVerifyState.offline => Icons.wifi_off_rounded,
+        UpdateVerifyState.notFound => Icons.help_outline_rounded,
+        UpdateVerifyState.versionMismatch ||
+        UpdateVerifyState.shaMismatch ||
+        UpdateVerifyState.sigMismatch =>
+          Icons.gpp_bad_outlined,
+        UpdateVerifyState.unknown => Icons.help_outline_rounded,
       };
 
-  Color get _sigColor => switch (_sigState) {
-        'ok' => C.green,
-        'sig-mismatch' => C.red,
-        'checking' => C.grey,
-        _ => C.grey,
+  Color get _verifyColor => switch (_verifyState) {
+        UpdateVerifyState.ok => C.green,
+        UpdateVerifyState.checking => C.grey,
+        UpdateVerifyState.offline || UpdateVerifyState.notFound => C.grey,
+        UpdateVerifyState.versionMismatch ||
+        UpdateVerifyState.shaMismatch ||
+        UpdateVerifyState.sigMismatch =>
+          C.red,
+        UpdateVerifyState.unknown => C.grey,
       };
 
-  String get _sigLabel => switch (_sigState) {
-        'ok' => S.of(context).updatePkgSigOk,
-        'sig-mismatch' => S.of(context).updatePkgSigMismatch,
-        'checking' => S.of(context).updatePkgSigChecking,
-        _ => S.of(context).updatePkgSigUnchecked,
+  String get _verifyLabel => switch (_verifyState) {
+        UpdateVerifyState.ok => S.of(context).updateCheckOk,
+        UpdateVerifyState.checking => S.of(context).updateCheckChecking,
+        UpdateVerifyState.offline => S.of(context).updateCheckOffline,
+        UpdateVerifyState.notFound => S.of(context).updateCheckNotFound,
+        UpdateVerifyState.versionMismatch => S.of(context).updateCheckVersion,
+        UpdateVerifyState.shaMismatch => S.of(context).updateCheckSha,
+        UpdateVerifyState.sigMismatch => S.of(context).updatePkgSigMismatch,
+        UpdateVerifyState.unknown => S.of(context).updatePkgSigUnchecked,
       };
+
+  /// 摘要对不上 / 版本号对不上 = 这个包不是仓库里那次发布的那一个，别装。
+  bool get _verifyBlocksInstall =>
+      _verifyState == UpdateVerifyState.shaMismatch ||
+      _verifyState == UpdateVerifyState.versionMismatch;
 
   Widget _downloadedCard(bool isWin) {
     final p = _pkg!;
@@ -1761,24 +1807,40 @@ class _CheckUpdatePageState extends State<CheckUpdatePage>
               overflow: TextOverflow.ellipsis,
             ),
           ),
-          // 签名校验：这一行是**这一页自己查出来的结果**，不是一句固定话。
-          // 下载时会查一次（对不上直接删），这里再查是为了「从别处放进来的包」
-          // 也能看出真假 —— 装的时候原生侧还会照这张证书再校一遍。
+          // 联网校验：这一行是**这一页自己查出来的结果**，不是一句固定话。
+          // 版本号、仓库里那份的 sha256、签名三道都对上才算通过；没联网就如实
+          // 说没联网（见 lib/update_verify.dart）。点一下可以重查。
           if (!isWin) ...[
             SizedBox(height: 8),
-            Row(
-              children: [
-                if (_sigState == 'checking')
-                  const SizedBox(
-                    width: 12,
-                    height: 12,
-                    child: CircularProgressIndicator(strokeWidth: 1.6),
-                  )
-                else
-                  Icon(_sigIcon, size: 13, color: _sigColor),
-                const SizedBox(width: 4),
-                Text(_sigLabel, style: ts(11, c: _sigColor)),
-              ],
+            InkWell(
+              onTap: _verifyState == UpdateVerifyState.checking
+                  ? null
+                  : () {
+                      _verifyFor = null;
+                      _verify = null;
+                      unawaited(_verifyPackage());
+                    },
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 2),
+                child: Row(
+                  children: [
+                    if (_verifyState == UpdateVerifyState.checking)
+                      const SizedBox(
+                        width: 12,
+                        height: 12,
+                        child: CircularProgressIndicator(strokeWidth: 1.6),
+                      )
+                    else
+                      Icon(_verifyIcon, size: 13, color: _verifyColor),
+                    const SizedBox(width: 4),
+                    Expanded(
+                      child: Text(_verifyLabel, style: ts(11, c: _verifyColor)),
+                    ),
+                    if ((_verify?.detail ?? '').isNotEmpty)
+                      Text(_verify!.detail, style: ts(10, c: C.greyLight)),
+                  ],
+                ),
+              ),
             ),
           ],
           SizedBox(height: 12),
