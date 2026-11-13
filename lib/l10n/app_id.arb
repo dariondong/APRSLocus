@@ -4540,5 +4540,6 @@
   "updatePkgDeleteTitle": "Simpan pemasang?",
   "updatePkgUnverifiedTitle": "Paket ini tidak dapat diverifikasi",
   "updatePkgUnverifiedBody": "Tidak ada koneksi, atau rilis ini tidak membawa digest untuk dibandingkan. Memasang tetap menjadi risiko Anda.",
-  "installAnyway": "Tetap pasang"
+  "installAnyway": "Tetap pasang",
+  "updatePkgUnreadable": "Paket ini tidak dapat dibaca"
 }

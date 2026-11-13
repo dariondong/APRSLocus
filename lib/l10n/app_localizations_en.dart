@@ -10558,4 +10558,7 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get installAnyway => "Install anyway";
 
+  @override
+  String get updatePkgUnreadable => "Cannot read this package";
+
 }

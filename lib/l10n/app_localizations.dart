@@ -18713,6 +18713,12 @@ abstract class AppLocalizations {
   /// **'继续安装'**
   String get installAnyway;
 
+  /// No description provided for @updatePkgUnreadable.
+  ///
+  /// In zh, this message translates to:
+  /// **'读不出这个安装包'**
+  String get updatePkgUnreadable;
+
 }
 
 class _AppLocalizationsDelegate

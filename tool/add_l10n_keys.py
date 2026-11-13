@@ -653,6 +653,10 @@ KEYS = {
         'Instalar de todos modos corre por tu cuenta.',
         'Tidak ada koneksi, atau rilis ini tidak membawa digest untuk dibandingkan. '
         'Memasang tetap menjadi risiko Anda.'),
+    'updatePkgUnreadable': (
+        '读不出这个安装包', '讀不出這個安裝包', 'Cannot read this package',
+        'このパッケージを読み取れません', 'No se puede leer este paquete',
+        'Paket ini tidak dapat dibaca'),
     'installAnyway': (
         '继续安装', '繼續安裝', 'Install anyway',
         'このままインストール', 'Instalar igualmente', 'Tetap pasang'),

@@ -10279,4 +10279,7 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String get installAnyway => "このままインストール";
 
+  @override
+  String get updatePkgUnreadable => "このパッケージを読み取れません";
+
 }

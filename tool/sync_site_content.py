@@ -419,6 +419,20 @@ CARDS = [
 # 只列「重点版本」：中间几十个纯修 bug 的版本归纳进文字说明，完整记录指向 Releases。
 CL = [
     {
+        'ver': 'v2.2.8', 'date': '2026-11-13',
+        'items': [
+            ('fix',
+             T('联网校验会去官方仓库查摘要，镜像渠道也不再一律说无法校验。',
+               '連網校驗會去官方倉庫查摘要，鏡像渠道也不再一律說無法校驗。',
+               'The online check asks the official repository for the digest, so mirror channels '
+               'no longer always fail it.')),
+            ('fix',
+             T('摘要对不上时，那一行写出两边的摘要前几位。',
+               '摘要對不上時，那一行寫出兩邊的摘要前幾位。',
+               'On a mismatch the row shows the first characters of both digests.')),
+        ],
+    },
+    {
         'ver': 'v2.2.7', 'date': '2026-11-13',
         'items': [
             ('up',

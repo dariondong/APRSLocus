@@ -10568,4 +10568,7 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get installAnyway => "Tetap pasang";
 
+  @override
+  String get updatePkgUnreadable => "Paket ini tidak dapat dibaca";
+
 }

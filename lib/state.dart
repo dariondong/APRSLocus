@@ -137,7 +137,7 @@ class SmartBeaconTier {
 
 class AppState extends ChangeNotifier {
   /// 应用版本（用于信标备注、APRSlocus 识别）
-  static const appVersion = '2.2.7';
+  static const appVersion = '2.2.8';
   // 我的电台
   String myCall = 'BV2AAA';
 
@@ -5767,6 +5767,13 @@ class AppState extends ChangeNotifier {
     logs.insert(0, LogEntry(DateTime.now(), level, source, message));
     if (logs.length > _maxLogs) logs.removeLast();
   }
+
+  /// 给页面用的日志入口（同一份 [logs]，见「数据包 → 日志」）。
+  ///
+  /// 只给真正需要用户自查的地方用：更新页的联网校验、强提醒拉取这类
+  /// 「界面上只写一句结论」的路径 —— 出问题时得能看出卡在哪一步。
+  void logLine(LogLevel level, String source, String message) =>
+      _log(level, source, message);
 
   void clearLogs() {
     logs.clear();

@@ -4540,5 +4540,6 @@
   "updatePkgDeleteTitle": "¿Conservar el instalador?",
   "updatePkgUnverifiedTitle": "No se pudo verificar este paquete",
   "updatePkgUnverifiedBody": "O no hay conexión, o la entrega no trae un resumen con el que comparar. Instalar de todos modos corre por tu cuenta.",
-  "installAnyway": "Instalar igualmente"
+  "installAnyway": "Instalar igualmente",
+  "updatePkgUnreadable": "No se puede leer este paquete"
 }

@@ -62,6 +62,12 @@ class UpdateVerifyReport {
   bool get ok => state == UpdateVerifyState.ok;
 }
 
+/// 官方仓库的 API 根地址。
+///
+/// 渠道可以换（官网下发的那份清单），但「这一版是不是官方发的」只能向官方仓库对。
+/// 它不受渠道影响：当前渠道拿不到摘要（镜像、OSS）时返回这里查。
+const String kOfficialApiBase = 'https://api.github.com/repos';
+
 /// 版本号归一：`v2.2.3` 与 `2.2.3` 是同一版。
 String normalizeVersionTag(String tag) =>
     tag.trim().replaceFirst(RegExp('^[vV]'), '');
@@ -104,8 +110,10 @@ UpdateVerifyReport judgeUpdatePackage({
   final gotSha = (local['sha256'] ?? '').toString().toLowerCase();
   if (gotSha.isEmpty) return const UpdateVerifyReport(UpdateVerifyState.unknown);
   if (gotSha != wantSha) {
-    final head = gotSha.length > 12 ? '${gotSha.substring(0, 12)}…' : gotSha;
-    return UpdateVerifyReport(UpdateVerifyState.shaMismatch, head);
+    // 两边都截前 8 位：一眼能看出不是同一个文件，且不占满一行。
+    String head(String v) => v.length > 8 ? '${v.substring(0, 8)}…' : v;
+    return UpdateVerifyReport(
+        UpdateVerifyState.shaMismatch, '${head(gotSha)} / ${head(wantSha)}');
   }
   return const UpdateVerifyReport(UpdateVerifyState.ok);
 }
@@ -229,27 +237,48 @@ Future<UpdateVerifyReport> verifyUpdatePackageOnline({
   required String ownSignature,
   required String packageName,
   required String userAgent,
+  String officialBase = kOfficialApiBase,
   Duration timeout = const Duration(seconds: 8),
 }) async {
   if (local == null) return const UpdateVerifyReport(UpdateVerifyState.unknown);
-  final got = await fetchRelease(
-    apiBase: apiBase,
-    owner: owner,
-    repo: repo,
-    tag: tag,
-    userAgent: userAgent,
-    timeout: timeout,
-  );
-  final release = got.release;
-  if (release == null) {
+  // 摘要在哪查：先问当前渠道，再问**官方仓库**。
+  //
+  // 为什么必须退到官方仓库：只有 GitHub 会给每个资产算 sha256。自建镜像
+  // （Qingling）没有这个字段，阿里云 OSS 那两条根本没有 releases 接口 ——
+  // 只看当前渠道的话，用这些渠道的人永远「无法校验」。而「这个包是不是官方
+  // 发布的那个」这件事，本来就该跟仓库对，与从哪台机器下的无关。
+  final bases = <String>[];
+  for (final b in [apiBase, officialBase]) {
+    if (b.isNotEmpty && !bases.contains(b)) bases.add(b);
+  }
+  Map<String, dynamic>? release;
+  var digest = '';
+  var reachable = false;
+  for (final b in bases) {
+    final got = await fetchRelease(
+      apiBase: b,
+      owner: owner,
+      repo: repo,
+      tag: tag,
+      userAgent: userAgent,
+      timeout: timeout,
+    );
+    reachable = reachable || got.reachable;
+    final r = got.release;
+    if (r == null) continue;
+    final d = assetDigestOf(r, assetName);
+    if (d.isEmpty) continue;
+    release = r;
+    digest = d;
+    break;
+  }
+  if (release == null || digest.isEmpty) {
     // 连不上 = 没联网；连上了却查不到 = 这条渠道没有 releases 接口，
     // 两句话不一样，别把「没网」安在阿里云 OSS 那两条渠道头上。
-    return UpdateVerifyReport(got.reachable
+    return UpdateVerifyReport(reachable
         ? UpdateVerifyState.notFound
         : UpdateVerifyState.offline);
   }
-  final digest = assetDigestOf(release, assetName);
-  if (digest.isEmpty) return const UpdateVerifyReport(UpdateVerifyState.notFound);
   return judgeUpdatePackage(
     local: local,
     ownSignature: ownSignature,

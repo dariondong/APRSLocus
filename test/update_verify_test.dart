@@ -137,6 +137,7 @@ void main() {
     test('连不上仓库时如实说没联网（这里连一个不存在的端口）', () async {
       final report = await verifyUpdatePackageOnline(
         apiBase: 'http://127.0.0.1:1/repos',
+        officialBase: 'http://127.0.0.1:1/repos',
         owner: 'dariondong',
         repo: 'APRSLocus',
         tag: '2.2.3',
@@ -204,9 +205,62 @@ void main() {
       expect(report.state, UpdateVerifyState.ok);
     });
 
+    test('这条渠道没有摘要（镜像 / OSS）时退到官方仓库查', () async {
+      // 渠道：200，但资产上没有 digest（Gitea / 自建镜像就是这样）
+      final mirror = await HttpServer.bind(InternetAddress.loopbackIPv4, 0);
+      mirror.listen((req) {
+        req.response.headers.contentType = ContentType.json;
+        req.response.write(jsonEncode({
+          'tag_name': 'v2.2.7',
+          'assets': [
+            {'name': 'APRSLocus_2.2.7.apk', 'size': 1},
+          ],
+        }));
+        req.response.close();
+      });
+      // 官方仓库：带 digest
+      final official = await HttpServer.bind(InternetAddress.loopbackIPv4, 0);
+      official.listen((req) {
+        req.response.headers.contentType = ContentType.json;
+        req.response.write(jsonEncode({
+          'tag_name': 'v2.2.7',
+          'assets': [
+            {
+              'name': 'APRSLocus_2.2.7.apk',
+              'digest': 'sha256:abc123',
+            },
+          ],
+        }));
+        req.response.close();
+      });
+      final report = await verifyUpdatePackageOnline(
+        apiBase: 'http://127.0.0.1:${mirror.port}/repos',
+        officialBase: 'http://127.0.0.1:${official.port}/repos',
+        owner: 'dariondong',
+        repo: 'APRSLocus',
+        tag: '2.2.7',
+        assetName: 'APRSLocus_2.2.7.apk',
+        local: local(version: '2.2.7'),
+        ownSignature: 'SIG',
+        packageName: 'com.aprslocus.aprslocus',
+        userAgent: 'APRSlocus/test',
+        timeout: const Duration(seconds: 2),
+      );
+      await mirror.close(force: true);
+      await official.close(force: true);
+      expect(report.state, UpdateVerifyState.ok);
+    });
+
+    test('摘要不一致时把两边的摘要都写出来', () {
+      final r = judge(pkg: local(sha: 'ffffffffaaaa'));
+      expect(r.state, UpdateVerifyState.shaMismatch);
+      expect(r.detail, 'ffffffff… / abc123');
+    });
+
     test('读不出包时直接 unknown，不去联网', () async {
       final report = await verifyUpdatePackageOnline(
         apiBase: 'http://127.0.0.1:1/repos',
+        officialBase: 'http://127.0.0.1:1/repos',
         owner: 'dariondong',
         repo: 'APRSLocus',
         tag: '2.2.3',

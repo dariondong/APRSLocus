@@ -10179,6 +10179,9 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String get installAnyway => "继续安装";
 
+  @override
+  String get updatePkgUnreadable => "读不出这个安装包";
+
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
@@ -20354,5 +20357,8 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get installAnyway => "繼續安裝";
+
+  @override
+  String get updatePkgUnreadable => "讀不出這個安裝包";
 
 }

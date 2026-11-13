@@ -10617,4 +10617,7 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get installAnyway => "Instalar igualmente";
 
+  @override
+  String get updatePkgUnreadable => "No se puede leer este paquete";
+
 }

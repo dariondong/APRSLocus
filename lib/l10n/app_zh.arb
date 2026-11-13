@@ -5219,5 +5219,6 @@
   "updatePkgDeleteTitle": "安装包还要不要留",
   "updatePkgUnverifiedTitle": "无法校验这个安装包",
   "updatePkgUnverifiedBody": "没联网、或者仓库里查不到这一版，版本号、摘要与签名对不上。继续安装的话，风险自负。",
-  "installAnyway": "继续安装"
+  "installAnyway": "继续安装",
+  "updatePkgUnreadable": "读不出这个安装包"
 }

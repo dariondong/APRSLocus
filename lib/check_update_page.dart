@@ -8,6 +8,7 @@ import 'package:flutter/foundation.dart'
 import 'package:path_provider/path_provider.dart';
 
 import 'device_abi.dart';
+import 'models.dart';
 import 'pinned_http.dart';
 import 'theme.dart';
 import 'update_channels.dart';
@@ -403,6 +404,15 @@ class _CheckUpdatePageState extends State<CheckUpdatePage>
       packageName: (mine?['package'] ?? '').toString(),
       userAgent: 'APRSLocus/${AppState.appVersion}',
     );
+    // 界面上只写一句结论，卡在哪一步得留痕：本地读出的版本号 / 摘要前 8 位、
+    // 仓库那边回的是哪一版、结论是什么（见「数据包 → 日志」）。
+    widget.state.logLine(
+      report.ok ? LogLevel.info : LogLevel.warn,
+      '更新校验',
+      '${report.state.name}${report.detail.isEmpty ? '' : ' · ${report.detail}'}'
+      ' · 本地 ${(local?['versionName'] ?? '?')} / '
+      '${_sha8(local?['sha256'])}',
+    );
     if (!mounted || _pkg?.name != name) return;
     setState(() => _verify = report);
   }
@@ -688,6 +698,13 @@ class _CheckUpdatePageState extends State<CheckUpdatePage>
       // 装完以后的欢迎卡要说「这一版改了什么」，所以趁着手里有正文先挑出来。
       notes: updateNotesSummary(rel.body),
     ));
+  }
+
+  /// 摘要只留前 8 位（日志里够认出「不是同一个文件」，又不至于糊一整行）。
+  static String _sha8(Object? v) {
+    final s = (v ?? '').toString();
+    if (s.isEmpty) return '无';
+    return s.length > 8 ? '${s.substring(0, 8)}…' : s;
   }
 
   /// 校验没有结论时的确认（用户：「如果无法校验 需要用户进一步确认」）。
@@ -1805,7 +1822,7 @@ class _CheckUpdatePageState extends State<CheckUpdatePage>
         UpdateVerifyState.versionMismatch => S.of(context).updateCheckVersion,
         UpdateVerifyState.shaMismatch => S.of(context).updateCheckSha,
         UpdateVerifyState.sigMismatch => S.of(context).updatePkgSigMismatch,
-        UpdateVerifyState.unknown => S.of(context).updatePkgSigUnchecked,
+        UpdateVerifyState.unknown => S.of(context).updatePkgUnreadable,
       };
 
   /// 摘要对不上 / 版本号对不上 = 这个包不是仓库里那次发布的那一个，别装。

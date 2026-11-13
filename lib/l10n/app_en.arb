@@ -4540,5 +4540,6 @@
   "updatePkgDeleteTitle": "Keep the installer?",
   "updatePkgUnverifiedTitle": "This package could not be verified",
   "updatePkgUnverifiedBody": "Either there is no network, or the release has no digest to compare. Installing anyway is at your own risk.",
-  "installAnyway": "Install anyway"
+  "installAnyway": "Install anyway",
+  "updatePkgUnreadable": "Cannot read this package"
 }
