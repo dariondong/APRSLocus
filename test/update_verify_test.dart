@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:aprslocus/update_notes.dart';
@@ -145,6 +148,60 @@ void main() {
         timeout: const Duration(milliseconds: 300),
       );
       expect(report.state, UpdateVerifyState.offline);
+    });
+
+    test('连上了但这条渠道查不到这一版：说查不到，不是「没联网」', () async {
+      final server = await HttpServer.bind(InternetAddress.loopbackIPv4, 0);
+      server.listen((req) {
+        req.response.statusCode = 404;
+        req.response.write('not found');
+        req.response.close();
+      });
+      final report = await verifyUpdatePackageOnline(
+        apiBase: 'http://127.0.0.1:${server.port}/repos',
+        owner: 'dariondong',
+        repo: 'APRSLocus',
+        tag: '2.2.4',
+        assetName: 'APRSLocus_2.2.4.apk',
+        local: local(),
+        ownSignature: 'SIG',
+        packageName: 'com.aprslocus.aprslocus',
+        userAgent: 'APRSLocus/test',
+        timeout: const Duration(seconds: 2),
+      );
+      await server.close(force: true);
+      expect(report.state, UpdateVerifyState.notFound);
+    });
+
+    test('仓库给的摘要与本机一致就通过（走一遍真的 HTTP）', () async {
+      final server = await HttpServer.bind(InternetAddress.loopbackIPv4, 0);
+      server.listen((req) {
+        req.response.headers.contentType = ContentType.json;
+        req.response.write(jsonEncode({
+          'tag_name': 'v2.2.4',
+          'assets': [
+            {
+              'name': 'APRSLocus_2.2.4.apk',
+              'digest': 'sha256:abc123',
+            },
+          ],
+        }));
+        req.response.close();
+      });
+      final report = await verifyUpdatePackageOnline(
+        apiBase: 'http://127.0.0.1:${server.port}/repos',
+        owner: 'dariondong',
+        repo: 'APRSLocus',
+        tag: '2.2.4',
+        assetName: 'APRSLocus_2.2.4.apk',
+        local: local(version: '2.2.4'),
+        ownSignature: 'SIG',
+        packageName: 'com.aprslocus.aprslocus',
+        userAgent: 'APRSlocus/test',
+        timeout: const Duration(seconds: 2),
+      );
+      await server.close(force: true);
+      expect(report.state, UpdateVerifyState.ok);
     });
 
     test('读不出包时直接 unknown，不去联网', () async {

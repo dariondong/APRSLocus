@@ -118,11 +118,28 @@ String _digestOf(String raw) {
   return s;
 }
 
-/// 从仓库读这一版的信息。拿不到（离线 / 超时 / 非 200）返回 null。
+/// 读一次的结果：拿到的那一版（可能没有）+ 有没有真的连上。
+///
+/// 「没连上」与「连上了但这一版查不到」必须分开：前者是没网，后者是这条渠道
+/// 根本没有 releases 接口（阿里云 OSS 那两条就是这样）。两种情况提示的话不一样，
+/// 不能都写成「没有联网」。
+class ReleaseFetch {
+  final Map<String, dynamic>? release;
+
+  /// 至少有一次请求真的拿到了 HTTP 响应（哪怕 404）。
+  final bool reachable;
+
+  const ReleaseFetch(this.release, {required this.reachable});
+
+  static const ReleaseFetch unreachable = ReleaseFetch(null, reachable: false);
+}
+
+/// 从仓库读这一版的信息。没网返回 [ReleaseFetch.unreachable]；
+/// 连上了但查不到这一版时 `release` 为 null、`reachable` 为真。
 ///
 /// 各条渠道都是 GitHub 兼容的 REST：`<base>/<owner>/<repo>/releases/tags/<tag>`。
 /// 自建镜像走钉扎 context（见 `lib/pinned_http.dart`）。
-Future<Map<String, dynamic>?> fetchReleaseByTag({
+Future<ReleaseFetch> fetchRelease({
   required String apiBase,
   required String owner,
   required String repo,
@@ -131,21 +148,51 @@ Future<Map<String, dynamic>?> fetchReleaseByTag({
   Duration timeout = const Duration(seconds: 8),
 }) async {
   final want = normalizeVersionTag(tag);
-  if (apiBase.isEmpty || want.isEmpty) return null;
+  if (apiBase.isEmpty || want.isEmpty) return ReleaseFetch.unreachable;
+  var reachable = false;
   // 有的渠道 tag 带 v、有的不带：先按 v 版问，再按原样问一次。
   for (final candidate in ['v$want', want]) {
     final url = '$apiBase/$owner/$repo/releases/tags/$candidate';
     try {
-      final map = await _getJson(url, userAgent, timeout);
-      if (map != null) return map;
+      final got = await _getJson(url, userAgent, timeout);
+      if (got.status > 0) reachable = true;
+      if (got.json != null) return ReleaseFetch(got.json, reachable: true);
     } catch (_) {
-      // 继续试下一个写法
+      // 网络层失败：继续试下一个写法（两种都失败就是没网）
     }
   }
-  return null;
+  return ReleaseFetch(null, reachable: reachable);
 }
 
-Future<Map<String, dynamic>?> _getJson(
+/// 只要那一版本身（拿不到返回 null）。上面的 [fetchRelease] 是完整版。
+Future<Map<String, dynamic>?> fetchReleaseByTag({
+  required String apiBase,
+  required String owner,
+  required String repo,
+  required String tag,
+  required String userAgent,
+  Duration timeout = const Duration(seconds: 8),
+}) async {
+  final got = await fetchRelease(
+    apiBase: apiBase,
+    owner: owner,
+    repo: repo,
+    tag: tag,
+    userAgent: userAgent,
+    timeout: timeout,
+  );
+  return got.release;
+}
+
+class _JsonGot {
+  /// 0 = 连不上（抛异常的那条路）。
+  final int status;
+  final Map<String, dynamic>? json;
+
+  const _JsonGot(this.status, this.json);
+}
+
+Future<_JsonGot> _getJson(
     String url, String userAgent, Duration timeout) async {
   final client = HttpClient(context: pinnedContextFor(url))
     ..connectionTimeout = timeout;
@@ -154,15 +201,15 @@ Future<Map<String, dynamic>?> _getJson(
     req.headers.set(HttpHeaders.acceptHeader, 'application/json');
     req.headers.set(HttpHeaders.userAgentHeader, userAgent);
     final resp = await req.close().timeout(timeout);
-    if (resp.statusCode != 200) {
-      // 非 200 也要把连接收掉，否则手机上的 socket 会一直挂着。
-      await resp.drain<void>();
-      return null;
-    }
+    // 不管什么状态码，正文都要读完再关：手机上一个没读的 socket 会一直挂着。
     final body = await resp.transform(utf8.decoder).join().timeout(timeout);
+    if (resp.statusCode != 200) return _JsonGot(resp.statusCode, null);
     final data = jsonDecode(body);
-    if (data is Map) return data.map((k, v) => MapEntry(k.toString(), v));
-    return null;
+    if (data is Map) {
+      return _JsonGot(resp.statusCode,
+          data.map((k, v) => MapEntry(k.toString(), v)));
+    }
+    return _JsonGot(resp.statusCode, null);
   } finally {
     client.close(force: true);
   }
@@ -185,7 +232,7 @@ Future<UpdateVerifyReport> verifyUpdatePackageOnline({
   Duration timeout = const Duration(seconds: 8),
 }) async {
   if (local == null) return const UpdateVerifyReport(UpdateVerifyState.unknown);
-  final release = await fetchReleaseByTag(
+  final got = await fetchRelease(
     apiBase: apiBase,
     owner: owner,
     repo: repo,
@@ -193,7 +240,14 @@ Future<UpdateVerifyReport> verifyUpdatePackageOnline({
     userAgent: userAgent,
     timeout: timeout,
   );
-  if (release == null) return const UpdateVerifyReport(UpdateVerifyState.offline);
+  final release = got.release;
+  if (release == null) {
+    // 连不上 = 没联网；连上了却查不到 = 这条渠道没有 releases 接口，
+    // 两句话不一样，别把「没网」安在阿里云 OSS 那两条渠道头上。
+    return UpdateVerifyReport(got.reachable
+        ? UpdateVerifyState.notFound
+        : UpdateVerifyState.offline);
+  }
   final digest = assetDigestOf(release, assetName);
   if (digest.isEmpty) return const UpdateVerifyReport(UpdateVerifyState.notFound);
   return judgeUpdatePackage(
