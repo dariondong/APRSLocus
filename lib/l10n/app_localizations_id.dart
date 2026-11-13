@@ -10532,4 +10532,25 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String connectingChannel(String name) => "Menghubungkan ke $name";
 
+  @override
+  String get updateCheckChecking => "Memeriksa daring";
+
+  @override
+  String get updateCheckOk => "Terverifikasi daring: versi, digest, dan tanda tangan cocok";
+
+  @override
+  String get updateCheckOffline => "Tidak daring: versi tidak dapat diperiksa";
+
+  @override
+  String get updateCheckNotFound => "Digest versi ini tidak ada di repositori: tidak dapat diperiksa";
+
+  @override
+  String get updateCheckVersion => "Versi di dalam paket tidak sama dengan rilis ini";
+
+  @override
+  String get updateCheckSha => "Digest tidak cocok dengan berkas di repositori";
+
+  @override
+  String get updatePkgWhatsNew => "Yang berubah di versi ini";
+
 }

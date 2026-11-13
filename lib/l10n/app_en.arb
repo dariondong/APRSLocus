@@ -4528,5 +4528,12 @@
   "updatePkgSigMismatch": "The signature does not match this device",
   "updatePkgSigUnchecked": "Could not read the signature",
   "connectingChannel": "Connecting to {name}",
-  "@connectingChannel": {"placeholders": {"name": {"type": "String"}}}
+  "@connectingChannel": {"placeholders": {"name": {"type": "String"}}},
+  "updateCheckChecking": "Checking online",
+  "updateCheckOk": "Checked online: version, digest and signature all match",
+  "updateCheckOffline": "Offline: cannot verify the version matches",
+  "updateCheckNotFound": "No digest for this version in the repository: cannot verify",
+  "updateCheckVersion": "The version inside does not match this release",
+  "updateCheckSha": "The digest does not match the file in the repository",
+  "updatePkgWhatsNew": "What's new in this version"
 }

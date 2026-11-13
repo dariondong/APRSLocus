@@ -13,6 +13,7 @@ import 'theme.dart';
 import 'update_channels.dart';
 import 'update_download.dart';
 import 'update_install.dart';
+import 'update_notes.dart';
 import 'update_packages.dart';
 import 'settings_widgets.dart';
 import 'state.dart';
@@ -665,6 +666,8 @@ class _CheckUpdatePageState extends State<CheckUpdatePage>
       fileName: fileName,
       versionTag: tag,
       dirProvider: _downloadDir,
+      // 装完以后的欢迎卡要说「这一版改了什么」，所以趁着手里有正文先挑出来。
+      notes: updateNotesSummary(rel.body),
     ));
   }
 

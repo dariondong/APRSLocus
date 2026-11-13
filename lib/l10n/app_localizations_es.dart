@@ -10581,4 +10581,25 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String connectingChannel(String name) => "Conectando con $name";
 
+  @override
+  String get updateCheckChecking => "Comprobando en línea";
+
+  @override
+  String get updateCheckOk => "Comprobado en línea: versión, resumen y firma coinciden";
+
+  @override
+  String get updateCheckOffline => "Sin conexión: no se puede comprobar la versión";
+
+  @override
+  String get updateCheckNotFound => "No hay resumen de esta versión en el repositorio: no se puede comprobar";
+
+  @override
+  String get updateCheckVersion => "La versión dentro del paquete no coincide con esta entrega";
+
+  @override
+  String get updateCheckSha => "El resumen no coincide con el archivo del repositorio";
+
+  @override
+  String get updatePkgWhatsNew => "Novedades de esta versión";
+
 }

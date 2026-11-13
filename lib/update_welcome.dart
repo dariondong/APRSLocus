@@ -41,6 +41,7 @@ Future<void> maybePromptUpdateWelcome({
     state.forgetUpdatePackage();
     return;
   }
+  final notes = state.updatePkgNotes;
 
   if (state.updatePkgAction == 'delete') {
     await deleteUpdatePackage(state);
@@ -73,11 +74,33 @@ Future<void> maybePromptUpdateWelcome({
             ),
           ],
         ),
-        content: Column(
+        content: SingleChildScrollView(
+          child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(s.updatePkgWelcomeBody, style: ts(13, h: 1.6)),
+            // 这一版改了什么：下载时从 release 正文里挑出的几行（见
+            // lib/update_notes.dart）。从别处装的包没有这段，就不摆标题。
+            if (notes.isNotEmpty) ...[
+              const SizedBox(height: 12),
+              Text(
+                s.updatePkgWhatsNew,
+                style: ts(12, w: FontWeight.w700, c: C.slate),
+              ),
+              const SizedBox(height: 6),
+              for (final line in notes)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 3),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('· ', style: ts(12, c: C.grey)),
+                      Expanded(child: Text(line, style: ts(12, h: 1.5))),
+                    ],
+                  ),
+                ),
+            ],
             const SizedBox(height: 12),
             Container(
               width: double.infinity,
@@ -125,6 +148,7 @@ Future<void> maybePromptUpdateWelcome({
               ),
             ),
           ],
+          ),
         ),
         actions: [
           TextButton(

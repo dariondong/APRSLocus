@@ -4528,5 +4528,12 @@
   "updatePkgSigMismatch": "署名がこの端末と一致しません",
   "updatePkgSigUnchecked": "署名を読み取れません",
   "connectingChannel": "{name} に接続しています",
-  "@connectingChannel": {"placeholders": {"name": {"type": "String"}}}
+  "@connectingChannel": {"placeholders": {"name": {"type": "String"}}},
+  "updateCheckChecking": "オンラインで確認中",
+  "updateCheckOk": "オンライン確認済み。バージョン・ダイジェスト・署名が一致",
+  "updateCheckOffline": "オンラインでないため、バージョンの一致を確認できません",
+  "updateCheckNotFound": "このバージョンのダイジェストが見つからず、確認できません",
+  "updateCheckVersion": "パッケージ内のバージョンがこのリリースと違います",
+  "updateCheckSha": "パッケージのダイジェストがリポジトリのものと違います",
+  "updatePkgWhatsNew": "このバージョンの変更点"
 }

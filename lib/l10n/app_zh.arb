@@ -5207,5 +5207,12 @@
   "updatePkgSigMismatch": "签名与本机不一致",
   "updatePkgSigUnchecked": "读不出签名",
   "connectingChannel": "正在连 {name}",
-  "@connectingChannel": {"placeholders": {"name": {"type": "String"}}}
+  "@connectingChannel": {"placeholders": {"name": {"type": "String"}}},
+  "updateCheckChecking": "正在联网校验",
+  "updateCheckOk": "联网校验通过，版本号、摘要、签名都一致",
+  "updateCheckOffline": "没有联网，无法校验版本号是否一致",
+  "updateCheckNotFound": "仓库里查不到这一版的摘要，无法校验",
+  "updateCheckVersion": "包里的版本号与仓库这一版不一致",
+  "updateCheckSha": "包的摘要与仓库里那份不一致",
+  "updatePkgWhatsNew": "这一版改了什么"
 }

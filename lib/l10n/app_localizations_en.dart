@@ -10522,4 +10522,25 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String connectingChannel(String name) => "Connecting to $name";
 
+  @override
+  String get updateCheckChecking => "Checking online";
+
+  @override
+  String get updateCheckOk => "Checked online: version, digest and signature all match";
+
+  @override
+  String get updateCheckOffline => "Offline: cannot verify the version matches";
+
+  @override
+  String get updateCheckNotFound => "No digest for this version in the repository: cannot verify";
+
+  @override
+  String get updateCheckVersion => "The version inside does not match this release";
+
+  @override
+  String get updateCheckSha => "The digest does not match the file in the repository";
+
+  @override
+  String get updatePkgWhatsNew => "What's new in this version";
+
 }

@@ -4528,5 +4528,12 @@
   "updatePkgSigMismatch": "Tanda tangan tidak cocok dengan perangkat ini",
   "updatePkgSigUnchecked": "Tanda tangan tidak terbaca",
   "connectingChannel": "Menghubungkan ke {name}",
-  "@connectingChannel": {"placeholders": {"name": {"type": "String"}}}
+  "@connectingChannel": {"placeholders": {"name": {"type": "String"}}},
+  "updateCheckChecking": "Memeriksa daring",
+  "updateCheckOk": "Terverifikasi daring: versi, digest, dan tanda tangan cocok",
+  "updateCheckOffline": "Tidak daring: versi tidak dapat diperiksa",
+  "updateCheckNotFound": "Digest versi ini tidak ada di repositori: tidak dapat diperiksa",
+  "updateCheckVersion": "Versi di dalam paket tidak sama dengan rilis ini",
+  "updateCheckSha": "Digest tidak cocok dengan berkas di repositori",
+  "updatePkgWhatsNew": "Yang berubah di versi ini"
 }

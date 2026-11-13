@@ -4528,5 +4528,12 @@
   "updatePkgSigMismatch": "La firma no coincide con este dispositivo",
   "updatePkgSigUnchecked": "No se pudo leer la firma",
   "connectingChannel": "Conectando con {name}",
-  "@connectingChannel": {"placeholders": {"name": {"type": "String"}}}
+  "@connectingChannel": {"placeholders": {"name": {"type": "String"}}},
+  "updateCheckChecking": "Comprobando en línea",
+  "updateCheckOk": "Comprobado en línea: versión, resumen y firma coinciden",
+  "updateCheckOffline": "Sin conexión: no se puede comprobar la versión",
+  "updateCheckNotFound": "No hay resumen de esta versión en el repositorio: no se puede comprobar",
+  "updateCheckVersion": "La versión dentro del paquete no coincide con esta entrega",
+  "updateCheckSha": "El resumen no coincide con el archivo del repositorio",
+  "updatePkgWhatsNew": "Novedades de esta versión"
 }

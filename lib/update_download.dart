@@ -85,11 +85,15 @@ class UpdateDownloader extends ChangeNotifier {
   HttpClient? _client;
 
   /// 开始下载。[dirProvider] 由页面传入（它知道各平台的下载目录口径）。
+  ///
+  /// [notes] 是这一版改了什么（从 release 正文里挑出的几行）：跟着包一起记下来，
+  /// 装上新版以后欢迎卡要拿它说「这次改了什么」。
   Future<void> start({
     required String url,
     required String fileName,
     required String versionTag,
     required Future<Directory> Function() dirProvider,
+    List<String> notes = const [],
   }) async {
     if (running) return; // 同一时刻只允许一个（重复点按钮不会开出两条流）
     final seq = ++_runSeq;
@@ -217,6 +221,7 @@ class UpdateDownloader extends ChangeNotifier {
         name: publicName ?? fileName,
         path: path ?? '',
         size: size,
+        notes: notes,
       );
 
       doneTag = versionTag;

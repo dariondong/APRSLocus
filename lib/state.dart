@@ -4972,6 +4972,15 @@ class AppState extends ChangeNotifier {
   String get updatePkgPath => (updatePkg['path'] ?? '').toString();
   int get updatePkgSize => ((updatePkg['size'] as num?) ?? 0).toInt();
 
+  /// 这一版改了什么（下载时从 release 正文里挑出的几行，装完的欢迎卡要用）。
+  List<String> get updatePkgNotes {
+    final raw = updatePkg['notes'];
+    if (raw is List) {
+      return [for (final e in raw) e.toString()];
+    }
+    return const [];
+  }
+
   /// 记下一个刚下载好、并且已经复制进「下载」的安装包。
   ///
   /// [name] 是用户在文件管理器里看到的文件名，[path] 是下载时落在应用自己
@@ -4981,12 +4990,14 @@ class AppState extends ChangeNotifier {
     required String name,
     required String path,
     int size = 0,
+    List<String> notes = const [],
   }) {
     updatePkgJson = jsonEncode({
       'tag': tag,
       'name': name,
       'path': path,
       'size': size,
+      if (notes.isNotEmpty) 'notes': notes,
     });
     persist();
     _notify();

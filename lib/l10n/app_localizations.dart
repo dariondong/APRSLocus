@@ -18641,6 +18641,48 @@ abstract class AppLocalizations {
   /// **'正在连 {name}'**
   String connectingChannel(String name);
 
+  /// No description provided for @updateCheckChecking.
+  ///
+  /// In zh, this message translates to:
+  /// **'正在联网校验'**
+  String get updateCheckChecking;
+
+  /// No description provided for @updateCheckOk.
+  ///
+  /// In zh, this message translates to:
+  /// **'联网校验通过，版本号、摘要、签名都一致'**
+  String get updateCheckOk;
+
+  /// No description provided for @updateCheckOffline.
+  ///
+  /// In zh, this message translates to:
+  /// **'没有联网，无法校验版本号是否一致'**
+  String get updateCheckOffline;
+
+  /// No description provided for @updateCheckNotFound.
+  ///
+  /// In zh, this message translates to:
+  /// **'仓库里查不到这一版的摘要，无法校验'**
+  String get updateCheckNotFound;
+
+  /// No description provided for @updateCheckVersion.
+  ///
+  /// In zh, this message translates to:
+  /// **'包里的版本号与仓库这一版不一致'**
+  String get updateCheckVersion;
+
+  /// No description provided for @updateCheckSha.
+  ///
+  /// In zh, this message translates to:
+  /// **'包的摘要与仓库里那份不一致'**
+  String get updateCheckSha;
+
+  /// No description provided for @updatePkgWhatsNew.
+  ///
+  /// In zh, this message translates to:
+  /// **'这一版改了什么'**
+  String get updatePkgWhatsNew;
+
 }
 
 class _AppLocalizationsDelegate

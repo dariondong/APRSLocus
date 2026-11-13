@@ -10143,6 +10143,27 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String connectingChannel(String name) => "正在连 $name";
 
+  @override
+  String get updateCheckChecking => "正在联网校验";
+
+  @override
+  String get updateCheckOk => "联网校验通过，版本号、摘要、签名都一致";
+
+  @override
+  String get updateCheckOffline => "没有联网，无法校验版本号是否一致";
+
+  @override
+  String get updateCheckNotFound => "仓库里查不到这一版的摘要，无法校验";
+
+  @override
+  String get updateCheckVersion => "包里的版本号与仓库这一版不一致";
+
+  @override
+  String get updateCheckSha => "包的摘要与仓库里那份不一致";
+
+  @override
+  String get updatePkgWhatsNew => "这一版改了什么";
+
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
@@ -20282,5 +20303,26 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String connectingChannel(String name) => "正在連 $name";
+
+  @override
+  String get updateCheckChecking => "正在連網校驗";
+
+  @override
+  String get updateCheckOk => "連網校驗通過，版本號、摘要、簽章都一致";
+
+  @override
+  String get updateCheckOffline => "沒有連網，無法校驗版本號是否一致";
+
+  @override
+  String get updateCheckNotFound => "倉庫裡查不到這一版的摘要，無法校驗";
+
+  @override
+  String get updateCheckVersion => "包裡的版本號與倉庫這一版不一致";
+
+  @override
+  String get updateCheckSha => "包的摘要與倉庫裡那份不一致";
+
+  @override
+  String get updatePkgWhatsNew => "這一版改了什麼";
 
 }
