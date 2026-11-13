@@ -326,7 +326,7 @@
     <h2 id="g3">服务器<a class="hdr-anchor" href="#g3" aria-label="本节永久链接" title="本节永久链接">#</a></h2>
       <h3 id="g3">服务器<a class="hdr-anchor" href="#g3" aria-label="本节永久链接" title="本节永久链接">#</a></h3>
       <p class="m-grp-sub">两条链路与过滤范围</p>
-      <p>两台服务器各有一张卡，点进去才是各自的地址与口令。这一页自己的设置是接收范围、数据上限与呼号筛选，改完点「保存并应用」才生效。</p>
+      <p>两台服务器各有一张卡，点进去才是各自的地址与口令。这一页自己的设置是接收范围与呼号筛选，改完点「保存并应用」才生效。</p>
       <div class="m-sub">
         <h4>互联网链接</h4>
         <p class="m-grp-sub">两台服务器可以同时在线，报文两边各收一份。</p>
@@ -339,19 +339,9 @@
         <h4>接收范围过滤</h4>
         <p class="m-grp-sub">过滤中心与接收半径</p>
         <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>设置项</th><th>控件</th><th>默认值</th><th>说明</th></tr></thead><tbody>
-<tr><td><b>过滤中心跟随我的位置<span class="m-opts">尚未定位，无法获取当前位置 · 保存并应用过滤</span></b> <code class="m-field">filterFollow</code></td><td><span class="m-kind">开关</span></td><td class="m-def">开</td><td></td></tr>
+<tr><td><b>过滤中心跟随我的位置<span class="m-opts">请输入有效的经纬度和半径 · 保存并应用过滤</span></b> <code class="m-field">filterFollow</code></td><td><span class="m-kind">开关</span></td><td class="m-def">开</td><td></td></tr>
 <tr><td><b>过滤半径(km)</b> <code class="m-field">filterRadius</code></td><td><span class="m-kind">输入框</span></td><td class="m-def"><code>300</code></td><td>接收半径（km），点“保存并应用”生效</td></tr>
 <tr><td><b>用我的位置作为过滤中心</b></td><td><span class="m-kind">按钮</span></td><td class="m-def">—</td><td></td></tr>
-</tbody></table></div>
-      </div>
-      <div class="m-sub">
-        <h4>数据上限</h4>
-        <p class="m-grp-sub">本地保留的数据量</p>
-        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>设置项</th><th>控件</th><th>默认值</th><th>说明</th></tr></thead><tbody>
-<tr><td><b>最大台站数</b> <code class="m-field">maxStations</code></td><td><span class="m-kind">输入框</span></td><td class="m-def"><code>100000</code></td><td>内存中保留的最大台站数量（默认不限制，可设更大值）</td></tr>
-<tr><td><b>数据包保留条数</b> <code class="m-field">maxPackets</code></td><td><span class="m-kind">输入框</span></td><td class="m-def"><code>2000</code></td><td>数据包页面保留的历史条数（默认 2000，提高会占用更多内存）</td></tr>
-<tr><td><b>轨迹点数上限</b> <code class="m-field">maxTrackPts</code></td><td><span class="m-kind">输入框</span></td><td class="m-def"><code>300</code></td><td>每个台站保留的轨迹点数（默认 300，决定运动轨迹能回溯多长；仅位移超过 20m 才记点）</td></tr>
-<tr><td><b>在线判定时长（分钟）</b> <code class="m-field">onlineWindowMin</code></td><td><span class="m-kind">输入框</span></td><td class="m-def"><code>5</code></td><td>台站最后上报超过该时长即视为离线（默认 5 分钟）</td></tr>
 </tbody></table></div>
       </div>
       <div class="m-sub">
@@ -480,7 +470,17 @@
     <h2 id="g8">数据<a class="hdr-anchor" href="#g8" aria-label="本节永久链接" title="本节永久链接">#</a></h2>
       <h3 id="g8">数据<a class="hdr-anchor" href="#g8" aria-label="本节永久链接" title="本节永久链接">#</a></h3>
       <p class="m-grp-sub">清除本地数据</p>
-      <p>只读统计与破坏性操作分开摆：清聊天记录是单独按钮，「清除所有数据」会二次确认。</p>
+      <p>最上面是本地保留多少数据（台站数、数据包条数、轨迹点、在线判定），下面只读统计与破坏性操作分开摆：清聊天记录是单独按钮，「清除所有数据」会二次确认。</p>
+      <div class="m-sub">
+        <h4>数据上限</h4>
+        <p class="m-grp-sub">本地保留的数据量</p>
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>设置项</th><th>控件</th><th>默认值</th><th>说明</th></tr></thead><tbody>
+<tr><td><b>最大台站数</b> <code class="m-field">maxStations</code></td><td><span class="m-kind">输入框</span></td><td class="m-def"><code>100000</code></td><td>内存中保留的最大台站数量（默认不限制，可设更大值）</td></tr>
+<tr><td><b>数据包保留条数</b> <code class="m-field">maxPackets</code></td><td><span class="m-kind">输入框</span></td><td class="m-def"><code>2000</code></td><td>数据包页面保留的历史条数（默认 2000，提高会占用更多内存）</td></tr>
+<tr><td><b>轨迹点数上限</b> <code class="m-field">maxTrackPts</code></td><td><span class="m-kind">输入框</span></td><td class="m-def"><code>300</code></td><td>每个台站保留的轨迹点数（默认 300，决定运动轨迹能回溯多长；仅位移超过 20m 才记点）</td></tr>
+<tr><td><b>在线判定时长（分钟）</b> <code class="m-field">onlineWindowMin</code></td><td><span class="m-kind">输入框</span></td><td class="m-def"><code>5</code></td><td>台站最后上报超过该时长即视为离线（默认 5 分钟）</td></tr>
+</tbody></table></div>
+      </div>
       <div class="m-sub">
         <h4>聊天记录</h4>
         <p class="m-grp-sub">联系人与聊天数据</p>

@@ -326,7 +326,7 @@
     <h2 id="g3">Servers<a class="hdr-anchor" href="#g3" aria-label="Permalink to this section" title="Permalink to this section">#</a></h2>
       <h3 id="g3">Servers<a class="hdr-anchor" href="#g3" aria-label="Permalink to this section" title="Permalink to this section">#</a></h3>
       <p class="m-grp-sub">Two links · filter range</p>
-      <p>One card per server; the address and credentials live one level down. This page keeps the receive range, the data caps and a callsign filter. Changes apply only with “Save &amp; apply”.</p>
+      <p>One card per server; the address and credentials live one level down. This page keeps the receive range and a callsign filter. Changes apply only with “Save &amp; apply”.</p>
       <div class="m-sub">
         <h4>Internet links</h4>
         <p class="m-grp-sub">Both servers can stay online at once; each one collects its own copy.</p>
@@ -339,19 +339,9 @@
         <h4>Range filter</h4>
         <p class="m-grp-sub">Filter center and radius</p>
         <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>Setting</th><th>Control</th><th>Default</th><th>Description</th></tr></thead><tbody>
-<tr><td><b>Follow my location for filter center<span class="m-opts">No location fix yet; current position is unavailable · Save &amp; apply filter</span></b> <code class="m-field">filterFollow</code></td><td><span class="m-kind">Switch</span></td><td class="m-def">on</td><td></td></tr>
+<tr><td><b>Follow my location for filter center<span class="m-opts">Enter valid latitude, longitude, and radius · Save &amp; apply filter</span></b> <code class="m-field">filterFollow</code></td><td><span class="m-kind">Switch</span></td><td class="m-def">on</td><td></td></tr>
 <tr><td><b>Radius (km)</b> <code class="m-field">filterRadius</code></td><td><span class="m-kind">Text input</span></td><td class="m-def"><code>300</code></td><td>Receive radius (km); tap “Save &amp; apply filter” to apply</td></tr>
 <tr><td><b>Use my position as filter center</b></td><td><span class="m-kind">Button</span></td><td class="m-def">—</td><td></td></tr>
-</tbody></table></div>
-      </div>
-      <div class="m-sub">
-        <h4>Data limits</h4>
-        <p class="m-grp-sub">How much data to keep locally</p>
-        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>Setting</th><th>Control</th><th>Default</th><th>Description</th></tr></thead><tbody>
-<tr><td><b>Max stations</b> <code class="m-field">maxStations</code></td><td><span class="m-kind">Text input</span></td><td class="m-def"><code>100000</code></td><td>Maximum stations kept in memory (unlimited by default; increase as needed)</td></tr>
-<tr><td><b>Packet history limit</b> <code class="m-field">maxPackets</code></td><td><span class="m-kind">Text input</span></td><td class="m-def"><code>2000</code></td><td>How many packets to keep on the packets page (default 2000; higher uses more memory)</td></tr>
-<tr><td><b>Track point limit</b> <code class="m-field">maxTrackPts</code></td><td><span class="m-kind">Text input</span></td><td class="m-def"><code>300</code></td><td>Track points kept per station (default 300; decides how far back a movement track can reach; a point is only stored after 20 m of movement)</td></tr>
-<tr><td><b>Online window (minutes)</b> <code class="m-field">onlineWindowMin</code></td><td><span class="m-kind">Text input</span></td><td class="m-def"><code>5</code></td><td>A station with no report for longer than this is treated as offline (default 5 minutes)</td></tr>
 </tbody></table></div>
       </div>
       <div class="m-sub">
@@ -480,7 +470,17 @@
     <h2 id="g8">Data<a class="hdr-anchor" href="#g8" aria-label="Permalink to this section" title="Permalink to this section">#</a></h2>
       <h3 id="g8">Data<a class="hdr-anchor" href="#g8" aria-label="Permalink to this section" title="Permalink to this section">#</a></h3>
       <p class="m-grp-sub">Clear local data</p>
-      <p>Read-only stats and destructive actions are kept apart: clearing the chat is its own button, and “clear all data” asks twice.</p>
+      <p>The top card caps how much stays on this device (stations, packets, track points, online window). Below it, read-only stats and destructive actions are kept apart: clearing the chat is its own button, and “clear all data” asks twice.</p>
+      <div class="m-sub">
+        <h4>Data limits</h4>
+        <p class="m-grp-sub">How much data to keep locally</p>
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>Setting</th><th>Control</th><th>Default</th><th>Description</th></tr></thead><tbody>
+<tr><td><b>Max stations</b> <code class="m-field">maxStations</code></td><td><span class="m-kind">Text input</span></td><td class="m-def"><code>100000</code></td><td>Maximum stations kept in memory (unlimited by default; increase as needed)</td></tr>
+<tr><td><b>Packet history limit</b> <code class="m-field">maxPackets</code></td><td><span class="m-kind">Text input</span></td><td class="m-def"><code>2000</code></td><td>How many packets to keep on the packets page (default 2000; higher uses more memory)</td></tr>
+<tr><td><b>Track point limit</b> <code class="m-field">maxTrackPts</code></td><td><span class="m-kind">Text input</span></td><td class="m-def"><code>300</code></td><td>Track points kept per station (default 300; decides how far back a movement track can reach; a point is only stored after 20 m of movement)</td></tr>
+<tr><td><b>Online window (minutes)</b> <code class="m-field">onlineWindowMin</code></td><td><span class="m-kind">Text input</span></td><td class="m-def"><code>5</code></td><td>A station with no report for longer than this is treated as offline (default 5 minutes)</td></tr>
+</tbody></table></div>
+      </div>
       <div class="m-sub">
         <h4>Chat history</h4>
         <p class="m-grp-sub">Contacts and chat data</p>

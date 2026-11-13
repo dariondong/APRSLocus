@@ -32,13 +32,12 @@ SETTINGS_INTRO = {
         'Three decisions: what fixes you (GPS / network / manual), how often (60 s default, 5 s floor) '
         'and what travels in the frame (speed/course/battery can be switched off).'),
     '服务器': T(
-        '两台服务器各有一张卡，点进去才是各自的地址与口令。这一页自己的设置是接收范围、'
-        '数据上限与呼号筛选，改完点「保存并应用」才生效。',
-        '兩台伺服器各有一張卡，點進去才是各自的位址與口令。這一頁自己的設定是接收範圍、'
-        '資料上限與呼號篩選，改完點「儲存並套用」才生效。',
+        '两台服务器各有一张卡，点进去才是各自的地址与口令。这一页自己的设置是接收范围与呼号筛选，'
+        '改完点「保存并应用」才生效。',
+        '兩台伺服器各有一張卡，點進去才是各自的位址與口令。這一頁自己的設定是接收範圍與呼號篩選，'
+        '改完點「儲存並套用」才生效。',
         'One card per server; the address and credentials live one level down. This page keeps the '
-        'receive range, the data caps and a callsign filter. Changes apply only with '
-        '“Save &amp; apply”.'),
+        'receive range and a callsign filter. Changes apply only with “Save &amp; apply”.'),
     'APRS-IS 服务器': T(
         '一条 APRS-IS 链路：地址、端口、Passcode 与 WebSocket 地址。地址留空就连不上，软件不预置服务器。',
         '一條 APRS-IS 鏈路：位址、連接埠、Passcode 與 WebSocket 位址。位址留空就連不上，軟體不預置伺服器。',
@@ -91,10 +90,13 @@ SETTINGS_INTRO = {
         'Device overview = current link, gateway status, the four sub-pages (TNC / WLAN radio / audio / PKWDWPL) '
         'plus link self-test and logs.'),
     '数据': T(
-        '只读统计与破坏性操作分开摆：清聊天记录是单独按钮，「清除所有数据」会二次确认。',
-        '唯讀統計與破壞性操作分開擺：清聊天記錄是單獨按鈕，「清除所有資料」會二次確認。',
-        'Read-only stats and destructive actions are kept apart: clearing the chat is its own button, '
-        'and “clear all data” asks twice.'),
+        '最上面是本地保留多少数据（台站数、数据包条数、轨迹点、在线判定），下面只读统计与'
+        '破坏性操作分开摆：清聊天记录是单独按钮，「清除所有数据」会二次确认。',
+        '最上面是本機保留多少資料（臺站數、封包條數、軌跡點、線上判定），下面唯讀統計與'
+        '破壞性操作分開擺：清聊天記錄是單獨按鈕，「清除所有資料」會二次確認。',
+        'The top card caps how much stays on this device (stations, packets, track points, online '
+        'window). Below it, read-only stats and destructive actions are kept apart: clearing the chat '
+        'is its own button, and “clear all data” asks twice.'),
     '高级': T(
         '横屏开关、演示数据（模拟台站/数据包）、收发计数与重新运行向导都在这里。',
         '橫螢幕開關、示範資料（模擬臺站/封包）、收發計數與重新執行引導都在這裡。',
@@ -299,7 +301,7 @@ a station 400 km away cannot reach you through a 300 km filter however healthy t
     ('display', T('看什么：列表筛选', '看什麼：列表篩選', 'What you display'), '''
 <p><b>台站页签</b>上再做一层<b>展示筛选</b>（不影响接收）：</p>
 <ul>
-<li><b>状态</b>：在线 / 移动 / 静止 —— 「在线判定时长」在 <b>设置 → 服务器 → 数据上限</b>（默认 5 分钟）。</li>
+<li><b>状态</b>：在线 / 移动 / 静止 —— 「在线判定时长」在 <b>设置 → 数据 → 数据上限</b>（默认 5 分钟）。</li>
 <li><b>类型</b>：APRS 类型（车载/固定/中继/气象）、软件（APRSLocus）、设备类别与具体型号。</li>
 <li><b>收藏</b>：标星的台站单独一档。</li>
 <li><b>搜索</b>：呼号 / 类型 / 备注 / 网格 —— 台站几万条也不卡（内存上限默认 10 万条，可调）。</li>

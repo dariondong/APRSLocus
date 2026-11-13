@@ -62,11 +62,11 @@ CAT_KEYS = {
     'CheckUpdatePage': 'updateCat',
 }
 
-# 服务器一级页只收录它自己的四张卡（互联网链接 / 过滤 / 上限 / 呼号筛选）。
+# 服务器一级页只收录它自己的三张卡（互联网链接 / 过滤 / 呼号筛选）。
 # 页尾那几张电台卡只在对应链路开着时才出现，内容与「设备」页重复，跳过。
+# 「数据上限」已搬到数据页（2026-11-12），所以这里不再列它。
 KEEP_SECTION_KEYS = {
-    'ConnectionSettingsPage': ('sourceGroupInternet', 'filter', 'storageLimit',
-                               'receiveFilter'),
+    'ConnectionSettingsPage': ('sourceGroupInternet', 'filter', 'receiveFilter'),
 }
 
 SINGLE_FILES = [

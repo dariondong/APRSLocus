@@ -326,7 +326,7 @@
     <h2 id="g3">伺服器<a class="hdr-anchor" href="#g3" aria-label="本節永久連結" title="本節永久連結">#</a></h2>
       <h3 id="g3">伺服器<a class="hdr-anchor" href="#g3" aria-label="本節永久連結" title="本節永久連結">#</a></h3>
       <p class="m-grp-sub">兩條鏈路與過濾範圍</p>
-      <p>兩台伺服器各有一張卡，點進去才是各自的位址與口令。這一頁自己的設定是接收範圍、資料上限與呼號篩選，改完點「儲存並套用」才生效。</p>
+      <p>兩台伺服器各有一張卡，點進去才是各自的位址與口令。這一頁自己的設定是接收範圍與呼號篩選，改完點「儲存並套用」才生效。</p>
       <div class="m-sub">
         <h4>網際網路連結</h4>
         <p class="m-grp-sub">兩臺伺服器可以同時在線，報文兩邊各收一份。</p>
@@ -339,19 +339,9 @@
         <h4>接收範圍篩選</h4>
         <p class="m-grp-sub">過濾中心與接收半徑</p>
         <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>設定項</th><th>控件</th><th>預設值</th><th>說明</th></tr></thead><tbody>
-<tr><td><b>篩選中心跟隨我的位置<span class="m-opts">尚未定位，無法獲取目前位置 · 儲存並套用篩選</span></b> <code class="m-field">filterFollow</code></td><td><span class="m-kind">開關</span></td><td class="m-def">開</td><td></td></tr>
+<tr><td><b>篩選中心跟隨我的位置<span class="m-opts">請輸入有效的經緯度和半徑 · 儲存並套用篩選</span></b> <code class="m-field">filterFollow</code></td><td><span class="m-kind">開關</span></td><td class="m-def">開</td><td></td></tr>
 <tr><td><b>篩選半徑(km)</b> <code class="m-field">filterRadius</code></td><td><span class="m-kind">輸入框</span></td><td class="m-def"><code>300</code></td><td>接收半徑（km），點「儲存並套用」生效</td></tr>
 <tr><td><b>用我的位置作為篩選中心</b></td><td><span class="m-kind">按鈕</span></td><td class="m-def">—</td><td></td></tr>
-</tbody></table></div>
-      </div>
-      <div class="m-sub">
-        <h4>資料上限</h4>
-        <p class="m-grp-sub">本機保留的資料量</p>
-        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>設定項</th><th>控件</th><th>預設值</th><th>說明</th></tr></thead><tbody>
-<tr><td><b>最大臺站數</b> <code class="m-field">maxStations</code></td><td><span class="m-kind">輸入框</span></td><td class="m-def"><code>100000</code></td><td>記憶體中保留的最大臺站數量（預設不限制，可設更大值）</td></tr>
-<tr><td><b>資料包保留條數</b> <code class="m-field">maxPackets</code></td><td><span class="m-kind">輸入框</span></td><td class="m-def"><code>2000</code></td><td>資料包頁面保留的歷史條數（預設 2000，提高會佔用更多記憶體）</td></tr>
-<tr><td><b>軌跡點數上限</b> <code class="m-field">maxTrackPts</code></td><td><span class="m-kind">輸入框</span></td><td class="m-def"><code>300</code></td><td>每個台站保留的軌跡點數（預設 300，決定運動軌跡能回溯多長；僅位移超過 20m 才記點）</td></tr>
-<tr><td><b>在線判定時長（分鐘）</b> <code class="m-field">onlineWindowMin</code></td><td><span class="m-kind">輸入框</span></td><td class="m-def"><code>5</code></td><td>台站最後上報超過該時長即視為離線（預設 5 分鐘）</td></tr>
 </tbody></table></div>
       </div>
       <div class="m-sub">
@@ -480,7 +470,17 @@
     <h2 id="g8">資料<a class="hdr-anchor" href="#g8" aria-label="本節永久連結" title="本節永久連結">#</a></h2>
       <h3 id="g8">資料<a class="hdr-anchor" href="#g8" aria-label="本節永久連結" title="本節永久連結">#</a></h3>
       <p class="m-grp-sub">清除本機資料</p>
-      <p>唯讀統計與破壞性操作分開擺：清聊天記錄是單獨按鈕，「清除所有資料」會二次確認。</p>
+      <p>最上面是本機保留多少資料（臺站數、封包條數、軌跡點、線上判定），下面唯讀統計與破壞性操作分開擺：清聊天記錄是單獨按鈕，「清除所有資料」會二次確認。</p>
+      <div class="m-sub">
+        <h4>資料上限</h4>
+        <p class="m-grp-sub">本機保留的資料量</p>
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>設定項</th><th>控件</th><th>預設值</th><th>說明</th></tr></thead><tbody>
+<tr><td><b>最大臺站數</b> <code class="m-field">maxStations</code></td><td><span class="m-kind">輸入框</span></td><td class="m-def"><code>100000</code></td><td>記憶體中保留的最大臺站數量（預設不限制，可設更大值）</td></tr>
+<tr><td><b>資料包保留條數</b> <code class="m-field">maxPackets</code></td><td><span class="m-kind">輸入框</span></td><td class="m-def"><code>2000</code></td><td>資料包頁面保留的歷史條數（預設 2000，提高會佔用更多記憶體）</td></tr>
+<tr><td><b>軌跡點數上限</b> <code class="m-field">maxTrackPts</code></td><td><span class="m-kind">輸入框</span></td><td class="m-def"><code>300</code></td><td>每個台站保留的軌跡點數（預設 300，決定運動軌跡能回溯多長；僅位移超過 20m 才記點）</td></tr>
+<tr><td><b>在線判定時長（分鐘）</b> <code class="m-field">onlineWindowMin</code></td><td><span class="m-kind">輸入框</span></td><td class="m-def"><code>5</code></td><td>台站最後上報超過該時長即視為離線（預設 5 分鐘）</td></tr>
+</tbody></table></div>
+      </div>
       <div class="m-sub">
         <h4>聊天記錄</h4>
         <p class="m-grp-sub">聯絡人與聊天資料</p>

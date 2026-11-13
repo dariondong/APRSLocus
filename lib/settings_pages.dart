@@ -2485,11 +2485,6 @@ class _ConnectionSettingsPageState extends State<ConnectionSettingsPage> {
   late final TextEditingController _filterLat;
   late final TextEditingController _filterLng;
   late final TextEditingController _filterRadius;
-  late final TextEditingController _maxStations;
-  late final TextEditingController _maxPackets;
-  late final TextEditingController _maxTrackPts;
-  // 在线判定时长（分钟）——原先写死 5 分钟，现改为用户可配置
-  late final TextEditingController _onlineWindow;
 
   int _origFilterRadius = 300;
   bool _origFilterFollow = false;
@@ -2504,10 +2499,6 @@ class _ConnectionSettingsPageState extends State<ConnectionSettingsPage> {
     _filterLat = TextEditingController(text: st.filterLat.toStringAsFixed(2));
     _filterLng = TextEditingController(text: st.filterLng.toStringAsFixed(2));
     _filterRadius = TextEditingController(text: '${st.filterRadius}');
-    _maxStations = TextEditingController(text: '${st.maxStations}');
-    _maxPackets = TextEditingController(text: '${st.maxPackets}');
-    _maxTrackPts = TextEditingController(text: '${st.maxTrackPts}');
-    _onlineWindow = TextEditingController(text: '${st.onlineWindowMin}');
     _origFilterRadius = st.filterRadius;
     _origFilterFollow = st.filterFollow;
     _origFilterLat = st.filterLat;
@@ -2519,10 +2510,6 @@ class _ConnectionSettingsPageState extends State<ConnectionSettingsPage> {
     _filterLat.dispose();
     _filterLng.dispose();
     _filterRadius.dispose();
-    _maxStations.dispose();
-    _maxPackets.dispose();
-    _maxTrackPts.dispose();
-    _onlineWindow.dispose();
     super.dispose();
   }
 
@@ -2547,8 +2534,6 @@ class _ConnectionSettingsPageState extends State<ConnectionSettingsPage> {
             // 云同步不在这里：它跟着「APRSNETCN」那条链路走，卡在那一页里
             // （见 acn_link_page.dart）。数据存在哪台机器上，就在哪台的页上配。
             _filterCard(),
-            const SizedBox(height: 16),
-            _storageCard(),
             const SizedBox(height: 16),
             // ① 指路：电台那几条（TNC / WLAN 电台 / 声卡 / PKWDWPL）仍在
             //    「设置 → 设备」里启用（用户反馈三处重复「感觉乱套了」，
@@ -3200,47 +3185,6 @@ class _ConnectionSettingsPageState extends State<ConnectionSettingsPage> {
       ),
     );
   }
-
-  /// 存储上限卡片。
-  /// 原先这三项被放在「过滤」卡片里 —— 它们与「取哪些台站」无关，
-  /// 而是「本地保留多少数据」，故按职责独立成卡。
-  Widget _storageCard() {
-    return SettingsSectionCard(
-      title: S.of(context).storageLimit,
-      subtitle: S.of(context).storageLimitSubtitle,
-      icon: Icons.sd_storage_rounded,
-      color: C.slate,
-      children: [
-        SettingsInput(S.of(context).maxStations, _maxStations,
-            tip: S.of(context).maxStationsTip,
-            onChanged: (v) {
-          final n = int.tryParse(v);
-          if (n != null) st.setMaxStations(n);
-        }),
-        // 数据包保留条数（原先硬编码 200，偏少）
-        SettingsInput(S.of(context).maxPackets, _maxPackets,
-            tip: S.of(context).maxPacketsTip, onChanged: (v) {
-          final n = int.tryParse(v);
-          if (n != null) st.setMaxPackets(n);
-        }),
-        // 单台站轨迹点数上限（原先硬编码 60，导致轨迹很短）
-        SettingsInput(S.of(context).maxTrackPts, _maxTrackPts,
-            tip: S.of(context).maxTrackPtsTip, onChanged: (v) {
-          final n = int.tryParse(v);
-          if (n != null) st.setMaxTrackPts(n);
-        }),
-        // 在线判定时长（原先写死 5 分钟）
-        SettingsInput(S.of(context).onlineWindow, _onlineWindow,
-            tip: S.of(context).onlineWindowTip, onChanged: (v) {
-          final n = int.tryParse(v);
-          if (n != null) st.setOnlineWindowMin(n);
-        }),
-        // 「台站保留天数」已移到「数据维护」页 —— 它属于「清理策略」而不是
-        // 「本地保留多少数据」，和它要清理的那个按钮分在两页时用户找不到。
-      ],
-    );
-  }
-
 
   /// 接收呼号筛选卡片：按国家/地区分组 + 精确呼号接收
   Widget _receivePrefCard() {
@@ -4487,6 +4431,73 @@ class _DataSettingsPageState extends State<DataSettingsPage> {
   /// 参数会让「点一下清掉多少」不可预期）。不落盘，一次性选择。
   int _pruneDays = 0;
 
+  // 数据上限四项从「服务器」页搬过来了：它们管的是本地留多少数据，
+  // 与连哪台服务器没关系。
+  late final TextEditingController _maxStations;
+  late final TextEditingController _maxPackets;
+  late final TextEditingController _maxTrackPts;
+  // 在线判定时长（分钟）——原先写死 5 分钟，现改为用户可配置
+  late final TextEditingController _onlineWindow;
+
+  @override
+  void initState() {
+    super.initState();
+    _maxStations = TextEditingController(text: '${st.maxStations}');
+    _maxPackets = TextEditingController(text: '${st.maxPackets}');
+    _maxTrackPts = TextEditingController(text: '${st.maxTrackPts}');
+    _onlineWindow = TextEditingController(text: '${st.onlineWindowMin}');
+  }
+
+  @override
+  void dispose() {
+    _maxStations.dispose();
+    _maxPackets.dispose();
+    _maxTrackPts.dispose();
+    _onlineWindow.dispose();
+    super.dispose();
+  }
+
+  /// 存储上限卡片（数据页的最上面一张）。
+  ///
+  /// 它从「服务器」页搬过来：这四项管的是「本地保留多少数据」，
+  /// 与连哪台服务器、取哪些台站都无关（用户：「数据上限区块移到数据页」）。
+  Widget _storageCard() {
+    return SettingsSectionCard(
+      title: S.of(context).storageLimit,
+      subtitle: S.of(context).storageLimitSubtitle,
+      icon: Icons.sd_storage_rounded,
+      color: C.slate,
+      children: [
+        SettingsInput(S.of(context).maxStations, _maxStations,
+            tip: S.of(context).maxStationsTip,
+            onChanged: (v) {
+          final n = int.tryParse(v);
+          if (n != null) st.setMaxStations(n);
+        }),
+        // 数据包保留条数（原先硬编码 200，偏少）
+        SettingsInput(S.of(context).maxPackets, _maxPackets,
+            tip: S.of(context).maxPacketsTip, onChanged: (v) {
+          final n = int.tryParse(v);
+          if (n != null) st.setMaxPackets(n);
+        }),
+        // 单台站轨迹点数上限（原先硬编码 60，导致轨迹很短）
+        SettingsInput(S.of(context).maxTrackPts, _maxTrackPts,
+            tip: S.of(context).maxTrackPtsTip, onChanged: (v) {
+          final n = int.tryParse(v);
+          if (n != null) st.setMaxTrackPts(n);
+        }),
+        // 在线判定时长（原先写死 5 分钟）
+        SettingsInput(S.of(context).onlineWindow, _onlineWindow,
+            tip: S.of(context).onlineWindowTip, onChanged: (v) {
+          final n = int.tryParse(v);
+          if (n != null) st.setOnlineWindowMin(n);
+        }),
+        // 「台站保留天数」也在这页：它属于清理策略，和它要清理的那个按钮挨着。
+      ],
+    );
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return ListenableBuilder(
@@ -4497,6 +4508,8 @@ class _DataSettingsPageState extends State<DataSettingsPage> {
         icon: Icons.storage_rounded,
         color: C.red,
         body: Column(children: [
+        _storageCard(),
+        const SizedBox(height: 16),
         // 单项：聊天记录（由原「聊天设置」页合并而来）
         SettingsSectionCard(
           title: S.of(context).chatRecords,
