@@ -419,6 +419,27 @@ CARDS = [
 # 只列「重点版本」：中间几十个纯修 bug 的版本归纳进文字说明，完整记录指向 Releases。
 CL = [
     {
+        'ver': 'v2.2.9', 'date': '2026-11-13',
+        'items': [
+            ('new',
+             T('开着省电模式时顶栏有一小条提示，点开就能关掉省电。',
+               '開著省電模式時頂欄有一小條提示，點開就能關掉省電。',
+               'A small chip in the top bar shows power saver, and tapping it turns it off.')),
+            ('new',
+             T('这一小条提示可以单独关掉。',
+               '這一小條提示可以單獨關掉。',
+               'That chip can be switched off on its own.')),
+            ('new',
+             T('消息没收到回执时会按间隔重发，间隔与次数都能改。',
+               '訊息沒收到回執時會按間隔重發，間隔與次數都能改。',
+               'A message with no receipt is resent on your interval, up to the count you set.')),
+            ('new',
+             T('自己发出的消息底下写着重发间隔、还要等几秒、已重发几次。',
+               '自己發出的訊息底下寫著重發間隔、還要等幾秒、已重發幾次。',
+               'Under each message you send: the interval, the wait left and how many resends ran.')),
+        ],
+    },
+    {
         'ver': 'v2.2.8', 'date': '2026-11-13',
         'items': [
             ('fix',

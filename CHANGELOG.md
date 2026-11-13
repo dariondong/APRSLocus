@@ -1,5 +1,26 @@
 # 更新日志
 
+## [2.2.9] - 2026-11-13
+
+### 新增
+
+- 开着省电模式时，顶栏有一小条写着它，点开就能关掉省电。
+- 设置 → 自动上报的省电模式里，可以把这一小条提示关掉。
+- 消息发出去没收到回执时，会按设定的间隔重发，最多重发设定的次数。
+- 设置 → 服务器里能开关消息重发，也能改间隔与次数。
+- 每条自己发出的消息底下写着重发的间隔、还要等几秒、已经重发几次。
+
+## [2.2.9] - 2026-11-13 (English)
+
+### Added
+
+- While power saver is on, a small chip in the top bar says so, and tapping it turns power saver off.
+- In Settings → Automatic reporting, that chip can be switched off on its own.
+- A message with no receipt is resent at the interval you set, up to the number of times you set.
+- Settings → Server can switch resending on or off and change the interval and the count.
+- Under each message you send, the interval, the seconds until the next try and the number of
+  resends so far are written out.
+
 ## [2.2.8] - 2026-11-13
 
 ### 修复
