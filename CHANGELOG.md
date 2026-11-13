@@ -1,5 +1,19 @@
 # 更新日志
 
+## [2.2.6] - 2026-11-13
+
+### 修复
+
+- 强提醒每次打开只弹一次，关掉以后不会再跳出来。
+- 从后台切回应用时也会补拉一次强提醒（以前只有冷启动才拉）。
+
+## [2.2.6] - 2026-11-13 (English)
+
+### Fixed
+
+- A strong notice shows once per app launch and no longer pops back right after you close it.
+- The notice is also fetched when the app returns from the background, not only on a cold start.
+
 ## [2.2.5] - 2026-11-13
 
 ### 新增

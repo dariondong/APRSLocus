@@ -419,6 +419,19 @@ CARDS = [
 # 只列「重点版本」：中间几十个纯修 bug 的版本归纳进文字说明，完整记录指向 Releases。
 CL = [
     {
+        'ver': 'v2.2.6', 'date': '2026-11-13',
+        'items': [
+            ('fix',
+             T('强提醒每次打开只弹一次，关掉以后不会再跳出来。',
+               '強提醒每次打開只彈一次，關掉以後不會再跳出來。',
+               'A strong notice shows once per launch and no longer pops back after you close it.')),
+            ('fix',
+             T('从后台切回应用时也会补拉一次强提醒。',
+               '從後台切回應用時也會補拉一次強提醒。',
+               'The notice is also fetched when the app returns from the background.')),
+        ],
+    },
+    {
         'ver': 'v2.2.5', 'date': '2026-11-13',
         'items': [
             ('up',
