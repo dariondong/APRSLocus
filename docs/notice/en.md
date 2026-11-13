@@ -269,13 +269,14 @@ The fault was ours. Sorry for the trouble.
 
 ---
 
-## 🔔 What is new: 2.1.43
+## 🔔 What is new: 2.2.7
 
-- Cloud sync uses the address of the APRSNETCN SERVER link, and only connects once an address is filled in.
-- With the address blank, the sync card shows Empty in that row instead of falling back to a server of its own.
-- Tapping sync without an address asks you to fill in the APRSNETCN server address above first.
-- Messages others send you and messages you send others are both kept on the server.
-- The first sync pulls the whole message history back, so it survives a reinstall.
+- A strong notice can fill the screen when you open the app; its text comes from the official site, so a wording change needs no new version.
+- The receive range on Settings → Server has a button that puts the filter centre on where you are now.
+- Data limits now sit at the top of Settings → Data.
+- The update page checks a package online: version, the digest published with the release and the signature, all three must match.
+- When that check cannot be done, installing asks you to confirm first, and offline it says so plainly.
+- The first screen after an update lists what changed; the installer question is asked separately.
 
 ---
 
@@ -293,9 +294,9 @@ Look up APALOC in the official TOCALL table and you will find it.
 
 The 2.2.0 build published on the Qingling (清零) channel by mistake has been taken down, and the channel works normally again.
 
-Checking for updates now returns the latest stable version, 2.1.43. If you installed 2.2.0, uninstall it first, then install 2.1.43.
+Checking for updates now returns the latest stable version, 2.2.7. If you installed 2.2.0, uninstall it first, then install 2.2.7.
 
-**[Download 2.1.43](https://github.com/dariondong/APRSLocus/releases/download/v2.1.43/APRSLocus_2.1.43.apk)**
+**[Download 2.2.7](https://github.com/dariondong/APRSLocus/releases/download/v2.2.7/APRSLocus_2.2.7.apk)**
 
 ---
 
