@@ -390,6 +390,10 @@ jobs:
       - name: Test strong notice
         run: flutter test test/strong_notice_test.dart
 
+      # 强提醒正文的行首标记排版（【】小标题 / - 条目 / ` ` 等宽）。
+      - name: Test strong notice layout
+        run: flutter test test/strong_notice_layout_test.dart
+
       # 「高级连接通道设置」开关（用户要求「位置默认全部都发、消息保留勾选」）：
       # 关着时位置发给所有已启用且连上的可发射链路、消息那条链路不动。
       # 三条错都编译能过、analyze 全绿：

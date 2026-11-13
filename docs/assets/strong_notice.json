@@ -1,30 +1,21 @@
 {
   "updated": "2026-11-13",
-  "note": "强提醒：打开应用时整页盖住主界面，用户点「知道了」才进主界面。内容只从这份文件读，改这里不用发版。字段：updated（本文件更新日期，YYYY-MM-DD）；items（数组，空数组 = 什么都不弹）。每条：id（换 id = 当成一条新提醒，必填且不重复）、level（info / warn / critical，决定那道颜色）、title 与 body（纯字符串，或按语言分开的对象 {\"zh\":\"…\",\"en\":\"…\"}，认 zh_TW/zh 再退 en；body 里用 \\n 分段）、actions（可选，[{label, url}]，url 留空 = 点了就关）、hard（默认 true，只能点按钮关掉，返回键不关）、every（默认 false，同一条只弹一次）、until（可选 YYYY-MM-DD，过完那天不再弹）。拉不到、文件坏了、一条都不合格，一律不弹。",
+  "note": "强提醒：打开应用时整页盖住主界面，用户点「知道了」才进主界面。内容只从这份文件读，改这里不用发版。字段：updated（本文件更新日期，YYYY-MM-DD）；items（数组，空数组 = 什么都不弹）。每条：id（换 id = 当成一条新提醒，必填且不重复）、level（info / warn / critical，决定那道颜色）、title（必填）、subtitle（可选，标题下面那行小字）、body（必填；行首标记决定排版：【…】小标题、- 条目、`…` 等宽块、其余段落）、actions（可选，[{label, url}]，url 留空 = 点了就关）、hard（默认 true，只能点按钮关掉，返回键不关）、every（默认 false，同一条只弹一次；true = 每次打开弹一次）、until（可选 YYYY-MM-DD，过完那天不再弹）。文本可以是纯字符串，也可以按语言分开写成 {\"zh\":\"…\",\"en\":\"…\"}；拉不到、文件坏了、一条都不合格，一律不弹。",
   "items": [
     {
-      "id": "test-261113",
-      "level": "info",
-      "title": {
-        "zh": "强提醒测试",
-        "zh_TW": "強提醒測試",
-        "en": "Strong notice test",
-        "ja": "強リマインダーのテスト",
-        "es": "Prueba del aviso destacado",
-        "id": "Uji pemberitahuan kuat"
-      },
+      "id": "resume-2.2.0",
+      "level": "warn",
+      "title": "恢复更新（v2.2.0）",
+      "subtitle": "Audit complete · 12 Nov 2026",
       "body": {
-        "zh": "这是一条测试用的强提醒。打开应用时它整页盖住主界面，点「知道了」才进主界面。\n文字来自官网这份文件，改一句不用发版。\n测完把 items 清空，或者等 until 那天过了，它就不再弹。",
-        "zh_TW": "這是一條測試用的強提醒。打開應用時它整頁蓋住主介面，點「知道了」才進主介面。\n文字來自官網這份檔案，改一句不用發版。\n測完把 items 清空，或者等 until 那天過了，它就不再彈。",
-        "en": "This is a test strong notice. It fills the screen when the app opens, and you get in after tapping the button.\nThe text comes from this file on the official site, so a wording change needs no new version.\nClear items when the test is over, or wait for until to pass.",
-        "ja": "テスト用の強リマインダーです。アプリを開くと画面いっぱいに表示され、「わかりました」を押すと先に進めます。\n文章は公式サイトのこのファイルから読みます。文言の変更に新しいバージョンは不要です。\nテストが終わったら items を空にしてください。",
-        "es": "Es un aviso destacado de prueba. Ocupa toda la pantalla al abrir la app y se entra al pulsar el botón.\nEl texto viene de este archivo del sitio oficial, así que cambiar una frase no necesita versión nueva.\nAl terminar la prueba, vacía items o espera a que pase until.",
-        "id": "Ini pemberitahuan kuat untuk uji coba. Menutupi seluruh layar saat aplikasi dibuka, dan Anda masuk setelah menekan tombolnya.\nTeksnya dibaca dari berkas ini di situs resmi, jadi mengubah kalimat tidak perlu versi baru.\nSetelah uji selesai, kosongkan items atau tunggu until lewat."
+        "zh": "注入的构建流程从未执行，密钥未被读取。v2.2.0 已用新签名证书重建，可恢复更新；因签名变更需卸载重装。\n2026 年 11 月 12 日的异常提交已审计完毕。结论是：被注入的构建流程一次也没有执行，构建阶段注入的密钥没有被读取。v2.2.0 已用全新签名证书重新构建，可以恢复更新。\n公告级别：已解除 · 最后更新 2026 年 11 月 12 日 18:20\n【一、审计结论】\n注入的构建流程由 v* 标签触发。两次注入各只存在约 48 秒即被一条 ci: restore 撤回，期间没有任何一次构建被它触发。\n因此构建阶段注入的密钥（含签名证书、对象存储密钥）从未被读取，此前公告中「密钥已暴露」的判断不成立。\n异常提交与诱饵 PR 现均已清除，仓库内无残留文件，工作流与注入前逐字节一致。\n【二、这一版必须卸载重装】\n出于谨慎，签名证书仍按「可能已泄露」处理，已整体更换并重新签发。\n签名换了，安装包不能覆盖安装。请先导出备份，再卸载旧版，然后安装 v2.2.0。\n新签名的 SHA-1 与 SHA-256 见下方，可自行核对。\n【三、发布包与校验】\nv2.2.0 及以后的安装包都由新证书签名。\n官网与 GitHub Releases 上的 SHA-256 请以官方渠道为准。\n新签名证书指纹\n`SHA-1: BE:7C:EC:BA:1C:8F:9B:78:64:9A:2E:03:5C:D7:62:9E:BA:B1:4A:0C`\n`SHA-256: 0F:2C:52:7A:9C:D6:6A:43:A8:71:F3:51:92:C7:5C:B7:5F:C1:B8:5B:6F:63:BA:45:8C:B5:A9:82:0A:2E:38:8A`\n旧版本（v2.1.43 及更早）的签名已作废，日后出现旧签名的「新版本」一律视为伪造。\n【四、官方不会做的事】\n- 不会通过任何渠道索要密码、验证码。\n- 不会要求远程控制你的设备。\n【五、渠道】\n- 网站：aprslocus.theez.top\n- 反馈与举报：GitHub Issues\n可信版本与校验值只以官方渠道为准，未经证实的安装包与补丁不要转发。",
+        "zh_TW": "注入的建置流程從未執行，金鑰未被讀取。v2.2.0 已用新簽章憑證重建，可恢復更新；因簽章變更需卸載重裝。\n2026 年 11 月 12 日的異常提交已稽核完畢。結論是：被注入的建置流程一次也沒有執行，建置階段注入的金鑰沒有被讀取。v2.2.0 已用全新簽章憑證重新建置，可以恢復更新。\n公告級別：已解除 · 最後更新 2026 年 11 月 12 日 18:20\n【一、稽核結論】\n注入的建置流程由 v* 標籤觸發。兩次注入各只存在約 48 秒即被一條 ci: restore 撤回，期間沒有任何一次建置被它觸發。\n因此建置階段注入的金鑰（含簽章憑證、物件儲存金鑰）從未被讀取，先前公告中「金鑰已暴露」的判斷不成立。\n異常提交與誘餌 PR 現均已清除，倉庫內無殘留檔案，工作流程與注入前逐位元組一致。\n【二、這一版必須卸載重裝】\n出於謹慎，簽章憑證仍按「可能已洩露」處理，已整體更換並重新簽發。\n簽章換了，安裝包不能覆蓋安裝。請先匯出備份，再卸載舊版，然後安裝 v2.2.0。\n新簽章的 SHA-1 與 SHA-256 見下方，可自行核對。\n【三、發布包與校驗】\nv2.2.0 及以後的安裝包都由新憑證簽章。\n官網與 GitHub Releases 上的 SHA-256 請以官方管道為準。\n新簽章憑證指紋\n`SHA-1: BE:7C:EC:BA:1C:8F:9B:78:64:9A:2E:03:5C:D7:62:9E:BA:B1:4A:0C`\n`SHA-256: 0F:2C:52:7A:9C:D6:6A:43:A8:71:F3:51:92:C7:5C:B7:5F:C1:B8:5B:6F:63:BA:45:8C:B5:A9:82:0A:2E:38:8A`\n舊版本（v2.1.43 及更早）的簽章已作廢，日後出現舊簽章的「新版本」一律視為偽造。\n【四、官方不會做的事】\n- 不會透過任何管道索要密碼、驗證碼。\n- 不會要求遠端控制你的裝置。\n【五、管道】\n- 網站：aprslocus.theez.top\n- 回報與檢舉：GitHub Issues\n可信版本與校驗值只以官方管道為準，未經證實的安裝包與補丁不要轉發。",
+        "en": "The injected build workflow never ran and no key was read. v2.2.0 has been rebuilt with a new signing certificate, so updates can resume; because the certificate changed, uninstall the old version first.\nThe anomalous commits of 12 November 2026 have been audited. Conclusion: the injected build workflow never ran even once, and the keys injected at build time were never read. v2.2.0 has been rebuilt with a brand-new signing certificate and updates can resume.\nStatus: lifted · Last updated 12 November 2026, 18:20\n【1. Audit conclusion】\nThe injected workflow was triggered by v* tags. Each of the two injections existed for about 48 seconds before a ci: restore commit reverted it, and no build was ever triggered by them.\nSo the keys injected at build time (signing certificate, object-storage keys) were never read, and the earlier statement that they had been exposed does not hold.\nThe anomalous commits and the decoy PR are removed; nothing is left in the repository and the workflows are byte-for-byte identical to before the injection.\n【2. This version needs a clean install】\nOut of caution the signing certificate is still treated as possibly leaked, so it has been replaced and reissued.\nThe certificate changed, so the package cannot be installed over the old one. Export a backup, uninstall the old version, then install v2.2.0.\nThe new fingerprints are below so you can check them yourself.\n【3. Packages and verification】\nv2.2.0 and later are signed with the new certificate.\nFor SHA-256, trust the official site and GitHub Releases only.\nNew signing certificate\n`SHA-1: BE:7C:EC:BA:1C:8F:9B:78:64:9A:2E:03:5C:D7:62:9E:BA:B1:4A:0C`\n`SHA-256: 0F:2C:52:7A:9C:D6:6A:43:A8:71:F3:51:92:C7:5C:B7:5F:C1:B8:5B:6F:63:BA:45:8C:B5:A9:82:0A:2E:38:8A`\nPackages signed with the old certificate (v2.1.43 and earlier) are void; a new version carrying the old signature is a forgery.\n【4. What the project will never do】\n- Ask for your password or verification code through any channel.\n- Ask for remote control of your device.\n【5. Channels】\n- Website: aprslocus.theez.top\n- Feedback and reports: GitHub Issues\nTrust only the official channels for packages and checksums, and do not forward unverified packages or patches."
       },
       "actions": [],
       "hard": true,
-      "every": true,
-      "until": "2026-11-16"
+      "every": false,
+      "until": ""
     }
   ]
 }

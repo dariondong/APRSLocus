@@ -42,6 +42,48 @@ class StrongNoticePage extends StatelessWidget {
         _ => Icons.notifications_active_rounded,
       };
 
+  /// 正文里的一块。小标题加粗并上下留白，条目缩进，指纹这类用等宽底块——
+  /// 一个字符一个字符对的东西挤成普通段落就全不能用了。
+  Widget _block(NoticeBlock b) {
+    switch (b.kind) {
+      case NoticeBlockKind.heading:
+        return Padding(
+          padding: const EdgeInsets.only(top: 18, bottom: 6),
+          child: Text(b.text, style: ts(14.5, w: FontWeight.w800, h: 1.4)),
+        );
+      case NoticeBlockKind.bullet:
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 4),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('· ', style: ts(14, c: C.grey)),
+              Expanded(child: Text(b.text, style: ts(14, h: 1.7))),
+            ],
+          ),
+        );
+      case NoticeBlockKind.mono:
+        return Container(
+          width: double.infinity,
+          margin: const EdgeInsets.only(bottom: 6),
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+          decoration: BoxDecoration(
+            color: C.greyBg,
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: SelectableText(
+            b.text,
+            style: ts(11.5, c: C.slate, h: 1.5).copyWith(fontFamily: 'monospace'),
+          ),
+        );
+      case NoticeBlockKind.paragraph:
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 8),
+          child: Text(b.text, style: ts(14, h: 1.75)),
+        );
+    }
+  }
+
   Future<void> _open(String url) async {
     try {
       await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
@@ -84,10 +126,19 @@ class StrongNoticePage extends StatelessWidget {
                   notice.title,
                   style: ts(22, w: FontWeight.w800, h: 1.35),
                 ),
-                const SizedBox(height: 12),
+                if (notice.subtitle.isNotEmpty) ...[
+                  const SizedBox(height: 4),
+                  Text(notice.subtitle, style: ts(11.5, c: C.grey, ls: 0.4)),
+                ],
+                const SizedBox(height: 14),
                 Expanded(
                   child: SingleChildScrollView(
-                    child: Text(notice.body, style: ts(14, h: 1.75)),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        for (final b in parseNoticeBody(notice.body)) _block(b),
+                      ],
+                    ),
                   ),
                 ),
                 const SizedBox(height: 12),

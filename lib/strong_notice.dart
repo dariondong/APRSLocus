@@ -39,6 +39,12 @@ class StrongNotice {
   /// `info` / `warn` / `critical`，认不出的一律当 `info`。
   final String level;
   final String title;
+
+  /// 标题下面那行小字（比如「Audit complete · 12 Nov 2026」），可空。
+  final String subtitle;
+
+  /// 正文。行首标记决定排版（见 [parseNoticeBody]）：
+  /// `【…】` 是小标题、`- ` 是条目、`…` 包起来的是等宽块、其余是段落。
   final String body;
   final List<StrongNoticeAction> actions;
 
@@ -56,6 +62,7 @@ class StrongNotice {
     required this.level,
     required this.title,
     required this.body,
+    this.subtitle = '',
     this.actions = const [],
     this.hard = true,
     this.every = false,
@@ -121,6 +128,7 @@ class StrongNotice {
   static StrongNotice? _one(Map raw, String lang) {
     final id = (raw['id'] ?? '').toString().trim();
     final title = textOf(raw['title'], lang);
+    final subtitle = textOf(raw['subtitle'], lang);
     final body = textOf(raw['body'], lang);
     if (id.isEmpty || title.isEmpty || body.isEmpty) return null;
     final level = (raw['level'] ?? 'info').toString().trim().toLowerCase();
@@ -139,6 +147,7 @@ class StrongNotice {
       id: id,
       level: const ['info', 'warn', 'critical'].contains(level) ? level : 'info',
       title: title,
+      subtitle: subtitle,
       body: body,
       actions: actions,
       hard: raw['hard'] is bool ? raw['hard'] as bool : true,
@@ -215,4 +224,46 @@ Future<String?> fetchStrongNoticeJson({
   } finally {
     client.close(force: true);
   }
+}
+
+/// 强提醒正文里的一行块：小标题 / 段落 / 条目 / 等宽块。
+enum NoticeBlockKind { heading, paragraph, bullet, mono }
+
+class NoticeBlock {
+  final NoticeBlockKind kind;
+  final String text;
+
+  const NoticeBlock(this.kind, this.text);
+}
+
+/// 把正文按**行首标记**切块，规则少到能一眼记住：
+///
+///   * `【一、审计结论】` → 小标题（去掉方括号，加粗、上下留白）
+///   * `- 一句话`        → 条目（前面加圆点，可换行不缩进）
+///   * `` `SHA-1: …` ``  → 等宽块（指纹、版本号这类要一个字符一个字符对的）
+///   * 其余每一行        → 段落
+///
+/// 为什么用行首标记而不是把 body 写成结构化数组：这份文件是**手写**的，
+/// 写数组要记括号层级，写错一个逗号整条都不弹；而 `【】`、`- `、反引号
+/// 就算哪天渲染没跟上，读起来也还是正常文字。
+List<NoticeBlock> parseNoticeBody(String raw) {
+  final out = <NoticeBlock>[];
+  for (final line in raw.split('\n')) {
+    final t = line.trim();
+    if (t.isEmpty) continue;
+    if (t.startsWith('【') && t.endsWith('】') && t.length > 2) {
+      out.add(NoticeBlock(NoticeBlockKind.heading, t.substring(1, t.length - 1)));
+      continue;
+    }
+    if ((t.startsWith('- ') || t.startsWith('· ')) && t.length > 2) {
+      out.add(NoticeBlock(NoticeBlockKind.bullet, t.substring(2).trim()));
+      continue;
+    }
+    if (t.startsWith('`') && t.endsWith('`') && t.length > 2) {
+      out.add(NoticeBlock(NoticeBlockKind.mono, t.substring(1, t.length - 1)));
+      continue;
+    }
+    out.add(NoticeBlock(NoticeBlockKind.paragraph, t));
+  }
+  return out;
 }
