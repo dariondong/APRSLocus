@@ -2821,12 +2821,10 @@ class _MessagesPageState extends State<MessagesPage> {
         c = C.green;
       }
     } else if (task != null) {
-      if (m.tries == 0) {
-        text = s.msgResendPlan('${st.msgResendGapSec}', '${st.msgResendTimes}');
-      } else {
-        final left = st.msgResendInSec(m.id) ?? 0;
-        text = s.msgResendWaiting('$left', '${m.tries}', '${st.msgResendTimes}');
-      }
+      // 一直在倒计时：从发出去那一刻起就写「N 秒后重发 · 已重发 0/2 次」，
+      // 用户要的就是这两样随时看得见（等待倒计时 + 已重发/总次数）。
+      final left = st.msgResendInSec(m.id) ?? 0;
+      text = s.msgResendWaiting('$left', '${m.tries}', '${st.msgResendTimes}');
       c = C.orange;
     } else if (m.tries > 0) {
       text = s.msgResendFailed('${m.tries}');
