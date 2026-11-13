@@ -10610,4 +10610,7 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String msgResendOk(String times) => "Konfirmasi masuk setelah $times× kirim ulang";
 
+  @override
+  String get lowBatteryAsk => "Tanya saat baterai lemah";
+
 }

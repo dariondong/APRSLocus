@@ -10600,4 +10600,7 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String msgResendOk(String times) => "Receipt came after $times× resend";
 
+  @override
+  String get lowBatteryAsk => "Ask when the battery is low";
+
 }

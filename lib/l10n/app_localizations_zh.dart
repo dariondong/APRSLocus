@@ -10221,6 +10221,9 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String msgResendOk(String times) => "重发 $times 次后收到回执";
 
+  @override
+  String get lowBatteryAsk => "电量低时提示开启";
+
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
@@ -20438,5 +20441,8 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String msgResendOk(String times) => "重發 $times 次後收到回執";
+
+  @override
+  String get lowBatteryAsk => "電量低時提示開啟";
 
 }

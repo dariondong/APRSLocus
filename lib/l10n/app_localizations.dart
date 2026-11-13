@@ -18797,6 +18797,12 @@ abstract class AppLocalizations {
   /// **'重发 {times} 次后收到回执'**
   String msgResendOk(String times);
 
+  /// No description provided for @lowBatteryAsk.
+  ///
+  /// In zh, this message translates to:
+  /// **'电量低时提示开启'**
+  String get lowBatteryAsk;
+
 }
 
 class _AppLocalizationsDelegate

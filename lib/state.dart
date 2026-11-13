@@ -1494,6 +1494,8 @@ class AppState extends ChangeNotifier {
   /// 低电量提醒：20% / 10% / 5% 各提一次，满足任一条件就不提 ——
   /// 在充电、已经开着省电模式、电量回到 25% 以上（阈值留 5 个点避开抖动）。
   void _checkLowBattery() {
+    // 用户关掉了「电量低时问要不要开省电」：到此为止，弹窗与提示都不再出。
+    if (!lowBatteryAsk) return;
     final level = _battery;
     if (level < 0) return;
     if (_charging == true || powerSave || level > 25) {
@@ -4387,6 +4389,23 @@ class AppState extends ChangeNotifier {
   /// 界面就回到干净的样子，省电本身照旧生效。
   bool powerSaveNotice = true;
 
+  /// 电量低时问一句「要不要开省电模式」（默认问）。
+  ///
+  /// 用户 2026-11-13 的原话：「省电模式可禁用提示，如果电量低的时候不再
+  /// 提示它是否要开启省电」—— 要的是这条**低电量弹句**能关掉。关掉之后
+  /// 电量低就低着，不弹、不追问，省电开不开全由他自己在设置里说了算。
+  bool lowBatteryAsk = true;
+
+  void setLowBatteryAsk(bool v) {
+    if (lowBatteryAsk == v) return;
+    lowBatteryAsk = v;
+    // 重新打开时把「已问过哪一档」清掉：否则从 20% 掉到 10% 才问，
+    // 而用户刚打开这一项时已经在 10% 以下，就永远等不到下一次提醒。
+    if (v) _lowBatteryWarned = -1;
+    persist();
+    _notify();
+  }
+
   void setPowerSaveNotice(bool v) {
     if (powerSaveNotice == v) return;
     powerSaveNotice = v;
@@ -5593,6 +5612,7 @@ class AppState extends ChangeNotifier {
     gpsIntervalSec = 1;
     powerSave = false;
     powerSaveNotice = true;
+    lowBatteryAsk = true;
     // 云同步是这台设备自己的登录，出厂复位就断开；云端数据不跟着删
     syncMode = 'off';
     syncAccount = '';
@@ -6207,6 +6227,7 @@ class AppState extends ChangeNotifier {
       // 用户原来的档位去注册 GPS，下一次 tick 才纠正
       powerSave = p.getBool('powerSave') ?? powerSave;
       powerSaveNotice = p.getBool('powerSaveNotice') ?? powerSaveNotice;
+      lowBatteryAsk = p.getBool('lowBatteryAsk') ?? lowBatteryAsk;
       loc.samplingMs = effectiveGpsIntervalSec * 1000;
       // 云同步：开关、账号、令牌与三类数据的上次时间。令牌不进备份。
       syncMode = p.getString('syncMode') ?? syncMode;
@@ -6639,6 +6660,7 @@ class AppState extends ChangeNotifier {
     await p.setInt('gpsIntervalSec', gpsIntervalSec);
     await p.setBool('powerSave', powerSave);
     await p.setBool('powerSaveNotice', powerSaveNotice);
+    await p.setBool('lowBatteryAsk', lowBatteryAsk);
     await p.setString('syncMode', syncMode);
     await p.setString('syncAccount', syncAccount);
     await p.setString('syncPassword', syncPassword);

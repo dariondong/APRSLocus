@@ -4560,5 +4560,6 @@
   "@msgResendPlan": {"placeholders": {"gap": {"type": "String"}, "max": {"type": "String"}}},
   "@msgResendWaiting": {"placeholders": {"s": {"type": "String"}, "done": {"type": "String"}, "max": {"type": "String"}}},
   "@msgResendFailed": {"placeholders": {"max": {"type": "String"}}},
-  "@msgResendOk": {"placeholders": {"times": {"type": "String"}}}
+  "@msgResendOk": {"placeholders": {"times": {"type": "String"}}},
+  "lowBatteryAsk": "バッテリー低下時に確認"
 }

@@ -1603,6 +1603,12 @@ class _BeaconSettingsPageState extends State<BeaconSettingsPage> {
                 value: st.powerSaveNotice,
                 color: C.green,
                 onChanged: st.setPowerSaveNotice),
+            // 用户 2026-11-13：「省电模式可禁用提示，如果电量低的时候不再提示
+            // 它是否要开启省电」—— 这一项管的就是那句低电量弹句。
+            SettingsSwitch(S.of(context).lowBatteryAsk,
+                value: st.lowBatteryAsk,
+                color: C.green,
+                onChanged: st.setLowBatteryAsk),
             SizedBox(height: 10),
           ],
         ),

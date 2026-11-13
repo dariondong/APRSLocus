@@ -10321,4 +10321,7 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String msgResendOk(String times) => "$times 回の再送で受領通知";
 
+  @override
+  String get lowBatteryAsk => "バッテリー低下時に確認";
+
 }

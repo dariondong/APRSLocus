@@ -677,6 +677,10 @@ KEYS = {
     'powerSaveNotice': (
         '在界面上提示', '在介面上提示', 'Show it on screen',
         '画面に表示する', 'Mostrarlo en pantalla', 'Tampilkan di layar'),
+    'lowBatteryAsk': (
+        '电量低时提示开启', '電量低時提示開啟', 'Ask when the battery is low',
+        'バッテリー低下時に確認', 'Preguntar con batería baja',
+        'Tanya saat baterai lemah'),
     # ── 消息重发（没收到回执时按设定重试）──
     'msgResend': (
         '消息重发', '訊息重發', 'Resend messages',
