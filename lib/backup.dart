@@ -114,6 +114,9 @@ const List<BackupGroupSpec> kBackupGroups = [
     'beaconIncludeSats',
     'beaconIncludeDeskLoad',
     'acceptOtherSsidMsgs',
+    // 消息重发：开不开、隔多久、重几次 —— 用户自己调的网络行为，换机后
+    // 回到默认会让刚刚调好的射频节奏白调。
+    'msgResend', 'msgResendGapSec', 'msgResendTimes',
     // 订阅命中要不要弹系统通知：通知偏好，换机后应跟着走（否则新机上订阅
     // 静悄悄，用户会以为订阅坏了）。
     'subsNotify',

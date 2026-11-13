@@ -583,6 +583,12 @@ jobs:
       - name: Test external GPS link
         run: flutter test test/nmea_gps_test.dart
 
+      # 消息重发：编号必须沿用、次数用完要停、回执到了要取消、断线期间不计次。
+      # 四件都是「编译能过、analyze 全绿」的纯逻辑，错了的表现是射频上同一句
+      # 话发两遍、或者没信号时一直重发把频道刷满。
+      - name: Test message resend
+        run: flutter test test/msg_resend_test.dart
+
       - name: Analyze (tolerate known vector_map false positive)
         shell: bash
         run: |

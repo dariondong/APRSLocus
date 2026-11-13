@@ -2767,6 +2767,8 @@ class _MessagesPageState extends State<MessagesPage> {
                   ],
                 ],
               ),
+              // 重发说明：间隔 / 等待秒数 / 已重发几次，都写在这条消息底下
+              if (mine && m.groupId == null) _resendLine(m),
               // 这条是发给我的另一个 SSID 的：说清楚它不是发给本机 ID 的，
               // 并给出「用哪个 ID 回」的选择（选择条在输入栏上方）
               if (!mine &&
@@ -2794,6 +2796,52 @@ class _MessagesPageState extends State<MessagesPage> {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  /// 气泡底下那行「重发」说明。
+  ///
+  /// 用户要的是「重发间隔、等待时间与重发次数写在消息底下」，三样都得看得见：
+  ///   * 刚发出、还没到第一次重发：写计划（每 30 秒 · 最多 2 次）；
+  ///   * 正等着：写还剩几秒 + 已重发几次；
+  ///   * 次数用完仍未收到回执：写明这件事，不再一直转圈；
+  ///   * 重发之后终于收到回执：也写一句，让人知道刚才那次重发起了作用。
+  ///
+  /// 重发关掉时这里什么都不画（除了历史上真重发过的那些）。
+  Widget _resendLine(AprsMsg m) {
+    final st = widget.state;
+    final s = S.of(context);
+    final task = st.msgResendOf(m.id);
+    String? text;
+    var c = C.grey;
+    if (m.acked) {
+      if (m.tries > 0) {
+        text = s.msgResendOk('${m.tries}');
+        c = C.green;
+      }
+    } else if (task != null) {
+      if (m.tries == 0) {
+        text = s.msgResendPlan('${st.msgResendGapSec}', '${st.msgResendTimes}');
+      } else {
+        final left = st.msgResendInSec(m.id) ?? 0;
+        text = s.msgResendWaiting('$left', '${m.tries}', '${st.msgResendTimes}');
+      }
+      c = C.orange;
+    } else if (m.tries > 0) {
+      text = s.msgResendFailed('${m.tries}');
+      c = C.orange;
+    }
+    if (text == null) return const SizedBox.shrink();
+    return Padding(
+      padding: const EdgeInsets.only(top: 3),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(Icons.autorenew_rounded, size: 10, color: c),
+          const SizedBox(width: 3),
+          Flexible(child: Text(text, style: ts(9, c: c, h: 1.3))),
+        ],
       ),
     );
   }

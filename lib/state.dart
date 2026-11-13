@@ -135,6 +135,33 @@ class SmartBeaconTier {
       );
 }
 
+/// 一条正在等回执的私聊（见 `AppState` 的消息重发）。
+///
+/// 存的是**当时那一帧的原文**（含它自己的 `{编号`）：重发必须用同一个编号，
+/// 否则对方会当成新消息，射频上就是真重复了。
+class MsgResend {
+  MsgResend(this.id, this.raw, this.to, this.dueAt);
+
+  /// 报文编号（`{XXXX`），也是这张表的键。
+  final String id;
+
+  /// 要重发的完整报文行（`SRC>DST:payload`，不含报头路径 —— 路径由
+  /// `lineForLink` 按当前链路重算，换链路后依然是对的）。
+  final String raw;
+
+  /// 收件人，只用来写日志和气泡。
+  final String to;
+
+  /// 下一次重发的时刻。
+  DateTime dueAt;
+
+  /// 排上队的时刻：链路久久不回来时不能让任务永远挂着（见 `_tickMsgResend`）。
+  final DateTime startedAt = DateTime.now();
+
+  /// 已经重发过几次。
+  int tries = 0;
+}
+
 class AppState extends ChangeNotifier {
   /// 应用版本（用于信标备注、APRSlocus 识别）
   static const appVersion = '2.2.8';
@@ -5507,6 +5534,10 @@ class AppState extends ChangeNotifier {
     beaconIncludeSats = false;
     beaconIncludeDeskLoad = false;
     acceptOtherSsidMsgs = true;
+    msgResend = true;
+    msgResendGapSec = 30;
+    msgResendTimes = 2;
+    _msgResend.clear();
     subsNotify = true;
     beaconAmbiguity = 0;
     notifStyle = 'plain';
@@ -6104,6 +6135,11 @@ class AppState extends ChangeNotifier {
       autoStartMode = (p.getInt('autoStartMode') ?? autoStartMode).clamp(0, 2);
       acceptOtherSsidMsgs =
           p.getBool('acceptOtherSsidMsgs') ?? acceptOtherSsidMsgs;
+      msgResend = p.getBool('msgResend') ?? msgResend;
+      msgResendGapSec = p.getInt('msgResendGapSec') ?? msgResendGapSec;
+      if (!msgResendGapChoices.contains(msgResendGapSec)) msgResendGapSec = 30;
+      msgResendTimes = p.getInt('msgResendTimes') ?? msgResendTimes;
+      if (!msgResendTimesChoices.contains(msgResendTimes)) msgResendTimes = 2;
       subsNotify = p.getBool('subsNotify') ?? subsNotify;
       bleHrId = p.getString('bleHrId') ?? bleHrId;
       bleHrName = p.getString('bleHrName') ?? bleHrName;
@@ -6549,6 +6585,9 @@ class AppState extends ChangeNotifier {
     await p.setBool('beaconIncludeSats', beaconIncludeSats);
     await p.setBool('beaconIncludeDeskLoad', beaconIncludeDeskLoad);
     await p.setBool('acceptOtherSsidMsgs', acceptOtherSsidMsgs);
+    await p.setBool('msgResend', msgResend);
+    await p.setInt('msgResendGapSec', msgResendGapSec);
+    await p.setInt('msgResendTimes', msgResendTimes);
     await p.setBool('subsNotify', subsNotify);
     await p.setInt('beaconAmbiguity', beaconAmbiguity);
     await p.setString('notifStyle', notifStyle);
@@ -6808,6 +6847,8 @@ class AppState extends ChangeNotifier {
       // 外接 GPS 的静默检测（连着但久久没有字节 → 状态转 silent）。
       // 它刻意不自起 Timer：已经在跑的秒 tick 就是天然的心跳。
       nmeaGps.heartbeat();
+      // 消息重发：没收到回执的私聊按设定的间隔与次数重试（开关在设置里）。
+      _tickMsgResend(DateTime.now());
       // 自动定时上报仅在链路可用时进行；未连接不发送（避免误以为在上报）。
       // TNC 模式下还需用户显式开启「射频信标」（见 canAutoBeacon）。
       // 上报判据：**定时到了，或者走够了**（智能信标的距离打点）。
@@ -9786,6 +9827,8 @@ class AppState extends ChangeNotifier {
       for (final m in messages) {
         if (m.sent && m.id == ackedId) m.acked = true;
       }
+      // 回执到了：这条不再重发。
+      _msgResend.remove(ackedId);
       // 策略帧的 ack：确认至少有一个队友收到（射频下这才是「送达」凭据），
       // 顺带把这条帧从待确认表里摘掉并记日志，便于排查射频丢包。
       final sf = _strategyAckWait.remove(ackedId);
@@ -11508,6 +11551,148 @@ class AppState extends ChangeNotifier {
   /// 实际用来发消息的呼号
   String get msgSendCall => msgSendAs ?? myFullCall;
 
+  // ─── 消息重发（对方没回执时按设定重试）──
+  //
+  // 只对**私聊**生效：群发用的是 `messageNoAck`（帧里没有 `{编号`），对方
+  // 本来就不回执，重发只会把同一句话在频道上刷很多遍。
+  //
+  // 三条规则，都是为了不把频道刷满：
+  //   * 链路没连上时不计次、不重发（等连上再说，秒表也停在原地）；
+  //   * 每重发一次都**用原来那个编号**（同一个 id）—— 对方在射频上收到两
+  //     份时按 msgid 去重，这正是「重发不等于重复」的前提；
+  //   * 次数用完就不再试，气泡上如实写「已重发 N 次，未收到回执」。
+
+  /// 消息重发总开关（用户要求可以自己选择开或关，默认开）。
+  bool msgResend = true;
+
+  /// 重发间隔可选值（秒）。它在等着的那几秒里会显示在气泡底下。
+  static const msgResendGapChoices = [15, 30, 60, 120];
+
+  /// 重发间隔（秒）：发出后等这么久没有回执，就重发一次。
+  int msgResendGapSec = 30;
+
+  /// 重发次数可选值。0 不在里面 —— 想关就关总开关。
+  static const msgResendTimesChoices = [1, 2, 3, 5];
+
+  /// 最多重发几次。
+  int msgResendTimes = 2;
+
+  /// 正在等回执的消息：msgid → 任务。只在内存里；冷启后仍留着的是
+  /// [AprsMsg.tries]，那是历史（这条消息当时确实重发过）。
+  final Map<String, MsgResend> _msgResend = {};
+
+  void setMsgResend(bool v) {
+    if (msgResend == v) return;
+    msgResend = v;
+    // 关掉就是「不要再替我发」：手上排着的也一起取消，否则关了之后还会
+    // 冒出几次重发，比不关更让人糊涂。
+    if (!v) _msgResend.clear();
+    persist();
+    _notify();
+  }
+
+  void setMsgResendGap(int sec) {
+    final v = msgResendGapChoices.contains(sec) ? sec : 30;
+    if (msgResendGapSec == v) return;
+    msgResendGapSec = v;
+    persist();
+    _notify();
+  }
+
+  void setMsgResendTimes(int n) {
+    final v = msgResendTimesChoices.contains(n) ? n : 2;
+    if (msgResendTimes == v) return;
+    msgResendTimes = v;
+    persist();
+    _notify();
+  }
+
+  /// 这条消息还在等回执吗（气泡底下要显示倒计时）。
+  MsgResend? msgResendOf(String? id) =>
+      id == null ? null : _msgResend[id];
+
+  /// 离下一次重发还有几秒（没在等就是 null）。
+  int? msgResendInSec(String? id) {
+    final t = msgResendOf(id);
+    if (t == null) return null;
+    final left = t.dueAt.difference(DateTime.now()).inSeconds;
+    return left < 0 ? 0 : left;
+  }
+
+  /// 把一条刚发出的私聊排上重发。链路没连上就不排（那一包根本没发出去）。
+  void _armMsgResend(String id, String raw, String to) {
+    if (!msgResend) return;
+    _msgResend[id] = MsgResend(
+      id,
+      raw,
+      to,
+      DateTime.now().add(Duration(seconds: msgResendGapSec)),
+    );
+  }
+
+  /// 把这条消息的「已重发次数」加一并落盘。
+  void _noteMsgTries(String id) {
+    for (final m in messages) {
+      if (m.id == id && m.sent) {
+        m.tries += 1;
+        break;
+      }
+    }
+    _saveMessages();
+  }
+
+  /// 秒 tick 里跑的一步：到点的重发、次数用完的收尾。
+  ///
+  /// [now] 由调用方给，测试可以直接把时间拨快（见 `test/msg_resend_test.dart`）。
+  void _tickMsgResend(DateTime now) {
+    if (_msgResend.isEmpty) return;
+    var changed = false;
+    // 只有「链路在线、正在倒计时」的那几秒才每秒通知一次（气泡底下那句
+    // 「N 秒后重发」要真的在走）。断线等待时不通知 —— 那时倒计时本来就不走，
+    // 每秒重画一遍全应用只是白烧电。
+    var counting = false;
+    for (final t in _msgResend.values.toList()) {
+      // 链路一直不回来就别永远挂着：超过 15 分钟算放弃，气泡上说未收到回执。
+      if (now.difference(t.startedAt) > const Duration(minutes: 15)) {
+        _msgResend.remove(t.id);
+        _log(LogLevel.warn, '消息',
+            '等了 15 分钟没能重发 ${t.to} 这一条，放弃（编号 ${t.id}）');
+        changed = true;
+        continue;
+      }
+      if (now.isBefore(t.dueAt)) {
+        if (msgLinkUp) counting = true;
+        continue;
+      }
+      if (t.tries >= msgResendTimes) {
+        // 次数用完：从表里摘掉，气泡改由 `m.tries > 0 && !acked` 说明结果。
+        _msgResend.remove(t.id);
+        _log(LogLevel.warn, '消息',
+            '重发 ${t.tries} 次仍未收到 ${t.to} 的回执（编号 ${t.id}）');
+        changed = true;
+        continue;
+      }
+      if (!msgLinkUp) {
+        // 链路断了：停在原地等它回来，这段时间不算次数、也不倒计时。
+        t.dueAt = now.add(const Duration(seconds: 2));
+        continue;
+      }
+      _sendRawMsg(t.raw);
+      t.tries += 1;
+      t.dueAt = now.add(Duration(seconds: msgResendGapSec));
+      _noteMsgTries(t.id);
+      _log(LogLevel.info, '消息',
+          '${t.to} 没有回执，第 ${t.tries} 次重发（编号 ${t.id}）');
+      changed = true;
+      counting = true;
+    }
+    if (changed || counting) _notify();
+  }
+
+  /// 测试用：手动跑一步重发（把时间拨到 [now]）。
+  @visibleForTesting
+  void debugTickMsgResend(DateTime now) => _tickMsgResend(now);
+
   void sendMessage(String to, String text,
       {String? sentAs, String? fromCall}) {
     if (text.trim().isEmpty) return;
@@ -11544,6 +11729,7 @@ class AppState extends ChangeNotifier {
     if (msgLinkUp) {
       _sendRawMsg(raw);
       _lastTx = DateTime.now();
+      _armMsgResend(id, raw, to);
     }
     _log(LogLevel.info, '消息', '发送给 $to：$text');
     _pushPacket(
@@ -11617,6 +11803,7 @@ class AppState extends ChangeNotifier {
     if (msgLinkUp) {
       _sendRawMsg(raw);
       _lastTx = DateTime.now();
+      _armMsgResend(id, raw, target);
     }
     _log(LogLevel.info, '消息', '发送位置点给 $target：${frame}');
     _pushPacket(

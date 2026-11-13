@@ -2576,6 +2576,38 @@ class _ConnectionSettingsPageState extends State<ConnectionSettingsPage> {
               ],
             ),
             const SizedBox(height: 16),
+            // 消息重发：没收到回执时按设定间隔与次数重发。用户要求可以开或关，
+            // 所以总开关放在最上面，隔多长、重几次在它开着时才出现。
+            SettingsSectionCard(
+              title: S.of(context).msgResend,
+              icon: Icons.sync_rounded,
+              color: C.blue,
+              children: [
+                SettingsSwitch(S.of(context).msgResend,
+                    value: st.msgResend,
+                    color: C.blue,
+                    onChanged: st.setMsgResend),
+                SettingsHint(S.of(context).msgResendTip),
+                if (st.msgResend) ...[
+                  SettingsChoice<int>(
+                    S.of(context).msgResendGap,
+                    value: st.msgResendGapSec,
+                    options: AppState.msgResendGapChoices,
+                    labelOf: (v) =>
+                        S.of(context).msgResendSeconds('$v'),
+                    onChanged: st.setMsgResendGap,
+                  ),
+                  SettingsChoice<int>(
+                    S.of(context).msgResendTimes,
+                    value: st.msgResendTimes,
+                    options: AppState.msgResendTimesChoices,
+                    labelOf: (v) => S.of(context).msgResendCount('$v'),
+                    onChanged: st.setMsgResendTimes,
+                  ),
+                ],
+              ],
+            ),
+            const SizedBox(height: 16),
             _receivePrefCard(),
           ]),
       );

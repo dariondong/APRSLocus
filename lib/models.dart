@@ -421,6 +421,12 @@ class AprsMsg {
   final bool system; // 系统消息（如"XX 已加入群聊"）
   bool acked;
 
+  /// 已经重发过几次（仅「我发出的私聊」有意义，见 AppState 的消息重发）。
+  ///
+  /// 存下来而不是只记在内存里：重装 / 冷启之后气泡上那句
+  /// 「已重发 2 次，未收到回执」还该在，否则用户会以为重发一次都没生效。
+  int tries;
+
   /// **实际发到空中的文本**（仅在「发送前翻译」时与 [text] 不同）。
   ///
   /// 语义分工：[text] 是用户写的内容（聊天记录应按他的话显示），
@@ -459,6 +465,7 @@ class AprsMsg {
     this.sent = false,
     this.id,
     this.acked = false,
+    this.tries = 0,
     this.groupId,
     this.system = false,
     this.sentAs,
@@ -476,6 +483,7 @@ class AprsMsg {
     'sent': sent,
     'id': id,
     'acked': acked,
+    if (tries > 0) 'tries': tries,
     if (groupId != null) 'groupId': groupId,
     if (system) 'system': system,
     if (sentAs != null) 'sentAs': sentAs,
@@ -493,6 +501,7 @@ class AprsMsg {
     sent: j['sent'] as bool? ?? false,
     id: j['id'] as String?,
     acked: j['acked'] as bool? ?? false,
+    tries: (j['tries'] as num?)?.toInt() ?? 0,
     groupId: j['groupId'] as String?,
     system: j['system'] as bool? ?? false,
     sentAs: j['sentAs'] as String?,
