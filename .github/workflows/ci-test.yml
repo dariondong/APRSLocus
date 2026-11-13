@@ -584,6 +584,11 @@ jobs:
       - name: Test message resend
         run: flutter test test/msg_resend_test.dart
 
+      # 安装标识的空中宣告：第一次连上服务器时报一次、只报一次、正文不超
+      # 状态字段上限；错了的表现是「压根没报」或「每帧保活都带着一串十六进制」。
+      - name: Test install mark
+        run: flutter test test/install_mark_test.dart
+
       - name: Analyze (tolerate known vector_map false positive)
         shell: bash
         run: |

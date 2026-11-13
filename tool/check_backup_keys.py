@@ -63,6 +63,7 @@ EXCLUDE = {
     # 会重拉；而「已弹过」带过去只会让新机少看一遍。两者都不该进备份。
     # 已经欢迎过哪个版本：跟着本机的安装记录走，带过去只会让新机少看一遍。
     'updatePkgWelcomeSeen': '本机已欢迎过的安装包版本',
+    'installAnnounced': '本机安装标识已经报过一次（跟着这一次安装走）',
     'strongNoticeJson': '官网强提醒的本地副本（可再生）',
     'strongNoticeAt': '强提醒副本的拉取时间戳',
     'strongNoticeSeen': '已经弹过的强提醒（跟着这台设备走）',

@@ -209,9 +209,12 @@ class Blacklist {
   /// 为什么不用硬件号：Android 早就限制读取（要特权），而且那属于设备隐私 ——
   /// 我们只需要一个"能被列进名单、也能在误判时对得上"的名字。
   /// ⚠ 它**只存在于本机**：名单那条路上应用只**下载**，从不上传这个标识
-  /// （重装/清数据会换新的）。唯一的例外是**云同步**：登录后把它当作
-  /// 「这是哪台设备」报给你自己的账号（见 `lib/cloud_sync.dart`），
-  /// 那是发去你自己账号的数据，不是名单。
+  /// （重装/清数据会换新的）。两处例外都是用户自己要的：
+  ///   * **云同步**：登录后把它当作「这是哪台设备」报给你自己的账号
+  ///     （见 `lib/cloud_sync.dart`），那是发去你自己账号的数据，不是名单；
+  ///   * **第一次连上 APRS 服务器**：随线上那帧状态报文报一次前 12 位
+  ///     （见 `lib/install_mark.dart` 与 `AppState.installAnnounced`），
+  ///     之后不再重复，也不再跟着保活帧跑。
   static Future<String> deviceId() async {
     try {
       final p = await SharedPreferences.getInstance();

@@ -9,6 +9,7 @@ import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'models.dart';
+import 'install_mark.dart';
 import 'cloud_sync.dart';
 import 'coord_format.dart';
 import 'update_channels.dart';
@@ -224,6 +225,15 @@ class AppState extends ChangeNotifier {
   /// 状态报文的文本上限（字符，APRS101 规定状态信息字段最长 62 个字符）。
   /// 这里按 60 留 2 个字符余量，且截断在**发送时**做，输入框不硬拦。
   static const int statusMaxLen = 60;
+
+  /// 装好后**第一次**连上 APRS 服务器时，状态报文里报过本机安装标识没有。
+  ///
+  /// 报的就是那一次：之后的每次上线、每帧保活都不再重复（用户 2026-11-13：
+  /// 「当 aprslocus 第一次连接到 APRS 服务器广播自身安装标识」）。
+  /// 它跟着**这一次安装**走：重装/清数据会重新变成 false（见 [factoryReset]），
+  /// 而换手机恢复备份**不**带它 —— 新机是新的安装，该报自己那一条
+  /// （见 tool/check_backup_keys.py 的 EXCLUDE）。
+  bool installAnnounced = false;
 
   /// 在线判定时长（分钟）：台站最后上报距今超过该值即视为离线。
   /// 原先是写死的 5 分钟，现改为用户可配置（步进见设置页）。
@@ -5558,6 +5568,7 @@ class AppState extends ChangeNotifier {
     msgResendTimes = 2;
     _msgResend.clear();
     _msgResendStopped.clear();
+    installAnnounced = false;
     subsNotify = true;
     beaconAmbiguity = 0;
     notifStyle = 'plain';
@@ -6158,6 +6169,7 @@ class AppState extends ChangeNotifier {
           p.getBool('acceptOtherSsidMsgs') ?? acceptOtherSsidMsgs;
       msgResend = p.getBool('msgResend') ?? msgResend;
       msgResendGapSec = p.getInt('msgResendGapSec') ?? msgResendGapSec;
+      installAnnounced = p.getBool('installAnnounced') ?? installAnnounced;
       if (!msgResendGapChoices.contains(msgResendGapSec)) msgResendGapSec = 30;
       msgResendTimes = p.getInt('msgResendTimes') ?? msgResendTimes;
       if (!msgResendTimesChoices.contains(msgResendTimes)) msgResendTimes = 2;
@@ -6614,6 +6626,7 @@ class AppState extends ChangeNotifier {
     await p.setInt('beaconAmbiguity', beaconAmbiguity);
     await p.setString('notifStyle', notifStyle);
     await p.setString('notifLiveText', notifLiveText);
+    await p.setBool('installAnnounced', installAnnounced);
     await p.setInt('stepsBaseline', _stepsBaseline);
     await p.setString('stepsDayKey', _stepsDayKey);
     await p.setInt('stepsCarry', _stepsCarry);
@@ -7973,6 +7986,12 @@ class AppState extends ChangeNotifier {
       _acnAttempt = 0;
       _acnRetryAt = null;
       _log(LogLevel.info, 'APRSNETCN', '第二条链路已连接');
+      // 装好后第一次连上 APRSNETCN 也算「第一次连到 APRS 服务器」：同样把安装
+      // 标识随一帧状态报文报出去。这条链路平时不发 CONNECT 帧，就只报这一次。
+      final markText = await _installMarkStatusText();
+      if (markText != null) {
+        acnLink.send('$myFullCall>APALOC,TCPIP*:>$markText');
+      }
       // 24 小时台站不在连上时拉：那要再发一次 HTTP 请求，还要把账号口令再发
       // 一遍，等用户点了设置页的「立即同步」才做这件事。
     } else {
@@ -8063,7 +8082,12 @@ class AppState extends ChangeNotifier {
       _log(LogLevel.info, '连接', '已连接 · $myCall 在线 (过滤: $filterString)');
       _flushPendingTx();
       // 连接成功即发一次身份状态帧（APRS 惯例：上报在线/客户端标识）。
-      _sendAprs(_defaultStatusFrame());
+      // 装好后**第一次**连上服务器时，这帧里还带上本机安装标识；之后再连
+      // 只报在线（见 [_installMarkStatusText]）。
+      final markText = await _installMarkStatusText();
+      _sendAprs(markText == null
+          ? _defaultStatusFrame()
+          : '$myFullCall>APALOC,TCPIP*:>$markText');
       // 这是 CONNECT 帧唯一的自动发送点：保活帧只在没填自定义文本时才用它兜底。
       // 紧接着补一帧自定义状态（issue #31）：上面那帧会把 aprs.fi 上「台站状态」
       // 改写成 CONNECT 文本，不补就等于「一连上服务器，用户自己设的状态立刻被
@@ -8499,6 +8523,38 @@ class AppState extends ChangeNotifier {
   /// CONNECT 帧（见 [_connectTnc]）。
   String _defaultStatusFrame() =>
       '$myFullCall>APALOC,TCPIP*:>$_defaultStatusText';
+
+  /// 取走「首次上线要报的安装标识」（`ID:xxxxxxxxxxxx`）。
+  ///
+  /// 取用即记账：两条链路同时上线也只会报一次。取不到标识（连偏好都存不进去）
+  /// 时返回 null 且**不**记账，下一次上线再试。
+  Future<String?> _takeInstallMark() async {
+    if (installAnnounced) return null;
+    installAnnounced = true; // 先占位：并发的第二个调用者拿不到
+    final id = await Blacklist.deviceId();
+    final mark = InstallMark.of(id);
+    if (mark == null) {
+      installAnnounced = false;
+      return null;
+    }
+    persist();
+    _log(LogLevel.info, '连接', '首次上线：状态报文里带上安装标识 $mark');
+    return mark;
+  }
+
+  /// 首次上线那帧状态报文的**正文**（带安装标识）；已经报过 / 取不到时为 null。
+  ///
+  /// 标识走状态报文（DTI `>`）而不是位置报文的备注，两者不是一回事：备注是
+  /// 跟着位置发的那句人话，状态报文是独立一帧（用户对这两者的区分很在意）。
+  Future<String?> _installMarkStatusText() async {
+    final mark = await _takeInstallMark();
+    if (mark == null) return null;
+    return InstallMark.text(_defaultStatusText, mark, max: statusMaxLen);
+  }
+
+  /// 测试用：跑一次「首次上线要报的标识」判定（不碰网络）。
+  @visibleForTesting
+  Future<String?> debugInstallMarkText() => _installMarkStatusText();
 
   /// 当前自定义状态文本对应的状态帧原文（DTI `>`）；未填自定义文本时返回 null。
   ///
