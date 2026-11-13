@@ -3044,6 +3044,7 @@ class _ConnectionSettingsPageState extends State<ConnectionSettingsPage> {
             ),
           ]),
         ),
+        _centerButton(),
         SettingsInput(S.of(context).filterRadius, _filterRadius,
             tip: S.of(context).radiusTip,
             onChanged: (v) {
@@ -3083,32 +3084,6 @@ class _ConnectionSettingsPageState extends State<ConnectionSettingsPage> {
                   ),
                 ),
             ],
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.all(14),
-          child: OutlinedButton.icon(
-            onPressed: () {
-              if (st.myLat != null && st.myLng != null) {
-                // 只填入经纬度输入框，点"保存并应用"才生效
-                setState(() {
-                  _filterLat.text = st.myLat!.toStringAsFixed(4);
-                  _filterLng.text = st.myLng!.toStringAsFixed(4);
-                });
-              } else {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(S.of(context).noFixYet)),
-                );
-              }
-            },
-            icon: Icon(Icons.my_location_rounded, size: 15),
-            label: Text(S.of(context).useMyLocation),
-            style: OutlinedButton.styleFrom(
-              foregroundColor: C.blue,
-              side: BorderSide(color: C.blue.withValues(alpha: 0.5)),
-              padding: const EdgeInsets.symmetric(vertical: 8),
-              textStyle: ts(11, w: FontWeight.w600),
-            ),
           ),
         ),
         // 保存并应用过滤（显式保存当前经纬度/半径）
@@ -3167,6 +3142,62 @@ class _ConnectionSettingsPageState extends State<ConnectionSettingsPage> {
         ),
         SettingsHint('${S.of(context).filterRule}: ${st.filterString}'),
       ],
+    );
+  }
+
+  /// 「用我的位置作为过滤中心」：一次点按就把中心定成当前位置并**立刻生效**，
+  /// 不再要求用户再点一次「保存并应用过滤」。
+  ///
+  /// 以前这个按钮只往两个输入框里写数字：而「过滤中心跟随我的位置」默认是开的，
+  /// 那两个框是灰的，点完屏幕上看不出任何变化 —— 按钮像是坏的。
+  Widget _centerButton() {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(14, 0, 14, 6),
+      child: SizedBox(
+        width: double.infinity,
+        height: 38,
+        child: OutlinedButton.icon(
+          onPressed: _useMyLocationAsCenter,
+          icon: const Icon(Icons.my_location_rounded, size: 15),
+          label: Text(S.of(context).useMyLocation, style: ts(12, w: FontWeight.w600)),
+          style: OutlinedButton.styleFrom(
+            foregroundColor: C.blue,
+            side: BorderSide(color: C.blue.withValues(alpha: 0.5)),
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10)),
+            textStyle: ts(12, w: FontWeight.w600),
+          ),
+        ),
+      ),
+    );
+  }
+
+  /// 把过滤中心设成当前位置（半径取输入框里那个），并立刻应用。
+  ///
+  /// 不碰「跟随我的位置」那个开关：跟随是用户设的长期行为，
+  /// 一键设中心只影响这一次的坐标。
+  void _useMyLocationAsCenter() {
+    final lat = st.myLat;
+    final lng = st.myLng;
+    if (lat == null || lng == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(S.of(context).noFixYet)),
+      );
+      return;
+    }
+    final r = int.tryParse(_filterRadius.text) ?? st.filterRadius;
+    _filterLat.text = lat.toStringAsFixed(4);
+    _filterLng.text = lng.toStringAsFixed(4);
+    _filterRadius.text = '$r';
+    st.setFilter(lat, lng, r);
+    setState(() {});
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(S.of(context)
+            .filterSavedRadius(S.of(context).filterSaved, st.filterRadius)),
+        backgroundColor: C.green,
+        behavior: SnackBarBehavior.floating,
+      ),
     );
   }
 
