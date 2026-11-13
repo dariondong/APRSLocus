@@ -621,6 +621,41 @@ KEYS = {
         'パッケージのダイジェストがリポジトリのものと違います',
         'El resumen no coincide con el archivo del repositorio',
         'Digest tidak cocok dengan berkas di repositori'),
+    'updatePkgWelcomeHello': (
+        '新版本已经装好了。', '新版本已經裝好了。',
+        'The new version is installed.',
+        '新しいバージョンをインストールしました。',
+        'La nueva versión ya está instalada.',
+        'Versi baru sudah terpasang.'),
+    'updatePkgDeleteTitle': (
+        '安装包还要不要留', '安裝包還要不要留',
+        'Keep the installer?',
+        'インストーラーを残しますか',
+        '¿Conservar el instalador?',
+        'Simpan pemasang?'),
+    # ── 无法校验时的确认（用户要求：无法校验要用户进一步确认）──
+    'updatePkgUnverifiedTitle': (
+        '无法校验这个安装包', '無法校驗這個安裝包',
+        'This package could not be verified',
+        'このパッケージは確認できませんでした',
+        'No se pudo verificar este paquete',
+        'Paket ini tidak dapat diverifikasi'),
+    'updatePkgUnverifiedBody': (
+        '没联网、或者仓库里查不到这一版，版本号、摘要与签名对不上。'
+        '继续安装的话，风险自负。',
+        '沒連網、或者倉庫裡查不到這一版，版本號、摘要與簽章對不上。'
+        '繼續安裝的話，風險自負。',
+        'Either there is no network, or the release has no digest to compare. '
+        'Installing anyway is at your own risk.',
+        'オンラインでないか、リリースに比較できるダイジェストがありません。'
+        'それでもインストールする場合は自己責任です。',
+        'O no hay conexión, o la entrega no trae un resumen con el que comparar. '
+        'Instalar de todos modos corre por tu cuenta.',
+        'Tidak ada koneksi, atau rilis ini tidak membawa digest untuk dibandingkan. '
+        'Memasang tetap menjadi risiko Anda.'),
+    'installAnyway': (
+        '继续安装', '繼續安裝', 'Install anyway',
+        'このままインストール', 'Instalar igualmente', 'Tetap pasang'),
     # ── 装上新版后的欢迎卡：这一版改了什么──
     'updatePkgWhatsNew': (
         '这一版改了什么', '這一版改了什麼',

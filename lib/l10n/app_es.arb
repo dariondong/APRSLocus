@@ -4535,5 +4535,10 @@
   "updateCheckNotFound": "No hay resumen de esta versión en el repositorio: no se puede comprobar",
   "updateCheckVersion": "La versión dentro del paquete no coincide con esta entrega",
   "updateCheckSha": "El resumen no coincide con el archivo del repositorio",
-  "updatePkgWhatsNew": "Novedades de esta versión"
+  "updatePkgWhatsNew": "Novedades de esta versión",
+  "updatePkgWelcomeHello": "La nueva versión ya está instalada.",
+  "updatePkgDeleteTitle": "¿Conservar el instalador?",
+  "updatePkgUnverifiedTitle": "No se pudo verificar este paquete",
+  "updatePkgUnverifiedBody": "O no hay conexión, o la entrega no trae un resumen con el que comparar. Instalar de todos modos corre por tu cuenta.",
+  "installAnyway": "Instalar igualmente"
 }

@@ -5214,5 +5214,10 @@
   "updateCheckNotFound": "仓库里查不到这一版的摘要，无法校验",
   "updateCheckVersion": "包里的版本号与仓库这一版不一致",
   "updateCheckSha": "包的摘要与仓库里那份不一致",
-  "updatePkgWhatsNew": "这一版改了什么"
+  "updatePkgWhatsNew": "这一版改了什么",
+  "updatePkgWelcomeHello": "新版本已经装好了。",
+  "updatePkgDeleteTitle": "安装包还要不要留",
+  "updatePkgUnverifiedTitle": "无法校验这个安装包",
+  "updatePkgUnverifiedBody": "没联网、或者仓库里查不到这一版，版本号、摘要与签名对不上。继续安装的话，风险自负。",
+  "installAnyway": "继续安装"
 }

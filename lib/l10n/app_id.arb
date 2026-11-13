@@ -4535,5 +4535,10 @@
   "updateCheckNotFound": "Digest versi ini tidak ada di repositori: tidak dapat diperiksa",
   "updateCheckVersion": "Versi di dalam paket tidak sama dengan rilis ini",
   "updateCheckSha": "Digest tidak cocok dengan berkas di repositori",
-  "updatePkgWhatsNew": "Yang berubah di versi ini"
+  "updatePkgWhatsNew": "Yang berubah di versi ini",
+  "updatePkgWelcomeHello": "Versi baru sudah terpasang.",
+  "updatePkgDeleteTitle": "Simpan pemasang?",
+  "updatePkgUnverifiedTitle": "Paket ini tidak dapat diverifikasi",
+  "updatePkgUnverifiedBody": "Tidak ada koneksi, atau rilis ini tidak membawa digest untuk dibandingkan. Memasang tetap menjadi risiko Anda.",
+  "installAnyway": "Tetap pasang"
 }

@@ -10553,4 +10553,19 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get updatePkgWhatsNew => "Yang berubah di versi ini";
 
+  @override
+  String get updatePkgWelcomeHello => "Versi baru sudah terpasang.";
+
+  @override
+  String get updatePkgDeleteTitle => "Simpan pemasang?";
+
+  @override
+  String get updatePkgUnverifiedTitle => "Paket ini tidak dapat diverifikasi";
+
+  @override
+  String get updatePkgUnverifiedBody => "Tidak ada koneksi, atau rilis ini tidak membawa digest untuk dibandingkan. Memasang tetap menjadi risiko Anda.";
+
+  @override
+  String get installAnyway => "Tetap pasang";
+
 }

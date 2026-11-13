@@ -4535,5 +4535,10 @@
   "updateCheckNotFound": "No digest for this version in the repository: cannot verify",
   "updateCheckVersion": "The version inside does not match this release",
   "updateCheckSha": "The digest does not match the file in the repository",
-  "updatePkgWhatsNew": "What's new in this version"
+  "updatePkgWhatsNew": "What's new in this version",
+  "updatePkgWelcomeHello": "The new version is installed.",
+  "updatePkgDeleteTitle": "Keep the installer?",
+  "updatePkgUnverifiedTitle": "This package could not be verified",
+  "updatePkgUnverifiedBody": "Either there is no network, or the release has no digest to compare. Installing anyway is at your own risk.",
+  "installAnyway": "Install anyway"
 }

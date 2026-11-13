@@ -8,15 +8,23 @@ import 'update_install.dart';
 import 'version_compare.dart';
 import 'widgets.dart';
 
-/// 装上新版之后的第一件事：欢迎一下，然后问那个安装包还要不要留。
+/// 装上新版之后的两件事，**分成两步，不再塞进一个弹窗**：
+///
+///   1. 欢迎一句 + 这一版改了什么（用户要「简要提示该版本更新内容」）；
+///   2. 那个安装包还要不要留（留着能装到别的设备，删掉能腾出空间）。
+///
+/// 合成一个弹窗的毛病：想留安装包的人得先看完一堆更新说明才能答「留」，
+/// 而只想看更新内容的人被迫面对一个「删除 / 保留」的选择题。两件事分开问，
+/// 各自一次，互不牵连。
 ///
 /// ── 为什么放在启动这一层判断 ──
 /// 「是不是刚更新完」只有启动时才知道：新版本是系统的安装器装上去的，
 /// 我们的进程在那之前就已经被杀掉了。所以**下载时**把包记进 prefs
 /// （[AppState.updatePkgJson]），启动后拿当前版本跟它比：装上了才问。
 ///
-/// 只问一次（[AppState.updatePkgAsked]）。用户在设置里选了「自动删除 / 一直保留」
-/// 就不再弹，直接照做。
+/// 欢迎卡一个版本只弹一次（[AppState.updatePkgWelcomeSeen]）；
+/// 「要不要留」按 [AppState.updatePkgAsked] 只听用户一次：设置里选了
+/// 「自动删除 / 一直保留」就照做，不再问。
 Future<void> maybePromptUpdateWelcome({
   required BuildContext context,
   required AppState state,
@@ -35,13 +43,19 @@ Future<void> maybePromptUpdateWelcome({
   // 走到这里说明确实装上了：安装时复制到缓存的那份副本没用了。
   await UpdateInstaller.cleanCache();
 
+  // ── ① 欢迎 + 这一版改了什么（一个版本一次）──
+  if (state.updatePkgWelcomeSeen != tag && context.mounted) {
+    state.markUpdatePkgWelcomeSeen(tag);
+    await _showWelcome(context, state, tag);
+  }
+
+  // ── ② 安装包还要不要留 ──
   if (state.updatePkgAsked == tag) return;
   final name = state.updatePkgName;
   if (name.isEmpty) {
     state.forgetUpdatePackage();
     return;
   }
-  final notes = state.updatePkgNotes;
 
   if (state.updatePkgAction == 'delete') {
     await deleteUpdatePackage(state);
@@ -54,32 +68,40 @@ Future<void> maybePromptUpdateWelcome({
   }
 
   if (!context.mounted) return;
+  await _askKeepPackage(context, state, tag);
+}
+
+/// 第一屏：欢迎一句 + 这一版改了什么。只有一个「知道了」，不做任何选择。
+Future<void> _showWelcome(
+  BuildContext context,
+  AppState state,
+  String tag,
+) async {
   final s = S.of(context);
-  var remember = false;
-  final del = await showDialog<bool>(
+  final notes = state.updatePkgNotes;
+  await showDialog<void>(
     context: context,
-    builder: (ctx) => StatefulBuilder(
-      builder: (ctx, setLocal) => AlertDialog(
-        backgroundColor: C.white,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: Row(
-          children: [
-            Icon(Icons.celebration_rounded, color: C.blue, size: 22),
-            const SizedBox(width: 8),
-            Expanded(
-              child: Text(
-                s.updatePkgWelcomeTitle(AppState.appVersion),
-                style: ts(16, w: FontWeight.w700),
-              ),
+    builder: (ctx) => AlertDialog(
+      backgroundColor: C.white,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      title: Row(
+        children: [
+          Icon(Icons.celebration_rounded, color: C.blue, size: 22),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              s.updatePkgWelcomeTitle(AppState.appVersion),
+              style: ts(16, w: FontWeight.w700),
             ),
-          ],
-        ),
-        content: SingleChildScrollView(
-          child: Column(
+          ),
+        ],
+      ),
+      content: SingleChildScrollView(
+        child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(s.updatePkgWelcomeBody, style: ts(13, h: 1.6)),
+            Text(s.updatePkgWelcomeHello, style: ts(13, h: 1.6)),
             // 这一版改了什么：下载时从 release 正文里挑出的几行（见
             // lib/update_notes.dart）。从别处装的包没有这段，就不摆标题。
             if (notes.isNotEmpty) ...[
@@ -101,53 +123,99 @@ Future<void> maybePromptUpdateWelcome({
                   ),
                 ),
             ],
-            const SizedBox(height: 12),
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                color: C.greyBg,
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    name,
-                    style: ts(12, w: FontWeight.w600),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  const SizedBox(height: 2),
-                  Text(
-                    '${s.updatePkgInDownloads} · '
-                    '${_fmtSize(state.updatePkgSize)}',
-                    style: ts(11, c: C.grey),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 4),
-            // 记住的是「这一次的做法」，不是某一个按钮：选删除就记住删除，
-            // 选保留就记住保留，下次直接照做。
-            InkWell(
-              onTap: () => setLocal(() => remember = !remember),
-              child: Row(
-                children: [
-                  Checkbox(
-                    value: remember,
-                    onChanged: (v) => setLocal(() => remember = v ?? false),
-                  ),
-                  Expanded(
-                    child: Text(
-                      s.updatePkgRemember,
-                      style: ts(12, c: C.slate),
-                    ),
-                  ),
-                ],
-              ),
-            ),
           ],
+        ),
+      ),
+      actions: [
+        FilledButton(
+          style: FilledButton.styleFrom(
+            backgroundColor: C.blue,
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          ),
+          onPressed: () => Navigator.pop(ctx),
+          child: Text(
+            s.gotIt,
+            style: ts(13, c: Colors.white, w: FontWeight.w600),
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+/// 第二步：那个安装包还要不要留（这才有选择）。
+Future<void> _askKeepPackage(
+  BuildContext context,
+  AppState state,
+  String tag,
+) async {
+  final s = S.of(context);
+  final name = state.updatePkgName;
+  var remember = false;
+  final del = await showDialog<bool>(
+    context: context,
+    builder: (ctx) => StatefulBuilder(
+      builder: (ctx, setLocal) => AlertDialog(
+        backgroundColor: C.white,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: Text(
+          s.updatePkgDeleteTitle,
+          style: ts(16, w: FontWeight.w700),
+        ),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(s.updatePkgWelcomeBody, style: ts(13, h: 1.6)),
+              const SizedBox(height: 12),
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: C.greyBg,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      name,
+                      style: ts(12, w: FontWeight.w600),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      '${s.updatePkgInDownloads} · '
+                      '${_fmtSize(state.updatePkgSize)}',
+                      style: ts(11, c: C.grey),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 4),
+              // 记住的是「这一次的做法」，不是某一个按钮：选删除就记住删除，
+              // 选保留就记住保留，下次直接照做。
+              InkWell(
+                onTap: () => setLocal(() => remember = !remember),
+                child: Row(
+                  children: [
+                    Checkbox(
+                      value: remember,
+                      onChanged: (v) => setLocal(() => remember = v ?? false),
+                    ),
+                    Expanded(
+                      child: Text(
+                        s.updatePkgRemember,
+                        style: ts(12, c: C.slate),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
         ),
         actions: [

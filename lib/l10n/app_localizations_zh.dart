@@ -10164,6 +10164,21 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String get updatePkgWhatsNew => "这一版改了什么";
 
+  @override
+  String get updatePkgWelcomeHello => "新版本已经装好了。";
+
+  @override
+  String get updatePkgDeleteTitle => "安装包还要不要留";
+
+  @override
+  String get updatePkgUnverifiedTitle => "无法校验这个安装包";
+
+  @override
+  String get updatePkgUnverifiedBody => "没联网、或者仓库里查不到这一版，版本号、摘要与签名对不上。继续安装的话，风险自负。";
+
+  @override
+  String get installAnyway => "继续安装";
+
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
@@ -20324,5 +20339,20 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get updatePkgWhatsNew => "這一版改了什麼";
+
+  @override
+  String get updatePkgWelcomeHello => "新版本已經裝好了。";
+
+  @override
+  String get updatePkgDeleteTitle => "安裝包還要不要留";
+
+  @override
+  String get updatePkgUnverifiedTitle => "無法校驗這個安裝包";
+
+  @override
+  String get updatePkgUnverifiedBody => "沒連網、或者倉庫裡查不到這一版，版本號、摘要與簽章對不上。繼續安裝的話，風險自負。";
+
+  @override
+  String get installAnyway => "繼續安裝";
 
 }

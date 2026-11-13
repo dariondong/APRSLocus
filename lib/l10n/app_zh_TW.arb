@@ -5123,5 +5123,10 @@
   "updateCheckNotFound": "倉庫裡查不到這一版的摘要，無法校驗",
   "updateCheckVersion": "包裡的版本號與倉庫這一版不一致",
   "updateCheckSha": "包的摘要與倉庫裡那份不一致",
-  "updatePkgWhatsNew": "這一版改了什麼"
+  "updatePkgWhatsNew": "這一版改了什麼",
+  "updatePkgWelcomeHello": "新版本已經裝好了。",
+  "updatePkgDeleteTitle": "安裝包還要不要留",
+  "updatePkgUnverifiedTitle": "無法校驗這個安裝包",
+  "updatePkgUnverifiedBody": "沒連網、或者倉庫裡查不到這一版，版本號、摘要與簽章對不上。繼續安裝的話，風險自負。",
+  "installAnyway": "繼續安裝"
 }

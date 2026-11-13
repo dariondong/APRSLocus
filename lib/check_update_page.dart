@@ -690,6 +690,56 @@ class _CheckUpdatePageState extends State<CheckUpdatePage>
     ));
   }
 
+  /// 校验没有结论时的确认（用户：「如果无法校验 需要用户进一步确认」）。
+  ///
+  /// 这一步不是走流程：它要把「为什么没校上」说清楚（没联网 / 渠道
+  /// 没有摘要），并且把默认按钮留给「取消」。
+  Future<bool?> _confirmUnverified() {
+    return showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: C.white,
+        title: Row(
+          children: [
+            Icon(Icons.gpp_maybe_rounded, color: C.orange, size: 20),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(S.of(context).updatePkgUnverifiedTitle,
+                  style: ts(15, w: FontWeight.w700)),
+            ),
+          ],
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(S.of(context).updatePkgUnverifiedBody, style: ts(13, h: 1.6)),
+            const SizedBox(height: 8),
+            Text(_verifyLabel, style: ts(11.5, c: C.grey)),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: Text(S.of(context).cancel, style: ts(13, c: C.grey)),
+          ),
+          FilledButton(
+            style: FilledButton.styleFrom(
+              backgroundColor: C.orange,
+              shape:
+                  RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            ),
+            onPressed: () => Navigator.pop(ctx, true),
+            child: Text(
+              S.of(context).installAnyway,
+              style: ts(13, c: Colors.white, w: FontWeight.w600),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   /// 弹出安装确认
   void _showInstallDialog(_Pkg p) {
     showDialog(
@@ -785,11 +835,24 @@ class _CheckUpdatePageState extends State<CheckUpdatePage>
       return;
     }
     try {
+      // 还没查完（刚进来就点了安装）就先等这一次查完—— 否则会平白弹一次
+      // 「无法校验」。
+      if (_verify == null ||
+          _verifyState == UpdateVerifyState.checking) {
+        await _verifyPackage();
+        if (!mounted) return;
+      }
       if (_verifyBlocksInstall) {
         // 摘要或版本号与仓库那份不一致：这已经不是「是不是我们签的」的问题，
         // 而是「它根本不是这一次发布的那个文件」，不往下走。
         _showSnack(_verifyLabel);
         return;
+      }
+      // 校验没有结论（没联网 / 这条渠道查不到摘要 / 读不出包）：
+      // 不替用户拍板，也不默默放行 —— 明说一句、让他自己点「继续安装」才走。
+      if (_verifyState != UpdateVerifyState.ok) {
+        final go = await _confirmUnverified();
+        if (!mounted || go != true) return;
       }
       final can = await UpdateInstaller.canRequestInstall();
       if (!mounted) return;

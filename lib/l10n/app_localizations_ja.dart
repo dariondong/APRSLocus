@@ -10264,4 +10264,19 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String get updatePkgWhatsNew => "このバージョンの変更点";
 
+  @override
+  String get updatePkgWelcomeHello => "新しいバージョンをインストールしました。";
+
+  @override
+  String get updatePkgDeleteTitle => "インストーラーを残しますか";
+
+  @override
+  String get updatePkgUnverifiedTitle => "このパッケージは確認できませんでした";
+
+  @override
+  String get updatePkgUnverifiedBody => "オンラインでないか、リリースに比較できるダイジェストがありません。それでもインストールする場合は自己責任です。";
+
+  @override
+  String get installAnyway => "このままインストール";
+
 }

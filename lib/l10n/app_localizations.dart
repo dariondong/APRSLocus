@@ -18683,6 +18683,36 @@ abstract class AppLocalizations {
   /// **'这一版改了什么'**
   String get updatePkgWhatsNew;
 
+  /// No description provided for @updatePkgWelcomeHello.
+  ///
+  /// In zh, this message translates to:
+  /// **'新版本已经装好了。'**
+  String get updatePkgWelcomeHello;
+
+  /// No description provided for @updatePkgDeleteTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'安装包还要不要留'**
+  String get updatePkgDeleteTitle;
+
+  /// No description provided for @updatePkgUnverifiedTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'无法校验这个安装包'**
+  String get updatePkgUnverifiedTitle;
+
+  /// No description provided for @updatePkgUnverifiedBody.
+  ///
+  /// In zh, this message translates to:
+  /// **'没联网、或者仓库里查不到这一版，版本号、摘要与签名对不上。继续安装的话，风险自负。'**
+  String get updatePkgUnverifiedBody;
+
+  /// No description provided for @installAnyway.
+  ///
+  /// In zh, this message translates to:
+  /// **'继续安装'**
+  String get installAnyway;
+
 }
 
 class _AppLocalizationsDelegate

@@ -5024,6 +5024,10 @@ class AppState extends ChangeNotifier {
   String updatePkgJson = '';
   String updatePkgAsked = '';
 
+  /// 已经欢迎过哪个版本的安装包（欢迎卡与「要不要留」分两步问，
+  /// 各自只问一次：留着安装包的人不应该每次启动都被欢迎一遍）。
+  String updatePkgWelcomeSeen = '';
+
   Map<String, dynamic> get updatePkg {
     if (updatePkgJson.isEmpty) return const {};
     try {
@@ -5075,6 +5079,13 @@ class AppState extends ChangeNotifier {
     updatePkgJson = '';
     persist();
     _notify();
+  }
+
+  /// 记住「这个版本已经欢迎过了」。
+  void markUpdatePkgWelcomeSeen(String tag) {
+    if (tag.isEmpty || updatePkgWelcomeSeen == tag) return;
+    updatePkgWelcomeSeen = tag;
+    persist();
   }
 
   /// 记住「这个版本已经问过删不删」。
@@ -5503,6 +5514,7 @@ class AppState extends ChangeNotifier {
     updatePkgAction = 'ask';
     updatePkgJson = '';
     updatePkgAsked = '';
+    updatePkgWelcomeSeen = '';
     strongNoticeJson = '';
     strongNoticeAt = 0;
     strongNoticeSeen = '';
@@ -6098,6 +6110,8 @@ class AppState extends ChangeNotifier {
       if (!updatePkgActions.contains(updatePkgAction)) updatePkgAction = 'ask';
       updatePkgJson = p.getString('updatePkgJson') ?? updatePkgJson;
       updatePkgAsked = p.getString('updatePkgAsked') ?? updatePkgAsked;
+      updatePkgWelcomeSeen =
+          p.getString('updatePkgWelcomeSeen') ?? updatePkgWelcomeSeen;
       strongNoticeJson = p.getString('strongNoticeJson') ?? strongNoticeJson;
       strongNoticeAt = p.getInt('strongNoticeAt') ?? strongNoticeAt;
       strongNoticeSeen = p.getString('strongNoticeSeen') ?? strongNoticeSeen;
@@ -6530,6 +6544,7 @@ class AppState extends ChangeNotifier {
     await p.setString('updatePkgAction', updatePkgAction);
     await p.setString('updatePkgJson', updatePkgJson);
     await p.setString('updatePkgAsked', updatePkgAsked);
+    await p.setString('updatePkgWelcomeSeen', updatePkgWelcomeSeen);
     await p.setString('strongNoticeJson', strongNoticeJson);
     await p.setInt('strongNoticeAt', strongNoticeAt);
     await p.setString('strongNoticeSeen', strongNoticeSeen);

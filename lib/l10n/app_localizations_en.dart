@@ -10543,4 +10543,19 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get updatePkgWhatsNew => "What's new in this version";
 
+  @override
+  String get updatePkgWelcomeHello => "The new version is installed.";
+
+  @override
+  String get updatePkgDeleteTitle => "Keep the installer?";
+
+  @override
+  String get updatePkgUnverifiedTitle => "This package could not be verified";
+
+  @override
+  String get updatePkgUnverifiedBody => "Either there is no network, or the release has no digest to compare. Installing anyway is at your own risk.";
+
+  @override
+  String get installAnyway => "Install anyway";
+
 }
