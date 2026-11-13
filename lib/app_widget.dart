@@ -527,6 +527,10 @@ class _AppWidgetSyncState extends State<AppWidgetSync>
     // 「已保存位置」，而且没有任何东西会自己恢复（见 ensureLocationRunning）。
     if (state == AppLifecycleState.resumed) {
       unawaited(widget.state.ensureLocationRunning());
+      // 强提醒：很多人「打开应用」就是从后台切回来，而不是冷启动。
+      // 冷启动那一次拉失败（没网 / 官网还没部署上）时，切回来就能补拉；
+      // 六小时内拉过就不重复拉（见 refreshStrongNotice）。
+      unawaited(widget.state.refreshStrongNotice());
       return;
     }
     // 切到后台前再同步一次：用户回到桌面时看到的就是最新的那份

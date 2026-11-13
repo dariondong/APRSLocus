@@ -137,7 +137,7 @@ class SmartBeaconTier {
 
 class AppState extends ChangeNotifier {
   /// 应用版本（用于信标备注、APRSlocus 识别）
-  static const appVersion = '2.2.5';
+  static const appVersion = '2.2.6';
   // 我的电台
   String myCall = 'BV2AAA';
 
@@ -4963,13 +4963,25 @@ class AppState extends ChangeNotifier {
       ? const <String>{}
       : strongNoticeSeen.split(',').where((e) => e.isNotEmpty).toSet();
 
+  /// 本次运行已经弹过的 id。**不落盘**：它的意思是「这一次打开已经
+  /// 给过了」，进程一重启就清空 —— 否则 `every: true` 的那条会在每一次
+  /// 重建时又跳出来（关掉→重建→又弹，用户永远进不了主界面）。
+  final Set<String> _strongNoticeShownNow = <String>{};
+
   /// 这一次该弹哪一条（null = 不弹）。
-  StrongNotice? get strongNoticeNow =>
-      StrongNotice.pick(strongNoticeJson, locale, strongNoticeSeenIds);
+  StrongNotice? get strongNoticeNow {
+    final n = StrongNotice.pick(strongNoticeJson, locale, strongNoticeSeenIds);
+    if (n == null) return null;
+    // 本次已弹过：`every` 的意思是「每次打开弹一次」，
+    // 不是「每一次重建都弹」。
+    if (_strongNoticeShownNow.contains(n.id)) return null;
+    return n;
+  }
 
   /// 用户关掉了这一条：记下来，默认同一条不再弹（`every` 除外）。
   void dismissStrongNotice(StrongNotice n) {
     if (n.id.isEmpty) return;
+    _strongNoticeShownNow.add(n.id);
     final ids = strongNoticeSeenIds.toList();
     if (!ids.contains(n.id)) {
       ids.add(n.id);
@@ -4999,6 +5011,9 @@ class AppState extends ChangeNotifier {
     if (text == null || text.trim().isEmpty) return;
     strongNoticeAt = now;
     _strongNoticeFetched = true;
+    // 日志里留一笔：弹不出来时能自己看出是「没拉到」还是「拉到了但过期 / 已弹」。
+    _log(LogLevel.info, '强提醒',
+        '拉到一份，本次可用 ${StrongNotice.parseAll(text, locale).where((e) => e.worthShowing(strongNoticeSeenIds)).length} 条');
     if (strongNoticeJson == text) {
       persist();
       return;
