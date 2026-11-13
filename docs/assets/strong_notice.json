@@ -1,5 +1,30 @@
 {
   "updated": "2026-11-13",
   "note": "强提醒：打开应用时整页盖住主界面，用户点「知道了」才进主界面。内容只从这份文件读，改这里不用发版。字段：updated（本文件更新日期，YYYY-MM-DD）；items（数组，空数组 = 什么都不弹）。每条：id（换 id = 当成一条新提醒，必填且不重复）、level（info / warn / critical，决定那道颜色）、title 与 body（纯字符串，或按语言分开的对象 {\"zh\":\"…\",\"en\":\"…\"}，认 zh_TW/zh 再退 en；body 里用 \\n 分段）、actions（可选，[{label, url}]，url 留空 = 点了就关）、hard（默认 true，只能点按钮关掉，返回键不关）、every（默认 false，同一条只弹一次）、until（可选 YYYY-MM-DD，过完那天不再弹）。拉不到、文件坏了、一条都不合格，一律不弹。",
-  "items": []
+  "items": [
+    {
+      "id": "test-261113",
+      "level": "info",
+      "title": {
+        "zh": "强提醒测试",
+        "zh_TW": "強提醒測試",
+        "en": "Strong notice test",
+        "ja": "強リマインダーのテスト",
+        "es": "Prueba del aviso destacado",
+        "id": "Uji pemberitahuan kuat"
+      },
+      "body": {
+        "zh": "这是一条测试用的强提醒。打开应用时它整页盖住主界面，点「知道了」才进主界面。\n文字来自官网这份文件，改一句不用发版。\n测完把 items 清空，或者等 until 那天过了，它就不再弹。",
+        "zh_TW": "這是一條測試用的強提醒。打開應用時它整頁蓋住主介面，點「知道了」才進主介面。\n文字來自官網這份檔案，改一句不用發版。\n測完把 items 清空，或者等 until 那天過了，它就不再彈。",
+        "en": "This is a test strong notice. It fills the screen when the app opens, and you get in after tapping the button.\nThe text comes from this file on the official site, so a wording change needs no new version.\nClear items when the test is over, or wait for until to pass.",
+        "ja": "テスト用の強リマインダーです。アプリを開くと画面いっぱいに表示され、「わかりました」を押すと先に進めます。\n文章は公式サイトのこのファイルから読みます。文言の変更に新しいバージョンは不要です。\nテストが終わったら items を空にしてください。",
+        "es": "Es un aviso destacado de prueba. Ocupa toda la pantalla al abrir la app y se entra al pulsar el botón.\nEl texto viene de este archivo del sitio oficial, así que cambiar una frase no necesita versión nueva.\nAl terminar la prueba, vacía items o espera a que pase until.",
+        "id": "Ini pemberitahuan kuat untuk uji coba. Menutupi seluruh layar saat aplikasi dibuka, dan Anda masuk setelah menekan tombolnya.\nTeksnya dibaca dari berkas ini di situs resmi, jadi mengubah kalimat tidak perlu versi baru.\nSetelah uji selesai, kosongkan items atau tunggu until lewat."
+      },
+      "actions": [],
+      "hard": true,
+      "every": true,
+      "until": "2026-11-16"
+    }
+  ]
 }
