@@ -582,45 +582,6 @@ KEYS = {
     'updatePkgActionKeep': (
         '一直保留', '一直保留', 'Always keep',
         '常に残す', 'Conservar siempre', 'Selalu simpan'),
-    # ── 联网校验安装包（版本号 + 仓库里那份的 sha256 + 签名）──
-    'updateCheckChecking': (
-        '正在联网校验', '正在連網校驗', 'Checking online',
-        'オンラインで確認中', 'Comprobando en línea', 'Memeriksa daring'),
-    'updateCheckOk': (
-        '联网校验通过，版本号、摘要、签名都一致',
-        '連網校驗通過，版本號、摘要、簽章都一致',
-        'Checked online: version, digest and signature all match',
-        'オンライン確認済み。バージョン・ダイジェスト・署名が一致',
-        'Comprobado en línea: versión, resumen y firma coinciden',
-        'Terverifikasi daring: versi, digest, dan tanda tangan cocok'),
-    'updateCheckOffline': (
-        '没有联网，无法校验版本号是否一致',
-        '沒有連網，無法校驗版本號是否一致',
-        'Offline: cannot verify the version matches',
-        'オンラインでないため、バージョンの一致を確認できません',
-        'Sin conexión: no se puede comprobar la versión',
-        'Tidak daring: versi tidak dapat diperiksa'),
-    'updateCheckNotFound': (
-        '仓库里查不到这一版的摘要，无法校验',
-        '倉庫裡查不到這一版的摘要，無法校驗',
-        'No digest for this version in the repository: cannot verify',
-        'このバージョンのダイジェストが見つからず、確認できません',
-        'No hay resumen de esta versión en el repositorio: no se puede comprobar',
-        'Digest versi ini tidak ada di repositori: tidak dapat diperiksa'),
-    'updateCheckVersion': (
-        '包里的版本号与仓库这一版不一致',
-        '包裡的版本號與倉庫這一版不一致',
-        'The version inside does not match this release',
-        'パッケージ内のバージョンがこのリリースと違います',
-        'La versión dentro del paquete no coincide con esta entrega',
-        'Versi di dalam paket tidak sama dengan rilis ini'),
-    'updateCheckSha': (
-        '包的摘要与仓库里那份不一致',
-        '包的摘要與倉庫裡那份不一致',
-        'The digest does not match the file in the repository',
-        'パッケージのダイジェストがリポジトリのものと違います',
-        'El resumen no coincide con el archivo del repositorio',
-        'Digest tidak cocok dengan berkas di repositori'),
     'updatePkgWelcomeHello': (
         '新版本已经装好了。', '新版本已經裝好了。',
         'The new version is installed.',
@@ -633,33 +594,6 @@ KEYS = {
         'インストーラーを残しますか',
         '¿Conservar el instalador?',
         'Simpan pemasang?'),
-    # ── 无法校验时的确认（用户要求：无法校验要用户进一步确认）──
-    'updatePkgUnverifiedTitle': (
-        '无法校验这个安装包', '無法校驗這個安裝包',
-        'This package could not be verified',
-        'このパッケージは確認できませんでした',
-        'No se pudo verificar este paquete',
-        'Paket ini tidak dapat diverifikasi'),
-    'updatePkgUnverifiedBody': (
-        '没联网、或者仓库里查不到这一版，版本号、摘要与签名对不上。'
-        '继续安装的话，风险自负。',
-        '沒連網、或者倉庫裡查不到這一版，版本號、摘要與簽章對不上。'
-        '繼續安裝的話，風險自負。',
-        'Either there is no network, or the release has no digest to compare. '
-        'Installing anyway is at your own risk.',
-        'オンラインでないか、リリースに比較できるダイジェストがありません。'
-        'それでもインストールする場合は自己責任です。',
-        'O no hay conexión, o la entrega no trae un resumen con el que comparar. '
-        'Instalar de todos modos corre por tu cuenta.',
-        'Tidak ada koneksi, atau rilis ini tidak membawa digest untuk dibandingkan. '
-        'Memasang tetap menjadi risiko Anda.'),
-    'updatePkgUnreadable': (
-        '读不出这个安装包', '讀不出這個安裝包', 'Cannot read this package',
-        'このパッケージを読み取れません', 'No se puede leer este paquete',
-        'Paket ini tidak dapat dibaca'),
-    'installAnyway': (
-        '继续安装', '繼續安裝', 'Install anyway',
-        'このままインストール', 'Instalar igualmente', 'Tetap pasang'),
     # ── 装上新版后的欢迎卡：这一版改了什么──
     'updatePkgWhatsNew': (
         '这一版改了什么', '這一版改了什麼',

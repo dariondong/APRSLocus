@@ -741,18 +741,6 @@ class MainActivity : FlutterActivity() {
                         }.start()
                     }
                 }
-                // 「下载」里那个包的完整身份（含文件 SHA-256）：联网校验用它比仓库那份。
-                "apkInfoFromDownloads" -> {
-                    val name = call.argument<String>("name")
-                    if (name == null) {
-                        result.error("NO_NAME", "缺少安装包名", null)
-                    } else {
-                        Thread {
-                            val info = infoOfDownloads(name)
-                            runOnUiThread { result.success(info) }
-                        }.start()
-                    }
-                }
                 // 安装完重启后清掉安装时的临时副本（cacheDir/update）。
                 "cleanUpdateCache" -> {
                     try {
@@ -1701,24 +1689,6 @@ class MainActivity : FlutterActivity() {
             return ApkPrep(null, "sig-mismatch")
         }
         return ApkPrep(target, null)
-    }
-
-    /// 「下载」里那个包的完整身份：复制到缓存读一遍，读完就删。
-    ///
-    /// 与 [prepareDownloadsApk] 的区别：这里**不判**签名对不对——校验结果要
-    /// 原样交回 Dart 去显示（签名不对也要让用户看见是哪一道不对），不在这里
-    /// 一删了之。失败时返回 `{"error": "no-file" | "failed"}`。
-    private fun infoOfDownloads(name: String): Map<String, Any?> {
-        val safe = name.replace('/', '_').replace('\\', '_')
-        val dir = File(cacheDir, "update")
-        if (!dir.exists() && !dir.mkdirs()) return mapOf("error" to "failed")
-        // 只留这一份：上一次没读完的副本在这里清掉
-        dir.listFiles()?.forEach { if (it.isFile) it.delete() }
-        val target = File(dir, "info_$safe")
-        if (!copyDownloadsTo(safe, target)) return mapOf("error" to "no-file")
-        val info = apkInfoOf(target.absolutePath) ?: mapOf("error" to "failed")
-        target.delete()
-        return info
     }
 
     /// 把「下载」里叫 [name] 的那一份复制到 [target]。

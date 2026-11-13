@@ -52,41 +52,7 @@ class UpdateInstaller {
     }
   }
 
-  /// 本机（已安装的这个应用）的身份：`package` / `versionCode` / `sig`。
-  ///
-  /// 联网校验要同时用它比包名与签名，读一次就够（原生每次都要过一遍
-  /// PackageManager，别拆成两次调用）。
-  static Future<Map<String, dynamic>?> own() async {
-    if (!isAndroid) return null;
-    try {
-      final r = await _ch.invokeMethod<Map>('ownSignature');
-      if (r == null) return null;
-      return r.map((k, v) => MapEntry(k.toString(), v));
-    } catch (_) {
-      return null;
-    }
-  }
-
-  /// 「下载」里那个包的完整身份（包名 / 版本号 / 签名摘要 / 大小 / SHA-256）。
-  ///
-  /// 安卓拿不到公共「下载」目录里的文件路径，所以原生复制一份到缓存、读完
-  /// 立刻删掉。读不出返回 null。
-  static Future<Map<String, dynamic>?> infoFromDownloads(String fileName) async {
-    if (!isAndroid) return null;
-    try {
-      final r = await _ch.invokeMethod<Map>('apkInfoFromDownloads', {
-        'name': fileName,
-      });
-      if (r == null) return null;
-      final m = r.map((k, v) => MapEntry(k.toString(), v));
-      if (m['error'] != null) return null;
-      return m;
-    } catch (_) {
-      return null;
-    }
-  }
-
-  /// 本机（已安装的这个应用）的签名摘要。
+  /// 校验 [path] 这个安装包是不是我们自己签的。
   static Future<String?> ownSignature() async {
     if (!isAndroid) return null;
     try {

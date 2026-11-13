@@ -18641,41 +18641,11 @@ abstract class AppLocalizations {
   /// **'正在连 {name}'**
   String connectingChannel(String name);
 
-  /// No description provided for @updateCheckChecking.
-  ///
-  /// In zh, this message translates to:
-  /// **'正在联网校验'**
-  String get updateCheckChecking;
 
-  /// No description provided for @updateCheckOk.
-  ///
-  /// In zh, this message translates to:
-  /// **'联网校验通过，版本号、摘要、签名都一致'**
-  String get updateCheckOk;
 
-  /// No description provided for @updateCheckOffline.
-  ///
-  /// In zh, this message translates to:
-  /// **'没有联网，无法校验版本号是否一致'**
-  String get updateCheckOffline;
 
-  /// No description provided for @updateCheckNotFound.
-  ///
-  /// In zh, this message translates to:
-  /// **'仓库里查不到这一版的摘要，无法校验'**
-  String get updateCheckNotFound;
 
-  /// No description provided for @updateCheckVersion.
-  ///
-  /// In zh, this message translates to:
-  /// **'包里的版本号与仓库这一版不一致'**
-  String get updateCheckVersion;
 
-  /// No description provided for @updateCheckSha.
-  ///
-  /// In zh, this message translates to:
-  /// **'包的摘要与仓库里那份不一致'**
-  String get updateCheckSha;
 
   /// No description provided for @updatePkgWhatsNew.
   ///
@@ -18695,29 +18665,9 @@ abstract class AppLocalizations {
   /// **'安装包还要不要留'**
   String get updatePkgDeleteTitle;
 
-  /// No description provided for @updatePkgUnverifiedTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'无法校验这个安装包'**
-  String get updatePkgUnverifiedTitle;
 
-  /// No description provided for @updatePkgUnverifiedBody.
-  ///
-  /// In zh, this message translates to:
-  /// **'没联网、或者仓库里查不到这一版，版本号、摘要与签名对不上。继续安装的话，风险自负。'**
-  String get updatePkgUnverifiedBody;
 
-  /// No description provided for @installAnyway.
-  ///
-  /// In zh, this message translates to:
-  /// **'继续安装'**
-  String get installAnyway;
 
-  /// No description provided for @updatePkgUnreadable.
-  ///
-  /// In zh, this message translates to:
-  /// **'读不出这个安装包'**
-  String get updatePkgUnreadable;
 
   /// No description provided for @powerSaveOn.
   ///

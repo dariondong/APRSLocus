@@ -381,11 +381,6 @@ jobs:
       - name: Test update channels
         run: flutter test test/update_channels_test.dart
 
-      # 安装包的联网校验（版本号 / 仓库里那份的 sha256 / 签名）与
-      # 装完欢迎卡要用的「这一版改了什么」摘要。
-      - name: Test update package verify
-        run: flutter test test/update_verify_test.dart
-
       # 强提醒的解析与「这一次该不该弹」（语言退化 / 过期 / 已弹过 / every）。
       - name: Test strong notice
         run: flutter test test/strong_notice_test.dart

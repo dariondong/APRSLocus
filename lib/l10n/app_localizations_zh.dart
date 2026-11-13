@@ -10144,22 +10144,16 @@ class AppLocalizationsZh extends AppLocalizations {
   String connectingChannel(String name) => "正在连 $name";
 
   @override
-  String get updateCheckChecking => "正在联网校验";
 
   @override
-  String get updateCheckOk => "联网校验通过，版本号、摘要、签名都一致";
 
   @override
-  String get updateCheckOffline => "没有联网，无法校验版本号是否一致";
 
   @override
-  String get updateCheckNotFound => "仓库里查不到这一版的摘要，无法校验";
 
   @override
-  String get updateCheckVersion => "包里的版本号与仓库这一版不一致";
 
   @override
-  String get updateCheckSha => "包的摘要与仓库里那份不一致";
 
   @override
   String get updatePkgWhatsNew => "这一版改了什么";
@@ -10171,16 +10165,12 @@ class AppLocalizationsZh extends AppLocalizations {
   String get updatePkgDeleteTitle => "安装包还要不要留";
 
   @override
-  String get updatePkgUnverifiedTitle => "无法校验这个安装包";
 
   @override
-  String get updatePkgUnverifiedBody => "没联网、或者仓库里查不到这一版，版本号、摘要与签名对不上。继续安装的话，风险自负。";
 
   @override
-  String get installAnyway => "继续安装";
 
   @override
-  String get updatePkgUnreadable => "读不出这个安装包";
 
   @override
   String get powerSaveOn => "省电模式已开启";
@@ -20371,22 +20361,16 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   String connectingChannel(String name) => "正在連 $name";
 
   @override
-  String get updateCheckChecking => "正在連網校驗";
 
   @override
-  String get updateCheckOk => "連網校驗通過，版本號、摘要、簽章都一致";
 
   @override
-  String get updateCheckOffline => "沒有連網，無法校驗版本號是否一致";
 
   @override
-  String get updateCheckNotFound => "倉庫裡查不到這一版的摘要，無法校驗";
 
   @override
-  String get updateCheckVersion => "包裡的版本號與倉庫這一版不一致";
 
   @override
-  String get updateCheckSha => "包的摘要與倉庫裡那份不一致";
 
   @override
   String get updatePkgWhatsNew => "這一版改了什麼";
@@ -20398,16 +20382,12 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   String get updatePkgDeleteTitle => "安裝包還要不要留";
 
   @override
-  String get updatePkgUnverifiedTitle => "無法校驗這個安裝包";
 
   @override
-  String get updatePkgUnverifiedBody => "沒連網、或者倉庫裡查不到這一版，版本號、摘要與簽章對不上。繼續安裝的話，風險自負。";
 
   @override
-  String get installAnyway => "繼續安裝";
 
   @override
-  String get updatePkgUnreadable => "讀不出這個安裝包";
 
   @override
   String get powerSaveOn => "省電模式已開啟";

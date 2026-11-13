@@ -16,7 +16,6 @@ import 'update_download.dart';
 import 'update_install.dart';
 import 'update_notes.dart';
 import 'update_packages.dart';
-import 'update_verify.dart';
 import 'settings_widgets.dart';
 import 'state.dart';
 import 'version_compare.dart';
@@ -229,13 +228,13 @@ class _CheckUpdatePageState extends State<CheckUpdatePage>
 
   String? get _downloadedTag => _pkg?.tag;
 
-  /// 已下载那个包的**联网**校验结果：版本号、仓库里那份的 sha256、签名。
-  /// null = 还没查（桌面端没有可校验的签名）。
-  UpdateVerifyReport? _verify;
+  /// 已下载那个包的**本地**签名结果：`checking` / `ok` / `mismatch` / `unreadable`。
+  /// null = 还没查（桌面端没有可校的签名）。不联网。
+  String? _sig;
 
-  /// [_verify] 是哪个包的结论（同名包在一页里只查一次 —— 安卓每查一次都要
-  /// 把包复制到缓存读一遍摘要，几十兆的包别每帧来一遍）。
-  String? _verifyFor;
+  /// [_sig] 是哪个包的结论（同名包在一页里只查一次 —— 安卓每查一次都要
+  /// 把包复制到缓存读一遍证书，几十兆的包别每帧来一遍）。
+  String? _sigFor;
 
   /// 两个 tag 是否指向**同一版本**（比较时忽略开头的 `v`）。
   ///
@@ -357,64 +356,47 @@ class _CheckUpdatePageState extends State<CheckUpdatePage>
     _localPackages = list;
     _pkg = list.isEmpty ? null : list.first;
     if (mounted) setState(() {});
-    unawaited(_verifyPackage());
+    unawaited(_checkSignature());
   }
 
-  /// 联网校验已下载的那个包。
+  /// 本地校一次签名：包里那份的签名证书与本机这一份是不是同一个。
   ///
-  /// 三道一起看（见 `lib/update_verify.dart`）：
-  ///   * 包里的版本号 == 仓库这一版的 tag；
-  ///   * 这个文件的 SHA-256 == 仓库那份资产的 `digest`；
-  ///   * 签名证书 == 本机这一份的证书。
-  ///
-  /// 没联网就说没联网 —— 只校签名就写「通过」的话，用户会以为「这次发布的就是它」，
-  /// 而签名只说明是同一个人签的。安卓拿不到公共「下载」目录里的路径，读包这件事
-  /// 交给原生（复制到缓存、读完即删）；桌面端没有可校验的签名，直接留空。
-  Future<void> _verifyPackage() async {
+  /// 只看签名，不联网。版本号与摘要得联网才查得到，查不到的那道没法做，
+  /// 也就不摆一个永远「无法校验」的提示。安卓拿不到系统「下载」目录的路径，
+  /// 读包交给原生（复制到缓存、读完删掉）；还留在应用自己目录里的那份直接读文件。
+  /// 桌面端没有可校的签名，这一行不画。
+  Future<void> _checkSignature() async {
     final p = _pkg;
-    if (p == null) {
-      if (mounted && _verify != null) setState(() => _verify = null);
+    if (p == null || !UpdateInstaller.isAndroid) {
+      if (mounted && _sig != null) setState(() => _sig = null);
       return;
     }
-    if (!UpdateInstaller.isAndroid) {
-      if (mounted && _verify != null) setState(() => _verify = null);
-      return;
-    }
-    if (_verifyFor == p.name &&
-        _verify != null &&
-        _verify!.state != UpdateVerifyState.checking) {
-      return;
-    }
+    if (_sigFor == p.name && _sig != null && _sig != 'checking') return;
     final name = p.name;
-    _verifyFor = name;
-    if (mounted) setState(() => _verify = UpdateVerifyReport.checking);
+    _sigFor = name;
+    if (mounted) setState(() => _sig = 'checking');
     final path = p.path;
-    final local = (path != null && path.isNotEmpty)
-        ? await UpdateInstaller.info(path)
-        : await UpdateInstaller.infoFromDownloads(name);
-    final mine = await UpdateInstaller.own();
-    final report = await verifyUpdatePackageOnline(
-      apiBase: widget.state.updateChannelBase,
-      owner: _repoOwner,
-      repo: _repoName,
-      tag: p.tag,
-      assetName: name,
-      local: local,
-      ownSignature: (mine?['sig'] ?? '').toString(),
-      packageName: (mine?['package'] ?? '').toString(),
-      userAgent: 'APRSLocus/${AppState.appVersion}',
-    );
-    // 界面上只写一句结论，卡在哪一步得留痕：本地读出的版本号 / 摘要前 8 位、
-    // 仓库那边回的是哪一版、结论是什么（见「数据包 → 日志」）。
+    String state;
+    if (path != null && path.isNotEmpty) {
+      state = switch (await UpdateInstaller.verify(path)) {
+        ApkTrust.ok => 'ok',
+        ApkTrust.mismatch => 'mismatch',
+        ApkTrust.unknown || ApkTrust.skip => 'unreadable',
+      };
+    } else {
+      state = switch (await UpdateInstaller.verifyDownloads(name)) {
+        'ok' => 'ok',
+        'sig-mismatch' => 'mismatch',
+        _ => 'unreadable',
+      };
+    }
     widget.state.logLine(
-      report.ok ? LogLevel.info : LogLevel.warn,
+      state == 'ok' ? LogLevel.info : LogLevel.warn,
       '更新校验',
-      '${report.state.name}${report.detail.isEmpty ? '' : ' · ${report.detail}'}'
-      ' · 本地 ${(local?['versionName'] ?? '?')} / '
-      '${_sha8(local?['sha256'])}',
+      state == 'ok' ? '签名与本机一致' : '签名没对上：$state',
     );
     if (!mounted || _pkg?.name != name) return;
-    setState(() => _verify = report);
+    setState(() => _sig = state);
   }
 
   /// 下载器落盘的目录。
@@ -700,63 +682,6 @@ class _CheckUpdatePageState extends State<CheckUpdatePage>
     ));
   }
 
-  /// 摘要只留前 8 位（日志里够认出「不是同一个文件」，又不至于糊一整行）。
-  static String _sha8(Object? v) {
-    final s = (v ?? '').toString();
-    if (s.isEmpty) return '无';
-    return s.length > 8 ? '${s.substring(0, 8)}…' : s;
-  }
-
-  /// 校验没有结论时的确认（用户：「如果无法校验 需要用户进一步确认」）。
-  ///
-  /// 这一步不是走流程：它要把「为什么没校上」说清楚（没联网 / 渠道
-  /// 没有摘要），并且把默认按钮留给「取消」。
-  Future<bool?> _confirmUnverified() {
-    return showDialog<bool>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        backgroundColor: C.white,
-        title: Row(
-          children: [
-            Icon(Icons.gpp_maybe_rounded, color: C.orange, size: 20),
-            const SizedBox(width: 8),
-            Expanded(
-              child: Text(S.of(context).updatePkgUnverifiedTitle,
-                  style: ts(15, w: FontWeight.w700)),
-            ),
-          ],
-        ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(S.of(context).updatePkgUnverifiedBody, style: ts(13, h: 1.6)),
-            const SizedBox(height: 8),
-            Text(_verifyLabel, style: ts(11.5, c: C.grey)),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, false),
-            child: Text(S.of(context).cancel, style: ts(13, c: C.grey)),
-          ),
-          FilledButton(
-            style: FilledButton.styleFrom(
-              backgroundColor: C.orange,
-              shape:
-                  RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-            ),
-            onPressed: () => Navigator.pop(ctx, true),
-            child: Text(
-              S.of(context).installAnyway,
-              style: ts(13, c: Colors.white, w: FontWeight.w600),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
   /// 弹出安装确认
   void _showInstallDialog(_Pkg p) {
     showDialog(
@@ -852,25 +777,6 @@ class _CheckUpdatePageState extends State<CheckUpdatePage>
       return;
     }
     try {
-      // 还没查完（刚进来就点了安装）就先等这一次查完—— 否则会平白弹一次
-      // 「无法校验」。
-      if (_verify == null ||
-          _verifyState == UpdateVerifyState.checking) {
-        await _verifyPackage();
-        if (!mounted) return;
-      }
-      if (_verifyBlocksInstall) {
-        // 摘要或版本号与仓库那份不一致：这已经不是「是不是我们签的」的问题，
-        // 而是「它根本不是这一次发布的那个文件」，不往下走。
-        _showSnack(_verifyLabel);
-        return;
-      }
-      // 校验没有结论（没联网 / 这条渠道查不到摘要 / 读不出包）：
-      // 不替用户拍板，也不默默放行 —— 明说一句、让他自己点「继续安装」才走。
-      if (_verifyState != UpdateVerifyState.ok) {
-        final go = await _confirmUnverified();
-        if (!mounted || go != true) return;
-      }
       final can = await UpdateInstaller.canRequestInstall();
       if (!mounted) return;
       if (!can) {
@@ -1788,47 +1694,26 @@ class _CheckUpdatePageState extends State<CheckUpdatePage>
     );
   }
 
-  UpdateVerifyState get _verifyState =>
-      _verify?.state ?? UpdateVerifyState.unknown;
-
-  IconData get _verifyIcon => switch (_verifyState) {
-        UpdateVerifyState.ok => Icons.verified_user_outlined,
-        UpdateVerifyState.checking => Icons.hourglass_empty_rounded,
-        UpdateVerifyState.offline => Icons.wifi_off_rounded,
-        UpdateVerifyState.notFound => Icons.help_outline_rounded,
-        UpdateVerifyState.versionMismatch ||
-        UpdateVerifyState.shaMismatch ||
-        UpdateVerifyState.sigMismatch =>
-          Icons.gpp_bad_outlined,
-        UpdateVerifyState.unknown => Icons.help_outline_rounded,
+  /// 本地签名校验的结论：null = 还没查，`checking` / `ok` / `mismatch` / `unreadable`。
+  IconData get _sigIcon => switch (_sig) {
+        'ok' => Icons.verified_user_outlined,
+        'mismatch' => Icons.gpp_bad_outlined,
+        'checking' => Icons.hourglass_empty_rounded,
+        _ => Icons.help_outline_rounded,
       };
 
-  Color get _verifyColor => switch (_verifyState) {
-        UpdateVerifyState.ok => C.green,
-        UpdateVerifyState.checking => C.grey,
-        UpdateVerifyState.offline || UpdateVerifyState.notFound => C.grey,
-        UpdateVerifyState.versionMismatch ||
-        UpdateVerifyState.shaMismatch ||
-        UpdateVerifyState.sigMismatch =>
-          C.red,
-        UpdateVerifyState.unknown => C.grey,
+  Color get _sigColor => switch (_sig) {
+        'ok' => C.green,
+        'mismatch' => C.red,
+        _ => C.grey,
       };
 
-  String get _verifyLabel => switch (_verifyState) {
-        UpdateVerifyState.ok => S.of(context).updateCheckOk,
-        UpdateVerifyState.checking => S.of(context).updateCheckChecking,
-        UpdateVerifyState.offline => S.of(context).updateCheckOffline,
-        UpdateVerifyState.notFound => S.of(context).updateCheckNotFound,
-        UpdateVerifyState.versionMismatch => S.of(context).updateCheckVersion,
-        UpdateVerifyState.shaMismatch => S.of(context).updateCheckSha,
-        UpdateVerifyState.sigMismatch => S.of(context).updatePkgSigMismatch,
-        UpdateVerifyState.unknown => S.of(context).updatePkgUnreadable,
+  String get _sigLabel => switch (_sig) {
+        'ok' => S.of(context).updatePkgSigOk,
+        'mismatch' => S.of(context).updatePkgSigMismatch,
+        'checking' => S.of(context).updatePkgSigChecking,
+        _ => S.of(context).updatePkgSigUnchecked,
       };
-
-  /// 摘要对不上 / 版本号对不上 = 这个包不是仓库里那次发布的那一个，别装。
-  bool get _verifyBlocksInstall =>
-      _verifyState == UpdateVerifyState.shaMismatch ||
-      _verifyState == UpdateVerifyState.versionMismatch;
 
   Widget _downloadedCard(bool isWin) {
     final p = _pkg!;
@@ -1887,37 +1772,34 @@ class _CheckUpdatePageState extends State<CheckUpdatePage>
               overflow: TextOverflow.ellipsis,
             ),
           ),
-          // 联网校验：这一行是**这一页自己查出来的结果**，不是一句固定话。
-          // 版本号、仓库里那份的 sha256、签名三道都对上才算通过；没联网就如实
-          // 说没联网（见 lib/update_verify.dart）。点一下可以重查。
+          // 本地签名：这一行是**这一页自己查出来的结果**，不是一句固定话。
+          // 只看签名，不联网（见 `_checkSignature`）。点一下可以重查。
           if (!isWin) ...[
             SizedBox(height: 8),
             InkWell(
-              onTap: _verifyState == UpdateVerifyState.checking
+              onTap: _sig == 'checking'
                   ? null
                   : () {
-                      _verifyFor = null;
-                      _verify = null;
-                      unawaited(_verifyPackage());
+                      _sigFor = null;
+                      _sig = null;
+                      unawaited(_checkSignature());
                     },
               child: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 2),
                 child: Row(
                   children: [
-                    if (_verifyState == UpdateVerifyState.checking)
+                    if (_sig == 'checking')
                       const SizedBox(
                         width: 12,
                         height: 12,
                         child: CircularProgressIndicator(strokeWidth: 1.6),
                       )
                     else
-                      Icon(_verifyIcon, size: 13, color: _verifyColor),
+                      Icon(_sigIcon, size: 13, color: _sigColor),
                     const SizedBox(width: 4),
                     Expanded(
-                      child: Text(_verifyLabel, style: ts(11, c: _verifyColor)),
+                      child: Text(_sigLabel, style: ts(11, c: _sigColor)),
                     ),
-                    if ((_verify?.detail ?? '').isNotEmpty)
-                      Text(_verify!.detail, style: ts(10, c: C.greyLight)),
                   ],
                 ),
               ),

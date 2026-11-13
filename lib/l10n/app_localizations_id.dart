@@ -10533,22 +10533,16 @@ class AppLocalizationsId extends AppLocalizations {
   String connectingChannel(String name) => "Menghubungkan ke $name";
 
   @override
-  String get updateCheckChecking => "Memeriksa daring";
 
   @override
-  String get updateCheckOk => "Terverifikasi daring: versi, digest, dan tanda tangan cocok";
 
   @override
-  String get updateCheckOffline => "Tidak daring: versi tidak dapat diperiksa";
 
   @override
-  String get updateCheckNotFound => "Digest versi ini tidak ada di repositori: tidak dapat diperiksa";
 
   @override
-  String get updateCheckVersion => "Versi di dalam paket tidak sama dengan rilis ini";
 
   @override
-  String get updateCheckSha => "Digest tidak cocok dengan berkas di repositori";
 
   @override
   String get updatePkgWhatsNew => "Yang berubah di versi ini";
@@ -10560,16 +10554,12 @@ class AppLocalizationsId extends AppLocalizations {
   String get updatePkgDeleteTitle => "Simpan pemasang?";
 
   @override
-  String get updatePkgUnverifiedTitle => "Paket ini tidak dapat diverifikasi";
 
   @override
-  String get updatePkgUnverifiedBody => "Tidak ada koneksi, atau rilis ini tidak membawa digest untuk dibandingkan. Memasang tetap menjadi risiko Anda.";
 
   @override
-  String get installAnyway => "Tetap pasang";
 
   @override
-  String get updatePkgUnreadable => "Paket ini tidak dapat dibaca";
 
   @override
   String get powerSaveOn => "Hemat daya aktif";

@@ -10244,22 +10244,16 @@ class AppLocalizationsJa extends AppLocalizations {
   String connectingChannel(String name) => "$name に接続しています";
 
   @override
-  String get updateCheckChecking => "オンラインで確認中";
 
   @override
-  String get updateCheckOk => "オンライン確認済み。バージョン・ダイジェスト・署名が一致";
 
   @override
-  String get updateCheckOffline => "オンラインでないため、バージョンの一致を確認できません";
 
   @override
-  String get updateCheckNotFound => "このバージョンのダイジェストが見つからず、確認できません";
 
   @override
-  String get updateCheckVersion => "パッケージ内のバージョンがこのリリースと違います";
 
   @override
-  String get updateCheckSha => "パッケージのダイジェストがリポジトリのものと違います";
 
   @override
   String get updatePkgWhatsNew => "このバージョンの変更点";
@@ -10271,16 +10265,12 @@ class AppLocalizationsJa extends AppLocalizations {
   String get updatePkgDeleteTitle => "インストーラーを残しますか";
 
   @override
-  String get updatePkgUnverifiedTitle => "このパッケージは確認できませんでした";
 
   @override
-  String get updatePkgUnverifiedBody => "オンラインでないか、リリースに比較できるダイジェストがありません。それでもインストールする場合は自己責任です。";
 
   @override
-  String get installAnyway => "このままインストール";
 
   @override
-  String get updatePkgUnreadable => "このパッケージを読み取れません";
 
   @override
   String get powerSaveOn => "省電モードがオンです";

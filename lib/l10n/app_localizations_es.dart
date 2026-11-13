@@ -10582,22 +10582,16 @@ class AppLocalizationsEs extends AppLocalizations {
   String connectingChannel(String name) => "Conectando con $name";
 
   @override
-  String get updateCheckChecking => "Comprobando en línea";
 
   @override
-  String get updateCheckOk => "Comprobado en línea: versión, resumen y firma coinciden";
 
   @override
-  String get updateCheckOffline => "Sin conexión: no se puede comprobar la versión";
 
   @override
-  String get updateCheckNotFound => "No hay resumen de esta versión en el repositorio: no se puede comprobar";
 
   @override
-  String get updateCheckVersion => "La versión dentro del paquete no coincide con esta entrega";
 
   @override
-  String get updateCheckSha => "El resumen no coincide con el archivo del repositorio";
 
   @override
   String get updatePkgWhatsNew => "Novedades de esta versión";
@@ -10609,16 +10603,12 @@ class AppLocalizationsEs extends AppLocalizations {
   String get updatePkgDeleteTitle => "¿Conservar el instalador?";
 
   @override
-  String get updatePkgUnverifiedTitle => "No se pudo verificar este paquete";
 
   @override
-  String get updatePkgUnverifiedBody => "O no hay conexión, o la entrega no trae un resumen con el que comparar. Instalar de todos modos corre por tu cuenta.";
 
   @override
-  String get installAnyway => "Instalar igualmente";
 
   @override
-  String get updatePkgUnreadable => "No se puede leer este paquete";
 
   @override
   String get powerSaveOn => "El ahorro de energía está activo";
