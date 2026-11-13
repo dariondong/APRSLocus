@@ -732,6 +732,16 @@ KEYS = {
         '{times} 回の再送で受領通知',
         'Acuse tras {times} reenvío(s)',
         'Konfirmasi masuk setelah {times}× kirim ulang'),
+    'msgResendTapRetry': (
+        '点一下再发', '點一下再發', 'tap to send again',
+        'タップで再送', 'toca para reenviar', 'ketuk untuk kirim lagi'),
+    'msgResendNoLink': (
+        '现在没有可用的链路，发不出去。',
+        '現在沒有可用的鏈路，發不出去。',
+        'No link is up right now, so it cannot go out.',
+        '使える回線がないため送れません。',
+        'Ahora no hay enlace disponible, así que no puede salir.',
+        'Tidak ada tautan aktif, jadi tidak bisa terkirim.'),
 }
 
 META = {

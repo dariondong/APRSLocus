@@ -4561,5 +4561,7 @@
   "@msgResendWaiting": {"placeholders": {"s": {"type": "String"}, "done": {"type": "String"}, "max": {"type": "String"}}},
   "@msgResendFailed": {"placeholders": {"max": {"type": "String"}}},
   "@msgResendOk": {"placeholders": {"times": {"type": "String"}}},
-  "lowBatteryAsk": "Ask when the battery is low"
+  "lowBatteryAsk": "Ask when the battery is low",
+  "msgResendTapRetry": "tap to send again",
+  "msgResendNoLink": "No link is up right now, so it cannot go out."
 }

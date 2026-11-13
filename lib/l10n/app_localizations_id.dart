@@ -10613,4 +10613,10 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get lowBatteryAsk => "Tanya saat baterai lemah";
 
+  @override
+  String get msgResendTapRetry => "ketuk untuk kirim lagi";
+
+  @override
+  String get msgResendNoLink => "Tidak ada tautan aktif, jadi tidak bisa terkirim.";
+
 }

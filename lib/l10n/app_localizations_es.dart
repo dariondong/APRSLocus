@@ -10662,4 +10662,10 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get lowBatteryAsk => "Preguntar con batería baja";
 
+  @override
+  String get msgResendTapRetry => "toca para reenviar";
+
+  @override
+  String get msgResendNoLink => "Ahora no hay enlace disponible, así que no puede salir.";
+
 }

@@ -11711,6 +11711,65 @@ class AppState extends ChangeNotifier {
     if (changed || counting) _notify();
   }
 
+  /// 这条消息「发了几轮都没回执」吗？
+  ///
+  /// 判据是「重发过至少一次、没回执、而且手上没有正在等回执的任务」—— 也就是
+  /// 上一轮重发次数已经用完。这时气泡底下写明白结果，点一下能重新来一轮
+  /// （用户 2026-11-13：「如果发送依旧失败的话，可以点击那个未发送成功的消息，
+  /// 重新激活发送」）。
+  bool msgResendGaveUp(AprsMsg m) =>
+      m.sent &&
+      !m.acked &&
+      m.groupId == null &&
+      m.tries > 0 &&
+      _msgResend[m.id] == null;
+
+  /// 重建一条已发出的消息的报文行（手动重发用）。
+  ///
+  /// 编号沿用原来那个（对方按 msgid 去重），路径由 [lineForLink] 发送时重算 ——
+  /// 所以换过链路之后手动重发依然带对路径。位置点消息的正文是策略帧，
+  /// 不能拿气泡上的「位置点」几个字去拼，要按坐标重新编一帧。
+  String? _frameFor(AprsMsg m) {
+    final id = m.id;
+    if (id == null || id.isEmpty) return null;
+    var text = m.sentAs ?? m.text;
+    if (m.type == 'location' && m.lat != null && m.lng != null) {
+      final station = (m.stationCall ?? '').trim().toUpperCase();
+      text = StrategyProto.encodeLocation(
+        StrategyProto.makeId(myCall, 0),
+        m.lat!,
+        m.lng!,
+        label: station.isEmpty ? '' : 'S:$station',
+      );
+    }
+    return AprsFmt.message(m.from, m.to, text, id, path: txPathMsg);
+  }
+
+  /// 手动重发一条没送达的消息（用户点那个气泡）。
+  ///
+  /// 立刻再发一包，并把重发计数器重新排上（重发开关关着时就只发这一包）。
+  /// 返回 false = 现在发不出去（没有可用链路 / 这条不可重发），由界面说一声。
+  bool resendMessage(AprsMsg m) {
+    if (!m.sent || m.acked || m.groupId != null) return false;
+    if (!msgLinkUp) return false;
+    final raw = _frameFor(m);
+    if (raw == null) return false;
+    _sendRawMsg(raw);
+    m.tries = 0;
+    if (msgResend && m.id != null) {
+      _msgResend[m.id!] = MsgResend(
+        m.id!,
+        raw,
+        m.to,
+        DateTime.now().add(Duration(seconds: msgResendGapSec)),
+      );
+    }
+    _saveMessages();
+    _log(LogLevel.info, '消息', '手动重发给 ${m.to}（编号 ${m.id}）');
+    _notify();
+    return true;
+  }
+
   /// 测试用：手动跑一步重发（把时间拨到 [now]）。
   @visibleForTesting
   void debugTickMsgResend(DateTime now) => _tickMsgResend(now);

@@ -4561,5 +4561,7 @@
   "@msgResendWaiting": {"placeholders": {"s": {"type": "String"}, "done": {"type": "String"}, "max": {"type": "String"}}},
   "@msgResendFailed": {"placeholders": {"max": {"type": "String"}}},
   "@msgResendOk": {"placeholders": {"times": {"type": "String"}}},
-  "lowBatteryAsk": "Tanya saat baterai lemah"
+  "lowBatteryAsk": "Tanya saat baterai lemah",
+  "msgResendTapRetry": "ketuk untuk kirim lagi",
+  "msgResendNoLink": "Tidak ada tautan aktif, jadi tidak bisa terkirim."
 }

@@ -18803,6 +18803,18 @@ abstract class AppLocalizations {
   /// **'电量低时提示开启'**
   String get lowBatteryAsk;
 
+  /// No description provided for @msgResendTapRetry.
+  ///
+  /// In zh, this message translates to:
+  /// **'点一下再发'**
+  String get msgResendTapRetry;
+
+  /// No description provided for @msgResendNoLink.
+  ///
+  /// In zh, this message translates to:
+  /// **'现在没有可用的链路，发不出去。'**
+  String get msgResendNoLink;
+
 }
 
 class _AppLocalizationsDelegate

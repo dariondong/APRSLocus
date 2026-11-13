@@ -10324,4 +10324,10 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String get lowBatteryAsk => "バッテリー低下時に確認";
 
+  @override
+  String get msgResendTapRetry => "タップで再送";
+
+  @override
+  String get msgResendNoLink => "使える回線がないため送れません。";
+
 }

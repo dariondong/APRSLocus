@@ -10224,6 +10224,12 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String get lowBatteryAsk => "电量低时提示开启";
 
+  @override
+  String get msgResendTapRetry => "点一下再发";
+
+  @override
+  String get msgResendNoLink => "现在没有可用的链路，发不出去。";
+
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
@@ -20444,5 +20450,11 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get lowBatteryAsk => "電量低時提示開啟";
+
+  @override
+  String get msgResendTapRetry => "點一下再發";
+
+  @override
+  String get msgResendNoLink => "現在沒有可用的鏈路，發不出去。";
 
 }

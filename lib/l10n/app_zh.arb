@@ -5240,5 +5240,7 @@
   "@msgResendWaiting": {"placeholders": {"s": {"type": "String"}, "done": {"type": "String"}, "max": {"type": "String"}}},
   "@msgResendFailed": {"placeholders": {"max": {"type": "String"}}},
   "@msgResendOk": {"placeholders": {"times": {"type": "String"}}},
-  "lowBatteryAsk": "电量低时提示开启"
+  "lowBatteryAsk": "电量低时提示开启",
+  "msgResendTapRetry": "点一下再发",
+  "msgResendNoLink": "现在没有可用的链路，发不出去。"
 }

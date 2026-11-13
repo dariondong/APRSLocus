@@ -10603,4 +10603,10 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get lowBatteryAsk => "Ask when the battery is low";
 
+  @override
+  String get msgResendTapRetry => "tap to send again";
+
+  @override
+  String get msgResendNoLink => "No link is up right now, so it cannot go out.";
+
 }

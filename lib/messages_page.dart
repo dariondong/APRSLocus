@@ -2598,13 +2598,33 @@ class _MessagesPageState extends State<MessagesPage> {
   /// 已经出现过的直接给原样，滚动来回不会重播。
   Widget _bubble(AprsMsg m, {String? groupSender, VoidCallback? onSenderTap}) {
     final id = identityHashCode(m);
+    Widget body = _bubbleBody(m,
+        groupSender: groupSender, onSenderTap: onSenderTap);
+    // 发了几轮都没回执：点一下这条消息就再发一轮（用户要的「重新激活发送」）。
+    if (widget.state.msgResendGaveUp(m)) {
+      body = GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: () => _retrySend(m),
+        child: body,
+      );
+    }
     return _BubbleAppear(
       // 必须带 key：列表按下标复用元素，新消息插在最前面时如果不带 key，
       // 它会接手上一条已经播完的动画状态，于是「新消息没有动画」。
       key: ValueKey<int>(id),
       play: _shownBubbles.add(id),
-      child: _bubbleBody(m, groupSender: groupSender, onSenderTap: onSenderTap),
+      child: body,
     );
+  }
+
+  /// 点一条没送达的消息：再发一轮。发不出去（没链路）时如实说一声。
+  void _retrySend(AprsMsg m) {
+    if (widget.state.resendMessage(m)) return;
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text(S.of(context).msgResendNoLink),
+      behavior: SnackBarBehavior.floating,
+    ));
   }
 
   Widget _bubbleBody(
@@ -2827,7 +2847,8 @@ class _MessagesPageState extends State<MessagesPage> {
       text = s.msgResendWaiting('$left', '${m.tries}', '${st.msgResendTimes}');
       c = C.orange;
     } else if (m.tries > 0) {
-      text = s.msgResendFailed('${m.tries}');
+      // 上一轮重发已经用完：写明结果，并提示点一下能再发一轮。
+      text = '${s.msgResendFailed('${m.tries}')} · ${s.msgResendTapRetry}';
       c = C.orange;
     }
     if (text == null) return const SizedBox.shrink();

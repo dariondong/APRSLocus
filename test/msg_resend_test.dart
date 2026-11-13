@@ -150,5 +150,48 @@ void main() {
       expect(st.msgResendOf(m.id), isNull);
       st.dispose();
     });
+
+    test('次数用完仍没回执：点一下能重新发一轮（编号不变）', () {
+      final st = online();
+      st.setMsgResendGap(15);
+      st.setMsgResendTimes(1);
+      st.sendMessage('BG0TST-9', '再试一次');
+      final m = firstSent(st);
+      final id = m.id!;
+
+      // 一轮用尽
+      st.debugTickMsgResend(DateTime.now().add(const Duration(seconds: 16)));
+      st.debugTickMsgResend(DateTime.now().add(const Duration(seconds: 40)));
+      expect(m.tries, 1);
+      expect(st.msgResendGaveUp(m), isTrue, reason: '发完一轮没回执，气泡上要能点');
+
+      // 点一下：立刻再发，并从这一轮重新计数
+      final before =
+          st.packets.where((p) => p.raw.contains('{$id')).length;
+      expect(st.resendMessage(m), isTrue);
+      expect(m.tries, 0, reason: '手动重发开新的一轮，不是接着旧的次数往上加');
+      expect(st.msgResendOf(id), isNotNull);
+      expect(st.msgResendGaveUp(m), isFalse);
+      // 手工重发也沿用原编号：对方按 msgid 去重
+      final again = st.msgResendOf(id)!.raw;
+      expect(again.contains('{$id'), isTrue);
+      expect(st.packets.where((p) => p.raw.contains('{$id')).length,
+          greaterThanOrEqualTo(before));
+      st.dispose();
+    });
+
+    test('链路没连上时点它不会假装发出了（返回 false，界面提示一声）', () {
+      final st = online();
+      st.setMsgResendGap(15);
+      st.setMsgResendTimes(1);
+      st.sendMessage('BG0TST-9', '断线时的点击');
+      final m = firstSent(st);
+      st.debugTickMsgResend(DateTime.now().add(const Duration(seconds: 16)));
+      st.debugTickMsgResend(DateTime.now().add(const Duration(seconds: 40)));
+      st.debugSetLinkUp(AppState.srcAprsIs, false);
+      expect(st.resendMessage(m), isFalse);
+      expect(st.msgResendOf(m.id), isNull);
+      st.dispose();
+    });
   });
 }
