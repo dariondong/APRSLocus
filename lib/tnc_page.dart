@@ -209,8 +209,9 @@ class DataSourceCard extends StatelessWidget {
         ),
         // 电台控制（Hamlib / rigctld）：管的是同一台电台，所以摆在「电台链路」
         // 这一组里；但它不传报文，只有频率、模式、PTT 三件事，所以没有发射
-        // 圆点（canTx: false），也不进 enabledSources。
-        _tile(
+        // 圆点（canTx: false），也不进 enabledSources。Web 上没有 TCP，不列这一行。
+        if (tcpLinkPlatformSupported)
+          _tile(
           context,
           key: 'rig',
           title: s.rigLinkTitle,
