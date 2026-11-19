@@ -4554,5 +4554,17 @@
   "lowBatteryAsk": "Tanya saat baterai lemah",
   "msgResendTapRetry": "ketuk untuk kirim lagi",
   "msgResendNoLink": "Tidak ada tautan aktif, jadi tidak bisa terkirim.",
-  "msgResendStopped": "Kirim ulang dibatalkan"
+  "msgResendStopped": "Kirim ulang dibatalkan",
+  "rigLinkTitle": "Kontrol radio",
+  "rigLinkLead": "Frekuensi, mode, dan transmisi lewat rigctld.",
+  "rigConnection": "Koneksi",
+  "rigAddr": "Alamat",
+  "rigAddrHint": "Mesin yang menjalankan rigctld",
+  "rigStatus": "Status",
+  "rigFreqMhz": "Frekuensi (MHz)",
+  "rigMode": "Mode",
+  "rigControl": "Kontrol",
+  "rigApply": "Terapkan ke radio",
+  "rigPttTest": "Pancar 3 dtk",
+  "rigConnectNow": "Sambungkan"
 }

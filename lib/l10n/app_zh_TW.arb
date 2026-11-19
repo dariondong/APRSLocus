@@ -5142,5 +5142,17 @@
   "lowBatteryAsk": "電量低時提示開啟",
   "msgResendTapRetry": "點一下再發",
   "msgResendNoLink": "現在沒有可用的鏈路，發不出去。",
-  "msgResendStopped": "已取消重發"
+  "msgResendStopped": "已取消重發",
+  "rigLinkTitle": "電台控制",
+  "rigLinkLead": "透過 rigctld 管電台的頻率、模式與發射。",
+  "rigConnection": "連線",
+  "rigAddr": "位址",
+  "rigAddrHint": "跑 rigctld 的那台機器",
+  "rigStatus": "狀態",
+  "rigFreqMhz": "頻率 (MHz)",
+  "rigMode": "模式",
+  "rigControl": "控制",
+  "rigApply": "設定到電台",
+  "rigPttTest": "發射 3 秒",
+  "rigConnectNow": "連線"
 }

@@ -10612,4 +10612,40 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get msgResendStopped => "Kirim ulang dibatalkan";
 
+  @override
+  String get rigLinkTitle => "Kontrol radio";
+
+  @override
+  String get rigLinkLead => "Frekuensi, mode, dan transmisi lewat rigctld.";
+
+  @override
+  String get rigConnection => "Koneksi";
+
+  @override
+  String get rigAddr => "Alamat";
+
+  @override
+  String get rigAddrHint => "Mesin yang menjalankan rigctld";
+
+  @override
+  String get rigStatus => "Status";
+
+  @override
+  String get rigFreqMhz => "Frekuensi (MHz)";
+
+  @override
+  String get rigMode => "Mode";
+
+  @override
+  String get rigControl => "Kontrol";
+
+  @override
+  String get rigApply => "Terapkan ke radio";
+
+  @override
+  String get rigPttTest => "Pancar 3 dtk";
+
+  @override
+  String get rigConnectNow => "Sambungkan";
+
 }

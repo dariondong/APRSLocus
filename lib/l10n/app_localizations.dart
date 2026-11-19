@@ -18771,6 +18771,78 @@ abstract class AppLocalizations {
   /// **'已取消重发'**
   String get msgResendStopped;
 
+  /// No description provided for @rigLinkTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'电台控制'**
+  String get rigLinkTitle;
+
+  /// No description provided for @rigLinkLead.
+  ///
+  /// In zh, this message translates to:
+  /// **'通过 rigctld 管电台的频率、模式与发射。'**
+  String get rigLinkLead;
+
+  /// No description provided for @rigConnection.
+  ///
+  /// In zh, this message translates to:
+  /// **'连接'**
+  String get rigConnection;
+
+  /// No description provided for @rigAddr.
+  ///
+  /// In zh, this message translates to:
+  /// **'地址'**
+  String get rigAddr;
+
+  /// No description provided for @rigAddrHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'跑 rigctld 的那台机器'**
+  String get rigAddrHint;
+
+  /// No description provided for @rigStatus.
+  ///
+  /// In zh, this message translates to:
+  /// **'状态'**
+  String get rigStatus;
+
+  /// No description provided for @rigFreqMhz.
+  ///
+  /// In zh, this message translates to:
+  /// **'频率 (MHz)'**
+  String get rigFreqMhz;
+
+  /// No description provided for @rigMode.
+  ///
+  /// In zh, this message translates to:
+  /// **'模式'**
+  String get rigMode;
+
+  /// No description provided for @rigControl.
+  ///
+  /// In zh, this message translates to:
+  /// **'控制'**
+  String get rigControl;
+
+  /// No description provided for @rigApply.
+  ///
+  /// In zh, this message translates to:
+  /// **'设置到电台'**
+  String get rigApply;
+
+  /// No description provided for @rigPttTest.
+  ///
+  /// In zh, this message translates to:
+  /// **'发射 3 秒'**
+  String get rigPttTest;
+
+  /// No description provided for @rigConnectNow.
+  ///
+  /// In zh, this message translates to:
+  /// **'连接'**
+  String get rigConnectNow;
+
 }
 
 class _AppLocalizationsDelegate

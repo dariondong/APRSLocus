@@ -10223,6 +10223,42 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String get msgResendStopped => "已取消重发";
 
+  @override
+  String get rigLinkTitle => "电台控制";
+
+  @override
+  String get rigLinkLead => "通过 rigctld 管电台的频率、模式与发射。";
+
+  @override
+  String get rigConnection => "连接";
+
+  @override
+  String get rigAddr => "地址";
+
+  @override
+  String get rigAddrHint => "跑 rigctld 的那台机器";
+
+  @override
+  String get rigStatus => "状态";
+
+  @override
+  String get rigFreqMhz => "频率 (MHz)";
+
+  @override
+  String get rigMode => "模式";
+
+  @override
+  String get rigControl => "控制";
+
+  @override
+  String get rigApply => "设置到电台";
+
+  @override
+  String get rigPttTest => "发射 3 秒";
+
+  @override
+  String get rigConnectNow => "连接";
+
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
@@ -20442,5 +20478,41 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get msgResendStopped => "已取消重發";
+
+  @override
+  String get rigLinkTitle => "電台控制";
+
+  @override
+  String get rigLinkLead => "透過 rigctld 管電台的頻率、模式與發射。";
+
+  @override
+  String get rigConnection => "連線";
+
+  @override
+  String get rigAddr => "位址";
+
+  @override
+  String get rigAddrHint => "跑 rigctld 的那台機器";
+
+  @override
+  String get rigStatus => "狀態";
+
+  @override
+  String get rigFreqMhz => "頻率 (MHz)";
+
+  @override
+  String get rigMode => "模式";
+
+  @override
+  String get rigControl => "控制";
+
+  @override
+  String get rigApply => "設定到電台";
+
+  @override
+  String get rigPttTest => "發射 3 秒";
+
+  @override
+  String get rigConnectNow => "連線";
 
 }

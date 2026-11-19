@@ -4554,5 +4554,17 @@
   "lowBatteryAsk": "Preguntar con batería baja",
   "msgResendTapRetry": "toca para reenviar",
   "msgResendNoLink": "Ahora no hay enlace disponible, así que no puede salir.",
-  "msgResendStopped": "Reenvío cancelado"
+  "msgResendStopped": "Reenvío cancelado",
+  "rigLinkTitle": "Control de radio",
+  "rigLinkLead": "Frecuencia, modo y transmisión a través de rigctld.",
+  "rigConnection": "Conexión",
+  "rigAddr": "Dirección",
+  "rigAddrHint": "La máquina donde corre rigctld",
+  "rigStatus": "Estado",
+  "rigFreqMhz": "Frecuencia (MHz)",
+  "rigMode": "Modo",
+  "rigControl": "Control",
+  "rigApply": "Aplicar a la radio",
+  "rigPttTest": "Transmitir 3 s",
+  "rigConnectNow": "Conectar"
 }

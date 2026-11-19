@@ -4554,5 +4554,17 @@
   "lowBatteryAsk": "バッテリー低下時に確認",
   "msgResendTapRetry": "タップで再送",
   "msgResendNoLink": "使える回線がないため送れません。",
-  "msgResendStopped": "再送を中止"
+  "msgResendStopped": "再送を中止",
+  "rigLinkTitle": "無線機制御",
+  "rigLinkLead": "rigctld 経由で周波数・モード・送信を操作します。",
+  "rigConnection": "接続",
+  "rigAddr": "アドレス",
+  "rigAddrHint": "rigctld が動くホスト",
+  "rigStatus": "状態",
+  "rigFreqMhz": "周波数 (MHz)",
+  "rigMode": "モード",
+  "rigControl": "操作",
+  "rigApply": "無線機に設定",
+  "rigPttTest": "3 秒送信",
+  "rigConnectNow": "接続"
 }

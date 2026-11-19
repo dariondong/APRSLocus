@@ -4554,5 +4554,17 @@
   "lowBatteryAsk": "Ask when the battery is low",
   "msgResendTapRetry": "tap to send again",
   "msgResendNoLink": "No link is up right now, so it cannot go out.",
-  "msgResendStopped": "Resend cancelled"
+  "msgResendStopped": "Resend cancelled",
+  "rigLinkTitle": "Rig control",
+  "rigLinkLead": "Frequency, mode and transmit, through rigctld.",
+  "rigConnection": "Connection",
+  "rigAddr": "Address",
+  "rigAddrHint": "The machine running rigctld",
+  "rigStatus": "Status",
+  "rigFreqMhz": "Frequency (MHz)",
+  "rigMode": "Mode",
+  "rigControl": "Control",
+  "rigApply": "Apply to rig",
+  "rigPttTest": "Transmit 3 s",
+  "rigConnectNow": "Connect"
 }

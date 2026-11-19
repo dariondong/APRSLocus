@@ -10323,4 +10323,40 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String get msgResendStopped => "再送を中止";
 
+  @override
+  String get rigLinkTitle => "無線機制御";
+
+  @override
+  String get rigLinkLead => "rigctld 経由で周波数・モード・送信を操作します。";
+
+  @override
+  String get rigConnection => "接続";
+
+  @override
+  String get rigAddr => "アドレス";
+
+  @override
+  String get rigAddrHint => "rigctld が動くホスト";
+
+  @override
+  String get rigStatus => "状態";
+
+  @override
+  String get rigFreqMhz => "周波数 (MHz)";
+
+  @override
+  String get rigMode => "モード";
+
+  @override
+  String get rigControl => "操作";
+
+  @override
+  String get rigApply => "無線機に設定";
+
+  @override
+  String get rigPttTest => "3 秒送信";
+
+  @override
+  String get rigConnectNow => "接続";
+
 }

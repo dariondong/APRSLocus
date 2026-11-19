@@ -5233,5 +5233,17 @@
   "lowBatteryAsk": "电量低时提示开启",
   "msgResendTapRetry": "点一下再发",
   "msgResendNoLink": "现在没有可用的链路，发不出去。",
-  "msgResendStopped": "已取消重发"
+  "msgResendStopped": "已取消重发",
+  "rigLinkTitle": "电台控制",
+  "rigLinkLead": "通过 rigctld 管电台的频率、模式与发射。",
+  "rigConnection": "连接",
+  "rigAddr": "地址",
+  "rigAddrHint": "跑 rigctld 的那台机器",
+  "rigStatus": "状态",
+  "rigFreqMhz": "频率 (MHz)",
+  "rigMode": "模式",
+  "rigControl": "控制",
+  "rigApply": "设置到电台",
+  "rigPttTest": "发射 3 秒",
+  "rigConnectNow": "连接"
 }

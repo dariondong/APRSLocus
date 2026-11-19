@@ -10602,4 +10602,40 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get msgResendStopped => "Resend cancelled";
 
+  @override
+  String get rigLinkTitle => "Rig control";
+
+  @override
+  String get rigLinkLead => "Frequency, mode and transmit, through rigctld.";
+
+  @override
+  String get rigConnection => "Connection";
+
+  @override
+  String get rigAddr => "Address";
+
+  @override
+  String get rigAddrHint => "The machine running rigctld";
+
+  @override
+  String get rigStatus => "Status";
+
+  @override
+  String get rigFreqMhz => "Frequency (MHz)";
+
+  @override
+  String get rigMode => "Mode";
+
+  @override
+  String get rigControl => "Control";
+
+  @override
+  String get rigApply => "Apply to rig";
+
+  @override
+  String get rigPttTest => "Transmit 3 s";
+
+  @override
+  String get rigConnectNow => "Connect";
+
 }

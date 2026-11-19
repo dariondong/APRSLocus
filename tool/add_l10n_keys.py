@@ -679,6 +679,42 @@ KEYS = {
     'msgResendStopped': (
         '已取消重发', '已取消重發', 'Resend cancelled', '再送を中止',
         'Reenvío cancelado', 'Kirim ulang dibatalkan'),
+    # ── 电台控制（Hamlib / rigctld）──
+    'rigLinkTitle': (
+        '电台控制', '電台控制', 'Rig control', '無線機制御',
+        'Control de radio', 'Kontrol radio'),
+    'rigLinkLead': (
+        '通过 rigctld 管电台的频率、模式与发射。',
+        '透過 rigctld 管電台的頻率、模式與發射。',
+        'Frequency, mode and transmit, through rigctld.',
+        'rigctld 経由で周波数・モード・送信を操作します。',
+        'Frecuencia, modo y transmisión a través de rigctld.',
+        'Frekuensi, mode, dan transmisi lewat rigctld.'),
+    'rigConnection': (
+        '连接', '連線', 'Connection', '接続', 'Conexión', 'Koneksi'),
+    'rigAddr': (
+        '地址', '位址', 'Address', 'アドレス', 'Dirección', 'Alamat'),
+    'rigAddrHint': (
+        '跑 rigctld 的那台机器', '跑 rigctld 的那台機器',
+        'The machine running rigctld', 'rigctld が動くホスト',
+        'La máquina donde corre rigctld', 'Mesin yang menjalankan rigctld'),
+    'rigStatus': (
+        '状态', '狀態', 'Status', '状態', 'Estado', 'Status'),
+    'rigFreqMhz': (
+        '频率 (MHz)', '頻率 (MHz)', 'Frequency (MHz)', '周波数 (MHz)',
+        'Frecuencia (MHz)', 'Frekuensi (MHz)'),
+    'rigMode': (
+        '模式', '模式', 'Mode', 'モード', 'Modo', 'Mode'),
+    'rigControl': (
+        '控制', '控制', 'Control', '操作', 'Control', 'Kontrol'),
+    'rigApply': (
+        '设置到电台', '設定到電台', 'Apply to rig', '無線機に設定',
+        'Aplicar a la radio', 'Terapkan ke radio'),
+    'rigPttTest': (
+        '发射 3 秒', '發射 3 秒', 'Transmit 3 s', '3 秒送信',
+        'Transmitir 3 s', 'Pancar 3 dtk'),
+    'rigConnectNow': (
+        '连接', '連線', 'Connect', '接続', 'Conectar', 'Sambungkan'),
 }
 
 META = {

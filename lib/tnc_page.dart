@@ -9,6 +9,7 @@ import 'garmin_page.dart';
 import 'hr_page.dart';
 import 'ic705_device_page.dart';
 import 'pkwdwpl_device_page.dart';
+import 'rig_link_page.dart';
 import 'models.dart';
 import 'platform_caps.dart';
 import 'station_detail.dart';
@@ -204,6 +205,28 @@ class DataSourceCard extends StatelessWidget {
           disabledReason: s.iosFeatureUnsupported,
           onConfigure: () => Navigator.of(context).push(
             MaterialPageRoute(builder: (_) => PkwdwplDevicePage(state: state)),
+          ),
+        ),
+        // 电台控制（Hamlib / rigctld）：管的是同一台电台，所以摆在「电台链路」
+        // 这一组里；但它不传报文，只有频率、模式、PTT 三件事，所以没有发射
+        // 圆点（canTx: false），也不进 enabledSources。
+        _tile(
+          context,
+          key: 'rig',
+          title: s.rigLinkTitle,
+          desc: state.rigConnected
+              ? (state.rigFreqHz == null
+                  ? state.rigAddr
+                  : '${(state.rigFreqHz! / 1000000).toStringAsFixed(3)} MHz'
+                      '${state.rigMode.isEmpty ? '' : ' · ${state.rigMode}'}')
+              : (state.rigAddr.isEmpty ? s.oobeDoneUnset : state.rigAddr),
+          icon: Icons.tune_rounded,
+          enabled: state.rigOn,
+          up: state.rigConnected,
+          canTx: false,
+          onToggle: (v) => state.setRigOn(v),
+          onConfigure: () => Navigator.of(context).push(
+            MaterialPageRoute(builder: (_) => RigLinkPage(state: state)),
           ),
         ),
         // 「高级连接通道设置」：默认关 —— 关着时位置与状态报文发往所有
