@@ -318,13 +318,12 @@ The fault was ours. Sorry for the trouble.
 
 ---
 
-## 🔔 What is new: 2.2.8
+## 🔔 What is new: 2.2.10
 
-- The online check no longer looks only at the selected channel: when a mirror has no digest, the official repository is asked, so it no longer always fails.
-- Release notes now list the SHA-256 of every package, so mirror channels can be checked too.
-- On a digest mismatch the row shows the first characters of both digests.
-- When the package cannot be read, the row says so instead of blaming the signature.
-- The result goes into the log, so you can see which step failed.
+- While the countdown under a message is running, tapping that message cancels the resend.
+- The first time the app connects to a server, a separate registration frame carries this device's install mark.
+- A downloaded update package is checked against the local signature only, with no online digest lookup.
+- The APRSNETCN OA card inside the announcement is laid out as one horizontal band.
 
 ---
 
@@ -342,9 +341,9 @@ Look up APALOC in the official TOCALL table and you will find it.
 
 The 2.2.0 build published on the Qingling (清零) channel by mistake has been taken down, and the channel works normally again.
 
-Checking for updates now returns the latest stable version, 2.2.8. If you installed 2.2.0, uninstall it first, then install 2.2.8.
+Checking for updates now returns the latest stable version, 2.2.10. If you installed 2.2.0, uninstall it first, then install 2.2.10.
 
-**[Download 2.2.8](https://github.com/dariondong/APRSLocus/releases/download/v2.2.8/APRSLocus_2.2.8.apk)**
+**[Download 2.2.10](https://github.com/dariondong/APRSLocus/releases/download/v2.2.10/APRSLocus_2.2.10.apk)**
 
 ---
 
