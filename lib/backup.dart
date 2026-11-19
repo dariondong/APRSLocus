@@ -227,6 +227,9 @@ const List<BackupGroupSpec> kBackupGroups = [
     // 并列的连接，换机后两个服务器都得重新填，所以一起进备份。
     'acnAccount', 'acnPassword', 'acnPasscode', 'acnOn', 'acnServer', 'acnPort',
     'acnHttpPort',
+    // 电台控制（Hamlib rigctld）：地址端口是用户自己填的，与服务器地址一样
+    // 属于「换机后重敲最容易出错」那一类，跟着进备份；开关也带上。
+    'rigOn', 'rigHost', 'rigPort',
     'igateEnabled', 'igateTwoWay',
     'myLat', 'myLng',
     // 链路配置（TNC / 声卡 TNC / PKWDWPL / 小盒子 / 外接 GPS）与各自上次选的设备。

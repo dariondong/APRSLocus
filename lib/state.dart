@@ -37,6 +37,7 @@ import 'l10n/app_localizations_ja.dart';
 import 'l10n/app_localizations_zh.dart';
 import 'net/aprs.dart';
 import 'net/http_send.dart';
+import 'net/rig_link.dart';
 import 'aprsnetcn.dart';
 import 'audio.dart';
 import 'box.dart';
@@ -5679,6 +5680,20 @@ class AppState extends ChangeNotifier {
     acnPasscode = '';
     _acnConfWarned = false;
     acnAccount = '';
+    // 电台控制：地址与端口一起清掉，下次要重新填（不预填任何地址）。
+    rigOn = false;
+    rigHost = '';
+    rigPort = 0;
+    rigLink.disconnect();
+    rigConnected = false;
+    rigBusy = false;
+    rigPtt = false;
+    rigFreqHz = null;
+    rigMode = '';
+    rigInfo = '';
+    rigError = '';
+    _rigPollAt = null;
+    _rigAutoTried = false;
     acnPassword = '';
     acnLogin = null;
     _acnRetryAt = null;
@@ -6002,6 +6017,25 @@ class AppState extends ChangeNotifier {
   /// 它与主链路的 `passcodeInvalid` 是两件事：副链路有自己的 passcode 与账号，
   /// 拿它的未验证去把主横幅变黄是错的（见 [_noteAcnServerLine]）。
   String? acnLogin;
+
+  // ── 电台控制（Hamlib / rigctld）──
+  //
+  // 它不是一条报文链路：只发频率、模式、PTT 三类控制命令，不进
+  // [enabledSources]，也不参与「发射来源」的判定。地址与端口由用户自己填，
+  // 与服务器地址同一个规矩：不预填。
+  final RigLink rigLink = createRigLink();
+  bool rigOn = false;
+  String rigHost = '';
+  int rigPort = 0;
+  bool rigConnected = false;
+  bool rigBusy = false;
+  String rigError = '';
+  String rigInfo = '';
+  int? rigFreqHz;
+  String rigMode = '';
+  bool rigPtt = false;
+  DateTime? _rigPollAt;
+  bool _rigAutoTried = false;
 
   /// 主链路最近收到的原始报文行（副链路镜像去重用，见 [_isMainMirror]）。
   final Map<String, DateTime> _mainLines = {};
@@ -6340,6 +6374,9 @@ class AppState extends ChangeNotifier {
       final legacyAcnOn = p.getBool('acnOn') ?? false;
       acnServer = p.getString('acnServer') ?? acnServer;
       acnPort = p.getInt('acnPort') ?? acnPort;
+      rigOn = p.getBool('rigOn') ?? rigOn;
+      rigHost = p.getString('rigHost') ?? rigHost;
+      rigPort = p.getInt('rigPort') ?? rigPort;
       final httpPort = p.getInt('acnHttpPort') ?? acnHttpPort;
       if (httpPort > 0 && httpPort <= 65535) acnHttpPort = httpPort;
       acnPasscode = p.getString('acnPasscode') ?? acnPasscode;
@@ -6739,6 +6776,9 @@ class AppState extends ChangeNotifier {
     // 老版本只认这一个开关（它没有 enabledSources）：照当前的启用状态同步
     // 写一份，免得磁盘上留着的旧 true 在下次启动时把已经关掉的链路又补回来。
     await p.setBool('acnOn', acnOn);
+    await p.setBool('rigOn', rigOn);
+    await p.setString('rigHost', rigHost);
+    await p.setInt('rigPort', rigPort);
     await p.setBool('igateEnabled', igateEnabled);
     await p.setBool('igateTwoWay', igateTwoWay);
     if (myHasFix && myLat != null && myLng != null) {
@@ -6885,6 +6925,8 @@ class AppState extends ChangeNotifier {
       nmeaGps.heartbeat();
       // 消息重发：没收到回执的私聊按设定的间隔与次数重试（开关在设置里）。
       _tickMsgResend(DateTime.now());
+      // 电台控制：启动后自己连一次，连着时每 3 秒读一次读数。
+      _tickRig();
       // 自动定时上报仅在链路可用时进行；未连接不发送（避免误以为在上报）。
       // TNC 模式下还需用户显式开启「射频信标」（见 canAutoBeacon）。
       // 上报判据：**定时到了，或者走够了**（智能信标的距离打点）。
@@ -8051,6 +8093,118 @@ class AppState extends ChangeNotifier {
     if (_disposed || !acnOn) return;
     await _connectAcn();
   }
+
+  // ─── 电台控制（Hamlib / rigctld）──
+
+  /// 「地址:端口」。没填就是空串，界面据此显示「未填」。
+  String get rigAddr =>
+      rigHost.trim().isEmpty || rigPort <= 0 ? '' : '${rigHost.trim()}:$rigPort';
+
+  void setRigHost(String v) {
+    final t = v.trim();
+    if (rigHost == t) return;
+    rigHost = t;
+    persist();
+    _notify();
+  }
+
+  void setRigPort(int v) {
+    if (rigPort == v) return;
+    rigPort = v;
+    persist();
+    _notify();
+  }
+
+  /// 开 / 关电台控制。开就先连一次，关就断开并清掉读数。
+  Future<void> setRigOn(bool v) async {
+    if (rigOn == v) return;
+    rigOn = v;
+    persist();
+    if (v) {
+      await _connectRig();
+    } else {
+      _dropRig('');
+    }
+    _notify();
+  }
+
+  /// 重新连接（改过地址、或者 rigctld 重启过之后点它）。
+  Future<void> reconnectRig() async {
+    _dropRig('');
+    if (!rigOn) return;
+    await _connectRig();
+  }
+
+  void _dropRig(String why) {
+    rigLink.disconnect();
+    rigConnected = false;
+    rigBusy = false;
+    rigPtt = false;
+    rigFreqHz = null;
+    rigMode = '';
+    rigInfo = '';
+    if (why.isNotEmpty) rigError = why;
+    _notify();
+  }
+
+  Future<void> _connectRig() async {
+    if (kIsWeb || _disposed) return;
+    final host = rigHost.trim();
+    if (host.isEmpty || rigPort <= 0) {
+      rigConnected = false;
+      rigError = 'no-address';
+      _notify();
+      return;
+    }
+    rigBusy = true;
+    rigError = '';
+    _notify();
+    final ok = await rigLink.connect(host, rigPort);
+    if (_disposed) return;
+    rigBusy = false;
+    rigConnected = ok;
+    if (ok) {
+      rigError = '';
+      _log(LogLevel.info, '电台控制', '已连上 rigctld $host:$rigPort');
+      await _refreshRig();
+    } else {
+      rigError = rigLink.lastError;
+      _log(LogLevel.warn, '电台控制', '连不上 rigctld：${rigLink.lastError}');
+    }
+    _notify();
+  }
+
+  /// 读回型号、频率、模式。连着的时候每 3 秒一次（见 1 秒 tick）。
+  Future<void> _refreshRig() async {
+    if (!rigConnected || _disposed) return;
+    final st = await rigLink.status();
+    if (_disposed || !rigConnected) return;
+    if (st != null) {
+      if (st.freqHz != null) rigFreqHz = st.freqHz;
+      if (st.mode.isNotEmpty) rigMode = st.mode;
+      if (st.info.isNotEmpty) rigInfo = st.info;
+    }
+    _notify();
+  }
+
+  Future<void> rigSetFreq(int hz) async {
+    final ok = await rigLink.setFreq(hz);
+    if (ok) rigFreqHz = hz;
+    _notify();
+  }
+
+  Future<void> rigSetMode(String mode) async {
+    final ok = await rigLink.setMode(mode);
+    if (ok) rigMode = mode;
+    _notify();
+  }
+
+  Future<void> rigSetPtt(bool on) async {
+    final ok = await rigLink.setPtt(on);
+    rigPtt = ok && on;
+    _notify();
+  }
+
 
   /// APRS-IS 连接（原来的 `_connect` 主体）
   Future<void> _connectAprsIs() async {
@@ -11785,6 +11939,32 @@ class AppState extends ChangeNotifier {
   /// 秒 tick 里跑的一步：到点的重发、次数用完的收尾。
   ///
   /// [now] 由调用方给，测试可以直接把时间拨快（见 `test/msg_resend_test.dart`）。
+  /// 电台控制的 1 秒心跳。
+  ///
+  /// 两件事：启动后自己连一次（用户开着这个开关就说明他想连）；连着的时候
+  /// 每 3 秒读一次读数，人在墙上拧旋钮、面板上的频率也会跟着变。
+  /// 掉线**不自动重连**：rigctld 重启是件看得见的事，让用户点一下「重新连接」
+  /// 比在后台默默刷一串失败日志诚实。
+  void _tickRig() {
+    if (_disposed || kIsWeb) return;
+    if (rigOn &&
+        !rigConnected &&
+        !rigBusy &&
+        !_rigAutoTried &&
+        rigHost.trim().isNotEmpty &&
+        rigPort > 0) {
+      _rigAutoTried = true;
+      unawaited(_connectRig());
+      return;
+    }
+    if (!rigConnected) return;
+    final now = DateTime.now();
+    final last = _rigPollAt;
+    if (last != null && now.difference(last).inSeconds < 3) return;
+    _rigPollAt = now;
+    unawaited(_refreshRig());
+  }
+
   void _tickMsgResend(DateTime now) {
     if (_msgResend.isEmpty) return;
     var changed = false;
