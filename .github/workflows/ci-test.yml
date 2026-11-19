@@ -371,6 +371,11 @@ jobs:
       - name: Test coordinate format
         run: flutter test test/coord_format_test.dart
 
+      # 电台控制（Hamlib rigctld）的协议客户端：用本机假 daemon 钉住回包格式，
+      # CI 里没有真 daemon 也没有电台。
+      - name: Test rig control (rigctld)
+        run: flutter test test/rig_link_test.dart
+
       # 地图右侧工具列的分列算式（列数、封顶、贴底控件让位、裁剪下边距）：
       # 用户报过两次「控件被重排 / 浮层挡在一起」，那种错编译与 analyze 都看不见。
       - name: Test map toolbar layout
