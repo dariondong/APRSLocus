@@ -1,22 +1,43 @@
-# Audit complete: updates resumed (v2.2.0)
+# OA paused: the server is under maintenance
+
+The APRSNETCN OA server is under technical maintenance. The activity is paused while it lasts, and full service is expected back by 21 November.
+
+Messages sent during the maintenance are not received, and no ACK comes back. The check-ins and the roster already collected are kept, and they carry on after the restart.
+
+This does not affect APRS-IS. Positions, status frames and messages work as usual.
+
+Once the date is fixed, it goes on the activity page and here.
+
+---
+
+## 🔔 What is new: 2.2.10
+
+- While the countdown under a message is running, tapping that message cancels the resend.
+- The first time the app connects to a server, a separate registration frame carries this device's install mark.
+- A downloaded update package is checked against the local signature only, with no online digest lookup.
+- The APRSNETCN OA card inside the announcement is laid out as one horizontal band.
+
+---
+
+## ✅ Security notice: updates resumed (v2.2.0)
 
 The unauthorised commits of 12 November 2026 have been fully audited. Result: the injected build pipeline never executed, and no build-time secret was ever read. v2.2.0 has been rebuilt with a **new signing certificate**, and updates can resume.
 
 **Severity: resolved · Last updated 12 November 2026, 18:20 (UTC+8)**
 
-## 1. Audit result
+### 1. Audit result
 
 - The injected pipeline was triggered by v* tags. Each injection existed for only about 48 seconds before a ci: restore commit reverted it, and no build was ever triggered by it.
 - Build-time secrets (the signing certificate and the object-storage keys) were therefore never read. The earlier statement that the signing keys had been exposed was incorrect.
 - The unauthorised commits and decoy pull requests are gone; no leftover files remain, and the workflows are byte-identical to their pre-incident state.
 
-## 2. This build requires a clean install
+### 2. This build requires a clean install
 
 - Out of caution the signing certificate is still treated as potentially compromised, so it has been replaced and reissued.
 - **The signature changed, so this build cannot be installed over an older one.** Export a backup, uninstall the old version, then install v2.2.0.
 - The new certificate's SHA-1 and SHA-256 are listed below for you to verify.
 
-## 3. Releases and verification
+### 3. Releases and verification
 
 - v2.2.0 and later are signed with the new certificate.
 - Use only the SHA-256 values published on the official site and GitHub Releases.
@@ -27,16 +48,38 @@ SHA-256: 0F:2C:52:7A:9C:D6:6A:43:A8:71:F3:51:92:C7:5C:B7:5F:C1:B8:5B:6F:63:BA:45
 
 - The old signature (v2.1.43 and earlier) is retired. Any future "new version" carrying the old signature should be treated as forged.
 
-## 4. What we will never do
+### 4. What we will never do
 
 - We will never ask for your password or verification code through any channel.
 - We will never ask to remotely control your device.
 
-## 5. Channels
+### 5. Channels
 
 - Website: [aprslocus.theez.top](https://aprslocus.theez.top)
 - Feedback and reports: [GitHub Issues](https://github.com/dariondong/APRSLocus/issues)
 - Trusted builds and checksums come from official channels only. Do not forward unverified packages or patches.
+
+---
+
+## 🙏 An apology
+
+During today's maintenance, users in some regions hit login errors, and a batch of callsigns was temporarily banned so the app would not open.
+
+Both are cleared now. If you are stuck on the block page, tap "Check again" and you are back in. Otherwise the app picks it up the next time you start it. No reinstall needed.
+
+The fault was ours. Sorry for the trouble.
+
+73!
+
+---
+
+## ✅ The Qingling channel is back
+
+The 2.2.0 build published on the Qingling (清零) channel by mistake has been taken down, and the channel works normally again.
+
+Checking for updates now returns the latest stable version, 2.2.10. If you installed 2.2.0, uninstall it first, then install 2.2.10.
+
+**[Download 2.2.10](https://github.com/dariondong/APRSLocus/releases/download/v2.2.10/APRSLocus_2.2.10.apk)**
 
 ---
 
@@ -185,6 +228,8 @@ Saturday, 31 October: one CQ out, one ACK in, one U back.
 
 **APRSNET.CN**
 
+---
+
 ## APRSNETCN OA · #261024 Half a Cat Bed
 
 APRSNETCN OA is an APRS message check-in run by APRSNET.CN. It lasts a whole Saturday, Beijing time. OA stands for On Air.
@@ -306,27 +351,6 @@ The form is anonymous.
 
 ---
 
-## 🙏 An apology
-
-During today's maintenance, users in some regions hit login errors, and a batch of callsigns was temporarily banned so the app would not open.
-
-Both are cleared now. If you are stuck on the block page, tap "Check again" and you are back in. Otherwise the app picks it up the next time you start it. No reinstall needed.
-
-The fault was ours. Sorry for the trouble.
-
-73!
-
----
-
-## 🔔 What is new: 2.2.10
-
-- While the countdown under a message is running, tapping that message cancels the resend.
-- The first time the app connects to a server, a separate registration frame carries this device's install mark.
-- A downloaded update package is checked against the local signature only, with no online digest lookup.
-- The APRSNETCN OA card inside the announcement is laid out as one horizontal band.
-
----
-
 ## 🆔 TOCALL in the official device library
 
 APRSLocus answers to the tocall **APALOC**, now listed in the official TOCALL device library (aprs-deviceid).
@@ -334,16 +358,6 @@ APRSLocus answers to the tocall **APALOC**, now listed in the official TOCALL de
 The vendor field reads Darion, BG7LZQ, the model APRSLocus, the class software.
 
 Look up APALOC in the official TOCALL table and you will find it.
-
----
-
-## ✅ The Qingling channel is back
-
-The 2.2.0 build published on the Qingling (清零) channel by mistake has been taken down, and the channel works normally again.
-
-Checking for updates now returns the latest stable version, 2.2.10. If you installed 2.2.0, uninstall it first, then install 2.2.10.
-
-**[Download 2.2.10](https://github.com/dariondong/APRSLocus/releases/download/v2.2.10/APRSLocus_2.2.10.apk)**
 
 ---
 

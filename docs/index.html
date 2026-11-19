@@ -225,28 +225,16 @@ html{overflow-x:hidden}
       <div class="announce-ribbon"><span class="ar-dot"></span>公告 · Announcement</div>
 
       <header class="announce-head">
-        <p class="announce-kicker">✅ 安全公告</p>
-        <h2 class="announce-title">审计完成：恢复更新（v2.2.0）<span class="announce-en">Audit complete · 12 Nov 2026</span></h2>
-        <p class="announce-sub">注入的构建流程从未执行，密钥未被读取。v2.2.0 已用新签名证书重建，可恢复更新；因签名变更需卸载重装。</p>
+        <p class="announce-kicker">⚠️ 活动公告</p>
+        <h2 class="announce-title">OA 活动暂停：服务器技术性维护<span class="announce-en">Maintenance · back 21 Nov 2026</span></h2>
+        <p class="announce-sub">维护期间不用发报文。恢复后活动页会写明哪一天接着签到。</p>
       </header>
 
       <div class="announce-body">
-        <p>2026 年 11 月 12 日的异常提交已审计完毕。结论是：被注入的构建流程一次也没有执行，构建阶段注入的密钥没有被读取。v2.2.0 已用<b>全新签名证书</b>重新构建，可以恢复更新。</p>
-        <p><b>公告级别：已解除 · 最后更新 2026 年 11 月 12 日 18:20</b></p>
-        <p><b>一、审计结论</b></p>
-        <ul class="announce-list"><li>注入的构建流程由 v* 标签触发。两次注入各只存在约 48 秒即被一条 ci: restore 撤回，期间没有任何一次构建被它触发。</li><li>因此构建阶段注入的密钥（含签名证书、对象存储密钥）从未被读取，此前公告中「密钥已暴露」的判断不成立。</li><li>异常提交与诱饵 PR 现均已清除，仓库内无残留文件，工作流与注入前逐字节一致。</li></ul>
-        <p><b>二、这一版必须卸载重装</b></p>
-        <ul class="announce-list"><li>出于谨慎，签名证书仍按「可能已泄露」处理，已整体更换并重新签发。</li><li><b>签名换了，安装包不能覆盖安装。</b> 请先导出备份，再卸载旧版，然后安装 v2.2.0。</li><li>新签名的 SHA-1 与 SHA-256 见下方，可自行核对。</li></ul>
-        <p><b>三、发布包与校验</b></p>
-        <ul class="announce-list"><li>v2.2.0 及以后的安装包都由新证书签名。</li><li>官网与 GitHub Releases 上的 SHA-256 请以官方渠道为准。</li></ul>
-        <p><b>新签名证书指纹</b></p>
-        <p>SHA-1:   BE:7C:EC:BA:1C:8F:9B:78:64:9A:2E:03:5C:D7:62:9E:BA:B1:4A:0C</p>
-        <p>SHA-256: 0F:2C:52:7A:9C:D6:6A:43:A8:71:F3:51:92:C7:5C:B7:5F:C1:B8:5B:6F:63:BA:45:8C:B5:A9:82:0A:2E:38:8A</p>
-        <ul class="announce-list"><li>旧版本（v2.1.43 及更早）的签名已作废，日后出现旧签名的「新版本」一律视为伪造。</li></ul>
-        <p><b>四、官方不会做的事</b></p>
-        <ul class="announce-list"><li>不会通过任何渠道索要密码、验证码。</li><li>不会要求远程控制你的设备。</li></ul>
-        <p><b>五、渠道</b></p>
-        <ul class="announce-list"><li>网站：<a href="https://aprslocus.theez.top" target="_blank" rel="noopener">aprslocus.theez.top</a></li><li>反馈与举报：<a href="https://github.com/dariondong/APRSLocus/issues" target="_blank" rel="noopener">GitHub Issues</a></li><li>可信版本与校验值只以官方渠道为准，未经证实的安装包与补丁不要转发。</li></ul>
+        <p>APRSNETCN OA 的服务器正在技术性维护，维护期间活动暂停，预计 11 月 21 日完全恢复。</p>
+        <p>维护期间发出去的报文收不到，也不会有 ACK。已经收到的签到与名单都保留着，恢复后接着用。</p>
+        <p>这跟 APRS-IS 无关，定位、状态报文和消息照常。</p>
+        <p>恢复时间定了，会在活动页和这里各写一条。</p>
       </div>
 
       <div class="announce-actions">

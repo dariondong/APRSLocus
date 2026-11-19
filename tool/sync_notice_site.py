@@ -73,22 +73,22 @@ PAGES = [
 # ⚠ 换一期公告时这里必须一起改，否则会出现「正文是新的、标题还是上一期」。
 HEAD = {
     'zh': {
-        'kicker': '✅ 安全公告',
-        'title': '审计完成：恢复更新（v2.2.0）',
-        'en': 'Audit complete · 12 Nov 2026',
-        'sub': '注入的构建流程从未执行，密钥未被读取。v2.2.0 已用新签名证书重建，可恢复更新；因签名变更需卸载重装。',
+        'kicker': '⚠️ 活动公告',
+        'title': 'OA 活动暂停：服务器技术性维护',
+        'en': 'Maintenance · back 21 Nov 2026',
+        'sub': '维护期间不用发报文。恢复后活动页会写明哪一天接着签到。',
     },
     'zh_TW': {
-        'kicker': '✅ 安全公告',
-        'title': '稽核完成：恢復更新（v2.2.0）',
-        'en': 'Audit complete · 12 Nov 2026',
-        'sub': '注入的建置流程從未執行，金鑰未被讀取。v2.2.0 已用新簽章憑證重建，可恢復更新；因簽章變更需解除安裝重裝。',
+        'kicker': '⚠️ 活動公告',
+        'title': 'OA 活動暫停：伺服器技術性維護',
+        'en': 'Maintenance · back 21 Nov 2026',
+        'sub': '維護期間不用發報文。恢復後活動頁會寫明哪一天接著簽到。',
     },
     'en': {
-        'kicker': '✅ Security notice',
-        'title': 'Audit complete: updates resumed (v2.2.0)',
-        'en': '12 Nov 2026',
-        'sub': 'The injected pipeline never ran and no secret was read. v2.2.0 is rebuilt with a new signing certificate; a clean install is required because the signature changed.',
+        'kicker': '⚠️ Activity notice',
+        'title': 'OA paused: server maintenance',
+        'en': 'Back on 21 Nov 2026',
+        'sub': 'No need to send messages while it lasts. The activity page will say which Saturday the check-in resumes.',
     },
 }
 
