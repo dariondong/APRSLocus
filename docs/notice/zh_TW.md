@@ -10,6 +10,20 @@ APRSNETCN OA 的伺服器正在技術性維護，維護期間活動暫停，預�
 
 ---
 
+## 📮 想聽聽你的聲音
+
+APRSLocus 已經陪 1000+ 位使用者走過一段路。下一步往哪兒走，我們想聽你說：哪裡彆扭、還缺什麼、最該先修的是哪一個。
+
+**[點擊進入調查問卷](https://ccncqe00x1e4.feishu.cn/share/base/form/shrcnWcCKNxzSMvlGP54DCrnAZg)**
+
+## 💬 官方 QQ 群 925025834
+
+有問題、有想法，或者只是想說一句「收到了」，都歡迎進來坐坐。
+
+**[點擊加入 925025834](https://qun.qq.com/universal-share/share?ac=1&authKey=tqe%2BI6lZzakmEoIBwnSVV9%2BT8Zg36F4%2FejuSGAfEIYiDhj5sGyQUOx%2B3YCU68G05&busi_data=eyJncm91cENvZGUiOiI5MjUwMjU4MzQiLCJ0b2tlbiI6ImxiMTMrTm55MEoxU1o2aFV1V1hLUDRKQkZBR21nTEdNemJFOUM0aE1jOWJLU2lNZUtZaGpOa1dicnlYSk15V0YiLCJ1aW4iOiIzNDIxMDE2MTUwIn0%3D&data=nW_8Q1gX2ft-4C0n9p83Ukel3sHzCwlFOSMnOU0HZ8sCtWkwY3hmqlwVFAZm5ipk2W3hIDPxc6Rl0HoW-nMf8Q&svctype=4&tempid=h5_group_info)**
+
+---
+
 ## 🔔 本次更新：2.2.10
 
 - 消息底下走著倒數計時的時候，點一下這條消息就取消重發。
@@ -58,18 +72,6 @@ SHA-256: 0F:2C:52:7A:9C:D6:6A:43:A8:71:F3:51:92:C7:5C:B7:5F:C1:B8:5B:6F:63:BA:45
 - 網站：[aprslocus.theez.top](https://aprslocus.theez.top)
 - 回饋與檢舉：[GitHub Issues](https://github.com/dariondong/APRSLocus/issues)
 - 可信版本與校驗值只以官方管道為準，未經證實的安裝包與補丁不要轉發。
-
----
-
-## 🙏 致歉
-
-今天技術維護期間，部分地區用戶遇到登入異常，另有一批呼號被臨時封禁，軟體打不開。
-
-封禁已全部解除。停在攔截頁的人點一下「重新檢查」就能進來，沒打開軟體的下次啟動自動恢復，不用重新安裝。
-
-問題出在我們的操作上，給你添了麻煩，抱歉。
-
-73！
 
 ---
 
@@ -364,20 +366,6 @@ APRSLocus 的 tocall 是 **APALOC**，現在進了官方的 TOCALL 設備庫（a
 那一頁裡有聲音，記得開著音響聽。不用長按，也不用等五秒 —— 點一下，故事就來了。想反悔也來得及：再點一下，它翻回正面，故事也就不打開了。
 
 剩下的，請你自己去看。
-
----
-
-## 📮 想聽聽你的聲音
-
-APRSLocus 已經陪 620+ 位使用者走過一段路。下一步往哪兒走，我們想聽你說：哪裡彆扭、還缺什麼、最該先修的是哪一個。
-
-**[點擊進入調查問卷](https://ccncqe00x1e4.feishu.cn/share/base/form/shrcnWcCKNxzSMvlGP54DCrnAZg)**
-
-## 💬 官方 QQ 群 925025834
-
-有問題、有想法，或者只是想說一句「收到了」，都歡迎進來坐坐。
-
-**[點擊加入 925025834](https://qun.qq.com/universal-share/share?ac=1&authKey=tqe%2BI6lZzakmEoIBwnSVV9%2BT8Zg36F4%2FejuSGAfEIYiDhj5sGyQUOx%2B3YCU68G05&busi_data=eyJncm91cENvZGUiOiI5MjUwMjU4MzQiLCJ0b2tlbiI6ImxiMTMrTm55MEoxU1o2aFV1V1hLUDRKQkZBR21nTEdNemJFOUM0aE1jOWJLU2lNZUtZaGpOa1dicnlYSk15V0YiLCJ1aW4iOiIzNDIxMDE2MTUwIn0%3D&data=nW_8Q1gX2ft-4C0n9p83Ukel3sHzCwlFOSMnOU0HZ8sCtWkwY3hmqlwVFAZm5ipk2W3hIDPxc6Rl0HoW-nMf8Q&svctype=4&tempid=h5_group_info)**
 
 ---
 

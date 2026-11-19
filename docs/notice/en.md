@@ -10,6 +10,20 @@ Once the date is fixed, it goes on the activity page and here.
 
 ---
 
+## 📮 We would like to hear from you
+
+APRSLocus has walked a while with 1000+ users now. Where it goes next is partly your call: what feels awkward, what is missing, what we should fix first.
+
+**[Take the survey](https://ccncqe00x1e4.feishu.cn/share/base/form/shrcnWcCKNxzSMvlGP54DCrnAZg)**
+
+## 💬 Official QQ group 925025834
+
+Questions, ideas, or just a "copy that": you are welcome to drop in.
+
+**[Join 925025834](https://qun.qq.com/universal-share/share?ac=1&authKey=tqe%2BI6lZzakmEoIBwnSVV9%2BT8Zg36F4%2FejuSGAfEIYiDhj5sGyQUOx%2B3YCU68G05&busi_data=eyJncm91cENvZGUiOiI5MjUwMjU4MzQiLCJ0b2tlbiI6ImxiMTMrTm55MEoxU1o2aFV1V1hLUDRKQkZBR21nTEdNemJFOUM0aE1jOWJLU2lNZUtZaGpOa1dicnlYSk15V0YiLCJ1aW4iOiIzNDIxMDE2MTUwIn0%3D&data=nW_8Q1gX2ft-4C0n9p83Ukel3sHzCwlFOSMnOU0HZ8sCtWkwY3hmqlwVFAZm5ipk2W3hIDPxc6Rl0HoW-nMf8Q&svctype=4&tempid=h5_group_info)**
+
+---
+
 ## 🔔 What is new: 2.2.10
 
 - While the countdown under a message is running, tapping that message cancels the resend.
@@ -58,18 +72,6 @@ SHA-256: 0F:2C:52:7A:9C:D6:6A:43:A8:71:F3:51:92:C7:5C:B7:5F:C1:B8:5B:6F:63:BA:45
 - Website: [aprslocus.theez.top](https://aprslocus.theez.top)
 - Feedback and reports: [GitHub Issues](https://github.com/dariondong/APRSLocus/issues)
 - Trusted builds and checksums come from official channels only. Do not forward unverified packages or patches.
-
----
-
-## 🙏 An apology
-
-During today's maintenance, users in some regions hit login errors, and a batch of callsigns was temporarily banned so the app would not open.
-
-Both are cleared now. If you are stuck on the block page, tap "Check again" and you are back in. Otherwise the app picks it up the next time you start it. No reinstall needed.
-
-The fault was ours. Sorry for the trouble.
-
-73!
 
 ---
 
@@ -370,20 +372,6 @@ That slowly turning star on the cover is not a picture. **Give it a light tap**:
 There is sound on that page; turn your speakers up. No long press, no five-second wait — one tap and the story arrives. Changed your mind? One more tap turns the cover back, and the story stays closed.
 
 The rest is yours to see.
-
----
-
-## 📮 We would like to hear from you
-
-APRSLocus has walked a while with 620+ users now. Where it goes next is partly your call: what feels awkward, what is missing, what we should fix first.
-
-**[Take the survey](https://ccncqe00x1e4.feishu.cn/share/base/form/shrcnWcCKNxzSMvlGP54DCrnAZg)**
-
-## 💬 Official QQ group 925025834
-
-Questions, ideas, or just a "copy that": you are welcome to drop in.
-
-**[Join 925025834](https://qun.qq.com/universal-share/share?ac=1&authKey=tqe%2BI6lZzakmEoIBwnSVV9%2BT8Zg36F4%2FejuSGAfEIYiDhj5sGyQUOx%2B3YCU68G05&busi_data=eyJncm91cENvZGUiOiI5MjUwMjU4MzQiLCJ0b2tlbiI6ImxiMTMrTm55MEoxU1o2aFV1V1hLUDRKQkZBR21nTEdNemJFOUM0aE1jOWJLU2lNZUtZaGpOa1dicnlYSk15V0YiLCJ1aW4iOiIzNDIxMDE2MTUwIn0%3D&data=nW_8Q1gX2ft-4C0n9p83Ukel3sHzCwlFOSMnOU0HZ8sCtWkwY3hmqlwVFAZm5ipk2W3hIDPxc6Rl0HoW-nMf8Q&svctype=4&tempid=h5_group_info)**
 
 ---
 
