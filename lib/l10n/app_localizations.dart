@@ -18861,6 +18861,120 @@ abstract class AppLocalizations {
   /// **'发报频率'**
   String get rigTxFreq;
 
+  /// No description provided for @rigDaemonCard.
+  ///
+  /// In zh, this message translates to:
+  /// **'本机 rigctld'**
+  String get rigDaemonCard;
+
+  /// No description provided for @rigDaemonSwitch.
+  ///
+  /// In zh, this message translates to:
+  /// **'由 APRSLocus 启动'**
+  String get rigDaemonSwitch;
+
+  /// No description provided for @rigDaemonModel.
+  ///
+  /// In zh, this message translates to:
+  /// **'型号编号'**
+  String get rigDaemonModel;
+
+  /// No description provided for @rigDaemonDevice.
+  ///
+  /// In zh, this message translates to:
+  /// **'串口'**
+  String get rigDaemonDevice;
+
+  /// No description provided for @rigDaemonBaud.
+  ///
+  /// In zh, this message translates to:
+  /// **'鮑率'**
+  String get rigDaemonBaud;
+
+  /// No description provided for @rigDaemonState.
+  ///
+  /// In zh, this message translates to:
+  /// **'运行状态'**
+  String get rigDaemonState;
+
+  /// No description provided for @rigDaemonRunning.
+  ///
+  /// In zh, this message translates to:
+  /// **'运行中'**
+  String get rigDaemonRunning;
+
+  /// No description provided for @rigDaemonStopped.
+  ///
+  /// In zh, this message translates to:
+  /// **'未运行'**
+  String get rigDaemonStopped;
+
+  /// No description provided for @rigDaemonStarting.
+  ///
+  /// In zh, this message translates to:
+  /// **'正在启动…'**
+  String get rigDaemonStarting;
+
+  /// No description provided for @rigDaemonExe.
+  ///
+  /// In zh, this message translates to:
+  /// **'程序'**
+  String get rigDaemonExe;
+
+  /// No description provided for @rigDaemonRestart.
+  ///
+  /// In zh, this message translates to:
+  /// **'重启 rigctld'**
+  String get rigDaemonRestart;
+
+  /// No description provided for @rigDaemonNoBinary.
+  ///
+  /// In zh, this message translates to:
+  /// **'没找到 rigctld。装一份 Hamlib，或者改用上面的地址。'**
+  String get rigDaemonNoBinary;
+
+  /// No description provided for @rigDaemonNoModel.
+  ///
+  /// In zh, this message translates to:
+  /// **'先填型号编号。'**
+  String get rigDaemonNoModel;
+
+  /// No description provided for @rigDaemonInUse.
+  ///
+  /// In zh, this message translates to:
+  /// **'端口被占用了，可能上一份 rigctld 还在跑。'**
+  String get rigDaemonInUse;
+
+  /// No description provided for @rigDaemonExited.
+  ///
+  /// In zh, this message translates to:
+  /// **'rigctld 起来了又退出，型号或串口不对。'**
+  String get rigDaemonExited;
+
+  /// No description provided for @rigDaemonTimeout.
+  ///
+  /// In zh, this message translates to:
+  /// **'rigctld 在跑，但端口一直连不上。'**
+  String get rigDaemonTimeout;
+
+  /// No description provided for @rigDaemonFailed.
+  ///
+  /// In zh, this message translates to:
+  /// **'rigctld 起不来。'**
+  String get rigDaemonFailed;
+
+  /// No description provided for @rigDaemonUnsupported.
+  ///
+  /// In zh, this message translates to:
+  /// **'这个平台不能自己起 rigctld。'**
+  String get rigDaemonUnsupported;
+
+  /// No description provided for @rigDaemonPort.
+  ///
+  /// In zh, this message translates to:
+  /// **'端口'**
+  String get rigDaemonPort;
+
 }
 
 class _AppLocalizationsDelegate

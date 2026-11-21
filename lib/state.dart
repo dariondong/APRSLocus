@@ -37,6 +37,7 @@ import 'l10n/app_localizations_ja.dart';
 import 'l10n/app_localizations_zh.dart';
 import 'net/aprs.dart';
 import 'net/http_send.dart';
+import 'net/rig_daemon.dart';
 import 'net/rig_link.dart';
 import 'aprsnetcn.dart';
 import 'audio.dart';
@@ -5696,6 +5697,14 @@ class AppState extends ChangeNotifier {
     _rigAutoTried = false;
     rigKeyTx = true;
     rigTxFreqHz = 0;
+    unawaited(rigDaemon.stop());
+    rigLocalOn = false;
+    rigLocalModel = 0;
+    rigLocalDevice = '';
+    rigLocalBaud = 0;
+    rigLocalPort = 0;
+    rigDaemonBusy = false;
+    rigDaemonError = RigDaemonError.none;
     acnPassword = '';
     acnLogin = null;
     _acnRetryAt = null;
@@ -6036,6 +6045,32 @@ class AppState extends ChangeNotifier {
   int? rigFreqHz;
   String rigMode = '';
   bool rigPtt = false;
+
+  // ── 本机 rigctld（安装包自带那份）──
+  //
+  // 以前用户得自己在终端里起 `rigctld -m <型号> -r <串口>`，Windows 上还得
+  // 先找 hamlib 的 w64 包。现在由应用自己起一份：开关是用户的意图，串口与
+  // 型号是他自己填的（不预填），起好之后地址就是 127.0.0.1:本机端口。
+  final RigDaemon rigDaemon = createRigDaemon();
+  bool rigLocalOn = false;
+
+  /// `rigctld -m`：hamlib 的型号编号。0 = 没填。
+  int rigLocalModel = 0;
+
+  /// `rigctld -r`：串口。不预填。
+  String rigLocalDevice = '';
+
+  /// `rigctld -s`：波特率。0 = 不指定，用 hamlib 的默认值。
+  int rigLocalBaud = 0;
+
+  /// `rigctld -t`：本机那份监听的端口。0 = 用 4532。
+  int rigLocalPort = 0;
+
+  /// 正在起 / 停。
+  bool rigDaemonBusy = false;
+
+  /// 上一次起不来的原因（界面按它取一句话）。
+  RigDaemonError rigDaemonError = RigDaemonError.none;
 
   /// 发报时由电台控制按下 PTT。开着就是「一体」：音频那条链只要发报，
   /// 电台自己按键、自己放开，不用先来这里点一下。
@@ -6390,6 +6425,11 @@ class AppState extends ChangeNotifier {
       rigPort = p.getInt('rigPort') ?? rigPort;
       rigKeyTx = p.getBool('rigKeyTx') ?? rigKeyTx;
       rigTxFreqHz = p.getInt('rigTxFreqHz') ?? rigTxFreqHz;
+      rigLocalOn = p.getBool('rigLocalOn') ?? rigLocalOn;
+      rigLocalModel = p.getInt('rigLocalModel') ?? rigLocalModel;
+      rigLocalDevice = p.getString('rigLocalDevice') ?? rigLocalDevice;
+      rigLocalBaud = p.getInt('rigLocalBaud') ?? rigLocalBaud;
+      rigLocalPort = p.getInt('rigLocalPort') ?? rigLocalPort;
       final httpPort = p.getInt('acnHttpPort') ?? acnHttpPort;
       if (httpPort > 0 && httpPort <= 65535) acnHttpPort = httpPort;
       acnPasscode = p.getString('acnPasscode') ?? acnPasscode;
@@ -6578,6 +6618,9 @@ class AppState extends ChangeNotifier {
       initialized = true;
       _applyOrientation();
       _notify();
+      // 「本机 rigctld」开着就顺手起一份：开关是用户的意图，不该每次开软件
+      // 都回来再点一次。起不来只在电台控制页说一句，不影响别的。
+      if (rigLocalOn) unawaited(startRigDaemon());
     } catch (_) {
       applySavedTheme();
       initialized = true;
@@ -6794,6 +6837,11 @@ class AppState extends ChangeNotifier {
     await p.setInt('rigPort', rigPort);
     await p.setBool('rigKeyTx', rigKeyTx);
     await p.setInt('rigTxFreqHz', rigTxFreqHz);
+    await p.setBool('rigLocalOn', rigLocalOn);
+    await p.setInt('rigLocalModel', rigLocalModel);
+    await p.setString('rigLocalDevice', rigLocalDevice);
+    await p.setInt('rigLocalBaud', rigLocalBaud);
+    await p.setInt('rigLocalPort', rigLocalPort);
     await p.setBool('igateEnabled', igateEnabled);
     await p.setBool('igateTwoWay', igateTwoWay);
     if (myHasFix && myLat != null && myLng != null) {
@@ -7306,6 +7354,8 @@ class AppState extends ChangeNotifier {
     unawaited(box.disconnect(manual: false));
     unawaited(tnc.disconnect(manual: false));
     unawaited(audio.disconnect(manual: false));
+    // 本机 rigctld 也要停：子进程不会跟着进程一起走，留着就占着串口。
+    unawaited(rigDaemon.stop());
     if (_stationsDirty) _saveStations();
     persist();
     // 个人历史台账也要落盘：手动「退出应用」是原生直接结束进程，
@@ -7340,6 +7390,7 @@ class AppState extends ChangeNotifier {
     unawaited(box.disconnect(manual: false));
     unawaited(tnc.disconnect(manual: false));
     unawaited(audio.disconnect(manual: false));
+    unawaited(rigDaemon.stop());
     // 退出前保存台站列表
     if (_stationsDirty) _saveStations();
     super.dispose();
@@ -8115,9 +8166,24 @@ class AppState extends ChangeNotifier {
 
   // ─── 电台控制（Hamlib / rigctld）──
 
+  /// hamlib 的 rigctld 默认端口：本机那份没单独填端口时用它。
+  static const int kRigDefaultPort = 4532;
+
+  /// 本机那份 rigctld 监听的端口。
+  int get rigListenPort => rigLocalPort > 0 ? rigLocalPort : kRigDefaultPort;
+
+  /// 真正连的地址：本机那份在管这台电台就用回环，否则用用户填的地址。
+  String get rigEffHost => rigLocalOn ? '127.0.0.1' : rigHost.trim();
+
+  /// 真正连的端口。
+  int get rigEffPort => rigLocalOn ? rigListenPort : rigPort;
+
   /// 「地址:端口」。没填就是空串，界面据此显示「未填」。
-  String get rigAddr =>
-      rigHost.trim().isEmpty || rigPort <= 0 ? '' : '${rigHost.trim()}:$rigPort';
+  String get rigAddr {
+    final h = rigEffHost;
+    final port = rigEffPort;
+    return h.isEmpty || port <= 0 ? '' : '$h:$port';
+  }
 
   void setRigHost(String v) {
     final t = v.trim();
@@ -8134,12 +8200,116 @@ class AppState extends ChangeNotifier {
     _notify();
   }
 
+  void setRigLocalModel(int v) {
+    final n = v < 0 ? 0 : v;
+    if (rigLocalModel == n) return;
+    rigLocalModel = n;
+    persist();
+    _notify();
+  }
+
+  void setRigLocalDevice(String v) {
+    final t = v.trim();
+    if (rigLocalDevice == t) return;
+    rigLocalDevice = t;
+    persist();
+    _notify();
+  }
+
+  void setRigLocalBaud(int v) {
+    final n = v < 0 ? 0 : v;
+    if (rigLocalBaud == n) return;
+    rigLocalBaud = n;
+    persist();
+    _notify();
+  }
+
+  void setRigLocalPort(int v) {
+    final n = v > 65535 ? 0 : (v < 0 ? 0 : v);
+    if (rigLocalPort == n) return;
+    rigLocalPort = n;
+    persist();
+    _notify();
+  }
+
+  /// 「由 APRSLocus 起一份 rigctld」。开就起，关就停。
+  Future<void> setRigLocalOn(bool v) async {
+    if (rigLocalOn == v) return;
+    rigLocalOn = v;
+    rigDaemonError = RigDaemonError.none;
+    persist();
+    _notify();
+    if (v) {
+      await startRigDaemon();
+      return;
+    }
+    await rigDaemon.stop();
+    rigDaemonError = RigDaemonError.none;
+    if (rigOn) await reconnectRig();
+    _notify();
+  }
+
+  /// 起本机那份 rigctld。已经有在跑就直接复用。
+  ///
+  /// 起好之后如果「电台控制」开着，顺手连上去 —— 用户点的是一次，不是两次。
+  Future<bool> startRigDaemon() async {
+    if (kIsWeb || _disposed) return false;
+    if (rigDaemon.running) return true;
+    if (!rigDaemon.supported) {
+      rigDaemonError = RigDaemonError.unsupported;
+      _notify();
+      return false;
+    }
+    if (rigLocalModel <= 0) {
+      rigDaemonError = RigDaemonError.noModel;
+      _notify();
+      return false;
+    }
+    rigDaemonBusy = true;
+    rigDaemonError = RigDaemonError.none;
+    _notify();
+    final cfg = RigDaemonConfig(
+      model: rigLocalModel,
+      device: rigLocalDevice,
+      baud: rigLocalBaud,
+      port: rigListenPort,
+    );
+    final ok = await rigDaemon.start(cfg);
+    if (_disposed) return ok;
+    rigDaemonBusy = false;
+    rigDaemonError = ok ? RigDaemonError.none : rigDaemon.error;
+    _log(
+      ok ? LogLevel.info : LogLevel.warn,
+      '电台控制',
+      ok
+          ? '已起本机 rigctld（型号 $rigLocalModel，端口 $rigListenPort）'
+          : '起不来本机 rigctld：${rigDaemon.error.name}'
+              '${rigDaemon.log.isEmpty ? '' : ' ${rigDaemon.log}'}',
+    );
+    _notify();
+    if (ok && rigOn) await _connectRig();
+    return ok;
+  }
+
+  /// 停本机那份（改了型号 / 串口之后要重起时也走它）。
+  Future<void> stopRigDaemon() async {
+    rigDaemonBusy = true;
+    _notify();
+    await rigDaemon.stop();
+    rigDaemonBusy = false;
+    rigDaemonError = RigDaemonError.none;
+    _notify();
+  }
+
   /// 开 / 关电台控制。开就先连一次，关就断开并清掉读数。
   Future<void> setRigOn(bool v) async {
     if (rigOn == v) return;
     rigOn = v;
     persist();
     if (v) {
+      // 「本机 rigctld」开着而进程没在跑：先起一份再连。两条开关都在用户
+      // 手里，但先后顺序不该让他自己排。
+      if (rigLocalOn && !rigDaemon.running) await startRigDaemon();
       await _connectRig();
     } else {
       _dropRig('');
@@ -8168,8 +8338,9 @@ class AppState extends ChangeNotifier {
 
   Future<void> _connectRig() async {
     if (kIsWeb || _disposed) return;
-    final host = rigHost.trim();
-    if (host.isEmpty || rigPort <= 0) {
+    final host = rigEffHost;
+    final port = rigEffPort;
+    if (host.isEmpty || port <= 0) {
       rigConnected = false;
       rigError = 'no-address';
       _notify();
@@ -8178,13 +8349,13 @@ class AppState extends ChangeNotifier {
     rigBusy = true;
     rigError = '';
     _notify();
-    final ok = await rigLink.connect(host, rigPort);
+    final ok = await rigLink.connect(host, port);
     if (_disposed) return;
     rigBusy = false;
     rigConnected = ok;
     if (ok) {
       rigError = '';
-      _log(LogLevel.info, '电台控制', '已连上 rigctld $host:$rigPort');
+      _log(LogLevel.info, '电台控制', '已连上 rigctld $host:$port');
       await _refreshRig();
     } else {
       rigError = rigLink.lastError;

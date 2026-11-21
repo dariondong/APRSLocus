@@ -10368,4 +10368,61 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String get rigTxFreq => "送信周波数";
 
+  @override
+  String get rigDaemonCard => "この PC の rigctld";
+
+  @override
+  String get rigDaemonSwitch => "APRSLocus から起動";
+
+  @override
+  String get rigDaemonModel => "機種番号";
+
+  @override
+  String get rigDaemonDevice => "シリアルポート";
+
+  @override
+  String get rigDaemonBaud => "ボーレート";
+
+  @override
+  String get rigDaemonState => "実行状態";
+
+  @override
+  String get rigDaemonRunning => "実行中";
+
+  @override
+  String get rigDaemonStopped => "停止中";
+
+  @override
+  String get rigDaemonStarting => "起動中…";
+
+  @override
+  String get rigDaemonExe => "プログラム";
+
+  @override
+  String get rigDaemonRestart => "rigctld を再起動";
+
+  @override
+  String get rigDaemonNoBinary => "rigctld が見つかりません。Hamlib を入れるか、上のアドレスを使ってください。";
+
+  @override
+  String get rigDaemonNoModel => "先に機種番号を入れてください。";
+
+  @override
+  String get rigDaemonInUse => "ポートが使われています。前の rigctld が残っているかもしれません。";
+
+  @override
+  String get rigDaemonExited => "rigctld が起動してすぐ終了しました。機種番号かシリアルポートを確認してください。";
+
+  @override
+  String get rigDaemonTimeout => "rigctld は動いていますが、ポートに繋がりません。";
+
+  @override
+  String get rigDaemonFailed => "rigctld が起動できません。";
+
+  @override
+  String get rigDaemonUnsupported => "この環境では rigctld を起動できません。";
+
+  @override
+  String get rigDaemonPort => "ポート";
+
 }

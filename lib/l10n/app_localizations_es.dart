@@ -10706,4 +10706,61 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get rigTxFreq => "Frecuencia de transmisión";
 
+  @override
+  String get rigDaemonCard => "rigctld en este equipo";
+
+  @override
+  String get rigDaemonSwitch => "Iniciarlo desde APRSLocus";
+
+  @override
+  String get rigDaemonModel => "Número de modelo";
+
+  @override
+  String get rigDaemonDevice => "Puerto serie";
+
+  @override
+  String get rigDaemonBaud => "Velocidad";
+
+  @override
+  String get rigDaemonState => "Estado";
+
+  @override
+  String get rigDaemonRunning => "En marcha";
+
+  @override
+  String get rigDaemonStopped => "Detenido";
+
+  @override
+  String get rigDaemonStarting => "Iniciando…";
+
+  @override
+  String get rigDaemonExe => "Programa";
+
+  @override
+  String get rigDaemonRestart => "Reiniciar rigctld";
+
+  @override
+  String get rigDaemonNoBinary => "No se encontró rigctld. Instala Hamlib o usa la dirección de arriba.";
+
+  @override
+  String get rigDaemonNoModel => "Primero pon el número de modelo.";
+
+  @override
+  String get rigDaemonInUse => "Ese puerto está ocupado. Puede que otro rigctld siga abierto.";
+
+  @override
+  String get rigDaemonExited => "rigctld arrancó y se cerró. Revisa el modelo y el puerto serie.";
+
+  @override
+  String get rigDaemonTimeout => "rigctld está en marcha pero su puerto no responde.";
+
+  @override
+  String get rigDaemonFailed => "rigctld no arranca.";
+
+  @override
+  String get rigDaemonUnsupported => "Esta plataforma no puede iniciar rigctld.";
+
+  @override
+  String get rigDaemonPort => "Puerto";
+
 }

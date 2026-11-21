@@ -381,6 +381,10 @@ jobs:
       - name: Test rig PTT with audio TX
         run: flutter test test/rig_tx_link_test.dart
 
+      # 本机 rigctld（安装包自带那份）的命令行：型号、串口、波特率、端口。
+      - name: Test rig daemon args
+        run: flutter test test/rig_daemon_test.dart
+
       # 地图右侧工具列的分列算式（列数、封顶、贴底控件让位、裁剪下边距）：
       # 用户报过两次「控件被重排 / 浮层挡在一起」，那种错编译与 analyze 都看不见。
       - name: Test map toolbar layout

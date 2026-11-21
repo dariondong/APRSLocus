@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
+import 'net/rig_daemon.dart';
 import 'settings_widgets.dart';
 import 'state.dart';
 import 'theme.dart';
@@ -55,6 +56,10 @@ class _RigCardsState extends State<RigCards> {
   late final TextEditingController _port;
   late final TextEditingController _freq;
   late final TextEditingController _txFreq;
+  late final TextEditingController _model;
+  late final TextEditingController _device;
+  late final TextEditingController _baud;
+  late final TextEditingController _localPort;
   String _mode = 'FM';
   Timer? _pttTimer;
 
@@ -76,6 +81,17 @@ class _RigCardsState extends State<RigCards> {
         text: st.rigTxFreqHz <= 0
             ? ''
             : (st.rigTxFreqHz / 1000000).toStringAsFixed(3));
+    _model = TextEditingController(
+        text: st.rigLocalModel > 0 ? '${st.rigLocalModel}' : '');
+    _device = TextEditingController(text: st.rigLocalDevice);
+    _baud = TextEditingController(
+        text: st.rigLocalBaud > 0 ? '${st.rigLocalBaud}' : '');
+    _localPort = TextEditingController(
+        text: st.rigLocalPort > 0 ? '${st.rigLocalPort}' : '');
+    // 程序路径只有查过才知道：进来先找一次，为了那行「程序」不至于永远空着。
+    unawaited(st.rigDaemon.locate().then((_) {
+      if (mounted) setState(() {});
+    }));
     if (_modes.contains(st.rigMode)) _mode = st.rigMode;
   }
 
@@ -86,6 +102,10 @@ class _RigCardsState extends State<RigCards> {
     _port.dispose();
     _freq.dispose();
     _txFreq.dispose();
+    _model.dispose();
+    _device.dispose();
+    _baud.dispose();
+    _localPort.dispose();
     super.dispose();
   }
 
@@ -125,30 +145,153 @@ class _RigCardsState extends State<RigCards> {
     st.setRigTxFreq((mhz * 1000000).round());
   }
 
+  /// 本机 rigctld（安装包自带那份）的开关、型号与串口。
+  ///
+  /// 四格输入都不预填：型号编号、串口、鲍率、端口都是用户那台电台的事。
+  /// 端口写清 4532 是 hamlib 自己的默认值，算告诉而不是替他填。
+  Widget _localCard(S s) {
+    final err = _daemonErrorText(s);
+    return Column(children: [
+      SettingsSectionCard(
+        title: s.rigDaemonCard,
+        icon: Icons.memory_rounded,
+        color: C.blue,
+        children: [
+          SettingsSwitch(
+            s.rigDaemonSwitch,
+            value: st.rigLocalOn,
+            color: C.blue,
+            enabled: st.rigDaemon.supported,
+            onChanged: (v) => unawaited(st.setRigLocalOn(v)),
+          ),
+          SettingsInput(
+            s.rigDaemonModel,
+            _model,
+            hint: '3085 = IC-705',
+            badge: st.rigLocalModel <= 0 ? s.oobeDoneUnset : null,
+            onChanged: (v) => st.setRigLocalModel(int.tryParse(v.trim()) ?? 0),
+          ),
+          SettingsInput(
+            s.rigDaemonDevice,
+            _device,
+            hint: 'COM3 / /dev/ttyUSB0',
+            onChanged: st.setRigLocalDevice,
+          ),
+          SettingsInput(
+            s.rigDaemonBaud,
+            _baud,
+            hint: '38400',
+            onChanged: (v) => st.setRigLocalBaud(int.tryParse(v.trim()) ?? 0),
+          ),
+          SettingsInput(
+            s.rigDaemonPort,
+            _localPort,
+            hint: '${AppState.kRigDefaultPort}',
+            onChanged: (v) => st.setRigLocalPort(int.tryParse(v.trim()) ?? 0),
+          ),
+          SettingsRow2(
+            s.rigDaemonState,
+            st.rigDaemonBusy
+                ? s.rigDaemonStarting
+                : (st.rigDaemon.running
+                    ? s.rigDaemonRunning
+                    : s.rigDaemonStopped),
+            valueColor: st.rigDaemon.running ? C.green : C.slate,
+          ),
+          SettingsRow2(
+            s.rigDaemonExe,
+            st.rigDaemon.exe.isEmpty ? '—' : st.rigDaemon.exe,
+          ),
+          if (err != null)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(14, 8, 14, 0),
+              child: Row(children: [
+                Icon(Icons.error_outline_rounded, size: 14, color: C.red),
+                const SizedBox(width: 6),
+                Expanded(
+                  child: Text(err,
+                      style: ts(10.5, c: C.red),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis),
+                ),
+              ]),
+            ),
+          if (st.rigLocalOn)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
+              child: OutlinedButton(
+                style: OutlinedButton.styleFrom(
+                  minimumSize: const Size.fromHeight(40),
+                  side: BorderSide(color: C.blue.withValues(alpha: 0.35)),
+                ),
+                onPressed: st.rigDaemonBusy
+                    ? null
+                    : () async {
+                        await st.stopRigDaemon();
+                        await st.startRigDaemon();
+                      },
+                child: Text(s.rigDaemonRestart, style: ts(13, c: C.blue)),
+              ),
+            ),
+        ],
+      ),
+      const SizedBox(height: 16),
+    ]);
+  }
+
+  /// 起不来的原因换成一句人话；没错就返回 null。
+  String? _daemonErrorText(S s) {
+    switch (st.rigDaemonError) {
+      case RigDaemonError.none:
+        return null;
+      case RigDaemonError.unsupported:
+        return s.rigDaemonUnsupported;
+      case RigDaemonError.noBinary:
+        return s.rigDaemonNoBinary;
+      case RigDaemonError.noModel:
+        return s.rigDaemonNoModel;
+      case RigDaemonError.inUse:
+        return s.rigDaemonInUse;
+      case RigDaemonError.exited:
+        return s.rigDaemonExited;
+      case RigDaemonError.timeout:
+        return s.rigDaemonTimeout;
+      case RigDaemonError.startFailed:
+        return s.rigDaemonFailed;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final s = S.of(context);
     return ListenableBuilder(
       listenable: st,
       builder: (context, _) => Column(children: [
+        _localCard(s),
         SettingsSectionCard(
           title: s.rigConnection,
           icon: Icons.cable_rounded,
           color: C.blue,
           children: [
-            SettingsInput(
-              s.rigAddr,
-              _host,
-              hint: s.rigAddrHint,
-              // 空着就是没配：与服务器地址同一个规矩，不预填任何地址。
-              badge: st.rigHost.trim().isEmpty ? s.oobeDoneUnset : null,
-              onChanged: st.setRigHost,
-            ),
-            SettingsInput(
-              s.port,
-              _port,
-              onChanged: (v) => st.setRigPort(int.tryParse(v.trim()) ?? 0),
-            ),
+            // 本机那份 rigctld 在管这台电台时，地址与端口不由用户填：
+            // 回环地址与上卡里的端口就是它的，填了也不会用。
+            if (st.rigLocalOn)
+              SettingsRow2(s.rigAddr, st.rigAddr)
+            else ...[
+              SettingsInput(
+                s.rigAddr,
+                _host,
+                hint: s.rigAddrHint,
+                // 空着就是没配：与服务器地址同一个规矩，不预填任何地址。
+                badge: st.rigHost.trim().isEmpty ? s.oobeDoneUnset : null,
+                onChanged: st.setRigHost,
+              ),
+              SettingsInput(
+                s.port,
+                _port,
+                onChanged: (v) => st.setRigPort(int.tryParse(v.trim()) ?? 0),
+              ),
+            ],
             SettingsRow2(
               s.rigStatus,
               st.rigBusy

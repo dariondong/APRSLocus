@@ -10657,4 +10657,61 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get rigTxFreq => "Frekuensi pancar";
 
+  @override
+  String get rigDaemonCard => "rigctld di komputer ini";
+
+  @override
+  String get rigDaemonSwitch => "Jalankan dari APRSLocus";
+
+  @override
+  String get rigDaemonModel => "Nomor model";
+
+  @override
+  String get rigDaemonDevice => "Port serial";
+
+  @override
+  String get rigDaemonBaud => "Baud rate";
+
+  @override
+  String get rigDaemonState => "Status";
+
+  @override
+  String get rigDaemonRunning => "Berjalan";
+
+  @override
+  String get rigDaemonStopped => "Tidak berjalan";
+
+  @override
+  String get rigDaemonStarting => "Memulai…";
+
+  @override
+  String get rigDaemonExe => "Program";
+
+  @override
+  String get rigDaemonRestart => "Mulai ulang rigctld";
+
+  @override
+  String get rigDaemonNoBinary => "rigctld tidak ditemukan. Pasang Hamlib, atau pakai alamat di atas.";
+
+  @override
+  String get rigDaemonNoModel => "Isi dulu nomor model.";
+
+  @override
+  String get rigDaemonInUse => "Port itu sedang dipakai. Mungkin rigctld sebelumnya masih jalan.";
+
+  @override
+  String get rigDaemonExited => "rigctld sempat jalan lalu berhenti. Cek nomor model dan port serial.";
+
+  @override
+  String get rigDaemonTimeout => "rigctld jalan tetapi portnya tidak bisa dihubungi.";
+
+  @override
+  String get rigDaemonFailed => "rigctld gagal dijalankan.";
+
+  @override
+  String get rigDaemonUnsupported => "Platform ini tidak bisa menjalankan rigctld.";
+
+  @override
+  String get rigDaemonPort => "Port";
+
 }

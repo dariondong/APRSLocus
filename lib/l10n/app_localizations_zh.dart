@@ -10268,6 +10268,63 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String get rigTxFreq => "发报频率";
 
+  @override
+  String get rigDaemonCard => "本机 rigctld";
+
+  @override
+  String get rigDaemonSwitch => "由 APRSLocus 启动";
+
+  @override
+  String get rigDaemonModel => "型号编号";
+
+  @override
+  String get rigDaemonDevice => "串口";
+
+  @override
+  String get rigDaemonBaud => "波特率";
+
+  @override
+  String get rigDaemonState => "运行状态";
+
+  @override
+  String get rigDaemonRunning => "运行中";
+
+  @override
+  String get rigDaemonStopped => "未运行";
+
+  @override
+  String get rigDaemonStarting => "正在启动…";
+
+  @override
+  String get rigDaemonExe => "程序";
+
+  @override
+  String get rigDaemonRestart => "重启 rigctld";
+
+  @override
+  String get rigDaemonNoBinary => "没找到 rigctld。装一份 Hamlib，或者改用上面的地址。";
+
+  @override
+  String get rigDaemonNoModel => "先填型号编号。";
+
+  @override
+  String get rigDaemonInUse => "端口被占用了，可能上一份 rigctld 还在跑。";
+
+  @override
+  String get rigDaemonExited => "rigctld 起来了又退出，型号或串口不对。";
+
+  @override
+  String get rigDaemonTimeout => "rigctld 在跑，但端口一直连不上。";
+
+  @override
+  String get rigDaemonFailed => "rigctld 起不来。";
+
+  @override
+  String get rigDaemonUnsupported => "这个平台不能自己起 rigctld。";
+
+  @override
+  String get rigDaemonPort => "端口";
+
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
@@ -20532,5 +20589,62 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get rigTxFreq => "發報頻率";
+
+  @override
+  String get rigDaemonCard => "本機 rigctld";
+
+  @override
+  String get rigDaemonSwitch => "由 APRSLocus 啟動";
+
+  @override
+  String get rigDaemonModel => "型號編號";
+
+  @override
+  String get rigDaemonDevice => "序列埠";
+
+  @override
+  String get rigDaemonBaud => "鮑率";
+
+  @override
+  String get rigDaemonState => "執行狀態";
+
+  @override
+  String get rigDaemonRunning => "執行中";
+
+  @override
+  String get rigDaemonStopped => "未執行";
+
+  @override
+  String get rigDaemonStarting => "正在啟動…";
+
+  @override
+  String get rigDaemonExe => "程式";
+
+  @override
+  String get rigDaemonRestart => "重新啟動 rigctld";
+
+  @override
+  String get rigDaemonNoBinary => "找不到 rigctld。裝一份 Hamlib，或改用上面的位址。";
+
+  @override
+  String get rigDaemonNoModel => "先填型號編號。";
+
+  @override
+  String get rigDaemonInUse => "埠被佔用了，可能上一份 rigctld 還在跑。";
+
+  @override
+  String get rigDaemonExited => "rigctld 起來了又退出，型號或序列埠不對。";
+
+  @override
+  String get rigDaemonTimeout => "rigctld 在跑，但埠一直連不上。";
+
+  @override
+  String get rigDaemonFailed => "rigctld 起不來。";
+
+  @override
+  String get rigDaemonUnsupported => "這個平台不能自己起 rigctld。";
+
+  @override
+  String get rigDaemonPort => "埠";
 
 }

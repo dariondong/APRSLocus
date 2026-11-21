@@ -10647,4 +10647,61 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get rigTxFreq => "Transmit frequency";
 
+  @override
+  String get rigDaemonCard => "rigctld on this computer";
+
+  @override
+  String get rigDaemonSwitch => "Start it from APRSLocus";
+
+  @override
+  String get rigDaemonModel => "Model number";
+
+  @override
+  String get rigDaemonDevice => "Serial port";
+
+  @override
+  String get rigDaemonBaud => "Baud rate";
+
+  @override
+  String get rigDaemonState => "State";
+
+  @override
+  String get rigDaemonRunning => "Running";
+
+  @override
+  String get rigDaemonStopped => "Not running";
+
+  @override
+  String get rigDaemonStarting => "Starting…";
+
+  @override
+  String get rigDaemonExe => "Binary";
+
+  @override
+  String get rigDaemonRestart => "Restart rigctld";
+
+  @override
+  String get rigDaemonNoBinary => "No rigctld found. Install Hamlib, or use the address above.";
+
+  @override
+  String get rigDaemonNoModel => "Fill in the model number first.";
+
+  @override
+  String get rigDaemonInUse => "That port is taken. An earlier rigctld may still be running.";
+
+  @override
+  String get rigDaemonExited => "rigctld started and quit. Check the model and serial port.";
+
+  @override
+  String get rigDaemonTimeout => "rigctld is running but its port never came up.";
+
+  @override
+  String get rigDaemonFailed => "rigctld would not start.";
+
+  @override
+  String get rigDaemonUnsupported => "This platform cannot start rigctld.";
+
+  @override
+  String get rigDaemonPort => "Port";
+
 }

@@ -724,6 +724,81 @@ KEYS = {
     'rigTxFreq': (
         '发报频率', '發報頻率', 'Transmit frequency', '送信周波数',
         'Frecuencia de transmisión', 'Frekuensi pancar'),
+    # ── 本机 rigctld（安装包自带那份，由应用自己起停）──
+    'rigDaemonCard': (
+        '本机 rigctld', '本機 rigctld', 'rigctld on this computer',
+        'この PC の rigctld', 'rigctld en este equipo', 'rigctld di komputer ini'),
+    'rigDaemonSwitch': (
+        '由 APRSLocus 启动', '由 APRSLocus 啟動', 'Start it from APRSLocus',
+        'APRSLocus から起動', 'Iniciarlo desde APRSLocus',
+        'Jalankan dari APRSLocus'),
+    'rigDaemonModel': (
+        '型号编号', '型號編號', 'Model number', '機種番号', 'Número de modelo',
+        'Nomor model'),
+    'rigDaemonDevice': (
+        '串口', '序列埠', 'Serial port', 'シリアルポート', 'Puerto serie',
+        'Port serial'),
+    'rigDaemonBaud': (
+        '波特率', '鮑率', 'Baud rate', 'ボーレート', 'Velocidad', 'Baud rate'),
+    'rigDaemonPort': (
+        '端口', '埠', 'Port', 'ポート', 'Puerto', 'Port'),
+    'rigDaemonState': (
+        '运行状态', '執行狀態', 'State', '実行状態', 'Estado', 'Status'),
+    'rigDaemonRunning': (
+        '运行中', '執行中', 'Running', '実行中', 'En marcha', 'Berjalan'),
+    'rigDaemonStopped': (
+        '未运行', '未執行', 'Not running', '停止中', 'Detenido',
+        'Tidak berjalan'),
+    'rigDaemonStarting': (
+        '正在启动…', '正在啟動…', 'Starting…', '起動中…', 'Iniciando…',
+        'Memulai…'),
+    'rigDaemonExe': (
+        '程序', '程式', 'Binary', 'プログラム', 'Programa', 'Program'),
+    'rigDaemonRestart': (
+        '重启 rigctld', '重新啟動 rigctld', 'Restart rigctld',
+        'rigctld を再起動', 'Reiniciar rigctld', 'Mulai ulang rigctld'),
+    'rigDaemonNoBinary': (
+        '没找到 rigctld。装一份 Hamlib，或者改用上面的地址。',
+        '找不到 rigctld。裝一份 Hamlib，或改用上面的位址。',
+        'No rigctld found. Install Hamlib, or use the address above.',
+        'rigctld が見つかりません。Hamlib を入れるか、上のアドレスを使ってください。',
+        'No se encontró rigctld. Instala Hamlib o usa la dirección de arriba.',
+        'rigctld tidak ditemukan. Pasang Hamlib, atau pakai alamat di atas.'),
+    'rigDaemonNoModel': (
+        '先填型号编号。', '先填型號編號。', 'Fill in the model number first.',
+        '先に機種番号を入れてください。', 'Primero pon el número de modelo.',
+        'Isi dulu nomor model.'),
+    'rigDaemonInUse': (
+        '端口被占用了，可能上一份 rigctld 还在跑。',
+        '埠被佔用了，可能上一份 rigctld 還在跑。',
+        'That port is taken. An earlier rigctld may still be running.',
+        'ポートが使われています。前の rigctld が残っているかもしれません。',
+        'Ese puerto está ocupado. Puede que otro rigctld siga abierto.',
+        'Port itu sedang dipakai. Mungkin rigctld sebelumnya masih jalan.'),
+    'rigDaemonExited': (
+        'rigctld 起来了又退出，型号或串口不对。',
+        'rigctld 起來了又退出，型號或序列埠不對。',
+        'rigctld started and quit. Check the model and serial port.',
+        'rigctld が起動してすぐ終了しました。機種番号かシリアルポートを確認してください。',
+        'rigctld arrancó y se cerró. Revisa el modelo y el puerto serie.',
+        'rigctld sempat jalan lalu berhenti. Cek nomor model dan port serial.'),
+    'rigDaemonTimeout': (
+        'rigctld 在跑，但端口一直连不上。',
+        'rigctld 在跑，但埠一直連不上。',
+        'rigctld is running but its port never came up.',
+        'rigctld は動いていますが、ポートに繋がりません。',
+        'rigctld está en marcha pero su puerto no responde.',
+        'rigctld jalan tetapi portnya tidak bisa dihubungi.'),
+    'rigDaemonFailed': (
+        'rigctld 起不来。', 'rigctld 起不來。', 'rigctld would not start.',
+        'rigctld が起動できません。', 'rigctld no arranca.',
+        'rigctld gagal dijalankan.'),
+    'rigDaemonUnsupported': (
+        '这个平台不能自己起 rigctld。', '這個平台不能自己起 rigctld。',
+        'This platform cannot start rigctld.',
+        'この環境では rigctld を起動できません。',
+        'Esta plataforma no puede iniciar rigctld.',
+        'Platform ini tidak bisa menjalankan rigctld.'),
 }
 
 META = {
