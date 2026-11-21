@@ -45,6 +45,10 @@ Source: "build\windows\x64\runner\Release\flutter_windows.dll"; DestDir: "{app}"
 ; 重则启动器直接报找不到 DLL。
 Source: "build\windows\x64\runner\Release\*_plugin.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "build\windows\x64\runner\Release\data\*"; DestDir: "{app}\data"; Flags: ignoreversion recursesubdirs createallsubdirs
+; hamlib 的 rigctld 与它要的 DLL（电台控制用）：由 CI 从 Hamlib 官方 w64 包
+; 取来放在 Release/hamlib 下。应用按「exe 旁边的 hamlib\rigctld.exe」找它，
+; 所以这一条的目标目录必须是 {app}\hamlib。
+Source: "build\windows\x64\runner\Release\hamlib\*"; DestDir: "{app}\hamlib"; Flags: ignoreversion recursesubdirs createallsubdirs
 
 [Icons]
 Name: "{autoprograms}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"

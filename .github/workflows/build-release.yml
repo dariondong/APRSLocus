@@ -59,6 +59,34 @@ jobs:
       - name: Build Windows (Release)
         run: flutter build windows --release --dart-define=QWEATHER_KEY=${{ secrets.QWEATHER_KEY }} --dart-define=QWEATHER_HOST=${{ secrets.QWEATHER_HOST || 'pf4ewvjfqj.re.qweatherapi.com' }} --dart-define=TIANDITU_KEY=${{ secrets.TIANDITU_KEY }} --dart-define=CRAC_ENDPOINT=${{ secrets.CRAC_ENDPOINT }}
 
+      # hamlib 的 rigctld 随安装包一起走，用户不必自己装 hamlib。
+      # 这里只取官方 w64 包里的 rigctld 与它要的 DLL（rigctl / rotctl / rigmem
+      # 那些工具与头文件不带），先按官方 SHA256SUM 校验再放进去。
+      # Linux / macOS 没有官方二进制，那边应用会退回系统装的 rigctld
+      # （见 lib/net/rig_daemon_io.dart）。
+      - name: Bundle Hamlib rigctld
+        shell: pwsh
+        run: |
+          $ver = "4.7.2"
+          $zip = "hamlib-w64-$ver.zip"
+          $base = "https://github.com/Hamlib/Hamlib/releases/download/$ver"
+          Invoke-WebRequest -Uri "$base/$zip" -OutFile $zip -UseBasicParsing
+          $sumtxt = (Invoke-WebRequest -Uri "$base/SHA256SUM-w64-$ver" -UseBasicParsing).Content
+          $want = ($sumtxt -split '\s+')[0].Trim().ToLower()
+          $got = (Get-FileHash $zip -Algorithm SHA256).Hash.ToLower()
+          if ($got -ne $want) { throw "hamlib sha256 mismatch: $got != $want" }
+          Expand-Archive -Path $zip -DestinationPath hamlib-tmp -Force
+          $src = "hamlib-tmp/hamlib-w64-$ver"
+          $dst = "build/windows/x64/runner/Release/hamlib"
+          New-Item -ItemType Directory -Force -Path $dst | Out-Null
+          Copy-Item "$src/bin/rigctld.exe" $dst
+          Copy-Item "$src/bin/*.dll" $dst
+          # 许可与说明也一并放进去（GPL / LGPL 要求随附）
+          Copy-Item "$src/COPYING.txt" $dst
+          Copy-Item "$src/COPYING.LIB.txt" $dst
+          Copy-Item "$src/README.w64-bin.txt" $dst
+          Get-ChildItem $dst | Select-Object Name, Length | Format-Table
+
       - name: Setup Inno Setup
         shell: pwsh
         run: |
