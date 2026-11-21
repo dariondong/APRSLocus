@@ -8252,7 +8252,9 @@ class AppState extends ChangeNotifier {
   /// 起本机那份 rigctld。已经有在跑就直接复用。
   ///
   /// 起好之后如果「电台控制」开着，顺手连上去 —— 用户点的是一次，不是两次。
-  Future<bool> startRigDaemon() async {
+  /// [connect] 为 false 时不顺手连：调用方自己接着连（`setRigOn` 就是这样，
+  /// 否则两条路径各连一次，中间还夹一个 disconnect）。
+  Future<bool> startRigDaemon({bool connect = true}) async {
     if (kIsWeb || _disposed) return false;
     if (rigDaemon.running) return true;
     if (!rigDaemon.supported) {
@@ -8287,7 +8289,7 @@ class AppState extends ChangeNotifier {
               '${rigDaemon.log.isEmpty ? '' : ' ${rigDaemon.log}'}',
     );
     _notify();
-    if (ok && rigOn) await _connectRig();
+    if (ok && connect && rigOn) await _connectRig();
     return ok;
   }
 
@@ -8309,7 +8311,7 @@ class AppState extends ChangeNotifier {
     if (v) {
       // 「本机 rigctld」开着而进程没在跑：先起一份再连。两条开关都在用户
       // 手里，但先后顺序不该让他自己排。
-      if (rigLocalOn && !rigDaemon.running) await startRigDaemon();
+      if (rigLocalOn && !rigDaemon.running) await startRigDaemon(connect: false);
       await _connectRig();
     } else {
       _dropRig('');
