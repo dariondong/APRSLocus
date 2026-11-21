@@ -577,7 +577,7 @@ class _OnAirChipState extends State<OnAirChip>
                         : C.greyLight.withValues(alpha: 0.55),
                   ),
                   boxShadow: [
-                    elev2(),
+                    ...elev2(),
                     if (on)
                       BoxShadow(
                         color: accent.withValues(alpha: 0.10 + 0.16 * v),
