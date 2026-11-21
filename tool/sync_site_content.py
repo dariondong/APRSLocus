@@ -419,6 +419,23 @@ CARDS = [
 # 只列「重点版本」：中间几十个纯修 bug 的版本归纳进文字说明，完整记录指向 Releases。
 CL = [
     {
+        'ver': 'v2.2.11', 'date': '2026-11-21',
+        'items': [
+            ('new',
+             T('设备 → 电台控制 多一张「本机 rigctld」卡：填型号编号、串口、波特率，由应用自己起停。',
+               '裝置 → 電台控制 多一張「本機 rigctld」卡：填型號編號、序列埠、鮑率，由應用程式自己起停。',
+               'The rig control page under Devices starts and stops rigctld for you, once the model number, serial port and baud rate are filled in.')),
+            ('new',
+             T('Windows 安装包自带 Hamlib 的 rigctld，不用另外装。',
+               'Windows 安裝包自帶 Hamlib 的 rigctld，不用另外裝。',
+               "The Windows installer ships Hamlib's rigctld, so nothing else has to be installed.")),
+            ('new',
+             T('关于页的「开源与许可」写明随包分发的 Hamlib，能翻到每个依赖包的许可原文。',
+               '關於頁的「開源與授權」寫明隨包分發的 Hamlib，能翻到每個相依套件的授權原文。',
+               'The about page names the bundled Hamlib and opens the licence page for every dependency.')),
+        ],
+    },
+    {
         'ver': 'v2.2.10', 'date': '2026-11-13',
         'items': [
             ('new',

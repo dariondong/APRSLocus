@@ -1,5 +1,21 @@
 # 更新日志
 
+## [2.2.11] - 2026-11-21
+
+### 新增
+
+- 设备 → 电台控制 多一张「本机 rigctld」卡：填型号编号、串口、波特率，由应用自己起停。
+- Windows 安装包自带 Hamlib 的 rigctld，不用另外装。
+- 关于页的「开源与许可」写明随包分发的 Hamlib，也能翻到每个依赖包的许可原文。
+
+## [2.2.11] - 2026-11-21 (English)
+
+### Added
+
+- The rig control page under Devices has a new "rigctld on this computer" card. Fill in the model number, serial port and baud rate, and the app starts and stops rigctld for you.
+- The Windows installer ships Hamlib's rigctld, so nothing else has to be installed.
+- The about page names the bundled Hamlib and opens the licence page for every dependency.
+
 ## [2.2.10] - 2026-11-13
 
 ### 新增

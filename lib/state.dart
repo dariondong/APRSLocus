@@ -167,7 +167,7 @@ class MsgResend {
 
 class AppState extends ChangeNotifier {
   /// 应用版本（用于信标备注、APRSlocus 识别）
-  static const appVersion = '2.2.10';
+  static const appVersion = '2.2.11';
   // 我的电台
   String myCall = 'BV2AAA';
 
