@@ -25,7 +25,16 @@ if ($LASTEXITCODE -ne 0) { throw "download failed: $base/$zip" }
 curl.exe -sSL --fail -o $sumfile "$base/SHA256SUM-w64-$Version"
 if ($LASTEXITCODE -ne 0) { throw "download failed: $base/SHA256SUM-w64-$Version" }
 
-$want = ((Get-Content -Raw -Path $sumfile).Trim() -split "\s+")[0].ToLower()
+# 这个摘要文件里有两行（.exe 一行、.zip 一行），按文件名挑我们要的那行：
+# 取第一行会拿到 exe 的摘要，校验永远不对（这是第二次红的原因）。
+$want = ""
+foreach ($line in (Get-Content -Path $sumfile)) {
+  $parts = ($line.Trim() -split "\s+")
+  if ($parts.Length -lt 2) { continue }
+  $name = $parts[-1].TrimStart("*")
+  if ($name -eq $zip) { $want = $parts[0].ToLower() }
+}
+if ($want -eq "") { throw "no checksum line for $zip in $sumfile" }
 $got = (Get-FileHash $zip -Algorithm SHA256).Hash.ToLower()
 if ($got -ne $want) { throw "hamlib sha256 mismatch: $got != $want" }
 
