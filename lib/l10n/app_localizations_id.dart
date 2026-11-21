@@ -10648,4 +10648,13 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get rigConnectNow => "Sambungkan";
 
+  @override
+  String get rigTxLink => "Pancar";
+
+  @override
+  String get rigKeyTxTitle => "Tekan PTT saat memancar";
+
+  @override
+  String get rigTxFreq => "Frekuensi pancar";
+
 }

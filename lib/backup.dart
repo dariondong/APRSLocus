@@ -229,7 +229,7 @@ const List<BackupGroupSpec> kBackupGroups = [
     'acnHttpPort',
     // 电台控制（Hamlib rigctld）：地址端口是用户自己填的，与服务器地址一样
     // 属于「换机后重敲最容易出错」那一类，跟着进备份；开关也带上。
-    'rigOn', 'rigHost', 'rigPort',
+    'rigOn', 'rigHost', 'rigPort', 'rigKeyTx', 'rigTxFreqHz',
     'igateEnabled', 'igateTwoWay',
     'myLat', 'myLng',
     // 链路配置（TNC / 声卡 TNC / PKWDWPL / 小盒子 / 外接 GPS）与各自上次选的设备。

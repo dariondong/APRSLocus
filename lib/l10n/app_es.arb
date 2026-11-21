@@ -4566,5 +4566,8 @@
   "rigControl": "Control",
   "rigApply": "Aplicar a la radio",
   "rigPttTest": "Transmitir 3 s",
-  "rigConnectNow": "Conectar"
+  "rigConnectNow": "Conectar",
+  "rigTxLink": "Transmisión",
+  "rigKeyTxTitle": "Pulsar PTT al transmitir",
+  "rigTxFreq": "Frecuencia de transmisión"
 }

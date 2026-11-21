@@ -13,6 +13,10 @@ import 'widgets.dart';
 /// [AppState.enabledSources] 里，也没有「发射圆点」——设备页上它是一行
 /// 普通的开关，点整行进这一页。
 ///
+/// 它与音频链路是**一体**的：音频要发报时，先由这里按下 PTT、切到发报频率，
+/// 播完再放开（`AudioLink.onTxKey` / `onTxUnkey`）。页面上的「发射 3 秒」
+/// 只是单测按键用的。
+///
 /// 为什么不链 libhamlib：那是 C 库，三个桌面平台各要打一份二进制；而 hamlib
 /// 自带的 `rigctld` 本来就是常驻进程，本地 TCP 说文本协议。用户自己起
 /// `rigctld -m <型号> -r <串口>`（Linux/macOS 一条 apt/brew 命令，Windows 用
@@ -50,6 +54,7 @@ class _RigCardsState extends State<RigCards> {
   late final TextEditingController _host;
   late final TextEditingController _port;
   late final TextEditingController _freq;
+  late final TextEditingController _txFreq;
   String _mode = 'FM';
   Timer? _pttTimer;
 
@@ -67,6 +72,10 @@ class _RigCardsState extends State<RigCards> {
         text: st.rigFreqHz == null
             ? ''
             : (st.rigFreqHz! / 1000000).toStringAsFixed(3));
+    _txFreq = TextEditingController(
+        text: st.rigTxFreqHz <= 0
+            ? ''
+            : (st.rigTxFreqHz / 1000000).toStringAsFixed(3));
     if (_modes.contains(st.rigMode)) _mode = st.rigMode;
   }
 
@@ -76,6 +85,7 @@ class _RigCardsState extends State<RigCards> {
     _host.dispose();
     _port.dispose();
     _freq.dispose();
+    _txFreq.dispose();
     super.dispose();
   }
 
@@ -100,6 +110,19 @@ class _RigCardsState extends State<RigCards> {
     _pttTimer = Timer(const Duration(seconds: 3), () {
       unawaited(st.rigSetPtt(false));
     });
+  }
+
+  /// 发报频率（MHz）：只存下来，真发报时由 `state` 切过去。
+  /// 清空就是「不动电台当前的频率」。
+  void _applyTxFreq() {
+    final txt = _txFreq.text.trim().replaceAll(',', '.');
+    if (txt.isEmpty) {
+      st.setRigTxFreq(0);
+      return;
+    }
+    final mhz = double.tryParse(txt);
+    if (mhz == null || mhz <= 0) return;
+    st.setRigTxFreq((mhz * 1000000).round());
   }
 
   @override
@@ -223,6 +246,26 @@ class _RigCardsState extends State<RigCards> {
                   ),
                 ),
               ]),
+            ),
+          ],
+        ),
+        const SizedBox(height: 16),
+        SettingsSectionCard(
+          title: s.rigTxLink,
+          icon: Icons.settings_input_antenna_rounded,
+          color: C.blue,
+          children: [
+            SettingsSwitch(
+              s.rigKeyTxTitle,
+              value: st.rigKeyTx,
+              color: C.blue,
+              onChanged: st.setRigKeyTx,
+            ),
+            SettingsInput(
+              s.rigTxFreq,
+              _txFreq,
+              hint: 'MHz',
+              onChanged: (_) => _applyTxFreq(),
             ),
           ],
         ),

@@ -272,6 +272,15 @@ class AudioLink {
   /// 状态变化（连接/断开/错误/电平刷新）
   void Function()? onStateChanged;
 
+  /// 发射前按 PTT / 发射后放开（由电台控制接管时挂上，见 `state.dart`）。
+  ///
+  /// 音频链路自己只管调制与播放：没有电台控制时这两支是空的，行为与以前
+  /// 逐字节一致。接上以后先按键再播，播完再放 —— 顺序反了就等于把一段
+  /// 报文播给了没开机的电台。返回 false 表示别发：宁可这条不发，也不要
+  /// 发一段对方收不到的音频却记成「已发射」。
+  Future<bool> Function()? onTxKey;
+  Future<void> Function()? onTxUnkey;
+
   bool get up => connected;
 
   AudioTransport get transport => _t;
@@ -597,35 +606,52 @@ class AudioLink {
       _log('⚠ 发射电平偏低：对方可能解不出，请调高「输出幅度」与设备音量');
     }
 
-    // ② 半双工：发射期间不喂解调器；结束后复位，避免把发射尾音当半帧
-    _txActive = true;
-    _playing = true;
-    _playDone = Completer<void>();
-    // 发射前把当前选择的播放设备同步给后端（设置里刚改完也能直接生效，
-    // 不必非要重连一次；Windows 侧_ensureOut 会发现设备变了而重开句柄）
-    _t.setOutputDevice(config.outDeviceId);
-    final err = await _t.play(pcm, sampleRate: config.afsk.sampleRate);
-    if (err != null) {
-      lastError = err;
-      _log('发射失败（$err）：${_trunc(tnc2)}');
+    // ② 电台控制：接上以后先按键，播完再由 finally 放开
+    var keyed = false;
+    if (onTxKey != null) {
+      keyed = await onTxKey!();
+      if (!keyed) {
+        lastError = 'ptt-failed';
+        _log('发射中止：电台没有按下 PTT');
+        onStateChanged?.call();
+        return;
+      }
+    }
+    try {
+      // ③ 半双工：发射期间不喂解调器；结束后复位，避免把发射尾音当半帧
+      _txActive = true;
+      _playing = true;
+      _playDone = Completer<void>();
+      // 发射前把当前选择的播放设备同步给后端（设置里刚改完也能直接生效，
+      // 不必非要重连一次；Windows 侧_ensureOut 会发现设备变了而重开句柄）
+      _t.setOutputDevice(config.outDeviceId);
+      final err = await _t.play(pcm, sampleRate: config.afsk.sampleRate);
+      if (err != null) {
+        lastError = err;
+        _log('发射失败（$err）：${_trunc(tnc2)}');
+        _txActive = false;
+        _playing = false;
+        _playDone = null;
+        onStateChanged?.call();
+        return;
+      }
+      txFrames++;
+      txBytes += pcm.length;
+      lastTxAt = DateTime.now();
+      // ④ 等播放结束（写完成 ≠ 播完），超时兜底免得队列卡死
+      await _playDone?.future.timeout(
+        Duration(milliseconds: (seconds * 1000).round() + 1500),
+        onTimeout: () {},
+      );
       _txActive = false;
       _playing = false;
-      _playDone = null;
+      _demod.reset();
       onStateChanged?.call();
-      return;
+    } finally {
+      // 放着不管电台会一直按着载波：这里必须是 finally，播放报错、超时、
+      // 上面任何一条提前 return 都要放开。
+      if (keyed) await onTxUnkey?.call();
     }
-    txFrames++;
-    txBytes += pcm.length;
-    lastTxAt = DateTime.now();
-    // ③ 等播放结束（写完成 ≠ 播完），超时兜底免得队列卡死
-    await _playDone?.future.timeout(
-      Duration(milliseconds: (seconds * 1000).round() + 1500),
-      onTimeout: () {},
-    );
-    _txActive = false;
-    _playing = false;
-    _demod.reset();
-    onStateChanged?.call();
   }
 
   /// 停止发射（清空队列 + 停止播放）

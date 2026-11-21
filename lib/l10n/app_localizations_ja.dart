@@ -10359,4 +10359,13 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String get rigConnectNow => "接続";
 
+  @override
+  String get rigTxLink => "送信";
+
+  @override
+  String get rigKeyTxTitle => "送信中に PTT を押す";
+
+  @override
+  String get rigTxFreq => "送信周波数";
+
 }

@@ -10259,6 +10259,15 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String get rigConnectNow => "连接";
 
+  @override
+  String get rigTxLink => "发报";
+
+  @override
+  String get rigKeyTxTitle => "发报时按下 PTT";
+
+  @override
+  String get rigTxFreq => "发报频率";
+
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
@@ -20514,5 +20523,14 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get rigConnectNow => "連線";
+
+  @override
+  String get rigTxLink => "發報";
+
+  @override
+  String get rigKeyTxTitle => "發報時按下 PTT";
+
+  @override
+  String get rigTxFreq => "發報頻率";
 
 }

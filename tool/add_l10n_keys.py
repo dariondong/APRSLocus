@@ -715,6 +715,15 @@ KEYS = {
         'Transmitir 3 s', 'Pancar 3 dtk'),
     'rigConnectNow': (
         '连接', '連線', 'Connect', '接続', 'Conectar', 'Sambungkan'),
+    'rigTxLink': (
+        '发报', '發報', 'Transmit', '送信', 'Transmisión', 'Pancar'),
+    'rigKeyTxTitle': (
+        '发报时按下 PTT', '發報時按下 PTT', 'Key PTT while transmitting',
+        '送信中に PTT を押す', 'Pulsar PTT al transmitir',
+        'Tekan PTT saat memancar'),
+    'rigTxFreq': (
+        '发报频率', '發報頻率', 'Transmit frequency', '送信周波数',
+        'Frecuencia de transmisión', 'Frekuensi pancar'),
 }
 
 META = {

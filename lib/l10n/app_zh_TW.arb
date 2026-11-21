@@ -5154,5 +5154,8 @@
   "rigControl": "控制",
   "rigApply": "設定到電台",
   "rigPttTest": "發射 3 秒",
-  "rigConnectNow": "連線"
+  "rigConnectNow": "連線",
+  "rigTxLink": "發報",
+  "rigKeyTxTitle": "發報時按下 PTT",
+  "rigTxFreq": "發報頻率"
 }

@@ -10638,4 +10638,13 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get rigConnectNow => "Connect";
 
+  @override
+  String get rigTxLink => "Transmit";
+
+  @override
+  String get rigKeyTxTitle => "Key PTT while transmitting";
+
+  @override
+  String get rigTxFreq => "Transmit frequency";
+
 }

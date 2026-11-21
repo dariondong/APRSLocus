@@ -5694,6 +5694,8 @@ class AppState extends ChangeNotifier {
     rigError = '';
     _rigPollAt = null;
     _rigAutoTried = false;
+    rigKeyTx = true;
+    rigTxFreqHz = 0;
     acnPassword = '';
     acnLogin = null;
     _acnRetryAt = null;
@@ -6034,6 +6036,15 @@ class AppState extends ChangeNotifier {
   int? rigFreqHz;
   String rigMode = '';
   bool rigPtt = false;
+
+  /// 发报时由电台控制按下 PTT。开着就是「一体」：音频那条链只要发报，
+  /// 电台自己按键、自己放开，不用先来这里点一下。
+  bool rigKeyTx = true;
+
+  /// 发报前把电台切到的频率（Hz）。0 = 什么都不做，用电台当前的频率。
+  ///
+  /// 不预填任何频点：这里填多少才知道用户那台机器想用哪个频率。
+  int rigTxFreqHz = 0;
   DateTime? _rigPollAt;
   bool _rigAutoTried = false;
 
@@ -6377,6 +6388,8 @@ class AppState extends ChangeNotifier {
       rigOn = p.getBool('rigOn') ?? rigOn;
       rigHost = p.getString('rigHost') ?? rigHost;
       rigPort = p.getInt('rigPort') ?? rigPort;
+      rigKeyTx = p.getBool('rigKeyTx') ?? rigKeyTx;
+      rigTxFreqHz = p.getInt('rigTxFreqHz') ?? rigTxFreqHz;
       final httpPort = p.getInt('acnHttpPort') ?? acnHttpPort;
       if (httpPort > 0 && httpPort <= 65535) acnHttpPort = httpPort;
       acnPasscode = p.getString('acnPasscode') ?? acnPasscode;
@@ -6779,6 +6792,8 @@ class AppState extends ChangeNotifier {
     await p.setBool('rigOn', rigOn);
     await p.setString('rigHost', rigHost);
     await p.setInt('rigPort', rigPort);
+    await p.setBool('rigKeyTx', rigKeyTx);
+    await p.setInt('rigTxFreqHz', rigTxFreqHz);
     await p.setBool('igateEnabled', igateEnabled);
     await p.setBool('igateTwoWay', igateTwoWay);
     if (myHasFix && myLat != null && myLng != null) {
@@ -7653,6 +7668,10 @@ class AppState extends ChangeNotifier {
       if (_disposed) return;
       if (usingAudio) _notifyRx();
     };
+    // 电台控制与音频链路是一体的：音频要发射，先让电台按键，播完再放开。
+    // 不挂这两支时 AudioLink 的行为与以前逐字节一致（见 [_rigKeyForTx]）。
+    audio.onTxKey = _rigKeyForTx;
+    audio.onTxUnkey = _rigUnkey;
   }
 
   /// 把 PKWDWPL 链路接入既有台站管线。
@@ -8204,6 +8223,75 @@ class AppState extends ChangeNotifier {
     rigPtt = ok && on;
     _notify();
   }
+
+  /// 发报时是否由电台按键（默认开）。关掉就回到「手动点 PTT 测试」。
+  void setRigKeyTx(bool v) {
+    if (rigKeyTx == v) return;
+    rigKeyTx = v;
+    persist();
+    _notify();
+  }
+
+  /// 发报前要切到的频率（Hz）。0 = 不动电台当前的频率。
+  void setRigTxFreq(int hz) {
+    final v = hz < 0 ? 0 : hz;
+    if (rigTxFreqHz == v) return;
+    rigTxFreqHz = v;
+    persist();
+    _notify();
+  }
+
+  /// 音频发射前的一步：切频率与模式，再按下 PTT（见 `AudioLink.onTxKey`）。
+  ///
+  /// 电台控制没开、没连上，或用户关了「发报时按下 PTT」，都直接放行 ——
+  /// 这时候音频照旧播出去，与没有电台控制时完全一样。
+  ///
+  /// 返回 false = **这条别发**：按键失败还播音频，对方听见的只有噪音，
+  /// 而我们这边会把它记成一次成功的发射。
+  Future<bool> _rigKeyForTx() async {
+    if (!rigKeyTx || !rigOn || !rigConnected) return true;
+    if (rigTxFreqHz > 0) {
+      if (rigFreqHz != rigTxFreqHz) {
+        if (await rigLink.setFreq(rigTxFreqHz)) rigFreqHz = rigTxFreqHz;
+      }
+      // 报文只能走 FM：频率是自己填的，模式也由这里对齐，
+      // 否则「频率切到了、模式还停在 USB」会是一段谁也解不出的音频。
+      if (rigMode.toUpperCase() != 'FM') {
+        if (await rigLink.setMode('FM')) rigMode = 'FM';
+      }
+    }
+    if (_disposed || !rigConnected) return false;
+    final ok = await rigLink.setPtt(true);
+    rigPtt = ok;
+    if (!ok) {
+      rigError = rigLink.lastError;
+      _log(LogLevel.warn, '电台控制',
+          'PTT 没按下去（${rigLink.lastError}），这条没有发');
+    }
+    _notify();
+    return ok;
+  }
+
+  /// 发完放开 PTT。播放失败、超时也走这里（`AudioLink` 的 finally）。
+  Future<void> _rigUnkey() async {
+    if (!rigPtt) return;
+    if (!rigConnected) {
+      rigPtt = false;
+      return;
+    }
+    final ok = await rigLink.setPtt(false);
+    rigPtt = false;
+    if (!ok) {
+      _log(LogLevel.warn, '电台控制', '放开 PTT 失败（${rigLink.lastError}）');
+    }
+    _notify();
+  }
+
+  /// 测试钩子：单独跑一次「发报前按键」（真发报要音频设备，CI 里没有）。
+  Future<bool> debugRigKeyForTx() => _rigKeyForTx();
+
+  /// 测试钩子：单独跑一次「发完放开」。
+  Future<void> debugRigUnkey() => _rigUnkey();
 
 
   /// APRS-IS 连接（原来的 `_connect` 主体）

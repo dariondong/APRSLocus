@@ -4566,5 +4566,8 @@
   "rigControl": "Kontrol",
   "rigApply": "Terapkan ke radio",
   "rigPttTest": "Pancar 3 dtk",
-  "rigConnectNow": "Sambungkan"
+  "rigConnectNow": "Sambungkan",
+  "rigTxLink": "Pancar",
+  "rigKeyTxTitle": "Tekan PTT saat memancar",
+  "rigTxFreq": "Frekuensi pancar"
 }

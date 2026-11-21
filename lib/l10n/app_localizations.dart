@@ -18843,6 +18843,24 @@ abstract class AppLocalizations {
   /// **'连接'**
   String get rigConnectNow;
 
+  /// No description provided for @rigTxLink.
+  ///
+  /// In zh, this message translates to:
+  /// **'发报'**
+  String get rigTxLink;
+
+  /// No description provided for @rigKeyTxTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'发报时按下 PTT'**
+  String get rigKeyTxTitle;
+
+  /// No description provided for @rigTxFreq.
+  ///
+  /// In zh, this message translates to:
+  /// **'发报频率'**
+  String get rigTxFreq;
+
 }
 
 class _AppLocalizationsDelegate

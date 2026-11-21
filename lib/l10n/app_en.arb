@@ -4566,5 +4566,8 @@
   "rigControl": "Control",
   "rigApply": "Apply to rig",
   "rigPttTest": "Transmit 3 s",
-  "rigConnectNow": "Connect"
+  "rigConnectNow": "Connect",
+  "rigTxLink": "Transmit",
+  "rigKeyTxTitle": "Key PTT while transmitting",
+  "rigTxFreq": "Transmit frequency"
 }
