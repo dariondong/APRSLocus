@@ -385,6 +385,10 @@ jobs:
       - name: Test rig daemon args
         run: flutter test test/rig_daemon_test.dart
 
+      # On-Air Friends：守听信息的编码 / 解析、频率归一、在线友台的挑选。
+      - name: Test on-air friends
+        run: flutter test test/onair_test.dart
+
       # 地图右侧工具列的分列算式（列数、封顶、贴底控件让位、裁剪下边距）：
       # 用户报过两次「控件被重排 / 浮层挡在一起」，那种错编译与 analyze 都看不见。
       - name: Test map toolbar layout

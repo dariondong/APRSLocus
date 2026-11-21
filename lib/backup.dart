@@ -234,6 +234,9 @@ const List<BackupGroupSpec> kBackupGroups = [
     // 往往不同，但型号与波特率不变，带上他手里就有个改的起点。
     'rigLocalOn', 'rigLocalModel', 'rigLocalDevice', 'rigLocalBaud',
     'rigLocalPort',
+    // On-Air Friends：守听频率/模式/附加参数是用户自己填的那几格，换机后
+    // 重敲最容易出错；开关也带上（恢复后与之前一样继续发布）。
+    'onAirOn', 'onAirFreq', 'onAirMode', 'onAirExtra',
     'igateEnabled', 'igateTwoWay',
     'myLat', 'myLng',
     // 链路配置（TNC / 声卡 TNC / PKWDWPL / 小盒子 / 外接 GPS）与各自上次选的设备。

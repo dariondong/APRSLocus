@@ -9,6 +9,7 @@ import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'models.dart';
+import 'onair.dart';
 import 'install_mark.dart';
 import 'cloud_sync.dart';
 import 'coord_format.dart';
@@ -167,7 +168,7 @@ class MsgResend {
 
 class AppState extends ChangeNotifier {
   /// 应用版本（用于信标备注、APRSlocus 识别）
-  static const appVersion = '2.2.11';
+  static const appVersion = '2.2.12';
   // 我的电台
   String myCall = 'BV2AAA';
 
@@ -1908,6 +1909,63 @@ class AppState extends ChangeNotifier {
     beaconIncludeSats = v;
     persist();
     _notify();
+  }
+
+  // ─── On-Air Friends（在线守听）───
+
+  OnAirInfo get onAirInfo =>
+      OnAirInfo(freq: onAirFreq, mode: onAirMode, extra: onAirExtra);
+
+  /// 卡片要不要出现：只要启用了**APRS 服务器类型**的链路（APRS-IS / APRSNETCN），
+  /// 且本机呼号是合法呼号。射频链路（TNC / 声卡 / PKWDWPL）不显示 —— 那几条
+  /// 链路上没有人替你汇总友台。
+  bool get onAirVisible => (aprsIsOn || acnOn) && isValidCallsign(myCall);
+
+  /// 服务器链路是否在线（卡片置灰与提示「需连接 APRS 服务器」靠它）。
+  bool get onAirServerUp => isUp(srcAprsIs) || isUp(srcAcn);
+
+  /// 在线友台（已开启、未过期）。自己不算。
+  List<OnAirFriend> get onAirFriends =>
+      onAirFriendsOf(stations, self: myFullCall);
+
+  /// 开关。关掉只影响**之后**的信标（已经发出去的那些收不回来）。
+  void setOnAirOn(bool v) {
+    if (onAirOn == v) return;
+    onAirOn = v;
+    persist();
+    _notify();
+    if (v) _publishOnAirNow();
+  }
+
+  /// 保存守听信息。频率归一成 `145.500` 这类写法；填不成返回 false（界面提示一句，
+  /// 不把错的值存下来）。
+  ///
+  /// 存完立刻尝试发一帧信标：用户改完守在哪个频点，等下一个周期才出去这件事
+  /// 很难自证（他没在本机日志里看到）。发不出去（没连接 / 没开自动上报 / 没定位）
+  /// 就什么都不做，下一个信标自然会带上。
+  bool saveOnAir({
+    required String freq,
+    required String mode,
+    required String extra,
+  }) {
+    final f = normalizeOnAirFreq(freq);
+    if (freq.trim().isNotEmpty && f.isEmpty) return false;
+    onAirFreq = f;
+    onAirMode = mode.trim().isEmpty ? 'FM' : mode.trim().toUpperCase();
+    onAirExtra = extra.trim();
+    persist();
+    _notify();
+    _publishOnAirNow();
+    return true;
+  }
+
+  /// 能发就立刻带出去一帧（受「自动上报 + 已确认 + 同意」那几道闸管），
+  /// 返回这一帧到底发了没有。
+  bool _publishOnAirNow() {
+    if (!onAirOn || onAirFreq.isEmpty) return false;
+    if (!canAutoBeacon) return false;
+    sendBeacon();
+    return true;
   }
 
   void setBeaconIncludeCourse(bool v) {
@@ -5697,6 +5755,10 @@ class AppState extends ChangeNotifier {
     _rigAutoTried = false;
     rigKeyTx = true;
     rigTxFreqHz = 0;
+    onAirOn = false;
+    onAirFreq = '';
+    onAirMode = 'FM';
+    onAirExtra = '';
     unawaited(rigDaemon.stop());
     rigLocalOn = false;
     rigLocalModel = 0;
@@ -6083,6 +6145,22 @@ class AppState extends ChangeNotifier {
   DateTime? _rigPollAt;
   bool _rigAutoTried = false;
 
+  // ── On-Air Friends（在线守听）──
+  //
+  // 打开后，守听信息（频率 / 模式 / 附加参数）写进**信标备注的最后一段**
+  // （`OAF:145.500:FM`，见 lib/onair.dart），谁的客户端都按同一份规则读回来。
+  // 它不是一个新链路：不占端口、不发额外报文，只是备注里多十几字节。
+  bool onAirOn = false;
+
+  /// 守听频率，MHz、三位小数。空 = 没设置（那时一个字符都不写进备注）。
+  String onAirFreq = '';
+
+  /// 模式，默认 FM。
+  String onAirMode = 'FM';
+
+  /// 附加参数（天线 / 功率 / CTCSS…），可空。
+  String onAirExtra = '';
+
   /// 主链路最近收到的原始报文行（副链路镜像去重用，见 [_isMainMirror]）。
   final Map<String, DateTime> _mainLines = {};
 
@@ -6430,6 +6508,10 @@ class AppState extends ChangeNotifier {
       rigLocalDevice = p.getString('rigLocalDevice') ?? rigLocalDevice;
       rigLocalBaud = p.getInt('rigLocalBaud') ?? rigLocalBaud;
       rigLocalPort = p.getInt('rigLocalPort') ?? rigLocalPort;
+      onAirOn = p.getBool('onAirOn') ?? onAirOn;
+      onAirFreq = p.getString('onAirFreq') ?? onAirFreq;
+      onAirMode = p.getString('onAirMode') ?? onAirMode;
+      onAirExtra = p.getString('onAirExtra') ?? onAirExtra;
       final httpPort = p.getInt('acnHttpPort') ?? acnHttpPort;
       if (httpPort > 0 && httpPort <= 65535) acnHttpPort = httpPort;
       acnPasscode = p.getString('acnPasscode') ?? acnPasscode;
@@ -6842,6 +6924,10 @@ class AppState extends ChangeNotifier {
     await p.setString('rigLocalDevice', rigLocalDevice);
     await p.setInt('rigLocalBaud', rigLocalBaud);
     await p.setInt('rigLocalPort', rigLocalPort);
+    await p.setBool('onAirOn', onAirOn);
+    await p.setString('onAirFreq', onAirFreq);
+    await p.setString('onAirMode', onAirMode);
+    await p.setString('onAirExtra', onAirExtra);
     await p.setBool('igateEnabled', igateEnabled);
     await p.setBool('igateTwoWay', igateTwoWay);
     if (myHasFix && myLat != null && myLng != null) {
@@ -9854,6 +9940,15 @@ class AppState extends ChangeNotifier {
     }
     if (myComment.trim().isNotEmpty) {
       parts.add(myComment.trim());
+    }
+    // On-Air Friends：守听信息放在**最后一段**。位置固定有两个原因：
+    //   1. 收端（见 lib/onair.dart 的 [OnAirInfo.decode]）把 `OAF:` 之后的
+    //      剩余部分都当附加参数，后面再跟着别的东西就会被一起读进去；
+    //   2. 备注是人读的，台站备注在前、机器标记在后，读起来不别扭。
+    // 关掉或没填频率时一个字符都不加 —— 收端据此判定「没开」。
+    if (onAirOn && onAirFreq.isNotEmpty) {
+      final token = onAirInfo.encode();
+      if (token.isNotEmpty) parts.add(token);
     }
     // 版本号/平台**不再**放在位置数据包备注里（会污染第三方地图上的备注），
     // 改由状态数据包上报：`>APRSlocus CONNECT vX.Y.Z 平台`。
