@@ -4588,5 +4588,9 @@
   "rigDaemonTimeout": "rigctld は動いていますが、ポートに繋がりません。",
   "rigDaemonFailed": "rigctld が起動できません。",
   "rigDaemonUnsupported": "この環境では rigctld を起動できません。",
-  "rigDaemonPort": "ポート"
+  "rigDaemonPort": "ポート",
+  "ossHamlib": "Hamlib · 無線機制御",
+  "ossAllLicenses": "オープンソースライセンス",
+  "ossView": "表示",
+  "ossBundledNote": "Windows インストーラには Hamlib の rigctld が同梱されています（GPL-2.0-or-later）。"
 }

@@ -10763,4 +10763,16 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get rigDaemonPort => "Puerto";
 
+  @override
+  String get ossHamlib => "Hamlib · control de radio";
+
+  @override
+  String get ossAllLicenses => "Licencias de código abierto";
+
+  @override
+  String get ossView => "Ver";
+
+  @override
+  String get ossBundledNote => "El instalador de Windows incluye rigctld de Hamlib, distribuido bajo GPL-2.0-or-later.";
+
 }

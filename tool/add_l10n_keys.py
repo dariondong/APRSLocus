@@ -724,6 +724,24 @@ KEYS = {
     'rigTxFreq': (
         '发报频率', '發報頻率', 'Transmit frequency', '送信周波数',
         'Frecuencia de transmisión', 'Frekuensi pancar'),
+    # ── 关于页：随包发的第三方程序与全部开源许可 ──
+    'ossHamlib': (
+        'Hamlib · 电台控制', 'Hamlib · 電台控制', 'Hamlib · rig control',
+        'Hamlib · 無線機制御', 'Hamlib · control de radio',
+        'Hamlib · kontrol radio'),
+    'ossAllLicenses': (
+        '开源组件与许可', '開源元件與授權', 'Open-source licences',
+        'オープンソースライセンス', 'Licencias de código abierto',
+        'Lisensi sumber terbuka'),
+    'ossView': (
+        '查看', '檢視', 'View', '表示', 'Ver', 'Lihat'),
+    'ossBundledNote': (
+        'Windows 安装包内附 Hamlib 的 rigctld，按 GPL-2.0-or-later 分发。',
+        'Windows 安裝包內附 Hamlib 的 rigctld，按 GPL-2.0-or-later 分發。',
+        'The Windows installer ships Hamlib rigctld, distributed under GPL-2.0-or-later.',
+        'Windows インストーラには Hamlib の rigctld が同梱されています（GPL-2.0-or-later）。',
+        'El instalador de Windows incluye rigctld de Hamlib, distribuido bajo GPL-2.0-or-later.',
+        'Installer Windows menyertakan rigctld dari Hamlib, didistribusikan di bawah GPL-2.0-or-later.'),
     # ── 本机 rigctld（安装包自带那份，由应用自己起停）──
     'rigDaemonCard': (
         '本机 rigctld', '本機 rigctld', 'rigctld on this computer',

@@ -10325,6 +10325,18 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String get rigDaemonPort => "端口";
 
+  @override
+  String get ossHamlib => "Hamlib · 电台控制";
+
+  @override
+  String get ossAllLicenses => "开源组件与许可";
+
+  @override
+  String get ossView => "查看";
+
+  @override
+  String get ossBundledNote => "Windows 安装包内附 Hamlib 的 rigctld，按 GPL-2.0-or-later 分发。";
+
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
@@ -20646,5 +20658,17 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get rigDaemonPort => "埠";
+
+  @override
+  String get ossHamlib => "Hamlib · 電台控制";
+
+  @override
+  String get ossAllLicenses => "開源元件與授權";
+
+  @override
+  String get ossView => "檢視";
+
+  @override
+  String get ossBundledNote => "Windows 安裝包內附 Hamlib 的 rigctld，按 GPL-2.0-or-later 分發。";
 
 }

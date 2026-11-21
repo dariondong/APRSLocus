@@ -18975,6 +18975,30 @@ abstract class AppLocalizations {
   /// **'端口'**
   String get rigDaemonPort;
 
+  /// No description provided for @ossHamlib.
+  ///
+  /// In zh, this message translates to:
+  /// **'Hamlib · 电台控制'**
+  String get ossHamlib;
+
+  /// No description provided for @ossAllLicenses.
+  ///
+  /// In zh, this message translates to:
+  /// **'开源组件与许可'**
+  String get ossAllLicenses;
+
+  /// No description provided for @ossView.
+  ///
+  /// In zh, this message translates to:
+  /// **'查看'**
+  String get ossView;
+
+  /// No description provided for @ossBundledNote.
+  ///
+  /// In zh, this message translates to:
+  /// **'Windows 安装包内附 Hamlib 的 rigctld，按 GPL-2.0-or-later 分发。'**
+  String get ossBundledNote;
+
 }
 
 class _AppLocalizationsDelegate

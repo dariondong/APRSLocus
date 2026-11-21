@@ -10425,4 +10425,16 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String get rigDaemonPort => "ポート";
 
+  @override
+  String get ossHamlib => "Hamlib · 無線機制御";
+
+  @override
+  String get ossAllLicenses => "オープンソースライセンス";
+
+  @override
+  String get ossView => "表示";
+
+  @override
+  String get ossBundledNote => "Windows インストーラには Hamlib の rigctld が同梱されています（GPL-2.0-or-later）。";
+
 }

@@ -4588,5 +4588,9 @@
   "rigDaemonTimeout": "rigctld está en marcha pero su puerto no responde.",
   "rigDaemonFailed": "rigctld no arranca.",
   "rigDaemonUnsupported": "Esta plataforma no puede iniciar rigctld.",
-  "rigDaemonPort": "Puerto"
+  "rigDaemonPort": "Puerto",
+  "ossHamlib": "Hamlib · control de radio",
+  "ossAllLicenses": "Licencias de código abierto",
+  "ossView": "Ver",
+  "ossBundledNote": "El instalador de Windows incluye rigctld de Hamlib, distribuido bajo GPL-2.0-or-later."
 }

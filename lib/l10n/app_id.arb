@@ -4588,5 +4588,9 @@
   "rigDaemonTimeout": "rigctld jalan tetapi portnya tidak bisa dihubungi.",
   "rigDaemonFailed": "rigctld gagal dijalankan.",
   "rigDaemonUnsupported": "Platform ini tidak bisa menjalankan rigctld.",
-  "rigDaemonPort": "Port"
+  "rigDaemonPort": "Port",
+  "ossHamlib": "Hamlib · kontrol radio",
+  "ossAllLicenses": "Lisensi sumber terbuka",
+  "ossView": "Lihat",
+  "ossBundledNote": "Installer Windows menyertakan rigctld dari Hamlib, didistribusikan di bawah GPL-2.0-or-later."
 }

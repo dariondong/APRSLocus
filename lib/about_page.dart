@@ -613,7 +613,36 @@ class _AboutPageState extends State<AboutPage>
                                 url:
                                     'https://github.com/dariondong/APRSLocus/blob/main/LICENSE',
                               ),
+                              // 随包发的第三方程序与全部依赖包的许可。
+                              // Hamlib 那行是必须的：Windows 安装包里带着它的
+                              // rigctld（GPL），GPL 要求把出处与许可写清楚。
+                              _linkRow(
+                                icon: Icons.settings_remote_rounded,
+                                label: t.ossHamlib,
+                                value: 'GPL-2.0-or-later',
+                                url: 'https://github.com/Hamlib/Hamlib',
+                              ),
+                              _linkRow(
+                                icon: Icons.article_rounded,
+                                label: t.ossAllLicenses,
+                                value: t.ossView,
+                                onTap: () => showLicensePage(
+                                  context: context,
+                                  applicationName: 'APRSLocus',
+                                  applicationVersion: AppState.appVersion,
+                                  applicationLegalese:
+                                      'GNU GPL v3 · Copyright © BG7LZQ',
+                                ),
+                              ),
                               _termsRow(context),
+                              Padding(
+                                padding:
+                                    const EdgeInsets.fromLTRB(14, 10, 14, 0),
+                                child: Text(
+                                  t.ossBundledNote,
+                                  style: ts(11, c: C.grey, h: 1.5),
+                                ),
+                              ),
                               Padding(
                                 padding:
                                     const EdgeInsets.fromLTRB(14, 10, 14, 12),
@@ -1495,11 +1524,15 @@ class _AboutPageState extends State<AboutPage>
     required IconData icon,
     required String label,
     required String value,
-    required String url,
+    String? url,
+    VoidCallback? onTap,
   }) {
     return InkWell(
-      onTap: () =>
-          launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication),
+      onTap: onTap ??
+          (url == null
+              ? null
+              : () => launchUrl(Uri.parse(url),
+                  mode: LaunchMode.externalApplication)),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
         decoration: BoxDecoration(

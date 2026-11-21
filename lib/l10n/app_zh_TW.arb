@@ -5176,5 +5176,9 @@
   "rigDaemonTimeout": "rigctld 在跑，但埠一直連不上。",
   "rigDaemonFailed": "rigctld 起不來。",
   "rigDaemonUnsupported": "這個平台不能自己起 rigctld。",
-  "rigDaemonPort": "埠"
+  "rigDaemonPort": "埠",
+  "ossHamlib": "Hamlib · 電台控制",
+  "ossAllLicenses": "開源元件與授權",
+  "ossView": "檢視",
+  "ossBundledNote": "Windows 安裝包內附 Hamlib 的 rigctld，按 GPL-2.0-or-later 分發。"
 }

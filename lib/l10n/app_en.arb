@@ -4588,5 +4588,9 @@
   "rigDaemonTimeout": "rigctld is running but its port never came up.",
   "rigDaemonFailed": "rigctld would not start.",
   "rigDaemonUnsupported": "This platform cannot start rigctld.",
-  "rigDaemonPort": "Port"
+  "rigDaemonPort": "Port",
+  "ossHamlib": "Hamlib · rig control",
+  "ossAllLicenses": "Open-source licences",
+  "ossView": "View",
+  "ossBundledNote": "The Windows installer ships Hamlib rigctld, distributed under GPL-2.0-or-later."
 }
