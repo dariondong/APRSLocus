@@ -21,6 +21,7 @@ import 'coord.dart';
 import 'coord_format.dart';
 import 'map_toolbar.dart';
 import 'material.dart';
+import 'onair_page.dart';
 
 class MapPage extends StatefulWidget {
   final AppState state;
@@ -927,6 +928,10 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                       _infoChip(vis, searched),
                       const SizedBox(height: 10),
                       _immersiveEntry(),
+                      // On-Air Friends：只连服务器（APRS-IS / APRSNETCN）且呼号合法时才有。
+                      // 摆在**这一列的最后一个**：它出现 / 消失不会把上面的心率、计数、
+                      // 沉浸入口推来推去（那正是「控件被重排」的那类毛病）。
+                      OnAirChip(state: widget.state),
                     ],
                   ),
                 ),

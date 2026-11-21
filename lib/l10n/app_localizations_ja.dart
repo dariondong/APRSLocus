@@ -10437,4 +10437,76 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String get ossBundledNote => "Windows インストーラには Hamlib の rigctld が同梱されています（GPL-2.0-or-later）。";
 
+  @override
+  String get onAirTitle => "On-Air Friends";
+
+  @override
+  String get onAirOff => "オフ";
+
+  @override
+  String get onAirNoFreq => "周波数が未設定";
+
+  @override
+  String get onAirNeedServer => "APRS サーバーに接続してください";
+
+  @override
+  String onAirFriendCount(String n) => "$n 局";
+
+  @override
+  String get onAirLead => "守聴周波数をビーコンのコメントに載せると、On-Air Friends をオンにしている人に見えます。";
+
+  @override
+  String get onAirEnable => "On-Air Friends をオン";
+
+  @override
+  String get onAirFreq => "守聴周波数";
+
+  @override
+  String get onAirMode => "モード";
+
+  @override
+  String get onAirExtra => "追加情報";
+
+  @override
+  String get onAirExtraHint => "アンテナ・出力など。空でも可";
+
+  @override
+  String get onAirSave => "保存";
+
+  @override
+  String get onAirSaved => "保存しました";
+
+  @override
+  String get onAirFreqBad => "周波数は 145.500 のように入力";
+
+  @override
+  String get onAirFriends => "オンエアの局";
+
+  @override
+  String get onAirEmpty => "30 分以内にオンエアの局はいません。";
+
+  @override
+  String get onAirFilterFreq => "周波数で絞り込む";
+
+  @override
+  String get onAirFilterAll => "すべて";
+
+  @override
+  String get onAirQso => "交信の約束";
+
+  @override
+  String get onAirQsoHint => "交信の約束を一言";
+
+  @override
+  String get onAirQsoSend => "送信";
+
+  @override
+  String get onAirQsoSent => "送信しました";
+
+  @override
+  String get onAirQsoNoLink => "メッセージのリンクが未接続です。「サーバー」で接続してください。";
+
+  @override
+  String get onAirTtlNote => "30 分以内に受信した局だけを表示します。";
+
 }

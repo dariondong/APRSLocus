@@ -18999,6 +18999,150 @@ abstract class AppLocalizations {
   /// **'Windows 安装包内附 Hamlib 的 rigctld，按 GPL-2.0-or-later 分发。'**
   String get ossBundledNote;
 
+  /// No description provided for @onAirTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'On-Air Friends'**
+  String get onAirTitle;
+
+  /// No description provided for @onAirOff.
+  ///
+  /// In zh, this message translates to:
+  /// **'未开启'**
+  String get onAirOff;
+
+  /// No description provided for @onAirNoFreq.
+  ///
+  /// In zh, this message translates to:
+  /// **'未设置频率'**
+  String get onAirNoFreq;
+
+  /// No description provided for @onAirNeedServer.
+  ///
+  /// In zh, this message translates to:
+  /// **'需连接 APRS 服务器'**
+  String get onAirNeedServer;
+
+  /// No description provided for @onAirFriendCount.
+  ///
+  /// In zh, this message translates to:
+  /// **'{n} 个友台'**
+  String onAirFriendCount(String n);
+
+  /// No description provided for @onAirLead.
+  ///
+  /// In zh, this message translates to:
+  /// **'守听频率写进信标备注，开着 On-Air Friends 的人就能看到。'**
+  String get onAirLead;
+
+  /// No description provided for @onAirEnable.
+  ///
+  /// In zh, this message translates to:
+  /// **'开启 On-Air Friends'**
+  String get onAirEnable;
+
+  /// No description provided for @onAirFreq.
+  ///
+  /// In zh, this message translates to:
+  /// **'守听频率'**
+  String get onAirFreq;
+
+  /// No description provided for @onAirMode.
+  ///
+  /// In zh, this message translates to:
+  /// **'模式'**
+  String get onAirMode;
+
+  /// No description provided for @onAirExtra.
+  ///
+  /// In zh, this message translates to:
+  /// **'附加参数'**
+  String get onAirExtra;
+
+  /// No description provided for @onAirExtraHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'天线、功率，可以留空'**
+  String get onAirExtraHint;
+
+  /// No description provided for @onAirSave.
+  ///
+  /// In zh, this message translates to:
+  /// **'保存'**
+  String get onAirSave;
+
+  /// No description provided for @onAirSaved.
+  ///
+  /// In zh, this message translates to:
+  /// **'已保存'**
+  String get onAirSaved;
+
+  /// No description provided for @onAirFreqBad.
+  ///
+  /// In zh, this message translates to:
+  /// **'频率填 145.500 这样'**
+  String get onAirFreqBad;
+
+  /// No description provided for @onAirFriends.
+  ///
+  /// In zh, this message translates to:
+  /// **'在线友台'**
+  String get onAirFriends;
+
+  /// No description provided for @onAirEmpty.
+  ///
+  /// In zh, this message translates to:
+  /// **'30 分钟内没有收到开着的友台。'**
+  String get onAirEmpty;
+
+  /// No description provided for @onAirFilterFreq.
+  ///
+  /// In zh, this message translates to:
+  /// **'按频率筛选'**
+  String get onAirFilterFreq;
+
+  /// No description provided for @onAirFilterAll.
+  ///
+  /// In zh, this message translates to:
+  /// **'全部'**
+  String get onAirFilterAll;
+
+  /// No description provided for @onAirQso.
+  ///
+  /// In zh, this message translates to:
+  /// **'约通联'**
+  String get onAirQso;
+
+  /// No description provided for @onAirQsoHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'写一句约通联的话'**
+  String get onAirQsoHint;
+
+  /// No description provided for @onAirQsoSend.
+  ///
+  /// In zh, this message translates to:
+  /// **'发送'**
+  String get onAirQsoSend;
+
+  /// No description provided for @onAirQsoSent.
+  ///
+  /// In zh, this message translates to:
+  /// **'已发送'**
+  String get onAirQsoSent;
+
+  /// No description provided for @onAirQsoNoLink.
+  ///
+  /// In zh, this message translates to:
+  /// **'消息链路没连上，先在「服务器」里连一条。'**
+  String get onAirQsoNoLink;
+
+  /// No description provided for @onAirTtlNote.
+  ///
+  /// In zh, this message translates to:
+  /// **'30 分钟内还在信标里才算在线。'**
+  String get onAirTtlNote;
+
 }
 
 class _AppLocalizationsDelegate

@@ -817,9 +817,93 @@ KEYS = {
         'この環境では rigctld を起動できません。',
         'Esta plataforma no puede iniciar rigctld.',
         'Platform ini tidak bisa menjalankan rigctld.'),
+    # ── On-Air Friends（守听频率写进信标备注，友台列表本地汇总）──
+    'onAirTitle': (
+        'On-Air Friends', 'On-Air Friends', 'On-Air Friends', 'On-Air Friends',
+        'On-Air Friends', 'On-Air Friends'),
+    'onAirOff': (
+        '未开启', '未開啟', 'Off', 'オフ', 'Apagado', 'Mati'),
+    'onAirNoFreq': (
+        '未设置频率', '未設定頻率', 'No frequency set', '周波数が未設定',
+        'Sin frecuencia', 'Frekuensi belum diisi'),
+    'onAirNeedServer': (
+        '需连接 APRS 服务器', '需連線 APRS 伺服器', 'Connect to an APRS server',
+        'APRS サーバーに接続してください', 'Conecta un servidor APRS',
+        'Hubungkan server APRS'),
+    'onAirFriendCount': (
+        '{n} 个友台', '{n} 個友台', '{n} friends', '{n} 局',
+        '{n} estaciones', '{n} stasiun'),
+    'onAirLead': (
+        '守听频率写进信标备注，开着 On-Air Friends 的人就能看到。',
+        '守聽頻率寫進信標備註，開著 On-Air Friends 的人就能看到。',
+        'The listening frequency rides in your beacon comment, so anyone running On-Air Friends sees it.',
+        '守聴周波数をビーコンのコメントに載せると、On-Air Friends をオンにしている人に見えます。',
+        'La frecuencia de escucha va en el comentario del beacon y la ve quien tenga On-Air Friends activo.',
+        'Frekuensi pantau ditulis di komentar beacon, jadi terlihat oleh yang menyalakan On-Air Friends.'),
+    'onAirEnable': (
+        '开启 On-Air Friends', '開啟 On-Air Friends', 'Turn on On-Air Friends',
+        'On-Air Friends をオン', 'Activar On-Air Friends', 'Nyalakan On-Air Friends'),
+    'onAirFreq': (
+        '守听频率', '守聽頻率', 'Listening frequency', '守聴周波数',
+        'Frecuencia de escucha', 'Frekuensi pantau'),
+    'onAirMode': (
+        '模式', '模式', 'Mode', 'モード', 'Modo', 'Mode'),
+    'onAirExtra': (
+        '附加参数', '附加參數', 'Extra', '追加情報', 'Extra', 'Tambahan'),
+    'onAirExtraHint': (
+        '天线、功率，可以留空', '天線、功率，可以留空', 'Antenna, power; may be blank',
+        'アンテナ・出力など。空でも可', 'Antena, potencia; puede ir vacío',
+        'Antena, daya; boleh kosong'),
+    'onAirSave': (
+        '保存', '儲存', 'Save', '保存', 'Guardar', 'Simpan'),
+    'onAirSaved': (
+        '已保存', '已儲存', 'Saved', '保存しました', 'Guardado', 'Tersimpan'),
+    'onAirFreqBad': (
+        '频率填 145.500 这样', '頻率填 145.500 這樣', 'Write the frequency like 145.500',
+        '周波数は 145.500 のように入力', 'Escribe la frecuencia así: 145.500',
+        'Tulis frekuensi seperti 145.500'),
+    'onAirFriends': (
+        '在线友台', '線上友台', 'Friends on air', 'オンエアの局',
+        'Estaciones en el aire', 'Stasiun daring'),
+    'onAirEmpty': (
+        '30 分钟内没有收到开着的友台。', '30 分鐘內沒有收到開著的友台。',
+        'Nobody with it on in the last 30 minutes.',
+        '30 分以内にオンエアの局はいません。',
+        'Nadie con esto activo en los últimos 30 minutos.',
+        'Tidak ada yang menyalakan ini dalam 30 menit terakhir.'),
+    'onAirFilterFreq': (
+        '按频率筛选', '依頻率篩選', 'Filter by frequency', '周波数で絞り込む',
+        'Filtrar por frecuencia', 'Saring per frekuensi'),
+    'onAirFilterAll': (
+        '全部', '全部', 'All', 'すべて', 'Todo', 'Semua'),
+    'onAirQso': (
+        '约通联', '約通聯', 'Set up a contact', '交信の約束',
+        'Quedar en contacto', 'Atur kontak'),
+    'onAirQsoHint': (
+        '写一句约通联的话', '寫一句約通聯的話', 'Write a line to set up the contact',
+        '交信の約束を一言', 'Escribe una línea para quedar',
+        'Tulis satu kalimat untuk mengatur kontak'),
+    'onAirQsoSend': (
+        '发送', '傳送', 'Send', '送信', 'Enviar', 'Kirim'),
+    'onAirQsoSent': (
+        '已发送', '已傳送', 'Sent', '送信しました', 'Enviado', 'Terkirim'),
+    'onAirQsoNoLink': (
+        '消息链路没连上，先在「服务器」里连一条。',
+        '訊息鏈路沒連上，先在「伺服器」裡連一條。',
+        'No message link is up. Connect one on the Server page.',
+        'メッセージのリンクが未接続です。「サーバー」で接続してください。',
+        'Ningún enlace de mensajes está conectado. Conecta uno en «Servidor».',
+        'Tautan pesan belum tersambung. Hubungkan satu di halaman Server.'),
+    'onAirTtlNote': (
+        '30 分钟内还在信标里才算在线。', '30 分鐘內還在信標裡才算線上。',
+        'Online means heard within the last 30 minutes.',
+        '30 分以内に受信した局だけを表示します。',
+        'En línea significa oído en los últimos 30 minutos.',
+        'Daring berarti terdengar dalam 30 menit terakhir.'),
 }
 
 META = {
+    'onAirFriendCount': '{"placeholders": {"n": {"type": "String"}}}',
     'connectingChannel': '{"placeholders": {"name": {"type": "String"}}}',
     'updatePkgWelcomeTitle': '{"placeholders": {"v": {"type": "String"}}}',
     'syncEveryMin': '{"placeholders": {"n": {"type": "String"}}}',

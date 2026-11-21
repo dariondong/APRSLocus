@@ -10775,4 +10775,76 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get ossBundledNote => "El instalador de Windows incluye rigctld de Hamlib, distribuido bajo GPL-2.0-or-later.";
 
+  @override
+  String get onAirTitle => "On-Air Friends";
+
+  @override
+  String get onAirOff => "Apagado";
+
+  @override
+  String get onAirNoFreq => "Sin frecuencia";
+
+  @override
+  String get onAirNeedServer => "Conecta un servidor APRS";
+
+  @override
+  String onAirFriendCount(String n) => "$n estaciones";
+
+  @override
+  String get onAirLead => "La frecuencia de escucha va en el comentario del beacon y la ve quien tenga On-Air Friends activo.";
+
+  @override
+  String get onAirEnable => "Activar On-Air Friends";
+
+  @override
+  String get onAirFreq => "Frecuencia de escucha";
+
+  @override
+  String get onAirMode => "Modo";
+
+  @override
+  String get onAirExtra => "Extra";
+
+  @override
+  String get onAirExtraHint => "Antena, potencia; puede ir vacío";
+
+  @override
+  String get onAirSave => "Guardar";
+
+  @override
+  String get onAirSaved => "Guardado";
+
+  @override
+  String get onAirFreqBad => "Escribe la frecuencia así: 145.500";
+
+  @override
+  String get onAirFriends => "Estaciones en el aire";
+
+  @override
+  String get onAirEmpty => "Nadie con esto activo en los últimos 30 minutos.";
+
+  @override
+  String get onAirFilterFreq => "Filtrar por frecuencia";
+
+  @override
+  String get onAirFilterAll => "Todo";
+
+  @override
+  String get onAirQso => "Quedar en contacto";
+
+  @override
+  String get onAirQsoHint => "Escribe una línea para quedar";
+
+  @override
+  String get onAirQsoSend => "Enviar";
+
+  @override
+  String get onAirQsoSent => "Enviado";
+
+  @override
+  String get onAirQsoNoLink => "Ningún enlace de mensajes está conectado. Conecta uno en «Servidor».";
+
+  @override
+  String get onAirTtlNote => "En línea significa oído en los últimos 30 minutos.";
+
 }

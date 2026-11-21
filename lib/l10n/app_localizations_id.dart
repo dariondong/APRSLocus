@@ -10726,4 +10726,76 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get ossBundledNote => "Installer Windows menyertakan rigctld dari Hamlib, didistribusikan di bawah GPL-2.0-or-later.";
 
+  @override
+  String get onAirTitle => "On-Air Friends";
+
+  @override
+  String get onAirOff => "Mati";
+
+  @override
+  String get onAirNoFreq => "Frekuensi belum diisi";
+
+  @override
+  String get onAirNeedServer => "Hubungkan server APRS";
+
+  @override
+  String onAirFriendCount(String n) => "$n stasiun";
+
+  @override
+  String get onAirLead => "Frekuensi pantau ditulis di komentar beacon, jadi terlihat oleh yang menyalakan On-Air Friends.";
+
+  @override
+  String get onAirEnable => "Nyalakan On-Air Friends";
+
+  @override
+  String get onAirFreq => "Frekuensi pantau";
+
+  @override
+  String get onAirMode => "Mode";
+
+  @override
+  String get onAirExtra => "Tambahan";
+
+  @override
+  String get onAirExtraHint => "Antena, daya; boleh kosong";
+
+  @override
+  String get onAirSave => "Simpan";
+
+  @override
+  String get onAirSaved => "Tersimpan";
+
+  @override
+  String get onAirFreqBad => "Tulis frekuensi seperti 145.500";
+
+  @override
+  String get onAirFriends => "Stasiun daring";
+
+  @override
+  String get onAirEmpty => "Tidak ada yang menyalakan ini dalam 30 menit terakhir.";
+
+  @override
+  String get onAirFilterFreq => "Saring per frekuensi";
+
+  @override
+  String get onAirFilterAll => "Semua";
+
+  @override
+  String get onAirQso => "Atur kontak";
+
+  @override
+  String get onAirQsoHint => "Tulis satu kalimat untuk mengatur kontak";
+
+  @override
+  String get onAirQsoSend => "Kirim";
+
+  @override
+  String get onAirQsoSent => "Terkirim";
+
+  @override
+  String get onAirQsoNoLink => "Tautan pesan belum tersambung. Hubungkan satu di halaman Server.";
+
+  @override
+  String get onAirTtlNote => "Daring berarti terdengar dalam 30 menit terakhir.";
+
 }

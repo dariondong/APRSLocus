@@ -10337,6 +10337,78 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String get ossBundledNote => "Windows 安装包内附 Hamlib 的 rigctld，按 GPL-2.0-or-later 分发。";
 
+  @override
+  String get onAirTitle => "On-Air Friends";
+
+  @override
+  String get onAirOff => "未开启";
+
+  @override
+  String get onAirNoFreq => "未设置频率";
+
+  @override
+  String get onAirNeedServer => "需连接 APRS 服务器";
+
+  @override
+  String onAirFriendCount(String n) => "$n 个友台";
+
+  @override
+  String get onAirLead => "守听频率写进信标备注，开着 On-Air Friends 的人就能看到。";
+
+  @override
+  String get onAirEnable => "开启 On-Air Friends";
+
+  @override
+  String get onAirFreq => "守听频率";
+
+  @override
+  String get onAirMode => "模式";
+
+  @override
+  String get onAirExtra => "附加参数";
+
+  @override
+  String get onAirExtraHint => "天线、功率，可以留空";
+
+  @override
+  String get onAirSave => "保存";
+
+  @override
+  String get onAirSaved => "已保存";
+
+  @override
+  String get onAirFreqBad => "频率填 145.500 这样";
+
+  @override
+  String get onAirFriends => "在线友台";
+
+  @override
+  String get onAirEmpty => "30 分钟内没有收到开着的友台。";
+
+  @override
+  String get onAirFilterFreq => "按频率筛选";
+
+  @override
+  String get onAirFilterAll => "全部";
+
+  @override
+  String get onAirQso => "约通联";
+
+  @override
+  String get onAirQsoHint => "写一句约通联的话";
+
+  @override
+  String get onAirQsoSend => "发送";
+
+  @override
+  String get onAirQsoSent => "已发送";
+
+  @override
+  String get onAirQsoNoLink => "消息链路没连上，先在「服务器」里连一条。";
+
+  @override
+  String get onAirTtlNote => "30 分钟内还在信标里才算在线。";
+
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
@@ -20670,5 +20742,77 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get ossBundledNote => "Windows 安裝包內附 Hamlib 的 rigctld，按 GPL-2.0-or-later 分發。";
+
+  @override
+  String get onAirTitle => "On-Air Friends";
+
+  @override
+  String get onAirOff => "未開啟";
+
+  @override
+  String get onAirNoFreq => "未設定頻率";
+
+  @override
+  String get onAirNeedServer => "需連線 APRS 伺服器";
+
+  @override
+  String onAirFriendCount(String n) => "$n 個友台";
+
+  @override
+  String get onAirLead => "守聽頻率寫進信標備註，開著 On-Air Friends 的人就能看到。";
+
+  @override
+  String get onAirEnable => "開啟 On-Air Friends";
+
+  @override
+  String get onAirFreq => "守聽頻率";
+
+  @override
+  String get onAirMode => "模式";
+
+  @override
+  String get onAirExtra => "附加參數";
+
+  @override
+  String get onAirExtraHint => "天線、功率，可以留空";
+
+  @override
+  String get onAirSave => "儲存";
+
+  @override
+  String get onAirSaved => "已儲存";
+
+  @override
+  String get onAirFreqBad => "頻率填 145.500 這樣";
+
+  @override
+  String get onAirFriends => "線上友台";
+
+  @override
+  String get onAirEmpty => "30 分鐘內沒有收到開著的友台。";
+
+  @override
+  String get onAirFilterFreq => "依頻率篩選";
+
+  @override
+  String get onAirFilterAll => "全部";
+
+  @override
+  String get onAirQso => "約通聯";
+
+  @override
+  String get onAirQsoHint => "寫一句約通聯的話";
+
+  @override
+  String get onAirQsoSend => "傳送";
+
+  @override
+  String get onAirQsoSent => "已傳送";
+
+  @override
+  String get onAirQsoNoLink => "訊息鏈路沒連上，先在「伺服器」裡連一條。";
+
+  @override
+  String get onAirTtlNote => "30 分鐘內還在信標裡才算線上。";
 
 }
