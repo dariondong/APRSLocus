@@ -376,6 +376,11 @@ jobs:
       - name: Test rig control (rigctld)
         run: flutter test test/rig_link_test.dart
 
+      # 音频链路与电台控制是一体的：先按键、再播、播完放开。顺序反了对方只听到
+      # 后半截；放不开则 PTT 一直压着载波。这两种错 analyze 与编译都看不见。
+      - name: Test rig PTT with audio TX
+        run: flutter test test/rig_tx_link_test.dart
+
       # 地图右侧工具列的分列算式（列数、封顶、贴底控件让位、裁剪下边距）：
       # 用户报过两次「控件被重排 / 浮层挡在一起」，那种错编译与 analyze 都看不见。
       - name: Test map toolbar layout
