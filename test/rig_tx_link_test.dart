@@ -7,6 +7,7 @@
 // 所以两半都钉在这里：AudioLink 的 hooks 顺序（用假传输层），
 // AppState 的「切频率 → 对齐 FM → 按键 → 放开」（用本机假 rigctld）。
 
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
@@ -151,6 +152,7 @@ void main() {
   group('AudioLink 的两支钩子', () {
     test('先按键、再播、播完放开', () async {
       final events = <String>[];
+      final unkeyed = Completer<void>();
       final link = AudioLink(transport: _FakeTransport(events));
       link.onTxKey = () async {
         events.add('key');
@@ -158,10 +160,14 @@ void main() {
       };
       link.onTxUnkey = () async {
         events.add('unkey');
+        if (!unkeyed.isCompleted) unkeyed.complete();
       };
       expect(await link.connect(), isTrue);
       expect(link.sendTnc2(line), isNull);
       await settle(link);
+      // 放开 PTT 在播放窗口之后（finally 里），不能只等 transmitting 变 false：
+      // 那一瞬只是音频播完了，CAT 还在路上。
+      await unkeyed.future.timeout(const Duration(seconds: 5));
       expect(events, <String>['key', 'play', 'unkey']);
       expect(link.txFrames, 1);
       await link.disconnect();
