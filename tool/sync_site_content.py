@@ -419,6 +419,27 @@ CARDS = [
 # 只列「重点版本」：中间几十个纯修 bug 的版本归纳进文字说明，完整记录指向 Releases。
 CL = [
     {
+        'ver': 'v2.2.12', 'date': '2026-11-21',
+        'items': [
+            ('new',
+             T('主页地图上多一张 On-Air Friends 卡片：开着它，守听频率就写进信标备注。',
+               '主頁地圖上多一張 On-Air Friends 卡片：開著它，守聽頻率就寫進信標備註。',
+               'A new On-Air Friends card on the home map: with it on, your listening frequency rides in the beacon comment.')),
+            ('new',
+             T('点卡片进设置：填守听频率、模式、附加参数，保存后立刻随信标发出去。',
+               '點卡片進設定：填守聽頻率、模式、附加參數，儲存後立刻隨信標送出去。',
+               'Tap the card for the settings: frequency, mode and an optional extra line. Saving sends a beacon right away.')),
+            ('new',
+             T('同一页列出在线友台：呼号、模式、频率、附加参数、最后听到的时间。',
+               '同一頁列出線上友台：呼號、模式、頻率、附加參數、最後聽到的時間。',
+               'The same page lists the friends on air, with callsign, mode, frequency, extra line and when they were last heard.')),
+            ('new',
+             T('点某一位友台，写一句约通联的话，走 APRS 消息发给他。',
+               '點某一位友台，寫一句約通聯的話，走 APRS 訊息送給他。',
+               'Tap a friend to write a line and send it to them as an APRS message.')),
+        ],
+    },
+    {
         'ver': 'v2.2.11', 'date': '2026-11-21',
         'items': [
             ('new',

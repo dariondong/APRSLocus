@@ -1,5 +1,31 @@
 # 更新日志
 
+## [2.2.12] - 2026-11-21
+
+### 新增
+
+- 主页地图上多一张 On-Air Friends 卡片：开着它，守听频率就写进信标备注。
+- 点卡片进设置：填守听频率、模式、附加参数，保存后立刻随信标发出去。
+- 同一页列出在线友台：呼号、模式、频率、附加参数、最后听到的时间。
+- 点某一位友台，写一句约通联的话，走 APRS 消息发给他。
+
+### 调整
+
+- 卡片关着时置灰写「未开启」，没连服务器时写「需连接 APRS 服务器」。
+
+## [2.2.12] - 2026-11-21 (English)
+
+### Added
+
+- A new On-Air Friends card on the home map. With it on, your listening frequency rides in the beacon comment.
+- Tap the card to open the settings: frequency, mode and an optional extra line. Saving sends a beacon right away.
+- The same page lists the friends on air: callsign, mode, frequency, extra line and when they were last heard.
+- Tap a friend to write a line and send it to them as an APRS message.
+
+### Changed
+
+- The card turns grey and reads "Off" when the feature is off, and asks you to connect an APRS server when none is up.
+
 ## [2.2.11] - 2026-11-21
 
 ### 新增
