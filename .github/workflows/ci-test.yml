@@ -650,6 +650,12 @@ jobs:
       - name: Build Windows (Release)
         run: flutter build windows --release --dart-define=QWEATHER_KEY=${{ secrets.QWEATHER_KEY }} --dart-define=QWEATHER_HOST=${{ secrets.QWEATHER_HOST || 'pf4ewvjfqj.re.qweatherapi.com' }} --dart-define=TIANDITU_KEY=${{ secrets.TIANDITU_KEY }}
 
+      # 安装包里带着 hamlib 的 rigctld（电台控制用）。这一步跟发版那条 workflow
+      # 走同一个脚本，CI 才能先撞上「脚本坏了 / 下载不到 / 校验不对」。
+      - name: Bundle Hamlib rigctld
+        shell: pwsh
+        run: pwsh tool/bundle_hamlib.ps1
+
       # 只上传 Release/*.exe 会得到一个**跑不起来**的产物：那只是 Flutter 的启动器
       # （约 123 KB），缺少 flutter_windows.dll 与 data/ 目录，双击无反应。
       # 正式发版用 Inno Setup 打成自足的单文件安装器，这里照搬同一套做法。
