@@ -161,6 +161,10 @@ def main() -> int:
                       '漏掉的那些在横屏会被竖条压住')
     # 沉浸入口必须**挂在左上竖列里**：它自己算 Positioned 时会被同列其它控件盖住
     # （真发生过：引导卡硬写 topBase+46，正好糊在这个入口上）。
+    # 左上竖列必须走定宽列（2026-11-22）：每行都是 `MapRailItem`，宽度由列宽统一。
+    if 'child: MapRail(' not in map_code:
+        errors.append('左上竖列没走 `MapRail` 定宽列 —— 各行会重新按内容伸缩、'
+                      '宽度参差不齐（用户报的「好乱 难看」）')
     if '_immersiveEntry(),' not in map_code:
         errors.append('沉浸入口没挂在「左上竖列」里 —— 它自己算 Positioned 就会被'
                       '同列控件盖住，也拿不到 leftInset 的让位')
@@ -407,7 +411,10 @@ def main() -> int:
                       '在右侧，工具列 / 上报横杠 / 底部坐标条会被它盖住')
     for anchor, what in (
         ('right: 14 + padRight,', '工具列 / 贴底控件'),
-        ('right: rightGutter + padRight,', '左上竖列'),
+        # 2026-11-22：左上竖列改成定宽的 `MapRail`（原来靠 `right:` 撑开、每行
+        # 各自按内容伸缩，宽度参差）。列宽自己要把右侧工具列与安全区减掉，
+        # 判据跟着换成那条算式。
+        ('(rightGutter + padRight) -', '左上竖列'),
     ):
         if anchor not in map_code:
             errors.append(f'{what}没有让开右侧安全区（缺 `{anchor}`）—— '

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
+import 'map_rail.dart';
 import 'material.dart';
 import 'onair.dart';
 import 'settings_widgets.dart';
@@ -469,74 +470,22 @@ class _OnAirCardsState extends State<OnAirCards> {
   }
 }
 
-/// 主页地图上那张卡片。
+/// 主页地图左上那一列里的 On-Air 读数行。
 ///
 /// 出现条件：启用了 APRS 服务器类型的链路，且本机呼号合法（见 AppState.onAirVisible）。
-/// 它在左上那一列的**最后一个**：插在当前列的其他项后面，出现/消失不会把上面的
-/// 心率、计数、沉浸入口推来推去。
-class OnAirChip extends StatefulWidget {
+/// 它和同列其它行同一个外形（见 `lib/map_rail.dart`）：图标 + 一行读数 + 一枚箭头。
+/// 开着且服务器在线时图标、描边与标题转绿，右端写友台数；其余状态只有一个灰读数。
+///
+/// 以前它是一张自带呼吸辉光的独立卡片：左列里唯一一块会动的、也是最宽的东西，
+/// 与上下几枚胶囊叠在一起就是「好乱 难看」的来源。辉光去掉了 —— 状态改用颜色与
+/// 友台数表达，既省一层每帧动画，也让这一列安静下来。
+class OnAirChip extends StatelessWidget {
   final AppState state;
   const OnAirChip({super.key, required this.state});
 
   @override
-  State<OnAirChip> createState() => _OnAirChipState();
-}
-
-class _OnAirChipState extends State<OnAirChip>
-    with SingleTickerProviderStateMixin {
-  late final AnimationController _glow = AnimationController(
-    vsync: this,
-    duration: const Duration(milliseconds: 1900),
-  );
-
-  @override
-  void initState() {
-    super.initState();
-    widget.state.addListener(_syncLater);
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    // 这里才读得到 MediaQuery（initState 里读 inherited widget 会抛），
-    // 而「系统要求减少动态效果」要跟着它走。
-    _syncLater();
-  }
-
-  @override
-  void dispose() {
-    widget.state.removeListener(_syncLater);
-    _glow.dispose();
-    super.dispose();
-  }
-
-  /// 状态一变就重排一次起停。
-  ///
-  /// 延到帧后做：`repeat()` / `stop()` 会**同步**通知监听者（AnimatedBuilder
-  /// 就挂在这个 controller 上），在状态通知（有时发生在 build 期间）里直接调
-  /// 等于在构建中标记重建。
-  void _syncLater() {
-    if (!mounted) return;
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted) return;
-      _applyGlow();
-    });
-  }
-
-  /// 辉光只在「开着且服务器在线」时跑，其余时候控制器停着（不白烧帧）。
-  void _applyGlow() {
-    final on = widget.state.onAirOn && widget.state.onAirServerUp;
-    final still = MediaQuery.maybeOf(context)?.disableAnimations ?? false;
-    if (on && !still) {
-      if (!_glow.isAnimating) _glow.repeat(reverse: true);
-    } else if (_glow.isAnimating) {
-      _glow.stop();
-    }
-  }
-
-  @override
   Widget build(BuildContext context) {
-    final st = widget.state;
+    final st = state;
     if (!st.onAirVisible) return const SizedBox.shrink();
     final s = S.of(context);
     final up = st.onAirServerUp;
@@ -550,102 +499,46 @@ class _OnAirChipState extends State<OnAirChip>
                 ? s.onAirNoFreq
                 : st.onAirInfo.label;
     final accent = on ? C.green : C.grey;
-    return AnimatedBuilder(
-      animation: _glow,
-      builder: (context, _) {
-        final v = _glow.isAnimating ? _glow.value : 0.0;
-        return Padding(
-          padding: const EdgeInsets.only(top: 10),
-          child: GestureDetector(
-            onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(builder: (_) => OnAirPage(state: st)),
-            ),
-            child: MaterialSurface(
-              radius: 16,
-              blurSigma: C.chipBlur,
-              child: Container(
-                constraints: const BoxConstraints(maxWidth: 250),
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                decoration: BoxDecoration(
-                  color: C.chipFill,
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(
-                    color: on
-                        ? accent.withValues(alpha: 0.30 + 0.35 * v)
-                        : C.greyLight.withValues(alpha: 0.55),
-                  ),
-                  boxShadow: [
-                    ...elev2(),
-                    if (on)
-                      BoxShadow(
-                        color: accent.withValues(alpha: 0.10 + 0.16 * v),
-                        blurRadius: 8 + 10 * v,
-                        spreadRadius: 0.5 + 1.5 * v,
-                      ),
-                  ],
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(Icons.podcasts_rounded, size: 18, color: accent),
-                    const SizedBox(width: 8),
-                    Flexible(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(
-                                s.onAirTitle,
-                                style: ts(11.5,
-                                    w: FontWeight.w700,
-                                    c: on ? C.green : C.slate),
-                              ),
-                              if (on) ...[
-                                const SizedBox(width: 5),
-                                Container(
-                                  width: 6,
-                                  height: 6,
-                                  decoration: BoxDecoration(
-                                    color:
-                                        accent.withValues(alpha: 0.45 + 0.55 * v),
-                                    shape: BoxShape.circle,
-                                  ),
-                                ),
-                              ],
-                            ],
-                          ),
-                          const SizedBox(height: 1),
-                          Text(
-                            status,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: ts(10.5, c: on ? C.ink : C.grey),
-                          ),
-                          if (on && friends > 0)
-                            Text(
-                              s.onAirFriendCount('$friends'),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: ts(10, c: C.green),
-                            ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(width: 6),
-                    Icon(Icons.chevron_right_rounded,
-                        size: 16, color: on ? C.green : C.grey),
-                  ],
-                ),
-              ),
+    return MapRailItem(
+      icon: Icons.podcasts_rounded,
+      iconColor: accent,
+      borderColor: on ? accent.withValues(alpha: 0.30) : null,
+      onTap: () => Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => OnAirPage(state: st)),
+      ),
+      label: Row(
+        children: [
+          Text(
+            s.onAirTitle,
+            style: ts(11, c: on ? C.green : C.slate, w: FontWeight.w700),
+          ),
+          const SizedBox(width: 6),
+          Expanded(
+            child: Text(
+              status,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: ts(11, c: on ? C.ink : C.grey),
             ),
           ),
-        );
-      },
+        ],
+      ),
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (friends > 0)
+            Text(
+              s.onAirFriendCount('$friends'),
+              style: ts(10, c: C.green, w: FontWeight.w700),
+            ),
+          Icon(
+            Icons.chevron_right_rounded,
+            size: 16,
+            color: on ? C.green : C.grey,
+          ),
+        ],
+      ),
     );
   }
 }

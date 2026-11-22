@@ -19,6 +19,7 @@ import 'strategy_map_page.dart';
 import 'track_groups_sheet.dart';
 import 'coord.dart';
 import 'coord_format.dart';
+import 'map_rail.dart';
 import 'map_toolbar.dart';
 import 'material.dart';
 import 'onair_page.dart';
@@ -900,38 +901,36 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                 Positioned(
                   top: topBase,
                   left: 14 + widget.leftInset,
-                  right: rightGutter + padRight,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  child: MapRail(
+                    // 列宽：让开右侧工具列与安全区，窄屏自动收窄到放得下为止
+                    //（以前是靠 `right:` 撑开、每行各按内容伸缩，宽度参差正是
+                    //「好乱」的一半）。
+                    width: math.max(
+                      120.0,
+                      math.min(
+                        kRailWidth,
+                        size.width -
+                            (14 + widget.leftInset) -
+                            (rightGutter + padRight) -
+                            8,
+                      ),
+                    ),
                     children: [
-                      // 两条**一次性**提示排在这一列的最前面（选点 / 搜索命中）。
-                      //
-                      // 它们以前各自 `Positioned` 在**同一个 top** 上居中，于是
-                      // 三个东西会同时占着地图顶端：左边的心率/计数、中间的提示、
-                      // 右边的工具列 —— 提示一长（搜索词长、西语漏译）就往两边长，
-                      // 正好糊在左右两排控件上（用户报的「浮层工具挡在一起」）。
-                      // 进同一列顺序排，结构上就压不到别人；宽度也被这一列的
-                      // `right`（让开工具列）挡住。
-                      if (_pickMode) ...[
-                        _pickBanner(),
-                        const SizedBox(height: 8),
-                      ],
-                      if (searched) ...[
-                        _searchHint(vis.length),
-                        const SizedBox(height: 8),
-                      ],
+                      // 两条**一次性**提示排在列的最前面（选点 / 搜索命中）：进同
+                      // 一列顺序排，结构上就压不到别人，宽度也被列宽统一。
+                      if (_pickMode) _pickBanner(),
+                      if (searched) _searchHint(vis.length),
                       // 心率放**最上面**：它是用户运动时最想一眼看到的东西，
                       // 而台站计数是「背景信息」（需求原话：「让心率显示在主屏幕上面」）。
-                      _hrChip(),
-                      const SizedBox(height: 10),
+                      // 没有读数就不占位，不摆一个空白胶囊。
+                      if (widget.state.myHr != null) _hrChip(),
                       _infoChip(vis, searched),
-                      const SizedBox(height: 10),
                       _immersiveEntry(),
-                      // On-Air Friends：只连服务器（APRS-IS / APRSNETCN）且呼号合法时才有。
-                      // 摆在**这一列的最后一个**：它出现 / 消失不会把上面的心率、计数、
-                      // 沉浸入口推来推去（那正是「控件被重排」的那类毛病）。
-                      OnAirChip(state: widget.state),
+                      // On-Air Friends：只连服务器（APRS-IS / APRSNETCN）且呼号合法时
+                      // 才有。摆在**这一列的最后一个**：它出现 / 消失不会把上面的心
+                      // 率、计数、沉浸入口推来推去（那正是「控件被重排」的那类毛病）。
+                      if (widget.state.onAirVisible)
+                        OnAirChip(state: widget.state),
                     ],
                   ),
                 ),
@@ -1952,74 +1951,43 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
   /// （见 build），与其它控件顺序排，结构上不会重叠。
   Widget _pickBanner() {
     final s = S.of(context);
-    return Container(
-      padding: const EdgeInsets.fromLTRB(12, 8, 8, 8),
-      decoration: BoxDecoration(
-        color: C.orange,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: elev3(),
+    return MapRailItem(
+      icon: Icons.gps_fixed_rounded,
+      iconColor: C.white,
+      fill: C.orange,
+      borderColor: C.orange,
+      label: Text(
+        s.mapPickDesc,
+        style: ts(11.5, c: C.white, w: FontWeight.w700),
+        maxLines: 2,
+        overflow: TextOverflow.ellipsis,
       ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const Icon(Icons.gps_fixed_rounded, color: Colors.white, size: 16),
-          const SizedBox(width: 8),
-          Flexible(
-            child: Text(
-              s.mapPickDesc,
-              style: ts(12, c: Colors.white, w: FontWeight.w700),
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-          const SizedBox(width: 6),
-          GestureDetector(
-            // 命中区给到 28×28：地图上那枚小叉原来只有 18，不好点
-            behavior: HitTestBehavior.opaque,
-            onTap: () {
-              widget.state.finishPick();
-              setState(() => _pickMode = false);
-            },
-            child: const SizedBox(
-              width: 28,
-              height: 28,
-              child: Icon(Icons.close_rounded, color: Colors.white, size: 18),
-            ),
-          ),
-        ],
+      trailing: GestureDetector(
+        // 命中区给到 26×26：地图上那枚小叉原来只有 18，不好点
+        behavior: HitTestBehavior.opaque,
+        onTap: () {
+          widget.state.finishPick();
+          setState(() => _pickMode = false);
+        },
+        child: SizedBox(
+          width: 26,
+          height: 26,
+          child: Icon(Icons.close_rounded, color: C.white, size: 17),
+        ),
       ),
     );
   }
 
   /// 搜索命中提示（「找到 N 个 XX」）。同样进了左上一列，理由见 [_pickBanner]。
   Widget _searchHint(int found) {
-    return MaterialSurface(
-      radius: 12,
-      blurSigma: C.chipBlur,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-        decoration: BoxDecoration(
-          color: C.chipFill,
-          borderRadius: BorderRadius.circular(12),
-          boxShadow: elev2(),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(Icons.search_rounded, size: 14, color: C.blue),
-            const SizedBox(width: 6),
-            Flexible(
-              child: Text(
-                S
-                    .of(context)
-                    .foundStations(found, widget.searchQuery.trim()),
-                style: ts(12, w: FontWeight.w600),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-          ],
-        ),
+    return MapRailItem(
+      icon: Icons.search_rounded,
+      iconColor: C.blue,
+      label: Text(
+        S.of(context).foundStations(found, widget.searchQuery.trim()),
+        style: ts(12, w: FontWeight.w600),
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
       ),
     );
   }
@@ -2032,110 +2000,89 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
   /// 一屏浮层上摆一个永远是空白的胶囊，比不显示更糟。
   Widget _hrChip() {
     final st = widget.state;
-    final hr = st.myHr;
-    if (hr == null) return const SizedBox.shrink();
+    final hr = st.myHr ?? 0;
     // 来源标注：心率带连上就写 BLE，否则若是佳明在跑就写 Garmin。
     // 不标来源的话，用户看到 140 会不知道是胸带还是手表报的。
     final fromBle = st.bleHr.connected;
     final tag = fromBle ? 'BLE' : (st.garminOn ? 'Garmin' : '');
     final live = fromBle ? st.bleHr.bpm != null : st.garminOn;
-    return MaterialSurface(
-      radius: 16,
-      blurSigma: C.chipBlur,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-        decoration: BoxDecoration(
-          color: C.chipFill,
-          borderRadius: BorderRadius.circular(16),
-          boxShadow: elev2(),
-          border: Border.all(color: C.red.withValues(alpha: 0.28)),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(Icons.favorite_rounded, size: 14, color: C.red),
-            const SizedBox(width: 6),
+    return MapRailItem(
+      icon: Icons.favorite_rounded,
+      iconColor: C.red,
+      borderColor: C.red.withValues(alpha: 0.24),
+      label: Row(
+        children: [
+          Text('$hr', style: ts(15, c: C.red, w: FontWeight.w800)),
+          const SizedBox(width: 3),
+          Text('bpm', style: ts(10, c: C.grey)),
+          const Spacer(),
+          if (tag.isNotEmpty)
+            // 读数过期（心率带掉线 / 佳明没在跑）时灰掉来源，别让人以为还在测
             Text(
-              '$hr',
-              style: ts(15, c: C.red, w: FontWeight.w800),
+              tag,
+              style: ts(9.5, c: live ? C.red : C.greyLight, w: FontWeight.w700),
             ),
-            const SizedBox(width: 3),
-            Text('bpm', style: ts(10, c: C.grey)),
-            if (tag.isNotEmpty) ...[
-              const SizedBox(width: 7),
-              // 读数过期（心率带掉线 / 佳明没在跑）时灰掉来源，别让人以为还在测
-              Text(tag, style: ts(9.5, c: live ? C.red : C.greyLight, w: FontWeight.w700)),
-            ],
-          ],
-        ),
+        ],
       ),
     );
   }
 
   Widget _infoChip(List<Station> vis, bool searched) {
-    return MaterialSurface(
-      radius: 16,
-      blurSigma: C.chipBlur,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-        decoration: BoxDecoration(
-          color: C.chipFill,
-          borderRadius: BorderRadius.circular(16),
-          boxShadow: elev2(),
-        ),
-        // 三段计数都是**定宽子项**（一个 Text 一个图标，没有弹性），而它能拿到的
-        // 宽度由外壳给的 left/right 决定 —— 2.0 横屏下（左侧竖条 + 展开的内容面板）
-        // 常只剩 200 出头，三段中文/西语文案必然撑爆 Row（debug 下溢出条纹、
-        // release 下直接被截）。所以按**实际可用宽度**分两档：够宽给三段，紧的
-        // 时候只留「在线 + 台站」（移动数最次要），每个计数再用 Flexible + ellipsis
-        // 兜底（西语的「en movimiento」比中文长一倍）。
-        child: LayoutBuilder(
-          builder: (_, cons) {
-            final compact = cons.maxWidth < 250;
-            final online = Flexible(
-              child: Text(
-                S.of(context).onlineCount(widget.state.online),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: ts(12, c: C.green, w: FontWeight.w600),
-              ),
-            );
-            final moving = Flexible(
-              child: Text(
-                S.of(context).movingCount(widget.state.moving),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: ts(12, c: C.blue, w: FontWeight.w600),
-              ),
-            );
-            final stations = Flexible(
-              child: Text(
-                S.of(context).stationCount(vis.length),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: ts(12, c: searched ? C.slate : C.grey),
-              ),
-            );
-            return Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                _dot(C.green),
+    return MapRailItem(
+      icon: Icons.cell_tower_rounded,
+      iconColor: C.slate,
+      // 三段计数都是**定宽子项**（一个 Text 一个图标，没有弹性），而它能拿到的
+      // 宽度由左列宽度决定 —— 2.0 横屏下（左侧竖条 + 展开的内容面板）左列会收窄，
+      // 三段中文/西语文案必然撑爆 Row（debug 下溢出条纹、release 下直接被截）。
+      // 所以按**实际可用宽度**分两档：够宽给三段，紧的时候只留「在线 + 台站」
+      //（移动数最次要），每个计数再用 Flexible + ellipsis 兜底（西语的
+      //「en movimiento」比中文长一倍）。
+      label: LayoutBuilder(
+        builder: (_, cons) {
+          final compact = cons.maxWidth < 160;
+          final online = Flexible(
+            child: Text(
+              S.of(context).onlineCount(widget.state.online),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: ts(12, c: C.green, w: FontWeight.w600),
+            ),
+          );
+          final moving = Flexible(
+            child: Text(
+              S.of(context).movingCount(widget.state.moving),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: ts(12, c: C.blue, w: FontWeight.w600),
+            ),
+          );
+          final stations = Flexible(
+            child: Text(
+              S.of(context).stationCount(vis.length),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: ts(12, c: searched ? C.slate : C.grey),
+            ),
+          );
+          return Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _dot(C.green),
+              const SizedBox(width: 6),
+              online,
+              if (!compact) ...[
+                const SizedBox(width: 10),
+                _dot(C.blue),
                 const SizedBox(width: 6),
-                online,
-                if (!compact) ...[
-                  const SizedBox(width: 12),
-                  _dot(C.blue),
-                  const SizedBox(width: 6),
-                  moving,
-                ],
-                const SizedBox(width: 12),
-                _dot(C.slate),
-                const SizedBox(width: 6),
-                stations,
+                moving,
               ],
-            );
-          },
-        ),
+              const SizedBox(width: 10),
+              _dot(C.slate),
+              const SizedBox(width: 6),
+              stations,
+            ],
+          );
+        },
       ),
     );
   }
@@ -2355,29 +2302,23 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
   /// 这条入口原先单独放在 `top: topBase + 44`，右侧工具列实际含 8 个按钮
   /// （一直排到 400 多），一旦有人改列间距它就会被别人盖住 —— 曾经被引导卡糊住过。
   Widget _immersiveEntry() {
-    return ClickCursor(
-      child: GestureDetector(
-        onTap: () => Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (_) => ImmersiveMapPage(state: widget.state)),
-        ),
-        child: Container(
-          width: 38,
-          height: 38,
-          decoration: BoxDecoration(
-            color: C.black.withValues(alpha: 0.82),
-            borderRadius: BorderRadius.circular(12),
-            boxShadow: elev1(),
-            border: Border.all(color: Colors.white.withValues(alpha: 0.18)),
-          ),
-          child: Tooltip(
-            message: S.of(context).immersiveMapTip,
-            child: const Icon(Icons.navigation_rounded,
-                size: 20, color: Colors.white),
-          ),
+    return MapRailItem(
+      icon: Icons.navigation_rounded,
+      iconColor: C.slate,
+      tooltip: S.of(context).immersiveMapTip,
+      onTap: () => Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => ImmersiveMapPage(state: widget.state),
         ),
       ),
+      label: Text(
+        S.of(context).immersiveMap,
+        style: ts(11.5, c: C.ink, w: FontWeight.w600),
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+      ),
+      trailing: Icon(Icons.chevron_right_rounded, size: 16, color: C.grey),
     );
   }
 
