@@ -5312,5 +5312,14 @@
   "@satPass": {"placeholders": {"pass": {"type": "String"}, "el": {"type": "String"}}},
   "@satFriend": {"placeholders": {"name": {"type": "String"}, "pass": {"type": "String"}}},
   "onAirSameFreq": "{n} 人同频",
-  "@onAirSameFreq": {"placeholders": {"n": {"type": "String"}}}
+  "@onAirSameFreq": {"placeholders": {"n": {"type": "String"}}},
+  "mapOnlyOnAir": "只看 On-Air 友台",
+  "satAddTle": "添加卫星",
+  "satTlePaste": "粘贴三行：名称、两行数据",
+  "satTleBad": "TLE 格式不对",
+  "satDelete": "删除",
+  "satCustom": "自定义",
+  "onAirModeCustom": "自定义",
+  "onAirModeCustomHint": "模式，例如 FM",
+  "onAirModeBad": "模式只填字母数字和 + / ."
 }

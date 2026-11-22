@@ -10448,6 +10448,33 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String onAirSameFreq(String n) => "$n 人同频";
 
+  @override
+  String get mapOnlyOnAir => "只看 On-Air 友台";
+
+  @override
+  String get satAddTle => "添加卫星";
+
+  @override
+  String get satTlePaste => "粘贴三行：名称、两行数据";
+
+  @override
+  String get satTleBad => "TLE 格式不对";
+
+  @override
+  String get satDelete => "删除";
+
+  @override
+  String get satCustom => "自定义";
+
+  @override
+  String get onAirModeCustom => "自定义";
+
+  @override
+  String get onAirModeCustomHint => "模式，例如 FM";
+
+  @override
+  String get onAirModeBad => "模式只填字母数字和 + / .";
+
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
@@ -20892,5 +20919,32 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String onAirSameFreq(String n) => "$n 人同頻";
+
+  @override
+  String get mapOnlyOnAir => "只看 On-Air 友台";
+
+  @override
+  String get satAddTle => "新增衛星";
+
+  @override
+  String get satTlePaste => "貼上三行：名稱、兩行資料";
+
+  @override
+  String get satTleBad => "TLE 格式不對";
+
+  @override
+  String get satDelete => "刪除";
+
+  @override
+  String get satCustom => "自訂";
+
+  @override
+  String get onAirModeCustom => "自訂";
+
+  @override
+  String get onAirModeCustomHint => "模式，例如 FM";
+
+  @override
+  String get onAirModeBad => "模式只填字母數字和 + / .";
 
 }

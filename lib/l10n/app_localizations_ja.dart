@@ -10548,4 +10548,31 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String onAirSameFreq(String n) => "$n 局が同周波";
 
+  @override
+  String get mapOnlyOnAir => "On-Air 友台のみ";
+
+  @override
+  String get satAddTle => "衛星を追加";
+
+  @override
+  String get satTlePaste => "3 行を貼り付け：名前と 2 行のデータ";
+
+  @override
+  String get satTleBad => "TLE の形式が違います";
+
+  @override
+  String get satDelete => "削除";
+
+  @override
+  String get satCustom => "カスタム";
+
+  @override
+  String get onAirModeCustom => "カスタム";
+
+  @override
+  String get onAirModeCustomHint => "モード（例：FM）";
+
+  @override
+  String get onAirModeBad => "モードは英数字と + / . だけ";
+
 }

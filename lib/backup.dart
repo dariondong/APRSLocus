@@ -237,6 +237,8 @@ const List<BackupGroupSpec> kBackupGroups = [
     // On-Air Friends：守听频率/模式/附加参数是用户自己填的那几格，换机后
     // 重敲最容易出错；开关也带上（恢复后与之前一样继续发布）。
     'onAirOn', 'onAirFreq', 'onAirMode', 'onAirExtra',
+    // 地图「只看 On-Air 友台」是他手动调的一个视图开关
+    'mapOnlyOnAir',
     // 卫星 QSO：开关、选中的星与星历原文一起带上。星历是别人算好的公开数据，
     // 但换机后没它就得等下一次同步才能用过境。
     'satQsoOn', 'satName', 'satTleText', 'satSyncedAt',

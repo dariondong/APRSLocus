@@ -5221,5 +5221,14 @@
   "@satPass": {"placeholders": {"pass": {"type": "String"}, "el": {"type": "String"}}},
   "@satFriend": {"placeholders": {"name": {"type": "String"}, "pass": {"type": "String"}}},
   "onAirSameFreq": "{n} 人同頻",
-  "@onAirSameFreq": {"placeholders": {"n": {"type": "String"}}}
+  "@onAirSameFreq": {"placeholders": {"n": {"type": "String"}}},
+  "mapOnlyOnAir": "只看 On-Air 友台",
+  "satAddTle": "新增衛星",
+  "satTlePaste": "貼上三行：名稱、兩行資料",
+  "satTleBad": "TLE 格式不對",
+  "satDelete": "刪除",
+  "satCustom": "自訂",
+  "onAirModeCustom": "自訂",
+  "onAirModeCustomHint": "模式，例如 FM",
+  "onAirModeBad": "模式只填字母數字和 + / ."
 }

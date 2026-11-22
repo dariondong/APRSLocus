@@ -2693,6 +2693,19 @@ class AppState extends ChangeNotifier {
     persist();
   }
 
+  /// 地图上只看开着 On-Air Friends 的台站（图层筛选里的一个开关）。
+  ///
+  /// 它是「只看」而不是「隐藏某类」：On-Air 是备注里的一段标记，与台站类型
+  /// 正交 —— 一个移动台也可以同时在守听。所以不进 [mapHiddenTypes]。
+  bool mapOnlyOnAir = false;
+
+  void setMapOnlyOnAir(bool v) {
+    if (v == mapOnlyOnAir) return;
+    mapOnlyOnAir = v;
+    _bumpStationsVersion();
+    persist();
+  }
+
   /// 数据包列表上限（下限 100，防止设成 0 把历史全清掉）
   void setMaxPackets(int n) {
     maxPackets = n < 100 ? 100 : n;
@@ -5837,6 +5850,7 @@ class AppState extends ChangeNotifier {
     mapFollowMode = 0;
     stationFilter = const StationFilter();
     applyFilterToMap = false;
+    mapOnlyOnAir = false;
     mapHiddenTypes.clear();
     stationSort = 'call';
     cracCertJson = '';
@@ -6598,6 +6612,7 @@ class AppState extends ChangeNotifier {
         }
       } catch (_) {}
       applyFilterToMap = p.getBool('applyFilterToMap') ?? applyFilterToMap;
+      mapOnlyOnAir = p.getBool('mapOnlyOnAir') ?? mapOnlyOnAir;
       // 地图图层筛选：认不出的类型名直接丢掉（改坏 / 将来改名都不该崩）
       try {
         final hid = p.getStringList('mapHiddenTypes');
@@ -7043,6 +7058,7 @@ class AppState extends ChangeNotifier {
     await p.setInt('mapFollowMode', mapFollowMode);
     await p.setString('stationFilterJson', jsonEncode(stationFilter.toJson()));
     await p.setBool('applyFilterToMap', applyFilterToMap);
+    await p.setBool('mapOnlyOnAir', mapOnlyOnAir);
     await p.setStringList(
         'mapHiddenTypes', mapHiddenTypes.map((g) => g.name).toList());
     await p.setString('stationSort', stationSort);

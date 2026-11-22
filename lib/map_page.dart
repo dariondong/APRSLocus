@@ -22,6 +22,7 @@ import 'coord_format.dart';
 import 'map_rail.dart';
 import 'map_toolbar.dart';
 import 'material.dart';
+import 'onair.dart';
 import 'onair_page.dart';
 
 class MapPage extends StatefulWidget {
@@ -557,6 +558,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
       Object.hashAll(widget.state.receiveCountries),
       widget.state.receiveOthers,
       widget.state.applyFilterToMap,
+      widget.state.mapOnlyOnAir,
       widget.state.stationFilter.key,
     );
     if (sv == _visibleStationsVersion && filterHash == _visibleFilterHash) {
@@ -578,6 +580,10 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
     }
     if (_hiddenTypes.isNotEmpty) {
       list = list.where((s) => !_hiddenTypes.contains(s.typeGroup)).toList();
+    }
+    // 只看 On-Air 友台（图层筛选里的一个开关；与类型无关，标记在备注里）
+    if (widget.state.mapOnlyOnAir) {
+      list = list.where((s) => OnAirInfo.decode(s.comment) != null).toList();
     }
     // 台站面板筛选应用到地图（可选，默认关闭；两处共用 StationFilter.matches）
     final st = widget.state;
@@ -2229,9 +2235,16 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
         onTap: () => _showLayerMenu(context),
         // 用 surfaceTint 保留「选中变蓝 / 普通白」的语义，
         // 只让通透程度跟着材质走（详见 material.dart）
-        bg: chipTint(_hiddenTypes.isNotEmpty ? C.blueBg : C.white),
-        fg: _hiddenTypes.isNotEmpty ? C.blue : C.slate,
-        border: _hiddenTypes.isNotEmpty ? C.blue : C.border,
+        bg: chipTint(
+            _hiddenTypes.isNotEmpty || widget.state.mapOnlyOnAir
+                ? C.blueBg
+                : C.white),
+        fg: _hiddenTypes.isNotEmpty || widget.state.mapOnlyOnAir
+            ? C.blue
+            : C.slate,
+        border: _hiddenTypes.isNotEmpty || widget.state.mapOnlyOnAir
+            ? C.blue
+            : C.border,
       ),
       _toolBtn(
         icon: Icons.map_rounded,
@@ -2799,6 +2812,66 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                     ),
                   ),
                 ],
+              ),
+            ),
+            Divider(height: 14, color: C.border),
+            // 只看 On-Air 友台：与下面那排类型是两回事（一台上网台也可以同时在守听）
+            GestureDetector(
+              onTap: () {
+                widget.state.setMapOnlyOnAir(!widget.state.mapOnlyOnAir);
+                setMenuState(() {});
+                setState(() {});
+              },
+              behavior: HitTestBehavior.opaque,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 3),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.podcasts_rounded,
+                      size: 16,
+                      color:
+                          widget.state.mapOnlyOnAir ? C.green : C.greyLight,
+                    ),
+                    SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        S.of(context).mapOnlyOnAir,
+                        style: ts(
+                          12,
+                          c: widget.state.mapOnlyOnAir ? C.ink : C.grey,
+                          w: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                    Container(
+                      width: 40,
+                      height: 22,
+                      decoration: BoxDecoration(
+                        color: widget.state.mapOnlyOnAir
+                            ? C.green.withValues(alpha: 0.25)
+                            : C.greyBg,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Align(
+                        alignment: widget.state.mapOnlyOnAir
+                            ? Alignment.centerRight
+                            : Alignment.centerLeft,
+                        child: Container(
+                          width: 18,
+                          height: 18,
+                          margin: const EdgeInsets.symmetric(horizontal: 2),
+                          decoration: BoxDecoration(
+                            color: widget.state.mapOnlyOnAir
+                                ? C.green
+                                : C.grey,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
             Divider(height: 14, color: C.border),

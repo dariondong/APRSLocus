@@ -10837,4 +10837,31 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String onAirSameFreq(String n) => "$n di frekuensi sama";
 
+  @override
+  String get mapOnlyOnAir => "Hanya teman On-Air";
+
+  @override
+  String get satAddTle => "Tambah satelit";
+
+  @override
+  String get satTlePaste => "Tempel tiga baris: nama dan dua baris data";
+
+  @override
+  String get satTleBad => "Format TLE salah";
+
+  @override
+  String get satDelete => "Hapus";
+
+  @override
+  String get satCustom => "Kustom";
+
+  @override
+  String get onAirModeCustom => "Kustom";
+
+  @override
+  String get onAirModeCustomHint => "Mode, mis. FM";
+
+  @override
+  String get onAirModeBad => "Mode hanya huruf, angka dan + / .";
+
 }

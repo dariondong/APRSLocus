@@ -4633,5 +4633,14 @@
   "@satPass": {"placeholders": {"pass": {"type": "String"}, "el": {"type": "String"}}},
   "@satFriend": {"placeholders": {"name": {"type": "String"}, "pass": {"type": "String"}}},
   "onAirSameFreq": "{n} 局が同周波",
-  "@onAirSameFreq": {"placeholders": {"n": {"type": "String"}}}
+  "@onAirSameFreq": {"placeholders": {"n": {"type": "String"}}},
+  "mapOnlyOnAir": "On-Air 友台のみ",
+  "satAddTle": "衛星を追加",
+  "satTlePaste": "3 行を貼り付け：名前と 2 行のデータ",
+  "satTleBad": "TLE の形式が違います",
+  "satDelete": "削除",
+  "satCustom": "カスタム",
+  "onAirModeCustom": "カスタム",
+  "onAirModeCustomHint": "モード（例：FM）",
+  "onAirModeBad": "モードは英数字と + / . だけ"
 }

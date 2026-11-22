@@ -10827,4 +10827,31 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String onAirSameFreq(String n) => "$n on your frequency";
 
+  @override
+  String get mapOnlyOnAir => "On-Air friends only";
+
+  @override
+  String get satAddTle => "Add satellite";
+
+  @override
+  String get satTlePaste => "Paste three lines: name, then the two data lines";
+
+  @override
+  String get satTleBad => "That TLE is not valid";
+
+  @override
+  String get satDelete => "Delete";
+
+  @override
+  String get satCustom => "Custom";
+
+  @override
+  String get onAirModeCustom => "Custom";
+
+  @override
+  String get onAirModeCustomHint => "Mode, e.g. FM";
+
+  @override
+  String get onAirModeBad => "Mode takes letters, digits and + / . only";
+
 }

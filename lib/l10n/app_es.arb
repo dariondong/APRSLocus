@@ -4633,5 +4633,14 @@
   "@satPass": {"placeholders": {"pass": {"type": "String"}, "el": {"type": "String"}}},
   "@satFriend": {"placeholders": {"name": {"type": "String"}, "pass": {"type": "String"}}},
   "onAirSameFreq": "{n} en tu frecuencia",
-  "@onAirSameFreq": {"placeholders": {"n": {"type": "String"}}}
+  "@onAirSameFreq": {"placeholders": {"n": {"type": "String"}}},
+  "mapOnlyOnAir": "Solo amigos On-Air",
+  "satAddTle": "Añadir satélite",
+  "satTlePaste": "Pega tres líneas: el nombre y las dos líneas de datos",
+  "satTleBad": "El TLE no es válido",
+  "satDelete": "Eliminar",
+  "satCustom": "Personalizado",
+  "onAirModeCustom": "Personalizado",
+  "onAirModeCustomHint": "Modo, p. ej. FM",
+  "onAirModeBad": "El modo solo admite letras, dígitos y + / ."
 }

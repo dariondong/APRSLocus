@@ -19221,6 +19221,60 @@ abstract class AppLocalizations {
   /// **'{n} 人同频'**
   String onAirSameFreq(String n);
 
+  /// No description provided for @mapOnlyOnAir.
+  ///
+  /// In zh, this message translates to:
+  /// **'只看 On-Air 友台'**
+  String get mapOnlyOnAir;
+
+  /// No description provided for @satAddTle.
+  ///
+  /// In zh, this message translates to:
+  /// **'添加卫星'**
+  String get satAddTle;
+
+  /// No description provided for @satTlePaste.
+  ///
+  /// In zh, this message translates to:
+  /// **'粘贴三行：名称、两行数据'**
+  String get satTlePaste;
+
+  /// No description provided for @satTleBad.
+  ///
+  /// In zh, this message translates to:
+  /// **'TLE 格式不对'**
+  String get satTleBad;
+
+  /// No description provided for @satDelete.
+  ///
+  /// In zh, this message translates to:
+  /// **'删除'**
+  String get satDelete;
+
+  /// No description provided for @satCustom.
+  ///
+  /// In zh, this message translates to:
+  /// **'自定义'**
+  String get satCustom;
+
+  /// No description provided for @onAirModeCustom.
+  ///
+  /// In zh, this message translates to:
+  /// **'自定义'**
+  String get onAirModeCustom;
+
+  /// No description provided for @onAirModeCustomHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'模式，例如 FM'**
+  String get onAirModeCustomHint;
+
+  /// No description provided for @onAirModeBad.
+  ///
+  /// In zh, this message translates to:
+  /// **'模式只填字母数字和 + / .'**
+  String get onAirModeBad;
+
 }
 
 class _AppLocalizationsDelegate
