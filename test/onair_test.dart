@@ -45,8 +45,9 @@ void main() {
     test('附加参数超长会被截断，不会把整段备注撑爆', () {
       final long = 'x' * 40;
       final info = OnAirInfo(freq: '145.500', mode: 'FM', extra: long);
-      expect(info.encode().length, 'OAF:145.500:FM:'.length + OnAirInfo.extraMax);
-      expect(info.encode().substring(0, 14), 'OAF:145.500:FM:');
+      const head = 'OAF:145.500:FM:';
+      expect(info.encode().length, head.length + OnAirInfo.extraMax);
+      expect(info.encode().startsWith(head), isTrue);
     });
 
     test('一行读数', () {
