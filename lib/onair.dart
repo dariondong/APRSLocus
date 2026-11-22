@@ -105,10 +105,10 @@ class OnAirInfo {
 String normalizeOnAirFreq(String raw) {
   var t = raw.trim();
   if (t.isEmpty) return '';
-  // 「MHz / mhz / M」这类单位后缀：留着只会让 double.tryParse 失败
+  // 「MHz / kHz / Hz」这类单位后缀：留着只会让 double.tryParse 失败
   // Dart 的 RegExp 是 ECMAScript 语法，不支持 `(?i)` 内联标志（写了会直接抛
   // FormatException: Invalid group），大小写不敏感只能走 caseSensitive。
-  t = t.replaceAll(RegExp(r'\s*m?hz$', caseSensitive: false), '').trim();
+  t = t.replaceAll(RegExp(r'\s*[mk]?hz$', caseSensitive: false), '').trim();
   double? mhz;
   if (t.contains('.')) {
     mhz = double.tryParse(t);
