@@ -669,6 +669,11 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
             final int toolbarCols = tools.cols;
             final bool roomForBottom = tools.roomForBottom;
             final double rightGutter = tools.rightGutter;
+            // 左上那一列能长多高：到贴底控件上沿（没有贴底控件就是安全区之上）。
+            // 超过就自己滚，而不是被 Stack 裁掉最下面那张小卡。
+            final double railBottom = tools.roomForBottom
+                ? tools.barsTop - 8
+                : size.height - 14 - padBottom;
             // ── 地图**画出来的**那几层也要让开外壳占用的区域 ──
             //
             // 与贴左控件同一个口径（见 [leftInset] 与 [bottomInset]）：2.0 外壳的
@@ -907,36 +912,48 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                 Positioned(
                   top: topBase,
                   left: 14 + widget.leftInset,
-                  child: MapRail(
-                    // 列宽：让开右侧工具列与安全区，窄屏自动收窄到放得下为止
-                    //（以前是靠 `right:` 撑开、每行各按内容伸缩，宽度参差正是
-                    //「好乱」的一半）。
-                    width: math.max(
-                      120.0,
-                      math.min(
-                        kRailWidth,
-                        size.width -
-                            (14 + widget.leftInset) -
-                            (rightGutter + padRight) -
-                            8,
+                  child: ConstrainedBox(
+                    // 这一列最多长到贴底控件上沿；再多就自己滚，最下面那张卡
+                    // 不会被 Stack 裁掉（用户报的「小面板溢出了也没滚动」）。
+                    // 内容装得下时滚动条不接管手指（`min == max` 且 `pixels == 0`
+                    // 时 ScrollPhysics 不接受拖动），地图照常能拖。
+                    constraints: BoxConstraints(
+                      maxHeight: math.max(96.0, railBottom - topBase),
+                    ),
+                    child: SingleChildScrollView(
+                      physics: const ClampingScrollPhysics(),
+                      child: MapRail(
+                        // 列宽：让开右侧工具列与安全区，窄屏自动收窄到放得下为止
+                        //（以前是靠 `right:` 撑开、每行各按内容伸缩，宽度参差正是
+                        //「好乱」的一半）。
+                        width: math.max(
+                          120.0,
+                          math.min(
+                            kRailWidth,
+                            size.width -
+                                (14 + widget.leftInset) -
+                                (rightGutter + padRight) -
+                                8,
+                          ),
+                        ),
+                        children: [
+                          // 两条**一次性**提示排在列的最前面（选点 / 搜索命中）：进同
+                          // 一列顺序排，结构上就压不到别人，宽度也被列宽统一。
+                          if (_pickMode) _pickBanner(),
+                          if (searched) _searchHint(vis.length),
+                          // 心率放**最上面**：它是用户运动时最想一眼看到的东西，
+                          // 而台站计数是「背景信息」（需求原话：「让心率显示在主屏幕上面」）。
+                          // 没有读数就不占位，不摆一个空白胶囊。
+                          if (widget.state.myHr != null) _hrChip(),
+                          _infoChip(vis, searched),
+                          // On-Air Friends：只连服务器（APRS-IS / APRSNETCN）且呼号合法时
+                          // 才有。摆在**这一列的最后一个**：它出现 / 消失不会把上面的心
+                          // 率、计数、沉浸入口推来推去（那正是「控件被重排」的那类毛病）。
+                          if (widget.state.onAirVisible)
+                            OnAirChip(state: widget.state),
+                        ],
                       ),
                     ),
-                    children: [
-                      // 两条**一次性**提示排在列的最前面（选点 / 搜索命中）：进同
-                      // 一列顺序排，结构上就压不到别人，宽度也被列宽统一。
-                      if (_pickMode) _pickBanner(),
-                      if (searched) _searchHint(vis.length),
-                      // 心率放**最上面**：它是用户运动时最想一眼看到的东西，
-                      // 而台站计数是「背景信息」（需求原话：「让心率显示在主屏幕上面」）。
-                      // 没有读数就不占位，不摆一个空白胶囊。
-                      if (widget.state.myHr != null) _hrChip(),
-                      _infoChip(vis, searched),
-                      // On-Air Friends：只连服务器（APRS-IS / APRSNETCN）且呼号合法时
-                      // 才有。摆在**这一列的最后一个**：它出现 / 消失不会把上面的心
-                      // 率、计数、沉浸入口推来推去（那正是「控件被重排」的那类毛病）。
-                      if (widget.state.onAirVisible)
-                        OnAirChip(state: widget.state),
-                    ],
                   ),
                 ),
                 // 焦点标记：从策略地图「导航」过来的目标点。

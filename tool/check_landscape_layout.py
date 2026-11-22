@@ -357,6 +357,13 @@ def main() -> int:
         if 'Flexible(' not in seg or 'TextOverflow.ellipsis' not in seg:
             errors.append('_infoChip 的计数段没有 Flexible + ellipsis 兜底 —— 西语/日语'
                           '的长文案（`120 en movimiento`）会溢出列宽')
+    if 'railBottom' not in map_code:
+        errors.append('地图左上那一列没有算出可用底边（railBottom）—— 溢出的高度没处判')
+    if 'maxHeight: math.max(96.0, railBottom - topBase)' not in map_code:
+        errors.append('地图左上那一列没有按可用高度限高 —— 小卡一多最下面那张会被裁掉')
+    if 'physics: const ClampingScrollPhysics(),' not in map_code:
+        errors.append('地图左上那一列限了高却没有滚动 —— 溢出的部分照样看不到'
+                      '（用户报的「小面板溢出了也没滚动」）')
 
     # ⑧ 分几列只看窗口尺寸（最坏情况预留），贴底控件让位只看当帧真实几何
     #
