@@ -969,14 +969,20 @@ class OnAirChip extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 2),
-          Text(
-            status,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: ts(
-              on ? 12.5 : 12,
-              c: on ? C.ink : C.grey,
-              w: on ? FontWeight.w700 : FontWeight.w500,
+          // 频率一行放不下的部分横向滚，不用省略号截断
+          // （频率、模式、同频人数是这张卡唯一有用的内容，截掉就等于没写）。
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            physics: const ClampingScrollPhysics(),
+            child: Text(
+              status,
+              maxLines: 1,
+              softWrap: false,
+              style: ts(
+                on ? 12.5 : 12,
+                c: on ? C.ink : C.grey,
+                w: on ? FontWeight.w700 : FontWeight.w500,
+              ),
             ),
           ),
         ],
