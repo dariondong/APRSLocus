@@ -4,6 +4,7 @@ import 'dart:ui' show ImageFilter;
 import 'package:flutter/foundation.dart' show ValueListenable;
 import 'package:flutter/gestures.dart' show PointerDeviceKind;
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart' show Ticker;
 
 import 'theme.dart';
 import 'material.dart';
@@ -746,26 +747,128 @@ class ClickCursor extends StatelessWidget {
       );
 }
 
-/// 一行放不下的长字段：横向滚，不用省略号截断。
+/// 一行放不下的长字段：自己慢慢横向滚，不用省略号截断。
 ///
-/// Flutter 默认的滚动行为只认手指与手写笔，鼠标按住拖是不动的 ——
-/// 桌面版上「怎么拉不动」就是这个（手机上同理的写法本来就能拖）。
-/// 这里换成带鼠标的 dragDevices，鼠标按着拉也行，滚轮照旧。
-class HScroll extends StatelessWidget {
+/// 为什么不靠手拉：手拉看不全（用户：「没有横向滚动啊」、「我要自动滚动」）。
+/// 溢出时才滚，速度恒定，到两头各停一下再往回，来回循环；手指／鼠标按下去
+/// 先停四秒，让手拉优先。不溢出时根本不启动画，一个多余的 ticker 都不留。
+///
+/// Flutter 默认的滚动行为只认手指与手写笔，这里顺手把鼠标与触控板也加进
+/// `dragDevices` —— 桌面版上鼠标按着拉也能拉。
+class HScroll extends StatefulWidget {
   final String text;
   final TextStyle style;
 
   const HScroll(this.text, {super.key, required this.style});
 
   @override
-  Widget build(BuildContext context) => ScrollConfiguration(
+  State<HScroll> createState() => _HScrollState();
+}
+
+class _HScrollState extends State<HScroll>
+    with SingleTickerProviderStateMixin {
+  final ScrollController _c = ScrollController();
+  late final Ticker _ticker = createTicker(_onTick);
+  Duration _last = Duration.zero;
+  int _dir = 1;
+  double _hold = 0; // 秒：到端停一下、以及手压住时不抢
+  bool _auto = false; // 真的溢出了才滚
+
+  static const double _speed = 24; // px/s，比读字快一点，不抢眼
+  static const double _edgeHold = 1.4; // 到端停顿
+  static const double _touchHold = 4; // 手指/鼠标按下后让路
+
+  @override
+  void initState() {
+    super.initState();
+    _arm();
+  }
+
+  @override
+  void didUpdateWidget(covariant HScroll old) {
+    super.didUpdateWidget(old);
+    if (old.text != widget.text) {
+      _dir = 1;
+      _hold = 0;
+      if (_c.hasClients) _c.jumpTo(0);
+      _arm();
+    }
+  }
+
+  /// 一帧后量一次：真的溢出才启动，装得下就停（不白跑动画）。
+  void _arm() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || !_c.hasClients) return;
+      final over = _c.position.maxScrollExtent > 0.5;
+      if (over == _auto) return;
+      _auto = over;
+      if (over) {
+        _last = Duration.zero;
+        if (!_ticker.isActive) _ticker.start();
+      } else if (_ticker.isActive) {
+        _ticker.stop();
+      }
+    });
+  }
+
+  void _onTick(Duration elapsed) {
+    if (!mounted || !_c.hasClients) return;
+    if (_last == Duration.zero) {
+      _last = elapsed;
+      return;
+    }
+    final dt = (elapsed - _last).inMicroseconds / 1e6;
+    _last = elapsed;
+    if (dt <= 0) return;
+    if (_hold > 0) {
+      _hold -= dt;
+      return;
+    }
+    final max = _c.position.maxScrollExtent;
+    if (max <= 0.5) return;
+    var next = _c.offset + _speed * dt * _dir;
+    if (next >= max) {
+      next = max;
+      _dir = -1;
+      _hold = _edgeHold;
+    } else if (next <= 0) {
+      next = 0;
+      _dir = 1;
+      _hold = _edgeHold;
+    }
+    _c.jumpTo(next);
+  }
+
+  @override
+  void dispose() {
+    _ticker.dispose();
+    _c.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    _arm();
+    return Listener(
+      onPointerDown: (_) {
+        if (_auto) _hold = _touchHold;
+      },
+      child: ScrollConfiguration(
         behavior: const _AnyDrag(),
         child: SingleChildScrollView(
+          controller: _c,
           scrollDirection: Axis.horizontal,
           physics: const ClampingScrollPhysics(),
-          child: Text(text, style: style, maxLines: 1, softWrap: false),
+          child: Text(
+            widget.text,
+            style: widget.style,
+            maxLines: 1,
+            softWrap: false,
+          ),
         ),
-      );
+      ),
+    );
+  }
 }
 
 /// 手指、笔、鼠标、触控板都能拖的滚动行为（不画滚动条）。
