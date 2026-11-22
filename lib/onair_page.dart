@@ -420,20 +420,22 @@ class _OnAirCardsState extends State<OnAirCards> {
                 Text(s.satNextPass, style: ts(12, c: C.slate)),
                 const Spacer(),
                 Flexible(
-                  child: Text(
-                    names.isEmpty
-                        ? s.satNeedSync
-                        : pass == null
-                            ? s.satNoPass
-                            : s.satPass(
-                                _utcHm(pass.tca),
-                                pass.maxElevation.toStringAsFixed(0),
-                              ),
-                    textAlign: TextAlign.right,
-                    style: ts(
-                      12.5,
-                      w: pass == null ? FontWeight.w500 : FontWeight.w700,
-                      c: pass == null ? C.grey : C.ink,
+                  child: Align(
+                    alignment: Alignment.centerRight,
+                    child: _scrollLine(
+                      names.isEmpty
+                          ? s.satNeedSync
+                          : pass == null
+                              ? s.satNoPass
+                              : s.satPass(
+                                  _utcHm(pass.tca),
+                                  pass.maxElevation.toStringAsFixed(0),
+                                ),
+                      ts(
+                        12.5,
+                        w: pass == null ? FontWeight.w500 : FontWeight.w700,
+                        c: pass == null ? C.grey : C.ink,
+                      ),
                     ),
                   ),
                 ),
@@ -667,6 +669,16 @@ class _OnAirCardsState extends State<OnAirCards> {
     return s.daysAgo(d.inDays);
   }
 
+  /// 一行放不下时横向滚动，而不是用省略号把内容吃掉。
+  ///
+  /// 呼号、频率加附加参数、网格、卫星过境都可能比一行长，省略号一裁就看不全，
+  /// 而这一页里它们正是要看的东西。
+  Widget _scrollLine(String text, TextStyle style) => SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        physics: const ClampingScrollPhysics(),
+        child: Text(text, style: style, maxLines: 1, softWrap: false),
+      );
+
   /// 一位友台一行：呼号 + 模式 + 频率 + 附加参数 + 网格与距离，右边是聊天与时间。
   ///
   /// 点整行 = 打开这一位的台站面板（网格、距离、路径、报文都在那儿）；
@@ -726,37 +738,23 @@ class _OnAirCardsState extends State<OnAirCards> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    f.call,
-                    style: ts(13, w: FontWeight.w700),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
+                  _scrollLine(f.call, ts(13, w: FontWeight.w700)),
                   const SizedBox(height: 2),
-                  Text(
+                  _scrollLine(
                     extra.isEmpty
                         ? '${f.info.freq} MHz'
                         : '${f.info.freq} MHz · $extra',
-                    style: ts(11, c: C.slate),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
+                    ts(11, c: C.slate),
                   ),
                   if (place != null) ...[
                     const SizedBox(height: 2),
-                    Text(
-                      place,
-                      style: ts(10.5, c: C.grey),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
+                    _scrollLine(place, ts(10.5, c: C.grey)),
                   ],
                   if (f.sat != null) ...[
                     const SizedBox(height: 2),
-                    Text(
+                    _scrollLine(
                       S.of(context).satFriend(f.sat!.name, f.sat!.label),
-                      style: ts(10.5, c: C.blue, w: FontWeight.w600),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
+                      ts(10.5, c: C.blue, w: FontWeight.w600),
                     ),
                   ],
                 ],
