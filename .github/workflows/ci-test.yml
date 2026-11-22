@@ -610,6 +610,11 @@ jobs:
       - name: Test embed box
         run: flutter test test/embed_box_test.dart
 
+      # 卫星 QSO：TLE 解析、星下点、过境时间与 `OAS:` 声明的编解码。
+      # 算式错的表现是过境时间差几个小时，而这种错只有固定样本能钉住。
+      - name: Test satellite pass
+        run: flutter test test/satellite_test.dart
+
       - name: Analyze (tolerate known vector_map false positive)
         shell: bash
         run: |

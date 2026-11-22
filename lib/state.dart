@@ -10,6 +10,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'models.dart';
 import 'onair.dart';
+import 'satellite.dart';
 import 'install_mark.dart';
 import 'cloud_sync.dart';
 import 'coord_format.dart';
@@ -1966,6 +1967,114 @@ class AppState extends ChangeNotifier {
     if (!canAutoBeacon) return false;
     sendBeacon();
     return true;
+  }
+
+  // ─── 卫星 QSO（星历 + 过境时间）───
+
+  /// 星历里那几颗星（解析自 [satTleText]；原文没变就不重解析）。
+  List<Tle> get satTles {
+    if (_satTlesOf != satTleText) {
+      _satTlesOf = satTleText;
+      _satTles = satTleText.isEmpty ? const [] : Tle.parseList(satTleText);
+    }
+    return _satTles;
+  }
+
+  /// 选中的那颗星；没选或者星历里没有，返回 null。
+  Tle? get satSelected {
+    if (satName.isEmpty) return null;
+    for (final t in satTles) {
+      if (normalizeSatName(t.name) == satName) return t;
+    }
+    return null;
+  }
+
+  /// 下次过境缓存：信标备注每条都要问一次，24 小时扫描是 2800 多次外推，
+  /// 不缓存的话每次拼备注都要算一遍。一分钟一换就够。
+  SatPass? _satPassCache;
+  String _satPassKey = '';
+
+  /// 下一次过境（默认往后看 24 小时）。没定位或没选星就是 null。
+  SatPass? satNextPass({
+    Duration within = const Duration(hours: 24),
+    double minElevationDeg = 0,
+  }) {
+    final t = satSelected;
+    if (t == null) return null;
+    final lat = myLat;
+    final lng = myLng;
+    if (lat == null || lng == null) return null;
+    final key = '$satName|${lat.toStringAsFixed(2)}|${lng.toStringAsFixed(2)}'
+        '|${within.inMinutes}|$minElevationDeg'
+        '|${DateTime.now().millisecondsSinceEpoch ~/ 60000}';
+    if (key == _satPassKey) return _satPassCache;
+    _satPassKey = key;
+    _satPassCache = nextPass(t, lat, lng,
+        within: within, minElevationDeg: minElevationDeg);
+    return _satPassCache;
+  }
+
+  /// 要写进信标的那一段；写不了（没开、没星、没定位、24 小时内不过境）返回 null。
+  SatQso? get satQso {
+    if (!satQsoOn) return null;
+    final p = satNextPass();
+    if (p == null) return null;
+    return SatQso.of(satName, p.tca);
+  }
+
+  void setSatQsoOn(bool v) {
+    if (satQsoOn == v) return;
+    satQsoOn = v;
+    persist();
+    _notify();
+    if (v) _publishOnAirNow();
+  }
+
+  /// 选一颗星。星名归一后不在星历里就不改（界面上本来也只能选到列表里的）。
+  void setSatName(String name) {
+    final n = normalizeSatName(name);
+    if (n == satName) return;
+    satName = n;
+    persist();
+    _notify();
+    if (satQsoOn) _publishOnAirNow();
+  }
+
+  /// 同步星历（Celestrak 的业余卫星组，TLE 文本）。
+  ///
+  /// 失败不抛异常，把原因写进 [satError] 并返回 false；拿到旧的那份也继续能用，
+  /// 所以断网只是「没更新」，不是「用不了」。
+  Future<bool> syncSatEphemeris() async {
+    if (satSyncing) return false;
+    satSyncing = true;
+    satError = '';
+    _notify();
+    try {
+      final text = await httpSend(
+        'GET',
+        Uri.parse(
+          'https://celestrak.org/NORAD/elements/gp.php?GROUP=amateur&FORMAT=tle',
+        ),
+        timeout: const Duration(seconds: 25),
+      );
+      final list = Tle.parseList(text);
+      if (list.isEmpty) {
+        satError = 'empty';
+        return false;
+      }
+      satTleText = text;
+      satSyncedAt = DateTime.now().toUtc().toIso8601String();
+      // 选中的那颗没了（退役 / 改名），就清空选择，别让它一直算不出来。
+      if (satName.isNotEmpty && satSelected == null) satName = '';
+      await persist();
+      return true;
+    } catch (e) {
+      satError = '$e';
+      return false;
+    } finally {
+      satSyncing = false;
+      _notify();
+    }
   }
 
   void setBeaconIncludeCourse(bool v) {
@@ -5759,6 +5868,12 @@ class AppState extends ChangeNotifier {
     onAirFreq = '';
     onAirMode = 'FM';
     onAirExtra = '';
+    satQsoOn = false;
+    satName = '';
+    satTleText = '';
+    satSyncedAt = '';
+    _satPassKey = '';
+    _satPassCache = null;
     unawaited(rigDaemon.stop());
     rigLocalOn = false;
     rigLocalModel = 0;
@@ -6161,6 +6276,32 @@ class AppState extends ChangeNotifier {
   /// 附加参数（天线 / 功率 / CTCSS…），可空。
   String onAirExtra = '';
 
+  // ── 卫星 QSO：星历与过境时间 ──
+  //
+  // 打开后信标备注里再多一段 `OAS:IO-117:0234Z`（见 lib/satellite.dart 的
+  // [SatQso]）：告诉别人「这颗星、这个过境我在」。名字与过境时间都只由
+  // 星历算出来，不手填 —— 手填的过境时间没有意义。
+  bool satQsoOn = false;
+
+  /// 选中的卫星名（归一大写）。空 = 还没选。
+  String satName = '';
+
+  /// 上次同步下来的星历原文（TLE），存字符串直接落盘。
+  String satTleText = '';
+
+  /// 上次同步时间（ISO 8601）。
+  String satSyncedAt = '';
+
+  /// 同步是否在跑（界面转圈）。
+  bool satSyncing = false;
+
+  /// 同步失败的原因，空 = 没失败。
+  String satError = '';
+
+  /// 星历解析缓存（[satTleText] 变了才重解析）。
+  List<Tle> _satTles = const [];
+  String _satTlesOf = '';
+
   /// 主链路最近收到的原始报文行（副链路镜像去重用，见 [_isMainMirror]）。
   final Map<String, DateTime> _mainLines = {};
 
@@ -6512,6 +6653,10 @@ class AppState extends ChangeNotifier {
       onAirFreq = p.getString('onAirFreq') ?? onAirFreq;
       onAirMode = p.getString('onAirMode') ?? onAirMode;
       onAirExtra = p.getString('onAirExtra') ?? onAirExtra;
+      satQsoOn = p.getBool('satQsoOn') ?? satQsoOn;
+      satName = p.getString('satName') ?? satName;
+      satTleText = p.getString('satTleText') ?? satTleText;
+      satSyncedAt = p.getString('satSyncedAt') ?? satSyncedAt;
       final httpPort = p.getInt('acnHttpPort') ?? acnHttpPort;
       if (httpPort > 0 && httpPort <= 65535) acnHttpPort = httpPort;
       acnPasscode = p.getString('acnPasscode') ?? acnPasscode;
@@ -6928,6 +7073,10 @@ class AppState extends ChangeNotifier {
     await p.setString('onAirFreq', onAirFreq);
     await p.setString('onAirMode', onAirMode);
     await p.setString('onAirExtra', onAirExtra);
+    await p.setBool('satQsoOn', satQsoOn);
+    await p.setString('satName', satName);
+    await p.setString('satTleText', satTleText);
+    await p.setString('satSyncedAt', satSyncedAt);
     await p.setBool('igateEnabled', igateEnabled);
     await p.setBool('igateTwoWay', igateTwoWay);
     if (myHasFix && myLat != null && myLng != null) {
@@ -9950,6 +10099,10 @@ class AppState extends ChangeNotifier {
       final token = onAirInfo.encode();
       if (token.isNotEmpty) parts.add(token);
     }
+    // 卫星 QSO：`OAS:星名:HHMMZ`，单独一段，不塞进 `OAF:` 的附加参数
+    // （附加参数是自由文本，混进机器字段两边都读不准）。
+    final sat = satQso;
+    if (sat != null) parts.add(sat.encode());
     // 版本号/平台**不再**放在位置数据包备注里（会污染第三方地图上的备注），
     // 改由状态数据包上报：`>APRSlocus CONNECT vX.Y.Z 平台`。
     return parts.join(' ');
