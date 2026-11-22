@@ -1165,10 +1165,12 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
       final sel = _selected?.call == s.call;
       // 选中后那条小条（宽 196）的落点：以标记为中心，再夹进屏幕；
       // 下方放不下（离底边近）就翻到标记上方，免得被屏幕边缘切掉。
+      // 翻上去的那次用 `bottom` 锚定 —— 备注不截断以后卡片高度会变，
+      // 朝上长才不会一头撞出屏幕（写死 `top: -78` 只够旧的两行）。
       final chipLeft = (pos.dx - 98)
               .clamp(6.0, math.max(6.0, size.width - 202.0)) -
           (pos.dx - 28);
-      final chipTop = pos.dy > size.height - 150 ? -78.0 : 34.0;
+      final chipAbove = pos.dy > size.height - 190;
       final pulsing = s.effectiveStatus == St.moving || sel;
       final dx = pos.dx - 28;
       final dy = pos.dy - 28;
@@ -1228,7 +1230,8 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                     ),
                   if (sel)
                     Positioned(
-                      top: chipTop,
+                      top: chipAbove ? null : 34,
+                      bottom: chipAbove ? 62 : null,
                       left: chipLeft,
                       child: GestureDetector(
                         onTap: () => _openDetail(s),
@@ -1286,7 +1289,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
   ///   ① 呼号单独一行（右侧箭头示意可点）；
   ///   ② 状态行：在线点 + 状态 + 距离；
   ///   ③ 数字行：速度 / 高度 / 网格（有哪个写哪个，不占位 `--`）；
-  ///   ④ 备注（最多两行，网址照旧可点）；
+  ///   ④ 备注（整段写出、太长自己滚，网址照旧可点）；
   ///   ⑤ 状态报文（紫色，独立一帧的东西，不与备注混行）。
   ///
   /// 固定宽度 + 在 [_buildMarkers] 里按屏幕边缘夹紧，手机上不会顶出画面。
@@ -1365,17 +1368,31 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
               overflow: TextOverflow.ellipsis,
               style: ts(10.5, c: C.slate, w: FontWeight.w600),
             ),
-            // ④ 备注（中继频点 / 活动公告常在这里，网址可点）
-            if (comment.isNotEmpty) ...[
+            // ④⑤ 备注与状态报文：整段写出来，不按行数截断
+            //    （用户：「备注太长也要滚动」）。太长时这一块自己滚，
+            //    上限约七行，卡片不会长到盖掉半张地图。
+            //    两者是两个字段，仍然各自一段，不并成一行。
+            if (comment.isNotEmpty || statusText.isNotEmpty) ...[
               const SizedBox(height: 4),
-              StationNote(comment,
-                  maxLines: 2, style: ts(10, c: C.ink, h: 1.35)),
-            ],
-            // ⑤ 状态报文：与备注是两个字段，各自一行
-            if (statusText.isNotEmpty) ...[
-              const SizedBox(height: 3),
-              StationNote(statusText,
-                  maxLines: 1, style: ts(10, c: C.purple, h: 1.35)),
+              ConstrainedBox(
+                constraints: const BoxConstraints(maxHeight: 108),
+                child: SingleChildScrollView(
+                  physics: const ClampingScrollPhysics(),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      if (comment.isNotEmpty)
+                        StationNote(comment, style: ts(10, c: C.ink, h: 1.35)),
+                      if (statusText.isNotEmpty) ...[
+                        if (comment.isNotEmpty) const SizedBox(height: 3),
+                        StationNote(statusText,
+                            style: ts(10, c: C.purple, h: 1.35)),
+                      ],
+                    ],
+                  ),
+                ),
+              ),
             ],
           ],
         ),
