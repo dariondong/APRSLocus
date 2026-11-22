@@ -507,37 +507,44 @@ class OnAirChip extends StatelessWidget {
         context,
         MaterialPageRoute(builder: (_) => OnAirPage(state: st)),
       ),
-      label: Row(
+      // 两行：上行是名字与友台数，下行是这一行真正要读的东西（频率 + 模式，
+      // 没开时是一句原因）。挤成一行时频率与模式会被省略号吃掉，那正是这张卡
+      // 唯一有用的内容。
+      label: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            s.onAirTitle,
-            style: ts(11, c: on ? C.green : C.slate, w: FontWeight.w700),
+          Row(
+            children: [
+              Text(
+                s.onAirTitle,
+                style: ts(10.5, c: on ? C.green : C.grey, w: FontWeight.w700),
+              ),
+              const Spacer(),
+              if (friends > 0)
+                Text(
+                  s.onAirFriendCount('$friends'),
+                  style: ts(10, c: C.green, w: FontWeight.w700),
+                ),
+            ],
           ),
-          const SizedBox(width: 6),
-          Expanded(
-            child: Text(
-              status,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: ts(11, c: on ? C.ink : C.grey),
+          const SizedBox(height: 2),
+          Text(
+            status,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: ts(
+              on ? 12.5 : 12,
+              c: on ? C.ink : C.grey,
+              w: on ? FontWeight.w700 : FontWeight.w500,
             ),
           ),
         ],
       ),
-      trailing: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          if (friends > 0)
-            Text(
-              s.onAirFriendCount('$friends'),
-              style: ts(10, c: C.green, w: FontWeight.w700),
-            ),
-          Icon(
-            Icons.chevron_right_rounded,
-            size: 16,
-            color: on ? C.green : C.grey,
-          ),
-        ],
+      trailing: Icon(
+        Icons.chevron_right_rounded,
+        size: 16,
+        color: on ? C.green : C.grey,
       ),
     );
   }
