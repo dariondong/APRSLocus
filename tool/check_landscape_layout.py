@@ -344,7 +344,7 @@ def main() -> int:
     if 'maxWidth: (_availW > 0' not in msgs:
         errors.append('消息气泡的最大宽度没有用 _availW 算')
 
-    # ⑦ 地图左上统计条在窄地图区必须能降级
+    # ⑦ 地图左上统计条在窄地图区必须能折行，整列超出可用高度时必须能滚
     i = map_code.find('Widget _infoChip(')
     j = map_code.find('Widget _mapTypeGroup(', i + 1) if i >= 0 else -1
     seg = map_code[i:j] if (i >= 0 and j > i) else ''

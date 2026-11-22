@@ -2483,17 +2483,29 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
               child: Container(color: Colors.black26),
             ),
           ),
-          // 面板
+          // 面板：限高、装不下就自己滚（与底图菜单同一口径）。图层筛选比底图
+          // 菜单多两行开关加六种类型，横屏或 2.0 外壳顶栏之下会超出屏幕 ——
+          // 上一版没有约束，最下面那几行直接被裁掉（用户报的「小面板溢出了
+          // 也没滚动」）。
           Positioned(
             right: 56,
             top: 14 + widget.topInset,
-            child: Material(
-              color: Colors.transparent,
-              child: StatefulBuilder(
-                builder: (ctx, setMenuState) =>
-                    _layerPanelContent(setMenuState, () {
-                      entry.remove();
-                    }),
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                maxHeight: MediaQuery.of(ctx).size.height -
+                    (14 + widget.topInset) -
+                    20,
+              ),
+              child: SingleChildScrollView(
+                child: Material(
+                  color: Colors.transparent,
+                  child: StatefulBuilder(
+                    builder: (ctx, setMenuState) =>
+                        _layerPanelContent(setMenuState, () {
+                          entry.remove();
+                        }),
+                  ),
+                ),
               ),
             ),
           ),
