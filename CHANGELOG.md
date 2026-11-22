@@ -7,6 +7,8 @@
 - On-Air Friends 页多一张「卫星 QSO」卡：同步星历后选一颗星，在三天内的过境里挑一个。
 - 信标里带上星名和这个过境的时间，台站面板与友台列表都读得出来。
 - 友台那一行多了他的网格和离你多远。
+- 地图的图层筛选多了「只看 On-Air 友台」。
+- 星历里没有的星可以自己贴三行 TLE 加进去，模式也可以自己填。
 
 ### 调整
 
@@ -19,6 +21,8 @@
 - A Satellite QSO card on the On-Air Friends page. Sync the ephemeris, pick a satellite, then choose one of the passes in the next three days.
 - Your beacon carries the satellite name and that pass time; the station panel and the friend list both read it back.
 - Each friend row now shows their grid and how far away they are.
+- The map layer filter has an On-Air friends only switch.
+- You can paste a three-line TLE for a satellite the ephemeris does not carry, and type your own mode.
 
 ### Changed
 
