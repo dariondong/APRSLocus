@@ -2036,59 +2036,57 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
     return MapRailItem(
       icon: Icons.cell_tower_rounded,
       iconColor: C.slate,
-      // 三段计数都是**定宽子项**（一个 Text 一个图标，没有弹性），而它能拿到的
-      // 宽度由左列宽度决定 —— 2.0 横屏下（左侧竖条 + 展开的内容面板）左列会收窄，
-      // 三段中文/西语文案必然撑爆 Row（debug 下溢出条纹、release 下直接被截）。
-      // 所以按**实际可用宽度**分两档：够宽给三段，紧的时候只留「在线 + 台站」
-      //（移动数最次要），每个计数再用 Flexible + ellipsis 兜底（西语的
-      //「en movimiento」比中文长一倍）。
-      label: LayoutBuilder(
-        builder: (_, cons) {
-          final compact = cons.maxWidth < 160;
-          final online = Flexible(
-            child: Text(
-              S.of(context).onlineCount(widget.state.online),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: ts(12, c: C.green, w: FontWeight.w600),
-            ),
-          );
-          final moving = Flexible(
-            child: Text(
-              S.of(context).movingCount(widget.state.moving),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: ts(12, c: C.blue, w: FontWeight.w600),
-            ),
-          );
-          final stations = Flexible(
-            child: Text(
-              S.of(context).stationCount(vis.length),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: ts(12, c: searched ? C.slate : C.grey),
-            ),
-          );
-          return Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              _dot(C.green),
-              const SizedBox(width: 6),
-              online,
-              if (!compact) ...[
-                const SizedBox(width: 10),
-                _dot(C.blue),
-                const SizedBox(width: 6),
-                moving,
-              ],
-              const SizedBox(width: 10),
-              _dot(C.slate),
-              const SizedBox(width: 6),
-              stations,
-            ],
-          );
-        },
+      // 三段计数**各自成组、放不下就折行**，不把数字挤成省略号。
+      //
+      // 上一版是「够宽给三段 / 紧的时候只留两段」+ 每段 `Flexible` + 省略号：
+      // 圆点与间隙是定宽的，三段文字按比例分剩下的宽度 —— 窄屏上分到的宽度
+      // 不够一次数字，读数就整段变成「…」，一列小面板里只剩三个点（用户报的
+      // 「统计面板上的数据都挤没了」）。折行只让列变高，不让数字消失；列本身
+      // 超出可用高度时自己滚（见 build 里那段 constrained 的 MapRail）。
+      label: Wrap(
+        spacing: 10,
+        runSpacing: 2,
+        children: [
+          _countGroup(
+            C.green,
+            S.of(context).onlineCount(widget.state.online),
+            C.green,
+          ),
+          _countGroup(
+            C.blue,
+            S.of(context).movingCount(widget.state.moving),
+            C.blue,
+          ),
+          _countGroup(
+            C.slate,
+            S.of(context).stationCount(vis.length),
+            searched ? C.slate : C.grey,
+            w: null,
+          ),
+        ],
       ),
+    );
+  }
+
+  /// 计数的一段：圆点 + 一句读数，整段按最小宽度排，由 [Wrap] 决定换行。
+  ///
+  /// 段内仍留 `Flexible` + 省略号兜底：西语的「en movimiento」比中文长一倍，
+  /// 单段就可能超过列宽 —— 那种情况才该在这一段里省略，而不是三段一起压。
+  Widget _countGroup(Color dot, String text, Color fg, {FontWeight? w}) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        _dot(dot),
+        const SizedBox(width: 6),
+        Flexible(
+          child: Text(
+            text,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: ts(12, c: fg, w: w),
+          ),
+        ),
+      ],
     );
   }
 

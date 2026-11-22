@@ -71,11 +71,17 @@
      判据：气泡宽度必须用消息区**实际宽度**（布局期记下的 `_availW`），
      且不许再出现屏幕宽度 × 0.55。
 
-  7. **地图左上统计条在窄地图区不许撑爆**（v1.6.163）。
+  7. **地图左上统计条在窄地图区不许撑爆**（v1.6.163；2026-11-22 改判据）。
      横屏 + 内容面板展开时，地图左上控件能拿到的宽度可能只剩 200 出头，而统计条
-     三段计数都是**定宽子项**（一个图标一个 Text，没有弹性）—— 必然溢出
+     三段计数原本都是**定宽子项**（一个图标一个 Text，没有弹性）—— 必然溢出
      （debug 下溢出条纹、release 下直接被截）。
-     判据：`_infoChip` 必须按可用宽度分档（`compact`），每个计数再用 `Flexible` 兜底。
+     旧判据是「按可用宽度分档（`compact`）+ 每段 `Flexible` 兜底」，实际跑出来
+     更糟：圆点与间隙定宽，三段文字按比例分剩下的宽度，窄屏上每段只剩「…」，
+     读数全没了（用户报的「统计面板上的数据都挤没了」）。
+     现判据：每段计数各自成组、外层用 `Wrap` **折行**（只让列变高，不让数字
+     消失），段内才用 `Flexible` + ellipsis 给西语长文案兜底；列本身超出可用
+     高度时必须限高 + 自己滚（`railBottom` / `ConstrainedBox` / 滚动），否则
+     最下面那张小卡被 Stack 裁掉（用户报的「小面板溢出了也没滚动」）。
 
   8. **「矮横屏」要按地图框尺寸判断，**不能**按当帧让位量判**（v1.6.163 立规，
      2026-10-28 改判据）。
@@ -345,12 +351,12 @@ def main() -> int:
     if not seg:
         errors.append('_infoChip 没了（或检查器自己坏了：找不到它到 _mapTypeGroup 之间）')
     else:
-        if 'final compact = cons.maxWidth <' not in seg:
-            errors.append('_infoChip 没有按可用宽度降级的 compact 档 —— 横屏面板'
-                          '展开时（地图区常只剩 200 出头）三段计数会撑爆 Row')
-        if seg.count('Flexible(') < 3:
-            errors.append('_infoChip 的计数没有**全部**(≥3) 用 Flexible + ellipsis '
-                          '兜底 —— 西语/日语的长文案（`120 en movimiento`）会溢出')
+        if 'label: Wrap(' not in seg:
+            errors.append('_infoChip 的三段计数不是 Wrap —— 放不下时只能按比例压缩，'
+                          '数字会被挤成省略号（「统计面板上的数据都挤没了」）')
+        if 'Flexible(' not in seg or 'TextOverflow.ellipsis' not in seg:
+            errors.append('_infoChip 的计数段没有 Flexible + ellipsis 兜底 —— 西语/日语'
+                          '的长文案（`120 en movimiento`）会溢出列宽')
 
     # ⑧ 分几列只看窗口尺寸（最坏情况预留），贴底控件让位只看当帧真实几何
     #
