@@ -411,7 +411,7 @@ class SatQso {
     return SatQso(name: n, hhmm: '$hh$mm');
   }
 
-  String encode() => '$mark$name:$hhmmZ';
+  String encode() => '$mark$name:${hhmm}Z';
 
   /// `02:34Z` 这样的读法。
   String get label =>

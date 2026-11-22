@@ -2066,7 +2066,7 @@ class AppState extends ChangeNotifier {
       satSyncedAt = DateTime.now().toUtc().toIso8601String();
       // 选中的那颗没了（退役 / 改名），就清空选择，别让它一直算不出来。
       if (satName.isNotEmpty && satSelected == null) satName = '';
-      await persist();
+      persist();
       return true;
     } catch (e) {
       satError = '$e';
