@@ -419,6 +419,33 @@ CARDS = [
 # 只列「重点版本」：中间几十个纯修 bug 的版本归纳进文字说明，完整记录指向 Releases。
 CL = [
     {
+        'ver': 'v2.2.13', 'date': '2026-11-22',
+        'items': [
+            ('new',
+             T('On-Air Friends 页多一张「卫星 QSO」卡：同步星历后选一颗星，'
+               '信标里带上星名和下一次过境时间。',
+               'On-Air Friends 頁多一張「衛星 QSO」卡：同步星曆後選一顆星，'
+               '信標裡帶上星名和下一次過境時間。',
+               'A Satellite QSO card on the On-Air Friends page: sync the '
+               'ephemeris, pick a satellite, and your beacon carries its name '
+               'and the next pass time.')),
+            ('new',
+             T('友台列表能看到对面报的卫星与过境时间。',
+               '友台列表能看到對面報的衛星與過境時間。',
+               'The friend list shows the satellite and pass time the other '
+               'station announced.')),
+            ('new',
+             T('友台那一行多了他的网格和离你多远。',
+               '友台那一行多了他的網格和離你多遠。',
+               'Each friend row now shows their grid and how far away they are.')),
+            ('up',
+             T('点一位友台打开的是他的台站面板，约通联改走右侧那枚图标。',
+               '點一位友台打開的是他的臺站面板，約通聯改走右側那枚圖示。',
+               'Tapping a friend opens their station panel; the icon on the '
+               'right starts the QSO message.')),
+        ],
+    },
+    {
         'ver': 'v2.2.12', 'date': '2026-11-21',
         'items': [
             ('new',

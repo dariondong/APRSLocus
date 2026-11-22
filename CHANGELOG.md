@@ -1,5 +1,29 @@
 # 更新日志
 
+## [2.2.13] - 2026-11-22
+
+### 新增
+
+- On-Air Friends 页多一张「卫星 QSO」卡：同步星历后选一颗星，信标里带上星名和下一次过境时间。
+- 友台列表能看到对面报的卫星与过境时间。
+- 友台那一行多了他的网格和离你多远。
+
+### 调整
+
+- 点一位友台打开的是他的台站面板，聊约通联改走右侧那枚图标。
+
+## [2.2.13] - 2026-11-22 (English)
+
+### Added
+
+- A Satellite QSO card on the On-Air Friends page. Sync the ephemeris, pick a satellite, and your beacon carries its name and the next pass time.
+- The friend list shows the satellite and pass time the other station announced.
+- Each friend row now shows their grid and how far away they are.
+
+### Changed
+
+- Tapping a friend opens their station panel. The chat icon on the right starts the QSO message.
+
 ## [2.2.12] - 2026-11-21
 
 ### 新增
