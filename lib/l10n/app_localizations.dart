@@ -19143,6 +19143,78 @@ abstract class AppLocalizations {
   /// **'30 分钟内还在信标里才算在线。'**
   String get onAirTtlNote;
 
+  /// No description provided for @satQso.
+  ///
+  /// In zh, this message translates to:
+  /// **'卫星 QSO'**
+  String get satQso;
+
+  /// No description provided for @satLead.
+  ///
+  /// In zh, this message translates to:
+  /// **'同步星历后选一颗星，下一次过境会跟着信标发出去。'**
+  String get satLead;
+
+  /// No description provided for @satSync.
+  ///
+  /// In zh, this message translates to:
+  /// **'同步星历'**
+  String get satSync;
+
+  /// No description provided for @satSyncOk.
+  ///
+  /// In zh, this message translates to:
+  /// **'星历已更新'**
+  String get satSyncOk;
+
+  /// No description provided for @satSyncFail.
+  ///
+  /// In zh, this message translates to:
+  /// **'星历没取到，稍后再试'**
+  String get satSyncFail;
+
+  /// No description provided for @satSatellite.
+  ///
+  /// In zh, this message translates to:
+  /// **'卫星'**
+  String get satSatellite;
+
+  /// No description provided for @satNextPass.
+  ///
+  /// In zh, this message translates to:
+  /// **'下次过境'**
+  String get satNextPass;
+
+  /// No description provided for @satPass.
+  ///
+  /// In zh, this message translates to:
+  /// **'{pass} · 最高 {el}°'**
+  String satPass(String pass, String el);
+
+  /// No description provided for @satNoPass.
+  ///
+  /// In zh, this message translates to:
+  /// **'24 小时内没有过境'**
+  String get satNoPass;
+
+  /// No description provided for @satNeedSync.
+  ///
+  /// In zh, this message translates to:
+  /// **'先同步星历'**
+  String get satNeedSync;
+
+  /// No description provided for @satEstimate.
+  ///
+  /// In zh, this message translates to:
+  /// **'过境时间按星历估算，实际可能差几分钟。'**
+  String get satEstimate;
+
+  /// No description provided for @satFriend.
+  ///
+  /// In zh, this message translates to:
+  /// **'{name} {pass}'**
+  String satFriend(String name, String pass);
+
 }
 
 class _AppLocalizationsDelegate

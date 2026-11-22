@@ -5296,5 +5296,19 @@
   "onAirQsoSent": "已发送",
   "onAirQsoNoLink": "消息链路没连上，先在「服务器」里连一条。",
   "onAirTtlNote": "30 分钟内还在信标里才算在线。",
-  "@onAirFriendCount": {"placeholders": {"n": {"type": "String"}}}
+  "@onAirFriendCount": {"placeholders": {"n": {"type": "String"}}},
+  "satQso": "卫星 QSO",
+  "satLead": "同步星历后选一颗星，下一次过境会跟着信标发出去。",
+  "satSync": "同步星历",
+  "satSyncOk": "星历已更新",
+  "satSyncFail": "星历没取到，稍后再试",
+  "satSatellite": "卫星",
+  "satNextPass": "下次过境",
+  "satPass": "{pass} · 最高 {el}°",
+  "satNoPass": "24 小时内没有过境",
+  "satNeedSync": "先同步星历",
+  "satEstimate": "过境时间按星历估算，实际可能差几分钟。",
+  "satFriend": "{name} {pass}",
+  "@satPass": {"placeholders": {"pass": {"type": "String"}, "el": {"type": "String"}}},
+  "@satFriend": {"placeholders": {"name": {"type": "String"}, "pass": {"type": "String"}}}
 }

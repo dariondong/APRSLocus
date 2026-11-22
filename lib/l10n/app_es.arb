@@ -4617,5 +4617,19 @@
   "onAirQsoSent": "Enviado",
   "onAirQsoNoLink": "Ningún enlace de mensajes está conectado. Conecta uno en «Servidor».",
   "onAirTtlNote": "En línea significa oído en los últimos 30 minutos.",
-  "@onAirFriendCount": {"placeholders": {"n": {"type": "String"}}}
+  "@onAirFriendCount": {"placeholders": {"n": {"type": "String"}}},
+  "satQso": "QSO por satélite",
+  "satLead": "Sincroniza la efeméride, elige un satélite y el próximo paso sale con tu baliza.",
+  "satSync": "Sincronizar efeméride",
+  "satSyncOk": "Efeméride actualizada",
+  "satSyncFail": "No se pudo descargar la efeméride, inténtalo más tarde",
+  "satSatellite": "Satélite",
+  "satNextPass": "Próximo paso",
+  "satPass": "{pass} · máx {el}°",
+  "satNoPass": "Sin paso en 24 horas",
+  "satNeedSync": "Sincroniza la efeméride primero",
+  "satEstimate": "Los pasos se calculan con la efeméride y pueden desviarse unos minutos.",
+  "satFriend": "{name} {pass}",
+  "@satPass": {"placeholders": {"pass": {"type": "String"}, "el": {"type": "String"}}},
+  "@satFriend": {"placeholders": {"name": {"type": "String"}, "pass": {"type": "String"}}}
 }

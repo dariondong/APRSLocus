@@ -10788,4 +10788,40 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get onAirTtlNote => "Online means heard within the last 30 minutes.";
 
+  @override
+  String get satQso => "Satellite QSO";
+
+  @override
+  String get satLead => "Sync the ephemeris, pick a satellite, and the next pass goes out with your beacon.";
+
+  @override
+  String get satSync => "Sync ephemeris";
+
+  @override
+  String get satSyncOk => "Ephemeris updated";
+
+  @override
+  String get satSyncFail => "Ephemeris not downloaded, try again later";
+
+  @override
+  String get satSatellite => "Satellite";
+
+  @override
+  String get satNextPass => "Next pass";
+
+  @override
+  String satPass(String pass, String el) => "$pass · max $el°";
+
+  @override
+  String get satNoPass => "No pass within 24 hours";
+
+  @override
+  String get satNeedSync => "Sync the ephemeris first";
+
+  @override
+  String get satEstimate => "Pass times are computed from the ephemeris and may be a few minutes off.";
+
+  @override
+  String satFriend(String name, String pass) => "$name $pass";
+
 }

@@ -10409,6 +10409,42 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String get onAirTtlNote => "30 分钟内还在信标里才算在线。";
 
+  @override
+  String get satQso => "卫星 QSO";
+
+  @override
+  String get satLead => "同步星历后选一颗星，下一次过境会跟着信标发出去。";
+
+  @override
+  String get satSync => "同步星历";
+
+  @override
+  String get satSyncOk => "星历已更新";
+
+  @override
+  String get satSyncFail => "星历没取到，稍后再试";
+
+  @override
+  String get satSatellite => "卫星";
+
+  @override
+  String get satNextPass => "下次过境";
+
+  @override
+  String satPass(String pass, String el) => "$pass · 最高 $el°";
+
+  @override
+  String get satNoPass => "24 小时内没有过境";
+
+  @override
+  String get satNeedSync => "先同步星历";
+
+  @override
+  String get satEstimate => "过境时间按星历估算，实际可能差几分钟。";
+
+  @override
+  String satFriend(String name, String pass) => "$name $pass";
+
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
@@ -20814,5 +20850,41 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get onAirTtlNote => "30 分鐘內還在信標裡才算線上。";
+
+  @override
+  String get satQso => "衛星 QSO";
+
+  @override
+  String get satLead => "同步星曆後選一顆星，下一次過境會跟著信標發出去。";
+
+  @override
+  String get satSync => "同步星曆";
+
+  @override
+  String get satSyncOk => "星曆已更新";
+
+  @override
+  String get satSyncFail => "星曆沒取到，稍後再試";
+
+  @override
+  String get satSatellite => "衛星";
+
+  @override
+  String get satNextPass => "下次過境";
+
+  @override
+  String satPass(String pass, String el) => "$pass · 最高 $el°";
+
+  @override
+  String get satNoPass => "24 小時內沒有過境";
+
+  @override
+  String get satNeedSync => "先同步星曆";
+
+  @override
+  String get satEstimate => "過境時間按星曆估算，實際可能差幾分鐘。";
+
+  @override
+  String satFriend(String name, String pass) => "$name $pass";
 
 }

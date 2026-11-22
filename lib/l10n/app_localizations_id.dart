@@ -10798,4 +10798,40 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get onAirTtlNote => "Daring berarti terdengar dalam 30 menit terakhir.";
 
+  @override
+  String get satQso => "QSO satelit";
+
+  @override
+  String get satLead => "Sinkronkan efemeris, pilih satelit, dan lintasan berikutnya ikut terkirim.";
+
+  @override
+  String get satSync => "Sinkronkan efemeris";
+
+  @override
+  String get satSyncOk => "Efemeris diperbarui";
+
+  @override
+  String get satSyncFail => "Efemeris gagal diunduh, coba lagi nanti";
+
+  @override
+  String get satSatellite => "Satelit";
+
+  @override
+  String get satNextPass => "Lintasan berikutnya";
+
+  @override
+  String satPass(String pass, String el) => "$pass · maks $el°";
+
+  @override
+  String get satNoPass => "Tidak ada lintasan dalam 24 jam";
+
+  @override
+  String get satNeedSync => "Sinkronkan efemeris dulu";
+
+  @override
+  String get satEstimate => "Waktu lintasan dihitung dari efemeris dan bisa meleset beberapa menit.";
+
+  @override
+  String satFriend(String name, String pass) => "$name $pass";
+
 }

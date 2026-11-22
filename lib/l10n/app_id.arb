@@ -4617,5 +4617,19 @@
   "onAirQsoSent": "Terkirim",
   "onAirQsoNoLink": "Tautan pesan belum tersambung. Hubungkan satu di halaman Server.",
   "onAirTtlNote": "Daring berarti terdengar dalam 30 menit terakhir.",
-  "@onAirFriendCount": {"placeholders": {"n": {"type": "String"}}}
+  "@onAirFriendCount": {"placeholders": {"n": {"type": "String"}}},
+  "satQso": "QSO satelit",
+  "satLead": "Sinkronkan efemeris, pilih satelit, dan lintasan berikutnya ikut terkirim.",
+  "satSync": "Sinkronkan efemeris",
+  "satSyncOk": "Efemeris diperbarui",
+  "satSyncFail": "Efemeris gagal diunduh, coba lagi nanti",
+  "satSatellite": "Satelit",
+  "satNextPass": "Lintasan berikutnya",
+  "satPass": "{pass} · maks {el}°",
+  "satNoPass": "Tidak ada lintasan dalam 24 jam",
+  "satNeedSync": "Sinkronkan efemeris dulu",
+  "satEstimate": "Waktu lintasan dihitung dari efemeris dan bisa meleset beberapa menit.",
+  "satFriend": "{name} {pass}",
+  "@satPass": {"placeholders": {"pass": {"type": "String"}, "el": {"type": "String"}}},
+  "@satFriend": {"placeholders": {"name": {"type": "String"}, "pass": {"type": "String"}}}
 }

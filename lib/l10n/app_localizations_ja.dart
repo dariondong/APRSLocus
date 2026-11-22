@@ -10509,4 +10509,40 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String get onAirTtlNote => "30 分以内に受信した局だけを表示します。";
 
+  @override
+  String get satQso => "衛星 QSO";
+
+  @override
+  String get satLead => "星暦を同期して衛星を選ぶと、次のパスがビーコンに付きます。";
+
+  @override
+  String get satSync => "星暦を同期";
+
+  @override
+  String get satSyncOk => "星暦を更新しました";
+
+  @override
+  String get satSyncFail => "星暦を取得できませんでした。後でもう一度";
+
+  @override
+  String get satSatellite => "衛星";
+
+  @override
+  String get satNextPass => "次のパス";
+
+  @override
+  String satPass(String pass, String el) => "$pass · 最大 $el°";
+
+  @override
+  String get satNoPass => "24 時間以内にパスなし";
+
+  @override
+  String get satNeedSync => "先に星暦を同期";
+
+  @override
+  String get satEstimate => "パス時刻は星暦からの推算で、数分ずれることがあります。";
+
+  @override
+  String satFriend(String name, String pass) => "$name $pass";
+
 }

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'map_rail.dart';
 import 'material.dart';
 import 'onair.dart';
+import 'satellite.dart';
 import 'settings_widgets.dart';
 import 'station_detail.dart';
 import 'state.dart';
@@ -296,6 +297,8 @@ class _OnAirCardsState extends State<OnAirCards> {
           ],
         ),
         const SizedBox(height: 16),
+        _satCard(),
+        const SizedBox(height: 16),
         SettingsSectionCard(
           title: s.onAirFriends,
           icon: Icons.people_alt_rounded,
@@ -370,6 +373,208 @@ class _OnAirCardsState extends State<OnAirCards> {
         ),
       ],
     );
+  }
+
+  /// 卫星 QSO：同步星历、选星、看下一次过境。
+  ///
+  /// 过境时间不由用户填：它只能由星历算出来。所以这块只有一颗按钮（同步）
+  /// 与一个选择（哪颗星），读数由 [AppState.satNextPass] 给。
+  Widget _satCard() {
+    final s = S.of(context);
+    final names = <String>[];
+    for (final t in st.satTles) {
+      final n = normalizeSatName(t.name);
+      if (n.isNotEmpty && !names.contains(n)) names.add(n);
+    }
+    names.sort();
+    final pass = st.satQsoOn ? st.satNextPass() : null;
+    final synced = DateTime.tryParse(st.satSyncedAt);
+    return SettingsSectionCard(
+      title: s.satQso,
+      icon: Icons.satellite_alt_rounded,
+      color: C.blue,
+      trailing: SettingsSwitch(
+        '',
+        value: st.satQsoOn,
+        color: C.blue,
+        onChanged: st.setSatQsoOn,
+      ),
+      children: [
+        if (!st.satQsoOn)
+          Padding(
+            padding: const EdgeInsets.fromLTRB(14, 12, 14, 14),
+            child: Text(s.satLead, style: ts(12, c: C.slate)),
+          )
+        else ...[
+          if (names.isNotEmpty) _satPickRow(names),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(14, 10, 14, 2),
+            child: Row(
+              children: [
+                Text(s.satNextPass, style: ts(12, c: C.slate)),
+                const Spacer(),
+                Flexible(
+                  child: Text(
+                    names.isEmpty
+                        ? s.satNeedSync
+                        : pass == null
+                            ? s.satNoPass
+                            : s.satPass(
+                                _utcHm(pass.tca),
+                                pass.maxElevation.toStringAsFixed(0),
+                              ),
+                    textAlign: TextAlign.right,
+                    style: ts(
+                      12.5,
+                      w: pass == null ? FontWeight.w500 : FontWeight.w700,
+                      c: pass == null ? C.grey : C.ink,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          if (pass != null)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(14, 2, 14, 0),
+              child: Text(s.satEstimate, style: ts(10.5, c: C.grey)),
+            ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(14, 10, 14, 12),
+            child: Row(
+              children: [
+                Expanded(
+                  child: FilledButton(
+                    style: FilledButton.styleFrom(
+                      backgroundColor: C.blue,
+                      padding: const EdgeInsets.symmetric(vertical: 11),
+                    ),
+                    onPressed: st.satSyncing ? null : _syncSat,
+                    child: st.satSyncing
+                        ? const SizedBox(
+                            width: 16,
+                            height: 16,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: Colors.white,
+                            ),
+                          )
+                        : Text(s.satSync, style: ts(13)),
+                  ),
+                ),
+                if (synced != null) ...[
+                  const SizedBox(width: 10),
+                  Text(_ago(context, synced), style: ts(10.5, c: C.grey)),
+                ],
+              ],
+            ),
+          ),
+        ],
+      ],
+    );
+  }
+
+  /// 选星那一行：没选时写「未选」，不当成默认选中第一颗（那不是他做的选择）。
+  Widget _satPickRow(List<String> names) {
+    final s = S.of(context);
+    final chosen = names.contains(st.satName);
+    return InkWell(
+      onTap: () => _pickSat(names),
+      child: Container(
+        padding: const EdgeInsets.fromLTRB(14, 12, 12, 12),
+        decoration: BoxDecoration(
+          border: Border(bottom: BorderSide(color: C.border, width: 0.4)),
+        ),
+        child: Row(
+          children: [
+            Text(s.satSatellite, style: ts(13)),
+            const Spacer(),
+            Text(
+              chosen ? st.satName : s.oobeDoneUnset,
+              style: ts(13, w: FontWeight.w700, c: chosen ? C.ink : C.grey),
+            ),
+            const SizedBox(width: 4),
+            Icon(Icons.expand_more_rounded, size: 18, color: C.grey),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<void> _pickSat(List<String> names) async {
+    final pick = await showModalBottomSheet<String>(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (ctx) => MaterialSurface(
+        radius: 24,
+        topOnly: true,
+        child: Container(
+          decoration: BoxDecoration(
+            color: C.sheetFill,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+          ),
+          padding: const EdgeInsets.fromLTRB(14, 14, 14, 18),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(S.of(ctx).satSatellite, style: ts(13, w: FontWeight.w700)),
+              const SizedBox(height: 8),
+              Flexible(
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: names.length,
+                  itemBuilder: (_, i) {
+                    final n = names[i];
+                    final on = n == st.satName;
+                    return InkWell(
+                      onTap: () => Navigator.pop(ctx, n),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 6, vertical: 12),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                n,
+                                style: ts(13,
+                                    w: on ? FontWeight.w700 : FontWeight.w500,
+                                    c: on ? C.blue : C.ink),
+                              ),
+                            ),
+                            if (on)
+                              Icon(Icons.check_rounded, size: 18, color: C.blue),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+    if (pick == null || !mounted) return;
+    st.setSatName(pick);
+  }
+
+  Future<void> _syncSat() async {
+    final ok = await st.syncSatEphemeris();
+    if (!mounted) return;
+    _toast(ok
+        ? S.of(context).satSyncOk
+        : S.of(context).satSyncFail);
+  }
+
+  /// 过境时间统一写 UTC：约通联的两个人可能不在一个时区。
+  String _utcHm(DateTime t) {
+    final u = t.toUtc();
+    final hh = u.hour.toString().padLeft(2, '0');
+    final mm = u.minute.toString().padLeft(2, '0');
+    return '$hh:$mmZ';
   }
 
   Widget _modeChip(String label, bool active, String value) {
@@ -478,6 +683,15 @@ class _OnAirCardsState extends State<OnAirCards> {
                     Text(
                       place,
                       style: ts(10.5, c: C.grey),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                  if (f.sat != null) ...[
+                    const SizedBox(height: 2),
+                    Text(
+                      S.of(context).satFriend(f.sat!.name, f.sat!.label),
+                      style: ts(10.5, c: C.blue, w: FontWeight.w600),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),

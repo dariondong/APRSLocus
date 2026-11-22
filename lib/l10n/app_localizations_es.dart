@@ -10847,4 +10847,40 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get onAirTtlNote => "En línea significa oído en los últimos 30 minutos.";
 
+  @override
+  String get satQso => "QSO por satélite";
+
+  @override
+  String get satLead => "Sincroniza la efeméride, elige un satélite y el próximo paso sale con tu baliza.";
+
+  @override
+  String get satSync => "Sincronizar efeméride";
+
+  @override
+  String get satSyncOk => "Efeméride actualizada";
+
+  @override
+  String get satSyncFail => "No se pudo descargar la efeméride, inténtalo más tarde";
+
+  @override
+  String get satSatellite => "Satélite";
+
+  @override
+  String get satNextPass => "Próximo paso";
+
+  @override
+  String satPass(String pass, String el) => "$pass · máx $el°";
+
+  @override
+  String get satNoPass => "Sin paso en 24 horas";
+
+  @override
+  String get satNeedSync => "Sincroniza la efeméride primero";
+
+  @override
+  String get satEstimate => "Los pasos se calculan con la efeméride y pueden desviarse unos minutos.";
+
+  @override
+  String satFriend(String name, String pass) => "$name $pass";
+
 }

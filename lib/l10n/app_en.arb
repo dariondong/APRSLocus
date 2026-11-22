@@ -4617,5 +4617,19 @@
   "onAirQsoSent": "Sent",
   "onAirQsoNoLink": "No message link is up. Connect one on the Server page.",
   "onAirTtlNote": "Online means heard within the last 30 minutes.",
-  "@onAirFriendCount": {"placeholders": {"n": {"type": "String"}}}
+  "@onAirFriendCount": {"placeholders": {"n": {"type": "String"}}},
+  "satQso": "Satellite QSO",
+  "satLead": "Sync the ephemeris, pick a satellite, and the next pass goes out with your beacon.",
+  "satSync": "Sync ephemeris",
+  "satSyncOk": "Ephemeris updated",
+  "satSyncFail": "Ephemeris not downloaded, try again later",
+  "satSatellite": "Satellite",
+  "satNextPass": "Next pass",
+  "satPass": "{pass} · max {el}°",
+  "satNoPass": "No pass within 24 hours",
+  "satNeedSync": "Sync the ephemeris first",
+  "satEstimate": "Pass times are computed from the ephemeris and may be a few minutes off.",
+  "satFriend": "{name} {pass}",
+  "@satPass": {"placeholders": {"pass": {"type": "String"}, "el": {"type": "String"}}},
+  "@satFriend": {"placeholders": {"name": {"type": "String"}, "pass": {"type": "String"}}}
 }

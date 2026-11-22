@@ -1,4 +1,5 @@
 import 'models.dart';
+import 'satellite.dart';
 
 /// ─── On-Air Friends：把「现在守着哪个频点」写进信标备注 ───
 ///
@@ -134,7 +135,11 @@ String normalizeOnAirFreq(String raw) {
 class OnAirFriend {
   final Station station;
   final OnAirInfo info;
-  const OnAirFriend(this.station, this.info);
+
+  /// 这一位声明的卫星过境（备注里的 `OAS:星名:HHMMZ`）；不玩卫星就是 null。
+  final SatQso? sat;
+
+  const OnAirFriend(this.station, this.info, {this.sat});
 
   String get call => station.call;
   DateTime get seen => station.lastHeard;
@@ -164,7 +169,8 @@ List<OnAirFriend> onAirFriendsOf(
     if (at.difference(s.lastHeard) > ttl) continue;
     final info = OnAirInfo.decode(s.comment);
     if (info == null) continue;
-    out.add(OnAirFriend(s, info));
+    // 卫星过境单独一段，与 `OAF:` 各读各的（一颗星也可以只声明过境、不守频）。
+    out.add(OnAirFriend(s, info, sat: SatQso.decode(s.comment)));
   }
   out.sort((a, b) => b.seen.compareTo(a.seen));
   return out;

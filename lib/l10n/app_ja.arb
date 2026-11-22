@@ -4617,5 +4617,19 @@
   "onAirQsoSent": "送信しました",
   "onAirQsoNoLink": "メッセージのリンクが未接続です。「サーバー」で接続してください。",
   "onAirTtlNote": "30 分以内に受信した局だけを表示します。",
-  "@onAirFriendCount": {"placeholders": {"n": {"type": "String"}}}
+  "@onAirFriendCount": {"placeholders": {"n": {"type": "String"}}},
+  "satQso": "衛星 QSO",
+  "satLead": "星暦を同期して衛星を選ぶと、次のパスがビーコンに付きます。",
+  "satSync": "星暦を同期",
+  "satSyncOk": "星暦を更新しました",
+  "satSyncFail": "星暦を取得できませんでした。後でもう一度",
+  "satSatellite": "衛星",
+  "satNextPass": "次のパス",
+  "satPass": "{pass} · 最大 {el}°",
+  "satNoPass": "24 時間以内にパスなし",
+  "satNeedSync": "先に星暦を同期",
+  "satEstimate": "パス時刻は星暦からの推算で、数分ずれることがあります。",
+  "satFriend": "{name} {pass}",
+  "@satPass": {"placeholders": {"pass": {"type": "String"}, "el": {"type": "String"}}},
+  "@satFriend": {"placeholders": {"name": {"type": "String"}, "pass": {"type": "String"}}}
 }
