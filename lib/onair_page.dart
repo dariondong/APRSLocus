@@ -574,7 +574,7 @@ class _OnAirCardsState extends State<OnAirCards> {
     final u = t.toUtc();
     final hh = u.hour.toString().padLeft(2, '0');
     final mm = u.minute.toString().padLeft(2, '0');
-    return '$hh:$mmZ';
+    return '$hh:${mm}Z';
   }
 
   Widget _modeChip(String label, bool active, String value) {
