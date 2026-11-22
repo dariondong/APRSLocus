@@ -10445,6 +10445,9 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String satFriend(String name, String pass) => "$name $pass";
 
+  @override
+  String onAirSameFreq(String n) => "$n 人同频";
+
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
@@ -20886,5 +20889,8 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String satFriend(String name, String pass) => "$name $pass";
+
+  @override
+  String onAirSameFreq(String n) => "$n 人同頻";
 
 }

@@ -4631,5 +4631,7 @@
   "satEstimate": "Waktu lintasan dihitung dari efemeris dan bisa meleset beberapa menit.",
   "satFriend": "{name} {pass}",
   "@satPass": {"placeholders": {"pass": {"type": "String"}, "el": {"type": "String"}}},
-  "@satFriend": {"placeholders": {"name": {"type": "String"}, "pass": {"type": "String"}}}
+  "@satFriend": {"placeholders": {"name": {"type": "String"}, "pass": {"type": "String"}}},
+  "onAirSameFreq": "{n} di frekuensi sama",
+  "@onAirSameFreq": {"placeholders": {"n": {"type": "String"}}}
 }

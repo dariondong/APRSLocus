@@ -4631,5 +4631,7 @@
   "satEstimate": "Los pasos se calculan con la efeméride y pueden desviarse unos minutos.",
   "satFriend": "{name} {pass}",
   "@satPass": {"placeholders": {"pass": {"type": "String"}, "el": {"type": "String"}}},
-  "@satFriend": {"placeholders": {"name": {"type": "String"}, "pass": {"type": "String"}}}
+  "@satFriend": {"placeholders": {"name": {"type": "String"}, "pass": {"type": "String"}}},
+  "onAirSameFreq": "{n} en tu frecuencia",
+  "@onAirSameFreq": {"placeholders": {"n": {"type": "String"}}}
 }

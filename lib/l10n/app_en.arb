@@ -4631,5 +4631,7 @@
   "satEstimate": "Pass times are computed from the ephemeris and may be a few minutes off.",
   "satFriend": "{name} {pass}",
   "@satPass": {"placeholders": {"pass": {"type": "String"}, "el": {"type": "String"}}},
-  "@satFriend": {"placeholders": {"name": {"type": "String"}, "pass": {"type": "String"}}}
+  "@satFriend": {"placeholders": {"name": {"type": "String"}, "pass": {"type": "String"}}},
+  "onAirSameFreq": "{n} on your frequency",
+  "@onAirSameFreq": {"placeholders": {"n": {"type": "String"}}}
 }

@@ -2,6 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 import '../lib/models.dart';
 import '../lib/onair.dart';
+import '../lib/satellite.dart';
 
 /// On-Air Friends 的纯逻辑：编码 / 解析 / 频率归一 / 挑在线友台。
 ///
@@ -142,6 +143,30 @@ void main() {
         station('A4AAA-4', 'OAF:145.800:AM', now),
       ];
       expect(onAirModesOf(onAirFriendsOf(list, now: now)), ['FM', 'AM', 'USB']);
+    });
+  });
+
+  group('现网报文', () {
+    test('OAF 后面跟着 OAS 时仍然认得出来', () {
+      // BG7PGW-2 的真实备注（带位置模糊、CsT 与 /A=）：
+      //   以前这里把模式读成 `FM OAS`，整条判成格式不对，列表里就看不到他。
+      const c = '212/000/A=000000 Bat:53% OAF:438.500:FM OAS:ISS:0548Z';
+      final info = OnAirInfo.decode(c);
+      expect(info, isNotNull);
+      expect(info!.freq, '438.500');
+      expect(info.mode, 'FM');
+      expect(info.extra, '');
+      final sat = SatQso.decode(c);
+      expect(sat, isNotNull);
+      expect(sat!.name, 'ISS');
+      expect(sat.label, '05:48Z');
+    });
+
+    test('附加参数带空格时不被吃掉', () {
+      final info = OnAirInfo.decode('OAF:145.500:FM GP 5W OAS:ISS:0548Z');
+      expect(info, isNotNull);
+      expect(info!.mode, 'FM');
+      expect(info.extra, 'GP 5W');
     });
   });
 }

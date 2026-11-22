@@ -5310,5 +5310,7 @@
   "satEstimate": "过境时间按星历估算，实际可能差几分钟。",
   "satFriend": "{name} {pass}",
   "@satPass": {"placeholders": {"pass": {"type": "String"}, "el": {"type": "String"}}},
-  "@satFriend": {"placeholders": {"name": {"type": "String"}, "pass": {"type": "String"}}}
+  "@satFriend": {"placeholders": {"name": {"type": "String"}, "pass": {"type": "String"}}},
+  "onAirSameFreq": "{n} 人同频",
+  "@onAirSameFreq": {"placeholders": {"n": {"type": "String"}}}
 }

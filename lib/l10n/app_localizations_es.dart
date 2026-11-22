@@ -10883,4 +10883,7 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String satFriend(String name, String pass) => "$name $pass";
 
+  @override
+  String onAirSameFreq(String n) => "$n en tu frecuencia";
+
 }

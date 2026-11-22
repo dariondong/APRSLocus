@@ -57,28 +57,55 @@ class OnAirInfo {
   }
 
   /// 从一条备注里解析出来；没有、或格式不对，返回 null。
+  ///
+  /// 两个坑都是现网报文里撞到的（BG7PGW-2 的
+  /// `… OAF:438.500:FM OAS:ISS:0548Z`）：
+  ///   1. OAF 段后面可能还跟着另一段机器标记（`OAS:` 卫星过境），
+  ///      不先切掉它，模式就会读成 `FM OAS`，整条判成格式不对；
+  ///   2. 模式后面的分隔可以是空白而不只是冒号，附加参数自己带空格
+  ///      （`GP 5W`），所以“词”只能切到第一个冒号或空白。
   static OnAirInfo? decode(String? comment) {
     if (comment == null) return null;
     final i = comment.indexOf(mark);
     if (i < 0) return null;
-    final rest = comment.substring(i + mark.length);
+    var rest = comment.substring(i + mark.length);
+    final cut = rest.indexOf(SatQso.mark);
+    if (cut > 0) rest = rest.substring(0, cut);
+    rest = rest.trim();
     if (rest.isEmpty) return null;
-    // 频率 / 模式 / 其余全部当附加参数（附加参数里可以有冒号，所以只切两刀）。
-    final first = rest.indexOf(':');
-    if (first <= 0) return null;
-    final freq = normalizeOnAirFreq(rest.substring(0, first));
+    final f = _tokenEnd(rest);
+    if (f <= 0) return null;
+    final freq = normalizeOnAirFreq(rest.substring(0, f));
     if (freq.isEmpty) return null;
-    final afterFreq = rest.substring(first + 1);
-    final second = afterFreq.indexOf(':');
-    final modeRaw = (second < 0 ? afterFreq : afterFreq.substring(0, second))
-        .trim();
-    final extraRaw = second < 0 ? '' : afterFreq.substring(second + 1).trim();
+    var after = f < rest.length ? rest.substring(f + 1).trim() : '';
+    // 整段都得解析得通才认（见类注释）：只写频率、没写模式的不是我们的标记。
+    if (after.isEmpty) return null;
+    var modeRaw = '';
+    var extraRaw = '';
+    if (after.isNotEmpty) {
+      final m = _tokenEnd(after);
+      modeRaw = after.substring(0, m).trim();
+      if (m < after.length) {
+        // 后面是 `:` 就跳过去，是空白就留在附加参数里
+        extraRaw = after.substring(after[m] == ':' ? m + 1 : m).trim();
+      }
+    }
+    if (modeRaw.isEmpty) return null;
     if (!_modeRe.hasMatch(modeRaw)) return null;
     return OnAirInfo(
       freq: freq,
       mode: modeRaw.toUpperCase(),
       extra: extraRaw.length > extraMax ? extraRaw.substring(0, extraMax) : extraRaw,
     );
+  }
+
+  /// 一段“词”到哪儿结束：第一个冒号或空白。
+  static int _tokenEnd(String s) {
+    for (var k = 0; k < s.length; k++) {
+      final c = s[k];
+      if (c == ':' || c == ' ' || c == '\t') return k;
+    }
+    return s.length;
   }
 
   /// 模式只认「字母数字 + 斜杠 + 点 + 加号」，长度 1~8。认出别的就不是我们的标记。

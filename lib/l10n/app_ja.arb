@@ -4631,5 +4631,7 @@
   "satEstimate": "パス時刻は星暦からの推算で、数分ずれることがあります。",
   "satFriend": "{name} {pass}",
   "@satPass": {"placeholders": {"pass": {"type": "String"}, "el": {"type": "String"}}},
-  "@satFriend": {"placeholders": {"name": {"type": "String"}, "pass": {"type": "String"}}}
+  "@satFriend": {"placeholders": {"name": {"type": "String"}, "pass": {"type": "String"}}},
+  "onAirSameFreq": "{n} 局が同周波",
+  "@onAirSameFreq": {"placeholders": {"n": {"type": "String"}}}
 }

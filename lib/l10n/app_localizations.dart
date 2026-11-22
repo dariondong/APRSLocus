@@ -19215,6 +19215,12 @@ abstract class AppLocalizations {
   /// **'{name} {pass}'**
   String satFriend(String name, String pass);
 
+  /// No description provided for @onAirSameFreq.
+  ///
+  /// In zh, this message translates to:
+  /// **'{n} 人同频'**
+  String onAirSameFreq(String n);
+
 }
 
 class _AppLocalizationsDelegate

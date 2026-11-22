@@ -304,7 +304,12 @@ class _OnAirCardsState extends State<OnAirCards> {
           icon: Icons.people_alt_rounded,
           color: C.green,
           subtitle: s.onAirTtlNote,
-          trailing: Text('${all.length}', style: ts(13, w: FontWeight.w700)),
+          trailing: Text(
+            _fltMode.isEmpty && q.isEmpty
+                ? '${all.length}'
+                : '${list.length}/${all.length}',
+            style: ts(13, w: FontWeight.w700),
+          ),
           children: [
             if (all.isNotEmpty) ...[
               Padding(
@@ -792,13 +797,21 @@ class OnAirChip extends StatelessWidget {
     final up = st.onAirServerUp;
     final on = st.onAirOn && up;
     final friends = on ? st.onAirFriends.length : 0;
+    // 同频同模式的有几个人：上行给总数（全部友台），下行给这个频道上的人数 ——
+    // 两个数分开用，不把同一个数在两处各写一遍。
+    final same = on
+        ? st.onAirFriends.where((f) =>
+            f.info.freq == st.onAirFreq &&
+            (f.info.mode.isEmpty ? 'FM' : f.info.mode) ==
+                (st.onAirMode.isEmpty ? 'FM' : st.onAirMode)).length
+        : 0;
     final status = !up
         ? s.onAirNeedServer
         : !st.onAirOn
             ? s.onAirOff
             : st.onAirFreq.isEmpty
                 ? s.onAirNoFreq
-                : st.onAirInfo.label;
+                : '${st.onAirInfo.label} · ${s.onAirSameFreq('$same')}';
     final accent = on ? C.green : C.grey;
     return MapRailItem(
       icon: Icons.podcasts_rounded,
