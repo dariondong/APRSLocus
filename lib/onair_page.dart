@@ -537,7 +537,7 @@ class _OnAirCardsState extends State<OnAirCards> {
             ),
           ),
           child: Text(
-            '$mo-$dd $hh:$mmZ · $el°',
+            '$mo-$dd $hh:${mm}Z · $el°',
             style: ts(
               11,
               w: active ? FontWeight.w700 : FontWeight.w500,
