@@ -360,6 +360,41 @@ SatPass? nextPass(
   return SatPass(aos: aos, tca: tca, los: los, maxElevation: bestEl);
 }
 
+/// 在 [within] 之内所有过境（含下一次），按时间顺序。
+///
+/// 一个观测点一天能看到同一条低轨星好几次，只给「下一次」不够用 ——
+/// 要约的是自己真能守的那个过境，所以这里把窗口内的都列出来，界面自己挑。
+/// [maxPasses] 是安全阀：极轨星在 3 天里能给出很多次，全算一遍不值当。
+List<SatPass> passesWithin(
+  Tle t,
+  double obsLat,
+  double obsLng, {
+  DateTime? from,
+  Duration within = const Duration(days: 3),
+  double minElevationDeg = 0,
+  int maxPasses = 24,
+}) {
+  final out = <SatPass>[];
+  var cursor = (from ?? DateTime.now()).toUtc();
+  final end = cursor.add(within);
+  while (out.length < maxPasses) {
+    final p = nextPass(
+      t,
+      obsLat,
+      obsLng,
+      from: cursor,
+      within: end.difference(cursor),
+      minElevationDeg: minElevationDeg,
+    );
+    if (p == null) break;
+    out.add(p);
+    // 从落下点之后一秒继续找：同一时刻不能出两次。
+    cursor = p.los.add(const Duration(seconds: 1));
+    if (!cursor.isBefore(end)) break;
+  }
+  return out;
+}
+
 /// 在 [a]（低于阈值）与 [b]（不低于阈值）之间二分到 1 秒。
 DateTime _bisect(
   Tle t,

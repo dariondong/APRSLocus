@@ -1989,35 +1989,51 @@ class AppState extends ChangeNotifier {
     return null;
   }
 
-  /// 下次过境缓存：信标备注每条都要问一次，24 小时扫描是 2800 多次外推，
-  /// 不缓存的话每次拼备注都要算一遍。一分钟一换就够。
-  SatPass? _satPassCache;
-  String _satPassKey = '';
+  /// 过境窗口：往后看多久。三天够约，也不会让界面列出一屏。
+  static const Duration satPassWindow = Duration(days: 3);
 
-  /// 下一次过境（默认往后看 24 小时）。没定位或没选星就是 null。
-  SatPass? satNextPass({
-    Duration within = const Duration(hours: 24),
-    double minElevationDeg = 0,
-  }) {
+  /// 窗口内能听到的过境（最高仰角 ≥ 10°），一分钟缓存。
+  List<SatPass> _satPasses = const [];
+  String _satPassesKey = '';
+
+  List<SatPass> satPasses() {
     final t = satSelected;
-    if (t == null) return null;
+    if (t == null) return const [];
     final lat = myLat;
     final lng = myLng;
-    if (lat == null || lng == null) return null;
+    if (lat == null || lng == null) return const [];
     final key = '$satName|${lat.toStringAsFixed(2)}|${lng.toStringAsFixed(2)}'
-        '|${within.inMinutes}|$minElevationDeg'
         '|${DateTime.now().millisecondsSinceEpoch ~/ 60000}';
-    if (key == _satPassKey) return _satPassCache;
-    _satPassKey = key;
-    _satPassCache = nextPass(t, lat, lng,
-        within: within, minElevationDeg: minElevationDeg);
-    return _satPassCache;
+    if (key == _satPassesKey) return _satPasses;
+    _satPassesKey = key;
+    _satPasses = passesWithin(t, lat, lng,
+        within: satPassWindow, minElevationDeg: 10);
+    return _satPasses;
+  }
+
+  /// 当前选中的那个过境；窗口里没有那么多个就是 null。
+  SatPass? get satPickedPass {
+    final list = satPasses();
+    if (list.isEmpty) return null;
+    final i = satPassIndex.clamp(0, list.length - 1);
+    return list[i];
+  }
+
+  /// 下一次过境（= 选中的那个）。留个名字给旧调用点。
+  SatPass? satNextPass() => satPickedPass;
+
+  void setSatPassIndex(int i) {
+    if (i == satPassIndex) return;
+    satPassIndex = i < 0 ? 0 : i;
+    persist();
+    _notify();
+    if (satQsoOn) _publishOnAirNow();
   }
 
   /// 要写进信标的那一段；写不了（没开、没星、没定位、24 小时内不过境）返回 null。
   SatQso? get satQso {
     if (!satQsoOn) return null;
-    final p = satNextPass();
+    final p = satPickedPass;
     if (p == null) return null;
     return SatQso.of(satName, p.tca);
   }
@@ -2035,6 +2051,7 @@ class AppState extends ChangeNotifier {
     final n = normalizeSatName(name);
     if (n == satName) return;
     satName = n;
+    satPassIndex = 0;
     persist();
     _notify();
     if (satQsoOn) _publishOnAirNow();
@@ -5870,10 +5887,11 @@ class AppState extends ChangeNotifier {
     onAirExtra = '';
     satQsoOn = false;
     satName = '';
+    satPassIndex = 0;
     satTleText = '';
     satSyncedAt = '';
-    _satPassKey = '';
-    _satPassCache = null;
+    _satPassesKey = '';
+    _satPasses = const [];
     unawaited(rigDaemon.stop());
     rigLocalOn = false;
     rigLocalModel = 0;
@@ -6286,6 +6304,11 @@ class AppState extends ChangeNotifier {
   /// 选中的卫星名（归一大写）。空 = 还没选。
   String satName = '';
 
+  /// 选中的是窗口里第几个过境（0 = 下一次）。
+  ///
+  /// 只给「下一次」不够用：要约的往往不是马上那个，而是今晚或明天的一个。
+  int satPassIndex = 0;
+
   /// 上次同步下来的星历原文（TLE），存字符串直接落盘。
   String satTleText = '';
 
@@ -6655,6 +6678,7 @@ class AppState extends ChangeNotifier {
       onAirExtra = p.getString('onAirExtra') ?? onAirExtra;
       satQsoOn = p.getBool('satQsoOn') ?? satQsoOn;
       satName = p.getString('satName') ?? satName;
+      satPassIndex = p.getInt('satPassIndex') ?? satPassIndex;
       satTleText = p.getString('satTleText') ?? satTleText;
       satSyncedAt = p.getString('satSyncedAt') ?? satSyncedAt;
       final httpPort = p.getInt('acnHttpPort') ?? acnHttpPort;
@@ -7075,6 +7099,7 @@ class AppState extends ChangeNotifier {
     await p.setString('onAirExtra', onAirExtra);
     await p.setBool('satQsoOn', satQsoOn);
     await p.setString('satName', satName);
+    await p.setInt('satPassIndex', satPassIndex);
     await p.setString('satTleText', satTleText);
     await p.setString('satSyncedAt', satSyncedAt);
     await p.setBool('igateEnabled', igateEnabled);

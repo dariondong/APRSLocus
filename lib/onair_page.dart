@@ -387,7 +387,8 @@ class _OnAirCardsState extends State<OnAirCards> {
       if (n.isNotEmpty && !names.contains(n)) names.add(n);
     }
     names.sort();
-    final pass = st.satQsoOn ? st.satNextPass() : null;
+    final passes = st.satQsoOn ? st.satPasses() : const <SatPass>[];
+    final pass = st.satQsoOn ? st.satPickedPass : null;
     final synced = DateTime.tryParse(st.satSyncedAt);
     return SettingsSectionCard(
       title: s.satQso,
@@ -434,6 +435,19 @@ class _OnAirCardsState extends State<OnAirCards> {
               ],
             ),
           ),
+          if (passes.length > 1)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(10, 8, 10, 2),
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: [
+                    for (var i = 0; i < passes.length; i++)
+                      _passChip(passes[i], i == st.satPassIndex, i),
+                  ],
+                ),
+              ),
+            ),
           if (pass != null)
             Padding(
               padding: const EdgeInsets.fromLTRB(14, 2, 14, 0),
@@ -496,6 +510,40 @@ class _OnAirCardsState extends State<OnAirCards> {
             const SizedBox(width: 4),
             Icon(Icons.expand_more_rounded, size: 18, color: C.grey),
           ],
+        ),
+      ),
+    );
+  }
+
+  /// 一个过境一枚小片：日期 + 时间 + 最高仰角。点一下就是选它。
+  Widget _passChip(SatPass p, bool active, int i) {
+    final t = p.tca.toUtc();
+    final mo = t.month.toString().padLeft(2, '0');
+    final dd = t.day.toString().padLeft(2, '0');
+    final hh = t.hour.toString().padLeft(2, '0');
+    final mm = t.minute.toString().padLeft(2, '0');
+    final el = p.maxElevation.toStringAsFixed(0);
+    return Padding(
+      padding: const EdgeInsets.only(right: 6),
+      child: GestureDetector(
+        onTap: () => st.setSatPassIndex(i),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
+          decoration: BoxDecoration(
+            color: active ? C.blueBg : C.greyBg,
+            borderRadius: BorderRadius.circular(999),
+            border: Border.all(
+              color: active ? C.blue.withValues(alpha: 0.45) : C.border,
+            ),
+          ),
+          child: Text(
+            '$mo-$dd $hh:$mmZ · $el°',
+            style: ts(
+              11,
+              w: active ? FontWeight.w700 : FontWeight.w500,
+              c: active ? C.blue : C.slate,
+            ),
+          ),
         ),
       ),
     );

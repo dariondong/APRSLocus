@@ -73,6 +73,20 @@ SO-50
       expect(p.maxElevation, lessThanOrEqualTo(90));
     });
 
+    test('三天内不止一次，且按时间排开', () {
+      final t = _iss();
+      final from = t.epoch.add(const Duration(hours: 1));
+      final list = passesWithin(t, 23.13, 113.26, from: from);
+      expect(list.length, greaterThanOrEqualTo(2));
+      for (var i = 1; i < list.length; i++) {
+        expect(list[i].aos.isAfter(list[i - 1].los), isTrue);
+      }
+      // 第一个就是「下一次」，两处口径必须一致
+      final one = nextPass(t, 23.13, 113.26, from: from)!;
+      expect(list.first.aos, one.aos);
+      expect(list.first.tca, one.tca);
+    });
+
     test('地平高度在场内高于阈值', () {
       final t = _iss();
       final from = t.epoch.add(const Duration(hours: 1));

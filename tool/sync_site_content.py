@@ -423,17 +423,17 @@ CL = [
         'items': [
             ('new',
              T('On-Air Friends 页多一张「卫星 QSO」卡：同步星历后选一颗星，'
-               '信标里带上星名和下一次过境时间。',
+               '在三天内的过境里挑一个。',
                'On-Air Friends 頁多一張「衛星 QSO」卡：同步星曆後選一顆星，'
-               '信標裡帶上星名和下一次過境時間。',
+               '在三天內的過境裡挑一個。',
                'A Satellite QSO card on the On-Air Friends page: sync the '
-               'ephemeris, pick a satellite, and your beacon carries its name '
-               'and the next pass time.')),
+               'ephemeris, pick a satellite, then choose one of the passes in '
+               'the next three days.')),
             ('new',
-             T('友台列表能看到对面报的卫星与过境时间。',
-               '友台列表能看到對面報的衛星與過境時間。',
-               'The friend list shows the satellite and pass time the other '
-               'station announced.')),
+             T('信标里带上星名和这个过境的时间，台站面板与友台列表都读得出来。',
+               '信標裡帶上星名和這個過境時間，臺站面板與友台列表都讀得出來。',
+               'Your beacon carries the satellite name and that pass time; the '
+               'station panel and the friend list both read it back.')),
             ('new',
              T('友台那一行多了他的网格和离你多远。',
                '友台那一行多了他的網格和離你多遠。',

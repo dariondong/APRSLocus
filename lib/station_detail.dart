@@ -14,6 +14,7 @@ import 'coord_format.dart';
 import 'early_member.dart';
 import 'honor_wall_page.dart';
 import 'station_note.dart';
+import 'satellite.dart';
 
 class StationDetail extends StatefulWidget {
   final AppState state;
@@ -225,6 +226,8 @@ class _StationDetailState extends State<StationDetail> {
   @override
   Widget build(BuildContext context) {
     final s = widget.station;
+    // 对面如果报了卫星过境（信标备注里的 `OAS:`），位置卡里多一行
+    final satInfo = SatQso.decode(s.comment);
     final pkt = widget.state.packets
         .where((p) => p.src == s.call)
         .take(5)
@@ -782,7 +785,14 @@ class _StationDetailState extends State<StationDetail> {
                                 icon: Icons.grid_4x4_rounded,
                               ),
                               SizedBox(height: 8),
-                              SizedBox(height: 8),
+                              if (satInfo != null) ...[
+                                KV(
+                                  S.of(context).satSatellite,
+                                  '${satInfo.name} · ${satInfo.label}',
+                                  icon: Icons.satellite_alt_rounded,
+                                ),
+                                SizedBox(height: 8),
+                              ],
                               KV(
                                 S.of(context).latitude,
                                 fmtLat(s.lat, widget.state.coordFmt),
