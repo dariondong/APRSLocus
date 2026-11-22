@@ -110,7 +110,6 @@ class OnAirInfo {
 
   /// 模式只认「字母数字 + 斜杠 + 点 + 加号」，长度 1~8。认出别的就不是我们的标记。
   static final RegExp _modeRe = RegExp(r'^[A-Za-z0-9/+.]{1,8}$');
-
   @override
   bool operator ==(Object other) =>
       other is OnAirInfo &&
@@ -121,6 +120,12 @@ class OnAirInfo {
   @override
   int get hashCode => Object.hash(freq, mode, extra);
 }
+
+/// 模式能不能写进 `OAF:` 段：字母数字与 `+ / .`，1~8 位。
+///
+/// 与收端的判据同一份 —— 自己填的模式若不合这条，发出去谁都读不出来。
+bool isValidOnAirMode(String mode) =>
+    RegExp(r'^[A-Za-z0-9/+.]{1,8}$').hasMatch(mode.trim());
 
 /// 把用户随手填的频率归一成 `145.500`（MHz、三位小数）；填不成返回空串。
 ///

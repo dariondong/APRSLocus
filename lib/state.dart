@@ -1951,8 +1951,11 @@ class AppState extends ChangeNotifier {
   }) {
     final f = normalizeOnAirFreq(freq);
     if (freq.trim().isNotEmpty && f.isEmpty) return false;
+    final m = mode.trim().isEmpty ? 'FM' : mode.trim().toUpperCase();
+    // 模式要能写进 `OAF:` 段（收端按同一份规则解析），不合就不存
+    if (!isValidOnAirMode(m)) return false;
     onAirFreq = f;
-    onAirMode = mode.trim().isEmpty ? 'FM' : mode.trim().toUpperCase();
+    onAirMode = m;
     onAirExtra = extra.trim();
     persist();
     _notify();
@@ -1971,13 +1974,65 @@ class AppState extends ChangeNotifier {
 
   // ─── 卫星 QSO（星历 + 过境时间）───
 
-  /// 星历里那几颗星（解析自 [satTleText]；原文没变就不重解析）。
+  /// 星历里那几颗星（解析自 [satTleText] 加 [satCustomTles]；原文没变就不重解析）。
   List<Tle> get satTles {
-    if (_satTlesOf != satTleText) {
-      _satTlesOf = satTleText;
-      _satTles = satTleText.isEmpty ? const [] : Tle.parseList(satTleText);
+    final all = <String>[for (final c in satCustomTles) c, satTleText].join('\n');
+    if (_satTlesOf != all) {
+      _satTlesOf = all;
+      _satTles = all.trim().isEmpty ? const [] : Tle.parseList(all);
     }
     return _satTles;
+  }
+
+  /// 加一条他自己填的星历；三行解析不通返回 false（不存坏的）。
+  bool addSatCustomTle(String blob) {
+    final lines = blob
+        .split(RegExp(r'\r?\n'))
+        .map((e) => e.trimRight())
+        .where((e) => e.trim().isNotEmpty)
+        .toList();
+    if (lines.length < 3) return false;
+    final t = Tle.parse(lines[0], lines[1], lines[2]);
+    if (t == null) return false;
+    final name = normalizeSatName(t.name);
+    if (name.isEmpty) return false;
+    // 同名的不重复存：再填一次就是替换（星历会更新）
+    satCustomTles = [
+      for (final c in satCustomTles)
+        if (normalizeSatName(c.split('\n').first) != name) c,
+      '${t.name}\n${t.line1}\n${t.line2}',
+    ];
+    _satTlesOf = '';
+    persist();
+    _notify();
+    return true;
+  }
+
+  /// 删掉一条自己加的（同步下来的那份不受影响）。
+  void removeSatCustomTle(String name) {
+    final n = normalizeSatName(name);
+    final before = satCustomTles.length;
+    satCustomTles = [
+      for (final c in satCustomTles)
+        if (normalizeSatName(c.split('\n').first) != n) c,
+    ];
+    if (satCustomTles.length == before) return;
+    if (normalizeSatName(satName) == n) {
+      satName = '';
+      satPassIndex = 0;
+    }
+    _satTlesOf = '';
+    persist();
+    _notify();
+  }
+
+  /// 这条星是不是他自己加的（界面上给删除按钮用）。
+  bool satIsCustom(String name) {
+    final n = normalizeSatName(name);
+    for (final c in satCustomTles) {
+      if (normalizeSatName(c.split('\n').first) == n) return true;
+    }
+    return false;
   }
 
   /// 选中的那颗星；没选或者星历里没有，返回 null。
@@ -5903,6 +5958,7 @@ class AppState extends ChangeNotifier {
     satName = '';
     satPassIndex = 0;
     satTleText = '';
+    satCustomTles = [];
     satSyncedAt = '';
     _satPassesKey = '';
     _satPasses = const [];
@@ -6326,6 +6382,12 @@ class AppState extends ChangeNotifier {
   /// 上次同步下来的星历原文（TLE），存字符串直接落盘。
   String satTleText = '';
 
+  /// 他自己加进来的卫星（每项 = 名称、两行数据，用换行连起来）。
+  ///
+  /// 星历组里没有的星（新发、临时、军星）只能手填；手填的那条也走同一套解析，
+  /// 解析不通就不收，不存半条坏的进去。
+  List<String> satCustomTles = [];
+
   /// 上次同步时间（ISO 8601）。
   String satSyncedAt = '';
 
@@ -6695,6 +6757,7 @@ class AppState extends ChangeNotifier {
       satName = p.getString('satName') ?? satName;
       satPassIndex = p.getInt('satPassIndex') ?? satPassIndex;
       satTleText = p.getString('satTleText') ?? satTleText;
+      satCustomTles = p.getStringList('satCustomTles') ?? satCustomTles;
       satSyncedAt = p.getString('satSyncedAt') ?? satSyncedAt;
       final httpPort = p.getInt('acnHttpPort') ?? acnHttpPort;
       if (httpPort > 0 && httpPort <= 65535) acnHttpPort = httpPort;
@@ -7117,6 +7180,7 @@ class AppState extends ChangeNotifier {
     await p.setString('satName', satName);
     await p.setInt('satPassIndex', satPassIndex);
     await p.setString('satTleText', satTleText);
+    await p.setStringList('satCustomTles', satCustomTles);
     await p.setString('satSyncedAt', satSyncedAt);
     await p.setBool('igateEnabled', igateEnabled);
     await p.setBool('igateTwoWay', igateTwoWay);
