@@ -2,6 +2,7 @@ import 'dart:math' as math;
 import 'dart:ui' show ImageFilter;
 
 import 'package:flutter/foundation.dart' show ValueListenable;
+import 'package:flutter/gestures.dart' show PointerDeviceKind;
 import 'package:flutter/material.dart';
 
 import 'theme.dart';
@@ -743,6 +744,43 @@ class ClickCursor extends StatelessWidget {
         cursor: SystemMouseCursors.click,
         child: child,
       );
+}
+
+/// 一行放不下的长字段：横向滚，不用省略号截断。
+///
+/// Flutter 默认的滚动行为只认手指与手写笔，鼠标按住拖是不动的 ——
+/// 桌面版上「怎么拉不动」就是这个（手机上同理的写法本来就能拖）。
+/// 这里换成带鼠标的 dragDevices，鼠标按着拉也行，滚轮照旧。
+class HScroll extends StatelessWidget {
+  final String text;
+  final TextStyle style;
+
+  const HScroll(this.text, {super.key, required this.style});
+
+  @override
+  Widget build(BuildContext context) => ScrollConfiguration(
+        behavior: const _AnyDrag(),
+        child: SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          physics: const ClampingScrollPhysics(),
+          child: Text(text, style: style, maxLines: 1, softWrap: false),
+        ),
+      );
+}
+
+/// 手指、笔、鼠标、触控板都能拖的滚动行为（不画滚动条）。
+class _AnyDrag extends ScrollBehavior {
+  const _AnyDrag();
+
+  @override
+  Set<PointerDeviceKind> get dragDevices => const {
+        PointerDeviceKind.touch,
+        PointerDeviceKind.stylus,
+        PointerDeviceKind.invertedStylus,
+        PointerDeviceKind.mouse,
+        PointerDeviceKind.trackpad,
+        PointerDeviceKind.unknown,
+      };
 }
 
 /// ─── 上报动作组（地图状态栏 / 我的位置面板 / 沉浸页 共用）───

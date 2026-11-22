@@ -786,11 +786,7 @@ class _OnAirCardsState extends State<OnAirCards> {
   ///
   /// 呼号、频率加附加参数、网格、卫星过境都可能比一行长，省略号一裁就看不全，
   /// 而这一页里它们正是要看的东西。
-  Widget _scrollLine(String text, TextStyle style) => SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        physics: const ClampingScrollPhysics(),
-        child: Text(text, style: style, maxLines: 1, softWrap: false),
-      );
+  Widget _scrollLine(String text, TextStyle style) => HScroll(text, style: style);
 
   /// 一位友台一行：呼号 + 模式 + 频率 + 附加参数 + 网格与距离，右边是聊天与时间。
   ///
@@ -971,18 +967,12 @@ class OnAirChip extends StatelessWidget {
           const SizedBox(height: 2),
           // 频率一行放不下的部分横向滚，不用省略号截断
           // （频率、模式、同频人数是这张卡唯一有用的内容，截掉就等于没写）。
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            physics: const ClampingScrollPhysics(),
-            child: Text(
-              status,
-              maxLines: 1,
-              softWrap: false,
-              style: ts(
-                on ? 12.5 : 12,
-                c: on ? C.ink : C.grey,
-                w: on ? FontWeight.w700 : FontWeight.w500,
-              ),
+          HScroll(
+            status,
+            style: ts(
+              on ? 12.5 : 12,
+              c: on ? C.ink : C.grey,
+              w: on ? FontWeight.w700 : FontWeight.w500,
             ),
           ),
         ],
