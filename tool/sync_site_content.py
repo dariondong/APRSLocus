@@ -419,6 +419,31 @@ CARDS = [
 # 只列「重点版本」：中间几十个纯修 bug 的版本归纳进文字说明，完整记录指向 Releases。
 CL = [
     {
+        'ver': 'v2.2.14', 'date': '2026-11-22',
+        'items': [
+            ('fix',
+             T('地图左上那一列浮层太高时自己滚，矮屏不再把最下面那一行裁掉。',
+               '地圖左上那一列浮層太高時自己滾，矮螢幕不再把最下面那一行裁掉。',
+               'The overlay column at the top left of the map scrolls when it is taller than the screen, so the last row is no longer cut off.')),
+            ('fix',
+             T('图层面板也限高可滚，最后几行不再够不着。',
+               '圖層面板也限高可滾，最後幾行不再夠不著。',
+               'The layer panel is height-limited and scrolls the same way.')),
+            ('fix',
+             T('地图顶部的统计装不下就折行，数字不再被挤成省略号。',
+               '地圖頂部的統計裝不下就折行，數字不再被擠成省略號。',
+               'The stats at the top of the map wrap instead of squeezing the numbers into an ellipsis.')),
+            ('new',
+             T('友台那一行补上台站备注，太长横向滚。',
+               '友台那一行補上臺站備註，太長橫向滾。',
+               "Each friend row now carries the station's beacon comment, scrolling sideways when it is long.")),
+            ('fix',
+             T('地图上的 On-Air 卡，频率那一行放不下就横向滚。',
+               '地圖上的 On-Air 卡，頻率那一行放不下就橫向滾。',
+               'On the On-Air card in the map, the frequency line scrolls sideways when it does not fit.')),
+        ],
+    },
+    {
         'ver': 'v2.2.13', 'date': '2026-11-22',
         'items': [
             ('new',

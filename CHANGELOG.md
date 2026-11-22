@@ -1,5 +1,31 @@
 # 更新日志
 
+## [2.2.14] - 2026-11-22
+
+### 修复
+
+- 地图左上那一列浮层太高时自己滚，矮屏不再把最下面那一行裁掉。
+- 图层面板也限高可滚，最后几行不再够不着。
+- 地图顶部的统计改成折行，窄屏不再把数字挤成省略号。
+- 地图上的 On-Air 卡，频率那一行放不下就横向滚，不再变省略号。
+
+### 新增
+
+- 友台那一行补上台站备注，太长横向滚。
+
+## [2.2.14] - 2026-11-22 (English)
+
+### Fixed
+
+- The left-hand column of map overlays scrolls when it is taller than the screen, so the last row is no longer cut off on a short screen.
+- The layer panel is height-limited and scrolls the same way.
+- The stats at the top of the map wrap onto a second line instead of squeezing the numbers into an ellipsis.
+- On the On-Air card in the map, the frequency line scrolls sideways when it does not fit.
+
+### Added
+
+- Each friend row now carries the station's beacon comment, scrolling sideways when it is long.
+
 ## [2.2.13] - 2026-11-22
 
 ### 新增
