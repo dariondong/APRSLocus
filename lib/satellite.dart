@@ -57,8 +57,9 @@ class Tle {
       final yy = int.parse(l1.substring(18, 20).trim());
       final doy = double.parse(l1.substring(20, 32).trim());
       final year = yy < 57 ? 2000 + yy : 1900 + yy;
+      // 年积日 1.0 = 1 月 1 日 00:00，所以先减一天再加。
       final epoch = DateTime.utc(year).add(
-        Duration(microseconds: (doy * 86400 * 1000000).round()),
+        Duration(microseconds: ((doy - 1) * 86400 * 1000000).round()),
       );
       final inc = double.parse(l2.substring(8, 16).trim());
       final raan = double.parse(l2.substring(17, 25).trim());
