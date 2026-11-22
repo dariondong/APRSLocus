@@ -799,6 +799,9 @@ class _OnAirCardsState extends State<OnAirCards> {
   /// 「对面在哪儿、离我多远」。
   Widget _friendRow(OnAirFriend f) {
     final extra = f.info.extra;
+    // 这一位的信标备注（台站备注）：一行放得下就一行，放不下横向滚 —— 与上面
+    // 呼号、频率同一套。备注里常带中继频点、天线、功率，截断等于看不到。
+    final note = (f.station.comment ?? '').trim();
     // 网格与距离：对面在哪儿、离我多远 —— 判断「这个频点够不够得着」要看的就是这两样。
     final hasPos = f.station.lat != 0 || f.station.lng != 0;
     final g = hasPos ? f.station.grid : '';
@@ -859,6 +862,10 @@ class _OnAirCardsState extends State<OnAirCards> {
                         : '${f.info.freq} MHz · $extra',
                     ts(11, c: C.slate),
                   ),
+                  if (note.isNotEmpty) ...[
+                    const SizedBox(height: 2),
+                    _scrollLine(note, ts(10.5, c: C.slate)),
+                  ],
                   if (place != null) ...[
                     const SizedBox(height: 2),
                     _scrollLine(place, ts(10.5, c: C.grey)),
