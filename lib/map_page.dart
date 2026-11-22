@@ -925,7 +925,6 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                       // 没有读数就不占位，不摆一个空白胶囊。
                       if (widget.state.myHr != null) _hrChip(),
                       _infoChip(vis, searched),
-                      _immersiveEntry(),
                       // On-Air Friends：只连服务器（APRS-IS / APRSNETCN）且呼号合法时
                       // 才有。摆在**这一列的最后一个**：它出现 / 消失不会把上面的心
                       // 率、计数、沉浸入口推来推去（那正是「控件被重排」的那类毛病）。
@@ -2168,39 +2167,42 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
   Widget _toolBtn({
     required IconData icon,
     required VoidCallback onTap,
-    required Color bg,
-    required Color fg,
-    required Color border,
+    Color? bg,
+    Color? fg,
+    Color? border,
+    String? tooltip,
   }) {
-    return ClickCursor(
+    final btn = ClickCursor(
       child: GestureDetector(
         onTap: onTap,
         // ⚠ 必须显式 opaque：按钮的底色来自 `BoxDecoration`，而它对应的
         // `DecoratedBox`（`RenderDecoratedBox extends RenderProxyBox`）**不重写
         // `hitTestSelf`** —— 也就是**不吸收点击**，命中全交给子节点。默认的
-        // `deferToChild` 于是把可点区域缩到中间那个 20px 图标上：38px 的按钮
-        // 只有中心 28% 能点，按到边缘/圆角**完全没反应**（用户报的
-        // 「图层选择面板打不开」就是这么来的：他按的是按钮，不是图标）。
+        // `deferToChild` 于是把可点区域缩到中间那个图标上：38px 的按钮只有中心
+        // 28% 能点，按到边缘/圆角**完全没反应**（用户报的「图层选择面板打不开」
+        // 就是这么来的：他按的是按钮，不是图标）。
         behavior: HitTestBehavior.opaque,
         child: MaterialSurface(
           radius: 12,
-          // 38px 的小控件：不模糊（省一层离屏重绘），所以 bg 必须由调用方给
-          // 「实心」的 chipTint —— 本函数的三个调用点都这么传。
+          // 38px 的小控件：不模糊（省一层离屏重绘），所以底色给「实心」的
+          // chipTint —— 调用点不传时就是常规的白底。
           blurSigma: C.chipBlur,
           child: Container(
-            width: 38,
-            height: 38,
+            width: MapToolbar.btn,
+            height: MapToolbar.btn,
             decoration: BoxDecoration(
-              color: bg,
+              color: bg ?? chipTint(C.white),
               borderRadius: BorderRadius.circular(12),
               boxShadow: elev1(),
-              border: Border.all(color: border),
+              border: Border.all(color: border ?? C.border),
             ),
-            child: Icon(icon, size: 20, color: fg),
+            child: Icon(icon, size: 19, color: fg ?? C.slate),
           ),
         ),
       ),
     );
+    if (tooltip == null) return btn;
+    return Tooltip(message: tooltip, child: btn);
   }
 
   /// 右侧工具列：按钮摊平成一串，再按 [cols] 分列（[cols] 由可用高度算，见
@@ -2209,8 +2211,19 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
   /// 为什么摊平：按钮的**颗数**与**尺寸**是唯一真相（[MapToolbar.btn] / [MapToolbar.gap]），
   /// 列高由它们算出来。以前是「单列固定多高 + 一个朝向判据」，每加一颗钮就得
   /// 重新猜阈值，猜漏了的表现就是最下面那颗被裁掉、点不到。
+  /// 右侧工具列：按钮摊平成一串，再按 [cols] 分列（[cols] 由可用高度算，见
+  /// [MapToolbar.columns]）。
+  ///
+  /// 顺序按**操作的性质**分三段，一根竖栏里从上往下读就是「看什么 → 去哪个视图 →
+  /// 怎么移动地图」：
+  ///   ① 显示类：台站类型筛选 / 底图 / 轨迹 / 轨迹组 / 热力 / 中心经纬度；
+  ///   ② 两个入口：沉浸地图、策略地图；
+  ///   ③ 移动：放大 / 缩小 / 定位 / 锁定中心。
+  /// 以前这十一颗是按「谁先写进来」排的，显示类与缩放穿插着放，用户看着就是一
+  /// 根没有顺序的柱子（他的原话是「显示类的合并成一栏」，沉浸地图也归到这一侧）。
   Widget _rightToolbar(int cols) {
     final btns = <Widget>[
+      // ── ① 显示类 ──
       _toolBtn(
         icon: Icons.layers_rounded,
         onTap: () => _showLayerMenu(context),
@@ -2219,20 +2232,6 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
         bg: chipTint(_hiddenTypes.isNotEmpty ? C.blueBg : C.white),
         fg: _hiddenTypes.isNotEmpty ? C.blue : C.slate,
         border: _hiddenTypes.isNotEmpty ? C.blue : C.border,
-      ),
-      _toolBtn(
-        icon: Icons.group_rounded,
-        onTap: () => showTrackGroupPicker(context, widget.state),
-        bg: C.orangeBg,
-        fg: C.orange,
-        border: C.orange.withValues(alpha: 0.4),
-      ),
-      _toolBtn(
-        icon: Icons.flag_rounded,
-        onTap: _openStrategyMap,
-        bg: C.green.withValues(alpha: 0.14),
-        fg: C.green,
-        border: C.green.withValues(alpha: 0.4),
       ),
       _toolBtn(
         icon: Icons.map_rounded,
@@ -2244,6 +2243,32 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
         bg: chipTint(C.white),
         fg: C.slate,
         border: C.border,
+      ),
+      _toolBtn(
+        icon: _showTracks ? Icons.route_rounded : Icons.route_outlined,
+        tooltip: S.of(context).track,
+        bg: chipTint(_showTracks ? C.greenBg : C.white),
+        fg: _showTracks ? C.green : C.slate,
+        border: _showTracks ? C.green : C.border,
+        onTap: () => setState(() => _showTracks = !_showTracks),
+      ),
+      _toolBtn(
+        icon: Icons.group_rounded,
+        onTap: () => showTrackGroupPicker(context, widget.state),
+        bg: C.orangeBg,
+        fg: C.orange,
+        border: C.orange.withValues(alpha: 0.4),
+      ),
+      // 低缩放热力图开关
+      _toolBtn(
+        icon: _heatEnabled
+            ? Icons.local_fire_department_rounded
+            : Icons.local_fire_department_outlined,
+        tooltip: S.of(context).heatmap,
+        bg: chipTint(_heatEnabled ? C.orangeBg : C.white),
+        fg: _heatEnabled ? C.orange : C.slate,
+        border: _heatEnabled ? C.orange : C.border,
+        onTap: () => setState(() => _heatEnabled = !_heatEnabled),
       ),
       // 屏幕正中的经纬度读数：**默认关**，开关就摆在地图自己身上。
       // 想看「正中这个点在哪」的人在图上点一下就开，不必绕进设置 → 显示；
@@ -2259,14 +2284,34 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
         fg: widget.state.mapCenterCoord ? C.blue : C.slate,
         border: widget.state.mapCenterCoord ? C.blue : C.border,
       ),
+      // ── ② 两个入口 ──
+      // 沉浸地图（导航风格：以我为中心 / 航向朝上 / 四角 HUD）。它原先挂在左上
+      // 那一列里，混在读数中间既不像读数也不像工具（用户：「沉浸地图也归为右侧」）。
+      _toolBtn(
+        icon: Icons.navigation_rounded,
+        tooltip: S.of(context).immersiveMapTip,
+        onTap: () => Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => ImmersiveMapPage(state: widget.state),
+          ),
+        ),
+      ),
+      _toolBtn(
+        icon: Icons.flag_rounded,
+        onTap: _openStrategyMap,
+        bg: C.green.withValues(alpha: 0.14),
+        fg: C.green,
+        border: C.green.withValues(alpha: 0.4),
+      ),
+      // ── ③ 移动 ──
       ..._zoomBtns(),
     ];
+    // 高屏一栏（用户要的「合并成一栏」）；只有真装不下时才按列数让位 ——
+    // 让位时也是先排满一列再排下一列，读的顺序始终是按钮表本身的顺序。
     if (cols <= 1) {
       return Column(mainAxisSize: MainAxisSize.min, children: _spaced(btns));
     }
-    // 按算出来的列数均分：先排满一列再排下一列（从上到下、从左到右），
-    // 于是「读的顺序」始终就是按钮表本身的顺序，列数怎么变都不会前后颠倒。
-    // 工具列整体靠右（`right: 14`），所以最后一列贴着屏幕边。
     final per = (btns.length + cols - 1) ~/ cols;
     final columns = <Widget>[];
     for (var i = 0; i < btns.length; i += per) {
@@ -2276,6 +2321,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
         children: _spaced(btns.sublist(i, end)),
       ));
     }
+    // 工具列整体靠右（`right: 14`），所以最后一列贴着屏幕边。
     return Row(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -2296,129 +2342,90 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
         ],
       ];
 
-  /// 沉浸地图入口（导航风格：以我为中心 / 航向朝上 / 四角 HUD）。
-  ///
-  /// 它是**左上竖列**的一员（与统计条、引导卡同列），不再自己算 Positioned：
-  /// 这条入口原先单独放在 `top: topBase + 44`，右侧工具列实际含 8 个按钮
-  /// （一直排到 400 多），一旦有人改列间距它就会被别人盖住 —— 曾经被引导卡糊住过。
-  Widget _immersiveEntry() {
-    return MapRailItem(
-      icon: Icons.navigation_rounded,
-      iconColor: C.slate,
-      tooltip: S.of(context).immersiveMapTip,
-      onTap: () => Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (_) => ImmersiveMapPage(state: widget.state),
-        ),
-      ),
-      label: Text(
-        S.of(context).immersiveMap,
-        style: ts(11.5, c: C.ink, w: FontWeight.w600),
-        maxLines: 1,
-        overflow: TextOverflow.ellipsis,
-      ),
-      trailing: Icon(Icons.chevron_right_rounded, size: 16, color: C.grey),
-    );
-  }
-
   List<Widget> _zoomBtns() {
     return [
-        RoundIconBtn(
-          Icons.add_rounded,
-          onTap: () {
-            if (_usePluginMap) {
-              _pluginAction('zoomIn');
-              return;
-            }
-            final z = (_zoom + 1).clamp(3.0, 19.0);
-            _animateTo(z, _panForCenter(z));
-          },
-        ),
-        RoundIconBtn(
-          Icons.remove_rounded,
-          onTap: () {
-            if (_usePluginMap) {
-              _pluginAction('zoomOut');
-              return;
-            }
-            final z = (_zoom - 1).clamp(3.0, 19.0);
-            _animateTo(z, _panForCenter(z));
-          },
-        ),
-        RoundIconBtn(
-          _showTracks ? Icons.route_rounded : Icons.route_outlined,
-          tooltip: S.of(context).track,
-          color: _showTracks ? C.green : C.slate,
-          onTap: () => setState(() => _showTracks = !_showTracks),
-        ),
-        // 低缩放热力图开关
-        RoundIconBtn(
-          _heatEnabled
-              ? Icons.local_fire_department_rounded
-              : Icons.local_fire_department_outlined,
-          tooltip: S.of(context).heatmap,
-          color: _heatEnabled ? C.orange : C.slate,
-          onTap: () => setState(() => _heatEnabled = !_heatEnabled),
-        ),
-        RoundIconBtn(
-          Icons.my_location_rounded,
-          tooltip: S.of(context).locateMe,
-          color: C.blue,
-          onTap: () {
-            if (_usePluginMap) {
-              _pluginAction('myLoc');
-              return;
-            }
-            if (widget.state.myHasFix) {
-              _animateTo(
-                15.0,
-                _panFor(widget.state.myLat!, widget.state.myLng!, 15.0),
-              );
-            } else {
-              _animateTo(11.0, Offset.zero);
-            }
-          },
-        ),
-        // ── 锁定地图中心（三态）──
-        //
-        // 与上面那颗「定位」配成一对：定位是**跳一次**（还会把缩放拉到 15），
-        // 锁定是**一直跟着** —— 开了之后自己走动时地图持续把我的位置摆在中心，
-        // 缩放交给用户（锁定只管位置，不抢缩放）。
-        //
-        // 用户要求把这一颗改成切换，于是三态循环：
-        //   关（自由拖动）→ 锁定中心·正北朝上 → 锁定中心·航向朝上 → 关
-        // 图标用 gps_fixed / gps_not_fixed 这一对：它就是「定位是否锁在我身上」
-        // 的通用符号，比再画一颗准星更不容易被认成别的意思；航向朝上那态
-        // 换成指南针（explore），与沉浸页切航向的按钮同一套图标。
-        RoundIconBtn(
-          _followMode == 1
-              ? Icons.gps_fixed_rounded
-              : (_followMode == 2
-                    ? Icons.explore_rounded
-                    : Icons.gps_not_fixed_rounded),
-          // 提示语说的是**这一下按下去会切到哪**：
-          // 关 → 锁定中心 → 航向朝上 → 关（最后一态回到「取消锁定」）
-          tooltip: _followMode == 0
-              ? S.of(context).lockMapCenter
-              : (_followMode == 1
-                    ? S.of(context).headingUp
-                    : S.of(context).unlockMapCenter),
-          color: _followMe ? C.blue : C.slate,
-          onTap: () {
-            final st = widget.state;
-            final next = (_followMode + 1) % 3;
-            if (next > 0 &&
-                st.myHasFix &&
-                st.myLat != null &&
-                st.myLng != null) {
-              // 打开就立刻居中一次（不缩放），否则要等到下一个定位点才生效，
-              // 按下去像没反应。
-              _setView(_zoom, _panFor(st.myLat!, st.myLng!, _zoom));
-            }
-            setState(() => st.setMapFollowMode(next));
-          },
-        ),
+      _toolBtn(
+        icon: Icons.add_rounded,
+        onTap: () {
+          if (_usePluginMap) {
+            _pluginAction('zoomIn');
+            return;
+          }
+          final z = (_zoom + 1).clamp(3.0, 19.0);
+          _animateTo(z, _panForCenter(z));
+        },
+      ),
+      _toolBtn(
+        icon: Icons.remove_rounded,
+        onTap: () {
+          if (_usePluginMap) {
+            _pluginAction('zoomOut');
+            return;
+          }
+          final z = (_zoom - 1).clamp(3.0, 19.0);
+          _animateTo(z, _panForCenter(z));
+        },
+      ),
+      _toolBtn(
+        icon: Icons.my_location_rounded,
+        tooltip: S.of(context).locateMe,
+        fg: C.blue,
+        onTap: () {
+          if (_usePluginMap) {
+            _pluginAction('myLoc');
+            return;
+          }
+          if (widget.state.myHasFix) {
+            _animateTo(
+              15.0,
+              _panFor(widget.state.myLat!, widget.state.myLng!, 15.0),
+            );
+          } else {
+            _animateTo(11.0, Offset.zero);
+          }
+        },
+      ),
+      // ── 锁定地图中心（三态）──
+      //
+      // 与上面那颗「定位」配成一对：定位是**跳一次**（还会把缩放拉到 15），
+      // 锁定是**一直跟着** —— 开了之后自己走动时地图持续把我的位置摆在中心，
+      // 缩放交给用户（锁定只管位置，不抢缩放）。
+      //
+      // 用户要求把这一颗改成切换，于是三态循环：
+      //   关（自由拖动）→ 锁定中心·正北朝上 → 锁定中心·航向朝上 → 关
+      // 图标用 gps_fixed / gps_not_fixed 这一对：它就是「定位是否锁在我身上」
+      // 的通用符号，比再画一颗准星更不容易被认成别的意思；航向朝上那态
+      // 换成指南针（explore），与沉浸页切航向的按钮同一套图标。
+      _toolBtn(
+        icon: _followMode == 1
+            ? Icons.gps_fixed_rounded
+            : (_followMode == 2
+                  ? Icons.explore_rounded
+                  : Icons.gps_not_fixed_rounded),
+        // 提示语说的是**这一下按下去会切到哪**：
+        // 关 → 锁定中心 → 航向朝上 → 关（最后一态回到「取消锁定」）
+        tooltip: _followMode == 0
+            ? S.of(context).lockMapCenter
+            : (_followMode == 1
+                  ? S.of(context).headingUp
+                  : S.of(context).unlockMapCenter),
+        fg: _followMe ? C.blue : C.slate,
+        bg: chipTint(_followMe ? C.blueBg : C.white),
+        border: _followMe ? C.blue : C.border,
+        onTap: () {
+          final st = widget.state;
+          final next = (_followMode + 1) % 3;
+          if (next > 0 &&
+              st.myHasFix &&
+              st.myLat != null &&
+              st.myLng != null) {
+            // 打开就立刻居中一次（不缩放），否则要等到下一个定位点才生效，
+            // 按下去像没反应。
+            _setView(_zoom, _panFor(st.myLat!, st.myLng!, _zoom));
+          }
+          setState(() => st.setMapFollowMode(next));
+        },
+      ),
     ];
   }
 

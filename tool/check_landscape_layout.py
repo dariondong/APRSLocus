@@ -159,15 +159,21 @@ def main() -> int:
         errors.append(f'MapPage 里只有 {n_left} 处用了 `14 + widget.leftInset`（要 ≥3：'
                       '左上竖列（信息条 + 沉浸入口）/ 上报横杠 / 底部坐标条）—— '
                       '漏掉的那些在横屏会被竖条压住')
-    # 沉浸入口必须**挂在左上竖列里**：它自己算 Positioned 时会被同列其它控件盖住
-    # （真发生过：引导卡硬写 topBase+46，正好糊在这个入口上）。
     # 左上竖列必须走定宽列（2026-11-22）：每行都是 `MapRailItem`，宽度由列宽统一。
     if 'child: MapRail(' not in map_code:
         errors.append('左上竖列没走 `MapRail` 定宽列 —— 各行会重新按内容伸缩、'
                       '宽度参差不齐（用户报的「好乱 难看」）')
-    if '_immersiveEntry(),' not in map_code:
-        errors.append('沉浸入口没挂在「左上竖列」里 —— 它自己算 Positioned 就会被'
-                      '同列控件盖住，也拿不到 leftInset 的让位')
+    # 沉浸入口 2026-11-22 挪到右侧工具列（用户：「沉浸地图也归为右侧」）：它是
+    # 「进另一个视图」的入口，混在左列的读数中间既不像读数也不像工具。
+    i_rt = map_code.find('Widget _rightToolbar(int cols)')
+    i_zoom = map_code.find('List<Widget> _zoomBtns()', i_rt + 1) if i_rt >= 0 else -1
+    seg_rt = map_code[i_rt:i_zoom] if (i_rt >= 0 and i_zoom > i_rt) else ''
+    if 'ImmersiveMapPage(state: widget.state)' not in seg_rt:
+        errors.append('沉浸地图入口不在右侧工具列里 —— 它要是那一栏的一颗按钮'
+                      '（用户：「沉浸地图也归为右侧」）')
+    if '_immersiveEntry' in map_code:
+        errors.append('左列还留着 `_immersiveEntry` —— 沉浸入口只能有一个位置'
+                      '（右侧工具列）')
     if 'left: widget.leftInset,' not in map_code:
         errors.append('搜索提示条没有按 leftInset 对齐 —— 横屏时它会偏向左侧、压到卡片边缘')
     if 'leftInset: mapLeftInset' not in shell:

@@ -15,27 +15,27 @@ import 'package:aprslocus/map_toolbar.dart';
 
 void main() {
   group('颗数、尺寸与分列', () {
-    test('十一颗按钮：一列 478、两列 258、三列 170', () {
-      expect(MapToolbar.count, 11);
-      expect(MapToolbar.perColumn(1), 11);
+    test('十二颗按钮：一列 452、两列 224、三列 148', () {
+      expect(MapToolbar.count, 12);
+      expect(MapToolbar.perColumn(1), 12);
       expect(MapToolbar.perColumn(2), 6);
       expect(MapToolbar.perColumn(3), 4);
-      expect(MapToolbar.height(1), 11 * 38 + 10 * 6);
-      expect(MapToolbar.height(2), 6 * 38 + 5 * 6);
-      expect(MapToolbar.height(3), 4 * 38 + 3 * 6);
+      expect(MapToolbar.height(1), 12 * 34 + 11 * 4);
+      expect(MapToolbar.height(2), 6 * 34 + 5 * 4);
+      expect(MapToolbar.height(3), 4 * 34 + 3 * 4);
     });
 
     test('宽度：列宽 + 列间距', () {
-      expect(MapToolbar.width(1), 38);
-      expect(MapToolbar.width(3), 3 * 38 + 2 * 6);
+      expect(MapToolbar.width(1), 34);
+      expect(MapToolbar.width(3), 3 * 34 + 2 * 4);
     });
 
     test('装不下就加列，到三列封顶', () {
       expect(MapToolbar.columns(1000), 1);
-      expect(MapToolbar.columns(478), 1);
-      expect(MapToolbar.columns(477), 2);
-      expect(MapToolbar.columns(258), 2);
-      expect(MapToolbar.columns(170), 3);
+      expect(MapToolbar.columns(452), 1);
+      expect(MapToolbar.columns(451), 2);
+      expect(MapToolbar.columns(224), 2);
+      expect(MapToolbar.columns(148), 3);
       expect(MapToolbar.columns(10), 3);
     });
   });
@@ -66,7 +66,7 @@ void main() {
       expect(l.barsBlock, 62 + 38);
       expect(l.roomForBottom, isTrue);
       expect(l.clipBottom, 100);
-      expect(l.rightGutter, 14 + 38 + 12);
+      expect(l.rightGutter, 14 + MapToolbar.width(1) + 12);
     });
 
     test('导航栏高度整个算进贴底那一块', () {

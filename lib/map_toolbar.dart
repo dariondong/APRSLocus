@@ -61,13 +61,18 @@ class MapToolbar {
   MapToolbar._();
 
   /// 一颗按钮的尺寸与相邻两颗的间距。列高由它们算出来，不写死。
-  static const double btn = 38;
-  static const double gap = 6;
+  ///
+  /// 2026-11-22：38 / 6 收成 34 / 4。用户要的是「显示类的合并成一栏」，而十二条
+  /// 按钮按 38 / 6 算是 478 高 —— 竖屏 800 的手机一旦顶上挂着横幅、底下又摆着
+  /// 上报横杠，可用高度只剩 460 出头，于是自己分成两列（看着就是「散成两栏」）。
+  /// 收窄到 34 / 4 之后一列 452，同一种屏幕上一栏装得下。
+  static const double btn = 34;
+  static const double gap = 4;
 
-  /// 两组按钮的颗数：5 颗工具（图层 / 轨迹组 / 策略 / 底图 / 中心经纬度）
-  /// + 6 颗缩放（放大 / 缩小 / 轨迹 / 热力图 / 定位 / 锁定中心）。
-  static const int toolCount = 5;
-  static const int zoomCount = 6;
+  /// 两组按钮的颗数：8 颗工具（图层 / 底图 / 轨迹 / 轨迹组 / 热力 /
+  /// 中心经纬度 / 沉浸地图 / 策略）+ 4 颗移动（放大 / 缩小 / 定位 / 锁定中心）。
+  static const int toolCount = 8;
+  static const int zoomCount = 4;
   static int get count => toolCount + zoomCount;
 
   /// 最多分几列。再多会把工具列拉成一排横贯地图的按钮（十一颗三列已经
