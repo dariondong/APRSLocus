@@ -682,11 +682,13 @@ class _OnAirCardsState extends State<OnAirCards> {
       if (bits.isNotEmpty) place = bits.join(' · ');
     }
     return InkWell(
-      onTap: () => Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (_) => StationDetail(state: st, station: f.station),
-        ),
+      // 台站面板是向上弹开的那张（与地图、台站页同一种打开方式），
+      // 不是又一页 —— 看一个人再退回来，不该在两个页面之间跳
+      onTap: () => showModalBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        backgroundColor: Colors.transparent,
+        builder: (_) => StationDetail(state: st, station: f.station),
       ),
       child: Container(
         padding: const EdgeInsets.fromLTRB(14, 10, 12, 10),
