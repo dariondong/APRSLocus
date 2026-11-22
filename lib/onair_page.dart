@@ -6,6 +6,7 @@ import 'map_rail.dart';
 import 'material.dart';
 import 'onair.dart';
 import 'settings_widgets.dart';
+import 'station_detail.dart';
 import 'state.dart';
 import 'theme.dart';
 import 'widgets.dart';
@@ -408,13 +409,32 @@ class _OnAirCardsState extends State<OnAirCards> {
     return s.daysAgo(d.inDays);
   }
 
-  /// 一位友台一行：呼号 + 模式 + 频率 + 附加参数，右边是最后听到的时间。
+  /// 一位友台一行：呼号 + 模式 + 频率 + 附加参数 + 网格与距离，右边是聊天与时间。
   ///
-  /// 点整行 = 约通联（不需要再找一个按钮：列表里最想做的事就是跟这一位说句话）。
+  /// 点整行 = 打开这一位的台站面板（网格、距离、路径、报文都在那儿）；
+  /// 聊天只走右边那枚图标 —— 点一行就直接发消息太容易误触，而他先想看的是
+  /// 「对面在哪儿、离我多远」。
   Widget _friendRow(OnAirFriend f) {
     final extra = f.info.extra;
+    // 网格与距离：对面在哪儿、离我多远 —— 判断「这个频点够不够得着」要看的就是这两样。
+    final hasPos = f.station.lat != 0 || f.station.lng != 0;
+    final g = hasPos ? f.station.grid : '';
+    String? place;
+    if (hasPos) {
+      final bits = <String>[];
+      if (g.isNotEmpty) bits.add(g);
+      if (st.myLat != null && st.myLng != null) {
+        bits.add('${f.station.distKm(st.myLat!, st.myLng!).toStringAsFixed(1)} km');
+      }
+      if (bits.isNotEmpty) place = bits.join(' · ');
+    }
     return InkWell(
-      onTap: () => unawaited(_compose(f)),
+      onTap: () => Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => StationDetail(state: st, station: f.station),
+        ),
+      ),
       child: Container(
         padding: const EdgeInsets.fromLTRB(14, 10, 12, 10),
         decoration: BoxDecoration(
@@ -453,6 +473,15 @@ class _OnAirCardsState extends State<OnAirCards> {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
+                  if (place != null) ...[
+                    const SizedBox(height: 2),
+                    Text(
+                      place,
+                      style: ts(10.5, c: C.grey),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
                 ],
               ),
             ),
@@ -462,7 +491,15 @@ class _OnAirCardsState extends State<OnAirCards> {
               style: ts(10, c: C.grey),
             ),
             const SizedBox(width: 6),
-            Icon(Icons.forum_rounded, size: 16, color: C.blue),
+            // 聊天只走这枚图标：点一行是看台站面板。
+            InkResponse(
+              onTap: () => unawaited(_compose(f)),
+              radius: 20,
+              child: Padding(
+                padding: const EdgeInsets.all(4),
+                child: Icon(Icons.forum_rounded, size: 18, color: C.blue),
+              ),
+            ),
           ],
         ),
       ),
