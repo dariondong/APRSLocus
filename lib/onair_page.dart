@@ -702,15 +702,23 @@ class _OnAirCardsState extends State<OnAirCards> {
         ),
         child: Row(
           children: [
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-              decoration: BoxDecoration(
-                color: C.greenBg,
-                borderRadius: BorderRadius.circular(6),
-              ),
-              child: Text(
-                f.info.mode.isEmpty ? 'FM' : f.info.mode,
-                style: ts(10, w: FontWeight.w700, c: C.green),
+            // 模式徽标定宽：FM / USB / C4FM 字数不同，不定宽时后头的呼号、
+            // 频率、时间会一排一排错开（用户：左侧 usb fm 数字不一没对齐）。
+            SizedBox(
+              width: 40,
+              child: Container(
+                padding: const EdgeInsets.symmetric(vertical: 2),
+                decoration: BoxDecoration(
+                  color: C.greenBg,
+                  borderRadius: BorderRadius.circular(6),
+                ),
+                child: Text(
+                  f.info.mode.isEmpty ? 'FM' : f.info.mode,
+                  textAlign: TextAlign.center,
+                  maxLines: 1,
+                  overflow: TextOverflow.clip,
+                  style: ts(10, w: FontWeight.w700, c: C.green),
+                ),
               ),
             ),
             const SizedBox(width: 8),
