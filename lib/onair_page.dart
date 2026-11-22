@@ -58,6 +58,11 @@ class _OnAirCardsState extends State<OnAirCards> {
   late final TextEditingController _freq;
   late final TextEditingController _extra;
   late final TextEditingController _filter;
+
+  /// 自定义模式输入框：列表里没有的模式（ATV、DVB…）靠它填。
+  late final TextEditingController _modeCtl;
+  bool _customMode = false;
+  static const String _kCustomMode = '__custom_mode__';
   String _mode = 'FM';
   String _fltMode = '';
   Timer? _fltDebounce;
@@ -77,12 +82,19 @@ class _OnAirCardsState extends State<OnAirCards> {
 
   AppState get st => widget.state;
 
+  /// 选星弹层里两个哨兵值：添加、删除某条自己加的星。
+  static const String _kAddSat = '__add_sat__';
+  static const String _kDelSat = '__del_sat__';
+
   @override
   void initState() {
     super.initState();
     _freq = TextEditingController(text: st.onAirFreq);
     _extra = TextEditingController(text: st.onAirExtra);
     _filter = TextEditingController();
+    _modeCtl = TextEditingController(
+        text: _modes.contains(st.onAirMode) ? '' : st.onAirMode);
+    _customMode = st.onAirMode.isNotEmpty && !_modes.contains(st.onAirMode);
     if (_modes.contains(st.onAirMode)) _mode = st.onAirMode;
   }
 
@@ -92,6 +104,7 @@ class _OnAirCardsState extends State<OnAirCards> {
     _freq.dispose();
     _extra.dispose();
     _filter.dispose();
+    _modeCtl.dispose();
     super.dispose();
   }
 
@@ -103,9 +116,15 @@ class _OnAirCardsState extends State<OnAirCards> {
   }
 
   void _save() {
+    final s = S.of(context);
+    final mode = _customMode ? _modeCtl.text.trim().toUpperCase() : _mode;
+    if (!isValidOnAirMode(mode)) {
+      _toast(s.onAirModeBad);
+      return;
+    }
     final ok = st.saveOnAir(
       freq: _freq.text,
-      mode: _mode,
+      mode: mode,
       extra: _extra.text,
     );
     if (!ok) {
@@ -115,6 +134,10 @@ class _OnAirCardsState extends State<OnAirCards> {
     // 存的是归一后的值（145500 → 145.500）：把框里也换成这个，免得框里一个样、
     // 卡片上另一个样。
     _freq.text = st.onAirFreq;
+    setState(() {
+      _mode = st.onAirMode;
+      if (_customMode) _modeCtl.text = st.onAirMode;
+    });
     _toast(S.of(context).onAirSaved);
   }
 
@@ -260,11 +283,29 @@ class _OnAirCardsState extends State<OnAirCards> {
               ),
               SettingsChoice<String>(
                 s.onAirMode,
-                value: _mode,
-                options: _modes,
-                labelOf: (m) => m,
-                onChanged: (v) => setState(() => _mode = v),
+                value: _customMode ? _kCustomMode : _mode,
+                options: [..._modes, _kCustomMode],
+                labelOf: (m) =>
+                    m == _kCustomMode ? s.onAirModeCustom : m,
+                onChanged: (v) => setState(() {
+                  if (v == _kCustomMode) {
+                    _customMode = true;
+                    if (_modeCtl.text.isEmpty && !_modes.contains(_mode)) {
+                      _modeCtl.text = _mode;
+                    }
+                  } else {
+                    _customMode = false;
+                    _mode = v;
+                  }
+                }),
               ),
+              // 自定义模式：列表里没有的（ATV / DVB / 私用代号）自己填
+              if (_customMode)
+                SettingsInput(
+                  s.onAirModeCustom,
+                  _modeCtl,
+                  hint: s.onAirModeCustomHint,
+                ),
               SettingsInput(
                 s.onAirExtra,
                 _extra,
@@ -412,7 +453,7 @@ class _OnAirCardsState extends State<OnAirCards> {
             child: Text(s.satLead, style: ts(12, c: C.slate)),
           )
         else ...[
-          if (names.isNotEmpty) _satPickRow(names),
+          _satPickRow(names),
           Padding(
             padding: const EdgeInsets.fromLTRB(14, 10, 14, 2),
             child: Row(
@@ -574,8 +615,21 @@ class _OnAirCardsState extends State<OnAirCards> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(S.of(ctx).satSatellite, style: ts(13, w: FontWeight.w700)),
-              const SizedBox(height: 8),
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(S.of(ctx).satSatellite,
+                        style: ts(13, w: FontWeight.w700)),
+                  ),
+                  // 星历组里没有的星只能自己填：三行 TLE 贴进来就行
+                  TextButton(
+                    onPressed: () => Navigator.pop(ctx, _kAddSat),
+                    child: Text(S.of(ctx).satAddTle,
+                        style: ts(12.5, c: C.blue, w: FontWeight.w600)),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 4),
               Flexible(
                 child: ListView.builder(
                   shrinkWrap: true,
@@ -583,6 +637,7 @@ class _OnAirCardsState extends State<OnAirCards> {
                   itemBuilder: (_, i) {
                     final n = names[i];
                     final on = n == st.satName;
+                    final custom = st.satIsCustom(n);
                     return InkWell(
                       onTap: () => Navigator.pop(ctx, n),
                       child: Padding(
@@ -596,8 +651,20 @@ class _OnAirCardsState extends State<OnAirCards> {
                                 style: ts(13,
                                     w: on ? FontWeight.w700 : FontWeight.w500,
                                     c: on ? C.blue : C.ink),
+                                maxLines: 1,
                               ),
                             ),
+                            if (custom)
+                              InkResponse(
+                                onTap: () =>
+                                    Navigator.pop(ctx, '$_kDelSat$n'),
+                                radius: 18,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(4),
+                                  child: Icon(Icons.close_rounded,
+                                      size: 16, color: C.grey),
+                                ),
+                              ),
                             if (on)
                               Icon(Icons.check_rounded, size: 18, color: C.blue),
                           ],
@@ -613,7 +680,53 @@ class _OnAirCardsState extends State<OnAirCards> {
       ),
     );
     if (pick == null || !mounted) return;
+    if (pick == _kAddSat) {
+      await _addSatTle();
+      return;
+    }
+    if (pick.startsWith(_kDelSat)) {
+      st.removeSatCustomTle(pick.substring(_kDelSat.length));
+      return;
+    }
     st.setSatName(pick);
+  }
+
+  /// 加一条自己填的星历：三行（名称、第 1 行、第 2 行），解析不通就不收。
+  Future<void> _addSatTle() async {
+    final ctrl = TextEditingController();
+    final blob = await showDialog<String>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(S.of(ctx).satAddTle, style: ts(15, w: FontWeight.w700)),
+        content: TextField(
+          controller: ctrl,
+          autofocus: true,
+          minLines: 3,
+          maxLines: 6,
+          style: ts(12.5),
+          decoration: InputDecoration(
+            hintText: S.of(ctx).satTlePaste,
+            hintStyle: ts(12, c: C.grey),
+            border: const OutlineInputBorder(),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: Text(S.of(ctx).cancel, style: ts(13)),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(ctx, ctrl.text),
+            child: Text(S.of(ctx).satAddTle, style: ts(13)),
+          ),
+        ],
+      ),
+    );
+    ctrl.dispose();
+    if (blob == null || blob.trim().isEmpty || !mounted) return;
+    if (!st.addSatCustomTle(blob)) {
+      _toast(S.of(context).satTleBad);
+    }
   }
 
   Future<void> _syncSat() async {
