@@ -2885,6 +2885,24 @@ class AppLocalizationsEn extends AppLocalizations {
       'Switching the data source disconnects the current link';
 
   @override
+  String get qsyRequest => 'QSY request';
+
+  @override
+  String get qsySetMine => 'Set as my listening frequency';
+
+  @override
+  String get qsySetDone => 'Set as listening frequency';
+
+  @override
+  String get qsyAuto => 'They ask for an automatic QSY (you can decline)';
+
+  @override
+  String get qsyNow => 'They ask for an immediate QSY';
+
+  @override
+  String get qsyManual => 'They ask for a manual QSY';
+
+  @override
   String get igateStatOwn => 'Own-call rejects';
 
   @override

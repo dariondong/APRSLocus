@@ -4645,5 +4645,11 @@
   "satCustom": "カスタム",
   "onAirModeCustom": "カスタム",
   "onAirModeCustomHint": "モード（例：FM）",
-  "onAirModeBad": "モードは英数字と + / . だけ"
+  "onAirModeBad": "モードは英数字と + / . だけ",
+  "qsyRequest": "QSY リクエスト",
+  "qsySetMine": "自分の受信周波数にする",
+  "qsySetDone": "受信周波数に設定しました",
+  "qsyAuto": "相手が自動 QSY を要求（拒否できます）",
+  "qsyNow": "相手が即時 QSY を要求",
+  "qsyManual": "相手が手動 QSY を要求"
 }

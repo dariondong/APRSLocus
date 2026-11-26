@@ -4645,5 +4645,11 @@
   "satCustom": "Custom",
   "onAirModeCustom": "Custom",
   "onAirModeCustomHint": "Mode, e.g. FM",
-  "onAirModeBad": "Mode takes letters, digits and + / . only"
+  "onAirModeBad": "Mode takes letters, digits and + / . only",
+  "qsyRequest": "QSY request",
+  "qsySetMine": "Set as my listening frequency",
+  "qsySetDone": "Set as listening frequency",
+  "qsyAuto": "They ask for an automatic QSY (you can decline)",
+  "qsyNow": "They ask for an immediate QSY",
+  "qsyManual": "They ask for a manual QSY"
 }

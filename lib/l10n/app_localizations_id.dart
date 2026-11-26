@@ -2882,6 +2882,24 @@ class AppLocalizationsId extends AppLocalizations {
       'Mengganti sumber data akan memutus koneksi saat ini';
 
   @override
+  String get qsyRequest => 'Permintaan QSY';
+
+  @override
+  String get qsySetMine => 'Jadikan frekuensi pantau saya';
+
+  @override
+  String get qsySetDone => 'Frekuensi pantau telah diatur';
+
+  @override
+  String get qsyAuto => 'Mereka meminta QSY otomatis (bisa ditolak)';
+
+  @override
+  String get qsyNow => 'Mereka meminta QSY segera';
+
+  @override
+  String get qsyManual => 'Mereka meminta QSY manual';
+
+  @override
   String get igateStatOwn => 'Penolakan panggilan sendiri';
 
   @override

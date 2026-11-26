@@ -10,6 +10,7 @@ import 'coord.dart';
 import 'coord_format.dart';
 import 'guide.dart';
 import 'models.dart';
+import 'onair.dart';
 import 'back_router.dart';
 import 'state.dart';
 import 'chat_dates.dart';
@@ -2642,6 +2643,100 @@ class _MessagesPageState extends State<MessagesPage> {
     ));
   }
 
+  /// 收到的标准 QSY 报文（`QSY 145.500MHz?`）：在气泡里给一个可执行卡片。
+  ///
+  /// 不自动改频：QSY 只是对方的请求，改不改由用户点。点「设为我的守听频率」
+  /// 会把本机 On-Air 频率设为该频点、打开 On-Air 并立即带进下一帧信标
+  ///（见 AppState.applyQsy）。如果对方在同一频点声明了模式/音调，沿用他的。
+  Widget _qsyCard(AprsMsg m) {
+    final q = QsyRequest.parse(m.text);
+    if (q == null) return const SizedBox.shrink();
+    final s = S.of(context);
+    final st = widget.state;
+    final applied = st.onAirOn && st.onAirFreq == q.freq;
+    final hint = switch (q.suffix) {
+      '!' => s.qsyNow,
+      '?' => s.qsyAuto,
+      _ => s.qsyManual, // '.' 或没有后缀
+    };
+    return Container(
+      margin: const EdgeInsets.only(top: 8),
+      padding: const EdgeInsets.fromLTRB(10, 8, 10, 8),
+      decoration: BoxDecoration(
+        color: C.green.withValues(alpha: 0.10),
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: C.green.withValues(alpha: 0.40)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(children: [
+            Icon(Icons.radio_rounded, size: 15, color: C.green),
+            const SizedBox(width: 6),
+            Expanded(
+              child: Text(
+                '${s.qsyRequest} · ${q.freq} MHz',
+                style: ts(12, c: C.green, w: FontWeight.w700),
+              ),
+            ),
+          ]),
+          const SizedBox(height: 3),
+          Text(hint, style: ts(10.5, c: C.slate, h: 1.35)),
+          const SizedBox(height: 8),
+          Align(
+            alignment: Alignment.centerRight,
+            child: FilledButton(
+              onPressed: applied ? null : () => _applyQsy(q, m),
+              style: FilledButton.styleFrom(
+                backgroundColor: C.green,
+                disabledBackgroundColor: C.green.withValues(alpha: 0.25),
+                disabledForegroundColor: Colors.white,
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                minimumSize: const Size(0, 0),
+                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              child: Text(
+                applied ? s.qsySetDone : s.qsySetMine,
+                style: ts(11.5, w: FontWeight.w700, c: Colors.white),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _applyQsy(QsyRequest q, AprsMsg m) {
+    final st = widget.state;
+    // 如果对方在同一频点的备注里声明了模式/音调，沿用他的 —— 比默认 FM 准。
+    var mode = 'FM';
+    var tone = '';
+    var offset = '';
+    for (final stn in st.stations) {
+      if (stn.call.toUpperCase() != m.from.toUpperCase()) continue;
+      final info = OnAirInfo.decode(stn.comment);
+      if (info != null && info.freq == q.freq) {
+        mode = info.mode;
+        tone = info.tone;
+        offset = info.offset;
+      }
+      break;
+    }
+    final ok = st.applyQsy(q.freq, mode: mode, tone: tone, offset: offset);
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(ok ? S.of(context).qsySetDone : S.of(context).onAirFreqBad),
+        behavior: SnackBarBehavior.floating,
+      ),
+    );
+    if (ok) setState(() {});
+  }
+
   Widget _bubbleBody(
     AprsMsg m, {
     String? groupSender,
@@ -2774,6 +2869,7 @@ class _MessagesPageState extends State<MessagesPage> {
                   ),
                 ),
               _urlRichText(m.text, ts(13)),
+              if (!mine) _qsyCard(m),
               // 「已译发」：这条当时是按对方语言发出的，显示实际发出的文本
               sentAsBlock(context: context, m: m),
               // 译文块：会话/群聊气泡与瀑布流气泡**必须都渲染**，

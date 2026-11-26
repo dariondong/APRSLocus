@@ -5324,5 +5324,11 @@
   "satCustom": "自定义",
   "onAirModeCustom": "自定义",
   "onAirModeCustomHint": "模式，例如 FM",
-  "onAirModeBad": "模式只填字母数字和 + / ."
+  "onAirModeBad": "模式只填字母数字和 + / .",
+  "qsyRequest": "改频请求",
+  "qsySetMine": "设为我的守听频率",
+  "qsySetDone": "已设为守听频率",
+  "qsyAuto": "对方请求自动改频（可以拒绝）",
+  "qsyNow": "对方请求立即改频",
+  "qsyManual": "对方请求手动改频"
 }

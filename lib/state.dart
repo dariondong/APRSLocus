@@ -1963,6 +1963,37 @@ class AppState extends ChangeNotifier {
     return true;
   }
 
+  /// 收到标准 QSY 报文后，一键把本机守听频率设为该频点并开始广播。
+  ///
+  /// 与 [saveOnAir] 的区别：QSY 是**对方明确请求**，所以这里顺手把 On-Air
+  /// 开关打开（否则只改了本机字段、对方仍然看不到你搬过去），并把新的频率
+  /// 立刻带进下一帧信标。频率非法返回 false。
+  bool applyQsy(
+    String freq, {
+    String mode = 'FM',
+    String tone = '',
+    String offset = '',
+  }) {
+    final f = normalizeOnAirFreq(freq);
+    if (f.isEmpty) return false;
+    final m = mode.trim().isEmpty ? 'FM' : mode.trim().toUpperCase();
+    if (!isValidOnAirMode(m)) return false;
+    onAirFreq = f;
+    onAirMode = m;
+    // 音调/偏移并入「附加参数」（UI 只有一个附加参数框）；旧内容保留在后面。
+    if (tone.isNotEmpty || offset.isNotEmpty) {
+      final head = [tone, offset].where((x) => x.isNotEmpty).join(' ');
+      final tail = onAirExtra.trim();
+      onAirExtra = tail.isEmpty ? head : '$head $tail';
+    }
+    onAirOn = true;
+    persist();
+    _notify();
+    _publishOnAirNow();
+    _updateNotification();
+    return true;
+  }
+
   /// 能发就立刻带出去一帧（受「自动上报 + 已确认 + 同意」那几道闸管），
   /// 返回这一帧到底发了没有。
   bool _publishOnAirNow() {

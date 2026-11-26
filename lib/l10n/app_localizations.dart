@@ -5227,6 +5227,41 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'切换数据来源会断开当前连接'**
   String get dataSourceSwitchHint;
+  /// No description provided for @qsyRequest.
+  ///
+  /// In zh, this message translates to:
+  /// **'改频请求'**
+  String get qsyRequest;
+
+  /// No description provided for @qsySetMine.
+  ///
+  /// In zh, this message translates to:
+  /// **'设为我的守听频率'**
+  String get qsySetMine;
+
+  /// No description provided for @qsySetDone.
+  ///
+  /// In zh, this message translates to:
+  /// **'已设为守听频率'**
+  String get qsySetDone;
+
+  /// No description provided for @qsyAuto.
+  ///
+  /// In zh, this message translates to:
+  /// **'对方请求自动改频（可以拒绝）'**
+  String get qsyAuto;
+
+  /// No description provided for @qsyNow.
+  ///
+  /// In zh, this message translates to:
+  /// **'对方请求立即改频'**
+  String get qsyNow;
+
+  /// No description provided for @qsyManual.
+  ///
+  /// In zh, this message translates to:
+  /// **'对方请求手动改频'**
+  String get qsyManual;
   /// No description provided for @igateStatOwn.
   ///
   /// In zh, this message translates to:

@@ -2776,6 +2776,24 @@ class AppLocalizationsZh extends AppLocalizations {
   String get dataSourceSwitchHint => '切换数据来源会断开当前连接';
 
   @override
+  String get qsyRequest => '改频请求';
+
+  @override
+  String get qsySetMine => '设为我的守听频率';
+
+  @override
+  String get qsySetDone => '已设为守听频率';
+
+  @override
+  String get qsyAuto => '对方请求自动改频（可以拒绝）';
+
+  @override
+  String get qsyNow => '对方请求立即改频';
+
+  @override
+  String get qsyManual => '对方请求手动改频';
+
+  @override
   String get igateStatOwn => '本机呼号拒收（条）';
 
   @override
@@ -13255,6 +13273,24 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get dataSourceSwitchHint => '切換資料來源會中斷目前連線';
+
+  @override
+  String get qsyRequest => '改頻請求';
+
+  @override
+  String get qsySetMine => '設為我的守聽頻率';
+
+  @override
+  String get qsySetDone => '已設為守聽頻率';
+
+  @override
+  String get qsyAuto => '對方請求自動改頻（可以拒絕）';
+
+  @override
+  String get qsyNow => '對方請求立即改頻';
+
+  @override
+  String get qsyManual => '對方請求手動改頻';
 
   @override
   String get igateStatOwn => '本機呼號拒收（條）';

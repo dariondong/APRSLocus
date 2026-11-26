@@ -26,6 +26,22 @@ void main() {
       expect(back?.mode, 'USB');
     });
 
+    test('音调/偏移按 AFRS 标准顺序排在频率后面', () {
+      const info = OnAirInfo(
+        freq: '145.500',
+        mode: 'FM',
+        extra: 'T107 +060 GP 5W',
+      );
+      expect(info.encode(), '145.500MHz T107 +060 FM GP 5W');
+      final back = OnAirInfo.decode(info.encode());
+      expect(back?.freq, '145.500');
+      expect(back?.tone, 'T107');
+      expect(back?.offset, '+060');
+      expect(back?.mode, 'FM');
+      expect(back?.extra, 'GP 5W');
+      expect(back?.label, '145.500 FM · T107 +060 · GP 5W');
+    });
+
     test('模式不区分大小写，输出大写', () {
       expect(OnAirInfo.decode('145.500MHz c4fm')?.mode, 'C4FM');
     });
@@ -58,19 +74,23 @@ void main() {
       expect(info, isNotNull);
       expect(info!.freq, '146.820');
       expect(info.mode, 'FM'); // AFRS 没有模式字段，默认话音
-      expect(info.extra, 'T107 AARC Repeater');
+      expect(info.tone, 'T107');
+      expect(info.extra, 'AARC Repeater');
     });
 
     test('1 kHz 分辨率 + 偏移', () {
       final info = OnAirInfo.decode('442.440MHz T107 -500 Repeater');
       expect(info!.freq, '442.440');
-      expect(info.extra, 'T107 -500 Repeater');
+      expect(info.tone, 'T107');
+      expect(info.offset, '-500');
+      expect(info.extra, 'Repeater');
     });
 
     test('小写 t（窄带）与自由文本', () {
       final info = OnAirInfo.decode('145.50 MHz t077 Simplex');
       expect(info!.freq, '145.500');
-      expect(info.extra, 't077 Simplex');
+      expect(info.tone, 't077');
+      expect(info.extra, 'Simplex');
     });
 
     test('显式模式被识别，不混进附加参数', () {
@@ -99,6 +119,33 @@ void main() {
       expect(OnAirInfo.decode('HR=72 Bat:80%'), isNull);
       expect(OnAirInfo.decode(''), isNull);
       expect(OnAirInfo.decode(null), isNull);
+    });
+  });
+
+  group('收到的标准 QSY 报文', () {
+    test('? / ! / . 与无后缀', () {
+      final q1 = QsyRequest.parse('QSY 145.500MHz?');
+      expect(q1!.freq, '145.500');
+      expect(q1.suffix, '?');
+      final q2 = QsyRequest.parse('qsy 145.5 MHz!');
+      expect(q2!.freq, '145.500');
+      expect(q2.suffix, '!');
+      final q3 = QsyRequest.parse('QSY 145.500MHz.');
+      expect(q3!.suffix, '.');
+      final q4 = QsyRequest.parse('QSY 145.500MHz');
+      expect(q4!.suffix, '');
+    });
+
+    test('允许末尾带一句说明', () {
+      final q = QsyRequest.parse('QSY 145.500MHz? please');
+      expect(q!.freq, '145.500');
+      expect(q.suffix, '?');
+    });
+
+    test('不是 QSY 或频率非法时不认', () {
+      expect(QsyRequest.parse('hello'), isNull);
+      expect(QsyRequest.parse('QSY abc'), isNull);
+      expect(QsyRequest.parse('QSY 9999MHz'), isNull);
     });
   });
 

@@ -2899,6 +2899,24 @@ class AppLocalizationsEs extends AppLocalizations {
       'Cambiar la fuente de datos desconecta el enlace actual';
 
   @override
+  String get qsyRequest => 'Solicitud QSY';
+
+  @override
+  String get qsySetMine => 'Usar como mi frecuencia de escucha';
+
+  @override
+  String get qsySetDone => 'Fijada como frecuencia de escucha';
+
+  @override
+  String get qsyAuto => 'Piden un QSY automático (puedes rechazar)';
+
+  @override
+  String get qsyNow => 'Piden un QSY inmediato';
+
+  @override
+  String get qsyManual => 'Piden un QSY manual';
+
+  @override
   String get igateStatOwn => 'Rechazos por indicativo propio';
 
   @override

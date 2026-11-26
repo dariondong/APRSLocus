@@ -5233,5 +5233,11 @@
   "satCustom": "自訂",
   "onAirModeCustom": "自訂",
   "onAirModeCustomHint": "模式，例如 FM",
-  "onAirModeBad": "模式只填字母數字和 + / ."
+  "onAirModeBad": "模式只填字母數字和 + / .",
+  "qsyRequest": "改頻請求",
+  "qsySetMine": "設為我的守聽頻率",
+  "qsySetDone": "已設為守聽頻率",
+  "qsyAuto": "對方請求自動改頻（可以拒絕）",
+  "qsyNow": "對方請求立即改頻",
+  "qsyManual": "對方請求手動改頻"
 }

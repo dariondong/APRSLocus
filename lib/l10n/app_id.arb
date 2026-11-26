@@ -4645,5 +4645,11 @@
   "satCustom": "Kustom",
   "onAirModeCustom": "Kustom",
   "onAirModeCustomHint": "Mode, mis. FM",
-  "onAirModeBad": "Mode hanya huruf, angka dan + / ."
+  "onAirModeBad": "Mode hanya huruf, angka dan + / .",
+  "qsyRequest": "Permintaan QSY",
+  "qsySetMine": "Jadikan frekuensi pantau saya",
+  "qsySetDone": "Frekuensi pantau telah diatur",
+  "qsyAuto": "Mereka meminta QSY otomatis (bisa ditolak)",
+  "qsyNow": "Mereka meminta QSY segera",
+  "qsyManual": "Mereka meminta QSY manual"
 }

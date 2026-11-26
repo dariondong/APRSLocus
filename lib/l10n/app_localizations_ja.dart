@@ -2798,6 +2798,24 @@ class AppLocalizationsJa extends AppLocalizations {
   String get dataSourceSwitchHint => 'データソースを切り替えると現在の接続は切断されます';
 
   @override
+  String get qsyRequest => 'QSY リクエスト';
+
+  @override
+  String get qsySetMine => '自分の受信周波数にする';
+
+  @override
+  String get qsySetDone => '受信周波数に設定しました';
+
+  @override
+  String get qsyAuto => '相手が自動 QSY を要求（拒否できます）';
+
+  @override
+  String get qsyNow => '相手が即時 QSY を要求';
+
+  @override
+  String get qsyManual => '相手が手動 QSY を要求';
+
+  @override
   String get igateStatOwn => '自局呼号の拒否（件）';
 
   @override
