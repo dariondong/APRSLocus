@@ -2093,12 +2093,27 @@ class AppState extends ChangeNotifier {
     final lat = myLat;
     final lng = myLng;
     if (lat == null || lng == null) return const [];
+    final now = DateTime.now().toUtc();
     final key = '$satName|${lat.toStringAsFixed(2)}|${lng.toStringAsFixed(2)}'
-        '|${DateTime.now().millisecondsSinceEpoch ~/ 60000}';
+        '|${now.millisecondsSinceEpoch ~/ 60000}';
     if (key == _satPassesKey) return _satPasses;
     _satPassesKey = key;
-    _satPasses = passesWithin(t, lat, lng,
-        within: satPassWindow, minElevationDeg: 10);
+    // 往回看 20 分钟：正在进行的过境要从**真实 AOS** 开始算。
+    // 否则 nextPass 会把「已在地平线之上」当成从 now 升起，
+    // 每过一分钟 AOS/进度就被重置一次，看起来像同一过境被切成很多次。
+    const lookback = Duration(minutes: 20);
+    final all = passesWithin(
+      t,
+      lat,
+      lng,
+      from: now.subtract(lookback),
+      within: satPassWindow + lookback,
+      minElevationDeg: 10,
+    );
+    _satPasses = [
+      for (final p in all)
+        if (!p.los.isBefore(now)) p,
+    ];
     return _satPasses;
   }
 

@@ -501,7 +501,9 @@ List<SatPass> passesWithin(
     if (p == null) break;
     out.add(p);
     // 从落下点之后一秒继续找：同一时刻不能出两次。
-    cursor = p.los.add(const Duration(seconds: 1));
+    // 防御：若几何异常给出 los <= aos，也要保证 cursor 前进。
+    final next = p.los.add(const Duration(seconds: 1));
+    cursor = next.isAfter(cursor) ? next : cursor.add(const Duration(seconds: 1));
     if (!cursor.isBefore(end)) break;
   }
   return out;
@@ -518,6 +520,14 @@ DateTime _bisect(
 ) {
   var lo = a;
   var hi = b;
+  // 调用点可能给「低→高」（AOS），也可能给「高→低」（LOS）。
+  // 统一成 hi = 仍在阈值之上的那一端，否则 LOS 会退化到起点，
+  // 一次过境就会被拆成几十个 0 秒的条目。
+  if (elevationDeg(t, lat, lng, lo) >= minEl) {
+    final tmp = lo;
+    lo = hi;
+    hi = tmp;
+  }
   for (var i = 0; i < 12; i++) {
     final mid = lo.add(Duration(microseconds: hi.difference(lo).inMicroseconds ~/ 2));
     if (elevationDeg(t, lat, lng, mid) >= minEl) {

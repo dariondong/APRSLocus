@@ -53,7 +53,10 @@ class _SatPassesPageState extends State<SatPassesPage> {
     final sats = favorites.isNotEmpty
         ? favorites
         : [if (st.satSelected != null) st.satSelected!];
-    final from = DateTime.now().toUtc();
+    final now = DateTime.now().toUtc();
+    // 与 AppState.satPasses 同样往回看 20 分钟：正在进行的过境要有真实 AOS。
+    final from = now.subtract(const Duration(minutes: 20));
+    final within = Duration(hours: _hours) + const Duration(minutes: 20);
     final rows = <_PassRow>[];
     for (final t in sats.take(16)) {
       final list = passesWithin(
@@ -61,12 +64,12 @@ class _SatPassesPageState extends State<SatPassesPage> {
         lat,
         lng,
         from: from,
-        within: Duration(hours: _hours),
+        within: within,
         minElevationDeg: 10,
         maxPasses: 8,
       );
       for (final p in list) {
-        rows.add(_PassRow(t, p));
+        if (!p.los.isBefore(now)) rows.add(_PassRow(t, p));
       }
     }
     rows.sort((a, b) => a.pass.aos.compareTo(b.pass.aos));

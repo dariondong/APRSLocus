@@ -96,6 +96,25 @@ SO-50
       expect(elevationDeg(t, 23.13, 113.26, p!.tca),
           greaterThanOrEqualTo(5));
     });
+
+    test('一次过境不会被 LOS 二分拆成多个 0 秒条目', () {
+      final t = _iss();
+      final from = t.epoch.add(const Duration(hours: 1));
+      final list = passesWithin(t, 23.13, 113.26,
+          from: from,
+          within: const Duration(hours: 48),
+          minElevationDeg: 10);
+      expect(list.length, greaterThan(2));
+      for (final p in list) {
+        expect(p.duration.inSeconds, greaterThan(60));
+        // 修 LOS 二分方向之前，这里会停在 11°+，接着被当成新的过境。
+        expect(elevationDeg(t, 23.13, 113.26, p.los), lessThan(10.5));
+      }
+      for (var i = 1; i < list.length; i++) {
+        expect(list[i].aos.difference(list[i - 1].los).inMinutes,
+            greaterThan(5));
+      }
+    });
   });
 
   group('罗盘经过线', () {
