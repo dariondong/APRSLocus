@@ -16,6 +16,10 @@
     <!-- Android 16 的实时更新（Live Updates）：把常驻通知提到状态栏药丸里显示。
          用户不用它也没关系，提不上去时就是普通常驻通知。 -->
     <uses-permission android:name="android.permission.POST_PROMOTED_NOTIFICATIONS"/>
+    <!-- 卫星悬浮小窗：显示在其他应用（如 Look4Sat）上层，快速发信标。
+         前台服务类型用 specialUse（Android 14+ 必须显式声明）。 -->
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE"/>
     <!-- 生命守护「强提醒」需要震动（issue #32）：手机放兜里时只有震动+响铃能被察觉。 -->
     <uses-permission android:name="android.permission.VIBRATE"/>
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
@@ -185,6 +189,17 @@
             android:exported="false"
             android:foregroundServiceType="location|microphone|connectedDevice"
             android:stopWithTask="false" />
+        <!-- 卫星悬浮小窗：前台服务保证退到 Look4Sat 后进程还在，
+             点小窗里的「发信标」仍能走 Dart 走 TNC/音频链路。 -->
+        <service
+            android:name=".SatOverlayService"
+            android:exported="false"
+            android:foregroundServiceType="specialUse"
+            android:stopWithTask="true">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Satellite pass overlay with one-tap APRS beacon" />
+        </service>
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.fileprovider"

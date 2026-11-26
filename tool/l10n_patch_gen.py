@@ -55,6 +55,8 @@ KEYS_EXPLICIT = (
     'satPointElev', 'satPointTarget',
     'satTone', 'satTune', 'satLinkNeeded', 'satAosNow',
     'satInPass', 'satWaitAos', 'satPassOver',
+    'satMini', 'satMiniOn', 'satMiniOff', 'satMiniPermission',
+    'satMiniUnsupported', 'satMiniTip', 'satSent',
 )
 
 

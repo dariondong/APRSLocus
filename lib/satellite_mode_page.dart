@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 
 import 'satellite.dart';
 import 'satellite_point_page.dart';
+import 'sat_overlay.dart';
 import 'settings_widgets.dart';
 import 'state.dart';
 import 'theme.dart';
@@ -376,6 +377,20 @@ class SatelliteModePage extends StatelessWidget {
           onTap: () => _editTone(context, s),
         ),
         SettingsHint(s.satPathHint),
+        ListenableBuilder(
+          listenable: SatOverlayController.instance,
+          builder: (context, _) {
+            final on = SatOverlayController.instance.enabled;
+            return SettingsNavRow(
+              title: s.satMini,
+              trailing: on ? s.tncSwitchOn : s.tncSwitchOff,
+              icon: Icons.picture_in_picture_alt_rounded,
+              color: C.blue,
+              onTap: () => SatOverlayController.instance.toggle(context, state),
+            );
+          },
+        ),
+        SettingsHint(s.satMiniTip),
         // 常用 APRS 卫星频点（ISS / NO-84 / PSAT2 / PCSAT 多为 145.825 同频）。
         Padding(
           padding: const EdgeInsets.fromLTRB(14, 6, 14, 0),

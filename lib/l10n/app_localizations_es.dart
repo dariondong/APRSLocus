@@ -2899,6 +2899,27 @@ class AppLocalizationsEs extends AppLocalizations {
       'Cambiar la fuente de datos desconecta el enlace actual';
 
   @override
+  String get satMini => 'Ventana mini';
+
+  @override
+  String get satMiniOn => 'Ventana mini activa: envía balizas desde Look4Sat';
+
+  @override
+  String get satMiniOff => 'Ventana mini cerrada';
+
+  @override
+  String get satMiniPermission => 'La ventana mini necesita el permiso "mostrar sobre otras apps"';
+
+  @override
+  String get satMiniUnsupported => 'La ventana mini solo está disponible en Android';
+
+  @override
+  String get satMiniTip => 'Al activarla, una ventana flota sobre otras apps (Look4Sat): cuenta atrás del paso, azimut/elevación, frecuencias con Doppler y baliza en un toque.';
+
+  @override
+  String get satSent => 'Enviado';
+
+  @override
   String get satTone => 'Tono';
 
   @override

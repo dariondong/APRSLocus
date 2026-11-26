@@ -5227,6 +5227,47 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'切换数据来源会断开当前连接'**
   String get dataSourceSwitchHint;
+  /// No description provided for @satMini.
+  ///
+  /// In zh, this message translates to:
+  /// **'小窗'**
+  String get satMini;
+
+  /// No description provided for @satMiniOn.
+  ///
+  /// In zh, this message translates to:
+  /// **'小窗已开启：切到 Look4Sat 也能一键发信标'**
+  String get satMiniOn;
+
+  /// No description provided for @satMiniOff.
+  ///
+  /// In zh, this message translates to:
+  /// **'小窗已关闭'**
+  String get satMiniOff;
+
+  /// No description provided for @satMiniPermission.
+  ///
+  /// In zh, this message translates to:
+  /// **'开启小窗需要「显示在其他应用上层」权限'**
+  String get satMiniPermission;
+
+  /// No description provided for @satMiniUnsupported.
+  ///
+  /// In zh, this message translates to:
+  /// **'小窗仅支持 Android'**
+  String get satMiniUnsupported;
+
+  /// No description provided for @satMiniTip.
+  ///
+  /// In zh, this message translates to:
+  /// **'开启后小窗浮在其他应用（如 Look4Sat）上，显示过境倒计时、方位/仰角和多普勒频率，并可直接发信标。'**
+  String get satMiniTip;
+
+  /// No description provided for @satSent.
+  ///
+  /// In zh, this message translates to:
+  /// **'已发送'**
+  String get satSent;
   /// No description provided for @satTone.
   ///
   /// In zh, this message translates to:

@@ -2798,6 +2798,27 @@ class AppLocalizationsJa extends AppLocalizations {
   String get dataSourceSwitchHint => 'データソースを切り替えると現在の接続は切断されます';
 
   @override
+  String get satMini => 'ミニ窓';
+
+  @override
+  String get satMiniOn => 'ミニ窓を表示中 - Look4Sat からもワンタップ送信';
+
+  @override
+  String get satMiniOff => 'ミニ窓を閉じました';
+
+  @override
+  String get satMiniPermission => 'ミニ窓には「他のアプリの上に重ねて表示」権限が必要です';
+
+  @override
+  String get satMiniUnsupported => 'ミニ窓は Android のみ対応';
+
+  @override
+  String get satMiniTip => 'オンにすると他のアプリ（Look4Sat など）の上に小窓が浮かび、パスまでの残り時間・方位/仰角・ドップラー補正した周波数・ワンタップ送信が使えます。';
+
+  @override
+  String get satSent => '送信しました';
+
+  @override
   String get satTone => 'トーン';
 
   @override

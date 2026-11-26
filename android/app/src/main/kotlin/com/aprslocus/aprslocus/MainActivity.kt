@@ -150,6 +150,9 @@ class MainActivity : FlutterActivity() {
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
 
+        // 卫星悬浮小窗：权限 / 实时读数 / 一键发信标都走这个通道。
+        SatOverlayBridge.attach(this, flutterEngine.dartExecutor.binaryMessenger)
+
         // 桌面小组件桥：Dart 把算好的天气快照推过来，这里落盘并刷新组件
         WeatherWidgetBridge(this, flutterEngine.dartExecutor.binaryMessenger).attach()
 
@@ -1976,6 +1979,8 @@ class MainActivity : FlutterActivity() {
     }
 
     override fun onDestroy() {
+        // 引擎销毁后没人处理小窗的发信标请求，必须一起收掉，别留个死按钮。
+        SatOverlayBridge.detach()
         // USB 串口的读线程与连接句柄要显式释放：
         //   * 不释放时 reader 线程会一直挂在长超时的 bulkTransfer 上；
         //   * 连接句柄不关，界面里选了一根线、退出应用后那根线仍显示占用。

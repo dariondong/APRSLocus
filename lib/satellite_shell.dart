@@ -3,11 +3,11 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import 'map_math.dart';
 import 'map_page.dart';
 import 'models.dart';
 import 'satellite.dart';
 import 'satellite_compass.dart';
+import 'sat_overlay.dart';
 import 'satellite_mode_page.dart';
 import 'state.dart';
 import 'theme.dart';
@@ -454,31 +454,59 @@ class _SatelliteShellState extends State<SatelliteShell> {
                 ),
               ],
               const SizedBox(height: 8),
-              Row(
-                children: [
-                  Expanded(
-                    child: FilledButton.icon(
-                      onPressed: () => _sendBeacon(context, s),
-                      icon: const Icon(Icons.send_rounded, size: 16),
-                      label: Text(s.featureBeacon,
-                          style: ts(12.5, w: FontWeight.w700)),
-                      style: FilledButton.styleFrom(
-                        backgroundColor: C.green,
-                        padding: const EdgeInsets.symmetric(vertical: 11),
+              ListenableBuilder(
+                listenable: SatOverlayController.instance,
+                builder: (context, _) {
+                  final miniOn = SatOverlayController.instance.enabled;
+                  return Row(
+                    children: [
+                      Expanded(
+                        child: FilledButton.icon(
+                          onPressed: () => _sendBeacon(context, s),
+                          icon: const Icon(Icons.send_rounded, size: 16),
+                          label: Text(s.featureBeacon,
+                              style: ts(12.5, w: FontWeight.w700)),
+                          style: FilledButton.styleFrom(
+                            backgroundColor: C.green,
+                            padding: const EdgeInsets.symmetric(vertical: 11),
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  OutlinedButton(
-                    onPressed: () => _openSettings(context),
-                    style: OutlinedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 14, vertical: 11),
-                    ),
-                    child: Icon(Icons.settings_rounded,
-                        size: 16, color: C.slate),
-                  ),
-                ],
+                      const SizedBox(width: 8),
+                      Tooltip(
+                        message: s.satMini,
+                        child: OutlinedButton(
+                          onPressed: () => SatOverlayController.instance
+                              .toggle(context, st),
+                          style: OutlinedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 12, vertical: 11),
+                            backgroundColor: miniOn
+                                ? C.blue.withValues(alpha: 0.10)
+                                : null,
+                            side: BorderSide(
+                                color: miniOn ? C.blue : C.border),
+                          ),
+                          child: Icon(
+                            Icons.picture_in_picture_alt_rounded,
+                            size: 16,
+                            color: miniOn ? C.blue : C.slate,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      OutlinedButton(
+                        onPressed: () => _openSettings(context),
+                        style: OutlinedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 12, vertical: 11),
+                        ),
+                        child: Icon(Icons.settings_rounded,
+                            size: 16, color: C.slate),
+                      ),
+                    ],
+                  );
+                },
               ),
             ],
           ),
