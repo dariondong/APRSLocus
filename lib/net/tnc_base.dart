@@ -10,6 +10,7 @@ import 'dart:typed_data';
 /// 一个可绑定的 TNC 设备
 ///
 /// - Android：`id` 为蓝牙 MAC 地址（经典 SPP / RFCOMM），`kind='bluetooth'`
+/// - Android（BLE KISS）：`id` 为 BLE MAC 地址，`kind='ble'`（RT-950 Pro 等）
 /// - Android（USB-OTG）：`id` 为 `vid:pid:serial`，`kind='usb'`
 /// - Windows/Linux/macOS：`id` 为串口名（如 `COM5` / `/dev/ttyUSB0`）
 class TncDevice {
@@ -19,7 +20,7 @@ class TncDevice {
   /// 展示名（蓝牙设备别名 / 串口友好名）
   final String name;
 
-  /// 'bluetooth' | 'serial' | 'usb'
+  /// 'bluetooth' | 'ble' | 'serial' | 'usb'
   final String kind;
 
   /// 是否已在系统里配对（串口恒为 true）
@@ -55,6 +56,9 @@ class TncDevice {
   String get label => name.isEmpty ? id : '$name · $id';
 
   bool get isBluetooth => kind == 'bluetooth';
+
+  /// BLE KISS TNC（低功耗蓝牙，如 RT-950 Pro 的 walkie-talkie）
+  bool get isBle => kind == 'ble';
 
   /// USB-OTG 转串口线 / 电台自带 USB 口（Android）
   bool get isUsb => kind == 'usb';

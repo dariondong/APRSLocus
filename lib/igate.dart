@@ -60,11 +60,19 @@ class Igate {
   ///   * 报头里已有 `TCPIP*` / `TCPXX*` —— 它本来就从互联网来（说明配了
   ///     双向网关或有人在 RF 上伪造），再送回去就是环路；
   ///   * 报头里已有 q 构造 —— 同上，已进过 IS；
-  ///   * 报文源呼号就是本网关自己 —— 自己发的信标没必要再由自己转一遍；
+  ///   * 报文源呼号就是本网关自己（且 [allowOwn] 未开）—— 自己发的信标
+  ///     没必要再由自己转一遍；
   ///   * 报文体为空。
+  ///
+  /// [allowOwn] 是给「电台自己发、且只能经本机 TNC 出去」的场景留的出口：
+  /// 有些电台（如 RT-950 Pro）的 APRS 信标只在本地发射、不经互联网，唯一
+  /// 的出口就是这条蓝牙链路。此时按规范挡掉，它的位置就永远上不了网。
+  /// 打开后源呼号等于本网关的报文也会上传，路径里照样带 `qAR,本机呼号`，
+  /// 与普通第三方报文没有区别。**默认关**，保持 iGate 的通行行为。
   static GateDecision toIs({
     required String tnc2,
     required String myFullCall,
+    bool allowOwn = false,
   }) {
     final line = tnc2.trim();
     final gt = line.indexOf('>');
@@ -79,7 +87,7 @@ class Igate {
     if (header.split(',').first.trim().isEmpty) {
       return const GateDecision(false, 'malformed');
     }
-    if (src == myFullCall.toUpperCase()) {
+    if (!allowOwn && src == myFullCall.toUpperCase()) {
       return const GateDecision(false, 'own-packet');
     }
     final parts = header.split(',');

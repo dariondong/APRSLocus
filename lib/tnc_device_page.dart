@@ -500,7 +500,11 @@ class _TncDevicePageState extends State<TncDevicePage> {
         ),
         child: Row(children: [
           Icon(
-            d.isBluetooth ? Icons.bluetooth_rounded : Icons.usb_rounded,
+            d.isUsb
+                ? Icons.usb_rounded
+                : (d.isBle
+                    ? Icons.bluetooth_connected_rounded // BLE（RT-950 Pro 走这条）
+                    : Icons.bluetooth_rounded), // 经典 SPP
             size: 16,
             color: usedByPkwdwpl
                 ? C.greyLight
@@ -511,7 +515,12 @@ class _TncDevicePageState extends State<TncDevicePage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(d.label,
+                Text(
+                    // 同名设备必须能看出协议差别：RT-950 Pro 的 BLE 与经典
+                    // SPP 是同一个 MAC、同一个名字，选错必报 read failed -1
+                    d.isBle
+                        ? '${d.label}  [BLE]'
+                        : (d.isBluetooth ? '${d.label}  [SPP]' : d.label),
                     style: usedByPkwdwpl
                         ? ts(12, w: FontWeight.w500, c: C.grey)
                         : ts(12,
