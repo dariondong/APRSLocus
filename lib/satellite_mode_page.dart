@@ -368,6 +368,13 @@ class SatelliteModePage extends StatelessWidget {
           color: C.purple,
           onTap: () => _editPath(context, s),
         ),
+        SettingsNavRow(
+          title: s.satTone,
+          trailing: state.satTone.isEmpty ? '—' : state.satTone,
+          icon: Icons.music_note_rounded,
+          color: C.cyan,
+          onTap: () => _editTone(context, s),
+        ),
         SettingsHint(s.satPathHint),
         // 常用 APRS 卫星频点（ISS / NO-84 / PSAT2 / PCSAT 多为 145.825 同频）。
         Padding(
@@ -575,6 +582,35 @@ class SatelliteModePage extends StatelessWidget {
     ctrl.dispose();
     if (v == null || v.isEmpty || !context.mounted) return;
     state.setSatPath(v);
+  }
+
+  Future<void> _editTone(BuildContext context, S s) async {
+    final ctrl = TextEditingController(text: state.satTone);
+    final v = await showDialog<String>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: C.white,
+        title: Text(s.satTone, style: ts(15, w: FontWeight.w700)),
+        content: TextField(
+          controller: ctrl,
+          autofocus: true,
+          style: ts(14),
+          decoration: const InputDecoration(hintText: '67.0 / T107'),
+        ),
+        actions: [
+          TextButton(
+              onPressed: () => Navigator.pop(ctx),
+              child: Text(S.of(ctx).cancel)),
+          FilledButton(
+            onPressed: () => Navigator.pop(ctx, ctrl.text.trim()),
+            child: Text(S.of(ctx).save),
+          ),
+        ],
+      ),
+    );
+    ctrl.dispose();
+    if (v == null || !context.mounted) return;
+    state.setSatTone(v);
   }
 
   double _correctedDown() {

@@ -2899,6 +2899,27 @@ class AppLocalizationsEs extends AppLocalizations {
       'Cambiar la fuente de datos desconecta el enlace actual';
 
   @override
+  String get satTone => 'Tono';
+
+  @override
+  String get satTune => 'Sintonizar radio';
+
+  @override
+  String get satLinkNeeded => 'Los satélites necesitan un enlace RF TNC / audio; el actual es de red.';
+
+  @override
+  String get satAosNow => '¡AOS, satélite visible!';
+
+  @override
+  String get satInPass => 'En paso';
+
+  @override
+  String get satWaitAos => 'Esperando AOS';
+
+  @override
+  String get satPassOver => 'Paso terminado';
+
+  @override
   String get satPoint => 'Apuntar al satélite';
 
   @override

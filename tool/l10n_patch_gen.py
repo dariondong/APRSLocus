@@ -53,6 +53,8 @@ KEYS_EXPLICIT = (
     'satPoint', 'satPointHint', 'satPointNoCompass', 'satPointBelow',
     'satPointTurnRight', 'satPointTurnLeft', 'satPointAligned',
     'satPointElev', 'satPointTarget',
+    'satTone', 'satTune', 'satLinkNeeded', 'satAosNow',
+    'satInPass', 'satWaitAos', 'satPassOver',
 )
 
 

@@ -2798,6 +2798,27 @@ class AppLocalizationsJa extends AppLocalizations {
   String get dataSourceSwitchHint => 'データソースを切り替えると現在の接続は切断されます';
 
   @override
+  String get satTone => 'トーン';
+
+  @override
+  String get satTune => '無線機に合わせる';
+
+  @override
+  String get satLinkNeeded => '衛星には TNC / オーディオの RF リンクが必要です（現在はネットワーク）。';
+
+  @override
+  String get satAosNow => '衛星が出現しました！';
+
+  @override
+  String get satInPass => 'パス中';
+
+  @override
+  String get satWaitAos => 'パス待ち';
+
+  @override
+  String get satPassOver => 'パス終了';
+
+  @override
   String get satPoint => '衛星を指す';
 
   @override

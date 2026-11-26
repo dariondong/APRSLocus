@@ -2885,6 +2885,27 @@ class AppLocalizationsEn extends AppLocalizations {
       'Switching the data source disconnects the current link';
 
   @override
+  String get satTone => 'Tone';
+
+  @override
+  String get satTune => 'Tune radio';
+
+  @override
+  String get satLinkNeeded => 'Satellites need a TNC / audio RF link; the current link is network.';
+
+  @override
+  String get satAosNow => 'AOS - satellite is up!';
+
+  @override
+  String get satInPass => 'In pass';
+
+  @override
+  String get satWaitAos => 'Waiting for AOS';
+
+  @override
+  String get satPassOver => 'Pass ended';
+
+  @override
   String get satPoint => 'Point at satellite';
 
   @override

@@ -2776,6 +2776,27 @@ class AppLocalizationsZh extends AppLocalizations {
   String get dataSourceSwitchHint => '切换数据来源会断开当前连接';
 
   @override
+  String get satTone => '亚音';
+
+  @override
+  String get satTune => '调到电台';
+
+  @override
+  String get satLinkNeeded => '卫星需要 TNC / 音频射频链路；当前是网络链路。';
+
+  @override
+  String get satAosNow => '卫星已升起！';
+
+  @override
+  String get satInPass => '过境中';
+
+  @override
+  String get satWaitAos => '等待过境';
+
+  @override
+  String get satPassOver => '过境已结束';
+
+  @override
   String get satPoint => '指向卫星';
 
   @override
@@ -13363,6 +13384,27 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get dataSourceSwitchHint => '切換資料來源會中斷目前連線';
+
+  @override
+  String get satTone => '亞音';
+
+  @override
+  String get satTune => '調到電台';
+
+  @override
+  String get satLinkNeeded => '衛星需要 TNC / 音訊射頻鏈路；目前是網路鏈路。';
+
+  @override
+  String get satAosNow => '衛星已升起！';
+
+  @override
+  String get satInPass => '過境中';
+
+  @override
+  String get satWaitAos => '等待過境';
+
+  @override
+  String get satPassOver => '過境已結束';
 
   @override
   String get satPoint => '指向衛星';

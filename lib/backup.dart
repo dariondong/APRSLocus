@@ -242,7 +242,7 @@ const List<BackupGroupSpec> kBackupGroups = [
     // 卫星 QSO：开关、选中的星与星历原文一起带上。星历是别人算好的公开数据，
     // 但换机后没它就得等下一次同步才能用过境。
     'satQsoOn', 'satName', 'satTleText', 'satSyncedAt',
-    'satelliteMode', 'satPath', 'satUpMhz', 'satDownMhz',
+    'satelliteMode', 'satPath', 'satTone', 'satUpMhz', 'satDownMhz',
     // 选中的是三天内第几个过境，也一并带上
     'satPassIndex',
     // 自己填的星历（星历组里没有的星），换机后不必重贴一遍

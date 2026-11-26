@@ -2882,6 +2882,27 @@ class AppLocalizationsId extends AppLocalizations {
       'Mengganti sumber data akan memutus koneksi saat ini';
 
   @override
+  String get satTone => 'Tone';
+
+  @override
+  String get satTune => 'Setel ke radio';
+
+  @override
+  String get satLinkNeeded => 'Satelit memerlukan tautan RF TNC / audio; tautan saat ini jaringan.';
+
+  @override
+  String get satAosNow => 'AOS, satelit muncul!';
+
+  @override
+  String get satInPass => 'Sedang lintas';
+
+  @override
+  String get satWaitAos => 'Menunggu AOS';
+
+  @override
+  String get satPassOver => 'Lintasan selesai';
+
+  @override
   String get satPoint => 'Arahkan ke satelit';
 
   @override

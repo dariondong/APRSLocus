@@ -5227,6 +5227,47 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'切换数据来源会断开当前连接'**
   String get dataSourceSwitchHint;
+  /// No description provided for @satTone.
+  ///
+  /// In zh, this message translates to:
+  /// **'亚音'**
+  String get satTone;
+
+  /// No description provided for @satTune.
+  ///
+  /// In zh, this message translates to:
+  /// **'调到电台'**
+  String get satTune;
+
+  /// No description provided for @satLinkNeeded.
+  ///
+  /// In zh, this message translates to:
+  /// **'卫星需要 TNC / 音频射频链路；当前是网络链路。'**
+  String get satLinkNeeded;
+
+  /// No description provided for @satAosNow.
+  ///
+  /// In zh, this message translates to:
+  /// **'卫星已升起！'**
+  String get satAosNow;
+
+  /// No description provided for @satInPass.
+  ///
+  /// In zh, this message translates to:
+  /// **'过境中'**
+  String get satInPass;
+
+  /// No description provided for @satWaitAos.
+  ///
+  /// In zh, this message translates to:
+  /// **'等待过境'**
+  String get satWaitAos;
+
+  /// No description provided for @satPassOver.
+  ///
+  /// In zh, this message translates to:
+  /// **'过境已结束'**
+  String get satPassOver;
   /// No description provided for @satPoint.
   ///
   /// In zh, this message translates to:

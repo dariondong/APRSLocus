@@ -2161,6 +2161,15 @@ class AppState extends ChangeNotifier {
     _notify();
   }
 
+  /// 卫星亚音（仅读数；APRS 卫星一般不用）。
+  void setSatTone(String v) {
+    final t = v.trim();
+    if (satTone == t) return;
+    satTone = t;
+    persist();
+    _notify();
+  }
+
   /// 卫星上行 / 下行频率（MHz）。非法值忽略。
   void setSatFreqs({double? up, double? down}) {
     bool ok(double? x) => x != null && x > 0 && x <= 6000;
@@ -6546,6 +6555,9 @@ class AppState extends ChangeNotifier {
   /// 卫星模式下的射频路径（ISS APRS 用 ARISS；换星时用户可改）。
   String satPath = 'ARISS';
 
+  /// 卫星亚音（如 `67.0` / `T107`）。只用于操作台读数，不参与 APRS 发射。
+  String satTone = '';
+
   /// 卫星上行 / 下行频率（MHz）。默认 ISS APRS 的 145.825 同频。
   double satUpMhz = 145.825;
   double satDownMhz = 145.825;
@@ -6914,6 +6926,7 @@ class AppState extends ChangeNotifier {
       satSyncedAt = p.getString('satSyncedAt') ?? satSyncedAt;
       satelliteMode = p.getBool('satelliteMode') ?? satelliteMode;
       satPath = p.getString('satPath') ?? satPath;
+      satTone = p.getString('satTone') ?? satTone;
       satUpMhz = p.getDouble('satUpMhz') ?? satUpMhz;
       satDownMhz = p.getDouble('satDownMhz') ?? satDownMhz;
       final httpPort = p.getInt('acnHttpPort') ?? acnHttpPort;
@@ -7342,6 +7355,7 @@ class AppState extends ChangeNotifier {
     await p.setString('satSyncedAt', satSyncedAt);
     await p.setBool('satelliteMode', satelliteMode);
     await p.setString('satPath', satPath);
+    await p.setString('satTone', satTone);
     await p.setDouble('satUpMhz', satUpMhz);
     await p.setDouble('satDownMhz', satDownMhz);
     await p.setBool('igateEnabled', igateEnabled);
