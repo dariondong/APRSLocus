@@ -2882,6 +2882,9 @@ class AppLocalizationsId extends AppLocalizations {
       'Mengganti sumber data akan memutus koneksi saat ini';
 
   @override
+  String get satHeading => 'Arah';
+
+  @override
   String get satCatalog => 'Katalog satelit';
 
   @override
@@ -2930,7 +2933,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get satMini => 'Jendela mini';
 
   @override
-  String get satMiniOn => 'Jendela mini aktif: kirim beacon dari Look4Sat';
+  String get satMiniOn => 'Jendela mini aktif: kirim beacon dari aplikasi lain';
 
   @override
   String get satMiniOff => 'Jendela mini ditutup';
@@ -2942,7 +2945,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get satMiniUnsupported => 'Jendela mini hanya untuk Android';
 
   @override
-  String get satMiniTip => 'Saat aktif, jendela kecil melayang di atas aplikasi lain (Look4Sat): hitung mundur lintasan, azimut/elevasi, frekuensi terkoreksi Doppler, dan beacon sekali ketuk.';
+  String get satMiniTip => 'Saat aktif, jendela kecil melayang di atas aplikasi lain: hitung mundur lintasan, azimut/elevasi, frekuensi terkoreksi Doppler, dan beacon sekali ketuk.';
 
   @override
   String get satSent => 'Terkirim';

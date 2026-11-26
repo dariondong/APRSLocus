@@ -78,6 +78,7 @@ class _SatellitePointPageState extends State<SatellitePointPage> {
     final heading = _hasCompass ? _heading : 0.0;
     final rel = _relative(look.azimuthDeg, heading);
     final pass = st.satPickedPass;
+    final altKm = subPoint(tle, now).altKm;
 
     // 过境轨迹按 (过境, 观测点) 缓存，位置/选星变化时才重算。
     if (pass != null &&
@@ -117,6 +118,13 @@ class _SatellitePointPageState extends State<SatellitePointPage> {
                     above: above,
                     trail: _trail,
                     now: now,
+                    rangeKm: look.rangeKm,
+                    altKm: altKm,
+                    azLabel: s.bearing,
+                    elLabel: s.satElevation,
+                    rangeLabel: s.satRange,
+                    altLabel: s.altitude,
+                    headingLabel: s.satHeading,
                   ),
                 ),
               ),

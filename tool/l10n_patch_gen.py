@@ -60,7 +60,7 @@ KEYS_EXPLICIT = (
     'satCatalog', 'satPasses', 'satFavorites', 'satFavHint',
     'satNoFavorites', 'satFavAprs', 'sat24h', 'sat48h', 'sat72h',
     'satAutoDoppler', 'satAutoDopplerHint', 'satTransponders',
-    'satNoTransponders', 'satApply', 'satRigOff',
+    'satNoTransponders', 'satApply', 'satRigOff', 'satHeading',
 )
 
 

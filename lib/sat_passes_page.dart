@@ -6,8 +6,7 @@ import 'state.dart';
 import 'theme.dart';
 import 'widgets.dart';
 
-/// 过境列表（Look4Sat 的 Passes 页思路）：
-/// 把**收藏的卫星**未来 1~3 天的过境按时间排成一张表，
+/// 过境列表：把**收藏的卫星**未来 1~3 天的过境按时间排成一张表，
 /// 点任意一条就切到那颗星 + 那条过境，回到操作台。
 class SatPassesPage extends StatefulWidget {
   final AppState state;

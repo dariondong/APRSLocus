@@ -6,8 +6,7 @@ import 'state.dart';
 import 'theme.dart';
 import 'widgets.dart';
 
-/// 卫星目录（Look4Sat 的 Satellites 页思路）：
-/// 搜索 + 收藏；收藏的星才会进过境列表。
+/// 卫星目录：搜索 + 收藏；收藏的星才会进过境列表。
 class SatellitesPage extends StatefulWidget {
   final AppState state;
   const SatellitesPage({super.key, required this.state});

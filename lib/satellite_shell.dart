@@ -672,7 +672,7 @@ class _SatelliteShellState extends State<SatelliteShell> {
         dopplerHz(st.satDownMhz, look.rangeRateKmS) / 1e6;
   }
 
-  /// 自动多普勒：L4S 的做法 —— 过境中持续把下行写进电台。
+  /// 自动多普勒：过境中持续把下行写进电台。
   /// 只在（自动开 + 电台已连 + 正在过境）时动手，且频率变化 < 40 Hz 不重复发。
   void _autoDoppler() {
     if (!st.satAutoDoppler || !st.rigConnected) return;

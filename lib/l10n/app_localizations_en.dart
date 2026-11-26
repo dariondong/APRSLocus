@@ -2885,6 +2885,9 @@ class AppLocalizationsEn extends AppLocalizations {
       'Switching the data source disconnects the current link';
 
   @override
+  String get satHeading => 'Heading';
+
+  @override
   String get satCatalog => 'Satellite catalog';
 
   @override
@@ -2933,7 +2936,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get satMini => 'Mini window';
 
   @override
-  String get satMiniOn => 'Mini window on - send a beacon from Look4Sat too';
+  String get satMiniOn => 'Mini window on - send a beacon from another app too';
 
   @override
   String get satMiniOff => 'Mini window closed';
@@ -2945,7 +2948,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get satMiniUnsupported => 'The mini window is Android only';
 
   @override
-  String get satMiniTip => 'When on, a small window floats over other apps (Look4Sat): pass countdown, azimuth/elevation, Doppler-corrected frequencies and a one-tap beacon.';
+  String get satMiniTip => 'When on, a small window floats over other apps: pass countdown, azimuth/elevation, Doppler-corrected frequencies and a one-tap beacon.';
 
   @override
   String get satSent => 'Sent';

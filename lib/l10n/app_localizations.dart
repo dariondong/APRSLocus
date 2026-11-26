@@ -5227,6 +5227,11 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'切换数据来源会断开当前连接'**
   String get dataSourceSwitchHint;
+  /// No description provided for @satHeading.
+  ///
+  /// In zh, this message translates to:
+  /// **'航向'**
+  String get satHeading;
   /// No description provided for @satCatalog.
   ///
   /// In zh, this message translates to:
@@ -5325,7 +5330,7 @@ abstract class AppLocalizations {
   /// No description provided for @satMiniOn.
   ///
   /// In zh, this message translates to:
-  /// **'小窗已开启：切到 Look4Sat 也能一键发信标'**
+  /// **'小窗已开启：切到其他应用也能一键发信标'**
   String get satMiniOn;
 
   /// No description provided for @satMiniOff.
@@ -5349,7 +5354,7 @@ abstract class AppLocalizations {
   /// No description provided for @satMiniTip.
   ///
   /// In zh, this message translates to:
-  /// **'开启后小窗浮在其他应用（如 Look4Sat）上，显示过境倒计时、方位/仰角和多普勒频率，并可直接发信标。'**
+  /// **'开启后小窗浮在其他应用上，显示过境倒计时、方位/仰角和多普勒频率，并可直接发信标。'**
   String get satMiniTip;
 
   /// No description provided for @satSent.

@@ -2776,6 +2776,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get dataSourceSwitchHint => '切换数据来源会断开当前连接';
 
   @override
+  String get satHeading => '航向';
+
+  @override
   String get satCatalog => '卫星目录';
 
   @override
@@ -2824,7 +2827,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get satMini => '小窗';
 
   @override
-  String get satMiniOn => '小窗已开启：切到 Look4Sat 也能一键发信标';
+  String get satMiniOn => '小窗已开启：切到其他应用也能一键发信标';
 
   @override
   String get satMiniOff => '小窗已关闭';
@@ -2836,7 +2839,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get satMiniUnsupported => '小窗仅支持 Android';
 
   @override
-  String get satMiniTip => '开启后小窗浮在其他应用（如 Look4Sat）上，显示过境倒计时、方位/仰角和多普勒频率，并可直接发信标。';
+  String get satMiniTip => '开启后小窗浮在其他应用上，显示过境倒计时、方位/仰角和多普勒频率，并可直接发信标。';
 
   @override
   String get satSent => '已发送';
@@ -13452,6 +13455,9 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   String get dataSourceSwitchHint => '切換資料來源會中斷目前連線';
 
   @override
+  String get satHeading => '航向';
+
+  @override
   String get satCatalog => '衛星目錄';
 
   @override
@@ -13500,7 +13506,7 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   String get satMini => '小窗';
 
   @override
-  String get satMiniOn => '小窗已開啟：切到 Look4Sat 也能一鍵發信標';
+  String get satMiniOn => '小窗已開啟：切到其他應用也能一鍵發信標';
 
   @override
   String get satMiniOff => '小窗已關閉';
@@ -13512,7 +13518,7 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   String get satMiniUnsupported => '小窗僅支援 Android';
 
   @override
-  String get satMiniTip => '開啟後小窗浮在其他應用（如 Look4Sat）上，顯示過境倒數、方位/仰角和多普勒頻率，並可直接發信標。';
+  String get satMiniTip => '開啟後小窗浮在其他應用上，顯示過境倒數、方位/仰角和多普勒頻率，並可直接發信標。';
 
   @override
   String get satSent => '已傳送';

@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'motion.dart';
 import 'satellite.dart';
 import 'theme.dart';
+import 'widgets.dart';
 
 /// 大罗盘：N/E/S/W 随手机航向转，橙色箭头指向卫星。
 ///
@@ -85,8 +86,10 @@ class _SatelliteCompassState extends State<SatelliteCompass> {
 
   @override
   Widget build(BuildContext context) {
+    final s = S.of(context);
     final now = DateTime.now();
     final look = lookAt(widget.tle, widget.lat, widget.lng, now);
+    final altKm = subPoint(widget.tle, now).altKm;
     return CustomPaint(
       painter: SatelliteCompassPainter(
         heading: _hasCompass ? _heading : 0,
@@ -96,6 +99,13 @@ class _SatelliteCompassState extends State<SatelliteCompass> {
         above: look.elevationDeg >= 0,
         trail: _trail,
         now: now,
+        rangeKm: look.rangeKm,
+        altKm: altKm,
+        azLabel: s.bearing,
+        elLabel: s.satElevation,
+        rangeLabel: s.satRange,
+        altLabel: s.altitude,
+        headingLabel: s.satHeading,
       ),
     );
   }
@@ -110,6 +120,13 @@ class SatelliteCompassPainter extends CustomPainter {
   final bool above;
   final List<SkyPoint> trail;
   final DateTime now;
+  final double rangeKm;
+  final double altKm;
+  final String azLabel;
+  final String elLabel;
+  final String rangeLabel;
+  final String altLabel;
+  final String headingLabel;
 
   const SatelliteCompassPainter({
     required this.heading,
@@ -119,6 +136,13 @@ class SatelliteCompassPainter extends CustomPainter {
     required this.above,
     this.trail = const [],
     required this.now,
+    this.rangeKm = 0,
+    this.altKm = 0,
+    this.azLabel = 'AZ',
+    this.elLabel = 'EL',
+    this.rangeLabel = 'R',
+    this.altLabel = 'H',
+    this.headingLabel = 'HDG',
   });
 
   @override
@@ -225,6 +249,9 @@ class SatelliteCompassPainter extends CustomPainter {
     canvas.restore();
 
     canvas.drawCircle(center, 3, Paint()..color = C.grey);
+
+    // 罗盘上的当前读数：方位/仰角、航向、距离、高度。
+    _drawReadouts(canvas, size);
   }
 
   @override
@@ -252,6 +279,8 @@ class SatelliteCompassPainter extends CustomPainter {
       ..color = C.greyLight.withValues(alpha: 0.55);
     canvas.drawCircle(center, r * 0.9 * (1 - 30 / 90), ring);
     canvas.drawCircle(center, r * 0.9 * (1 - 60 / 90), ring);
+    _tiny(canvas, '30°', Offset(cx + 3, cy - r * 0.9 * 0.6 - 12), C.grey);
+    _tiny(canvas, '60°', Offset(cx + 3, cy - r * 0.9 * 0.3 - 12), C.grey);
 
     Offset pos(SkyPoint p) {
       final el = p.elevationDeg.clamp(0.0, 90.0);
@@ -339,6 +368,30 @@ class SatelliteCompassPainter extends CustomPainter {
     canvas.drawCircle(pos(trail.first), 3.2, endPaint);
     canvas.drawCircle(pos(trail.last), 3.2, endPaint);
 
+    // 每分钟一个点：看得出卫星沿轨迹走的快慢（靠近天顶时走得快）。
+    var lastMin = -1;
+    final tick = Paint()..color = Colors.white.withValues(alpha: 0.5);
+    for (final p in trail) {
+      if (p.at.minute == lastMin) continue;
+      lastMin = p.at.minute;
+      canvas.drawCircle(pos(p), 1.6, tick);
+    }
+
+    // TCA：轨迹上最高仰角那一点，单独标出来。
+    var tca = trail.first;
+    for (final p in trail) {
+      if (p.elevationDeg > tca.elevationDeg) tca = p;
+    }
+    final td = pos(tca);
+    final diamond = Path()
+      ..moveTo(td.dx, td.dy - 4)
+      ..lineTo(td.dx + 4, td.dy)
+      ..lineTo(td.dx, td.dy + 4)
+      ..lineTo(td.dx - 4, td.dy)
+      ..close();
+    canvas.drawPath(diamond, Paint()..color = C.orange);
+    _tiny(canvas, 'TCA', td + const Offset(6, -10), C.orange);
+
     // 当前点：只在「这条过境正在进行」时画，避免选了别的过境时错位。
     if (!now.isBefore(trail.first.at) && !now.isAfter(trail.last.at)) {
       final d = pos(trail.firstWhere(
@@ -353,6 +406,95 @@ class SatelliteCompassPainter extends CustomPainter {
           ..strokeWidth = 1.4
           ..color = Colors.white.withValues(alpha: 0.75),
       );
+    }
+  }
+
+  // ─── 读数 ───
+
+  TextPainter _tp(String text, double size, Color color, FontWeight weight,
+      {double ls = 0}) {
+    final tp = TextPainter(
+      text: TextSpan(
+        text: text,
+        style: TextStyle(
+          fontSize: size,
+          color: color,
+          fontWeight: weight,
+          letterSpacing: ls,
+        ),
+      ),
+      textDirection: TextDirection.ltr,
+    )..layout();
+    return tp;
+  }
+
+  void _tiny(Canvas canvas, String text, Offset at, Color color) {
+    final tp =
+        _tp(text, 8.5, color.withValues(alpha: 0.92), FontWeight.w700);
+    tp.paint(canvas, at);
+  }
+
+  void _pill(Canvas canvas, Rect r) {
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(r, const Radius.circular(9)),
+      Paint()..color = C.bg.withValues(alpha: 0.78),
+    );
+  }
+
+  /// 左上/右上角的大读数：小标签 + 大数值。
+  void _stat(Canvas canvas, Offset at, String label, String value,
+      Color accent, {required bool right}) {
+    final l = _tp(label, 8.5, C.grey, FontWeight.w700, ls: 0.5);
+    final v = _tp(value, 21, accent, FontWeight.w800, ls: -0.5);
+    final w = math.max(l.width, v.width);
+    final x = right ? at.dx - w : at.dx;
+    _pill(canvas, Rect.fromLTWH(x - 7, at.dy - 3, w + 14,
+        l.height + v.height + 7));
+    l.paint(canvas, Offset(x, at.dy));
+    v.paint(canvas, Offset(x, at.dy + l.height + 1));
+    canvas.drawCircle(
+      Offset(x - 3.5, at.dy + l.height / 2),
+      1.8,
+      Paint()..color = accent,
+    );
+  }
+
+  /// 罗盘上的实时读数：方位/仰角、航向、高度、距离。
+  void _drawReadouts(Canvas canvas, Size size) {
+    _stat(canvas, const Offset(8, 8), azLabel,
+        '${targetAz.toStringAsFixed(0)}°', C.cyan, right: false);
+    _stat(canvas, Offset(size.width - 8, 8), elLabel,
+        '${targetEl.toStringAsFixed(0)}°', C.orange, right: true);
+
+    final hdg = hasCompass ? '${heading.round()}°' : '--';
+    final items = [
+      _tp('$headingLabel $hdg', 10, C.slate, FontWeight.w600),
+      _tp(
+          '$altLabel ${altKm <= 0 ? '--' : '${altKm.toStringAsFixed(0)} km'}',
+          10,
+          C.slate,
+          FontWeight.w600),
+      _tp(
+          '$rangeLabel ${rangeKm <= 0 ? '--' : '${rangeKm.toStringAsFixed(0)} km'}',
+          10,
+          C.slate,
+          FontWeight.w600),
+    ];
+    const gap = 10.0;
+    final total = items.fold<double>(0, (a, t) => a + t.width) +
+        gap * (items.length - 1);
+    final y = size.height - 20;
+    var x = (size.width - total) / 2;
+    if (total > size.width - 16) {
+      // 窄屏：只保留航向和距离，别叠成一团。
+      x = 8;
+    }
+    final draw = total > size.width - 16 ? [items[0], items[2]] : items;
+    var cx = x;
+    for (final t in draw) {
+      _pill(canvas, Rect.fromLTWH(cx - 6, y - 3, t.width + 12, t.height + 6));
+      t.paint(canvas, Offset(cx, y));
+      cx += t.width + gap;
     }
   }
 }
