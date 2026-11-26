@@ -128,6 +128,7 @@ class _SatelliteShellState extends State<SatelliteShell> {
                                   tle: tle,
                                   lat: lat,
                                   lng: lng,
+                                  pass: st.satPickedPass,
                                 )
                               : _compassHint(context, s),
                         ),

@@ -28,6 +28,12 @@ class _SatellitePointPageState extends State<SatellitePointPage> {
   double _heading = -1;
   bool _hasCompass = false;
 
+  /// 过境轨迹缓存：页面 10Hz 重绘，不能每次重算整条弧。
+  SatPass? _trailPass;
+  double? _trailLat;
+  double? _trailLng;
+  List<SkyPoint> _trail = const [];
+
   AppState get st => widget.state;
 
   @override
@@ -73,6 +79,21 @@ class _SatellitePointPageState extends State<SatellitePointPage> {
     final rel = _relative(look.azimuthDeg, heading);
     final pass = st.satPickedPass;
 
+    // 过境轨迹按 (过境, 观测点) 缓存，位置/选星变化时才重算。
+    if (pass != null &&
+        (_trailPass?.aos != pass.aos ||
+            _trailPass?.los != pass.los ||
+            _trailLat != lat ||
+            _trailLng != lng)) {
+      _trailPass = pass;
+      _trailLat = lat;
+      _trailLng = lng;
+      _trail = passTrack(tle, lat, lng, pass);
+    } else if (pass == null && _trail.isNotEmpty) {
+      _trailPass = null;
+      _trail = const [];
+    }
+
     return Scaffold(
       backgroundColor: C.bg,
       appBar: AppBar(
@@ -94,6 +115,8 @@ class _SatellitePointPageState extends State<SatellitePointPage> {
                     targetEl: look.elevationDeg,
                     hasCompass: _hasCompass,
                     above: above,
+                    trail: _trail,
+                    now: now,
                   ),
                 ),
               ),

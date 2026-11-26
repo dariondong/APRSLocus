@@ -97,6 +97,29 @@ SO-50
     });
   });
 
+  group('罗盘经过线', () {
+    test('passTrack 覆盖 AOS→LOS，首尾与过境一致', () {
+      final t = _iss();
+      final p = nextPass(t, 23.13, 113.26,
+          from: t.epoch.add(const Duration(hours: 1)))!;
+      final track = passTrack(t, 23.13, 113.26, p);
+      expect(track.length, greaterThan(5));
+      expect(track.first.at, p.aos);
+      expect(track.last.at, p.los);
+      for (final q in track) {
+        expect(q.azimuthDeg, inInclusiveRange(0, 360));
+        // 过境窗口按 0° 地平算，端点采样可能略低于 0°。
+        expect(q.elevationDeg, greaterThanOrEqualTo(-2));
+      }
+      expect(
+        track
+            .map((q) => q.elevationDeg)
+            .reduce((a, b) => a > b ? a : b),
+        greaterThan(0),
+      );
+    });
+  });
+
   group('过境声明', () {
     test('名字归一', () {
       expect(normalizeSatName('ISS (ZARYA)'), 'ISS');

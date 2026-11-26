@@ -334,6 +334,49 @@ SatLook lookAt(Tle t, double obsLat, double obsLng, DateTime at) {
   );
 }
 
+/// 过境期间天空中的一个采样点（方位/仰角）。
+class SkyPoint {
+  final DateTime at;
+  final double azimuthDeg;
+  final double elevationDeg;
+  const SkyPoint({
+    required this.at,
+    required this.azimuthDeg,
+    required this.elevationDeg,
+  });
+}
+
+/// 采样整条过境轨迹（默认 20 s 一个点，含 AOS/LOS），用于罗盘上的经过线。
+///
+/// 上限 120 点：正常 LEO 过境十几分钟约 40 点，异常 TLE 也不会卡界面。
+List<SkyPoint> passTrack(
+  Tle t,
+  double obsLat,
+  double obsLng,
+  SatPass pass, {
+  int stepSec = 20,
+}) {
+  final out = <SkyPoint>[];
+  final step = Duration(seconds: stepSec.clamp(5, 120));
+  var at = pass.aos;
+  while (!at.isAfter(pass.los) && out.length < 120) {
+    final l = lookAt(t, obsLat, obsLng, at);
+    out.add(SkyPoint(
+      at: at,
+      azimuthDeg: l.azimuthDeg,
+      elevationDeg: l.elevationDeg,
+    ));
+    at = at.add(step);
+  }
+  final end = lookAt(t, obsLat, obsLng, pass.los);
+  out.add(SkyPoint(
+    at: pass.los,
+    azimuthDeg: end.azimuthDeg,
+    elevationDeg: end.elevationDeg,
+  ));
+  return out;
+}
+
 /// 多普勒频移（Hz）。
 ///
 /// 正频率 + 正在接近（[rangeRateKmS] < 0）时返回正偏移 —— 也就是接收到的
