@@ -1,79 +1,196 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import 'map_math.dart';
 import 'map_page.dart';
-import 'material.dart';
+import 'models.dart';
 import 'satellite.dart';
+import 'satellite_compass.dart';
 import 'satellite_mode_page.dart';
-import 'satellite_point_page.dart';
 import 'state.dart';
 import 'theme.dart';
+import 'tile_map.dart';
 import 'tnc_page.dart';
 import 'widgets.dart';
 
-/// ─── APRS 卫星模式外壳 ───
+/// ─── APRS 卫星模式外壳（指向器为主）───
 ///
-/// 与 1.0 经典 / 2.0 地图 / 精简并列，不是设置里的一个开关：
-///   * 地图铺底（卫星星下点、足迹与轨迹由 MapPage 的卫星层画）；
-///   * 顶部一颗状态胶囊：卫星名 + 下次过境，右侧直接切换模式；
-///   * 底部可拖动面板：卫星选择/同步、极坐标天空图、过境列表、实时多普勒、
-///     频率/路径、指向卫星。
-class SatelliteShell extends StatelessWidget {
+/// 布局按实际“打卫星”的顺序：
+///   顶栏：卫星 / 模式切换
+///   主区：**大罗盘**（箭头指向卫星），右下角一张**小地图**
+///   底栏：过境进度、多普勒上/下行、亚音、发信标 / 设置
+///
+/// 小地图不是装饰：收到新信标时自动缩放到那台站（并标出呼号），
+/// 点一下可以放大成全屏地图。
+class SatelliteShell extends StatefulWidget {
   final AppState state;
   const SatelliteShell({super.key, required this.state});
 
   @override
+  State<SatelliteShell> createState() => _SatelliteShellState();
+}
+
+class _SatelliteShellState extends State<SatelliteShell> {
+  AppState get st => widget.state;
+
+  int _lastStationsVer = -1;
+  double? _miniLat, _miniLng;
+  double _miniZoom = 5;
+  String? _beaconCall;
+  DateTime? _beaconAt;
+  DateTime? _alertedAos;
+
+  @override
+  void initState() {
+    super.initState();
+    st.addListener(_onState);
+    _lastStationsVer = st.stationsVersion;
+    _miniLat = st.myLat;
+    _miniLng = st.myLng;
+  }
+
+  @override
+  void dispose() {
+    st.removeListener(_onState);
+    super.dispose();
+  }
+
+  void _onState() {
+    if (!mounted) return;
+    final ver = st.stationsVersion;
+    if (ver == _lastStationsVer) return;
+    _lastStationsVer = ver;
+    final latest = _latestStation();
+    if (latest == null) return;
+    // 同一台站重复信标也刷新（它可能移动了）；只是避免每次心跳都重设。
+    if (latest.call == _beaconCall &&
+        !latest.lastHeard.isAfter(_beaconAt ?? DateTime(2000))) {
+      return;
+    }
+    setState(() {
+      _beaconCall = latest.call;
+      _beaconAt = latest.lastHeard;
+      _miniLat = latest.lat;
+      _miniLng = latest.lng;
+      _miniZoom = 7;
+    });
+  }
+
+  /// 最近 10 分钟听到的、不是自己的、有坐标的最新台站。
+  Station? _latestStation() {
+    Station? best;
+    final cutoff = DateTime.now().subtract(const Duration(minutes: 10));
+    final me = st.myFullCall.toUpperCase();
+    for (final s in st.stations) {
+      if (s.call.toUpperCase() == me) continue;
+      if (s.lat == 0 && s.lng == 0) continue;
+      if (s.lastHeard.isBefore(cutoff)) continue;
+      if (best == null || s.lastHeard.isAfter(best.lastHeard)) best = s;
+    }
+    return best;
+  }
+
+  @override
   Widget build(BuildContext context) {
     final s = S.of(context);
+    final tle = st.satSelected;
+    final lat = st.myLat;
+    final lng = st.myLng;
+    final canPoint = tle != null && lat != null && lng != null;
+
+    double? miniLat = _miniLat ?? st.myLat;
+    double? miniLng = _miniLng ?? st.myLng;
+    if ((miniLat == null || miniLng == null) && tle != null) {
+      final sub = subPoint(tle, DateTime.now());
+      miniLat = sub.lat;
+      miniLng = sub.lng;
+    }
+
     return Scaffold(
-      backgroundColor: C.pageFill,
-      body: Stack(
-        children: [
-          Positioned.fill(
-            child: MapPage(
-              state: state,
-              isActive: true,
-              // 让开顶部状态胶囊；底部由面板盖住。
-              topInset: 64,
-              bottomInset: 0,
-            ),
-          ),
-          Positioned(
-            top: MediaQuery.of(context).padding.top + 8,
-            left: 12,
-            right: 12,
-            child: _topBar(context, s),
-          ),
-          DraggableScrollableSheet(
-            initialChildSize: 0.46,
-            minChildSize: 0.12,
-            maxChildSize: 0.94,
-            builder: (ctx, controller) => Container(
-              decoration: BoxDecoration(
-                color: C.pageFill,
-                borderRadius:
-                    const BorderRadius.vertical(top: Radius.circular(20)),
-                boxShadow: elev3(),
-              ),
-              child: Column(
+      backgroundColor: C.bg,
+      body: SafeArea(
+        child: Column(
+          children: [
+            _topBar(context, s),
+            Expanded(
+              child: Stack(
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.only(top: 8, bottom: 2),
-                    child: Container(
-                      width: 36,
-                      height: 4,
-                      decoration: BoxDecoration(
-                        color: C.border,
-                        borderRadius: BorderRadius.circular(2),
+                  Positioned.fill(
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(18, 6, 18, 10),
+                      child: Center(
+                        child: AspectRatio(
+                          aspectRatio: 1,
+                          child: canPoint
+                              ? SatelliteCompass(
+                                  tle: tle,
+                                  lat: lat,
+                                  lng: lng,
+                                )
+                              : _compassHint(context, s),
+                        ),
                       ),
                     ),
                   ),
-                  Expanded(
-                    child: _Cockpit(
-                      state: state,
-                      controller: controller,
+                  if (miniLat != null && miniLng != null)
+                    Positioned(
+                      right: 14,
+                      bottom: 12,
+                      child: _miniMap(context, s, miniLat, miniLng, tle),
                     ),
-                  ),
+                ],
+              ),
+            ),
+            _operatingBar(context, s),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // ─── 顶栏 ───
+
+  Widget _topBar(BuildContext context, S s) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 8, 10, 4),
+      child: Row(
+        children: [
+          Icon(Icons.satellite_alt_rounded, size: 20, color: C.blue),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(s.satMode,
+                    style: ts(14, w: FontWeight.w800, ls: -0.2)),
+                Text(
+                  st.satName.isEmpty ? s.satNeedSync : st.satName,
+                  style: ts(10, c: C.grey),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
+            ),
+          ),
+          GestureDetector(
+            onTap: () => _showModes(context),
+            behavior: HitTestBehavior.opaque,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+              decoration: BoxDecoration(
+                color: C.blue.withValues(alpha: 0.12),
+                borderRadius: BorderRadius.circular(999),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.dashboard_customize_rounded,
+                      size: 14, color: C.blue),
+                  const SizedBox(width: 4),
+                  Text(s.featureModes,
+                      style: ts(11, c: C.blue, w: FontWeight.w700)),
                 ],
               ),
             ),
@@ -83,59 +200,349 @@ class SatelliteShell extends StatelessWidget {
     );
   }
 
-  Widget _topBar(BuildContext context, S s) {
-    final pass = state.satPickedPass;
-    final name = state.satName;
-    final label = name.isEmpty
-        ? s.satMode
-        : '$name${pass == null ? '' : ' · ${_hm(pass.aos)}'}';
-    return MaterialSurface(
-      radius: 999,
-      blurSigma: C.chipBlur,
+  Widget _compassHint(BuildContext context, S s) {
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(Icons.explore_off_rounded, size: 42, color: C.greyLight),
+          const SizedBox(height: 8),
+          Text(
+            st.satName.isEmpty ? s.satNeedSync : s.satNoPosition,
+            textAlign: TextAlign.center,
+            style: ts(12, c: C.grey),
+          ),
+          TextButton(
+            onPressed: () => _openSettings(context),
+            child: Text(s.settings, style: ts(12, c: C.blue)),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ─── 小地图（收到新信标就缩放到那台站）───
+
+  Widget _miniMap(BuildContext context, S s, double lat, double lng, Tle? tle) {
+    return GestureDetector(
+      onTap: () => _openFullMap(context),
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+        width: 134,
+        height: 100,
         decoration: BoxDecoration(
-          color: C.chipFill,
-          borderRadius: BorderRadius.circular(999),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: C.border),
           boxShadow: elev2(),
+          color: C.bgSoft,
         ),
-        child: Row(
-          children: [
-            Icon(Icons.satellite_alt_rounded, size: 17, color: C.blue),
-            const SizedBox(width: 7),
-            Expanded(
-              child: Text(
-                label,
-                style: ts(12.5, w: FontWeight.w700),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-            GestureDetector(
-              onTap: () => _showModes(context),
-              behavior: HitTestBehavior.opaque,
-              child: Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
-                decoration: BoxDecoration(
-                  color: C.blue.withValues(alpha: 0.12),
-                  borderRadius: BorderRadius.circular(999),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(12),
+          child: Stack(
+            children: [
+              Positioned.fill(
+                child: IgnorePointer(
+                  child: TileMapView(
+                    centerLat: lat,
+                    centerLng: lng,
+                    zoom: _miniZoom,
+                    pan: Offset.zero,
+                    onPan: (_) {},
+                    onViewChanged: (_, _) {},
+                    onZoomRequest: (_, _) {},
+                    onTap: (_) {},
+                    mapType: MapType.gaode,
+                    cacheEnabled: st.tileCacheOn,
+                    offlineOnly: st.offlineOnly,
+                    overlay: Positioned.fill(
+                      child: IgnorePointer(
+                        child: CustomPaint(
+                          painter: _MiniPainter(
+                            centerLat: lat,
+                            centerLng: lng,
+                            zoom: _miniZoom,
+                            tle: tle,
+                            stations: st.stations,
+                            highlight: _beaconCall,
+                            myLat: st.myLat,
+                            myLng: st.myLng,
+                            now: DateTime.now(),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
                 ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(Icons.dashboard_customize_rounded,
-                        size: 14, color: C.blue),
-                    const SizedBox(width: 4),
-                    Text(s.featureModes,
-                        style: ts(11, c: C.blue, w: FontWeight.w700)),
-                  ],
-                ),
               ),
-            ),
-          ],
+              if (_beaconCall != null)
+                Positioned(
+                  left: 4,
+                  top: 4,
+                  child: Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                    decoration: BoxDecoration(
+                      color: C.orange.withValues(alpha: 0.92),
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                    child: Text(
+                      _beaconCall!,
+                      style: ts(8.5, c: Colors.white, w: FontWeight.w700),
+                    ),
+                  ),
+                ),
+              Positioned(
+                right: 4,
+                bottom: 4,
+                child: Icon(Icons.open_in_full_rounded,
+                    size: 12, color: C.slate.withValues(alpha: 0.65)),
+              ),
+            ],
+          ),
         ),
       ),
+    );
+  }
+
+  // ─── 底栏操作台 ───
+
+  Widget _operatingBar(BuildContext context, S s) {
+    return ValueListenableBuilder<int>(
+      valueListenable: st.tick,
+      builder: (context, _, _) {
+        final now = DateTime.now().toUtc();
+        final pass = st.satPickedPass;
+        final inPass = pass != null &&
+            !now.isBefore(pass.aos) &&
+            now.isBefore(pass.los);
+        final before = pass != null && now.isBefore(pass.aos);
+        final progress = inPass
+            ? (now.difference(pass.aos).inMicroseconds /
+                    pass.duration.inMicroseconds)
+                .clamp(0.0, 1.0)
+            : 0.0;
+        if (inPass && _alertedAos != pass.aos) {
+          _alertedAos = pass.aos;
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (!mounted) return;
+            HapticFeedback.heavyImpact();
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(s.satAosNow),
+                backgroundColor: C.green,
+                behavior: SnackBarBehavior.floating,
+              ),
+            );
+          });
+        }
+        final tle = st.satSelected;
+        final lat = st.myLat;
+        final lng = st.myLng;
+        SatLook? look;
+        if (tle != null && lat != null && lng != null) {
+          look = lookAt(tle, lat, lng, now);
+        }
+        final dUp =
+            look == null ? 0.0 : dopplerHz(st.satUpMhz, look.rangeRateKmS);
+        final dDown =
+            look == null ? 0.0 : dopplerHz(st.satDownMhz, look.rangeRateKmS);
+        final up = st.satUpMhz - dUp / 1e6;
+        final down = st.satDownMhz + dDown / 1e6;
+
+        final color = inPass ? C.green : (before ? C.orange : C.grey);
+        final title = pass == null
+            ? (st.satName.isEmpty ? s.satNeedSync : s.satNoPass)
+            : inPass
+                ? '${s.satInPass} · ${_mmss(pass.los.difference(now))}'
+                : before
+                    ? '${s.satWaitAos} · ${_mmss(pass.aos.difference(now))}'
+                    : s.satPassOver;
+
+        return Container(
+          padding: const EdgeInsets.fromLTRB(16, 10, 16, 14),
+          decoration: BoxDecoration(
+            color: C.sheetFill,
+            borderRadius:
+                const BorderRadius.vertical(top: Radius.circular(20)),
+            boxShadow: elev3(),
+            border: Border(top: BorderSide(color: C.border, width: 0.5)),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Row(
+                children: [
+                  Icon(
+                    inPass ? Icons.sensors_rounded : Icons.timer_outlined,
+                    size: 15,
+                    color: color,
+                  ),
+                  const SizedBox(width: 6),
+                  Expanded(
+                    child: Text(title,
+                        style: ts(12.5, c: color, w: FontWeight.w700)),
+                  ),
+                  if (pass != null)
+                    Text('${_hm(pass.aos)}–${_hm(pass.los)}',
+                        style: ts(10, c: C.grey)),
+                ],
+              ),
+              if (pass != null) ...[
+                const SizedBox(height: 6),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(3),
+                  child: LinearProgressIndicator(
+                    value: inPass ? progress : 0,
+                    minHeight: 4,
+                    backgroundColor: C.bgSoft,
+                    valueColor: AlwaysStoppedAnimation<Color>(color),
+                  ),
+                ),
+              ],
+              const SizedBox(height: 8),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _freqCell(s.satUplink, up, dUp, C.blue),
+                  _freqCell(s.satDownlink, down, dDown, C.green),
+                  _readCell(
+                    s.bearing,
+                    look == null
+                        ? '--'
+                        : '${look.azimuthDeg.toStringAsFixed(0)}°',
+                  ),
+                  _readCell(
+                    s.satElevation,
+                    look == null
+                        ? '--'
+                        : '${look.elevationDeg.toStringAsFixed(0)}°',
+                  ),
+                ],
+              ),
+              if (st.satTone.isNotEmpty) ...[
+                const SizedBox(height: 4),
+                Row(
+                  children: [
+                    Text(s.satTone, style: ts(10, c: C.grey)),
+                    const SizedBox(width: 6),
+                    Text(st.satTone,
+                        style: ts(11.5, c: C.ink, w: FontWeight.w700)),
+                    const Spacer(),
+                    if (look != null)
+                      Text('${look.rangeKm.toStringAsFixed(0)} km',
+                          style: ts(10, c: C.grey)),
+                  ],
+                ),
+              ],
+              if (!st.usingRf) ...[
+                const SizedBox(height: 6),
+                Row(
+                  children: [
+                    Icon(Icons.warning_amber_rounded, size: 14, color: C.orange),
+                    const SizedBox(width: 4),
+                    Expanded(
+                      child: Text(s.satLinkNeeded,
+                          style: ts(9.5, c: C.orange, h: 1.3),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis),
+                    ),
+                    TextButton(
+                      onPressed: () => showLinkSheet(context, st),
+                      child: Text(s.dataSourceTitle,
+                          style: ts(10.5, c: C.orange, w: FontWeight.w700)),
+                    ),
+                  ],
+                ),
+              ],
+              const SizedBox(height: 8),
+              Row(
+                children: [
+                  Expanded(
+                    child: FilledButton.icon(
+                      onPressed: () => _sendBeacon(context, s),
+                      icon: const Icon(Icons.send_rounded, size: 16),
+                      label: Text(s.featureBeacon,
+                          style: ts(12.5, w: FontWeight.w700)),
+                      style: FilledButton.styleFrom(
+                        backgroundColor: C.green,
+                        padding: const EdgeInsets.symmetric(vertical: 11),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  OutlinedButton(
+                    onPressed: () => _openSettings(context),
+                    style: OutlinedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 14, vertical: 11),
+                    ),
+                    child: Icon(Icons.settings_rounded,
+                        size: 16, color: C.slate),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _freqCell(String label, double mhz, double shift, Color color) =>
+      Expanded(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(label, style: ts(9.5, c: C.grey)),
+            Text(mhz.toStringAsFixed(3),
+                style: ts(15.5, c: color, w: FontWeight.w800, ls: -0.3)),
+            Text(_hz(shift), style: ts(8.5, c: C.grey)),
+          ],
+        ),
+      );
+
+  Widget _readCell(String label, String value) => Expanded(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(label, style: ts(9.5, c: C.grey)),
+            Text(value,
+                style: ts(15.5, c: C.ink, w: FontWeight.w800, ls: -0.3)),
+          ],
+        ),
+      );
+
+  // ─── 动作 ───
+
+  void _sendBeacon(BuildContext context, S s) {
+    if (!st.usingRf) {
+      _toast(context, s.satLinkNeeded);
+      return;
+    }
+    if (!st.connected) {
+      _toast(context, s.beaconNotConnected);
+      return;
+    }
+    final ok = st.myPositionReportable;
+    st.sendBeacon();
+    _toast(
+      context,
+      ok
+          ? s.positionBeaconDetail(st.myGrid, st.beaconAttachedDetail)
+          : s.beaconWaitingFix,
+    );
+  }
+
+  void _openSettings(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => SatelliteModePage(state: st)),
+    );
+  }
+
+  void _openFullMap(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => _FullMapPage(state: st)),
     );
   }
 
@@ -171,14 +578,14 @@ class SatelliteShell extends StatelessWidget {
             for (final (m, label, icon) in modes)
               ListTile(
                 leading: Icon(icon,
-                    color: state.appMode == m ? C.blue : C.slate),
+                    color: st.appMode == m ? C.blue : C.slate),
                 title: Text(label, style: ts(13, w: FontWeight.w600)),
-                trailing: state.appMode == m
+                trailing: st.appMode == m
                     ? Icon(Icons.check_rounded, size: 18, color: C.blue)
                     : null,
                 onTap: () {
                   Navigator.pop(ctx);
-                  state.setAppMode(m);
+                  st.setAppMode(m);
                 },
               ),
             const SizedBox(height: 6),
@@ -186,328 +593,6 @@ class SatelliteShell extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  String _hm(DateTime t) {
-    final l = t.toLocal();
-    return '${l.hour.toString().padLeft(2, '0')}:'
-        '${l.minute.toString().padLeft(2, '0')}';
-  }
-}
-
-/// 卫星操作台：按真实流程排 —— 过境进度 → 对准读数 → 多普勒上/下行 →
-/// 链路检查 → 发信标/指向/调谐/设置。配置项收进二级页，不在这里堆。
-class _Cockpit extends StatefulWidget {
-  final AppState state;
-  final ScrollController controller;
-  const _Cockpit({required this.state, required this.controller});
-
-  @override
-  State<_Cockpit> createState() => _CockpitState();
-}
-
-class _CockpitState extends State<_Cockpit> {
-  DateTime? _alertedAos;
-
-  AppState get st => widget.state;
-
-  @override
-  Widget build(BuildContext context) {
-    final s = S.of(context);
-    return ListenableBuilder(
-      listenable: st,
-      builder: (context, _) => ValueListenableBuilder<int>(
-        valueListenable: st.tick,
-        builder: (context, _, _) {
-          final tle = st.satSelected;
-          final lat = st.myLat;
-          final lng = st.myLng;
-          final pass = st.satPickedPass;
-          final now = DateTime.now().toUtc();
-          final inPass = pass != null &&
-              !now.isBefore(pass.aos) &&
-              now.isBefore(pass.los);
-          final before = pass != null && now.isBefore(pass.aos);
-          final progress = inPass
-              ? (now.difference(pass.aos).inMicroseconds /
-                      pass.duration.inMicroseconds)
-                  .clamp(0.0, 1.0)
-              : 0.0;
-          if (inPass && _alertedAos != pass.aos) {
-            _alertedAos = pass.aos;
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              if (!mounted) return;
-              HapticFeedback.heavyImpact();
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(s.satAosNow),
-                  backgroundColor: C.green,
-                  behavior: SnackBarBehavior.floating,
-                ),
-              );
-            });
-          }
-          SatLook? look;
-          if (tle != null && lat != null && lng != null) {
-            look = lookAt(tle, lat, lng, now);
-          }
-          final dUp = look == null
-              ? 0.0
-              : dopplerHz(st.satUpMhz, look.rangeRateKmS);
-          final dDown = look == null
-              ? 0.0
-              : dopplerHz(st.satDownMhz, look.rangeRateKmS);
-          final up = st.satUpMhz - dUp / 1e6;
-          final down = st.satDownMhz + dDown / 1e6;
-
-          return ListView(
-            controller: widget.controller,
-            padding: const EdgeInsets.fromLTRB(16, 4, 16, 24),
-            children: [
-              _passHeader(s, pass, inPass, before, progress, now),
-              const SizedBox(height: 10),
-              _bigNumbers(s, look, up, down, dUp, dDown),
-              if (!st.usingRf) ...[
-                const SizedBox(height: 10),
-                _linkWarning(context, s),
-              ],
-              const SizedBox(height: 12),
-              _actions(context, s, down),
-            ],
-          );
-        },
-      ),
-    );
-  }
-
-  Widget _passHeader(S s, SatPass? pass, bool inPass, bool before,
-      double progress, DateTime now) {
-    final color = inPass ? C.green : (before ? C.orange : C.grey);
-    final title = pass == null
-        ? (st.satName.isEmpty ? s.satNeedSync : s.satNoPass)
-        : inPass
-            ? '${s.satInPass} · ${_mmss(pass.los.difference(now))}'
-            : before
-                ? '${s.satWaitAos} · ${_mmss(pass.aos.difference(now))}'
-                : s.satPassOver;
-    return Container(
-      padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
-      decoration: BoxDecoration(
-        color: C.sheetFill,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: color.withValues(alpha: 0.35)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Icon(inPass ? Icons.sensors_rounded : Icons.timer_outlined,
-                  size: 16, color: color),
-              const SizedBox(width: 6),
-              Expanded(
-                child: Text(title,
-                    style: ts(13, c: color, w: FontWeight.w700)),
-              ),
-              if (pass != null)
-                Text(
-                    '${st.satName} · '
-                    '${pass.maxElevation.toStringAsFixed(0)}°',
-                    style: ts(11, c: C.slate, w: FontWeight.w600)),
-            ],
-          ),
-          if (pass != null) ...[
-            const SizedBox(height: 8),
-            ClipRRect(
-              borderRadius: BorderRadius.circular(4),
-              child: LinearProgressIndicator(
-                value: inPass ? progress : 0,
-                minHeight: 6,
-                backgroundColor: C.bgSoft,
-                valueColor: AlwaysStoppedAnimation<Color>(color),
-              ),
-            ),
-            const SizedBox(height: 6),
-            Row(
-              children: [
-                Text('AOS ${_hm(pass.aos)}', style: ts(10, c: C.grey)),
-                const Spacer(),
-                Text('LOS ${_hm(pass.los)}', style: ts(10, c: C.grey)),
-              ],
-            ),
-          ],
-        ],
-      ),
-    );
-  }
-
-  Widget _bigNumbers(S s, SatLook? look, double up, double down,
-      double dUp, double dDown) {
-    return Container(
-      padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
-      decoration: BoxDecoration(
-        color: C.sheetFill,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: C.border),
-      ),
-      child: Column(
-        children: [
-          Row(
-            children: [
-              _bigCell(
-                  s.satElevation,
-                  look == null
-                      ? '--'
-                      : '${look.elevationDeg.toStringAsFixed(0)}°'),
-              _bigCell(
-                  s.bearing,
-                  look == null
-                      ? '--'
-                      : '${look.azimuthDeg.toStringAsFixed(0)}°'),
-            ],
-          ),
-          const Divider(height: 18),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _freqCell(s.satUplink, up, dUp, C.blue),
-              _freqCell(s.satDownlink, down, dDown, C.green),
-            ],
-          ),
-          if (st.satTone.isNotEmpty) ...[
-            const SizedBox(height: 8),
-            Row(
-              children: [
-                Text(s.satTone, style: ts(10.5, c: C.grey)),
-                const Spacer(),
-                Text(st.satTone,
-                    style: ts(13, c: C.ink, w: FontWeight.w700)),
-              ],
-            ),
-          ],
-        ],
-      ),
-    );
-  }
-
-  Widget _bigCell(String label, String value) => Expanded(
-        child: Column(
-          children: [
-            Text(label, style: ts(10, c: C.grey)),
-            const SizedBox(height: 2),
-            Text(value,
-                style: ts(26, c: C.ink, w: FontWeight.w800, ls: -0.5)),
-          ],
-        ),
-      );
-
-  Widget _freqCell(String label, double mhz, double shift, Color color) =>
-      Expanded(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(label, style: ts(10, c: C.grey)),
-            const SizedBox(height: 2),
-            Text(mhz.toStringAsFixed(3),
-                style: ts(18, c: color, w: FontWeight.w800, ls: -0.3)),
-            Text('MHz ${_hz(shift)}', style: ts(9.5, c: C.grey)),
-          ],
-        ),
-      );
-
-  Widget _linkWarning(BuildContext context, S s) {
-    return Container(
-      padding: const EdgeInsets.fromLTRB(10, 8, 6, 8),
-      decoration: BoxDecoration(
-        color: C.orange.withValues(alpha: 0.10),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: C.orange.withValues(alpha: 0.40)),
-      ),
-      child: Row(
-        children: [
-          Icon(Icons.warning_amber_rounded, size: 16, color: C.orange),
-          const SizedBox(width: 6),
-          Expanded(
-            child: Text(s.satLinkNeeded,
-                style: ts(10.5, c: C.orange, h: 1.35)),
-          ),
-          TextButton(
-            onPressed: () => showLinkSheet(context, st),
-            child: Text(s.dataSourceTitle,
-                style: ts(11, c: C.orange, w: FontWeight.w700)),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _actions(BuildContext context, S s, double down) {
-    return Wrap(
-      spacing: 8,
-      runSpacing: 8,
-      children: [
-        FilledButton.icon(
-          onPressed: () => _sendBeacon(context, s),
-          icon: const Icon(Icons.send_rounded, size: 16),
-          label: Text(s.featureBeacon, style: ts(12.5, w: FontWeight.w700)),
-          style: FilledButton.styleFrom(
-            backgroundColor: C.green,
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          ),
-        ),
-        OutlinedButton.icon(
-          onPressed: () => Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (_) => SatellitePointPage(state: st),
-            ),
-          ),
-          icon: const Icon(Icons.explore_rounded, size: 15),
-          label: Text(s.satPoint, style: ts(12)),
-        ),
-        if (st.rigConnected)
-          OutlinedButton.icon(
-            onPressed: () => _tune(context, down),
-            icon: const Icon(Icons.tune_rounded, size: 15),
-            label: Text(s.satTune, style: ts(12)),
-          ),
-        OutlinedButton.icon(
-          onPressed: () => Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (_) => SatelliteModePage(state: st),
-            ),
-          ),
-          icon: const Icon(Icons.settings_rounded, size: 15),
-          label: Text(s.settings, style: ts(12)),
-        ),
-      ],
-    );
-  }
-
-  void _sendBeacon(BuildContext context, S s) {
-    if (!st.usingRf) {
-      _toast(context, s.satLinkNeeded);
-      return;
-    }
-    if (!st.connected) {
-      _toast(context, s.beaconNotConnected);
-      return;
-    }
-    final ok = st.myPositionReportable;
-    st.sendBeacon();
-    _toast(
-      context,
-      ok
-          ? s.positionBeaconDetail(st.myGrid, st.beaconAttachedDetail)
-          : s.beaconWaitingFix,
-    );
-  }
-
-  Future<void> _tune(BuildContext context, double down) async {
-    await st.rigSetFreq((down * 1e6).round());
-    if (!context.mounted) return;
-    _toast(context, '${down.toStringAsFixed(3)} MHz');
   }
 
   void _toast(BuildContext context, String m) {
@@ -535,5 +620,152 @@ class _CockpitState extends State<_Cockpit> {
   String _hz(double hz) {
     final k = hz / 1000.0;
     return '${k >= 0 ? '+' : ''}${k.toStringAsFixed(1)} kHz';
+  }
+}
+
+/// 小地图上的卫星星下点/足迹、台站与新信标高亮。
+class _MiniPainter extends CustomPainter {
+  final double centerLat, centerLng, zoom;
+  final Tle? tle;
+  final List<Station> stations;
+  final String? highlight;
+  final double? myLat, myLng;
+  final DateTime now;
+
+  const _MiniPainter({
+    required this.centerLat,
+    required this.centerLng,
+    required this.zoom,
+    required this.tle,
+    required this.stations,
+    required this.highlight,
+    required this.myLat,
+    required this.myLng,
+    required this.now,
+  });
+
+  Offset _to(Size size, double lat, double lng) {
+    final proj = projectionFor(MapType.gaode);
+    final c = proj.latLngToPx(centerLat, centerLng, zoom);
+    final p = proj.latLngToPx(lat, lng, zoom);
+    return Offset(size.width / 2 + p.dx - c.dx, size.height / 2 + p.dy - c.dy);
+  }
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    // 卫星星下点 + 足迹
+    final t = tle;
+    if (t != null) {
+      final sub = subPoint(t, now.toUtc());
+      final center = _to(size, sub.lat, sub.lng);
+      const earthR = 6378.137;
+      final radDeg = math.acos(earthR / (earthR + sub.altKm)) * 180 / math.pi;
+      final edge = _to(
+        size,
+        (sub.lat + radDeg).clamp(-89.0, 89.0),
+        sub.lng,
+      );
+      final rr = (edge - center).distance;
+      if (rr.isFinite && rr > 1) {
+        canvas.drawCircle(
+          center,
+          rr,
+          Paint()
+            ..style = PaintingStyle.stroke
+            ..strokeWidth = 1.1
+            ..color = C.cyan.withValues(alpha: 0.75),
+        );
+        canvas.drawCircle(center, rr,
+            Paint()..color = C.cyan.withValues(alpha: 0.06));
+      }
+      canvas.drawCircle(center, 2.5, Paint()..color = C.cyan);
+    }
+
+    // 台站
+    for (final s in stations) {
+      if (s.lat == 0 && s.lng == 0) continue;
+      final p = _to(size, s.lat, s.lng);
+      if (p.dx < -4 ||
+          p.dy < -4 ||
+          p.dx > size.width + 4 ||
+          p.dy > size.height + 4) {
+        continue;
+      }
+      final hi = s.call == highlight;
+      canvas.drawCircle(
+        p,
+        hi ? 3.5 : 1.8,
+        Paint()
+          ..color = hi
+              ? C.orange
+              : C.blue.withValues(alpha: 0.65),
+      );
+      if (hi) {
+        final tp = TextPainter(
+          text: TextSpan(
+            text: s.call,
+            style: TextStyle(
+              fontSize: 8,
+              color: C.orange,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+          textDirection: TextDirection.ltr,
+        )..layout();
+        tp.paint(canvas, p + const Offset(5, -4));
+      }
+    }
+
+    // 我的位置
+    final mlat = myLat;
+    final mlng = myLng;
+    if (mlat != null && mlng != null) {
+      final p = _to(size, mlat, mlng);
+      canvas.drawCircle(p, 2.8, Paint()..color = C.green);
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant _MiniPainter old) =>
+      old.centerLat != centerLat ||
+      old.centerLng != centerLng ||
+      old.zoom != zoom ||
+      old.highlight != highlight ||
+      old.now != now ||
+      old.stations != stations;
+}
+
+/// 小地图点开后的全屏地图（卫星层仍由 MapPage 画）。
+class _FullMapPage extends StatelessWidget {
+  final AppState state;
+  const _FullMapPage({required this.state});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Stack(
+        children: [
+          Positioned.fill(
+            child: MapPage(
+              state: state,
+              isActive: true,
+              topInset: 60,
+            ),
+          ),
+          Positioned(
+            top: MediaQuery.of(context).padding.top + 8,
+            left: 12,
+            child: Material(
+              color: C.sheetFill,
+              borderRadius: BorderRadius.circular(999),
+              child: IconButton(
+                icon: Icon(Icons.arrow_back_rounded, color: C.slate),
+                onPressed: () => Navigator.pop(context),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
