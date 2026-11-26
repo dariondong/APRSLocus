@@ -10220,6 +10220,13 @@ class AppState extends ChangeNotifier {
     // 电量 / 心率 / 里程 / 用户备注）—— 它们之间照常用空格分隔。
     final parts = <String>[];
     if (ext.isNotEmpty) parts.add(ext.toString());
+    // On-Air Friends：AFRS/QSY 标准频率段（`145.500MHz FM`）必须放在**自由
+    // 文本的最前面**（数据扩展之后）—— 电台的 TUNE/QSY 键只在靠前的位置找
+    // 它。以前放在最后、还用私有 `OAF:` 前缀，只有本 App 能读。
+    if (onAirOn && onAirFreq.isNotEmpty) {
+      final token = onAirInfo.encode();
+      if (token.isNotEmpty) parts.add(token);
+    }
     if (beaconIncludeBattery && _battery >= 0) {
       parts.add('Bat:$_battery%');
     }
@@ -10260,17 +10267,7 @@ class AppState extends ChangeNotifier {
     if (myComment.trim().isNotEmpty) {
       parts.add(myComment.trim());
     }
-    // On-Air Friends：守听信息放在**最后一段**。位置固定有两个原因：
-    //   1. 收端（见 lib/onair.dart 的 [OnAirInfo.decode]）把 `OAF:` 之后的
-    //      剩余部分都当附加参数，后面再跟着别的东西就会被一起读进去；
-    //   2. 备注是人读的，台站备注在前、机器标记在后，读起来不别扭。
-    // 关掉或没填频率时一个字符都不加 —— 收端据此判定「没开」。
-    if (onAirOn && onAirFreq.isNotEmpty) {
-      final token = onAirInfo.encode();
-      if (token.isNotEmpty) parts.add(token);
-    }
-    // 卫星 QSO：`OAS:星名:HHMMZ`，单独一段，不塞进 `OAF:` 的附加参数
-    // （附加参数是自由文本，混进机器字段两边都读不准）。
+    // 卫星 QSO：`OAS:星名:HHMMZ`，单独一段（非标准，本 App 自己读）。
     final sat = satQso;
     if (sat != null) parts.add(sat.encode());
     // 版本号/平台**不再**放在位置数据包备注里（会污染第三方地图上的备注），

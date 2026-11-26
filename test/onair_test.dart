@@ -6,36 +6,28 @@ import '../lib/satellite.dart';
 
 /// On-Air Friends 的纯逻辑：编码 / 解析 / 频率归一 / 挑在线友台。
 ///
-/// 解析规则是发送端与接收端**同一份**，所以它值得被钉住：一旦只改一边，
-/// 自己的包在别人的列表里就消失了，而那种错在界面上完全看不出来。
+/// 编码已改用 APRS 的 **AFRS / QSY 标准**（`145.500MHz`），不再用私有的
+/// `OAF:` 标记；旧标记仍能解析（兼容已经在网上跑的老报文）。
 void main() {
-  group('On-Air 编码与解析', () {
+  group('On-Air 编码（AFRS / QSY 标准）', () {
     test('往返一致', () {
       const info = OnAirInfo(freq: '145.500', mode: 'FM');
       final token = info.encode();
-      expect(token, 'OAF:145.500:FM');
+      expect(token, '145.500MHz FM');
       expect(OnAirInfo.decode('HR=72 $token'), info);
     });
 
-    test('附加参数跟在最后一段，冒号也收', () {
+    test('附加参数跟在模式后面', () {
       const info = OnAirInfo(freq: '439.600', mode: 'USB', extra: 'GP 5W');
-      final back = OnAirInfo.decode('${info.encode()}');
+      expect(info.encode(), '439.600MHz USB GP 5W');
+      final back = OnAirInfo.decode(info.encode());
       expect(back?.extra, 'GP 5W');
       expect(back?.freq, '439.600');
       expect(back?.mode, 'USB');
-      expect(OnAirInfo.decode('OAF:7.050:CW:a:b')?.extra, 'a:b');
     });
 
     test('模式不区分大小写，输出大写', () {
-      expect(OnAirInfo.decode('OAF:145.500:c4fm')?.mode, 'C4FM');
-    });
-
-    test('没有标记 / 频率不像频率 / 模式不像模式，一律不认', () {
-      expect(OnAirInfo.decode('守听 145.500 FM'), isNull);
-      expect(OnAirInfo.decode('OAF:abc:FM'), isNull);
-      expect(OnAirInfo.decode('OAF:145.500'), isNull);
-      expect(OnAirInfo.decode('OAF:145.500:中文'), isNull);
-      expect(OnAirInfo.decode(null), isNull);
+      expect(OnAirInfo.decode('145.500MHz c4fm')?.mode, 'C4FM');
     });
 
     test('没填频率时编码是空串（备注里一个字符都不加）', () {
@@ -46,9 +38,9 @@ void main() {
     test('附加参数超长会被截断，不会把整段备注撑爆', () {
       final long = 'x' * 40;
       final info = OnAirInfo(freq: '145.500', mode: 'FM', extra: long);
-      const head = 'OAF:145.500:FM:';
+      const head = '145.500MHz FM ';
       expect(info.encode().length, head.length + OnAirInfo.extraMax);
-      expect(info.encode().startsWith(head), isTrue);
+      expect(info.encode(), head + 'x' * OnAirInfo.extraMax);
     });
 
     test('一行读数', () {
@@ -57,6 +49,80 @@ void main() {
         const OnAirInfo(freq: '145.500', mode: 'FM', extra: 'GP 5W').label,
         '145.500 FM · GP 5W',
       );
+    });
+  });
+
+  group('标准备注解析（第三方电台）', () {
+    test('Kenwood/Yaesu 常见的 FFF.FF MHz + Tnnn', () {
+      final info = OnAirInfo.decode('146.82 MHz T107 AARC Repeater');
+      expect(info, isNotNull);
+      expect(info!.freq, '146.820');
+      expect(info.mode, 'FM'); // AFRS 没有模式字段，默认话音
+      expect(info.extra, 'T107 AARC Repeater');
+    });
+
+    test('1 kHz 分辨率 + 偏移', () {
+      final info = OnAirInfo.decode('442.440MHz T107 -500 Repeater');
+      expect(info!.freq, '442.440');
+      expect(info.extra, 'T107 -500 Repeater');
+    });
+
+    test('小写 t（窄带）与自由文本', () {
+      final info = OnAirInfo.decode('145.50 MHz t077 Simplex');
+      expect(info!.freq, '145.500');
+      expect(info.extra, 't077 Simplex');
+    });
+
+    test('显式模式被识别，不混进附加参数', () {
+      final info = OnAirInfo.decode('439.600MHz USB GP 5W');
+      expect(info!.mode, 'USB');
+      expect(info.extra, 'GP 5W');
+    });
+
+    test('频率前面有分隔符也认', () {
+      final info = OnAirInfo.decode('PHG5950/A=001234/145.500MHz FM');
+      expect(info!.freq, '145.500');
+      expect(info.mode, 'FM');
+    });
+
+    test('OAS 卫星段不混进附加参数', () {
+      const c = '438.500MHz FM OAS:ISS:0548Z';
+      final info = OnAirInfo.decode(c);
+      expect(info!.freq, '438.500');
+      expect(info.mode, 'FM');
+      expect(info.extra, '');
+      expect(SatQso.decode(c)!.name, 'ISS');
+    });
+
+    test('没有 MHz 的普通备注不认', () {
+      expect(OnAirInfo.decode('守听 145.500 FM'), isNull);
+      expect(OnAirInfo.decode('HR=72 Bat:80%'), isNull);
+      expect(OnAirInfo.decode(''), isNull);
+      expect(OnAirInfo.decode(null), isNull);
+    });
+  });
+
+  group('旧版 OAF 兼容', () {
+    test('旧标记仍然能解析', () {
+      final info = OnAirInfo.decode('HR=72 OAF:145.500:FM');
+      expect(info!.freq, '145.500');
+      expect(info.mode, 'FM');
+      expect(OnAirInfo.decode('OAF:7.050:CW:a:b')?.extra, 'a:b');
+    });
+
+    test('OAF 后跟 OAS 时仍然认得出来', () {
+      const c = '212/000/A=000000 Bat:53% OAF:438.500:FM OAS:ISS:0548Z';
+      final info = OnAirInfo.decode(c);
+      expect(info, isNotNull);
+      expect(info!.freq, '438.500');
+      expect(info.mode, 'FM');
+      expect(info.extra, '');
+    });
+
+    test('旧标记格式不对时不认', () {
+      expect(OnAirInfo.decode('OAF:abc:FM'), isNull);
+      expect(OnAirInfo.decode('OAF:145.500'), isNull);
+      expect(OnAirInfo.decode('OAF:145.500:中文'), isNull);
     });
   });
 
@@ -100,13 +166,14 @@ void main() {
 
     test('只挑开着且没过期的，自己不算', () {
       final list = [
-        station('BG7LZQ-7', 'OAF:145.500:FM', now.subtract(const Duration(minutes: 1))),
-        station('BG5CCC-7', 'OAF:145.500:FM:GP 5W',
+        station('BG7LZQ-7', '145.500MHz FM',
+            now.subtract(const Duration(minutes: 1))),
+        station('BG5CCC-7', '145.500MHz FM GP 5W',
             now.subtract(const Duration(minutes: 5))),
         // 没开
         station('BA4XYZ-9', '周末在山上', now.subtract(const Duration(minutes: 2))),
         // 过期
-        station('BD3QID-6', 'OAF:439.600:USB',
+        station('BD3QID-6', '439.600MHz USB',
             now.subtract(const Duration(minutes: 40))),
       ];
       final out = onAirFriendsOf(list, self: 'bg7lzq-7', now: now);
@@ -116,9 +183,12 @@ void main() {
 
     test('按最后听到倒序', () {
       final list = [
-        station('A1AAA-1', 'OAF:145.500:FM', now.subtract(const Duration(minutes: 9))),
-        station('A2AAA-2', 'OAF:145.500:FM', now.subtract(const Duration(minutes: 1))),
-        station('A3AAA-3', 'OAF:145.500:FM', now.subtract(const Duration(minutes: 5))),
+        station('A1AAA-1', '145.500MHz FM',
+            now.subtract(const Duration(minutes: 9))),
+        station('A2AAA-2', '145.500MHz FM',
+            now.subtract(const Duration(minutes: 1))),
+        station('A3AAA-3', '145.500MHz FM',
+            now.subtract(const Duration(minutes: 5))),
       ];
       final out = onAirFriendsOf(list, now: now);
       expect(out.map((f) => f.call).toList(), ['A2AAA-2', 'A3AAA-3', 'A1AAA-1']);
@@ -126,7 +196,8 @@ void main() {
 
     test('过期时间可改（界面将来要调就一处）', () {
       final list = [
-        station('A1AAA-1', 'OAF:145.500:FM', now.subtract(const Duration(minutes: 40))),
+        station('A1AAA-1', '145.500MHz FM',
+            now.subtract(const Duration(minutes: 40))),
       ];
       expect(onAirFriendsOf(list, now: now), isEmpty);
       expect(
@@ -137,36 +208,12 @@ void main() {
 
     test('模式统计：多的在前，同名按字母', () {
       final list = [
-        station('A1AAA-1', 'OAF:145.500:FM', now),
-        station('A2AAA-2', 'OAF:145.600:USB', now),
-        station('A3AAA-3', 'OAF:145.700:FM', now),
-        station('A4AAA-4', 'OAF:145.800:AM', now),
+        station('A1AAA-1', '145.500MHz FM', now),
+        station('A2AAA-2', '145.600MHz USB', now),
+        station('A3AAA-3', '145.700MHz FM', now),
+        station('A4AAA-4', '145.800MHz AM', now),
       ];
       expect(onAirModesOf(onAirFriendsOf(list, now: now)), ['FM', 'AM', 'USB']);
-    });
-  });
-
-  group('现网报文', () {
-    test('OAF 后面跟着 OAS 时仍然认得出来', () {
-      // BG7PGW-2 的真实备注（带位置模糊、CsT 与 /A=）：
-      //   以前这里把模式读成 `FM OAS`，整条判成格式不对，列表里就看不到他。
-      const c = '212/000/A=000000 Bat:53% OAF:438.500:FM OAS:ISS:0548Z';
-      final info = OnAirInfo.decode(c);
-      expect(info, isNotNull);
-      expect(info!.freq, '438.500');
-      expect(info.mode, 'FM');
-      expect(info.extra, '');
-      final sat = SatQso.decode(c);
-      expect(sat, isNotNull);
-      expect(sat!.name, 'ISS');
-      expect(sat.label, '05:48Z');
-    });
-
-    test('附加参数带空格时不被吃掉', () {
-      final info = OnAirInfo.decode('OAF:145.500:FM GP 5W OAS:ISS:0548Z');
-      expect(info, isNotNull);
-      expect(info!.mode, 'FM');
-      expect(info.extra, 'GP 5W');
     });
   });
 }

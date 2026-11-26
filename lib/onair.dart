@@ -3,20 +3,18 @@ import 'satellite.dart';
 
 /// ─── On-Air Friends：把「现在守着哪个频点」写进信标备注 ───
 ///
-/// 这一层只做**纯逻辑**（编码 / 解析 / 归一 / 挑出在线友台），不碰界面也不碰
-/// AppState —— 解析规则是发送端与接收端**同一份**，一旦进了界面就会有人
-/// 「顺手」只改一边，于是自己的包读不出来。
+/// 编码采用 APRS 的 **AFRS（Automatic Frequency Reporting System）/ QSY**
+/// 标准位置备注格式（aprs.org/info/freqspec.txt）：
 ///
-/// 为什么不用某个现成字段：APRS101 没有「守听频率」这个标准位置字段，
-/// 中继台是把频点写在备注里（`439.75500MHz -5.0000MHz`），那是自由文本、
-/// 无法可靠解析。这里用一个带前缀的短标记，写在我们自己信标备注的**最后**：
+///     145.500MHz              守听 145.500
+///     145.500MHz FM           再带模式（AFRS 没有模式字段，作为自由文本跟在后面）
+///     145.500MHz FM GP 5W     末尾可再带附加参数（天线 / 功率 / T107 +060…）
 ///
-///     OAF:145.500:FM          守听 145.500、模式 FM
-///     OAF:145.500:FM:GP 5W    末尾可以再带一段附加参数（自由文本）
+/// 这样 Kenwood / Yaesu 等电台的 TUNE/QSY 键、以及其它 APRS 客户端，都能
+/// 直接在备注里找到 `FFF.FFFMHz` 并调到这个频点 —— 不再只有本 App 能读。
 ///
-/// 前缀取了 `OAF:`（On-Air Friends 的首字母），一眼能认出是谁写的；
-/// 收端只在**整段**都解析得通时才认（见 [OnAirInfo.decode]），所以一条恰好
-/// 含 `OAF:` 的普通备注不会被误当成在线友台。
+/// 兼容：旧版本写的私有标记 `OAF:145.500:FM[:extra]` 仍然能解析（见
+/// [decode]）；新版本不再产生它。
 class OnAirInfo {
   /// 频率，MHz、三位小数（`145.500`）。空串 = 没设置。
   final String freq;
@@ -29,12 +27,11 @@ class OnAirInfo {
 
   const OnAirInfo({required this.freq, this.mode = 'FM', this.extra = ''});
 
-  /// 信标备注里的标记前缀。
-  static const String mark = 'OAF:';
+  /// 旧版本（<= 2.2.x）的私有标记，只用于兼容解析。
+  static const String legacyMark = 'OAF:';
 
-  /// 附加参数最多带多少字符：备注整段是有长度上限的（APRS101 的 43 字节说法
-  /// 指的是标准信息域），而这一项是「顺手补一句」，不该把电量、心率这些
-  /// 真正有用的字段挤掉。
+  /// 附加参数最多带多少字符：备注整段是有长度上限的，而这一项是「顺手补一句」，
+  /// 不该把电量、心率这些真正有用的字段挤掉。
   static const int extraMax = 24;
 
   bool get configured => freq.isNotEmpty;
@@ -47,16 +44,31 @@ class OnAirInfo {
     return '$freq $m · $extra';
   }
 
-  /// 编码成信标备注里的那一段。没填频率时是空串（= 什么都不写）。
+  /// 编码成信标备注里的那一段（AFRS 标准）。
+  ///
+  /// 频率必须写成 `FFF.FFFMHz`（三位小数、`MHz` 按规范用混合大小写），
+  /// 并且要放在自由文本的**最前面** —— 电台的 TUNE/QSY 键只认那个位置。
+  /// 没填频率时是空串（= 什么都不写）。
   String encode() {
     if (!configured) return '';
     final m = mode.isEmpty ? 'FM' : mode;
     final e = extra.length > extraMax ? extra.substring(0, extraMax) : extra;
-    final tail = e.isEmpty ? '' : ':$e';
-    return '$mark$freq:$m$tail';
+    // AFRS 没有模式字段，`FM`/`USB` 作为自由文本跟在频率后面。
+    final tail = e.isEmpty ? ' $m' : ' $m $e';
+    return '${freq}MHz$tail';
   }
 
   /// 从一条备注里解析出来；没有、或格式不对，返回 null。
+  ///
+  /// 先认旧版的 `OAF:` 私有标记（兼容已经在网上跑的老报文），再认 AFRS
+  /// 标准频率段。标准段对其它电台同样有效 —— 他们只要在备注里写了
+  /// `146.82 MHz T107 …`，这里就能读出来。
+  static OnAirInfo? decode(String? comment) {
+    if (comment == null) return null;
+    return _decodeLegacy(comment) ?? _decodeAfrs(comment);
+  }
+
+  /// 旧格式：`OAF:145.500:FM[:extra]`。
   ///
   /// 两个坑都是现网报文里撞到的（BG7PGW-2 的
   /// `… OAF:438.500:FM OAS:ISS:0548Z`）：
@@ -64,11 +76,10 @@ class OnAirInfo {
   ///      不先切掉它，模式就会读成 `FM OAS`，整条判成格式不对；
   ///   2. 模式后面的分隔可以是空白而不只是冒号，附加参数自己带空格
   ///      （`GP 5W`），所以“词”只能切到第一个冒号或空白。
-  static OnAirInfo? decode(String? comment) {
-    if (comment == null) return null;
-    final i = comment.indexOf(mark);
+  static OnAirInfo? _decodeLegacy(String comment) {
+    final i = comment.indexOf(legacyMark);
     if (i < 0) return null;
-    var rest = comment.substring(i + mark.length);
+    var rest = comment.substring(i + legacyMark.length);
     final cut = rest.indexOf(SatQso.mark);
     if (cut > 0) rest = rest.substring(0, cut);
     rest = rest.trim();
@@ -98,6 +109,50 @@ class OnAirInfo {
       extra: extraRaw.length > extraMax ? extraRaw.substring(0, extraMax) : extraRaw,
     );
   }
+
+  /// AFRS 标准：`FFF.FFFMHz`（`MHz` 接收时大小写不敏感，允许 `146.82 MHz`）。
+  ///
+  /// 频率之后的自由文本里，若第一个词是已知模式（`FM` / `USB` / `C4FM`…）
+  /// 就取作模式；否则按 `FM`（这是一条**话音**频率）。`T107` / `+060` 这类
+  /// 音调与偏移保留在附加参数里，不吞掉。
+  static OnAirInfo? _decodeAfrs(String comment) {
+    final m = _afrsRe.firstMatch(comment);
+    if (m == null) return null;
+    final freq = normalizeOnAirFreq('${m.group(1)}.${m.group(2)}');
+    if (freq.isEmpty) return null;
+    var rest = comment.substring(m.end).trim();
+    // 卫星过境标记（`OAS:ISS:0548Z`）不是频率的附加参数，先切掉
+    final satCut = rest.indexOf(SatQso.mark);
+    if (satCut > 0) rest = rest.substring(0, satCut).trim();
+    // 去掉紧邻的分隔符（`/146.820MHz`、`145.500MHz, FM` 之类）
+    rest = rest.replaceFirst(RegExp(r'^[/,:;\-]+'), '').trim();
+    var mode = '';
+    var extra = rest;
+    final first = RegExp(r'^([A-Za-z0-9/+.\-]{1,8})').firstMatch(rest);
+    if (first != null) {
+      final cand = first.group(1)!.toUpperCase();
+      if (_knownModes.contains(cand)) {
+        mode = cand;
+        extra = rest.substring(first.end).trim();
+      }
+    }
+    if (mode.isEmpty) mode = 'FM';
+    if (extra.length > extraMax) extra = extra.substring(0, extraMax);
+    return OnAirInfo(freq: freq, mode: mode, extra: extra);
+  }
+
+  /// 频率段后面跟的模式词（AFRS 没有模式字段，这是本 App 的自由文本约定）。
+  static const Set<String> _knownModes = {
+    'FM', 'NFM', 'WFM', 'AM', 'USB', 'LSB', 'SSB', 'CW',
+    'C4FM', 'DMR', 'DSTAR', 'D-STAR', 'YSF', 'P25', 'NXDN', 'M17',
+    'FT8', 'FT4', 'RTTY', 'PSK31',
+  };
+
+  /// AFRS 频率段：`145.500MHz` / `146.82 MHz`；4 位整数也收（1296.000MHz）。
+  static final RegExp _afrsRe = RegExp(
+    r'(?<![0-9.])(\d{1,4})\.(\d{1,3})\s*MHz',
+    caseSensitive: false,
+  );
 
   /// 一段“词”到哪儿结束：第一个冒号或空白。
   static int _tokenEnd(String s) {
@@ -201,7 +256,7 @@ List<OnAirFriend> onAirFriendsOf(
     if (at.difference(s.lastHeard) > ttl) continue;
     final info = OnAirInfo.decode(s.comment);
     if (info == null) continue;
-    // 卫星过境单独一段，与 `OAF:` 各读各的（一颗星也可以只声明过境、不守频）。
+    // 卫星过境单独一段，与频率标记各读各的（一颗星也可以只声明过境、不守频）。
     out.add(OnAirFriend(s, info, sat: SatQso.decode(s.comment)));
   }
   out.sort((a, b) => b.seen.compareTo(a.seen));

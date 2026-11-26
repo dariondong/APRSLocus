@@ -145,6 +145,12 @@ class _OnAirCardsState extends State<OnAirCards> {
   Future<void> _compose(OnAirFriend f) async {
     final s = S.of(context);
     final ctrl = TextEditingController();
+    // 标准 QSY 报文：`QSY FFF.FFFMHz?`（`?` = 对方自动 QSY，除非他按 NO；
+    // `!` 立即 QSY、`.` 手动 TUNE）。优先用**本机**守听频点（让对方过来），
+    // 没填就用对方的频点。
+    final qsyFreq = st.onAirFreq.isNotEmpty ? st.onAirFreq : f.info.freq;
+    ctrl.text = 'QSY ${qsyFreq}MHz?';
+    ctrl.selection = TextSelection.collapsed(offset: ctrl.text.length);
     final text = await showModalBottomSheet<String>(
       context: context,
       backgroundColor: Colors.transparent,
