@@ -2198,6 +2198,54 @@ class AppState extends ChangeNotifier {
     if (satQsoOn) _publishOnAirNow();
   }
 
+  /// 首次同步时默认收藏的业余卫星关键字（匹配 Celestrak 名字即可）。
+  static const List<String> satFavoriteDefaults = [
+    'ISS',
+    'NO-84',
+    'PSAT',
+    'PCSAT',
+    'SO-50',
+    'AO-91',
+    'AO-92',
+    'PO-101',
+    'DIWATA',
+    'AO-27',
+    'FOX-1',
+  ];
+
+  bool isSatFavorite(String name) =>
+      satFavorites.contains(normalizeSatName(name));
+
+  void toggleSatFavorite(String name) {
+    final n = normalizeSatName(name);
+    if (n.isEmpty) return;
+    if (satFavorites.contains(n)) {
+      satFavorites = [
+        for (final f in satFavorites)
+          if (f != n) f,
+      ];
+    } else {
+      satFavorites = [...satFavorites, n];
+    }
+    persist();
+    _notify();
+  }
+
+  void setSatAutoDoppler(bool v) {
+    if (satAutoDoppler == v) return;
+    satAutoDoppler = v;
+    persist();
+    _notify();
+  }
+
+  /// 过境列表点一条：切星并选中那一条（按 AOS 对齐，索引不会错位）。
+  void selectSatPass(String name, DateTime aos) {
+    setSatName(name);
+    final list = satPasses();
+    final i = list.indexWhere((p) => p.aos.isAtSameMomentAs(aos));
+    if (i >= 0) setSatPassIndex(i);
+  }
+
   /// 同步星历（Celestrak 的业余卫星组，TLE 文本）。
   ///
   /// 失败不抛异常，把原因写进 [satError] 并返回 false；拿到旧的那份也继续能用，
@@ -2222,6 +2270,18 @@ class AppState extends ChangeNotifier {
       }
       satTleText = text;
       satSyncedAt = DateTime.now().toUtc().toIso8601String();
+      // 第一次同步且没有收藏：按关键字预置一批常用业余/APRS 卫星，
+      // 否则过境页默认空着，用户不知道要收藏什么。
+      if (satFavorites.isEmpty) {
+        final fav = <String>[];
+        for (final t in list) {
+          final n = normalizeSatName(t.name);
+          if (n.isEmpty || fav.contains(n)) continue;
+          if (satFavoriteDefaults.any((k) => n.contains(k))) fav.add(n);
+        }
+        satFavorites = fav;
+        if (satName.isEmpty && fav.isNotEmpty) satName = fav.first;
+      }
       // 选中的那颗没了（退役 / 改名），就清空选择，别让它一直算不出来。
       if (satName.isNotEmpty && satSelected == null) satName = '';
       persist();
@@ -6562,6 +6622,12 @@ class AppState extends ChangeNotifier {
   double satUpMhz = 145.825;
   double satDownMhz = 145.825;
 
+  /// 收藏的卫星（归一化名字）。过境列表只扫描收藏的星，不至于一次算上百颗。
+  List<String> satFavorites = [];
+
+  /// 自动多普勒：过境中把下行频率持续写进已连接的 rigctld 电台。
+  bool satAutoDoppler = false;
+
   /// 星历解析缓存（[satTleText] 变了才重解析）。
   List<Tle> _satTles = const [];
   String _satTlesOf = '';
@@ -6929,6 +6995,8 @@ class AppState extends ChangeNotifier {
       satTone = p.getString('satTone') ?? satTone;
       satUpMhz = p.getDouble('satUpMhz') ?? satUpMhz;
       satDownMhz = p.getDouble('satDownMhz') ?? satDownMhz;
+      satFavorites = p.getStringList('satFavorites') ?? satFavorites;
+      satAutoDoppler = p.getBool('satAutoDoppler') ?? satAutoDoppler;
       final httpPort = p.getInt('acnHttpPort') ?? acnHttpPort;
       if (httpPort > 0 && httpPort <= 65535) acnHttpPort = httpPort;
       acnPasscode = p.getString('acnPasscode') ?? acnPasscode;
@@ -7358,6 +7426,8 @@ class AppState extends ChangeNotifier {
     await p.setString('satTone', satTone);
     await p.setDouble('satUpMhz', satUpMhz);
     await p.setDouble('satDownMhz', satDownMhz);
+    await p.setStringList('satFavorites', satFavorites);
+    await p.setBool('satAutoDoppler', satAutoDoppler);
     await p.setBool('igateEnabled', igateEnabled);
     await p.setBool('igateTwoWay', igateTwoWay);
     await p.setBool('igateAllowOwn', igateAllowOwn);

@@ -243,6 +243,8 @@ const List<BackupGroupSpec> kBackupGroups = [
     // 但换机后没它就得等下一次同步才能用过境。
     'satQsoOn', 'satName', 'satTleText', 'satSyncedAt',
     'satelliteMode', 'satPath', 'satTone', 'satUpMhz', 'satDownMhz',
+    // 收藏的卫星 + 自动多普勒开关
+    'satFavorites', 'satAutoDoppler',
     // 选中的是三天内第几个过境，也一并带上
     'satPassIndex',
     // 自己填的星历（星历组里没有的星），换机后不必重贴一遍

@@ -2882,6 +2882,51 @@ class AppLocalizationsId extends AppLocalizations {
       'Mengganti sumber data akan memutus koneksi saat ini';
 
   @override
+  String get satCatalog => 'Katalog satelit';
+
+  @override
+  String get satPasses => 'Lintasan';
+
+  @override
+  String get satFavorites => 'Favorit';
+
+  @override
+  String get satFavHint => 'Lintasan hanya memindai satelit favorit. Ketuk bintang untuk menambah.';
+
+  @override
+  String get satNoFavorites => 'Belum ada favorit. Tandai beberapa satelit untuk mengisi daftar lintasan.';
+
+  @override
+  String get satFavAprs => 'Tandai satelit APRS';
+
+  @override
+  String get sat24h => '24 jam';
+
+  @override
+  String get sat48h => '48 jam';
+
+  @override
+  String get sat72h => '72 jam';
+
+  @override
+  String get satAutoDoppler => 'Doppler otomatis';
+
+  @override
+  String get satAutoDopplerHint => 'Saat lintasan, kirim downlink terkoreksi Doppler ke radio tiap 2 detik (rigctld).';
+
+  @override
+  String get satTransponders => 'Transponder';
+
+  @override
+  String get satNoTransponders => 'Tidak ada transponder bawaan; isi uplink/downlink secara manual.';
+
+  @override
+  String get satApply => 'Terapkan';
+
+  @override
+  String get satRigOff => 'Radio belum terhubung: sambungkan rigctld di Kontrol radio';
+
+  @override
   String get satMini => 'Jendela mini';
 
   @override

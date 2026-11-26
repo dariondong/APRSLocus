@@ -2776,6 +2776,51 @@ class AppLocalizationsZh extends AppLocalizations {
   String get dataSourceSwitchHint => '切换数据来源会断开当前连接';
 
   @override
+  String get satCatalog => '卫星目录';
+
+  @override
+  String get satPasses => '过境列表';
+
+  @override
+  String get satFavorites => '收藏';
+
+  @override
+  String get satFavHint => '过境列表只扫描收藏的卫星；点 ☆ 收藏，列表会跟着变。';
+
+  @override
+  String get satNoFavorites => '还没有收藏卫星：先收藏几颗，过境列表才有内容。';
+
+  @override
+  String get satFavAprs => '收藏 APRS 卫星';
+
+  @override
+  String get sat24h => '24 小时';
+
+  @override
+  String get sat48h => '48 小时';
+
+  @override
+  String get sat72h => '72 小时';
+
+  @override
+  String get satAutoDoppler => '自动多普勒';
+
+  @override
+  String get satAutoDopplerHint => '过境中每 2 秒把多普勒修正后的下行频率写进已连接的电台（需 rigctld）。';
+
+  @override
+  String get satTransponders => '转发器';
+
+  @override
+  String get satNoTransponders => '这颗星没有内置转发器；可以手动填写上/下行频率。';
+
+  @override
+  String get satApply => '应用';
+
+  @override
+  String get satRigOff => '电台未连接：先在「电台控制」里连上 rigctld';
+
+  @override
   String get satMini => '小窗';
 
   @override
@@ -13405,6 +13450,51 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get dataSourceSwitchHint => '切換資料來源會中斷目前連線';
+
+  @override
+  String get satCatalog => '衛星目錄';
+
+  @override
+  String get satPasses => '過境列表';
+
+  @override
+  String get satFavorites => '收藏';
+
+  @override
+  String get satFavHint => '過境列表只掃描收藏的衛星；點 ☆ 收藏，列表會跟著變。';
+
+  @override
+  String get satNoFavorites => '還沒有收藏衛星：先收藏幾顆，過境列表才有內容。';
+
+  @override
+  String get satFavAprs => '收藏 APRS 衛星';
+
+  @override
+  String get sat24h => '24 小時';
+
+  @override
+  String get sat48h => '48 小時';
+
+  @override
+  String get sat72h => '72 小時';
+
+  @override
+  String get satAutoDoppler => '自動多普勒';
+
+  @override
+  String get satAutoDopplerHint => '過境中每 2 秒把多普勒修正後的下行頻率寫進已連接的電台（需 rigctld）。';
+
+  @override
+  String get satTransponders => '轉發器';
+
+  @override
+  String get satNoTransponders => '這顆星沒有內建轉發器；可以手動填寫上/下行頻率。';
+
+  @override
+  String get satApply => '套用';
+
+  @override
+  String get satRigOff => '電台未連接：先在「電台控制」裡連上 rigctld';
 
   @override
   String get satMini => '小窗';

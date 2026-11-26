@@ -2885,6 +2885,51 @@ class AppLocalizationsEn extends AppLocalizations {
       'Switching the data source disconnects the current link';
 
   @override
+  String get satCatalog => 'Satellite catalog';
+
+  @override
+  String get satPasses => 'Passes';
+
+  @override
+  String get satFavorites => 'Favorites';
+
+  @override
+  String get satFavHint => 'Passes only scan favorited satellites. Tap the star to add some.';
+
+  @override
+  String get satNoFavorites => 'No favorites yet. Star a few satellites to fill the pass list.';
+
+  @override
+  String get satFavAprs => 'Star APRS satellites';
+
+  @override
+  String get sat24h => '24 h';
+
+  @override
+  String get sat48h => '48 h';
+
+  @override
+  String get sat72h => '72 h';
+
+  @override
+  String get satAutoDoppler => 'Auto Doppler';
+
+  @override
+  String get satAutoDopplerHint => 'During a pass, write the Doppler-corrected downlink to the connected radio every 2 s (rigctld).';
+
+  @override
+  String get satTransponders => 'Transponders';
+
+  @override
+  String get satNoTransponders => 'No built-in transponder for this satellite; enter uplink/downlink manually.';
+
+  @override
+  String get satApply => 'Apply';
+
+  @override
+  String get satRigOff => 'Radio not connected: connect rigctld under Rig control first';
+
+  @override
   String get satMini => 'Mini window';
 
   @override

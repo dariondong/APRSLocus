@@ -5227,6 +5227,95 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'切换数据来源会断开当前连接'**
   String get dataSourceSwitchHint;
+  /// No description provided for @satCatalog.
+  ///
+  /// In zh, this message translates to:
+  /// **'卫星目录'**
+  String get satCatalog;
+
+  /// No description provided for @satPasses.
+  ///
+  /// In zh, this message translates to:
+  /// **'过境列表'**
+  String get satPasses;
+
+  /// No description provided for @satFavorites.
+  ///
+  /// In zh, this message translates to:
+  /// **'收藏'**
+  String get satFavorites;
+
+  /// No description provided for @satFavHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'过境列表只扫描收藏的卫星；点 ☆ 收藏，列表会跟着变。'**
+  String get satFavHint;
+
+  /// No description provided for @satNoFavorites.
+  ///
+  /// In zh, this message translates to:
+  /// **'还没有收藏卫星：先收藏几颗，过境列表才有内容。'**
+  String get satNoFavorites;
+
+  /// No description provided for @satFavAprs.
+  ///
+  /// In zh, this message translates to:
+  /// **'收藏 APRS 卫星'**
+  String get satFavAprs;
+
+  /// No description provided for @sat24h.
+  ///
+  /// In zh, this message translates to:
+  /// **'24 小时'**
+  String get sat24h;
+
+  /// No description provided for @sat48h.
+  ///
+  /// In zh, this message translates to:
+  /// **'48 小时'**
+  String get sat48h;
+
+  /// No description provided for @sat72h.
+  ///
+  /// In zh, this message translates to:
+  /// **'72 小时'**
+  String get sat72h;
+
+  /// No description provided for @satAutoDoppler.
+  ///
+  /// In zh, this message translates to:
+  /// **'自动多普勒'**
+  String get satAutoDoppler;
+
+  /// No description provided for @satAutoDopplerHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'过境中每 2 秒把多普勒修正后的下行频率写进已连接的电台（需 rigctld）。'**
+  String get satAutoDopplerHint;
+
+  /// No description provided for @satTransponders.
+  ///
+  /// In zh, this message translates to:
+  /// **'转发器'**
+  String get satTransponders;
+
+  /// No description provided for @satNoTransponders.
+  ///
+  /// In zh, this message translates to:
+  /// **'这颗星没有内置转发器；可以手动填写上/下行频率。'**
+  String get satNoTransponders;
+
+  /// No description provided for @satApply.
+  ///
+  /// In zh, this message translates to:
+  /// **'应用'**
+  String get satApply;
+
+  /// No description provided for @satRigOff.
+  ///
+  /// In zh, this message translates to:
+  /// **'电台未连接：先在「电台控制」里连上 rigctld'**
+  String get satRigOff;
   /// No description provided for @satMini.
   ///
   /// In zh, this message translates to:

@@ -6,6 +6,9 @@ import 'package:flutter/services.dart';
 import 'satellite.dart';
 import 'satellite_point_page.dart';
 import 'sat_overlay.dart';
+import 'sat_passes_page.dart';
+import 'sat_transponders.dart';
+import 'satellites_page.dart';
 import 'settings_widgets.dart';
 import 'state.dart';
 import 'theme.dart';
@@ -47,6 +50,8 @@ class SatelliteModePage extends StatelessWidget {
           _lookCard(context, s),
           const SizedBox(height: 16),
           _freqCard(context, s),
+          const SizedBox(height: 16),
+          _transponderCard(context, s),
           const SizedBox(height: 24),
         ];
     if (embedded) {
@@ -118,6 +123,25 @@ class SatelliteModePage extends StatelessWidget {
                 Icon(Icons.chevron_right_rounded, size: 16, color: C.grey),
               ],
             ),
+          ),
+        ),
+        SettingsNavRow(
+          title: s.satCatalog,
+          trailing: '${state.satFavorites.length}',
+          icon: Icons.satellite_alt_rounded,
+          color: C.blue,
+          onTap: () => Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => SatellitesPage(state: state)),
+          ),
+        ),
+        SettingsNavRow(
+          title: s.satPasses,
+          icon: Icons.format_list_bulleted_rounded,
+          color: C.indigo,
+          onTap: () => Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => SatPassesPage(state: state)),
           ),
         ),
         Padding(
@@ -405,6 +429,13 @@ class SatelliteModePage extends StatelessWidget {
           ),
         ),
         SettingsSwitch(
+          s.satAutoDoppler,
+          value: state.satAutoDoppler,
+          color: C.green,
+          onChanged: state.setSatAutoDoppler,
+        ),
+        SettingsHint(s.satAutoDopplerHint),
+        SettingsSwitch(
           s.satQso,
           value: state.satQsoOn,
           color: C.blue,
@@ -434,6 +465,103 @@ class SatelliteModePage extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+
+  // ─── 转发器 ───
+
+  Widget _transponderCard(BuildContext context, S s) {
+    final list = transpondersFor(state.satName);
+    return SettingsSectionCard(
+      title: s.satTransponders,
+      icon: Icons.settings_input_antenna_rounded,
+      color: C.purple,
+      children: [
+        if (state.satName.isEmpty)
+          SettingsHint(s.satNeedSync, color: C.orange)
+        else if (list.isEmpty)
+          SettingsHint(s.satNoTransponders)
+        else
+          for (final t in list)
+            InkWell(
+              onTap: () => _applyTransponder(context, t),
+              child: Container(
+                padding: const EdgeInsets.fromLTRB(14, 9, 14, 9),
+                decoration: BoxDecoration(
+                  border: Border(
+                      bottom: BorderSide(color: C.border, width: 0.4)),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(t.name,
+                              style:
+                                  ts(12.5, w: FontWeight.w700),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis),
+                        ),
+                        Text(t.mode, style: ts(9.5, c: C.grey)),
+                        if (t.invert) ...[
+                          const SizedBox(width: 4),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 4, vertical: 1),
+                            decoration: BoxDecoration(
+                              color: C.orange.withValues(alpha: 0.14),
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                            child: Text('INV',
+                                style: ts(8, c: C.orange, w: FontWeight.w800)),
+                          ),
+                        ],
+                      ],
+                    ),
+                    const SizedBox(height: 2),
+                    Row(
+                      children: [
+                        Text(
+                          'U ${t.upMhz.toStringAsFixed(3)}  ·  '
+                          'D ${t.downMhz.toStringAsFixed(3)}',
+                          style: ts(10.5, c: C.slate),
+                        ),
+                        if (t.tone.isNotEmpty) ...[
+                          const SizedBox(width: 6),
+                          Text('T ${t.tone}',
+                              style: ts(10.5, c: C.cyan, w: FontWeight.w600)),
+                        ],
+                        const Spacer(),
+                        Text(s.satApply,
+                            style:
+                                ts(9.5, c: C.blue, w: FontWeight.w700)),
+                      ],
+                    ),
+                    if (t.note.isNotEmpty) ...[
+                      const SizedBox(height: 2),
+                      Text(t.note, style: ts(8.5, c: C.grey)),
+                    ],
+                  ],
+                ),
+              ),
+            ),
+      ],
+    );
+  }
+
+  void _applyTransponder(BuildContext context, SatTransponder t) {
+    state.setSatFreqs(up: t.upMhz, down: t.downMhz);
+    state.setSatTone(t.tone);
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          '${t.name} · U ${t.upMhz.toStringAsFixed(3)} / '
+          'D ${t.downMhz.toStringAsFixed(3)}'
+          '${t.tone.isEmpty ? '' : ' · T ${t.tone}'}',
+        ),
+        behavior: SnackBarBehavior.floating,
+      ),
     );
   }
 

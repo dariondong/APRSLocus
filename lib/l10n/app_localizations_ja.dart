@@ -2798,6 +2798,51 @@ class AppLocalizationsJa extends AppLocalizations {
   String get dataSourceSwitchHint => 'データソースを切り替えると現在の接続は切断されます';
 
   @override
+  String get satCatalog => '衛星カタログ';
+
+  @override
+  String get satPasses => 'パス一覧';
+
+  @override
+  String get satFavorites => 'お気に入り';
+
+  @override
+  String get satFavHint => 'パス一覧はお気に入りの衛星だけを計算します。☆ で追加できます。';
+
+  @override
+  String get satNoFavorites => 'お気に入りがありません。☆ で追加するとパス一覧に表示されます。';
+
+  @override
+  String get satFavAprs => 'APRS 衛星をお気に入り';
+
+  @override
+  String get sat24h => '24 時間';
+
+  @override
+  String get sat48h => '48 時間';
+
+  @override
+  String get sat72h => '72 時間';
+
+  @override
+  String get satAutoDoppler => 'ドップラー自動補正';
+
+  @override
+  String get satAutoDopplerHint => 'パス中は 2 秒ごとにドップラー補正したダウンリンクを無線機へ送ります（rigctld 必須）。';
+
+  @override
+  String get satTransponders => 'トランスポンダ';
+
+  @override
+  String get satNoTransponders => 'この衛星の内蔵トランスポンダはありません。アップリンク/ダウンリンクを手入力してください。';
+
+  @override
+  String get satApply => '適用';
+
+  @override
+  String get satRigOff => '無線機未接続：「無線機制御」で rigctld に接続してください';
+
+  @override
   String get satMini => 'ミニ窓';
 
   @override

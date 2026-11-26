@@ -58,6 +58,29 @@ void main() {
     st.dispose();
   });
 
+  test('收藏与自动多普勒会落盘', () async {
+    final st = await fresh();
+    expect(st.isSatFavorite('ISS (ZARYA)'), isFalse);
+    st.toggleSatFavorite('ISS (ZARYA)');
+    st.toggleSatFavorite('so-50');
+    expect(st.isSatFavorite('ISS (ZARYA)'), isTrue);
+    expect(st.isSatFavorite('SO-50'), isTrue);
+    expect(st.satFavorites.length, 2);
+    st.setSatAutoDoppler(true);
+    await Future<void>.delayed(const Duration(milliseconds: 120));
+
+    final st2 = await fresh();
+    expect(st2.isSatFavorite('ISS (ZARYA)'), isTrue);
+    expect(st2.isSatFavorite('SO-50'), isTrue);
+    expect(st2.satAutoDoppler, isTrue);
+
+    st2.toggleSatFavorite('SO-50');
+    expect(st2.isSatFavorite('SO-50'), isFalse);
+    expect(st2.satFavorites.length, 1);
+    st.dispose();
+    st2.dispose();
+  });
+
   test('模式互斥：卫星 / 精简 / 2.0 / 1.0 一次只选一个', () async {
     final st = await fresh();
     st.setAppMode(AppMode.satellite);

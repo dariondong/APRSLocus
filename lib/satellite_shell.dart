@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
@@ -5,10 +6,12 @@ import 'package:flutter/services.dart';
 
 import 'map_page.dart';
 import 'models.dart';
+import 'sat_passes_page.dart';
 import 'satellite.dart';
 import 'satellite_compass.dart';
 import 'sat_overlay.dart';
 import 'satellite_mode_page.dart';
+import 'satellites_page.dart';
 import 'state.dart';
 import 'theme.dart';
 import 'tile_map.dart';
@@ -42,23 +45,40 @@ class _SatelliteShellState extends State<SatelliteShell> {
   DateTime? _beaconAt;
   DateTime? _alertedAos;
 
+  /// 自动多普勒：每 2 秒检查一次，频率变化超过 40 Hz 才写电台。
+  Timer? _tuneTimer;
+  int _lastTunedHz = 0;
+  DateTime? _autoTunedFor;
+  String _lastSatKey = '';
+
   @override
   void initState() {
     super.initState();
     st.addListener(_onState);
     _lastStationsVer = st.stationsVersion;
+    _lastSatKey = _satKey();
     _miniLat = st.myLat;
     _miniLng = st.myLng;
+    _tuneTimer = Timer.periodic(
+      const Duration(seconds: 2),
+      (_) => _autoDoppler(),
+    );
   }
 
   @override
   void dispose() {
+    _tuneTimer?.cancel();
     st.removeListener(_onState);
     super.dispose();
   }
 
   void _onState() {
     if (!mounted) return;
+    final sk = _satKey();
+    if (sk != _lastSatKey) {
+      _lastSatKey = sk;
+      setState(() {});
+    }
     final ver = st.stationsVersion;
     if (ver == _lastStationsVer) return;
     _lastStationsVer = ver;
@@ -77,6 +97,12 @@ class _SatelliteShellState extends State<SatelliteShell> {
       _miniZoom = 7;
     });
   }
+
+  /// 卫星相关状态变了才重建外壳（选星、收藏、频率、路径、自动多普勒）。
+  String _satKey() =>
+      '${st.satName}|${st.satPassIndex}|${st.satFavorites.length}'
+      '|${st.satAutoDoppler}|${st.satUpMhz}|${st.satDownMhz}'
+      '|${st.satTone}|${st.satPath}|${st.satTleText.length}';
 
   /// 最近 10 分钟听到的、不是自己的、有坐标的最新台站。
   Station? _latestStation() {
@@ -154,6 +180,7 @@ class _SatelliteShellState extends State<SatelliteShell> {
   // ─── 顶栏 ───
 
   Widget _topBar(BuildContext context, S s) {
+    final fav = st.satName.isNotEmpty && st.isSatFavorite(st.satName);
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 8, 10, 4),
       child: Row(
@@ -161,19 +188,50 @@ class _SatelliteShellState extends State<SatelliteShell> {
           Icon(Icons.satellite_alt_rounded, size: 20, color: C.blue),
           const SizedBox(width: 8),
           Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(s.satMode,
-                    style: ts(14, w: FontWeight.w800, ls: -0.2)),
-                Text(
-                  st.satName.isEmpty ? s.satNeedSync : st.satName,
-                  style: ts(10, c: C.grey),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ],
+            child: GestureDetector(
+              onTap: () => _openCatalog(context),
+              behavior: HitTestBehavior.opaque,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(s.satMode,
+                      style: ts(14, w: FontWeight.w800, ls: -0.2)),
+                  Text(
+                    st.satName.isEmpty ? s.satNeedSync : st.satName,
+                    style: ts(10, c: C.grey),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ),
             ),
+          ),
+          IconButton(
+            tooltip: s.satFavorites,
+            visualDensity: VisualDensity.compact,
+            constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
+            padding: EdgeInsets.zero,
+            onPressed: () {
+              if (st.satName.isEmpty) {
+                _openCatalog(context);
+                return;
+              }
+              st.toggleSatFavorite(st.satName);
+            },
+            icon: Icon(
+              fav ? Icons.star_rounded : Icons.star_border_rounded,
+              size: 20,
+              color: fav ? C.orange : C.grey,
+            ),
+          ),
+          IconButton(
+            tooltip: s.satPasses,
+            visualDensity: VisualDensity.compact,
+            constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
+            padding: EdgeInsets.zero,
+            onPressed: () => _openPasses(context),
+            icon: Icon(Icons.format_list_bulleted_rounded,
+                size: 20, color: C.slate),
           ),
           GestureDetector(
             onTap: () => _showModes(context),
@@ -404,7 +462,14 @@ class _SatelliteShellState extends State<SatelliteShell> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   _freqCell(s.satUplink, up, dUp, C.blue),
-                  _freqCell(s.satDownlink, down, dDown, C.green),
+                  _freqCell(
+                    st.satAutoDoppler
+                        ? '${s.satDownlink} · AUTO'
+                        : s.satDownlink,
+                    down,
+                    dDown,
+                    C.green,
+                  ),
                   _readCell(
                     s.bearing,
                     look == null
@@ -471,6 +536,20 @@ class _SatelliteShellState extends State<SatelliteShell> {
                             backgroundColor: C.green,
                             padding: const EdgeInsets.symmetric(vertical: 11),
                           ),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Tooltip(
+                        message: s.satTune,
+                        child: OutlinedButton(
+                          onPressed: () => _tuneNow(context, s),
+                          style: OutlinedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 12, vertical: 11),
+                          ),
+                          child: Icon(Icons.tune_rounded,
+                              size: 16,
+                              color: st.rigConnected ? C.green : C.grey),
                         ),
                       ),
                       const SizedBox(width: 8),
@@ -566,6 +645,60 @@ class _SatelliteShellState extends State<SatelliteShell> {
       context,
       MaterialPageRoute(builder: (_) => SatelliteModePage(state: st)),
     );
+  }
+
+  void _openCatalog(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => SatellitesPage(state: st)),
+    );
+  }
+
+  void _openPasses(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => SatPassesPage(state: st)),
+    );
+  }
+
+  /// 当前下行 + 多普勒修正（MHz）。没有定位时退回标称频率。
+  double _tunedDownMhz() {
+    final tle = st.satSelected;
+    final lat = st.myLat;
+    final lng = st.myLng;
+    if (tle == null || lat == null || lng == null) return st.satDownMhz;
+    final look = lookAt(tle, lat, lng, DateTime.now().toUtc());
+    return st.satDownMhz +
+        dopplerHz(st.satDownMhz, look.rangeRateKmS) / 1e6;
+  }
+
+  /// 自动多普勒：L4S 的做法 —— 过境中持续把下行写进电台。
+  /// 只在（自动开 + 电台已连 + 正在过境）时动手，且频率变化 < 40 Hz 不重复发。
+  void _autoDoppler() {
+    if (!st.satAutoDoppler || !st.rigConnected) return;
+    final pass = st.satPickedPass;
+    if (pass == null) return;
+    final now = DateTime.now().toUtc();
+    if (now.isBefore(pass.aos) || now.isAfter(pass.los)) return;
+    if (_autoTunedFor != pass.aos) {
+      _autoTunedFor = pass.aos;
+      _lastTunedHz = 0;
+    }
+    final hz = (_tunedDownMhz() * 1e6).round();
+    if ((hz - _lastTunedHz).abs() < 40) return;
+    _lastTunedHz = hz;
+    st.rigSetFreq(hz);
+  }
+
+  Future<void> _tuneNow(BuildContext context, S s) async {
+    if (!st.rigConnected) {
+      _toast(context, s.satRigOff);
+      return;
+    }
+    final mhz = _tunedDownMhz();
+    await st.rigSetFreq((mhz * 1e6).round());
+    if (!context.mounted) return;
+    _toast(context, '${mhz.toStringAsFixed(3)} MHz');
   }
 
   void _openFullMap(BuildContext context) {

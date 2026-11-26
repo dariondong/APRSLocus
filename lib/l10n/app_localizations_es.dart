@@ -2899,6 +2899,51 @@ class AppLocalizationsEs extends AppLocalizations {
       'Cambiar la fuente de datos desconecta el enlace actual';
 
   @override
+  String get satCatalog => 'Catálogo de satélites';
+
+  @override
+  String get satPasses => 'Pasos';
+
+  @override
+  String get satFavorites => 'Favoritos';
+
+  @override
+  String get satFavHint => 'Los pasos solo calculan satélites favoritos. Toca la estrella para añadir.';
+
+  @override
+  String get satNoFavorites => 'Sin favoritos. Marca algunos satélites para llenar la lista de pasos.';
+
+  @override
+  String get satFavAprs => 'Marcar satélites APRS';
+
+  @override
+  String get sat24h => '24 h';
+
+  @override
+  String get sat48h => '48 h';
+
+  @override
+  String get sat72h => '72 h';
+
+  @override
+  String get satAutoDoppler => 'Doppler automático';
+
+  @override
+  String get satAutoDopplerHint => 'Durante un paso, envía el enlace descendente corregido por Doppler a la radio cada 2 s (rigctld).';
+
+  @override
+  String get satTransponders => 'Transpondedores';
+
+  @override
+  String get satNoTransponders => 'Sin transpondedor integrado; introduce el enlace ascendente/descendente a mano.';
+
+  @override
+  String get satApply => 'Aplicar';
+
+  @override
+  String get satRigOff => 'Radio no conectada: conecta rigctld en Control de radio';
+
+  @override
   String get satMini => 'Ventana mini';
 
   @override

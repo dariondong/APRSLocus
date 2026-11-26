@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:aprslocus/sat_transponders.dart';
 import 'package:aprslocus/satellite.dart';
 
 /// 一个真实 TLE（ISS，2026-11-21 历元）。放在这里当固定样本：过境时间可以由
@@ -117,6 +118,19 @@ SO-50
             .reduce((a, b) => a > b ? a : b),
         greaterThan(0),
       );
+    });
+  });
+
+  group('转发器预设', () {
+    test('按卫星名匹配，APRS 星给 145.825', () {
+      final iss = transpondersFor('ISS (ZARYA)');
+      expect(iss.any((t) => t.isAprs && t.upMhz == 145.825), isTrue);
+      expect(iss.any((t) => t.downMhz == 145.800), isTrue);
+      expect(transpondersFor('SO-50').first.tone, '67.0');
+      expect(transpondersFor('PO-101').first.tone, '141.3');
+      expect(transpondersFor('CAS-4A').first.invert, isTrue);
+      expect(transpondersFor('NOT A SAT'), isEmpty);
+      expect(transpondersFor(''), isEmpty);
     });
   });
 

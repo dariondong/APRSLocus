@@ -57,6 +57,10 @@ KEYS_EXPLICIT = (
     'satInPass', 'satWaitAos', 'satPassOver',
     'satMini', 'satMiniOn', 'satMiniOff', 'satMiniPermission',
     'satMiniUnsupported', 'satMiniTip', 'satSent',
+    'satCatalog', 'satPasses', 'satFavorites', 'satFavHint',
+    'satNoFavorites', 'satFavAprs', 'sat24h', 'sat48h', 'sat72h',
+    'satAutoDoppler', 'satAutoDopplerHint', 'satTransponders',
+    'satNoTransponders', 'satApply', 'satRigOff',
 )
 
 
