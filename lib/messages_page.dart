@@ -2831,6 +2831,7 @@ class _MessagesPageState extends State<MessagesPage> {
   Widget _qsyCard(AprsMsg m) {
     final q = QsyRequest.parse(m.text);
     if (q == null) return const SizedBox.shrink();
+    final mine = m.sent;
     final s = S.of(context);
     final st = widget.state;
     final applied = st.onAirOn && st.onAirFreq == q.freq;
@@ -2855,7 +2856,7 @@ class _MessagesPageState extends State<MessagesPage> {
             const SizedBox(width: 6),
             Expanded(
               child: Text(
-                '${s.qsyRequest} · ${q.freq} MHz',
+                '${mine ? s.onAirQso : s.qsyRequest} · ${q.freq} MHz',
                 style: ts(12, c: C.green, w: FontWeight.w700),
               ),
             ),
@@ -3049,7 +3050,7 @@ class _MessagesPageState extends State<MessagesPage> {
                   ),
                 ),
               _urlRichText(m.text, ts(13)),
-              if (!mine) _qsyCard(m),
+              _qsyCard(m),
               // 「已译发」：这条当时是按对方语言发出的，显示实际发出的文本
               sentAsBlock(context: context, m: m),
               // 译文块：会话/群聊气泡与瀑布流气泡**必须都渲染**，
