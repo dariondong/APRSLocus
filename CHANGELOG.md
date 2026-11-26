@@ -1,5 +1,49 @@
 # 更新日志
 
+## [2.2.15] - 2026-11-26
+
+### 新增
+
+- APRS 卫星模式成为与 1.0 / 2.0 / 精简并列的顶层模式：大罗盘指向、过境倒计时、多普勒修正的上/下行、亚音与一键发信标。
+- 卫星目录与收藏；过境列表汇总收藏星未来 24/48/72 小时的过境，点一条即可切星并切到那次过境。
+- 内置常用卫星频点/转发器（APRS、FM、线性倒置），点一下填入上/下行与亚音。
+- 自动多普勒：过境中把修正后的下行持续写进已连接的电台；也可手动一键调谐。
+- 卫星悬浮小窗：切到其他应用时仍显示倒计时、方位/仰角、频率，并可直接发信标。
+- 罗盘经过线：整条过境轨迹、AOS/LOS、TCA 与每分钟点；罗盘上实时显示方位、仰角、航向、高度、距离。
+- 地图卫星层：星下点、足迹、前后 45 分钟地面轨迹（栅格地图）。
+- 守听频率改用 AFRS 标准备注（频率/模式/音调/偏移），台站详情显示频率卡；收到 QSY 请求可一键跟随，消息里可直接发 QSY 邀请。
+- iGate 可放行自己的报文（开关 + 计数）。
+- 新增 BLE TNC（RT-950 Pro，KISS over BLE）；支持导入自定义 TLE。
+
+### 修复
+
+- 一次过境不再被算成多个 0 秒条目（LOS 穿越点计算方向）；过境进行中从真实 AOS 起算。
+- 取消重发后点消息气泡无法再次发送。
+- BLE TNC 只能收不能发、部分机型写完成不回调导致发送队列卡住。
+- 卫星界面在窄屏/深色模式下的排版与文案细节。
+
+## [2.2.15] - 2026-11-26 (English)
+
+### Added
+
+- APRS satellite mode is now a top-level mode alongside 1.0 / 2.0 / Lite: large compass, pass countdown, Doppler-corrected uplink/downlink, tone and one-tap beacon.
+- Satellite catalog with favorites; the pass list combines the next 24/48/72 hours for favorited satellites, and tapping a pass switches both satellite and pass.
+- Built-in satellite frequencies/transponders (APRS, FM, inverting linear); one tap fills uplink/downlink and tone.
+- Auto Doppler keeps writing the corrected downlink to the connected radio during a pass; manual one-tap tuning is also available.
+- Satellite mini window: while using other apps it still shows the countdown, azimuth/elevation, frequencies, and can send a beacon.
+- Pass trail on the compass: full track, AOS/LOS, TCA and minute ticks; the compass also shows live azimuth, elevation, heading, altitude and range.
+- Satellite map layer: subpoint, footprint and ±45 minute ground track (raster map).
+- Listening frequency now uses the AFRS note format (frequency/mode/tone/offset); station details show a frequency card; incoming QSY requests can be followed in one tap, and QSY invites can be sent from messages.
+- iGate can pass its own packets (switch + counter).
+- BLE TNC (RT-950 Pro, KISS over BLE); custom TLE import.
+
+### Fixed
+
+- A single pass is no longer split into many zero-length entries (LOS crossing direction); an in-progress pass starts at the real AOS.
+- After cancelling a resend, tapping the message bubble sends again.
+- BLE TNC could receive but not send; on some devices a missing write callback stalled the send queue.
+- Satellite layout and wording details on narrow screens / dark mode.
+
 ## [2.2.14] - 2026-11-22
 
 ### 修复

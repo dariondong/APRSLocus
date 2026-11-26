@@ -585,6 +585,21 @@ html{overflow-x:hidden}
 <!-- site-sync:changelog -->
     <div class="cl-version reveal">
       <div class="cl-head">
+        <span class="cl-tag">v2.2.15</span>
+        <span class="cl-date">2026-11-26</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot new"></span>APRS satellite mode is now a top-level mode alongside 1.0 / 2.0 / Lite: large compass, pass countdown, Doppler-corrected uplink/downlink, tone and one-tap beacon.</div>
+        <div class="cl-item"><span class="cl-dot new"></span>Satellite catalog with favorites; the pass list combines the next 24/48/72 hours for favorited satellites, and tapping a pass switches both satellite and pass.</div>
+        <div class="cl-item"><span class="cl-dot new"></span>Satellite mini window: while using other apps it still shows the countdown, azimuth/elevation and frequencies, and can send a beacon.</div>
+        <div class="cl-item"><span class="cl-dot new"></span>Pass trail on the compass: the full track, AOS/LOS, TCA and minute ticks; the compass also shows live azimuth, elevation, heading, altitude and range.</div>
+        <div class="cl-item"><span class="cl-dot new"></span>Listening frequency now uses the AFRS note format and station details show a frequency card; incoming QSY requests can be followed in one tap, and QSY invites can be sent from messages.</div>
+        <div class="cl-item"><span class="cl-dot new"></span>New BLE TNC support (RT-950 Pro, KISS over BLE); the iGate can pass its own packets; custom TLE import.</div>
+        <div class="cl-item"><span class="cl-dot fix"></span>A single pass is no longer split into many zero-length entries, and an in-progress pass starts at the real AOS.</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
         <span class="cl-tag">v2.2.14</span>
         <span class="cl-date">2026-11-22</span>
       </div>

@@ -261,7 +261,7 @@ class _SatellitesPageState extends State<SatellitesPage> {
     return Container(
       margin: const EdgeInsets.only(bottom: 6),
       decoration: BoxDecoration(
-        color: selected ? C.blue.withValues(alpha: 0.08) : C.sheetFill,
+        color: selected ? C.blue.withValues(alpha: 0.08) : C.surfaceFill,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
           color: selected ? C.blue.withValues(alpha: 0.5) : C.border,

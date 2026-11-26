@@ -419,6 +419,63 @@ CARDS = [
 # 只列「重点版本」：中间几十个纯修 bug 的版本归纳进文字说明，完整记录指向 Releases。
 CL = [
     {
+        'ver': 'v2.2.15', 'date': '2026-11-26',
+        'items': [
+            ('new',
+             T('APRS 卫星模式成为与 1.0 / 2.0 / 精简并列的顶层模式：大罗盘指向、'
+               '过境倒计时、多普勒修正的上/下行、亚音与一键发信标。',
+               'APRS 衛星模式成為與 1.0 / 2.0 / 精簡並列的頂層模式：大羅盤指向、'
+               '過境倒數、多普勒修正的上/下行、亞音與一鍵發信標。',
+               'APRS satellite mode is now a top-level mode alongside 1.0 / 2.0 / '
+               'Lite: large compass, pass countdown, Doppler-corrected '
+               'uplink/downlink, tone and one-tap beacon.')),
+            ('new',
+             T('卫星目录与收藏；过境列表汇总收藏星未来 24/48/72 小时的过境，'
+               '点一条即可切星并切到那次过境。',
+               '衛星目錄與收藏；過境列表彙總收藏星未來 24/48/72 小時的過境，'
+               '點一條即可切星並切到那次過境。',
+               'Satellite catalog with favorites; the pass list combines the next '
+               '24/48/72 hours for favorited satellites, and tapping a pass '
+               'switches both satellite and pass.')),
+            ('new',
+             T('卫星悬浮小窗：切到其他应用时仍显示倒计时、方位/仰角、频率，'
+               '并可直接发信标。',
+               '衛星懸浮小窗：切到其他應用時仍顯示倒數、方位/仰角、頻率，'
+               '並可直接發信標。',
+               'Satellite mini window: while using other apps it still shows the '
+               'countdown, azimuth/elevation and frequencies, and can send a '
+               'beacon.')),
+            ('new',
+             T('罗盘经过线：整条过境轨迹、AOS/LOS、TCA 与每分钟点；罗盘上实时'
+               '显示方位、仰角、航向、高度、距离。',
+               '羅盤經過線：整條過境軌跡、AOS/LOS、TCA 與每分鐘點；羅盤上即時'
+               '顯示方位、仰角、航向、高度、距離。',
+               'Pass trail on the compass: the full track, AOS/LOS, TCA and '
+               'minute ticks; the compass also shows live azimuth, elevation, '
+               'heading, altitude and range.')),
+            ('new',
+             T('守听频率改用 AFRS 标准备注，台站详情显示频率卡；收到 QSY 请求'
+               '可一键跟随，消息里可直接发 QSY 邀请。',
+               '守聽頻率改用 AFRS 標準備註，臺站詳情顯示頻率卡；收到 QSY 請求'
+               '可一鍵跟隨，訊息裡可直接發 QSY 邀請。',
+               'Listening frequency now uses the AFRS note format and station '
+               'details show a frequency card; incoming QSY requests can be '
+               'followed in one tap, and QSY invites can be sent from messages.')),
+            ('new',
+             T('新增 BLE TNC（RT-950 Pro，KISS over BLE）；iGate 可放行自己的'
+               '报文；支持导入自定义 TLE。',
+               '新增 BLE TNC（RT-950 Pro，KISS over BLE）；iGate 可放行自己的'
+               '報文；支援匯入自訂 TLE。',
+               'New BLE TNC support (RT-950 Pro, KISS over BLE); the iGate can '
+               'pass its own packets; custom TLE import.')),
+            ('fix',
+             T('一次过境不再被算成多个 0 秒条目；过境进行中从真实 AOS 起算。',
+               '一次過境不再被算成多個 0 秒條目；過境進行中從真實 AOS 起算。',
+               'A single pass is no longer split into many zero-length entries, '
+               'and an in-progress pass starts at the real AOS.')),
+        ],
+    },
+    {
         'ver': 'v2.2.14', 'date': '2026-11-22',
         'items': [
             ('fix',

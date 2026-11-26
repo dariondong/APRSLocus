@@ -211,7 +211,7 @@ class _SatPassesPageState extends State<SatPassesPage> {
       margin: const EdgeInsets.fromLTRB(16, 8, 16, 6),
       padding: const EdgeInsets.fromLTRB(14, 10, 14, 10),
       decoration: BoxDecoration(
-        color: C.sheetFill,
+        color: C.surfaceFill,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: color.withValues(alpha: 0.35)),
       ),
@@ -306,7 +306,7 @@ class _SatPassesPageState extends State<SatPassesPage> {
         margin: const EdgeInsets.only(bottom: 8),
         padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
         decoration: BoxDecoration(
-          color: inPass ? C.green.withValues(alpha: 0.07) : C.sheetFill,
+          color: inPass ? C.green.withValues(alpha: 0.07) : C.surfaceFill,
           borderRadius: BorderRadius.circular(14),
           border: Border.all(
             color: inPass

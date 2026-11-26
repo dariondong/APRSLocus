@@ -419,7 +419,7 @@ class _SatelliteShellState extends State<SatelliteShell> {
         return Container(
           padding: const EdgeInsets.fromLTRB(16, 10, 16, 14),
           decoration: BoxDecoration(
-            color: C.sheetFill,
+            color: C.surfaceFill,
             borderRadius:
                 const BorderRadius.vertical(top: Radius.circular(20)),
             boxShadow: elev3(),
@@ -718,7 +718,7 @@ class _SatelliteShellState extends State<SatelliteShell> {
     ];
     showModalBottomSheet<void>(
       context: context,
-      backgroundColor: C.sheetFill,
+      backgroundColor: C.surfaceFill,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(18)),
       ),
@@ -918,7 +918,7 @@ class _FullMapPage extends StatelessWidget {
             top: MediaQuery.of(context).padding.top + 8,
             left: 12,
             child: Material(
-              color: C.sheetFill,
+              color: C.surfaceFill,
               borderRadius: BorderRadius.circular(999),
               child: IconButton(
                 icon: Icon(Icons.arrow_back_rounded, color: C.slate),

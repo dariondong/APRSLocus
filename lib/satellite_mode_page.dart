@@ -579,7 +579,7 @@ class SatelliteModePage extends StatelessWidget {
     final ctrl = TextEditingController();
     final pick = await showModalBottomSheet<String>(
       context: context,
-      backgroundColor: C.sheetFill,
+      backgroundColor: C.surfaceFill,
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(18)),

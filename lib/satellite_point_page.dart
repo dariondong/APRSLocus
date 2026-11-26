@@ -134,7 +134,7 @@ class _SatellitePointPageState extends State<SatellitePointPage> {
               margin: const EdgeInsets.fromLTRB(16, 8, 16, 18),
               padding: const EdgeInsets.fromLTRB(16, 14, 16, 14),
               decoration: BoxDecoration(
-                color: C.sheetFill,
+                color: C.surfaceFill,
                 borderRadius: BorderRadius.circular(18),
                 border: Border.all(color: C.border),
               ),
