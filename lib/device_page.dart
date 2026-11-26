@@ -155,6 +155,16 @@ class _DeviceOverviewPageState extends State<DeviceOverviewPage> {
             onChanged: state.setIgateTwoWay,
           ),
           SettingsHint(s.igateTwoWayHint, color: C.orange),
+          // 本机呼号的包该不该上传：电台自己的信标可能只能经这条蓝牙
+          // 链路出去，而 own-packet 规则会把它们全挡在互联网之外 ——
+          // 这正是「别人的包能上传、电台自己的包上传不了」的软件成因。
+          SettingsSwitch(
+            s.igateAllowOwn,
+            value: state.igateAllowOwn,
+            color: C.purple,
+            onChanged: state.setIgateAllowOwn,
+          ),
+          SettingsHint(s.igateAllowOwnHint),
           // 条件全齐、射频却一条都没收到 —— 这最容易被当成「网关坏了」，
           // 而它其实与网关无关：报文根本没进到应用里。先把责任划清，
           // 用户才不会在网关的开关上反复折腾。
@@ -178,6 +188,13 @@ class _DeviceOverviewPageState extends State<DeviceOverviewPage> {
           // 环路防护拒收的数原先只在日志里（还得按节流才看得见），
           // 如果它一直在涨，那「已转递 = 0」是有原因的，得让人看见
           SettingsRow2(s.igateStatBlocked, '${state.igateBlocked}'),
+          // 被 own-packet 挡下的条数。它涨而「已转递」不涨，就直接说明
+          // 包已经收到、只是被呼号规则拦了 —— 与「电台没回传」是两回事。
+          SettingsRow2(
+            s.igateStatOwn,
+            '${state.igateOwnDropped}',
+            valueColor: state.igateOwnDropped > 0 ? C.orange : C.grey,
+          ),
           Padding(
             padding: const EdgeInsets.fromLTRB(14, 0, 14, 10),
             child: Row(children: [

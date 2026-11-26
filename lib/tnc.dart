@@ -296,9 +296,11 @@ class TncLink {
 
   /// 绑定设备（不连接）
   void bind(TncDevice? d) {
-    device = d;
+    // 用户可能手点了扫描列表里 SPP 那份同名 walkie-talkie，
+    // 这里同样纠正一次，避免把错误的 kind 又写回持久化。
+    device = d == null ? null : _migrateLegacyKind(d);
     lastError = '';
-    _log(d == null ? '解除绑定' : '绑定 ${d.label}');
+    _log(device == null ? '解除绑定' : '绑定 ${device!.label}');
     unawaited(_persistDevice());
     onStateChanged?.call();
   }
@@ -605,8 +607,25 @@ class TncLink {
         _copy(parsed, config);
       }
       final d = p.getString(_kDevice);
-      if (d != null && d.isNotEmpty) device = TncDevice.fromJson(jsonDecode(d));
+      if (d != null && d.isNotEmpty) {
+        final restored = TncDevice.fromJson(jsonDecode(d));
+        if (restored != null) device = _migrateLegacyKind(restored);
+      }
     } catch (_) {}
+  }
+
+  /// 修复旧版绑定残留的 kind：早期版本只支持经典蓝牙 SPP，把 RT-950 Pro
+  /// 的 `walkie-talkie` 存成了 `kind='bluetooth'`。升级到带 BLE 通道的新版后
+  /// 若原样恢复，connect() 会按 kind 误选 SPP → 报 `read failed, socket might
+  /// closed or timeout, read ret: -1`（正是用户反复看到的那条）。
+  ///
+  /// 判断刻意收窄：只纠正 kind='bluetooth' 且名字含 walkie 的设备，
+  /// 避免误伤真正走经典 SPP 的其它串口设备。
+  static TncDevice _migrateLegacyKind(TncDevice d) {
+    if (d.kind == 'bluetooth' && d.name.toLowerCase().contains('walkie')) {
+      return d.copyWith(kind: 'ble');
+    }
+    return d;
   }
 
   static void _copy(TncConfig from, TncConfig to) {

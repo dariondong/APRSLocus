@@ -2986,6 +2986,31 @@ class AppState extends ChangeNotifier {
   /// 送到射频。**会真实发射**，所以默认关闭，需用户显式打开。
   bool igateTwoWay = false;
 
+  /// 是否允许「源呼号 == 本机呼号」的射频报文上传 APRS-IS。
+  ///
+  /// 默认关，符合 iGate 通行做法：网关自己的信标已经由网关自己（经 IS 或
+  /// 经射频）发过一遍，再从射频收回来转发就是重复。
+  ///
+  /// 但有一类设备让这条规则变成死路：电台自己产生的 APRS 信标只从本地
+  /// 发射、不经互联网，而它唯一能到达互联网的路径就是本机的蓝牙 TNC。
+  /// 此时 own-packet 过滤会把它的位置**永久挡在互联网之外** —— 现象就是
+  /// 「别人的包能上传，电台自己的包上传不了」。打开这个开关即可放行，
+  /// 前提是电台确实把自发帧回传给了 TNC（用设备页的「收帧」数可验证）。
+  bool igateAllowOwn = false;
+
+  /// 因「源呼号 == 本机呼号」被挡下的射频报文数（界面直接显示）。
+  ///
+  /// 单独计数而不是混进 [igateBlocked]：后者的语义是「环路防护」，
+  /// 两者混在一起时用户看到的数字无法指认到底卡在哪一步。
+  int igateOwnDropped = 0;
+
+  /// RF→IS 最近一次未转递的原因（空 = 没有拒绝记录）。
+  ///
+  /// 与 [igateLastReject] 对称：那个是 IS→RF 方向，这个是上传方向。
+  /// 原先上传方向的拒绝只写日志（节流 50 次、debug 级），用户几乎不可能
+  /// 看到，排查时只能靠猜。
+  String igateLastRfReject = '';
+
   /// 射频上收到的报文总数（无论网关开不开都计）。
   ///
   /// 为什么需要它：网关统计全是 0 时，用户无法区分下面两种完全不同的情况 ——
@@ -5984,6 +6009,7 @@ class AppState extends ChangeNotifier {
       ..add(srcAprsIs);
     igateEnabled = false;
     igateTwoWay = false;
+    igateAllowOwn = false;
     _lastFilter = '';
 
     // 内容与运行时状态
@@ -6813,6 +6839,7 @@ class AppState extends ChangeNotifier {
       advChannels = p.getBool('advChannels') ?? advChannels;
       igateEnabled = p.getBool('igateEnabled') ?? igateEnabled;
       igateTwoWay = p.getBool('igateTwoWay') ?? igateTwoWay;
+      igateAllowOwn = p.getBool('igateAllowOwn') ?? igateAllowOwn;
       await tnc.load();
       await audio.load();
       await pkwdwpl.load();
@@ -7184,6 +7211,7 @@ class AppState extends ChangeNotifier {
     await p.setString('satSyncedAt', satSyncedAt);
     await p.setBool('igateEnabled', igateEnabled);
     await p.setBool('igateTwoWay', igateTwoWay);
+    await p.setBool('igateAllowOwn', igateAllowOwn);
     if (myHasFix && myLat != null && myLng != null) {
       p.setDouble('myLat', myLat!);
       p.setDouble('myLng', myLng!);
@@ -7832,17 +7860,33 @@ class AppState extends ChangeNotifier {
     if (!igateRfUp) return;
     igateRfSeen++;
     if (!igateEnabled || !isUp(srcAprsIs)) return;
-    final d = Igate.toIs(tnc2: line, myFullCall: myFullCall);
+    final d = Igate.toIs(
+      tnc2: line,
+      myFullCall: myFullCall,
+      allowOwn: igateAllowOwn,
+    );
     if (!d.ok) {
+      igateLastRfReject = d.reason;
       // 环路相关的拒绝要留痕：如果日志里频繁出现 from-is / has-q-construct，
       // 说明有人在射频上重放互联网报文，值得用户知道
       if (d.reason == 'from-is' || d.reason == 'has-q-construct') {
         if (igateBlocked++ % 20 == 1) {
           _log(LogLevel.debug, '网关', '拒绝转递（${d.reason}）：${_trunc(line)}');
         }
+      } else if (d.reason == 'own-packet') {
+        // 这条单独计数并**第一次就记日志**：它是「电台自己的信标上不了网」
+        // 的唯一软件原因。原先它和 malformed 挤在同一个 `% 50 == 1` 的
+        // debug 节流里，用户实际根本看不到 —— 排查时只能靠猜。
+        igateOwnDropped++;
+        if (igateOwnDropped == 1 || igateOwnDropped % 10 == 0) {
+          _log(
+            LogLevel.warn,
+            '网关',
+            '未转递（own-packet）· 源呼号等于本机呼号 $myFullCall，'
+            '射频已收 $igateRfSeen 条：${_trunc(line)}',
+          );
+        }
       } else if (_igateRejectLog++ % 50 == 1) {
-        // 其余拒绝（own-packet / malformed / empty-body）原先完全不留痕：
-        // 网关一条都没转，日志里却什么也看不到，只能靠猜。
         _log(LogLevel.debug, '网关',
             '未转递（${d.reason}）· 射频已收 $igateRfSeen 条：${_trunc(line)}');
       }
@@ -8020,6 +8064,25 @@ class AppState extends ChangeNotifier {
     _refreshFilter();
   }
 
+  /// 打开/关闭「允许本机呼号的射频报文上传」。
+  ///
+  /// 不涉及发射、也不改 APRS-IS 过滤器，所以不需要重连；下一次收到的
+  /// 报文立刻按新规则判定。
+  void setIgateAllowOwn(bool v) {
+    if (igateAllowOwn == v) return;
+    igateAllowOwn = v;
+    _log(
+      LogLevel.info,
+      '网关',
+      v
+          ? '已允许源呼号为本机呼号（$myFullCall）的射频报文上传 APRS-IS'
+          : '已恢复：源呼号等于本机呼号的射频报文不再上传（own-packet）',
+    );
+    persist();
+    _notify();
+    _updateNotification();
+  }
+
   /// 清空网关统计
   void resetIgateStats() {
     igateGated = 0;
@@ -8027,7 +8090,9 @@ class AppState extends ChangeNotifier {
     igateDupDropped = 0;
     igateRfSeen = 0;
     igateBlocked = 0;
+    igateOwnDropped = 0;
     igateLastReject = '';
+    igateLastRfReject = '';
     _igateDedupe.clear();
     _notify();
   }

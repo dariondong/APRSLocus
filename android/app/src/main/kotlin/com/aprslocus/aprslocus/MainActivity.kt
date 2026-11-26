@@ -132,6 +132,11 @@ class MainActivity : FlutterActivity() {
     // 与 TNC 同一套分层（协议与用法全在 Dart 侧）。
     private var bleHr: BleHrManager? = null
 
+    // BLE TNC（低功耗蓝牙 KISS 串口，FFE0/FFE1）：给 RT-950 Pro 这类只提供
+    // BLE 而不提供经典 SPP 的电台用。与 SPP TNC / 心率带各自独立 GATT/socket，
+    // 事件协议与 TncManager 一致，Dart 侧当作第三条 TNC 通路接入。
+    private var bleTnc: BleTncManager? = null
+
     // 外部分享进来的文本（目前只认佳明 LiveTrack 链接）。
     // 为什么要存下来而不是直接发事件：分享**冷启动**也会发生（应用没在运行时
     // 从佳明 App 点分享），那一刻 Flutter 引擎还没起来、事件通道还没有监听者，
@@ -460,6 +465,7 @@ class MainActivity : FlutterActivity() {
                     tnc?.connectedAddress(),
                     pkwdwpl?.connectedAddress(),
                     box?.connectedAddress(),
+                    bleTnc?.connectedAddress(),
                 )
             },
             // 链路状态是异步变化的（GATT 回调），Dart 的方法调用点覆盖不到，
@@ -504,6 +510,51 @@ class MainActivity : FlutterActivity() {
 
                     override fun onCancel(arguments: Any?) {
                         bleHrManager.setEventSink(null)
+                    }
+                }
+            )
+
+        // BLE TNC（KISS over BLE，RT-950 Pro 的 walkie-talkie）：扫描 → 连接
+        // → 订阅 FFE1 通知收发 KISS 字节。与上面的 SPP TNC 是两条独立通路，
+        // Dart 侧 TncAutoTransport 按绑定设备的 kind='ble' 选路。
+        val bleTncManager = BleTncManager(this, onLinkChanged = { refreshBtActive() })
+        bleTnc = bleTncManager
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, BleTncManager.METHOD_CHANNEL)
+            .setMethodCallHandler { call, result ->
+                when (call.method) {
+                    "isSupported" -> result.success(bleTncManager.isSupported())
+                    "requestPermissions" -> bleTncManager.requestPermissions(result)
+                    "scanDevices" -> bleTncManager.scanDevices(result)
+                    "connect" -> {
+                        val address = call.argument<String>("address")
+                        if (address.isNullOrEmpty()) {
+                            result.error("NO_ADDRESS", "缺少设备地址", null)
+                        } else {
+                            bleTncManager.connect(address, result)
+                        }
+                    }
+                    "disconnect" -> {
+                        bleTncManager.disconnect()
+                        result.success(true)
+                    }
+                    "status" -> result.success(
+                        mapOf(
+                            "connected" to bleTncManager.isConnected(),
+                            "address" to bleTncManager.connectedAddress(),
+                        )
+                    )
+                    else -> result.notImplemented()
+                }
+            }
+        EventChannel(flutterEngine.dartExecutor.binaryMessenger, BleTncManager.EVENT_CHANNEL)
+            .setStreamHandler(
+                object : EventChannel.StreamHandler {
+                    override fun onListen(arguments: Any?, events: EventChannel.EventSink?) {
+                        bleTncManager.setEventSink(events)
+                    }
+
+                    override fun onCancel(arguments: Any?) {
+                        bleTncManager.setEventSink(null)
                     }
                 }
             )
@@ -1458,6 +1509,7 @@ class MainActivity : FlutterActivity() {
         gps?.onRequestPermissionsResult(requestCode, grantResults)
         audio?.onRequestPermissionsResult(requestCode, grantResults)
         bleHr?.onRequestPermissionsResult(requestCode, grantResults)
+        bleTnc?.onRequestPermissionsResult(requestCode, grantResults)
         // 导出落盘的存储权限（仅 Android 9 及以下会走到这里）：拿到权限后把
         // 暂存的这次导出补做完。无论允许还是拒绝都要回一次 Result ——
         // 拒绝时 saveToDownloads 会退到私有目录，导出仍然成功，不会被卡住。
@@ -1562,7 +1614,8 @@ class MainActivity : FlutterActivity() {
             box?.isConnected() == true ||
             gps?.isConnected() == true ||
             usbSerial?.isConnected() == true ||
-            bleHr?.isConnected() == true
+            bleHr?.isConnected() == true ||
+            bleTnc?.isConnected() == true
         setBtActive(anyActive)
     }
 
@@ -1941,6 +1994,12 @@ class MainActivity : FlutterActivity() {
         } catch (_: Exception) {
         }
         bleHr = null
+        // BLE TNC：dispose 里停扫描 + disconnect + gatt.close()。
+        try {
+            bleTnc?.dispose()
+        } catch (_: Exception) {
+        }
+        bleTnc = null
         // 分享入口的 sink 必须清掉：Activity 都销毁了，EventChannel 已经没人听，
         // 留着会让下一次分享被推给一个失效的 sink（丢事件且不报错）
         shareInSink = null

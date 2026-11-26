@@ -27,6 +27,7 @@ TncTransport createTncTransport() {
       // 选路必须由传输层自己按 device.kind 完成。
       return TncAutoTransport(
         bluetooth: TncNativeBluetooth(),
+        ble: TncNativeBle(),
         usb: TncNativeUsb(),
       );
     default:
@@ -296,6 +297,143 @@ class TncNativeBluetooth implements TncTransport {
   }
 
   /// 请求系统蓝牙权限（Android 12+ 需要 BLUETOOTH_CONNECT）
+  @override
+  Future<bool> requestPermissions() async {
+    try {
+      return await _ch.invokeMethod<bool>('requestPermissions') ?? false;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  void dispose() {
+    _sub?.cancel();
+    _sub = null;
+  }
+}
+
+/// ─── Android / iOS：BLE KISS TNC（低功耗蓝牙）───
+///
+/// 给 RT-950 Pro 这类**只有 BLE、没有经典 SPP** 的电台用（广播名
+/// `walkie-talkie`，串口服务 FFE0 / 特征 FFE1）。原生侧 BleTncManager
+/// 完成 GATT 连接与订阅，这里同样只搬字节；事件协议与 SPP 完全一致，
+/// 因此直接复用 [TncNativeBluetooth.wireEvents]，避免两份解析各自走样。
+class TncNativeBle implements TncTransport {
+  static const MethodChannel _ch = MethodChannel('com.aprslocus/bletnc');
+  static const EventChannel _ev = EventChannel('com.aprslocus/bletnc_events');
+
+  StreamSubscription<dynamic>? _sub;
+
+  @override
+  bool connected = false;
+
+  @override
+  void Function(List<int> bytes)? onBytes;
+
+  @override
+  void Function(String status)? onStatus;
+
+  @override
+  void Function()? onClosed;
+
+  @override
+  void Function(String reason)? onTxFailed;
+
+  @override
+  void Function(int size)? onTxAck;
+
+  bool _probed = false;
+  bool _supported = false;
+
+  @override
+  Future<bool> get supported async {
+    if (_probed) return _supported;
+    _probed = true;
+    try {
+      _supported = await _ch.invokeMethod<bool>('isSupported') ?? false;
+    } on MissingPluginException {
+      _supported = false;
+    } catch (_) {
+      _supported = false;
+    }
+    return _supported;
+  }
+
+  void _listen() {
+    _sub ??= TncNativeBluetooth.wireEvents(
+      _ev.receiveBroadcastStream(),
+      onBytes: (b) => onBytes?.call(b),
+      onClosed: () {
+        connected = false;
+        onClosed?.call();
+      },
+      onStatus: (s) => onStatus?.call(s),
+      onTxAck: (n) => onTxAck?.call(n),
+      onTxFailed: (r) => onTxFailed?.call(r),
+    );
+  }
+
+  /// BLE 设备通常**不在系统配对列表**里，必须主动扫描广播，
+  /// 所以这里调用原生 `scanDevices`（内部扫描 6 秒后一次性返回列表），
+  /// 与 SPP 的 `listBondedDevices` 不同。
+  @override
+  Future<List<TncDevice>> listDevices() async {
+    if (!await supported) return const [];
+    try {
+      final raw = await _ch.invokeMethod<List<dynamic>>('scanDevices');
+      final out = <TncDevice>[];
+      for (final it in raw ?? const []) {
+        final d = TncDevice.fromJson(it);
+        if (d != null) out.add(d);
+      }
+      return out;
+    } catch (e) {
+      onStatus?.call('$e');
+      return const [];
+    }
+  }
+
+  @override
+  Future<String?> connect(TncDevice device) async {
+    if (!await supported) return 'unsupported';
+    try {
+      _listen();
+      await _ch
+          .invokeMethod<bool>('connect', {'address': device.id})
+          .timeout(const Duration(seconds: 25));
+      connected = true;
+      return null;
+    } on TimeoutException {
+      connected = false;
+      unawaited(disconnect());
+      return 'connect-timeout';
+    } on PlatformException catch (e) {
+      connected = false;
+      return e.message ?? e.code;
+    } catch (e) {
+      connected = false;
+      return '$e';
+    }
+  }
+
+  @override
+  Future<void> disconnect() async {
+    try {
+      await _ch.invokeMethod<bool>('disconnect');
+    } catch (_) {}
+    connected = false;
+  }
+
+  @override
+  void send(Uint8List bytes) {
+    if (!connected) return;
+    _ch.invokeMethod<bool>('send', {'data': bytes}).catchError((Object e) {
+      onStatus?.call('$e');
+      onTxFailed?.call('$e');
+      return false;
+    });
+  }
+
   @override
   Future<bool> requestPermissions() async {
     try {
@@ -724,19 +862,25 @@ class TncNativeUsb implements TncTransport {
 /// （串口两个句柄各读一部分 / 蓝牙第二条 RFCOMM 顶掉第一条），
 /// 症状正是「能发不能收」。
 class TncAutoTransport implements TncTransport {
-  TncAutoTransport({required this.bluetooth, required this.usb});
+  TncAutoTransport({required this.bluetooth, this.ble, required this.usb});
 
   final TncTransport bluetooth;
+  /// BLE KISS 通路（RT-950 Pro 等）。可选：PKWDWPL / BOX / GPS 复用本类时不传。
+  final TncTransport? ble;
   final TncTransport usb;
 
   TncTransport? _active;
+
+  /// 所有后端（用于遍历接线 / 断开）。BLE 为可选。
+  List<TncTransport> get _all => [bluetooth, if (ble != null) ble!, usb];
 
   @override
   bool get connected => _active?.connected ?? false;
 
   @override
   Future<bool> get supported async =>
-      await bluetooth.supported || await usb.supported;
+      await bluetooth.supported || await usb.supported ||
+      (ble != null && await ble!.supported);
 
   @override
   void Function(List<int> bytes)? onBytes;
@@ -756,7 +900,7 @@ class TncAutoTransport implements TncTransport {
   /// 把两个后端的回调都接到同一个出口。切路时**不需要**重接：
   /// 回调闭包指向本对象的字段，字段由上层赋值，与当前活跃后端无关。
   void _wire() {
-    for (final t in [bluetooth, usb]) {
+    for (final t in _all) {
       t.onBytes = (b) => onBytes?.call(b);
       t.onStatus = (s) => onStatus?.call(s);
       t.onTxAck = (n) => onTxAck?.call(n);
@@ -776,10 +920,17 @@ class TncAutoTransport implements TncTransport {
       _wire();
       _wired = true;
     }
-    final out = <TncDevice>[];
-    out.addAll(await bluetooth.listDevices());
-    out.addAll(await usb.listDevices());
-    return out;
+    // 按 id 去重，且 **BLE 覆盖同 id 的经典 SPP**。
+    // RT-950 Pro 双模：既在「已配对经典蓝牙」里出现（kind=bluetooth），
+    // 又被 BLE 扫描到（kind=ble），两者 MAC 相同、名字相同。不去重时界面上
+    // 是两个一模一样的 walkie-talkie，用户点到 SPP 那份就必然 read failed -1。
+    final merged = <String, TncDevice>{};
+    for (final d in await bluetooth.listDevices()) merged[d.id] = d;
+    if (ble != null) {
+      for (final d in await ble!.listDevices()) merged[d.id] = d;
+    }
+    for (final d in await usb.listDevices()) merged[d.id] = d;
+    return merged.values.toList();
   }
 
   @override
@@ -799,13 +950,22 @@ class TncAutoTransport implements TncTransport {
       _wire();
       _wired = true;
     }
-    final target = device.isUsb ? usb : bluetooth;
-    final other = device.isUsb ? bluetooth : usb;
-    // 切路：先把另一条断干净（单连接模型）
-    if (other.connected) {
-      try {
-        await other.disconnect();
-      } catch (_) {}
+    // 按绑定设备的 kind 选路：BLE / USB / 经典 SPP 三选一。
+    final TncTransport target;
+    if (device.isBle && ble != null) {
+      target = ble!;
+    } else if (device.isUsb) {
+      target = usb;
+    } else {
+      target = bluetooth;
+    }
+    // 切路：先把其它后端断干净（单连接模型，避免两条链路瓜分字节流）
+    for (final t in _all) {
+      if (t != target && t.connected) {
+        try {
+          await t.disconnect();
+        } catch (_) {}
+      }
     }
     _active = target;
     return target.connect(device);
@@ -818,8 +978,8 @@ class TncAutoTransport implements TncTransport {
     try {
       await a?.disconnect();
     } catch (_) {}
-    // 另一条也顺手断掉：用户点的是「断开」，不该留下一条没人认领的链路
-    for (final t in [bluetooth, usb]) {
+    // 其它后端也顺手断掉：用户点的是「断开」，不该留下一条没人认领的链路
+    for (final t in _all) {
       if (t != a && t.connected) {
         try {
           await t.disconnect();
