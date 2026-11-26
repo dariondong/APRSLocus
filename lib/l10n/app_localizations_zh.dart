@@ -2776,6 +2776,69 @@ class AppLocalizationsZh extends AppLocalizations {
   String get dataSourceSwitchHint => '切换数据来源会断开当前连接';
 
   @override
+  String get featureModeTitle => '模式与功能';
+
+  @override
+  String get featureModeDesc => '精简模式、APRS 卫星模式与模块开关';
+
+  @override
+  String get featureModes => '模式';
+
+  @override
+  String get satMode => 'APRS 卫星模式';
+
+  @override
+  String get satModeDesc => '过境、多普勒与卫星频率；射频路径改用卫星路径（默认 ARISS）。';
+
+  @override
+  String get satModeOpen => '打开卫星面板';
+
+  @override
+  String get satElevation => '仰角';
+
+  @override
+  String get satRange => '距离';
+
+  @override
+  String get satRangeRate => '距离变化率';
+
+  @override
+  String get satUplink => '上行频率';
+
+  @override
+  String get satDownlink => '下行频率';
+
+  @override
+  String get satDoppler => '多普勒修正';
+
+  @override
+  String get satPath => '卫星路径';
+
+  @override
+  String get satPathHint => '卫星模式下，TNC / 音频的射频路径改用此值（ISS APRS 用 ARISS）。';
+
+  @override
+  String get satCopyDown => '复制下行频率';
+
+  @override
+  String get satUseAsOnAir => '设为我的守听频率';
+
+  @override
+  String get satAos => '升起';
+
+  @override
+  String get satLos => '落下';
+
+  @override
+  String get satNoPosition => '先等定位，才能算仰角/方位。';
+
+  @override
+  String get satDopplerHint => '上行按到达卫星时落在标称频率补偿；下行按实际接收频率补偿。';
+
+  @override
+  String get satCopied => '已复制';
+
+  @override
   String get qsyRequest => '改频请求';
 
   @override
@@ -13273,6 +13336,69 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get dataSourceSwitchHint => '切換資料來源會中斷目前連線';
+
+  @override
+  String get featureModeTitle => '模式與功能';
+
+  @override
+  String get featureModeDesc => '精簡模式、APRS 衛星模式與模組開關';
+
+  @override
+  String get featureModes => '模式';
+
+  @override
+  String get satMode => 'APRS 衛星模式';
+
+  @override
+  String get satModeDesc => '過境、多普勒與衛星頻率；射頻路徑改用衛星路徑（預設 ARISS）。';
+
+  @override
+  String get satModeOpen => '開啟衛星面板';
+
+  @override
+  String get satElevation => '仰角';
+
+  @override
+  String get satRange => '距離';
+
+  @override
+  String get satRangeRate => '距離變化率';
+
+  @override
+  String get satUplink => '上行頻率';
+
+  @override
+  String get satDownlink => '下行頻率';
+
+  @override
+  String get satDoppler => '多普勒修正';
+
+  @override
+  String get satPath => '衛星路徑';
+
+  @override
+  String get satPathHint => '衛星模式下，TNC / 音訊的射頻路徑改用此值（ISS APRS 用 ARISS）。';
+
+  @override
+  String get satCopyDown => '複製下行頻率';
+
+  @override
+  String get satUseAsOnAir => '設為我的守聽頻率';
+
+  @override
+  String get satAos => '升起';
+
+  @override
+  String get satLos => '落下';
+
+  @override
+  String get satNoPosition => '先等定位，才能算仰角/方位。';
+
+  @override
+  String get satDopplerHint => '上行按到達衛星時落在標稱頻率補償；下行按實際接收頻率補償。';
+
+  @override
+  String get satCopied => '已複製';
 
   @override
   String get qsyRequest => '改頻請求';

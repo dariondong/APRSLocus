@@ -2132,6 +2132,41 @@ class AppState extends ChangeNotifier {
     if (v) _publishOnAirNow();
   }
 
+  /// 开/关 APRS 卫星模式。只影响射频路径与界面，不改用户的星历/过境选择。
+  void setSatelliteMode(bool v) {
+    if (satelliteMode == v) return;
+    satelliteMode = v;
+    persist();
+    _notify();
+    _updateNotification();
+  }
+
+  /// 卫星模式下射频报文的路径（默认 ARISS）。
+  void setSatPath(String v) {
+    final t = v.trim().toUpperCase();
+    if (satPath == t) return;
+    satPath = t;
+    persist();
+    _notify();
+  }
+
+  /// 卫星上行 / 下行频率（MHz）。非法值忽略。
+  void setSatFreqs({double? up, double? down}) {
+    bool ok(double? x) => x != null && x > 0 && x <= 6000;
+    var changed = false;
+    if (ok(up) && satUpMhz != up) {
+      satUpMhz = up!;
+      changed = true;
+    }
+    if (ok(down) && satDownMhz != down) {
+      satDownMhz = down!;
+      changed = true;
+    }
+    if (!changed) return;
+    persist();
+    _notify();
+  }
+
   /// 选一颗星。星名归一后不在星历里就不改（界面上本来也只能选到列表里的）。
   void setSatName(String name) {
     final n = normalizeSatName(name);
@@ -3763,7 +3798,11 @@ class AppState extends ChangeNotifier {
   String pathFor(String src) {
     final s0 = _normalizeSrc(src);
     if (s0 != srcTnc && s0 != srcAudio) return 'APALOC,TCPIP*';
-    final p = rfPathOf(s0).trim();
+    // APRS 卫星模式：射频报文改走卫星路径（默认 ARISS）。
+    // 只覆盖 TNC / 音频这两条射频来源，APRS-IS 仍是 APALOC,TCPIP*。
+    final p = (satelliteMode && satPath.trim().isNotEmpty)
+        ? satPath.trim()
+        : rfPathOf(s0).trim();
     // 去掉头部逗号/空格，避免出现 `APALOC,,WIDE1-1`
     final cleaned = p.replaceAll(RegExp(r'^[,\s]+'), '');
     return cleaned.isEmpty ? 'APALOC' : 'APALOC,$cleaned';
@@ -6451,8 +6490,18 @@ class AppState extends ChangeNotifier {
   /// 同步是否在跑（界面转圈）。
   bool satSyncing = false;
 
-  /// 同步失败的原因，空 = 没失败。
+  /// 同步失败的原因，空 = 没有失败。
   String satError = '';
+
+  /// APRS 卫星模式：射频路径改用 [satPath]，界面显示卫星面板。
+  bool satelliteMode = false;
+
+  /// 卫星模式下的射频路径（ISS APRS 用 ARISS；换星时用户可改）。
+  String satPath = 'ARISS';
+
+  /// 卫星上行 / 下行频率（MHz）。默认 ISS APRS 的 145.825 同频。
+  double satUpMhz = 145.825;
+  double satDownMhz = 145.825;
 
   /// 星历解析缓存（[satTleText] 变了才重解析）。
   List<Tle> _satTles = const [];
@@ -6816,6 +6865,10 @@ class AppState extends ChangeNotifier {
       satTleText = p.getString('satTleText') ?? satTleText;
       satCustomTles = p.getStringList('satCustomTles') ?? satCustomTles;
       satSyncedAt = p.getString('satSyncedAt') ?? satSyncedAt;
+      satelliteMode = p.getBool('satelliteMode') ?? satelliteMode;
+      satPath = p.getString('satPath') ?? satPath;
+      satUpMhz = p.getDouble('satUpMhz') ?? satUpMhz;
+      satDownMhz = p.getDouble('satDownMhz') ?? satDownMhz;
       final httpPort = p.getInt('acnHttpPort') ?? acnHttpPort;
       if (httpPort > 0 && httpPort <= 65535) acnHttpPort = httpPort;
       acnPasscode = p.getString('acnPasscode') ?? acnPasscode;
@@ -7240,6 +7293,10 @@ class AppState extends ChangeNotifier {
     await p.setString('satTleText', satTleText);
     await p.setStringList('satCustomTles', satCustomTles);
     await p.setString('satSyncedAt', satSyncedAt);
+    await p.setBool('satelliteMode', satelliteMode);
+    await p.setString('satPath', satPath);
+    await p.setDouble('satUpMhz', satUpMhz);
+    await p.setDouble('satDownMhz', satDownMhz);
     await p.setBool('igateEnabled', igateEnabled);
     await p.setBool('igateTwoWay', igateTwoWay);
     await p.setBool('igateAllowOwn', igateAllowOwn);

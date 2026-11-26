@@ -42,6 +42,16 @@ ANCHOR = 'dataSourceSwitchHint'
 KEYS_PREFIX = ('donate', 'box', 'bl', 'dataNotice', 'icomLan', 'codeContribution',
                'startFrom', 'heat', 'honorReset', 'igate', 'qsy')
 
+# 精确键名单：有些前缀（如 'sat'）会命中已有的**方法**（satPass / satFriend 带
+# 占位符），拿前缀补会把它们误写成 getter，所以这些只能按名单补。
+KEYS_EXPLICIT = (
+    'featureModeTitle', 'featureModeDesc', 'featureModes',
+    'satMode', 'satModeDesc', 'satModeOpen', 'satElevation', 'satRange',
+    'satRangeRate', 'satUplink', 'satDownlink', 'satDoppler', 'satPath',
+    'satPathHint', 'satCopyDown', 'satUseAsOnAir', 'satAos', 'satLos',
+    'satNoPosition', 'satDopplerHint', 'satCopied',
+)
+
 
 def read(p):
     return io.open(p, encoding='utf-8', newline='').read()
@@ -58,7 +68,7 @@ def esc(v):
 
 def main():
     zh = json.loads(read(os.path.join(L10N, 'app_zh.arb')))
-    keys = [k for k in zh if k.startswith(KEYS_PREFIX)]
+    keys = [k for k in zh if k.startswith(KEYS_PREFIX) or k in KEYS_EXPLICIT]
 
     # ① 抽象类：补声明
     p = os.path.join(L10N, 'app_localizations.dart')

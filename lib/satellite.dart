@@ -272,6 +272,75 @@ double elevationDeg(Tle t, double obsLat, double obsLng, DateTime at) {
   return math.asin(up / range) * _deg;
 }
 
+/// 观测点看到的卫星：方位 / 仰角 / 距离 / 距离变化率。
+class SatLook {
+  /// 方位角（度，0 = 北，顺时针）。
+  final double azimuthDeg;
+
+  /// 地平高度（度，负 = 地平线以下）。
+  final double elevationDeg;
+
+  /// 斜距（km）。
+  final double rangeKm;
+
+  /// 距离变化率（km/s）：正 = 远离，负 = 接近。
+  final double rangeRateKmS;
+
+  const SatLook({
+    required this.azimuthDeg,
+    required this.elevationDeg,
+    required this.rangeKm,
+    required this.rangeRateKmS,
+  });
+}
+
+/// 在 [at] 时刻从观测点看卫星的完整状态。
+SatLook lookAt(Tle t, double obsLat, double obsLng, DateTime at) {
+  final p = _ecef(t, at);
+  final o = _observer(obsLat, obsLng);
+  final dx = p[0] - o[0];
+  final dy = p[1] - o[1];
+  final dz = p[2] - o[2];
+  final lat = obsLat / _deg;
+  final lng = obsLng / _deg;
+  final sinLat = math.sin(lat);
+  final cosLat = math.cos(lat);
+  final sinLng = math.sin(lng);
+  final cosLng = math.cos(lng);
+  final east = -sinLng * dx + cosLng * dy;
+  final north = -sinLat * cosLng * dx - sinLat * sinLng * dy + cosLat * dz;
+  final up = cosLat * cosLng * dx + cosLat * sinLng * dy + sinLat * dz;
+  final range = math.sqrt(east * east + north * north + up * up);
+  final el = range == 0 ? 90.0 : math.asin(up / range) * _deg;
+  var az = math.atan2(east, north) * _deg;
+  if (az < 0) az += 360;
+
+  // 距离变化率用中心差分（±0.5 s）。低轨 ±7 km/s，1 Hz 的多普勒精度够用。
+  final dt = const Duration(milliseconds: 500);
+  double rangeAt(DateTime x) {
+    final q = _ecef(t, x);
+    final ex = q[0] - o[0];
+    final ey = q[1] - o[1];
+    final ez = q[2] - o[2];
+    return math.sqrt(ex * ex + ey * ey + ez * ez);
+  }
+
+  final rr = rangeAt(at.add(dt)) - rangeAt(at.subtract(dt)); // km / 1 s
+  return SatLook(
+    azimuthDeg: az,
+    elevationDeg: el,
+    rangeKm: range,
+    rangeRateKmS: rr,
+  );
+}
+
+/// 多普勒频移（Hz）。
+///
+/// 正频率 + 正在接近（[rangeRateKmS] < 0）时返回正偏移 —— 也就是接收到的
+/// 频率比标称值高。发射时用相反符号补偿（让信号到达卫星时落在标称频率）。
+double dopplerHz(double freqMhz, double rangeRateKmS) =>
+    -freqMhz * 1e6 * rangeRateKmS * 1000 / 299792458.0;
+
 /// 下一次过境。没有（[within] 之内一直不出现）返回 null。
 ///
 /// [minElevationDeg] 默认 0：地平线上就算过境开始，界面另按 5° 显示「能听到」。

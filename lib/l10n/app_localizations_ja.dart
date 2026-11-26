@@ -2798,6 +2798,69 @@ class AppLocalizationsJa extends AppLocalizations {
   String get dataSourceSwitchHint => 'データソースを切り替えると現在の接続は切断されます';
 
   @override
+  String get featureModeTitle => 'モードと機能';
+
+  @override
+  String get featureModeDesc => 'Lite モード、APRS 衛星モード、モジュール';
+
+  @override
+  String get featureModes => 'モード';
+
+  @override
+  String get satMode => 'APRS 衛星モード';
+
+  @override
+  String get satModeDesc => 'パス・ドップラー・衛星周波数。RF パスは衛星パス（既定 ARISS）。';
+
+  @override
+  String get satModeOpen => '衛星パネルを開く';
+
+  @override
+  String get satElevation => '仰角';
+
+  @override
+  String get satRange => '距離';
+
+  @override
+  String get satRangeRate => '距離変化率';
+
+  @override
+  String get satUplink => 'アップリンク';
+
+  @override
+  String get satDownlink => 'ダウンリンク';
+
+  @override
+  String get satDoppler => 'ドップラー補正';
+
+  @override
+  String get satPath => '衛星パス';
+
+  @override
+  String get satPathHint => '衛星モードでは TNC / オーディオの RF パスをこの値にします（ISS APRS は ARISS）。';
+
+  @override
+  String get satCopyDown => 'ダウンリンクをコピー';
+
+  @override
+  String get satUseAsOnAir => '自分の受信周波数にする';
+
+  @override
+  String get satAos => '出現';
+
+  @override
+  String get satLos => '消失';
+
+  @override
+  String get satNoPosition => '位置情報が必要です。';
+
+  @override
+  String get satDopplerHint => 'アップリンクは衛星到達時に公称周波数になるよう補正し、ダウンリンクは受信周波数に追従します。';
+
+  @override
+  String get satCopied => 'コピーしました';
+
+  @override
   String get qsyRequest => 'QSY リクエスト';
 
   @override

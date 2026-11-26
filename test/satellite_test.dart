@@ -125,4 +125,28 @@ SO-50
       expect(SatQso.decode(null), isNull);
     });
   });
+
+  group('观测与多普勒', () {
+    test('lookAt 的仰角与 elevationDeg 一致，方位/距离/变化率合理', () {
+      final t = _iss();
+      final at = t.epoch.add(const Duration(hours: 1));
+      const lat = 23.13;
+      const lng = 113.26;
+      final look = lookAt(t, lat, lng, at);
+      expect(look.elevationDeg, closeTo(elevationDeg(t, lat, lng, at), 1e-6));
+      expect(look.azimuthDeg, inInclusiveRange(0, 360));
+      expect(look.rangeKm, greaterThan(300));
+      expect(look.rangeKm, lessThan(20000));
+      expect(look.rangeRateKmS.abs(), lessThan(8)); // 低轨上限约 7.5 km/s
+    });
+
+    test('多普勒符号：接近为正、远离为负', () {
+      final approaching = dopplerHz(145.825, -7.0);
+      final receding = dopplerHz(145.825, 7.0);
+      expect(approaching, greaterThan(0));
+      expect(receding, lessThan(0));
+      expect(approaching, closeTo(3404, 20));
+      expect(receding, closeTo(-3404, 20));
+    });
+  });
 }

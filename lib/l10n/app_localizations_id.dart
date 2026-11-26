@@ -2882,6 +2882,69 @@ class AppLocalizationsId extends AppLocalizations {
       'Mengganti sumber data akan memutus koneksi saat ini';
 
   @override
+  String get featureModeTitle => 'Mode & fitur';
+
+  @override
+  String get featureModeDesc => 'Mode ringan, mode satelit APRS, dan modul';
+
+  @override
+  String get featureModes => 'Mode';
+
+  @override
+  String get satMode => 'Mode satelit APRS';
+
+  @override
+  String get satModeDesc => 'Lintasan, Doppler, dan frekuensi satelit; jalur RF memakai jalur satelit (ARISS default).';
+
+  @override
+  String get satModeOpen => 'Buka panel satelit';
+
+  @override
+  String get satElevation => 'Elevasi';
+
+  @override
+  String get satRange => 'Jarak';
+
+  @override
+  String get satRangeRate => 'Laju jarak';
+
+  @override
+  String get satUplink => 'Uplink';
+
+  @override
+  String get satDownlink => 'Downlink';
+
+  @override
+  String get satDoppler => 'Koreksi Doppler';
+
+  @override
+  String get satPath => 'Jalur satelit';
+
+  @override
+  String get satPathHint => 'Dalam mode satelit, jalur RF TNC / audio memakai nilai ini (ARISS untuk ISS APRS).';
+
+  @override
+  String get satCopyDown => 'Salin downlink';
+
+  @override
+  String get satUseAsOnAir => 'Jadikan frekuensi pantau saya';
+
+  @override
+  String get satAos => 'AOS';
+
+  @override
+  String get satLos => 'LOS';
+
+  @override
+  String get satNoPosition => 'Tunggu posisi untuk menghitung elevasi/azimut.';
+
+  @override
+  String get satDopplerHint => 'Uplink dikompensasi agar tiba di frekuensi nominal pada satelit; downlink mengikuti frekuensi yang diterima.';
+
+  @override
+  String get satCopied => 'Disalin';
+
+  @override
   String get qsyRequest => 'Permintaan QSY';
 
   @override

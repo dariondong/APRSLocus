@@ -2899,6 +2899,69 @@ class AppLocalizationsEs extends AppLocalizations {
       'Cambiar la fuente de datos desconecta el enlace actual';
 
   @override
+  String get featureModeTitle => 'Modos y funciones';
+
+  @override
+  String get featureModeDesc => 'Modo ligero, modo satélite APRS y módulos';
+
+  @override
+  String get featureModes => 'Modos';
+
+  @override
+  String get satMode => 'Modo satélite APRS';
+
+  @override
+  String get satModeDesc => 'Pasos, Doppler y frecuencias; la ruta RF usa la ruta satelital (ARISS por defecto).';
+
+  @override
+  String get satModeOpen => 'Abrir panel satelital';
+
+  @override
+  String get satElevation => 'Elevación';
+
+  @override
+  String get satRange => 'Distancia';
+
+  @override
+  String get satRangeRate => 'Tasa de distancia';
+
+  @override
+  String get satUplink => 'Enlace ascendente';
+
+  @override
+  String get satDownlink => 'Enlace descendente';
+
+  @override
+  String get satDoppler => 'Corrección Doppler';
+
+  @override
+  String get satPath => 'Ruta satelital';
+
+  @override
+  String get satPathHint => 'En modo satélite la ruta RF de TNC / audio usa este valor (ARISS para ISS APRS).';
+
+  @override
+  String get satCopyDown => 'Copiar enlace descendente';
+
+  @override
+  String get satUseAsOnAir => 'Usar como mi frecuencia de escucha';
+
+  @override
+  String get satAos => 'AOS';
+
+  @override
+  String get satLos => 'LOS';
+
+  @override
+  String get satNoPosition => 'Espera una posición para calcular elevación/azimut.';
+
+  @override
+  String get satDopplerHint => 'El enlace ascendente se compensa para llegar a la frecuencia nominal en el satélite; el descendente sigue la frecuencia recibida.';
+
+  @override
+  String get satCopied => 'Copiado';
+
+  @override
   String get qsyRequest => 'Solicitud QSY';
 
   @override

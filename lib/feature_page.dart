@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'features.dart';
 import 'l10n/app_localizations.dart';
+import 'satellite_mode_page.dart';
 import 'settings_widgets.dart';
 import 'state.dart';
 import 'theme.dart';
@@ -25,13 +26,13 @@ class FeaturePage extends StatelessWidget {
     return ListenableBuilder(
       listenable: state,
       builder: (context, _) => SettingsPageShell(
-        title: s.featureCat,
-        subtitle: s.featureCatDesc,
+        title: s.featureModeTitle,
+        subtitle: s.featureModeDesc,
         icon: Icons.tune_rounded,
         color: C.slate,
         body: Column(
           children: [
-            _liteCard(s),
+            _modesCard(context, s),
             const SizedBox(height: 16),
             _modulesCard(s),
             const SizedBox(height: 24),
@@ -41,9 +42,9 @@ class FeaturePage extends StatelessWidget {
     );
   }
 
-  Widget _liteCard(S s) {
+  Widget _modesCard(BuildContext context, S s) {
     return SettingsSectionCard(
-      title: s.featureLite,
+      title: s.featureModes,
       icon: Icons.bolt_rounded,
       color: C.blue,
       children: [
@@ -53,6 +54,26 @@ class FeaturePage extends StatelessWidget {
           onChanged: state.setLiteMode,
         ),
         SettingsHint(s.featureLiteDesc),
+        // APRS 卫星模式：射频路径改用卫星路径（默认 ARISS），并开一个专用面板。
+        SettingsSwitch(
+          s.satMode,
+          value: state.satelliteMode,
+          color: C.blue,
+          onChanged: state.setSatelliteMode,
+        ),
+        SettingsHint(s.satModeDesc),
+        if (state.satelliteMode)
+          SettingsNavRow(
+            title: s.satModeOpen,
+            icon: Icons.satellite_alt_rounded,
+            color: C.blue,
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => SatelliteModePage(state: state),
+              ),
+            ),
+          ),
       ],
     );
   }

@@ -212,12 +212,12 @@ class _SettingsPageState extends State<SettingsPage> {
                   ),
                 ),
                 SizedBox(height: 16),
-                // 功能启用：自选模块 + 精简模式。**永远显示** —— 精简模式就是
-                // 从这里关掉的，它自己不能跟着模块一起消失。
+                // 模式与功能：精简模式、APRS 卫星模式 + 自选模块。**永远显示** ——
+                // 精简模式就是从这里关掉的，它自己不能跟着模块一起消失。
                 SettingsEntryTile(
                   icon: Icons.tune_rounded,
                   fallback: const [Color(0xFF475569), Color(0xFF1E293B)],
-                  title: S.of(context).featureCat,
+                  title: S.of(context).featureModeTitle,
                   onTap: () => _push(FeaturePage(state: st)),
                 ),
                 SizedBox(height: 12),

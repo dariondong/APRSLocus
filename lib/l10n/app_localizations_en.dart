@@ -2885,6 +2885,69 @@ class AppLocalizationsEn extends AppLocalizations {
       'Switching the data source disconnects the current link';
 
   @override
+  String get featureModeTitle => 'Modes & features';
+
+  @override
+  String get featureModeDesc => 'Lite mode, APRS satellite mode and module switches';
+
+  @override
+  String get featureModes => 'Modes';
+
+  @override
+  String get satMode => 'APRS satellite mode';
+
+  @override
+  String get satModeDesc => 'Passes, Doppler and satellite frequencies; the RF path uses the satellite path (ARISS by default).';
+
+  @override
+  String get satModeOpen => 'Open satellite panel';
+
+  @override
+  String get satElevation => 'Elevation';
+
+  @override
+  String get satRange => 'Range';
+
+  @override
+  String get satRangeRate => 'Range rate';
+
+  @override
+  String get satUplink => 'Uplink';
+
+  @override
+  String get satDownlink => 'Downlink';
+
+  @override
+  String get satDoppler => 'Doppler shift';
+
+  @override
+  String get satPath => 'Satellite path';
+
+  @override
+  String get satPathHint => 'In satellite mode the RF path for TNC / audio uses this value (ARISS for ISS APRS).';
+
+  @override
+  String get satCopyDown => 'Copy downlink';
+
+  @override
+  String get satUseAsOnAir => 'Set as my listening frequency';
+
+  @override
+  String get satAos => 'AOS';
+
+  @override
+  String get satLos => 'LOS';
+
+  @override
+  String get satNoPosition => 'Wait for a position fix to compute elevation/azimuth.';
+
+  @override
+  String get satDopplerHint => 'Uplink is compensated to land on the nominal frequency at the satellite; downlink tracks the received frequency.';
+
+  @override
+  String get satCopied => 'Copied';
+
+  @override
   String get qsyRequest => 'QSY request';
 
   @override

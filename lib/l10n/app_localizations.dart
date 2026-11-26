@@ -5227,6 +5227,131 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'切换数据来源会断开当前连接'**
   String get dataSourceSwitchHint;
+  /// No description provided for @featureModeTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'模式与功能'**
+  String get featureModeTitle;
+
+  /// No description provided for @featureModeDesc.
+  ///
+  /// In zh, this message translates to:
+  /// **'精简模式、APRS 卫星模式与模块开关'**
+  String get featureModeDesc;
+
+  /// No description provided for @featureModes.
+  ///
+  /// In zh, this message translates to:
+  /// **'模式'**
+  String get featureModes;
+
+  /// No description provided for @satMode.
+  ///
+  /// In zh, this message translates to:
+  /// **'APRS 卫星模式'**
+  String get satMode;
+
+  /// No description provided for @satModeDesc.
+  ///
+  /// In zh, this message translates to:
+  /// **'过境、多普勒与卫星频率；射频路径改用卫星路径（默认 ARISS）。'**
+  String get satModeDesc;
+
+  /// No description provided for @satModeOpen.
+  ///
+  /// In zh, this message translates to:
+  /// **'打开卫星面板'**
+  String get satModeOpen;
+
+  /// No description provided for @satElevation.
+  ///
+  /// In zh, this message translates to:
+  /// **'仰角'**
+  String get satElevation;
+
+  /// No description provided for @satRange.
+  ///
+  /// In zh, this message translates to:
+  /// **'距离'**
+  String get satRange;
+
+  /// No description provided for @satRangeRate.
+  ///
+  /// In zh, this message translates to:
+  /// **'距离变化率'**
+  String get satRangeRate;
+
+  /// No description provided for @satUplink.
+  ///
+  /// In zh, this message translates to:
+  /// **'上行频率'**
+  String get satUplink;
+
+  /// No description provided for @satDownlink.
+  ///
+  /// In zh, this message translates to:
+  /// **'下行频率'**
+  String get satDownlink;
+
+  /// No description provided for @satDoppler.
+  ///
+  /// In zh, this message translates to:
+  /// **'多普勒修正'**
+  String get satDoppler;
+
+  /// No description provided for @satPath.
+  ///
+  /// In zh, this message translates to:
+  /// **'卫星路径'**
+  String get satPath;
+
+  /// No description provided for @satPathHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'卫星模式下，TNC / 音频的射频路径改用此值（ISS APRS 用 ARISS）。'**
+  String get satPathHint;
+
+  /// No description provided for @satCopyDown.
+  ///
+  /// In zh, this message translates to:
+  /// **'复制下行频率'**
+  String get satCopyDown;
+
+  /// No description provided for @satUseAsOnAir.
+  ///
+  /// In zh, this message translates to:
+  /// **'设为我的守听频率'**
+  String get satUseAsOnAir;
+
+  /// No description provided for @satAos.
+  ///
+  /// In zh, this message translates to:
+  /// **'升起'**
+  String get satAos;
+
+  /// No description provided for @satLos.
+  ///
+  /// In zh, this message translates to:
+  /// **'落下'**
+  String get satLos;
+
+  /// No description provided for @satNoPosition.
+  ///
+  /// In zh, this message translates to:
+  /// **'先等定位，才能算仰角/方位。'**
+  String get satNoPosition;
+
+  /// No description provided for @satDopplerHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'上行按到达卫星时落在标称频率补偿；下行按实际接收频率补偿。'**
+  String get satDopplerHint;
+
+  /// No description provided for @satCopied.
+  ///
+  /// In zh, this message translates to:
+  /// **'已复制'**
+  String get satCopied;
   /// No description provided for @qsyRequest.
   ///
   /// In zh, this message translates to:
