@@ -98,6 +98,12 @@ class BleTncManager(
     private val writeQueue = java.util.LinkedList<ByteArray>()
     private var writing = false
 
+    /** 写队列的代次：看门狗与回调谁先到都只推进一次。 */
+    private var writeSeq = 0
+
+    /** 当前在写的分片大小（无应答写不回调时，看门狗用它上报 txok）。 */
+    private var activeChunkSize = 0
+
     private val adapter: BluetoothAdapter?
         get() = (activity.getSystemService(Activity.BLUETOOTH_SERVICE) as? BluetoothManager)?.adapter
 
@@ -399,6 +405,7 @@ class BleTncManager(
             status: Int,
         ) {
             main.post {
+                writeSeq++
                 writing = false
                 if (status == BluetoothGatt.GATT_SUCCESS) {
                     emit(mapOf("type" to "txok", "size" to (ch?.value?.size ?: 0)))
@@ -510,6 +517,8 @@ class BleTncManager(
         val c = txChar ?: return
         val next = writeQueue.poll() ?: return
         writing = true
+        activeChunkSize = next.size
+        val seq = ++writeSeq
         try {
             c.value = next
             // 优先无应答写（更快）；不支持则退回普通写
@@ -523,6 +532,17 @@ class BleTncManager(
                 writing = false
                 emit(mapOf("type" to "txfail", "message" to "BLE 写入入队失败"))
                 main.postDelayed({ pumpWrite() }, 20)
+            } else {
+                // 无应答写（WRITE_TYPE_NO_RESPONSE）在部分 ROM 上**不会**回调
+                // onCharacteristicWrite；只等回调会让队列在第一片之后永久卡住。
+                // 看门狗：回调先到会 ++writeSeq 让这里失效；没回调就自己推进。
+                main.postDelayed({
+                    if (writing && writeSeq == seq) {
+                        writing = false
+                        emit(mapOf("type" to "txok", "size" to activeChunkSize))
+                        pumpWrite()
+                    }
+                }, 150)
             }
         } catch (_: SecurityException) {
             writing = false

@@ -2776,6 +2776,15 @@ class AppLocalizationsZh extends AppLocalizations {
   String get dataSourceSwitchHint => '切换数据来源会断开当前连接';
 
   @override
+  String get igateStatOwn => '本机呼号拒收（条）';
+
+  @override
+  String get igateAllowOwn => '允许本机呼号的射频包上传';
+
+  @override
+  String get igateAllowOwnHint => '默认关闭：网关不会把「源呼号等于本机呼号」的射频报文上传 APRS-IS（iGate 规范，避免自己已经发过的报文重复注入）。但有些电台（如 RT-950 Pro）自己的 APRS 信标只在本地发射、不经互联网，唯一出口就是这条蓝牙链路 —— 此时它会被永久挡在互联网之外。打开后这类报文也会上传（路径同样带 qAR,本机呼号）。前提是电台确实把自发帧回传给了 TNC：先在设备页看连接后的「收帧」数有没有随电台发射而增长。';
+
+  @override
   String get icomLanHotspotRoutingHint => '连上电台热点后，电台数据会绑定到 Wi-Fi 局域网，移动数据仍用于 APRS-IS 上网；若系统把这条热点当成了默认上网通道，请在该 Wi-Fi 的高级设置里关闭「自动切换网络」。';
 
   @override
@@ -13246,6 +13255,15 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get dataSourceSwitchHint => '切換資料來源會中斷目前連線';
+
+  @override
+  String get igateStatOwn => '本機呼號拒收（條）';
+
+  @override
+  String get igateAllowOwn => '允許本機呼號的射頻包上傳';
+
+  @override
+  String get igateAllowOwnHint => '預設關閉：網關不會把「來源呼號等於本機呼號」的射頻報文上傳 APRS-IS（iGate 規範，避免自己發過的報文重複注入）。但有些電台（如 RT-950 Pro）自己的 APRS 信標只在本地發射、不經網際網路，唯一出口就是這條藍牙鏈路 —— 此時它會被永久擋在網際網路之外。打開後這類報文也會上傳（路徑同樣帶 qAR,本機呼號）。前提是電台確實把自發幀回傳給 TNC：先在裝置頁看連接後的「收幀」數有沒有隨著電台發射增長。';
 
   @override
   String get icomLanHotspotRoutingHint => '連上電台熱點後，電台資料會綁定到 Wi-Fi 區域網路，行動數據仍用於 APRS-IS 上網；若系統把這條熱點當成預設上網通道，請在該 Wi-Fi 的進階設定裡關閉「自動切換網路」。';

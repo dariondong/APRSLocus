@@ -2798,6 +2798,15 @@ class AppLocalizationsJa extends AppLocalizations {
   String get dataSourceSwitchHint => 'データソースを切り替えると現在の接続は切断されます';
 
   @override
+  String get igateStatOwn => '自局呼号の拒否（件）';
+
+  @override
+  String get igateAllowOwn => '自局呼号のRFパケットをアップロード';
+
+  @override
+  String get igateAllowOwnHint => '既定はオフ：送信元呼号が自局呼号と一致するRFパケットは APRS-IS にアップロードしません（iGate の一般的な規則で、自分が既に送ったパケットの二重注入を防ぐため）。ただし一部の無線機（RT-950 Pro など）は APRS ビーコンを無線でしか送信せず、インターネットに届きません。この Bluetooth リンクが唯一の経路なので、この規則のままだと永久に届きません。オンにすると、そうしたパケットもアップロードされます（経路は通常どおり qAR,自局呼号）。前提：無線機が自身の送信を TNC に返していること。送信中にデバイス画面の RX フレーム数が増えるか確認してください。';
+
+  @override
   String get icomLanHotspotRoutingHint => '無線機のホットスポットに接続すると、無線機の通信は Wi-Fi に、APRS-IS はモバイルデータに振り分けられます。システムがこのホットスポットを既定のインターネット経路にした場合は、その Wi-Fi の詳細設定で「自動ネットワーク切り替え」をオフにしてください。';
 
   @override

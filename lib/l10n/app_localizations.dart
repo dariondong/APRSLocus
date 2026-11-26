@@ -5227,6 +5227,23 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'切换数据来源会断开当前连接'**
   String get dataSourceSwitchHint;
+  /// No description provided for @igateStatOwn.
+  ///
+  /// In zh, this message translates to:
+  /// **'本机呼号拒收（条）'**
+  String get igateStatOwn;
+
+  /// No description provided for @igateAllowOwn.
+  ///
+  /// In zh, this message translates to:
+  /// **'允许本机呼号的射频包上传'**
+  String get igateAllowOwn;
+
+  /// No description provided for @igateAllowOwnHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'默认关闭：网关不会把「源呼号等于本机呼号」的射频报文上传 APRS-IS（iGate 规范，避免自己已经发过的报文重复注入）。但有些电台（如 RT-950 Pro）自己的 APRS 信标只在本地发射、不经互联网，唯一出口就是这条蓝牙链路 —— 此时它会被永久挡在互联网之外。打开后这类报文也会上传（路径同样带 qAR,本机呼号）。前提是电台确实把自发帧回传给了 TNC：先在设备页看连接后的「收帧」数有没有随电台发射而增长。'**
+  String get igateAllowOwnHint;
   /// No description provided for @icomLanHotspotRoutingHint.
   ///
   /// In zh, this message translates to:

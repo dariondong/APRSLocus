@@ -2882,6 +2882,15 @@ class AppLocalizationsId extends AppLocalizations {
       'Mengganti sumber data akan memutus koneksi saat ini';
 
   @override
+  String get igateStatOwn => 'Penolakan panggilan sendiri';
+
+  @override
+  String get igateAllowOwn => 'Unggah paket RF panggilan sendiri';
+
+  @override
+  String get igateAllowOwnHint => 'Mati secara bawaan: paket RF yang panggilan sumbernya sama dengan panggilan Anda tidak diunggah ke APRS-IS (aturan iGate umum, agar paket yang sudah Anda kirim tidak dimasukkan dua kali). Namun sebagian radio (mis. RT-950 Pro) menghasilkan beacon APRS yang hanya dipancarkan lewat udara dan tidak pernah sampai ke internet — tautan Bluetooth ini satu-satunya jalur, sehingga aturan itu akan menahannya selamanya. Jika dinyalakan, paket tersebut juga diunggah (dengan jalur qAR,panggilan-Anda). Syarat: radio memang mengirim ulang transmisinya sendiri ke TNC — pantau penghitung frame RX di halaman perangkat saat radio memancar.';
+
+  @override
   String get icomLanHotspotRoutingHint => 'Setelah terhubung ke hotspot radio, lalu lintas radio diikat ke Wi-Fi tersebut sementara data seluler tetap untuk APRS-IS. Jika sistem menjadikan hotspot ini rute internet default, matikan "ganti jaringan otomatis" di pengaturan lanjutan Wi-Fi itu.';
 
   @override

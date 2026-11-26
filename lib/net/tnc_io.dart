@@ -553,7 +553,6 @@ class TncDesktopSerial implements TncTransport {
     }
   }
 
-  @override
   /// Windows 的 COM 口要写成 `\\.\COM3`（设备命名空间路径）才能被 dart:io
   /// 打开；其它平台原样返回。
   ///

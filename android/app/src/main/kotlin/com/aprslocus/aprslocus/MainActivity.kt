@@ -543,6 +543,29 @@ class MainActivity : FlutterActivity() {
                             "address" to bleTncManager.connectedAddress(),
                         )
                     )
+                    // ⚠ 必须有：Dart 侧 TncNativeBle.send 调的就是这个方法。
+                    // 贡献包最初漏了这一支，结果是 BLE「能收不能发」（send 全部落到
+                    // notImplemented），界面只表现为报文发不出去。
+                    "send" -> {
+                        val data = call.argument<ByteArray>("data")
+                        if (data == null) {
+                            val raw = call.argument<Any>("data")
+                            result.error(
+                                "NO_DATA",
+                                "缺少数据：期望 ByteArray，实际收到 " +
+                                    (raw?.javaClass?.name ?: "null") +
+                                    "。Dart 侧必须传 Uint8List",
+                                null
+                            )
+                        } else {
+                            try {
+                                bleTncManager.send(data)
+                                result.success(true)
+                            } catch (e: Exception) {
+                                result.error("BT_SEND_FAILED", e.message ?: "发送失败", null)
+                            }
+                        }
+                    }
                     else -> result.notImplemented()
                 }
             }

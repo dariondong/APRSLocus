@@ -246,7 +246,7 @@ const List<BackupGroupSpec> kBackupGroups = [
     'satPassIndex',
     // 自己填的星历（星历组里没有的星），换机后不必重贴一遍
     'satCustomTles',
-    'igateEnabled', 'igateTwoWay',
+    'igateEnabled', 'igateTwoWay', 'igateAllowOwn',
     'myLat', 'myLng',
     // 链路配置（TNC / 声卡 TNC / PKWDWPL / 小盒子 / 外接 GPS）与各自上次选的设备。
     //

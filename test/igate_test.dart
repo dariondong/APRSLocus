@@ -41,6 +41,15 @@ void main() {
       expect(d.reason, 'own-packet');
     });
 
+    test('允许本机呼号时放行（给「电台只能经本机 TNC 出网」的场景留的出口）', () {
+      final d = Igate.toIs(
+        tnc2: 'BA7KSM-10>APALOC:>APRSlocus',
+        myFullCall: 'BA7KSM-10',
+        allowOwn: true,
+      );
+      expect(d.ok, isTrue);
+    });
+
     test('正常射频报文放行', () {
       final d = Igate.toIs(
         tnc2: 'BG7LZQ-9>APALOC,WIDE1-1,WIDE2-1*:!2230.00N/11400.00E>',

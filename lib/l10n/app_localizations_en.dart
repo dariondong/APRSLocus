@@ -2885,6 +2885,15 @@ class AppLocalizationsEn extends AppLocalizations {
       'Switching the data source disconnects the current link';
 
   @override
+  String get igateStatOwn => 'Own-call rejects';
+
+  @override
+  String get igateAllowOwn => 'Upload own-call RF packets';
+
+  @override
+  String get igateAllowOwnHint => 'Off by default: RF packets whose source callsign equals your own callsign are not uploaded to APRS-IS (the usual iGate rule, so a packet you already injected is not injected twice). But some radios (e.g. RT-950 Pro) produce APRS beacons that only go out over the air and never reach the internet — this Bluetooth link is their only path, so the rule would keep them offline forever. When on, such packets are uploaded too (with the usual qAR,your-call path). Precondition: the radio must actually echo its own transmissions back to the TNC — watch the RX frame counter on the device page while the radio transmits.';
+
+  @override
   String get icomLanHotspotRoutingHint => 'After joining the radio hotspot, radio traffic is bound to that Wi-Fi LAN while mobile data stays on APRS-IS. If the system treats the hotspot as the default internet route, turn off "auto-switch network" in that Wi-Fi\'s advanced settings.';
 
   @override

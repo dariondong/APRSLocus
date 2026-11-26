@@ -2899,6 +2899,15 @@ class AppLocalizationsEs extends AppLocalizations {
       'Cambiar la fuente de datos desconecta el enlace actual';
 
   @override
+  String get igateStatOwn => 'Rechazos por indicativo propio';
+
+  @override
+  String get igateAllowOwn => 'Subir paquetes RF del indicativo propio';
+
+  @override
+  String get igateAllowOwnHint => 'Desactivado por defecto: los paquetes RF cuyo indicativo de origen es el tuyo no se suben a APRS-IS (regla habitual de iGate, para no reinyectar lo que ya enviaste). Pero algunas radios (p. ej. RT-950 Pro) emiten balizas APRS solo por radio y nunca llegan a internet; este enlace Bluetooth es su única vía, así que la regla las dejaría fuera para siempre. Al activarlo, esos paquetes también se suben (con la ruta qAR,tu-indicativo). Requisito: que la radio reenvíe sus propias transmisiones al TNC — observa el contador de tramas RX en la página del dispositivo mientras transmite.';
+
+  @override
   String get icomLanHotspotRoutingHint => 'Al unirte al punto de acceso de la radio, el tráfico de la radio se ata a esa Wi-Fi y los datos móviles siguen para APRS-IS. Si el sistema toma el punto de acceso como ruta de internet predeterminada, desactiva "cambio automático de red" en los ajustes avanzados de esa Wi-Fi.';
 
   @override
