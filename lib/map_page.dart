@@ -24,6 +24,7 @@ import 'map_toolbar.dart';
 import 'material.dart';
 import 'onair.dart';
 import 'onair_page.dart';
+import 'satellite.dart';
 
 class MapPage extends StatefulWidget {
   final AppState state;
@@ -889,6 +890,27 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                           toScreen: (lat, lng) => _toScreen(lat, lng, size),
                           level: widget.state.heatLevel,
                           rot: _rot,
+                        ),
+                      ),
+                    ),
+                  ),
+                // APRS 卫星模式：星下点 + 足迹 + 地面轨迹。只画在瓦片图上
+                //（矢量图的投影在 flutter_map 侧，不混用两套坐标）。
+                if (!_usePluginMap &&
+                    widget.state.satelliteMode &&
+                    widget.state.satSelected != null)
+                  IgnorePointer(
+                    child: ClipRect(
+                      clipper: _ovClip,
+                      child: ValueListenableBuilder<int>(
+                        valueListenable: widget.state.tick,
+                        builder: (_, _, _) => CustomPaint(
+                          size: size,
+                          painter: _SatellitePainter(
+                            tle: widget.state.satSelected!,
+                            now: DateTime.now(),
+                            toScreen: (lat, lng) => _toScreen(lat, lng, size),
+                          ),
                         ),
                       ),
                     ),
@@ -3554,6 +3576,102 @@ class _MyAccuracyPainter extends CustomPainter {
       old.lng != lng ||
       old.accuracyM != accuracyM ||
       old.toScreen != toScreen;
+}
+
+/// APRS 卫星模式：星下点、足迹与地面轨迹。
+class _SatellitePainter extends CustomPainter {
+  final Tle tle;
+  final DateTime now;
+  final Offset Function(double lat, double lng) toScreen;
+
+  const _SatellitePainter({
+    required this.tle,
+    required this.now,
+    required this.toScreen,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final utc = now.toUtc();
+
+    // 地面轨迹：前后各 45 分钟，每分钟一点；跨 180° 经线时断开。
+    final path = Path();
+    var has = false;
+    var prev = Offset.zero;
+    for (var m = -45; m <= 45; m++) {
+      final p = subPoint(tle, utc.add(Duration(minutes: m)));
+      final o = toScreen(p.lat, p.lng);
+      if (!has) {
+        path.moveTo(o.dx, o.dy);
+        has = true;
+      } else if ((o.dx - prev.dx).abs() > size.width / 2) {
+        path.moveTo(o.dx, o.dy);
+      } else {
+        path.lineTo(o.dx, o.dy);
+      }
+      prev = o;
+    }
+    canvas.drawPath(
+      path,
+      Paint()
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 1.6
+        ..color = C.cyan.withValues(alpha: 0.75),
+    );
+
+    final sub = subPoint(tle, utc);
+    final center = toScreen(sub.lat, sub.lng);
+
+    // 足迹：地心张角 acos(R/(R+h))；在屏幕上用经纬度各取一个边界点做近似椭圆。
+    const earthR = 6378.137;
+    final radDeg = math.acos(earthR / (earthR + sub.altKm)) * 180 / math.pi;
+    final cosLat = math.cos(sub.lat * math.pi / 180).abs().clamp(0.15, 1.0);
+    final dLat = radDeg.clamp(-80.0, 80.0);
+    final dLng = (radDeg / cosLat).clamp(-60.0, 60.0);
+    final vEdge = toScreen((sub.lat + dLat).clamp(-89.0, 89.0), sub.lng);
+    final hEdge = toScreen(sub.lat, sub.lng + dLng);
+    final dy = (vEdge - center).distance;
+    final dx = (hEdge - center).distance;
+    if (dx.isFinite && dy.isFinite && dx > 1 && dy > 1) {
+      final rect =
+          Rect.fromCenter(center: center, width: dx * 2, height: dy * 2);
+      canvas.drawOval(rect, Paint()..color = C.cyan.withValues(alpha: 0.06));
+      canvas.drawOval(
+        rect,
+        Paint()
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 1.2
+          ..color = C.cyan.withValues(alpha: 0.55),
+      );
+    }
+
+    // 星下点 + 名字
+    canvas.drawCircle(center, 4, Paint()..color = C.cyan);
+    canvas.drawCircle(
+      center,
+      8,
+      Paint()
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 1.4
+        ..color = C.cyan,
+    );
+    final tp = TextPainter(
+      text: TextSpan(
+        text: tle.name.split(' ').first,
+        style: TextStyle(
+          fontSize: 10,
+          color: C.cyan,
+          fontWeight: FontWeight.w700,
+        ),
+      ),
+      textDirection: TextDirection.ltr,
+    )..layout();
+    tp.paint(canvas, center + const Offset(10, -7));
+  }
+
+  @override
+  bool shouldRepaint(covariant _SatellitePainter old) =>
+      old.now != now || old.tle != tle;
 }
 
 /// 低缩放热力图：把台站按屏幕位置绘制成密度热力点（网格统计 + 色阶），无第三方依赖

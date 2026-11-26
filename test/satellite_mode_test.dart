@@ -57,4 +57,24 @@ void main() {
     expect(st.satDownMhz, closeTo(145.825, 1e-9));
     st.dispose();
   });
+
+  test('模式互斥：卫星 / 精简 / 2.0 / 1.0 一次只选一个', () async {
+    final st = await fresh();
+    st.setAppMode(AppMode.satellite);
+    expect(st.appMode, AppMode.satellite);
+    expect(st.liteMode, isFalse);
+
+    st.setAppMode(AppMode.lite);
+    expect(st.appMode, AppMode.lite);
+    expect(st.satelliteMode, isFalse);
+
+    st.setAppMode(AppMode.classic);
+    expect(st.appMode, AppMode.classic);
+    expect(st.liteMode, isFalse);
+    expect(st.satelliteMode, isFalse);
+
+    st.setAppMode(AppMode.sheet);
+    expect(st.appMode, AppMode.sheet);
+    st.dispose();
+  });
 }

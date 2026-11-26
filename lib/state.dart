@@ -167,6 +167,11 @@ class MsgResend {
   int tries = 0;
 }
 
+/// 顶层外壳模式：1.0 经典 / 2.0 地图 / 精简 / APRS 卫星。
+///
+/// 四者**互斥**：`app.dart` 按它选一整套外壳，而不是在同一个外壳里叠开关。
+enum AppMode { classic, sheet, lite, satellite }
+
 class AppState extends ChangeNotifier {
   /// 应用版本（用于信标备注、APRSlocus 识别）
   static const appVersion = '2.2.14';
@@ -2136,6 +2141,12 @@ class AppState extends ChangeNotifier {
   void setSatelliteMode(bool v) {
     if (satelliteMode == v) return;
     satelliteMode = v;
+    if (v) {
+      // 卫星与精简是并列模式：进卫星就退出精简，并落到 2.0 地图外壳。
+      liteMode = false;
+      uiLayout = uiLayoutName(UiLayout.sheet);
+    }
+    applySavedTheme();
     persist();
     _notify();
     _updateNotification();
@@ -4495,12 +4506,46 @@ class AppState extends ChangeNotifier {
   /// 别的生效路径）；App 侧的 `_onThemeChange` 会发现 uiLayout 变了并重建。
   void setUiLayout(String v) {
     uiLayout = uiLayoutName(uiLayoutOf(v));
+    // 选了 1.0/2.0 就退出其它顶层模式（卫星/精简是并列的，不叠加）。
+    satelliteMode = false;
     applySavedTheme();
     persist();
     _notify();
   }
 
   UiLayout get uiLayoutValue => uiLayoutOf(uiLayout);
+
+  /// 当前顶层模式：卫星 > 精简 > 2.0/1.0。
+  AppMode get appMode {
+    if (satelliteMode) return AppMode.satellite;
+    if (liteMode) return AppMode.lite;
+    return uiLayoutValue == UiLayout.sheet ? AppMode.sheet : AppMode.classic;
+  }
+
+  /// 切换顶层模式。四个模式互斥：选一个就把另外两个关掉。
+  void setAppMode(AppMode m) {
+    if (m == appMode) return;
+    if (m == AppMode.classic) {
+      satelliteMode = false;
+      liteMode = false;
+      uiLayout = uiLayoutName(UiLayout.classic);
+    } else if (m == AppMode.sheet) {
+      satelliteMode = false;
+      liteMode = false;
+      uiLayout = uiLayoutName(UiLayout.sheet);
+    } else if (m == AppMode.lite) {
+      satelliteMode = false;
+      liteMode = true;
+    } else {
+      liteMode = false;
+      satelliteMode = true;
+      uiLayout = uiLayoutName(UiLayout.sheet);
+    }
+    applySavedTheme();
+    persist();
+    _notify();
+    _updateNotification();
+  }
 
   // ─── 自选模块 + 精简模式 ───
   //
@@ -4546,6 +4591,8 @@ class AppState extends ChangeNotifier {
   void setLiteMode(bool v) {
     if (liteMode == v) return;
     liteMode = v;
+    // 精简与卫星是并列模式：开精简就退出卫星。
+    if (v) satelliteMode = false;
     applySavedTheme();
     persist();
     _notify();

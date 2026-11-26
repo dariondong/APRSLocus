@@ -21,11 +21,43 @@ import 'widgets.dart';
 /// 不做自动改频：这里只给读数与一键复制/设为守听；真正拧电台仍由用户决定。
 class SatelliteModePage extends StatelessWidget {
   final AppState state;
-  const SatelliteModePage({super.key, required this.state});
+
+  /// 作为**卫星模式外壳**的底部面板使用：不套设置页外壳，直接给一个可滚动列表。
+  final bool embedded;
+
+  /// 嵌入时由 `DraggableScrollableSheet` 提供的滚动控制器。
+  final ScrollController? scrollController;
+
+  const SatelliteModePage({
+    super.key,
+    required this.state,
+    this.embedded = false,
+    this.scrollController,
+  });
 
   @override
   Widget build(BuildContext context) {
     final s = S.of(context);
+    List<Widget> cards() => [
+          _modeCard(context, s),
+          const SizedBox(height: 16),
+          _passCard(context, s),
+          const SizedBox(height: 16),
+          _lookCard(context, s),
+          const SizedBox(height: 16),
+          _freqCard(context, s),
+          const SizedBox(height: 24),
+        ];
+    if (embedded) {
+      return ListenableBuilder(
+        listenable: state,
+        builder: (context, _) => ListView(
+          controller: scrollController,
+          padding: const EdgeInsets.fromLTRB(12, 12, 12, 28),
+          children: cards(),
+        ),
+      );
+    }
     return ListenableBuilder(
       listenable: state,
       builder: (context, _) => SettingsPageShell(
@@ -33,18 +65,7 @@ class SatelliteModePage extends StatelessWidget {
         subtitle: s.satModeDesc,
         icon: Icons.satellite_alt_rounded,
         color: C.blue,
-        body: Column(
-          children: [
-            _modeCard(context, s),
-            const SizedBox(height: 16),
-            _passCard(context, s),
-            const SizedBox(height: 16),
-            _lookCard(context, s),
-            const SizedBox(height: 16),
-            _freqCard(context, s),
-            const SizedBox(height: 24),
-          ],
-        ),
+        body: Column(children: cards()),
       ),
     );
   }
@@ -348,6 +369,19 @@ class SatelliteModePage extends StatelessWidget {
           onTap: () => _editPath(context, s),
         ),
         SettingsHint(s.satPathHint),
+        // 常用 APRS 卫星频点（ISS / NO-84 / PSAT2 / PCSAT 多为 145.825 同频）。
+        Padding(
+          padding: const EdgeInsets.fromLTRB(14, 6, 14, 0),
+          child: Align(
+            alignment: Alignment.centerLeft,
+            child: ActionChip(
+              avatar: Icon(Icons.bolt_rounded, size: 14, color: C.orange),
+              label: Text('APRS 145.825 MHz', style: ts(11)),
+              onPressed: () =>
+                  state.setSatFreqs(up: 145.825, down: 145.825),
+            ),
+          ),
+        ),
         SettingsSwitch(
           s.satQso,
           value: state.satQsoOn,

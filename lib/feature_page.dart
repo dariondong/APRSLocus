@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 
 import 'features.dart';
-import 'satellite_mode_page.dart';
 import 'settings_widgets.dart';
 import 'state.dart';
 import 'theme.dart';
-import 'ui_layout_selector.dart';
 import 'widgets.dart';
 
 /// ─── 功能启用页 ───
@@ -43,40 +41,89 @@ class FeaturePage extends StatelessWidget {
   }
 
   Widget _modesCard(BuildContext context, S s) {
+    final modes = <(AppMode, String, String, IconData, Color)>[
+      (
+        AppMode.sheet,
+        s.uiLayoutSheet,
+        s.uiLayoutSheetDesc,
+        Icons.map_rounded,
+        C.blue,
+      ),
+      (
+        AppMode.classic,
+        s.uiLayoutClassic,
+        s.uiLayoutClassicDesc,
+        Icons.dashboard_rounded,
+        C.slate,
+      ),
+      (
+        AppMode.lite,
+        s.featureLite,
+        s.featureLiteDesc,
+        Icons.bolt_rounded,
+        C.orange,
+      ),
+      (
+        AppMode.satellite,
+        s.satMode,
+        s.satModeDesc,
+        Icons.satellite_alt_rounded,
+        C.indigo,
+      ),
+    ];
+    final cur = state.appMode;
     return SettingsSectionCard(
       title: s.featureModes,
       icon: Icons.bolt_rounded,
       color: C.blue,
       children: [
-        // 界面结构：1.0 经典 / 2.0 地图基底 —— 与下面两个模式同属「外壳怎么长」。
-        // 精简模式有自己的一套外壳，这时候选 1.0/2.0 看不出效果，按旧行为隐藏。
-        if (!state.liteMode) UiLayoutSelector(state: state),
-        SettingsSwitch(
-          s.featureLite,
-          value: state.liteMode,
-          onChanged: state.setLiteMode,
-        ),
-        SettingsHint(s.featureLiteDesc),
-        // APRS 卫星模式：射频路径改用卫星路径（默认 ARISS），并开一个专用面板。
-        SettingsSwitch(
-          s.satMode,
-          value: state.satelliteMode,
-          color: C.blue,
-          onChanged: state.setSatelliteMode,
-        ),
-        SettingsHint(s.satModeDesc),
-        if (state.satelliteMode)
-          SettingsNavRow(
-            title: s.satModeOpen,
-            icon: Icons.satellite_alt_rounded,
-            color: C.blue,
-            onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (_) => SatelliteModePage(state: state),
+        for (final (m, name, desc, icon, color) in modes)
+          GestureDetector(
+            onTap: () => state.setAppMode(m),
+            behavior: HitTestBehavior.opaque,
+            child: Container(
+              margin: const EdgeInsets.fromLTRB(14, 8, 14, 0),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+              decoration: BoxDecoration(
+                color: cur == m ? color.withValues(alpha: 0.10) : C.bgSoft,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  color: cur == m ? color : C.border,
+                  width: cur == m ? 1.5 : 1,
+                ),
+              ),
+              child: Row(
+                children: [
+                  Icon(icon, size: 18, color: cur == m ? color : C.grey),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          name,
+                          style: ts(12.5,
+                              c: cur == m ? color : C.ink,
+                              w: cur == m ? FontWeight.w700 : FontWeight.w600),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(desc, style: ts(10, c: C.grey, h: 1.3)),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Icon(
+                    cur == m
+                        ? Icons.radio_button_checked_rounded
+                        : Icons.radio_button_unchecked_rounded,
+                    size: 16,
+                    color: cur == m ? color : C.greyLight,
+                  ),
+                ],
               ),
             ),
           ),
+        const SizedBox(height: 12),
       ],
     );
   }

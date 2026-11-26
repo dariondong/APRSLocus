@@ -12,6 +12,7 @@ import 'home_page.dart';
 import 'hr_alarm.dart';
 import 'lite_shell.dart';
 import 'shell2.dart';
+import 'satellite_shell.dart';
 import 'splash_page.dart';
 import 'oobe_page.dart';
 import 'app_widget.dart';
@@ -76,6 +77,7 @@ class _AppState extends State<App> {
   String _lastMaterial = '';
   String _lastLayout = '';
   bool _lastLite = false;
+  bool _lastSat = false;
   int _lastReloadTick = 0;
   int _lastThemeRevision = 0;
 
@@ -166,6 +168,8 @@ class _AppState extends State<App> {
     final lay = _state.uiLayout;
     // 精简模式换的是**整个外壳**（HomeShell2 / HomePage ↔ LiteShell），不进 key。
     final lite = _state.liteMode;
+    // APRS 卫星模式也是**并列的一整套外壳**（SatelliteShell），不进 key。
+    final sat = _state.satelliteMode;
     final rt = _state.reloadTick;
     // 主题改动也要重建 MaterialApp：颜色/圆角写在 ThemeData 里，
     // 但它们**不**需要换 key（换 key 会把导航栈整个丢掉，
@@ -179,6 +183,7 @@ class _AppState extends State<App> {
         tc != _lastTheme ||
         lay != _lastLayout ||
         lite != _lastLite ||
+        sat != _lastSat ||
         loc != _lastLocale ||
         mat != _lastMaterial ||
         rt != _lastReloadTick ||
@@ -189,6 +194,7 @@ class _AppState extends State<App> {
       _lastMaterial = mat;
       _lastLayout = lay;
       _lastLite = lite;
+      _lastSat = sat;
       _lastReloadTick = rt;
       _lastThemeRevision = tr;
       if (mounted) setState(() {});
@@ -540,11 +546,13 @@ class _AppState extends State<App> {
           // 任何一套外壳下发生，挂在 home 这一层才保证「无论在哪儿都弹得出来」。
           return HrAlarmWatcher(
             state: _state,
-            child: C.liteMode
-                ? LiteShell(state: _state)
-                : (C.sheetLayout
-                    ? HomeShell2(state: _state)
-                    : HomePage(state: _state)),
+            child: _state.satelliteMode
+                ? SatelliteShell(state: _state)
+                : C.liteMode
+                    ? LiteShell(state: _state)
+                    : (C.sheetLayout
+                        ? HomeShell2(state: _state)
+                        : HomePage(state: _state)),
           );
         },
       ),
