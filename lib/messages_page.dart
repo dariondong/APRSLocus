@@ -2788,8 +2788,11 @@ class _MessagesPageState extends State<MessagesPage> {
         onTap: () => _cancelResend(m),
         child: body,
       );
-    } else if (widget.state.msgResendGaveUp(m)) {
-      // 发了几轮都没回执：点一下这条消息就再发一轮（用户要的「重新激活发送」）。
+    } else if (widget.state.msgResendGaveUp(m) ||
+        widget.state.msgResendCancelled(m)) {
+      // 发了几轮都没回执 / 用户自己按停了：点一下这条消息再发一轮
+      //（用户要的「重新激活发送」）。取消后 tries 可能还是 0，所以不能只靠
+      // msgResendGaveUp —— 那需要 tries > 0，正好把「取消后」漏掉。
       body = GestureDetector(
         behavior: HitTestBehavior.opaque,
         onTap: () => _retrySend(m),
