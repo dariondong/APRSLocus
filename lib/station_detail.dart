@@ -6,6 +6,7 @@ import 'theme.dart';
 import 'material.dart';
 import 'huangyan_island.dart';
 import 'models.dart';
+import 'onair.dart';
 import 'services.dart';
 import 'state.dart';
 import 'widgets.dart';
@@ -625,6 +626,13 @@ class _StationDetailState extends State<StationDetail> {
                         if (AprsPhg.decode(s.comment ?? '') case final phg?) ...[
                           const SizedBox(height: 12),
                           _phgCard(S.of(context), phg),
+                        ],
+                        // 标准 APRS 守听频率（AFRS / QSY）：备注里带了才出现。
+                        // 与 PHG 一样做成独立卡片 —— 频率是「能不能直接喊到他」
+                        // 的关键信息，不该埋在备注原文里。
+                        if (OnAirInfo.decode(s.comment ?? '') case final air?) ...[
+                          const SizedBox(height: 12),
+                          _onAirCard(air),
                         ],
                         const SizedBox(height: 12),
                         // 快捷操作（Wrap 自动换行，窄屏不溢出）
@@ -1719,6 +1727,38 @@ class _StationDetailState extends State<StationDetail> {
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
       builder: (_) => StationDetail(state: widget.state, station: target),
+    );
+  }
+
+  /// 标准 APRS 守听频率卡片（AFRS / QSY）：频率、模式、音调/偏移、附加参数。
+  ///
+  /// 只显示**解析成功**的标准段（[OnAirInfo.decode]），普通备注不硬猜；
+  /// 旧版 `OAF:` 标记也能解出来（兼容）。
+  Widget _onAirCard(OnAirInfo air) {
+    final l = S.of(context);
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      decoration: BoxDecoration(
+        color: C.green.withValues(alpha: 0.08),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: C.green.withValues(alpha: 0.30)),
+      ),
+      child: Row(
+        children: [
+          Icon(Icons.radio_rounded, size: 16, color: C.green),
+          const SizedBox(width: 8),
+          Text(l.onAirFreq, style: ts(11, c: C.slate, w: FontWeight.w600)),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              air.label,
+              style: ts(12, c: C.green, w: FontWeight.w700),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ],
+      ),
     );
   }
 
