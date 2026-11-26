@@ -2776,6 +2776,33 @@ class AppLocalizationsZh extends AppLocalizations {
   String get dataSourceSwitchHint => '切换数据来源会断开当前连接';
 
   @override
+  String get satPoint => '指向卫星';
+
+  @override
+  String get satPointHint => '按箭头转动手机；仰角是手机要抬起的高度。';
+
+  @override
+  String get satPointNoCompass => '本机没有指南针，无法显示相对方向。';
+
+  @override
+  String get satPointBelow => '卫星在地平线下，等下一次过境。';
+
+  @override
+  String get satPointTurnRight => '向右转';
+
+  @override
+  String get satPointTurnLeft => '向左转';
+
+  @override
+  String get satPointAligned => '方向已对准';
+
+  @override
+  String get satPointElev => '抬头';
+
+  @override
+  String get satPointTarget => '目标方位';
+
+  @override
   String get featureModeTitle => '模式与功能';
 
   @override
@@ -13336,6 +13363,33 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get dataSourceSwitchHint => '切換資料來源會中斷目前連線';
+
+  @override
+  String get satPoint => '指向衛星';
+
+  @override
+  String get satPointHint => '按箭頭轉動手機；仰角是手機要抬起的高度。';
+
+  @override
+  String get satPointNoCompass => '本機沒有指南針，無法顯示相對方向。';
+
+  @override
+  String get satPointBelow => '衛星在地平線下，等下一次過境。';
+
+  @override
+  String get satPointTurnRight => '向右轉';
+
+  @override
+  String get satPointTurnLeft => '向左轉';
+
+  @override
+  String get satPointAligned => '方向已對準';
+
+  @override
+  String get satPointElev => '抬頭';
+
+  @override
+  String get satPointTarget => '目標方位';
 
   @override
   String get featureModeTitle => '模式與功能';

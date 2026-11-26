@@ -2798,6 +2798,33 @@ class AppLocalizationsJa extends AppLocalizations {
   String get dataSourceSwitchHint => 'データソースを切り替えると現在の接続は切断されます';
 
   @override
+  String get satPoint => '衛星を指す';
+
+  @override
+  String get satPointHint => '矢印に合わせて端末を回し、仰角の高さまで持ち上げます。';
+
+  @override
+  String get satPointNoCompass => 'この端末にはコンパスがないため、相対方向を表示できません。';
+
+  @override
+  String get satPointBelow => '衛星は地平線の下です。次のパスを待ってください。';
+
+  @override
+  String get satPointTurnRight => '右へ';
+
+  @override
+  String get satPointTurnLeft => '左へ';
+
+  @override
+  String get satPointAligned => '方向一致';
+
+  @override
+  String get satPointElev => '見上げる';
+
+  @override
+  String get satPointTarget => '目標方位';
+
+  @override
   String get featureModeTitle => 'モードと機能';
 
   @override

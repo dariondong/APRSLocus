@@ -2885,6 +2885,33 @@ class AppLocalizationsEn extends AppLocalizations {
       'Switching the data source disconnects the current link';
 
   @override
+  String get satPoint => 'Point at satellite';
+
+  @override
+  String get satPointHint => 'Turn the phone to follow the arrow; elevation is how high to raise it.';
+
+  @override
+  String get satPointNoCompass => 'No compass on this device; relative direction is unavailable.';
+
+  @override
+  String get satPointBelow => 'The satellite is below the horizon; wait for the next pass.';
+
+  @override
+  String get satPointTurnRight => 'Turn right';
+
+  @override
+  String get satPointTurnLeft => 'Turn left';
+
+  @override
+  String get satPointAligned => 'Aligned';
+
+  @override
+  String get satPointElev => 'Raise';
+
+  @override
+  String get satPointTarget => 'Target azimuth';
+
+  @override
   String get featureModeTitle => 'Modes & features';
 
   @override

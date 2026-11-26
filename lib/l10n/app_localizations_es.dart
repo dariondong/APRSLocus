@@ -2899,6 +2899,33 @@ class AppLocalizationsEs extends AppLocalizations {
       'Cambiar la fuente de datos desconecta el enlace actual';
 
   @override
+  String get satPoint => 'Apuntar al satélite';
+
+  @override
+  String get satPointHint => 'Gira el teléfono siguiendo la flecha; la elevación indica cuánto subirlo.';
+
+  @override
+  String get satPointNoCompass => 'Este dispositivo no tiene brújula; no se puede mostrar la dirección relativa.';
+
+  @override
+  String get satPointBelow => 'El satélite está bajo el horizonte; espera el siguiente paso.';
+
+  @override
+  String get satPointTurnRight => 'Gira a la derecha';
+
+  @override
+  String get satPointTurnLeft => 'Gira a la izquierda';
+
+  @override
+  String get satPointAligned => 'Alineado';
+
+  @override
+  String get satPointElev => 'Eleva';
+
+  @override
+  String get satPointTarget => 'Azimut objetivo';
+
+  @override
   String get featureModeTitle => 'Modos y funciones';
 
   @override

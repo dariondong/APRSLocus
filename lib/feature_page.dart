@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
 import 'features.dart';
-import 'l10n/app_localizations.dart';
 import 'satellite_mode_page.dart';
 import 'settings_widgets.dart';
 import 'state.dart';
 import 'theme.dart';
+import 'ui_layout_selector.dart';
 import 'widgets.dart';
 
 /// ─── 功能启用页 ───
@@ -48,6 +48,9 @@ class FeaturePage extends StatelessWidget {
       icon: Icons.bolt_rounded,
       color: C.blue,
       children: [
+        // 界面结构：1.0 经典 / 2.0 地图基底 —— 与下面两个模式同属「外壳怎么长」。
+        // 精简模式有自己的一套外壳，这时候选 1.0/2.0 看不出效果，按旧行为隐藏。
+        if (!state.liteMode) UiLayoutSelector(state: state),
         SettingsSwitch(
           s.featureLite,
           value: state.liteMode,

@@ -5227,6 +5227,59 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'切换数据来源会断开当前连接'**
   String get dataSourceSwitchHint;
+  /// No description provided for @satPoint.
+  ///
+  /// In zh, this message translates to:
+  /// **'指向卫星'**
+  String get satPoint;
+
+  /// No description provided for @satPointHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'按箭头转动手机；仰角是手机要抬起的高度。'**
+  String get satPointHint;
+
+  /// No description provided for @satPointNoCompass.
+  ///
+  /// In zh, this message translates to:
+  /// **'本机没有指南针，无法显示相对方向。'**
+  String get satPointNoCompass;
+
+  /// No description provided for @satPointBelow.
+  ///
+  /// In zh, this message translates to:
+  /// **'卫星在地平线下，等下一次过境。'**
+  String get satPointBelow;
+
+  /// No description provided for @satPointTurnRight.
+  ///
+  /// In zh, this message translates to:
+  /// **'向右转'**
+  String get satPointTurnRight;
+
+  /// No description provided for @satPointTurnLeft.
+  ///
+  /// In zh, this message translates to:
+  /// **'向左转'**
+  String get satPointTurnLeft;
+
+  /// No description provided for @satPointAligned.
+  ///
+  /// In zh, this message translates to:
+  /// **'方向已对准'**
+  String get satPointAligned;
+
+  /// No description provided for @satPointElev.
+  ///
+  /// In zh, this message translates to:
+  /// **'抬头'**
+  String get satPointElev;
+
+  /// No description provided for @satPointTarget.
+  ///
+  /// In zh, this message translates to:
+  /// **'目标方位'**
+  String get satPointTarget;
   /// No description provided for @featureModeTitle.
   ///
   /// In zh, this message translates to:

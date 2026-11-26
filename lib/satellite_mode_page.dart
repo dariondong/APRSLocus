@@ -1,8 +1,10 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import 'l10n/app_localizations.dart';
 import 'satellite.dart';
+import 'satellite_point_page.dart';
 import 'settings_widgets.dart';
 import 'state.dart';
 import 'theme.dart';
@@ -127,6 +129,10 @@ class SatelliteModePage extends StatelessWidget {
     final names = _names();
     final passes = state.satPasses();
     final pass = state.satPickedPass;
+    final tle = state.satSelected;
+    final lat = state.myLat;
+    final lng = state.myLng;
+    final canPlot = tle != null && lat != null && lng != null;
     return SettingsSectionCard(
       title: s.satNextPass,
       icon: Icons.upcoming_rounded,
@@ -137,26 +143,58 @@ class SatelliteModePage extends StatelessWidget {
         else if (pass == null)
           SettingsHint(s.satNoPass, color: C.orange)
         else ...[
+          // 极坐标天空图：外圈地平线、圆心天顶；轨迹 + 当前星位。
+          if (canPlot) ...[
+            Padding(
+              padding: const EdgeInsets.fromLTRB(14, 10, 14, 2),
+              child: Center(
+                child: ValueListenableBuilder<int>(
+                  valueListenable: state.tick,
+                  builder: (_, _, _) => SizedBox(
+                    width: 210,
+                    height: 210,
+                    child: _SkyPlot(
+                      tle: tle,
+                      lat: lat,
+                      lng: lng,
+                      pass: pass,
+                      now: DateTime.now(),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(14, 0, 14, 8),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  _legendDot(C.green, s.satAos),
+                  const SizedBox(width: 12),
+                  _legendDot(C.orange, 'TCA'),
+                  const SizedBox(width: 12),
+                  _legendDot(C.red, s.satLos),
+                ],
+              ),
+            ),
+          ],
           SettingsRow2(
             s.satNextPass,
-            s.satPass(_utcHm(pass.tca), pass.maxElevation.toStringAsFixed(0)),
+            s.satPass(_hm(pass.tca), pass.maxElevation.toStringAsFixed(0)),
             valueColor: C.ink,
           ),
           SettingsRow2(
             '${s.satAos} / ${s.satLos}',
-            '${_utcHm(pass.aos)} / ${_utcHm(pass.los)}',
+            '${_hm(pass.aos)} / ${_hm(pass.los)}',
           ),
           if (passes.length > 1)
             Padding(
-              padding: const EdgeInsets.fromLTRB(10, 8, 10, 6),
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: [
-                    for (var i = 0; i < passes.length; i++)
-                      _passChip(passes[i], i == state.satPassIndex, i, s),
-                  ],
-                ),
+              padding: const EdgeInsets.fromLTRB(14, 8, 14, 2),
+              child: Column(
+                children: [
+                  for (var i = 0; i < passes.length && i < 6; i++)
+                    _passRow(passes[i], i == state.satPassIndex, i),
+                ],
               ),
             ),
           SettingsHint(s.satEstimate),
@@ -165,22 +203,58 @@ class SatelliteModePage extends StatelessWidget {
     );
   }
 
-  Widget _passChip(SatPass p, bool active, int i, S s) {
+  Widget _legendDot(Color c, String label) => Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 7,
+            height: 7,
+            decoration: BoxDecoration(color: c, shape: BoxShape.circle),
+          ),
+          const SizedBox(width: 4),
+          Text(label, style: ts(9.5, c: C.grey)),
+        ],
+      );
+
+  Widget _passRow(SatPass p, bool active, int i) {
+    final mins = p.duration.inMinutes;
     return GestureDetector(
       onTap: () => state.setSatPassIndex(i),
+      behavior: HitTestBehavior.opaque,
       child: Container(
-        margin: const EdgeInsets.only(right: 8),
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+        margin: const EdgeInsets.only(bottom: 4),
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
         decoration: BoxDecoration(
-          color: active ? C.blueBg : C.bgSoft,
+          color: active ? C.indigo.withValues(alpha: 0.10) : C.bgSoft,
           borderRadius: BorderRadius.circular(8),
-          border: Border.all(color: active ? C.blue : C.border),
+          border: Border.all(
+            color: active ? C.indigo : C.border,
+            width: active ? 1.2 : 0.6,
+          ),
         ),
-        child: Text(
-          '${_utcHm(p.tca)} · ${p.maxElevation.toStringAsFixed(0)}°',
-          style: ts(11,
-              c: active ? C.blue : C.slate,
-              w: active ? FontWeight.w700 : FontWeight.w500),
+        child: Row(
+          children: [
+            Icon(
+              active
+                  ? Icons.radio_button_checked_rounded
+                  : Icons.radio_button_unchecked_rounded,
+              size: 14,
+              color: active ? C.indigo : C.greyLight,
+            ),
+            const SizedBox(width: 6),
+            Expanded(
+              child: Text(
+                '${_when(p.aos)} → ${_hm(p.los)}',
+                style: ts(11.5,
+                    c: active ? C.ink : C.slate,
+                    w: active ? FontWeight.w700 : FontWeight.w500),
+              ),
+            ),
+            Text(
+              '${p.maxElevation.toStringAsFixed(0)}° · $mins min',
+              style: ts(10.5, c: active ? C.indigo : C.grey),
+            ),
+          ],
         ),
       ),
     );
@@ -226,6 +300,18 @@ class SatelliteModePage extends StatelessWidget {
             SettingsRow2(s.satDownlink,
                 '${down.toStringAsFixed(3)} MHz · ${_hz(dDown)}'),
             SettingsHint(s.satDopplerHint),
+            SettingsNavRow(
+              title: s.satPoint,
+              subtitle: s.satPointHint,
+              icon: Icons.explore_rounded,
+              color: C.orange,
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => SatellitePointPage(state: state),
+                ),
+              ),
+            ),
           ],
         );
       },
@@ -306,35 +392,84 @@ class SatelliteModePage extends StatelessWidget {
 
   Future<void> _pickSat(BuildContext context, List<String> names) async {
     final s = S.of(context);
+    final ctrl = TextEditingController();
     final pick = await showModalBottomSheet<String>(
       context: context,
       backgroundColor: C.sheetFill,
+      isScrollControlled: true,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(18)),
       ),
-      builder: (ctx) => SafeArea(
-        top: false,
-        child: ListView(
-          shrinkWrap: true,
-          children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16, 14, 16, 6),
-              child: Text(s.satSatellite,
-                  style: ts(14, w: FontWeight.w700)),
-            ),
-            for (final n in names)
-              ListTile(
-                dense: true,
-                title: Text(n, style: ts(13)),
-                trailing: state.satName == n
-                    ? Icon(Icons.check_rounded, size: 16, color: C.blue)
-                    : null,
-                onTap: () => Navigator.pop(ctx, n),
+      builder: (ctx) => StatefulBuilder(
+        builder: (ctx, setSheet) {
+          final q = ctrl.text.trim().toLowerCase();
+          final list = q.isEmpty
+              ? names
+              : names.where((n) => n.toLowerCase().contains(q)).toList();
+          return SafeArea(
+            top: false,
+            child: Padding(
+              padding: EdgeInsets.only(
+                  bottom: MediaQuery.of(ctx).viewInsets.bottom),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(14, 12, 14, 6),
+                    child: Row(
+                      children: [
+                        Text(s.satSatellite, style: ts(14, w: FontWeight.w700)),
+                        const Spacer(),
+                        Text('${names.length}', style: ts(11, c: C.grey)),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(14, 0, 14, 8),
+                    child: TextField(
+                      controller: ctrl,
+                      onChanged: (_) => setSheet(() {}),
+                      style: ts(13),
+                      decoration: InputDecoration(
+                        hintText: s.search,
+                        hintStyle: ts(13, c: C.greyLight),
+                        prefixIcon: Icon(Icons.search_rounded,
+                            size: 18, color: C.grey),
+                        isDense: true,
+                        filled: true,
+                        fillColor: C.bgSoft,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide.none,
+                        ),
+                      ),
+                    ),
+                  ),
+                  Flexible(
+                    child: ListView(
+                      shrinkWrap: true,
+                      children: [
+                        for (final n in list)
+                          ListTile(
+                            dense: true,
+                            title: Text(n, style: ts(13)),
+                            trailing: state.satName == n
+                                ? Icon(Icons.check_rounded,
+                                    size: 16, color: C.blue)
+                                : null,
+                            onTap: () => Navigator.pop(ctx, n),
+                          ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
-          ],
-        ),
+            ),
+          );
+        },
       ),
     );
+    ctrl.dispose();
     if (pick != null && context.mounted) state.setSatName(pick);
   }
 
@@ -436,10 +571,18 @@ class SatelliteModePage extends StatelessWidget {
 
   // ─── 小工具 ───
 
-  String _utcHm(DateTime t) {
-    final u = t.toUtc();
-    return '${u.hour.toString().padLeft(2, '0')}:'
-        '${u.minute.toString().padLeft(2, '0')}Z';
+  String _hm(DateTime t) {
+    final l = t.toLocal();
+    return '${l.hour.toString().padLeft(2, '0')}:'
+        '${l.minute.toString().padLeft(2, '0')}';
+  }
+
+  String _when(DateTime t) {
+    final l = t.toLocal();
+    final n = DateTime.now();
+    final hm = _hm(t);
+    if (l.year == n.year && l.month == n.month && l.day == n.day) return hm;
+    return '${l.month}/${l.day} $hm';
   }
 
   String _hz(double hz) {
@@ -452,4 +595,146 @@ class SatelliteModePage extends StatelessWidget {
       SnackBar(content: Text(m), behavior: SnackBarBehavior.floating),
     );
   }
+}
+
+/// 极坐标天空图：外圈 = 地平线（0°），圆心 = 天顶（90°）。
+class _SkyPlot extends StatelessWidget {
+  final Tle tle;
+  final double lat, lng;
+  final SatPass pass;
+  final DateTime now;
+
+  const _SkyPlot({
+    required this.tle,
+    required this.lat,
+    required this.lng,
+    required this.pass,
+    required this.now,
+  });
+
+  @override
+  Widget build(BuildContext context) => CustomPaint(
+        painter: _SkyPlotPainter(
+          tle: tle,
+          lat: lat,
+          lng: lng,
+          pass: pass,
+          now: now,
+        ),
+      );
+}
+
+class _SkyPlotPainter extends CustomPainter {
+  final Tle tle;
+  final double lat, lng;
+  final SatPass pass;
+  final DateTime now;
+
+  const _SkyPlotPainter({
+    required this.tle,
+    required this.lat,
+    required this.lng,
+    required this.pass,
+    required this.now,
+  });
+
+  Offset _point(Size size, double azDeg, double elDeg) {
+    final cx = size.width / 2;
+    final cy = size.height / 2;
+    final r = math.min(cx, cy) - 12;
+    final rr = r * (1 - elDeg.clamp(0.0, 90.0) / 90);
+    final a = azDeg * math.pi / 180;
+    return Offset(cx + rr * math.sin(a), cy - rr * math.cos(a));
+  }
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final cx = size.width / 2;
+    final cy = size.height / 2;
+    final r = math.min(cx, cy) - 12;
+    final center = Offset(cx, cy);
+    final ring = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1
+      ..color = C.border;
+    canvas.drawCircle(center, r, ring);
+    for (final el in const [30.0, 60.0]) {
+      canvas.drawCircle(
+        center,
+        r * (1 - el / 90),
+        Paint()
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 0.8
+          ..color = C.border.withValues(alpha: 0.55),
+      );
+    }
+
+    void label(String text, Offset at) {
+      final tp = TextPainter(
+        text: TextSpan(
+          text: text,
+          style: TextStyle(fontSize: 10, color: C.grey),
+        ),
+        textDirection: TextDirection.ltr,
+      )..layout();
+      tp.paint(canvas, at - Offset(tp.width / 2, tp.height / 2));
+    }
+
+    label('N', Offset(cx, cy - r - 8));
+    label('E', Offset(cx + r + 8, cy));
+    label('S', Offset(cx, cy + r + 8));
+    label('W', Offset(cx - r - 8, cy));
+
+    // 过境轨迹（每 20 秒一个点）
+    final pts = <Offset>[];
+    for (var t = pass.aos;
+        t.isBefore(pass.los);
+        t = t.add(const Duration(seconds: 20))) {
+      final look = lookAt(tle, lat, lng, t);
+      if (look.elevationDeg < 0) continue;
+      pts.add(_point(size, look.azimuthDeg, look.elevationDeg));
+    }
+    if (pts.length > 1) {
+      final path = Path()..moveTo(pts.first.dx, pts.first.dy);
+      for (final p in pts.skip(1)) {
+        path.lineTo(p.dx, p.dy);
+      }
+      canvas.drawPath(
+        path,
+        Paint()
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 2
+          ..strokeCap = StrokeCap.round
+          ..color = C.blue,
+      );
+    }
+
+    void dot(DateTime at, Color color) {
+      final look = lookAt(tle, lat, lng, at);
+      if (look.elevationDeg < -1) return;
+      canvas.drawCircle(
+        _point(size, look.azimuthDeg, look.elevationDeg.clamp(0.0, 90.0)),
+        3.5,
+        Paint()..color = color,
+      );
+    }
+
+    dot(pass.aos, C.green);
+    dot(pass.tca, C.orange);
+    dot(pass.los, C.red);
+
+    // 卫星当前所在（只有落在这次过境里才画）
+    if (!now.isBefore(pass.aos) && !now.isAfter(pass.los)) {
+      final look = lookAt(tle, lat, lng, now);
+      if (look.elevationDeg >= 0) {
+        final p = _point(size, look.azimuthDeg, look.elevationDeg);
+        canvas.drawCircle(p, 6, Paint()..color = Colors.white);
+        canvas.drawCircle(p, 4, Paint()..color = C.blue);
+      }
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant _SkyPlotPainter old) =>
+      old.now != now || old.pass != pass || old.tle != tle;
 }

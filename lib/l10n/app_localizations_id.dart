@@ -2882,6 +2882,33 @@ class AppLocalizationsId extends AppLocalizations {
       'Mengganti sumber data akan memutus koneksi saat ini';
 
   @override
+  String get satPoint => 'Arahkan ke satelit';
+
+  @override
+  String get satPointHint => 'Putar ponsel mengikuti panah; elevasi menunjukkan seberapa tinggi mengangkatnya.';
+
+  @override
+  String get satPointNoCompass => 'Perangkat ini tidak punya kompas; arah relatif tidak tersedia.';
+
+  @override
+  String get satPointBelow => 'Satelit di bawah cakrawala; tunggu lintasan berikutnya.';
+
+  @override
+  String get satPointTurnRight => 'Putar kanan';
+
+  @override
+  String get satPointTurnLeft => 'Putar kiri';
+
+  @override
+  String get satPointAligned => 'Sudah searah';
+
+  @override
+  String get satPointElev => 'Angkat';
+
+  @override
+  String get satPointTarget => 'Azimut target';
+
+  @override
   String get featureModeTitle => 'Mode & fitur';
 
   @override

@@ -50,6 +50,9 @@ KEYS_EXPLICIT = (
     'satRangeRate', 'satUplink', 'satDownlink', 'satDoppler', 'satPath',
     'satPathHint', 'satCopyDown', 'satUseAsOnAir', 'satAos', 'satLos',
     'satNoPosition', 'satDopplerHint', 'satCopied',
+    'satPoint', 'satPointHint', 'satPointNoCompass', 'satPointBelow',
+    'satPointTurnRight', 'satPointTurnLeft', 'satPointAligned',
+    'satPointElev', 'satPointTarget',
 )
 
 
