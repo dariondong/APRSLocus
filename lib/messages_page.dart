@@ -663,6 +663,19 @@ class _MessagesPageState extends State<MessagesPage> {
                   ),
                 ),
                 const SizedBox(height: 6),
+                // 邀请通联：用标准 QSY 报文把对方约到某个频点。
+                ListTile(
+                  leading: Icon(Icons.record_voice_over_rounded,
+                      color: canLocate ? C.green : C.grey),
+                  title: Text(s.onAirQso, style: ts(13, w: FontWeight.w600)),
+                  enabled: canLocate,
+                  onTap: canLocate
+                      ? () {
+                          Navigator.pop(ctx);
+                          _showQsyInviteSheet(st);
+                        }
+                      : null,
+                ),
                 ListTile(
                   leading: Icon(Icons.place_rounded,
                       color: canLocate ? C.blue : C.grey),
@@ -682,6 +695,173 @@ class _MessagesPageState extends State<MessagesPage> {
         ),
       ),
     );
+  }
+
+  void _toast(String m) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(m), behavior: SnackBarBehavior.floating),
+    );
+  }
+
+  /// 「邀请通联」面板：用标准 QSY 报文把对方约到一个频点。
+  ///
+  /// 与 On-Air 页的自由文本不同，这里把频率与请求方式做成结构化输入，
+  /// 发出去的就是标准 `QSY 145.500MHz?`：
+  ///   * `?` 自动改频（可以拒绝）；
+  ///   * `!` 立即改频；
+  ///   * `.` 手动 TUNE。
+  Future<void> _showQsyInviteSheet(AppState st) async {
+    final s = S.of(context);
+    final ctrl = TextEditingController(
+      text: st.onAirFreq.isNotEmpty ? st.onAirFreq : '',
+    );
+    var suffix = '?';
+    String? error;
+    final text = await showModalBottomSheet<String>(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (ctx) => Padding(
+        padding: EdgeInsets.only(bottom: MediaQuery.of(ctx).viewInsets.bottom),
+        child: MaterialSurface(
+          radius: 24,
+          topOnly: true,
+          child: Container(
+            decoration: BoxDecoration(
+              color: C.sheetFill,
+              borderRadius:
+                  const BorderRadius.vertical(top: Radius.circular(24)),
+            ),
+            padding: const EdgeInsets.fromLTRB(16, 14, 16, 18),
+            child: StatefulBuilder(
+              builder: (ctx, setSheet) {
+                final f = normalizeOnAirFreq(ctrl.text);
+                final preview =
+                    f.isEmpty ? 'QSY — MHz$suffix' : 'QSY ${f}MHz$suffix';
+                final hint = suffix == '!'
+                    ? s.qsyNow
+                    : suffix == '?'
+                        ? s.qsyAuto
+                        : s.qsyManual;
+                return Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('${s.onAirQso} · $_selected',
+                        style: ts(13, w: FontWeight.w700)),
+                    const SizedBox(height: 10),
+                    TextField(
+                      controller: ctrl,
+                      keyboardType: const TextInputType.numberWithOptions(
+                          decimal: true),
+                      style: ts(13),
+                      onChanged: (_) => setSheet(() => error = null),
+                      decoration: InputDecoration(
+                        labelText: s.onAirFreq,
+                        hintText: '145.500',
+                        hintStyle: ts(13, c: C.greyLight),
+                        errorText: error,
+                        filled: true,
+                        fillColor: C.surfaceFill,
+                        isDense: true,
+                        suffixText: 'MHz',
+                        contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 14, vertical: 12),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide(color: C.border),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide(color: C.border),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide(color: C.blue, width: 1.5),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    Wrap(
+                      spacing: 8,
+                      children: [
+                        for (final v in const ['?', '!', '.'])
+                          ChoiceChip(
+                            label: Text(v, style: ts(12, w: FontWeight.w700)),
+                            selected: suffix == v,
+                            selectedColor: C.green.withValues(alpha: 0.15),
+                            onSelected: (_) => setSheet(() => suffix = v),
+                          ),
+                      ],
+                    ),
+                    const SizedBox(height: 6),
+                    Text(hint, style: ts(11, c: C.slate, h: 1.35)),
+                    const SizedBox(height: 10),
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 10),
+                      decoration: BoxDecoration(
+                        color: C.green.withValues(alpha: 0.08),
+                        borderRadius: BorderRadius.circular(10),
+                        border:
+                            Border.all(color: C.green.withValues(alpha: 0.30)),
+                      ),
+                      child: Text(
+                        preview,
+                        style: ts(13, c: C.green, w: FontWeight.w700),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: OutlinedButton(
+                            onPressed: () => Navigator.pop(ctx),
+                            style: OutlinedButton.styleFrom(
+                              padding:
+                                  const EdgeInsets.symmetric(vertical: 11),
+                            ),
+                            child: Text(S.of(ctx).cancel, style: ts(13)),
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: FilledButton(
+                            style: FilledButton.styleFrom(
+                              backgroundColor: C.green,
+                              padding:
+                                  const EdgeInsets.symmetric(vertical: 11),
+                            ),
+                            onPressed: () {
+                              final n = normalizeOnAirFreq(ctrl.text);
+                              if (n.isEmpty) {
+                                setSheet(() => error = s.onAirFreqBad);
+                                return;
+                              }
+                              Navigator.pop(ctx, 'QSY ${n}MHz$suffix');
+                            },
+                            child: Text(s.onAirQsoSend, style: ts(13)),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                );
+              },
+            ),
+          ),
+        ),
+      ),
+    );
+    ctrl.dispose();
+    if (text == null || text.isEmpty || !mounted) return;
+    if (!st.msgLinkUp) {
+      _toast(S.of(context).onAirQsoNoLink);
+      return;
+    }
+    st.sendMessage(_selected, text);
+    _toast(S.of(context).onAirQsoSent);
   }
 
   /// 自由选点的小面板（用户要求）：位置点气泡点按后不直接跳，而是让用户选
